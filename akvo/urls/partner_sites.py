@@ -9,13 +9,15 @@ from __future__ import absolute_import
 
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
+from django.conf.urls.i18n import i18n_patterns
 from django_counter.urls import urlpatterns as counter_urls
 
 from akvo.rsr import views_partner_sites as views
 from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates
 
-urlpatterns = patterns('',
-    # Home
+
+urlpatterns = i18n_patterns('',
+
     url(r'^$',
         views.HomeView.as_view(),
         name='home'),
@@ -68,16 +70,11 @@ urlpatterns = patterns('',
     url(r'^project/(?P<project_id>\d+)/widgets/$',
         views.GetWidgetView.as_view(),
         name="get_widget"),
-        
+
     url(r'^widgets/projects/map/$',
         views.ProjectMapView.as_view(),
         name="widget_org_map"),
-    
-    # Beta API
-    url(r'^api/beta/projects_cordinates.json$',
-        views.ProjectCordinates.as_view(),
-        name="api_projects_cordinates"), 
-    
+
     # Auth
     url(r'^rsr/signin/$',
         views.SignInView.as_view(),
@@ -86,6 +83,14 @@ urlpatterns = patterns('',
     url(r'^rsr/signout/$',
         views.signout,
         name='sign_out'),
+)
+
+# Non i18n
+urlpatterns += patterns('',
+   # Beta API
+    url(r'^api/beta/projects_cordinates.json$',
+        views.ProjectCordinates.as_view(),
+        name="api_projects_cordinates"),
 )
 
 urlpatterns += counter_urls

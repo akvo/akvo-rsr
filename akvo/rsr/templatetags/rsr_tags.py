@@ -15,13 +15,11 @@ from akvo.scripts.asset_manager import map, asset_bundles
 register = template.Library()
 
 
-@register.inclusion_tag('inclusion_tags/counter_badge.html', \
+@register.inclusion_tag('inclusion_tags/counter_badge.html',
                         takes_context=True)
 def counter_badge(context, object):
     '''show the counter_badge'''
-    cache_key = '%s_view_count' % type(object).__name__.lower()
-    return {'MEDIA_URL': context['MEDIA_URL'], 'object': object, \
-            'cache_key': cache_key}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'object': object,}
 
 
 @register.inclusion_tag('inclusion_tags/funding_box.html', takes_context=True)
@@ -31,7 +29,7 @@ def funding_box(context, project):
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/funding_table.html', \
+@register.inclusion_tag('inclusion_tags/funding_table.html',
                         takes_context=True)
 def funding_table(context, project):
     '''Show the funding box used in the widgets. Css definition in
@@ -39,7 +37,7 @@ def funding_table(context, project):
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/funding_project.html', \
+@register.inclusion_tag('inclusion_tags/funding_project.html',
                         takes_context=True)
 def funding_project(context, project):
     '''Show the funding box used in the widgets. Css definition in
@@ -47,7 +45,7 @@ def funding_project(context, project):
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/funding_box_narrow.html', \
+@register.inclusion_tag('inclusion_tags/funding_box_narrow.html',
                         takes_context=True)
 def funding_box_narrow(context, project):
     '''Show the funding box used in the widgets. Css definition in
@@ -55,7 +53,7 @@ def funding_box_narrow(context, project):
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/funding_box_narrow2.html', \
+@register.inclusion_tag('inclusion_tags/funding_box_narrow2.html',
                         takes_context=True)
 def funding_box_narrow2(context, project):
     '''Show the funding box used in the widgets. Css definition in
@@ -63,7 +61,7 @@ def funding_box_narrow2(context, project):
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag( \
+@register.inclusion_tag(
     'partner_sites/inclusion_tags/partner_sites_funding_box.html',
     takes_context=True)
 def partner_sites_funding_box(context, project):
@@ -71,35 +69,35 @@ def partner_sites_funding_box(context, project):
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/individual_donate_button.html', \
+@register.inclusion_tag('inclusion_tags/individual_donate_button.html',
                         takes_context=True)
 def individual_donate_button(context, project):
     '''Show the individual doante button. CSS in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/institutions_sponsor.html', \
+@register.inclusion_tag('inclusion_tags/institutions_sponsor.html',
                         takes_context=True)
 def institutions_sponsor(context, project):
     '''Show the individual doante button. CSS in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/project_budget.html', \
+@register.inclusion_tag('inclusion_tags/project_budget.html',
                         takes_context=True)
 def project_budget(context, project):
     '''Show the individual doante button. CSS in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/funding_box_wide.html', \
+@register.inclusion_tag('inclusion_tags/funding_box_wide.html',
                         takes_context=True)
 def funding_box_wide(context, project):
     '''Show the funding box used in the widgets. Css in widget_global.css'''
     return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
 
 
-@register.inclusion_tag('inclusion_tags/project_thumb.html', \
+@register.inclusion_tag('inclusion_tags/project_thumb.html',
                         takes_context=True)
 def project_thumb(context, project, width, height, style='',):
     return {
@@ -124,7 +122,7 @@ def org_logo(context, org, width, height, style=''):
     }
 
 
-@register.inclusion_tag('inclusion_tags/update_thumb.html', \
+@register.inclusion_tag('inclusion_tags/update_thumb.html',
                         takes_context=True)
 def update_thumb(context, update, width, height, style=''):
     return {
@@ -152,7 +150,7 @@ def gallery_thumb(context, image, width, height, caption='', style=''):
     }
     
 
-@register.inclusion_tag('inclusion_tags/asset_bundle.html', \
+@register.inclusion_tag('inclusion_tags/asset_bundle.html',
                         takes_context=True)
 def asset_bundle(context, bundle):
     '''Uses akvo/scripts/asset_manager/map.py to retrive a resource file'''
@@ -175,7 +173,7 @@ def asset_bundle(context, bundle):
 
     if dev_mode or cant_get_map:
         if asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['type'] == 'css':
-            url = '%s%sbuild/%s_raw.%s' % (settings.MEDIA_URL, bundle_path, \
+            url = '%s%sbuild/%s_raw.%s' % (settings.MEDIA_URL, bundle_path,
                                            bundle, bundle_type)
             script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
             include = script_string

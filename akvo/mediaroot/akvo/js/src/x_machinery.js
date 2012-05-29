@@ -80,7 +80,6 @@ function preview_widget()
 	}
         
         if (akvo_widget_type != 'project-map') {
-            alert('In the non map code path');
 
             // Get Titlecolor string, validate that it's 3 or 6 characters and only has 0-f characters
             var txtcolor = '';
