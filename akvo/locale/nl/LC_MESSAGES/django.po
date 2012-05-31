@@ -1,25 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
-# Anke van Lenteren <anke@vanlenteren.com>, 2011.
+# Anke van Lenteren <anke@vanlenteren.com>, 2011, 2012.
 # Beth Whiteside <beth@akvo.org>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: Akvo RSR\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-22 07:26-0700\n"
-"PO-Revision-Date: 2011-12-08 15:15+0000\n"
+"Report-Msgid-Bugs-To: https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets\n"
+"POT-Creation-Date: 2012-05-22 07:25-0700\n"
+"PO-Revision-Date: 2012-05-29 21:43+0000\n"
 "Last-Translator: Anke van Lenteren <anke@vanlenteren.com>\n"
-"Language-Team: Dutch (http://www.transifex.net/projects/p/akvo-rsr/language/"
-"nl/)\n"
+"Language-Team: Dutch (http://www.transifex.net/projects/p/akvo-rsr/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Translated-Using: django-rosetta 0.4.5.svn\n"
 
 #: gateway/utils.py:219 rsr/utils.py:219
 msgid "Thank you from Akvo.org!"
@@ -46,87 +44,66 @@ msgid "Project description"
 msgstr "Projectbeschrijving"
 
 #: rsr/admin.py:407
-#, fuzzy
 msgid ""
 "Give your project a short title and subtitle in RSR. These fields are the "
 "newspaper headline for your project: use them to attract attention to what "
 "you are doing."
-msgstr ""
-"Geef uw project een korte naam en ondertitel in RSR. Zie deze velden als "
-"krantkoppen waarmee u aandacht kunt vestigen op wat u doet."
+msgstr "Geef uw project een korte naam en ondertitel in RSR. Zie deze velden als krantkoppen waarmee u aandacht kunt vestigen op wat u doet."
 
 #: rsr/admin.py:414
 msgid "Categories"
 msgstr "Categorieën"
 
 #: rsr/admin.py:416
-#, fuzzy
 msgid ""
 "Please select all categories applicable to your project. (The Focus area(s) "
 "of each category is shown in parenthesis after the category name)"
-msgstr ""
-"Selecteer alle categorieën die van toepassing zijn op uw project. (Het thema "
-"van elke categorie wordt tussen haakjes getoond achter de categorienaam)"
+msgstr "Gelieve alle categorieën die op uw project van toepassing zijn te selecteren. (De thema's worden tussen haakjes getoond, volgend op de categorie-naam.)"
 
 #: rsr/admin.py:423
 msgid "Project info"
 msgstr "Projectinformatie"
 
 #: rsr/admin.py:425
-#, fuzzy
 msgid ""
-"The summary should <em>briefly</em> explain why the project is being carried "
-"out, where it is taking place, who will benefit and/or participate, what it "
-"specifically hopes to accomplish and how those specific goals will be "
+"The summary should <em>briefly</em> explain why the project is being carried"
+" out, where it is taking place, who will benefit and/or participate, what it"
+" specifically hopes to accomplish and how those specific goals will be "
 "accomplished."
-msgstr ""
-"Gebruik onderstaande ruimte om in het kort uit te leggen waarom het project "
-"wordt uitgevoerd, waar het plaatsvindt, wie zullen profiteren en / of "
-"deelnemen, wat u met het project hoopt te bereiken en hoe deze specifieke "
-"doelstellingen zullen worden bereikt. "
+msgstr "De samenvatting moet <em>in het kort</em> uitleggen waarom het project wordt uitgevoerd, waar het plaatsvindt, wie er van gaat profiteren en /of deelnemen, wat u ermee hoopt te bereiken en hoe de specificieke doelen zullen worden bereikt."
 
 #: rsr/admin.py:431
 msgid "Project details"
 msgstr "Projectdetails"
 
 #: rsr/admin.py:433
-#, fuzzy
 msgid ""
 "In-depth information about your project should be put in this section. Use "
 "the Background, Project plan, Current status and Sustainability fields to "
 "tell people more about the project."
-msgstr ""
-"Gebruik onderstaande velden om uitgebreide informatie te geven over het "
-"project."
+msgstr "Dit gedeelte kan gebruikt worden voor meer gedetailleerde informatie over uw project. Gebruik de velden Achtergrond, Projectplan, Huidige status en Duurzaamheid om meer te vertellen over het project."
 
 #: rsr/admin.py:439
 msgid "Project meta info"
 msgstr "Project meta-informatie"
 
 #: rsr/admin.py:441
-#, fuzzy
 msgid ""
 "The project meta information fields are not public. They allow you to make "
 "notes to other members of your organisation or partners with access to your "
 "projects on the RSR Admin pages."
-msgstr ""
-"Onderstaande velden worden niet openbaar gemaakt. U kunt hier aantekeningen "
-"maken die alleen zichtbaar zijn voor uw collega's of partners met toegang "
-"tot uw projecten op de RSR administratie-pagina's."
+msgstr "De project meta-informatie velden zijn niet zichtbaar voor het algemene publiek. U kunt hier aantekeningen achterlaten voor medewerkers van uw organisatie of partner-organisaties die toegang hebben tot uw projecten in Akvo RSR."
 
 #: rsr/admin.py:447 templates/partner_sites/project/project_funding.html:27
 msgid "Project budget"
 msgstr "Projectbudget"
 
 #: rsr/admin.py:449
-#, fuzzy
 msgid ""
-"The request posted date is filled in for you automatically when you create a "
-"project. When the project implementation phase is complete, enter the "
+"The request posted date is filled in for you automatically when you create a"
+" project. When the project implementation phase is complete, enter the "
 "<em>Date complete</em> here."
-msgstr ""
-"De 'Aanvraag verzonden datum' wordt automatisch ingevuld. Als het project "
-"afgerond is, moet u wel zelf de <em>datum voltooid</em> invoeren."
+msgstr "De 'Aanvraag verzonden' datum wordt automatisch voor u ingevuld als u een project creëert. Als de projectimplementatie-fase afgerond is, gelieve de <em>Datum afgerond</em> hier in te vullen. "
 
 #: rsr/admin.py:454 templates/partner_sites/project/project_main.html:64
 #: templates/partner_sites/project/project_main.html:82
@@ -136,18 +113,12 @@ msgid "Goals"
 msgstr "Doelstellingen"
 
 #: rsr/admin.py:456
-#, fuzzy
 msgid ""
 "Describe what the project hopes to accomplish. Keep in mind the SMART "
 "criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. "
 "The numbered fields can be used to list specific goals whose accomplishment "
 "will be used to measure overall project success."
-msgstr ""
-"Beschrijf wat u met het project hoopt te bereiken. Houd rekening met de "
-"volgende criteria: specifiek, meetbaar, overeengekomen, realistisch en "
-"tijdgebonden. De overige velden kunnen worden gebruikt om specifieke "
-"doelstellingen aan te geven, die na afloop kunnen worden gebruikt om het "
-"succes van het project te meten."
+msgstr "Beschrijf wat u met dit project hoopt te bereiken. Houd rekening met de SMART-criteria: Specifiek, Meetbaar, Afgesproken, Realistisch en Tijdgebonden. De genummerde velden kunnen worden gebruikt om een lijst te maken van de specifieke doelen die zullen worden gebruikt om het algemene succes van het project te meten."
 
 #: rsr/admin.py:611
 #, python-format
@@ -171,34 +142,34 @@ msgid "can create sms updates"
 msgstr "kan SMS-updates maken"
 
 #: rsr/feeds.py:194
-#, fuzzy, python-format
+#, python-format
 msgid "Akvo RSR project %(id)d: %(project_title)s"
-msgstr "Akvo RSR-nr %(id)d: %(project_title)s"
+msgstr "Akvo RSR-project %(id)d: %(project_title)s"
 
 #: rsr/feeds.py:197
-#, fuzzy, python-format
+#, python-format
 msgid "Project updates for project %(project_title)s"
-msgstr "Project-updates voor alle Akvo RSR-projecten"
+msgstr "Project-updates voor project %(project_title)s"
 
 #: rsr/feeds.py:212
-#, fuzzy, python-format
+#, python-format
 msgid "Projects of %(org_name)s"
-msgstr "Project %(id)d: %(name)s"
+msgstr "Projecten van %(org_name)s"
 
 #: rsr/feeds.py:216 templates/rsr/organisation/organisation.html:11
 #, python-format
 msgid "Project updates for projects partnered by %(org_name)s"
-msgstr ""
+msgstr "Project-updates voor een bepaalde project partner %(org_name)s"
 
 #: rsr/feeds.py:219
 #, python-format
 msgid "Project updates for projects partnered by %(org_name)s - %(long_name)s"
-msgstr ""
+msgstr "Project-updates voor een bepaalde project partner %(org_name)s - %(long_name)s"
 
 #: rsr/feeds.py:228 rsr/feeds.py:251
 #, python-format
 msgid "Project %(project_id)d - %(project_title)s: %(update_title)s"
-msgstr ""
+msgstr "Project %(project_id)d - %(project_title)s: %(update_title)s"
 
 #: rsr/feeds.py:239
 msgid "Akvo RSR all project updates"
@@ -221,7 +192,6 @@ msgid "All words"
 msgstr "Alle woorden"
 
 #: rsr/filters.py:90
-#, fuzzy
 msgid "Project title or subtitle"
 msgstr "Projectnaam of ondertitel"
 
@@ -243,8 +213,7 @@ msgstr "Alle organisaties"
 
 #: rsr/forms.py:98
 msgid "The two 'new password' fields didn't match."
-msgstr ""
-"De twee opgegeven wachtwoorden in 'nieuw wachtwoord' waren niet hetzelfde."
+msgstr "De twee opgegeven wachtwoorden in 'nieuw wachtwoord' waren niet hetzelfde."
 
 #: rsr/forms.py:113
 msgid "username"
@@ -268,16 +237,12 @@ msgstr "emailadres (herhalen a.u.b.)"
 
 #: rsr/forms.py:151
 msgid "Passwords do not match. Please enter the same password in both fields."
-msgstr ""
-"De door u ingegeven wachtwoorden waren niet hetzelfde. Graag twee keer "
-"precies hetzelfde wachtwoord invullen."
+msgstr "De door u ingegeven wachtwoorden waren niet hetzelfde. Graag twee keer precies hetzelfde wachtwoord invullen."
 
 #: rsr/forms.py:154
 msgid ""
 "Email addresses do not match. Please enter the email address in both fields."
-msgstr ""
-"De door u ingegeven emailadressen waren niet hetzelfde. Graag twee keer "
-"precies hetzelfde emailadres invullen."
+msgstr "De door u ingegeven emailadressen waren niet hetzelfde. Graag twee keer precies hetzelfde emailadres invullen."
 
 #: rsr/forms.py:200
 msgid "New password"
@@ -293,9 +258,7 @@ msgstr "Email"
 
 #: rsr/forms.py:244
 msgid "You cannot donate more than the project actually needs!"
-msgstr ""
-"Uw donatie mag niet hoger zijn dan de voor dit project benodigde "
-"financiering."
+msgstr "Uw donatie mag niet hoger zijn dan de voor dit project benodigde financiering."
 
 #: rsr/forms.py:247
 msgid "You must type the same email address each time!"
@@ -315,7 +278,7 @@ msgstr "Ongeldige video-URL. Gebruik Blip.TV, Vimeo of YouTube."
 
 #: rsr/forms.py:329
 msgid "www is a reserved hostname. Please choose another hostname."
-msgstr ""
+msgstr "www is een gereserveerde hostnaam. Kies een andere hostnaam."
 
 #: rsr/iso3166.py:10
 msgid "Afghanistan"
@@ -1352,9 +1315,7 @@ msgstr "Telefoon bevestigd"
 #: rsr/management.py:20
 msgid ""
 "Your mobile phone number has been confirmed for use in updating RSR projects"
-msgstr ""
-"Uw mobiele telefoonnummer kan nu worden gebruikt om updates naar RSR-"
-"projecten te sturen"
+msgstr "Uw mobiele telefoonnummer kan nu worden gebruikt om updates naar RSR-projecten te sturen"
 
 #: rsr/management.py:24
 msgid "SMS updates enabled for project"
@@ -1414,9 +1375,10 @@ msgstr "landen"
 
 #: rsr/models.py:110
 msgid ""
-"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap."
-"com</a> to get the decimal coordinates of your project."
-msgstr ""
+"Go to <a href='http://itouchmap.com/latlong.html' "
+"target='_blank'>iTouchMap.com</a> to get the decimal coordinates of your "
+"project."
+msgstr "Ga naar <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> voor de decimale coördinaten van uw project."
 
 #: rsr/models.py:112
 msgid "latitude"
@@ -1431,9 +1393,8 @@ msgid "city"
 msgstr "stad"
 
 #: rsr/models.py:114 rsr/models.py:115 rsr/models.py:117 rsr/models.py:118
-#, fuzzy
 msgid "(255 characters)."
-msgstr "(max. 20 tekens)"
+msgstr "(255 tekens)."
 
 #: rsr/models.py:115
 msgid "state"
@@ -1452,9 +1413,8 @@ msgid "postcode"
 msgstr "postcode"
 
 #: rsr/models.py:119
-#, fuzzy
 msgid "(10 characters)."
-msgstr "(max. 20 tekens)"
+msgstr "(10 tekens)."
 
 #: rsr/models.py:123
 msgid "primary location"
@@ -1485,9 +1445,8 @@ msgid "Support partner"
 msgstr "Support partner"
 
 #: rsr/models.py:152 rsr/models.py:344 rsr/models.py:1992
-#, fuzzy
 msgid "organisation"
-msgstr "Organisatie"
+msgstr "organisatie"
 
 #: rsr/models.py:153 rsr/models.py:1043 rsr/models.py:1055 rsr/models.py:1091
 #: rsr/models.py:1683 rsr/models.py:1797
@@ -1509,14 +1468,12 @@ msgid "funding amount"
 msgstr "bedrag"
 
 #: rsr/models.py:164
-#, fuzzy
 msgid "project partner"
-msgstr "Project partners"
+msgstr "project partner"
 
 #: rsr/models.py:165
-#, fuzzy
 msgid "project partners"
-msgstr "Project partners"
+msgstr "project partners"
 
 #: rsr/models.py:186
 msgid "NGO"
@@ -1561,13 +1518,10 @@ msgid "logo"
 msgstr "logo"
 
 #: rsr/models.py:209
-#, fuzzy
 msgid ""
 "Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on "
 "a white background."
-msgstr ""
-"Afmeting van logo's bij voorkeur 360x270 pixels (ca. 100-200kB) met een "
-"witte achtergrond."
+msgstr "Logo's moeten ca. 360 x 270 pixels zijn (ca. 100-200kB) tegen een witte achtergrond."
 
 #: rsr/models.py:212
 msgid "Enter the full address of your web site, beginning with http://."
@@ -1594,20 +1548,18 @@ msgid "contact person"
 msgstr "Contactpersoon"
 
 #: rsr/models.py:217
-#, fuzzy
 msgid "Name of external contact person for your organisation (30 characters)."
-msgstr "Naam van externe contactpersoon voor uw organisatie."
+msgstr "Naam van externe contactpersoon voor uw organisatie (30 tekens)."
 
 #: rsr/models.py:218
 msgid "contact email"
 msgstr "Emailadres"
 
 #: rsr/models.py:218
-#, fuzzy
 msgid ""
 "Email to which inquiries about your organisation should be sent (50 "
 "characters)."
-msgstr "Emailadres waarnaar vragen over uw organisatie kunnen worden gestuurd."
+msgstr "Emailadres waarnaar vragen over uw organisatie kunnen worden gestuurd (50 tekens)."
 
 #: rsr/models.py:219
 msgid "description"
@@ -1618,36 +1570,27 @@ msgid "Describe your organisation."
 msgstr "Beschrijf uw organisatie."
 
 #: rsr/models.py:345
-#, fuzzy
 msgid "organisations"
-msgstr "Organisaties"
+msgstr "organisaties"
 
 #: rsr/models.py:374
 msgid ""
 "The name of the focus area. This will show as the title of the focus area "
 "project listing page. (30 characters)."
-msgstr ""
-"De naam van het thema. Dit zal gestoond worden als de titel van de op thema "
-"gesorteerde projectenlijst (30 tekens)."
+msgstr "De naam van het thema. Dit zal gestoond worden als de titel van de op thema gesorteerde projectenlijst (30 tekens)."
 
 #: rsr/models.py:375
 msgid ""
 "Enter the \"slug\" i.e. a short word or hyphenated-words. This will be used "
 "in the URL of the focus area project listing page. (20 characters, only "
 "lower case letters, numbers, hyphen and underscore allowed.)."
-msgstr ""
-"Geef hier een \"slug\" in, d.w.z. een kort woord of woorden met "
-"koppeltekens. De \"slug\" wordt gebruikt in de URL van de op thema "
-"gesorteerde projectenlijst (20 tekens, gebruik kleine letters, nummers, "
-"koppel- en onderstrepingstekens). "
+msgstr "Geef hier een \"slug\" in, d.w.z. een kort woord of woorden met koppeltekens. De \"slug\" wordt gebruikt in de URL van de op thema gesorteerde projectenlijst (20 tekens, gebruik kleine letters, nummers, koppel- en onderstrepingstekens). "
 
 #: rsr/models.py:376
 msgid ""
-"Enter the text that will appear on the focus area project listing page. (500 "
-"characters)."
-msgstr ""
-"Geef hier de tekst in die getoond zal worden in de op thema gesorteerde "
-"projectenlijst (500 tekens)."
+"Enter the text that will appear on the focus area project listing page. (500"
+" characters)."
+msgstr "Geef hier de tekst in die getoond zal worden in de op thema gesorteerde projectenlijst (500 tekens)."
 
 #: rsr/models.py:378
 msgid "focus area image"
@@ -1655,18 +1598,17 @@ msgstr "Thema-foto"
 
 #: rsr/models.py:381
 msgid "The image that will appear on the focus area project listing page."
-msgstr ""
-"De foto die getoond zal worden in de op thema gesorteerde  projectenlijst."
+msgstr "De foto die getoond zal worden in de op thema gesorteerde  projectenlijst."
 
 #: rsr/models.py:383
 msgid "accordion link"
-msgstr ""
+msgstr "uitklaptekst-link"
 
 #: rsr/models.py:383
 msgid ""
 "Where the link in the accordion for the focus area points if other than the "
 "focus area project listing."
-msgstr ""
+msgstr "Waar de link in de uitklaptekst voor het thema naar toe leidt als dit anders is dan de op thema gesorteerde projectenlijst."
 
 #: rsr/models.py:403 rsr/models.py:411 rsr/models.py:1057
 msgid "benchmark name"
@@ -1684,9 +1626,7 @@ msgstr "volgorde"
 msgid ""
 "Used to order the benchmarks when displayed. Larger numbers sink to the "
 "bottom of the list."
-msgstr ""
-"Dit wordt gebruikt om de indicatoren te rangschikken. Grotere nummers zinken "
-"naar de bodem van de lijst."
+msgstr "Dit wordt gebruikt om de indicatoren te rangschikken. Grotere nummers zinken naar de bodem van de lijst."
 
 #: rsr/models.py:412 rsr/models.py:428
 msgid "benchmark names"
@@ -1755,9 +1695,8 @@ msgid "title"
 msgstr "titel"
 
 #: rsr/models.py:524
-#, fuzzy
 msgid "A short descriptive title for your project (45 characters)."
-msgstr "Een korte titel voor uw project (max. 45 tekens)."
+msgstr "Een korte titel voor uw project (45 tekens)."
 
 #: rsr/models.py:525
 msgid "subtitle"
@@ -1784,9 +1723,8 @@ msgid "summary of project plan"
 msgstr "samenvatting van projectplan"
 
 #: rsr/models.py:529
-#, fuzzy
 msgid "Briefly summarize the project (400 characters)."
-msgstr "Geef een korte samenvatting van het project (500 tekens)."
+msgstr "Korte beschrijving van het project (400 tekens)."
 
 #: rsr/models.py:531
 msgid "project photo"
@@ -1796,9 +1734,7 @@ msgstr "projectfoto"
 msgid ""
 "The project image looks best in landscape format (4:3 width:height ratio), "
 "and should be less than 3.5 mb in size."
-msgstr ""
-"De foto ziet er het mooiste als hij van dit formaat is: liggend (4:3 breed:"
-"hoog ratio) en max. 3,5 mB groot."
+msgstr "De foto ziet er het mooiste als hij van dit formaat is: liggend (4:3 breed:hoog ratio) en max. 3,5 mB groot."
 
 #: rsr/models.py:537 rsr/models.py:1696
 msgid "photo caption"
@@ -1809,36 +1745,30 @@ msgid "Enter a caption for your project picture (50 characters)."
 msgstr "Een korte titel voor de foto van het project (50 tekens)."
 
 #: rsr/models.py:538
-#, fuzzy
 msgid "overview of goals"
-msgstr "overzicht"
+msgstr "overzicht van doelstellingen"
 
 #: rsr/models.py:538
-#, fuzzy
 msgid "Describe what the project hopes to accomplish (600 characters)."
-msgstr "Beschrijf wat u met dit project hoopt te bereiken (max. 500 tekens)."
+msgstr "Beschrijf wat u met dit project hoopt te bereiken (600 tekens)."
 
 #: rsr/models.py:546
-#, fuzzy
 msgid "current status"
-msgstr "Huidige status"
+msgstr "huidige status"
 
 #: rsr/models.py:546
 msgid "Description of current phase of project. (600 characters)."
 msgstr "Beschrijving van de huidige fase van het project (max. 600 tekens)."
 
 #: rsr/models.py:547
-#, fuzzy
 msgid "project plan"
-msgstr "Projectplan"
+msgstr "projectplan"
 
 #: rsr/models.py:547
 msgid ""
-"Detailed information about the project and plans for implementing: the what, "
-"how, who and when. (unlimited)."
-msgstr ""
-"Uitgebreide informatie over het project en de implementatie ervan: wat, hoe, "
-"wanneer (u kunt zo veel tekens als u wilt gebruiken)."
+"Detailed information about the project and plans for implementing: the what,"
+" how, who and when. (unlimited)."
+msgstr "Uitgebreide informatie over het project en de implementatie ervan: wat, hoe, wanneer (u kunt zo veel tekens als u wilt gebruiken)."
 
 #: rsr/models.py:548
 msgid "sustainability"
@@ -1848,28 +1778,21 @@ msgstr "duurzaamheid"
 msgid ""
 "Describe plans for sustaining/maintaining results after implementation is "
 "complete (unlimited)."
-msgstr ""
-"Beschrijf hoe het project onderhouden en in leven gehouden zal worden na "
-"implementatie (u kunt zo veel tekens als u wilt gebruiken)."
+msgstr "Beschrijf hoe het project onderhouden en in leven gehouden zal worden na implementatie (u kunt zo veel tekens als u wilt gebruiken)."
 
 #: rsr/models.py:549
-#, fuzzy
 msgid "background"
-msgstr "Achtergrond"
+msgstr "achtergrond"
 
 #: rsr/models.py:549
-#, fuzzy
 msgid ""
 "Relevant background information, including geographic, political, "
 "environmental, social and/or cultural issues (1000 characters)."
-msgstr ""
-"Achtergrondinformatie: factoren die van belang zijn op geografisch, "
-"politiek, milieu, sociaal, en/of cultureel gebied (max. 500 tekens)."
+msgstr "Achtergrondinformatie: factoren die van belang zijn op geografisch, politiek, milieu, sociaal, en/of cultureel gebied (1000 tekens)."
 
 #: rsr/models.py:551
-#, fuzzy
 msgid "project rating"
-msgstr "Waardering"
+msgstr "projectwaardering"
 
 #: rsr/models.py:552
 msgid "notes"
@@ -1884,14 +1807,12 @@ msgid "currency"
 msgstr "valuta"
 
 #: rsr/models.py:556
-#, fuzzy
 msgid "date request posted"
-msgstr "Aanvraag verzonden datum"
+msgstr "Datum waarop de aanvraag is verzonden"
 
 #: rsr/models.py:557
-#, fuzzy
 msgid "date complete"
-msgstr "Wijziging afgerond"
+msgstr "datum afgerond"
 
 #: rsr/models.py:910
 msgid "No update yet"
@@ -1902,14 +1823,12 @@ msgid "projects"
 msgstr "projecten"
 
 #: rsr/models.py:1051
-#, fuzzy
 msgid "goal"
-msgstr "doelstellingen"
+msgstr "doelstelling"
 
 #: rsr/models.py:1051
-#, fuzzy
 msgid "(100 characters)"
-msgstr "(600 tekens)."
+msgstr "(100 tekens)"
 
 #: rsr/models.py:1055 rsr/models.py:1072
 msgid "benchmarks"
@@ -1930,49 +1849,44 @@ msgstr "indicator"
 
 #: rsr/models.py:1076 rsr/models.py:1092
 msgid "label"
-msgstr ""
+msgstr "label"
 
 #: rsr/models.py:1083
-#, fuzzy
 msgid "budget item label"
-msgstr "Budgetpost"
+msgstr "budgetpost-label"
 
 #: rsr/models.py:1084
-#, fuzzy
 msgid "budget item labels"
-msgstr "Budgetposten"
+msgstr "budgetpost-labels"
 
 #: rsr/models.py:1094
 msgid "\"Other\" labels extra info"
-msgstr ""
+msgstr "Extra informatie voor \"Andere\" labels"
 
 #: rsr/models.py:1095
 msgid "Extra information about the exact nature of an \"other\" budget item."
-msgstr ""
+msgstr "Extra informatie over the precieze aard van een \"andere\" budgetpost."
 
 #. Translators: This is the amount of an budget item in a currancy (€ or $)
 #: rsr/models.py:1098
-#, fuzzy
 msgid "amount"
-msgstr "Bedrag"
+msgstr "bedrag"
 
 #: rsr/models.py:1113
-#, fuzzy
 msgid "budget item"
-msgstr "Budgetpost"
+msgstr "budgetpost"
 
 #: rsr/models.py:1114
-#, fuzzy
 msgid "budget items"
-msgstr "Budgetposten"
+msgstr "budgetposten"
 
 #: rsr/models.py:1127
 msgid "Unpublished"
-msgstr ""
+msgstr "Niet gepubliceerd"
 
 #: rsr/models.py:1128
 msgid "Published"
-msgstr ""
+msgstr "Gepubliceerd"
 
 #: rsr/models.py:1136
 msgid "publishing status"
@@ -2046,22 +1960,19 @@ msgstr "gebruikersprofielen"
 
 #: rsr/models.py:1265
 msgid "user is activated (may log in)"
-msgstr ""
+msgstr "gebruiker is geactiveerd (mag inloggen)"
 
 #: rsr/models.py:1285
-#, fuzzy
 msgid "user is an organisation administrator"
-msgstr "administrator van organisatie"
+msgstr "gebruiker is administrator van een organisatie"
 
 #: rsr/models.py:1296
-#, fuzzy
 msgid "user is a project editor"
-msgstr "project-editor van organisatie"
+msgstr "gebruiker is een project-editor"
 
 #: rsr/models.py:1551
-#, fuzzy
 msgid "may create SMS project updates"
-msgstr "Terug naar project-updates"
+msgstr "kan SMS project-updates maken"
 
 #: rsr/models.py:1684 rsr/models.py:1798
 msgid "user"
@@ -2076,13 +1987,13 @@ msgid "text"
 msgstr "tekst"
 
 #: rsr/models.py:1689
-#, fuzzy
 msgid "photo"
-msgstr "Foto"
+msgstr "foto"
 
 #: rsr/models.py:1693
-msgid "The image should have 4:3 height:width ratio for best displaying result"
-msgstr ""
+msgid ""
+"The image should have 4:3 height:width ratio for best displaying result"
+msgstr "De afbeelding ziet er het mooiste als hij een ratio heeft van 4 hoog x 3 breed."
 
 #: rsr/models.py:1695
 msgid "photo location"
@@ -2141,22 +2052,18 @@ msgid "comment"
 msgstr "opmerking"
 
 #: rsr/models.py:1803
-#, fuzzy
 msgid "project comment"
-msgstr "Projectopmerkingen"
+msgstr "projectopmerking"
 
 #: rsr/models.py:1804
-#, fuzzy
 msgid "project comments"
-msgstr "Projectopmerkingen"
+msgstr "projectopmerkingen"
 
 #: rsr/models.py:1993
-#, fuzzy
 msgid "Select your organisation from the drop-down list."
-msgstr "Selecteer uw organisatie:"
+msgstr "Selecteer uw organisatie uit de drop-down lijst."
 
 #: rsr/models.py:1995
-#, fuzzy
 msgid "hostname"
 msgstr "hostnaam"
 
@@ -2165,80 +2072,77 @@ msgid ""
 "<p>Your hostname is used in the default web address of your partner site. "
 "The web address created from  the hostname <em>myorganisation</em> would be "
 "<em>http://myorganisation.akvoapp.org/</em>.</p>"
-msgstr ""
+msgstr "<p>Uw hostnaam wordt gebruikt in het standaard webadres van uw partnersite. Het webadres dat gemaakt wordt op basis van de hostnaam <em>mijnorganisatie</em>, is bijv. <em>http://mijnorganisatie.akvoapp.org/</em>.</p>"
 
 #: rsr/models.py:2002
 msgid "CNAME"
-msgstr ""
+msgstr "CNAME"
 
 #: rsr/models.py:2004
 msgid ""
 "<p>Enter a custom domain name for accessing the partner site, for example "
 "<i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>"
-msgstr ""
+msgstr "<p>Geef een eigen domeinnaam in voor toegang tot de partnersite, bijv. <i>projecten.mijndomein.org</i>. Dit is optioneel en vereist extra DNS-setup.</p>"
 
 #: rsr/models.py:2008
 msgid "Return URL"
-msgstr ""
+msgstr "'Terug naar' URL"
 
 #: rsr/models.py:2010
 msgid ""
-"<p>Enter the full URL (including http://) for the page to which users should "
-"be returned when leaving the partner site.</p>"
-msgstr ""
+"<p>Enter the full URL (including http://) for the page to which users should"
+" be returned when leaving the partner site.</p>"
+msgstr "<p>Geef de volledige URL in (inclusief http://) voor de pagina waar de gebruikers naar toe gaan bij het verlaten van de partnersite.</p>"
 
 #: rsr/models.py:2014
 msgid "stylesheet"
-msgstr ""
+msgstr "stylesheet"
 
 #: rsr/models.py:2015
-#, fuzzy
 msgid "organisation banner logo"
-msgstr "Organisatie"
+msgstr "Bannerlogo van organisatie"
 
 #: rsr/models.py:2017
 msgid ""
-"<p>Upload a logo file for the banner at the top of the partner site page. By "
-"default the logo currently used by www.akvo.org will be displayed.</p>"
-msgstr ""
+"<p>Upload a logo file for the banner at the top of the partner site page. By"
+" default the logo currently used by www.akvo.org will be displayed.</p>"
+msgstr "<p>Upload een logo voor de banner bovenaan de partnersite. Het logo dat momenteel door www.akvo.org voor uw organisatie in gebruik is zal worden getoond, tenzij u hier een ander logo upload.</p>"
 
 #: rsr/models.py:2021
 msgid "favicon"
-msgstr ""
+msgstr "favicon"
 
 #: rsr/models.py:2023
 msgid ""
-"<p>A favicon (.ico file) is the 16x16 pixel image shown inside the browser's "
-"location bar, on tabs and in the bookmark menu.</p>"
-msgstr ""
+"<p>A favicon (.ico file) is the 16x16 pixel image shown inside the browser's"
+" location bar, on tabs and in the bookmark menu.</p>"
+msgstr "<p>Een favicon (.ico-bestand) is de 16 x 16 pixel afbeelding getoond in de adresbalk van de browser, op tabs en in het bladwijzermenu.</p>"
 
 #: rsr/models.py:2027
 msgid "about box text"
-msgstr ""
+msgstr "Tekst voor het 'over ons' gedeelte"
 
 #: rsr/models.py:2053
 msgid "about box image"
-msgstr ""
+msgstr "Afbeelding voor het 'over ons' gedeelte"
 
 #: rsr/models.py:2054
 msgid ""
 "<p>The optional background image for the About box\n"
 "            <em>must</em> be 470 pixels wide and 250 pixels tall.</p>\n"
 "        "
-msgstr ""
+msgstr "<p>De achtergrondafbeelding - indien gebruikt - voor het 'over ons' gedeelte\n            <em>moet</em> 470 pixels breed en 250 pixels hoog zijn.</p>\n        "
 
 #: rsr/models.py:2059
 msgid "enabled"
-msgstr ""
+msgstr "geactiveerd"
 
 #: rsr/views.py:824
 #, python-format
 msgid ""
 "The phone number %s is already registered for updating. Please check the "
 "number entered."
-msgstr ""
-"Dit telefoonnummer %s staat al geregistreerd voor het verzenden van updates. "
-"Controleer a.u.b. het ingegeven nummer."
+msgstr "Dit telefoonnummer %s staat al geregistreerd voor het verzenden van updates. Controleer a.u.b. het ingegeven nummer."
 
 #: templates/404.html:6
 msgid "Page not found (404)"
@@ -2266,16 +2170,13 @@ msgstr " Er is iets mis gegaan met onze servers"
 
 #: templates/500.html:14
 msgid "We&#x27;re sorry, Something went wrong with our servers (error 500)"
-msgstr ""
-"Onze excuses. Er is iets mis gegaan met onze servers (foutmelding 500)."
+msgstr "Onze excuses. Er is iets mis gegaan met onze servers (foutmelding 500)."
 
 #: templates/500.html:19
 msgid ""
 "Our staff has been notified and will look into the problem as soon as "
 "possible."
-msgstr ""
-"Een van onze medewerkers zal het probleem zo snel mogelijk proberen op te "
-"lossen."
+msgstr "Een van onze medewerkers zal het probleem zo snel mogelijk proberen op te lossen."
 
 #: templates/admin/base_site.html:5
 msgid "Akvo RSR site admin"
@@ -2290,15 +2191,15 @@ msgstr "Akvo RSR administratie"
 msgid ""
 "Void invoices by selecting them below and then choosing Action > Mark "
 "selected invoices as void."
-msgstr ""
+msgstr "Maak de fakturen niet langer geldig door ze aan te vinken en vervolgens \"Action > Mark selected invoices as void\" te selecteren."
 
 #: templates/admin/rsr/invoice/change_list.html:8
 #: templates/admin/rsr/paypalinvoice/change_list.html:9
 msgid ""
 "Stale invoices, which are identified automatically by the system, are "
-"potential candidates for voiding. Invoices with a status of Void or Complete "
-"cannot be voided."
-msgstr ""
+"potential candidates for voiding. Invoices with a status of Void or Complete"
+" cannot be voided."
+msgstr "Verouderde fakturen, dwz fakturen voor donaties die niet voltooid zijn, worden automatisch door het systeem geïdentificeerd en zijn potentiële kandidaten om ongeldig te maken. Fakturen wiens status al aangegeven is als \"Void\" of \"Complete\" kunnen niet ongeldig gemaakt worden."
 
 #: templates/admin/rsr/minicms/change_form.html:9
 msgid "Preview home page"
@@ -2313,18 +2214,12 @@ msgid ""
 "Describe your organisation to the international Akvo community of users: "
 "tell us who you are, what you do, and what you as an organisation hope to "
 "accomplish. Your audience may include people unfamiliar with the sector or "
-"with your sphere of operation, so a bit of explanation in plain language (no "
-"acronyms) might be helpful. Details will help viewers get a sense of who you "
-"are: do you work on all continents? In both water and sanitation, perhaps "
-"even with other goals in mind? Are you part of a network or programme? "
-msgstr ""
-"Geef de internationale Akvo-gebruikers een beschrijving van uw organisatie: "
-"vertel wie u bent, wat u doet en wat uw organisatie hoopt te bereiken. Denk "
-"eraan dat niet alle lezers vertrouwd zijn met de sector of uw specifieke "
-"werkterrein: gebruik dus liefst duidelijke, verklarende woorden zonder "
-"afkortingen. Andere behulpzame details: Bent up op alle contintenten "
-"werkzaam? Zowel op het gebied van water en sanitaire voorzieningen of met "
-"oog op andere doelen? Maakt u deel uit van een netwerk of programma?"
+"with your sphere of operation, so a bit of explanation in plain language (no"
+" acronyms) might be helpful. Details will help viewers get a sense of who "
+"you are: do you work on all continents? In both water and sanitation, "
+"perhaps even with other goals in mind? Are you part of a network or "
+"programme? "
+msgstr "Geef de internationale Akvo-gebruikers een beschrijving van uw organisatie: vertel wie u bent, wat u doet en wat uw organisatie hoopt te bereiken. Denk eraan dat niet alle lezers vertrouwd zijn met de sector of uw specifieke werkterrein: gebruik dus liefst duidelijke, verklarende woorden zonder afkortingen. Andere behulpzame details: Bent up op alle contintenten werkzaam? Zowel op het gebied van water en sanitaire voorzieningen of met oog op andere doelen? Maakt u deel uit van een netwerk of programma?"
 
 #: templates/admin/rsr/organisation/change_form.html:19
 msgid "History"
@@ -2348,23 +2243,16 @@ msgstr "Projecten toevoegen en bewerken."
 msgid ""
 "The project information in RSR presents your water or sanitation project to "
 "the Akvo community of users: donors, support and field partners, sector "
-"professionals, and of course the wider online community. Tell the <i>story</"
-"i> of the project by entering complete information, in common language and "
-"an active (doing) voice."
-msgstr ""
-"De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, support en "
-"field partners, in de sector werkzame deskundigen en uiteraard de bredere "
-"online gemeenschap) een overzicht van uw water- of sanitaire project. Vertel "
-"het <i>verhaal</i> van het project door zo veel mogelijk informatie te geven "
-"- in sprekende, duidelijke taal."
+"professionals, and of course the wider online community. Tell the "
+"<i>story</i> of the project by entering complete information, in common "
+"language and an active (doing) voice."
+msgstr "De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, support en field partners, in de sector werkzame deskundigen en uiteraard de bredere online gemeenschap) een overzicht van uw water- of sanitaire project. Vertel het <i>verhaal</i> van het project door zo veel mogelijk informatie te geven - in sprekende, duidelijke taal."
 
 #: templates/admin/rsr/project/change_form.html:19
 msgid ""
 "Please look over the whole page before beginning, so you can see where your "
 "information belongs on RSR project forms."
-msgstr ""
-"We raden u aan eerst de hele pagina door de lezen, zodat u kunt zien waar op "
-"het RSR-formulier uw informatie thuishoort."
+msgstr "We raden u aan eerst de hele pagina door de lezen, zodat u kunt zien waar op het RSR-formulier uw informatie thuishoort."
 
 #: templates/admin/rsr/project/change_list.html:9
 msgid "Project listing"
@@ -2375,37 +2263,22 @@ msgid ""
 "Click the project ID number to view detailed information about a project. "
 "Click a column header (for example, Country) to sort the project list by "
 "that criteria."
-msgstr ""
-"Klik op het projectnummer voor meer informatie over het project. Klik op een "
-"kolomkop (bijv. Land) om de projectlijst op dit kenmerk te rangschikken."
+msgstr "Klik op het projectnummer voor meer informatie over het project. Klik op een kolomkop (bijv. Land) om de projectlijst op dit kenmerk te rangschikken."
 
 #: templates/admin/rsr/project/change_list.html:14
 msgid ""
 "Organisation administrators will see an <em>Add project</em> button at the "
 "top right of the listing; push it to create a new project in RSR."
-msgstr ""
-"Administrators zullen rechts bovenaan de lijst <em>Project toevoegen</em> "
-"zien; klik hierop om een nieuw project in RSR te creëren."
+msgstr "Administrators zullen rechts bovenaan de lijst <em>Project toevoegen</em> zien; klik hierop om een nieuw project in RSR te creëren."
 
 #: templates/admin/rsr/project/change_list.html:17
-#, fuzzy
 msgid ""
 "You can also create a new project from an existing project. Select and open "
 "the project you want to copy, scroll to the bottom and click Save as new. "
-"The new project will be created in the project listing for you to select and "
-"edit. The following information is <strong>not copied</strong>: project "
+"The new project will be created in the project listing for you to select and"
+" edit. The following information is <strong>not copied</strong>: project "
 "photo, locations, benchmarks, individual donations, updates, comments."
-msgstr ""
-"\n"
-"        U kunt ook een nieuw project creëren van een bestaand project. "
-"Selecteer en open het project dat u wilt kopiëren,\n"
-"        scroll naar beneden en klik op \"Opslaan als nieuw\". Het nieuwe "
-"project wordt nu in de projectlijst getoond, \n"
-"        zodat u dit kunt selecteren en bewerken. De volgende informatie "
-"wordt <strong>niet gekopieerd</strong>: \n"
-"        projectfoto, locaties, indicatoren, individuele donaties, updates, "
-"opmerkingen.\n"
-"      "
+msgstr "U kunt ook van een bestaand project een nieuw project creëren. Selecteer en open het project dat u wilt kopiëren, ga naar het einde van de pagina en klik op \"Save as new\". Het nieuwe project is nu zichtbaar in de projectenlijst zodat u het kunt selecteren en bewerken. De volgende informatie wordt <strong>niet gekopieerd</strong>: projectfoto, locaties, individuele donaties, updates, opmerkingen."
 
 #: templates/admin/rsr/projectupdate/change_list.html:8
 msgid "Update listing"
@@ -2414,11 +2287,11 @@ msgstr "Lijst van updates"
 #: templates/admin/rsr/projectupdate/change_list.html:9
 msgid ""
 "Select the update ID to make changes to an individual update. Use the "
-"Filters listed on the right to view particular update groupings, such as all "
-"Featured updates or updates connected to a particular project. Multiple "
+"Filters listed on the right to view particular update groupings, such as all"
+" Featured updates or updates connected to a particular project. Multiple "
 "filters can also be used, to permit viewing Featured updates for a "
 "particular project from the last 7 days, for example."
-msgstr ""
+msgstr "Selecteer het updatenummer om wijzigingen aan te brengen. Gebruik de filters rechts om naar bepaalde groep van updates te kijken, bijv. alle Uitgelichte updates, of alle updates voor een bepaald project. U kunt ook meerdere filters gelijktijdig gebruiken, zodat u bijvoorbeeld alle Uitgelichte updates van de afgelopen 7 dagen voor een bepaald project kunt zien."
 
 #: templates/admin/rsr/projectupdate/change_list.html:10
 msgid ""
@@ -2428,13 +2301,13 @@ msgid ""
 "what you would like to do, and press Go. You cannot add updates without "
 "images to the Featured pool from this page, but can put it in the pool "
 "through the box on the individual update page."
-msgstr ""
+msgstr "Om meerdere updates gelijktijdig te wijzigen, bijv. alle updates wissen van of toevoegen aan de <em>Uitgelichte update</em>- verzameling, vinkt u eerst de updates aan. Maak daarna een keuze uit het Aktie-menu en selecteer Go. U kunt via deze werkwijze geen updates zonder foto's aan de <em>Uitgelichte update</em>-verzameling toevoegen. Dit kunt u alleen doe via de individuele update-pagina zelf."
 
 #: templates/admin/rsr/projectupdate/change_list.html:11
 msgid ""
 "When fewer than 3 updates are in the Featured pool, the 3 most recent "
 "updates with images are displayed as Staff picks."
-msgstr ""
+msgstr "Als er minder dan 3 updates in de Uitgelichte updates-verzameling zitten worden de 3 meest recente updates getoon als <em>Door ons uitgekozen</em>"
 
 #: templates/inclusion_tags/counter_badge.html:9
 #: templates/partner_sites/widgets/projects_map.html:36
@@ -2459,7 +2332,7 @@ msgstr "views"
 #: templates/inclusion_tags/funding_box.html:47
 #, python-format
 msgid "%(currency)s: %(funds)s"
-msgstr ""
+msgstr "%(currency)s: %(funds)s"
 
 #: templates/inclusion_tags/funding_box.html:16
 #: templates/inclusion_tags/funding_box_narrow.html:16
@@ -2553,7 +2426,7 @@ msgstr "Sponsoren"
 #: templates/inclusion_tags/funding_table.html:11
 #, python-format
 msgid "Raised:&nbsp;%(currency)s&nbsp;%(funds)s"
-msgstr ""
+msgstr "Ingezameld bedrag:&nbsp;%(currency)s&nbsp;%(funds)s"
 
 #: templates/inclusion_tags/funding_box_narrow2.html:23
 #: templates/inclusion_tags/project_budget.html:7
@@ -2625,7 +2498,7 @@ msgstr "personen die per jaar training / scholing ontvangen"
 
 #: templates/inclusion_tags/project_thumb.html:16
 msgid "Image<br/>not<br/>available"
-msgstr ""
+msgstr "Afbeelding<br/>niet<br/>beschikbaar"
 
 #: templates/inclusion_tags/update_thumb.html:14
 #: templates/rsr/project/update_form.html:122
@@ -2674,14 +2547,11 @@ msgid "Note"
 msgstr "Aantekening"
 
 #: templates/notification/notice_settings.html:35
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "You do not have a verified email address to which notices can be sent. You "
 "can add one by going to <a href='%(email_url)s'>Account</a>."
-msgstr ""
-"U heeft geen geverifieerd emailadres waar mededelingen naar toe kunnen "
-"worden gestuurd. U kunt uw emailadres toevoegen door naar deze link te gaan "
-"<a href=\"%(email_url)s\">Account</a>."
+msgstr "U heeft geen geverifieerd emailadres waar mededelingen naar toe gestuurd kunnen worden. U kunt een adres toevoegen door naar <a href='%(email_url)s'>Account</a> te gaan."
 
 #: templates/notification/notice_settings.html:43
 msgid "Notification Type"
@@ -2725,176 +2595,92 @@ msgstr "Geen mededelingen."
 #, python-format
 msgid ""
 "\n"
-"<p>Your mobile number, %(phone_number)s, has been added to your user "
-"profile. This will let you send updates to your projects via SMS.</p>\n"
+"<p>Your mobile number, %(phone_number)s, has been added to your user profile. This will let you send updates to your projects via SMS.</p>\n"
 "\n"
-"<p>To ensure that all works as it should we ask that you validate the phone "
-"by sending the following code:</p>\n"
+"<p>To ensure that all works as it should we ask that you validate the phone by sending the following code:</p>\n"
 "\n"
 "<p>%(validation)s</p>\n"
 "\n"
-"<p>An SMS from Akvo RSR has been sent to you. Please reply to the SMS with "
-"the validation code only.\n"
-"If the SMS didn't reach you for some reason you send the validation code to:"
-"</p>\n"
+"<p>An SMS from Akvo RSR has been sent to you. Please reply to the SMS with the validation code only.\n"
+"If the SMS didn't reach you for some reason you send the validation code to:</p>\n"
 "\n"
 "<p>%(gw_number)s</p>\n"
 "\n"
-"<p>Then all you have to do is log in to Akvo and select the project you want "
-"to enable SMS updates for.</p>\n"
+"<p>Then all you have to do is log in to Akvo and select the project you want to enable SMS updates for.</p>\n"
 "\n"
 "\n"
 "<p>The Akvo team</p>\n"
-msgstr ""
-"\n"
-"<p>Uw mobiele telefoonnummer, %(phone_number)s, is aan uw gebruikersprofiel "
-"toegevoegd. U zult nu via SMS updates naar uw projecten kunnen sturen.</p>\n"
-"\n"
-"<p>Om te controleren of alles goed werkt, graag uw telefoon verifiëren door "
-"de volgende code te sturen:</p>\n"
-"\n"
-"<p>%(validation)s</p>\n"
-"\n"
-"<p>Akvo RSR heeft een SMS-bericht naar u gestuurd. Beantwoord dit alleen met "
-"de validatie-code.\n"
-"Mocht u de SMS niet hebben ontvangen, stuur de validatie-code dan naar:</p>\n"
-"\n"
-"<p>%(gw_number)s</p>\n"
-"\n"
-"<p>Log daarna in op de akvo website en selecteer het project waar u SMS-"
-"updates naar wilt sturen.</p>\n"
-"\n"
-"\n"
-"<p>Het Akvo-team</p>\n"
+msgstr "\n<p>Uw mobiele telefoonnummer, %(phone_number)s, is aan uw gebruikersprofiel toegevoegd. U zult nu via SMS updates naar uw projecten kunnen sturen.</p>\n\n<p>Om te controleren of alles goed werkt, graag uw telefoon verifiëren door de volgende code te sturen:</p>\n\n<p>%(validation)s</p>\n\n<p>Akvo RSR heeft een SMS-bericht naar u gestuurd. Beantwoord dit alleen met de validatie-code.\nMocht u de SMS niet hebben ontvangen, stuur de validatie-code dan naar:</p>\n\n<p>%(gw_number)s</p>\n\n<p>Log daarna in op de akvo website en selecteer het project waar u SMS-updates naar wilt sturen.</p>\n\n\n<p>Het Akvo-team</p>\n"
 
 #: templates/notification/phone_confirmed/notice.html:3
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
-"<p>Your mobile number, %(phone_number)s, is now confirmed for use in "
-"updating projects in Akvo.</p>\n"
+"<p>Your mobile number, %(phone_number)s, is now confirmed for use in updating projects in Akvo.</p>\n"
 "\n"
-"<p>You can now select what project or projects you want to send updates to "
-"<a href='%(url_myakvo_mobile)s'>here</a>.</p>\n"
+"<p>You can now select what project or projects you want to send updates to <a href='%(url_myakvo_mobile)s'>here</a>.</p>\n"
 "\n"
 "\n"
 "<p>The Akvo team</p>\n"
-msgstr ""
-"\n"
-"<p>U kunt nu uw mobiele telefoonnummer, %(phone_number)s, gebruiken om "
-"updates naar Akvo-projecten te sturen.</p>\n"
-"\n"
-"<p>U kunt <a href=\"%(url_myakvo_mobile)s\">hier</a> aangeven naar welke "
-"projecten u updates wilt sturen.</p>\n"
-"\n"
-"\n"
-"<p>Het Akvo-team</p>\n"
+msgstr "\n<p>U kunt nu met dit mobiele telefoonnummer, %(phone_number)s, updates sturen naar projecten in Akvo.</p>\n\n<p>U kunt <a href='%(url_myakvo_mobile)s'>hier</a> selecteren naar welk(e) project(en) u updates wilt sturen.</p>\n\n\n<p>Het Akvo-team</p>\n"
 
 #: templates/notification/phone_disabled/notice.html:2
 #, python-format
 msgid ""
 "\n"
-"<p>Your mobile phone, %(phone_number)s has been disabled for creating SMS "
-"updates to Akvo projects.</p>\n"
+"<p>Your mobile phone, %(phone_number)s has been disabled for creating SMS updates to Akvo projects.</p>\n"
 "\n"
-"<p>If you want to enable updating again please login to Akvo and re-enter "
-"your phone number.</p>\n"
+"<p>If you want to enable updating again please login to Akvo and re-enter your phone number.</p>\n"
 "\n"
 "\n"
 "<p>The Akvo team</p>\n"
-msgstr ""
-"\n"
-"<p>Het is niet langer mogelijk met dit mobiele telefoonnummer, %"
-"(phone_number)s, SMS-updates naar Akvo-projects te versturen.</p>\n"
-"\n"
-"<p>Als u weer updates via SMS wilt sturen, log dan in op de Akvo website en "
-"geef opnieuw uw telefoonnumber in.</p>\n"
-"\n"
-"\n"
-"<p>Het Akvo-team</p>\n"
+msgstr "\n<p>Het is niet langer mogelijk met dit mobiele telefoonnummer, %(phone_number)s, SMS-updates naar Akvo-projects te versturen.</p>\n\n<p>Als u weer updates via SMS wilt sturen, log dan in op de Akvo website en geef opnieuw uw telefoonnumber in.</p>\n\n\n<p>Het Akvo-team</p>\n"
 
 #: templates/notification/reporting_cancelled/notice.html:2
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
-"<p>SMS updates to project %(project_pk)s - %(project_title)s are no longer "
-"enabled from your mobile phone, %(phone_number)s.</p>\n"
+"<p>SMS updates to project %(project_pk)s - %(project_title)s are no longer enabled from your mobile phone, %(phone_number)s.</p>\n"
 "\n"
-"<p>If you want to resume updating via SMS please login to Akvo and select "
-"the project again.</p>\n"
+"<p>If you want to resume updating via SMS please login to Akvo and select the project again.</p>\n"
 "\n"
 "<p>The Akvo team</p>\n"
-msgstr ""
-"\n"
-"<p>SMS-updates voor project %(project_pk)s - %(project_name)s kunnen niet "
-"langer worden gemaakt met uw mobiele telefoon, %(phone_number)s.</p>\n"
-"\n"
-"<p>Als u weer updates via SMS wilt sturen, log dan in op de Akvo website en "
-"selecteer opnieuw het project.</p>\n"
-"\n"
-"<p>Het Akvo-team</p>\n"
+msgstr "\n<p>SMS-updates voor project %(project_pk)s - %(project_title)s kunnen niet langer worden gemaakt met uw mobiele telefoon, %(phone_number)s.</p>\n\n<p>Als u weer updates via SMS wilt sturen, log dan in op de Akvo website en selecteer opnieuw het project.</p>\n\n<p>Het Akvo-team</p>\n"
 
 #: templates/notification/reporting_enabled/notice.html:2
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
-"<p>Your mobile number, %(phone_number)s, is now enabled to send SMS updates "
-"to\n"
+"<p>Your mobile number, %(phone_number)s, is now enabled to send SMS updates to\n"
 "project %(project_pk)s - %(project_title)s.</p>\n"
 "\n"
-"<p>Make sure that you send reports to this number: %(gw_number)s. You should "
-"have\n"
-"received several SMSs from Akvo with that number but it has not been "
-"explicitly\n"
+"<p>Make sure that you send reports to this number: %(gw_number)s. You should have\n"
+"received several SMSs from Akvo with that number but it has not been explicitly\n"
 "linked to this project until now.</p>\n"
 "\n"
 "\n"
 "<p>The Akvo team</p>\n"
-msgstr ""
-"\n"
-"<p>U kunt nu met dit mobiele telefoonnummer, %(phone_number)s, updates "
-"sturen naar \n"
-"project %(project_pk)s - %(project_name)s.</p>\n"
-"\n"
-"<p>Zorg ervoor dat de updates naar dit nummer worden verstuurd: %(gw_number)"
-"s. Als het goed is heeft u meerdere SMS-berichten van Akvo ontvangen met dat "
-"nummer, maar het was tot nu toe niet gekoppeld aan dit project.</p>\n"
-"\n"
-"\n"
-"<p>Het Akvo-team</p>\n"
+msgstr "\n<p>U kunt nu met dit mobiele telefoonnummer, %(phone_number)s, updates sturen naar project %(project_pk)s - %(project_title)s.</p>\n\n<p>Zorg ervoor dat de updates naar dit nummer worden verstuurd: %(gw_number)s. Als het goed is heeft u meerdere SMS-berichten van Akvo ontvangen met dat nummer, maar het was tot nu toe niet gekoppeld aan dit project.</p>\n\n\n<p>Het Akvo-team</p>\n"
 
 #: templates/notification/update_received/notice.html:3
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
-"<p>Akvo has received an update from your phone to project %(project_pk)s - %"
-"(project_title)s, beginning with the text \"%(update_intro)s\".</p>\n"
+"<p>Akvo has received an update from your phone to project %(project_pk)s - %(project_title)s, beginning with the text \"%(update_intro)s\".</p>\n"
 "\n"
-"<p>You can see the update <a href='http://%(domain)s%(update_url)s'>here</"
-"a></p>\n"
+"<p>You can see the update <a href='http://%(domain)s%(update_url)s'>here</a></p>\n"
 "\n"
 "<p>The Akvo team</p>\n"
 "\n"
-msgstr ""
-"\n"
-"<p>Akvo heeft een update van uw telefoon ontvangen voor project %(project_pk)"
-"s - %(project_name)s, beginned met deze tekst \"%(update_intro)s\".</p>\n"
-"\n"
-"<p>U kunt <a href=\"http://%(domain)s%(update_url)s\">hier </a> de update "
-"zien</p>\n"
-"\n"
-"<p>The Akvo team</p>\n"
-"\n"
+msgstr "\n<p>Akvo heeft een update van uw telefoon ontvangen voor project %(project_pk)s - %(project_title)s, beginnend met de tekst \"%(update_intro)s\".</p>\n\n<p>U kunt de update <a href='http://%(domain)s%(update_url)s'>hier</a> zien.</p>\n\n<p>Het Akvo-team</p>\n\n"
 
 #: templates/partner_sites/base.html:38
-#, fuzzy
 msgid "Back to"
-msgstr "Terug"
+msgstr "Terug naar"
 
 #: templates/partner_sites/base.html:77
-#, fuzzy
 msgid "Contact at "
-msgstr "Contactpersoon"
+msgstr "Contactpersoon bij "
 
 #: templates/partner_sites/base.html:83
 #: templates/partner_sites/auth/sign-in.html:47 templates/rsr/base.html:93
@@ -2904,7 +2690,7 @@ msgstr "Inloggen"
 
 #: templates/partner_sites/base.html:86
 msgid "Hello"
-msgstr ""
+msgstr "Hallo"
 
 #: templates/partner_sites/base.html:89 templates/rsr/base.html:97
 msgid "Sign out"
@@ -2933,9 +2719,8 @@ msgid "Projects"
 msgstr "Projecten"
 
 #: templates/partner_sites/home.html:39
-#, fuzzy
 msgid "Find projects"
-msgstr "projecten"
+msgstr "Projecten vinden"
 
 #: templates/partner_sites/home.html:50
 #: templates/rsr/project/project_directory.html:100
@@ -2944,9 +2729,8 @@ msgstr "Filter"
 
 #: templates/partner_sites/home.html:58
 #: templates/rsr/project/project_directory.html:108
-#, fuzzy
 msgid "Filter on project title or subtitle"
-msgstr "Op projectnaam of ondertitel filteren"
+msgstr "Op protectnaam of ondertitel filteren"
 
 #: templates/partner_sites/home.html:63
 msgid "Reset filter"
@@ -2956,28 +2740,28 @@ msgstr "Start een nieuwe zoekactie"
 #, python-format
 msgid "%(project_count)s project"
 msgid_plural "%(project_count)s projects"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(project_count)s project"
+msgstr[1] "%(project_count)s projecten"
 
 #: templates/partner_sites/home.html:74
 #, python-format
 msgid "in %(search_country)s"
-msgstr ""
+msgstr "in %(search_country)s"
 
 #: templates/partner_sites/home.html:77
 #, python-format
 msgid "in %(search_continent)s"
-msgstr ""
+msgstr "in %(search_continent)s"
 
 #: templates/partner_sites/home.html:81
 #, python-format
 msgid "in partnership with %(search_organisation)s"
-msgstr ""
+msgstr "in samenwerking met %(search_organisation)s"
 
 #: templates/partner_sites/home.html:84
-#, fuzzy, python-format
+#, python-format
 msgid "filtered by keywords: %(keywords)s"
-msgstr "projecten op trefwoorden gefilterd:"
+msgstr "op trefwoorden gefilterd: %(keywords)s"
 
 #: templates/partner_sites/home.html:95
 #: templates/partner_sites/partners/partner_list.html:6
@@ -3007,18 +2791,16 @@ msgid_plural ""
 "\n"
 "        %(project_count)s projects\n"
 "      "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "\n        %(project_count)s project\n      "
+msgstr[1] "\n        %(project_count)s projecten\n      "
 
 #: templates/partner_sites/auth/sign-in.html:15
-#, fuzzy
 msgid "Sign-in"
 msgstr "Inloggen"
 
 #: templates/partner_sites/auth/sign-in.html:20
-#, fuzzy
 msgid "Sign in with your Akvo account"
-msgstr "Account opzetten"
+msgstr "Met uw Akvo-account inloggen"
 
 #: templates/partner_sites/auth/sign-in.html:23 templates/rsr/sign_in.html:21
 msgid "Error when signing in"
@@ -3029,9 +2811,8 @@ msgid "I forgot my username and/or password"
 msgstr "Gebruikersnaam en/of wachtwoord vergeten?"
 
 #: templates/partner_sites/inclusion_tags/partner_sites_funding_box.html:28
-#, fuzzy
 msgid "Requested"
-msgstr "Aanvraag verzonden"
+msgstr "Aangevraagd"
 
 #: templates/partner_sites/partners/partner_list.html:12
 #: templates/partner_sites/partners/partner_list.html:21
@@ -3049,8 +2830,8 @@ msgstr "Project partners"
 #, python-format
 msgid "%(partner_count)s partner"
 msgid_plural "%(partner_count)s partners"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(partner_count)s partner"
+msgstr[1] "%(partner_count)s partners"
 
 #: templates/partner_sites/partners/partner_list.html:54
 msgid "No projects"
@@ -3119,7 +2900,6 @@ msgid "Total projects"
 msgstr "Totaal aantal projecten"
 
 #: templates/partner_sites/partners/partner_main.html:115
-#, fuzzy
 msgid "People who get"
 msgstr "Aantal mensen voorzien van"
 
@@ -3175,9 +2955,8 @@ msgid "Pledged"
 msgstr "Toegezegd"
 
 #: templates/partner_sites/partners/partner_main.html:164
-#, fuzzy
 msgid "in Dollars"
-msgstr "in US dollars"
+msgstr "in Dollars"
 
 #: templates/partner_sites/project/base_project.html:10
 #: templates/partner_sites/project/update_list.html:6
@@ -3188,24 +2967,23 @@ msgstr "in US dollars"
 msgid "Project updates"
 msgstr "Project-updates"
 
-#. Translators: Heading in the top right blue box on Partner sites, http://akvo.akvoapp.org/project/276/
+#. Translators: Heading in the top right blue box on Partner sites,
+#. http://akvo.akvoapp.org/project/276/
 #: templates/partner_sites/project/base_project.html:44
 msgid "Schedule"
-msgstr ""
+msgstr "Schema"
 
 #: templates/partner_sites/project/base_project.html:46
 msgid "Begun"
-msgstr ""
+msgstr "Begonnen"
 
 #: templates/partner_sites/project/base_project.html:50
-#, fuzzy
 msgid "Completed"
 msgstr "Afgerond"
 
 #: templates/partner_sites/project/base_project.html:61
-#, fuzzy
 msgid "See funding and milestone details"
-msgstr "Meer uitgebreide financieringsinformatie"
+msgstr "Zie financierings- en mijlpaalinformatie"
 
 #: templates/partner_sites/project/base_project.html:70
 #: templates/rsr/project/project_base.html:83
@@ -3227,7 +3005,7 @@ msgstr "Nog geen updates"
 #: templates/partner_sites/project/base_project.html:121
 #: templates/rsr/project/project_base.html:142
 msgid "Tools for this page"
-msgstr "Tools voor deze bladzijde"
+msgstr "Tools voor deze pagina"
 
 #: templates/partner_sites/project/base_project.html:125
 #: templates/partner_sites/project/update_form.html:6
@@ -3242,9 +3020,8 @@ msgstr "Update toevoegen"
 
 #: templates/partner_sites/project/base_project.html:130
 #: templates/rsr/project/project_base.html:151
-#, fuzzy
 msgid "Sign in to add an update to your project."
-msgstr "Terug naar updates voor project"
+msgstr "U moet inloggen om een update aan uw project toe te voegen"
 
 #: templates/partner_sites/project/base_project.html:137
 #: templates/partner_sites/widgets/get_widget1.html:6
@@ -3259,7 +3036,7 @@ msgstr "Een widget maken"
 
 #: templates/partner_sites/project/base_project.html:137
 msgid "for your website"
-msgstr ""
+msgstr "voor uw website"
 
 #: templates/partner_sites/project/base_project.html:138
 #: templates/partner_sites/project/update_main.html:102
@@ -3328,9 +3105,8 @@ msgid "Anonymous"
 msgstr "Anoniem"
 
 #: templates/partner_sites/project/project_funding.html:91
-#, fuzzy
 msgid "Raised equals donations minus transaction fees."
-msgstr "* Het aangegeven bedrag is de donatie minus de transactiekosten."
+msgstr "Ingezameld bedrag staat gelijk aan donaties minus de transactiekosten."
 
 #: templates/partner_sites/project/project_funding.html:98
 #: templates/rsr/project/project_funding.html:89
@@ -3344,9 +3120,8 @@ msgstr "Subsidie"
 
 #: templates/partner_sites/project/project_main.html:28
 #: templates/rsr/project/project_main.html:36
-#, fuzzy
 msgid "Summary"
-msgstr "samenvatting"
+msgstr "Samenvatting"
 
 #: templates/partner_sites/project/project_main.html:35
 #: templates/rsr/project/project_main.html:44
@@ -3390,11 +3165,10 @@ msgstr "Niets gevonden."
 
 #: templates/partner_sites/project/project_main.html:103
 #: templates/rsr/project/project_main.html:136
-#, fuzzy
 msgid "Akvopedia article"
 msgid_plural "Akvopedia articles"
-msgstr[0] "Akvopedia-bijdrage"
-msgstr[1] "Akvopedia-bijdrage"
+msgstr[0] "Akvopedia-artikel"
+msgstr[1] "Akvopedia-artikelen"
 
 #: templates/partner_sites/project/project_main.html:117
 #: templates/rsr/project/project_main.html:150
@@ -3414,21 +3188,20 @@ msgstr "Foto genomen door:"
 #: templates/partner_sites/project/project_main.html:166
 #: templates/rsr/project/project_main.html:194
 msgid "View more..."
-msgstr ""
+msgstr "Toon meer ..."
 
 #: templates/partner_sites/project/project_main.html:167
 #: templates/rsr/project/project_main.html:195
 msgid "View less..."
-msgstr ""
+msgstr "Toon minder ..."
 
 #: templates/partner_sites/project/update_form.html:13
 msgid "Edit"
-msgstr ""
+msgstr "Bewerken"
 
 #: templates/partner_sites/project/update_form.html:24
-#, fuzzy
 msgid "Back to update"
-msgstr "Terug naar project-updates"
+msgstr "Terug naar update"
 
 #: templates/partner_sites/project/update_form.html:26
 msgid "Back to project"
@@ -3444,23 +3217,20 @@ msgid "Edit update"
 msgstr "Update bewerken"
 
 #: templates/partner_sites/project/update_form.html:32
-#, fuzzy
 msgid "Add update to project"
-msgstr "Terug naar updates voor project"
+msgstr "Update aan project toevoegen"
 
 #: templates/partner_sites/project/update_form.html:54
 #: templates/partner_sites/project/update_form.html:94
 #: templates/partner_sites/project/update_form.html:107
 #: templates/partner_sites/project/update_form.html:138
 #: templates/partner_sites/project/update_form.html:150
-#, fuzzy
 msgid "characters left"
-msgstr "tekens"
+msgstr "tekens over"
 
 #: templates/partner_sites/project/update_form.html:110
-#, fuzzy
 msgid "Remove photo"
-msgstr "projectfoto"
+msgstr "Foto verwijderen"
 
 #: templates/partner_sites/project/update_form.html:115
 #: templates/rsr/project/update_form.html:144
@@ -3468,19 +3238,16 @@ msgid "Paste video URL"
 msgstr "Video-URL plakken"
 
 #: templates/partner_sites/project/update_form.html:153
-#, fuzzy
 msgid "Remove video"
-msgstr "Een video embedden"
+msgstr "Video verwijderen"
 
 #: templates/partner_sites/project/update_form.html:159
-#, fuzzy
 msgid "Save update"
-msgstr "Meest recente update"
+msgstr "Update opslaan"
 
 #: templates/partner_sites/project/update_form.html:173
-#, fuzzy
 msgid "The url provided is not a valid Blip, Vimeo or YouTube video"
-msgstr "Ondersteunde providers: Blip, Vimeo, YouTube"
+msgstr "Deze URL is geen geldige Blip-, Vimeo- of YouTube-video"
 
 #: templates/partner_sites/project/update_list.html:11
 #: templates/partner_sites/project/update_main.html:11
@@ -3498,35 +3265,33 @@ msgid "Back to project updates"
 msgstr "Terug naar project-updates"
 
 #: templates/partner_sites/project/update_main.html:26
-#, fuzzy, python-format
+#, python-format
 msgid ""
-"by %(user_name)s, <a href='%(user_org_url)s'>%(user_org)s</a>, via %"
-"(update_meth)s"
-msgstr ""
-"door %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via %"
-"(update_meth)s"
+"by %(user_name)s, <a href='%(user_org_url)s'>%(user_org)s</a>, via "
+"%(update_meth)s"
+msgstr "door %(user_name)s, <a href='%(user_org_url)s'>%(user_org)s</a>, via %(update_meth)s"
 
-#. Translators: When you just have added an update you have a window of time to edit it
+#. Translators: When you just have added an update you have a window of time
+#. to edit it
 #: templates/partner_sites/project/update_main.html:57
 msgid "Found a typo?"
-msgstr ""
+msgstr "Tikfout gevonden?"
 
-#. Translators: When you have added a new update. You posted this on "date". You can edit this update until "time", at which...
+#. Translators: When you have added a new update. You posted this on "date".
+#. You can edit this update until "time", at which...
 #: templates/partner_sites/project/update_main.html:61
 #, python-format
 msgid ""
-"You posted this update at %(posted)s. You can edit this update until %"
-"(expires)s; at which time it will become locked and final."
-msgstr ""
+"You posted this update at %(posted)s. You can edit this update until "
+"%(expires)s; at which time it will become locked and final."
+msgstr "U heeft deze update gemaakt op %(posted)s. U kunt deze update tot %(expires)s bewerken. Na dit tijdstip wordt de update definitief en niet langer bewerkbaar."
 
 #: templates/partner_sites/widgets/get_widget1.html:23
 #: templates/rsr/project/get-a-widget/machinery_step1.html:17
 msgid ""
 "The following steps will produce a snippet of Akvo widget code you can copy "
 "and paste into your own web site&#x27;s code."
-msgstr ""
-"Het eindresultaat van de volgende stappen is een stukje code voor een Akvo-"
-"widget dat u op uw eigen website kunt plakken."
+msgstr "Het eindresultaat van de volgende stappen is een stukje code voor een Akvo-widget dat u op uw eigen website kunt plakken."
 
 #: templates/partner_sites/widgets/get_widget1.html:26
 #: templates/partner_sites/widgets/get_widget1.html:33
@@ -3549,9 +3314,7 @@ msgstr "Stap 3: Kopieer de HTML-code voor gebruik op uw website."
 msgid ""
 "You can customise the top and bottom bar and title text colours on the next "
 "step."
-msgstr ""
-"In de volgende stap kunt de kleuren van de boven- en onderbalk en de titel "
-"zelf aanpassen."
+msgstr "In de volgende stap kunt de kleuren van de boven- en onderbalk en de titel zelf aanpassen."
 
 #: templates/partner_sites/widgets/get_widget1.html:38
 #: templates/rsr/project/get-a-widget/machinery_step1.html:773
@@ -3563,9 +3326,7 @@ msgstr "Widget met een kaart van projecten"
 msgid ""
 "Shows a map of projects from your organisation. Users who click on this "
 "widget will go to Akvo.org."
-msgstr ""
-"De widget toont een kaart met projecten van uw organisatie. Gebruikers die "
-"op de widget klikken gaan naar Akvo.org."
+msgstr "De widget toont een kaart met projecten van uw organisatie. Gebruikers die op de widget klikken gaan naar Akvo.org."
 
 #: templates/partner_sites/widgets/get_widget1.html:47
 #: templates/rsr/project/get-a-widget/machinery_step1.html:112
@@ -3593,21 +3354,18 @@ msgid "Step 2: Select colours for your widget and preview"
 msgstr "Stap 2: Kies de widget-kleuren en kijk naar een voorproefje"
 
 #: templates/partner_sites/widgets/get_widget2.html:31
-#, fuzzy
 msgid "A: Bottom coloured bar"
-msgstr "A: Kleur voor boven- en onderbalk"
+msgstr "A: Kleur voor onderbalk"
 
 #: templates/partner_sites/widgets/get_widget2.html:33
 #: templates/rsr/project/get-a-widget/machinery_step2.html:88
 msgid "A color you entered is not recognized. Please change and try again."
-msgstr ""
-"De kleur die u hebt ingevoerd, wordt niet herkend. Gelieve een andere te "
-"proberen."
+msgstr "De kleur die u hebt ingevoerd, wordt niet herkend. Gelieve een andere te proberen."
 
 #: templates/partner_sites/widgets/get_widget2.html:38
 #: templates/rsr/project/get-a-widget/machinery_step2.html:96
 msgid "Akvo Red"
-msgstr "Akvo Red"
+msgstr "Akvo Rood"
 
 #: templates/partner_sites/widgets/get_widget2.html:39
 #: templates/rsr/project/get-a-widget/machinery_step2.html:97
@@ -3619,7 +3377,7 @@ msgstr "Goud"
 #: templates/rsr/project/get-a-widget/machinery_step2.html:98
 #: templates/rsr/project/get-a-widget/machinery_step2.html:150
 msgid "DarkGoldenrod"
-msgstr "DonkerGoudenRood"
+msgstr "DarkGoldenrod"
 
 #: templates/partner_sites/widgets/get_widget2.html:41
 #: templates/rsr/project/get-a-widget/machinery_step2.html:99
@@ -3673,7 +3431,7 @@ msgstr "Teal"
 #: templates/rsr/project/get-a-widget/machinery_step2.html:107
 #: templates/rsr/project/get-a-widget/machinery_step2.html:159
 msgid "SeaGreen"
-msgstr "Zeegroen"
+msgstr "SeaGreen"
 
 #: templates/partner_sites/widgets/get_widget2.html:50
 #: templates/rsr/project/get-a-widget/machinery_step2.html:108
@@ -3741,14 +3499,12 @@ msgid "B: Set height of the widget"
 msgstr "B:Geef de gewenste hoogte van de widget aan"
 
 #: templates/partner_sites/widgets/get_widget2.html:89
-#, fuzzy
 msgid "C: Set width of the widget"
-msgstr "D: Geef de gewenste breedte van de widget aan"
+msgstr "C: Breedte van de widget aangeven"
 
 #: templates/partner_sites/widgets/get_widget2.html:94
-#, fuzzy
 msgid "D: Set map state"
-msgstr "C: Kaart-status"
+msgstr "D: Status van kaart aangeven (dynamisch of statisch)"
 
 #: templates/partner_sites/widgets/get_widget2.html:105
 #: templates/registration/password_change_form.html:72
@@ -3783,9 +3539,8 @@ msgid "Preview"
 msgstr "Voorproefje"
 
 #: templates/partner_sites/widgets/get_widget2.html:114
-#, fuzzy
 msgid "E: Review your widget"
-msgstr "D: Voorproefje van uw widget"
+msgstr "E: Voorproefje van uw widget"
 
 #: templates/partner_sites/widgets/get_widget2.html:118
 #: templates/rsr/project/get-a-widget/machinery_step2.html:235
@@ -3795,11 +3550,9 @@ msgstr "Stap 3: Kopieer de HTML-code voor gebruik op uw website."
 #: templates/partner_sites/widgets/get_widget2.html:121
 #: templates/rsr/project/get-a-widget/machinery_step2.html:239
 msgid ""
-"You may repeat the steps above until you are satisﬁed with the appearance of "
-"your widget."
-msgstr ""
-"U kunt bovenstaande stappen net zo vaak herhalen tot u tevreden bent met hoe "
-"de widget eruit ziet."
+"You may repeat the steps above until you are satisﬁed with the appearance of"
+" your widget."
+msgstr "U kunt bovenstaande stappen net zo vaak herhalen tot u tevreden bent met hoe de widget eruit ziet."
 
 #: templates/partner_sites/widgets/get_widget2.html:145
 #: templates/rsr/project/get-a-widget/machinery_step2.html:271
@@ -3854,9 +3607,8 @@ msgid ""
 msgstr "Uw account zal zo snel mogelijk na aanvraag worden bevestigd."
 
 #: templates/registration/activate.html:32
-#, fuzzy
 msgid "We're sorry, the account activation failed"
-msgstr "Onze excuses. Het is niet gelukt uw account te aktiveren."
+msgstr "Het spijt ons, de account-bevestiging is helaas mislukt"
 
 #: templates/registration/activate.html:34
 #, python-format
@@ -3864,19 +3616,13 @@ msgid ""
 "Either your activation link was incorrect, or the activation key for your "
 "account has expired. Activation keys are only valid for %(exp_days)s days "
 "after registration."
-msgstr ""
-"Het is mogelijk dat de aktiveringslink niet juist was, of dat de "
-"aktiveringssleutel voor uw account verlopen is. De sleutel is slechts %"
-"(exp_days)s dagen na registratie geldig."
+msgstr "Het is mogelijk dat de aktiveringslink niet juist was, of dat de aktiveringssleutel voor uw account verlopen is. De sleutel is slechts %(exp_days)s dagen na registratie geldig."
 
 #: templates/registration/activate.html:36
-#, fuzzy
 msgid ""
 "Please <a href='mailto:support@akvo.org'>contact us</a> if you have any "
 "questions."
-msgstr ""
-"Gelieve <a href=\"mailto:support@akvo.org\">contact met ons op te nemen</a>  "
-"met eventuele vragen."
+msgstr "Gelieve <a href='mailto:support@akvo.org'> contact met ons op te nemen</a> met eventuele vragen."
 
 #: templates/registration/password_change_done.html:6
 #: templates/registration/password_change_done.html:10
@@ -3979,17 +3725,16 @@ msgstr "Vul uw nieuwe wachtwoord in:"
 
 #: templates/registration/password_reset_confirm.html:48
 msgid "This URL has expired"
-msgstr ""
+msgstr "Deze URL is niet langer geldig"
 
 #: templates/registration/password_reset_confirm.html:52
 #, python-format
 msgid ""
 "\n"
 "\t\t\tThis url is no longer valid. If you still want to reset your \n"
-"\t\t\tpassword, please request a new <a href=\"%(reset_url)s\">password "
-"reset</a>.\n"
+"\t\t\tpassword, please request a new <a href=\"%(reset_url)s\">password reset</a>.\n"
 "\t\t"
-msgstr ""
+msgstr "\n\t\t\tDeze URL is niet meer geldig. Als u uw  \n\t\t\twachtwoord wilt wijzigen, gelieve een nieuwe <a href=\"%(reset_url)s\">wachtwoord-wijziging aan te vragen</a>.\n\t\t"
 
 #: templates/registration/password_reset_done.html:6
 #: templates/registration/password_reset_done.html:10
@@ -4004,23 +3749,18 @@ msgstr "Gelieve uw email te lezen."
 msgid ""
 "We&#x27;ve e-mailed a temporary password to your e-mail address. You should "
 "be receiving it shortly."
-msgstr ""
-"We hebben een tijdelijk wachtwoord naar uw emailadres gestuurd. U zult dit "
-"zo spoedig mogelijk ontvangen."
+msgstr "We hebben een tijdelijk wachtwoord naar uw emailadres gestuurd. U zult dit zo spoedig mogelijk ontvangen."
 
 #: templates/registration/password_reset_email.html:7
 #, python-format
 msgid ""
-"You're receiving this e-mail because you requested a password reset for your "
-"user account at %(site_name)s."
-msgstr ""
-"U ontvangt deze email omdat u een nieuw wachtwoord heeft aangevraagd voor uw "
-"account bij %(site_name)s."
+"You're receiving this e-mail because you requested a password reset for your"
+" user account at %(site_name)s."
+msgstr "U ontvangt deze email omdat u een nieuw wachtwoord heeft aangevraagd voor uw account bij %(site_name)s."
 
 #: templates/registration/password_reset_email.html:9
 msgid "Please go to the following page and choose a new password:"
-msgstr ""
-"Gelieve naar de volgende pagina te gaan en een nieuw wachtwoord te kiezen:"
+msgstr "Gelieve naar de volgende pagina te gaan en een nieuw wachtwoord te kiezen:"
 
 #: templates/registration/password_reset_email.html:13
 msgid "Your username, in case you've forgotten:"
@@ -4063,9 +3803,7 @@ msgstr "Registratie afgerond"
 msgid ""
 "A confirmation will be sent to you via email. Please click the link in the "
 "email to complete the setup of your account."
-msgstr ""
-"U zult een bevestiging via email ontvangen. Gelieve de link in de email aan "
-"te klikken om het opzetten van uw account af te ronden."
+msgstr "U zult een bevestiging via email ontvangen. Gelieve de link in de email aan te klikken om het opzetten van uw account af te ronden."
 
 #: templates/registration/registration_form1.html:6
 msgid "Register with Akvo RSR - Step 1 of 2"
@@ -4089,18 +3827,13 @@ msgid "Select your organisation:"
 msgstr "Selecteer uw organisatie:"
 
 #: templates/registration/registration_form1.html:35
-#, fuzzy
 msgid ""
 "To set up your account, your organisation must be already registered with "
-"Akvo. If you do not see your organisation on the list above, <a href='/web/"
-"become_a_project_partner'>contact us</a> to begin registering your "
-"organisation. After registration is complete, please return to set up your "
-"account."
-msgstr ""
-"Om een account op te zetten, moet uw organisatie al bij Akvo geregistreerd "
-"zijn. Als uw organisatie niet op bovenstaande lijst wordt getoond, neem dan "
-"<a href=\"/web/become_a_project_partner\">contact met ons op</a> om uw "
-"organisatie aan te melden. Kom daarna terug om uw account op te zetten."
+"Akvo. If you do not see your organisation on the list above, <a "
+"href='/web/become_a_project_partner'>contact us</a> to begin registering "
+"your organisation. After registration is complete, please return to set up "
+"your account."
+msgstr "Om een account op te zetten moet uw organisatie al bij Akvo aangemeld zijn. Als u uw organisatie niet op bovenstaande lijst kunt zien, neem dan eerst <a href='/web/become_a_project_partner'>contact met ons op</a> om uw organisatie te registreren."
 
 #: templates/registration/registration_form1.html:44
 msgid "Continue to step 2"
@@ -4120,15 +3853,11 @@ msgstr "Geef een gebruikersnaam in:"
 
 #: templates/registration/registration_form2.html:29
 msgid "Your user name will be permanent. Use this to log into Akvo."
-msgstr ""
-"Uw Akvo-gebruikersnaam is definitief. U kunt deze gebruiken om in te loggen "
-"op de Akvo website."
+msgstr "Uw Akvo-gebruikersnaam is definitief. U kunt deze gebruiken om in te loggen op de Akvo website."
 
 #: templates/registration/registration_form2.html:30
 msgid "Remember that user names as well as passwords are case sensitive."
-msgstr ""
-"Let op gebruik van hoofdletters en kleine letters bij het invullen van de "
-"gebruikersnaam en wachtwoord. "
+msgstr "Let op gebruik van hoofdletters en kleine letters bij het invullen van de gebruikersnaam en wachtwoord. "
 
 #: templates/registration/registration_form2.html:48
 msgid "Enter your first and last name:"
@@ -4145,11 +3874,9 @@ msgstr "Achternaam."
 #: templates/registration/registration_form2.html:57
 #: templates/registration/update_form.html:59
 msgid ""
-"Your first and last name will be displayed when you post comments or updates "
-"to Akvo."
-msgstr ""
-"Uw voor- en achternaam worden getoond als u opmerkingen of updates plaatst "
-"op de Akvo website."
+"Your first and last name will be displayed when you post comments or updates"
+" to Akvo."
+msgstr "Uw voor- en achternaam worden getoond als u opmerkingen of updates plaatst op de Akvo website."
 
 #: templates/registration/registration_form2.html:74
 msgid "Enter a password:"
@@ -4202,11 +3929,10 @@ msgid "Your organisation is"
 msgstr "Uw organisatie is"
 
 #: templates/registration/update_form.html:37
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "You can also <a href='%(password_change_url)s'>change your password</a>."
-msgstr ""
-"U kunt ook <a href='%(password_change_url)s'>uw wachtwoord wijzigen</a>."
+msgstr "U kunt ook <a href='%(password_change_url)s'>uw wachtwoord wijzigen</a>."
 
 #: templates/registration/update_form.html:54
 msgid "Change your name:"
@@ -4274,9 +4000,7 @@ msgstr "Funding partners"
 msgid ""
 "We help donors and doers reach out to fund many thousands of new water and "
 "sanitation projects."
-msgstr ""
-"We helpen doeners en donors om duizenden nieuwe water- en sanitatieprojecten "
-"te financieren. "
+msgstr "We helpen doeners en donors om duizenden nieuwe water- en sanitatieprojecten te financieren. "
 
 #: templates/rsr/base.html:11
 msgid "See it happen"
@@ -4305,19 +4029,13 @@ msgid "About Akvo.org"
 msgstr "Over Akvo.org"
 
 #: templates/rsr/base.html:163
-#, fuzzy
 msgid ""
 "We are a non-profit foundation headquartered in the Netherlands. We help "
 "connect doers and donors to transform communities in some of the poorest "
-"parts of the world. The Akvo platform is open source and we encourage others "
-"to build on and improve these tools, or adapt the platform for other "
+"parts of the world. The Akvo platform is open source and we encourage others"
+" to build on and improve these tools, or adapt the platform for other "
 "purposes."
-msgstr ""
-"Wij zijn een non-profit organisatie, met het hoofdkantoor gevestigd in "
-"Nederland. Wij helpen doeners en donors met elkaar te verbinden, om "
-"gemeenschappen in de armste delen van de wereld te veranderen. Het Akvo "
-"platform is 'open source' en we moedigen anderen aan om deze tools te "
-"gebruiken en verbeteren, of het platform te gebruiken voor andere doeleinden."
+msgstr "Wij zijn een non-profit stichting, met het hoofdkantoor gevestigd in Nederland. Wij verbinden doeners en donoren met elkaar, om gemeenschappen in de armste delen van de wereld te helpen veranderen. Het Akvo platform is open source en we moedigen anderen aan om onze tools te gebruiken en verbeteren, of het platform te gebruiken voor andere doeleinden."
 
 #: templates/rsr/base.html:168
 msgid "Policies"
@@ -4449,9 +4167,7 @@ msgstr "Een probleem rapporteren"
 msgid ""
 "Please <a href=\"mailto:support@akvo.org\">contact us</a> if you have any "
 "questions."
-msgstr ""
-"Gelieve <a href=\"mailto:support@akvo.org\">contact met ons op te nemen</a>  "
-"met eventuele vragen."
+msgstr "Gelieve <a href=\"mailto:support@akvo.org\"> contact met ons op te nemen</a> met eventuele vragen."
 
 #: templates/rsr/error_access_denied.html:6
 #: templates/rsr/error_access_denied.html:10
@@ -4460,9 +4176,8 @@ msgid "Permission denied"
 msgstr "Toestemming geweigerd"
 
 #: templates/rsr/error_access_denied.html:17
-#, fuzzy
 msgid "Project updates can only be posted on your organisation's projects."
-msgstr "U kunt alleen updates plaatsen voor projecten van uw eigen organisatie"
+msgstr "U kunt alleen updates plaatsen op projecten van uw eigen organisatie."
 
 #: templates/rsr/global_map.html:6 templates/rsr/global_map.html.py:34
 msgid "Global map"
@@ -4490,13 +4205,11 @@ msgstr "RSS"
 
 #. Translators: This is for the home page recent updates, "on a date"
 #: templates/rsr/index.html:72
-#, fuzzy, python-format
+#, python-format
 msgid ""
-"By %(user_name)s, <a href='%(org_url)s'>%(user_org)s</a>, via %(update_meth)"
-"s on %(update_time)s"
-msgstr ""
-"Door %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via %"
-"(update_meth)s on %(update_time)s"
+"By %(user_name)s, <a href='%(org_url)s'>%(user_org)s</a>, via "
+"%(update_meth)s on %(update_time)s"
+msgstr "Door %(user_name)s, <a href='%(org_url)s'>%(user_org)s</a>, via %(update_meth)s op %(update_time)s"
 
 #: templates/rsr/index.html:84
 msgid "Recent blog posts"
@@ -4557,18 +4270,15 @@ msgid "Enter username"
 msgstr "Gebruikersnaam"
 
 #: templates/rsr/sign_in.html:53
-#, fuzzy
 msgid "I don't have an account"
 msgstr "Ik heb geen account"
 
 #: templates/rsr/sign_in.html:56
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "By <a href='%(register1_url)s'>registering</a> with Akvo, you will be able "
 "to:"
-msgstr ""
-"Door u zich bij Akvo <a href='%(register1_url)s'>te laten registreren</a>, "
-"zult u het volgende kunnen doen:"
+msgstr "Door u bij Akvo <a href='%(register1_url)s'>aan te melden</a> zult u:"
 
 #: templates/rsr/sign_in.html:59
 msgid "Create updates on your organisation's projects"
@@ -4579,9 +4289,8 @@ msgid "Leave comments on projects"
 msgstr "Opmerkingen plaatsen over projecten"
 
 #: templates/rsr/sign_in.html:62
-#, fuzzy
 msgid "And much more! <a href='/web/'>Learn about</a> how Akvo works."
-msgstr "Lees meer over <a href=\"/web/\"> Akvo</a> en de vele mogelijkheden!"
+msgstr "En nog veel meer! <a href='/web/'>Lees meer over</a> hoe Akvo werkt."
 
 #: templates/rsr/myakvo/mobile.html:11 templates/rsr/myakvo/mobile.html:23
 msgid "MyAkvo - Mobile"
@@ -4626,48 +4335,37 @@ msgstr "Akvo updates via mobiele telefoon"
 
 #: templates/rsr/myakvo/mobile.html:108
 msgid "To enable updating from your mobile phone follow these steps:"
-msgstr ""
-"Om met uw mobiele telefoon updates te sturen, de volgende stappen volgen:"
+msgstr "Om met uw mobiele telefoon updates te sturen, de volgende stappen volgen:"
 
 #: templates/rsr/myakvo/mobile.html:109
 msgid ""
-"1. Enter you mobile phone number. Your number will be listed on this page as "
-"needing validation."
-msgstr ""
-"1. Geef uw mobiele telefoonnummer in. Op deze pagina zal worden aangeven dat "
-"het nummer goedgekeurd moet worden."
+"1. Enter you mobile phone number. Your number will be listed on this page as"
+" needing validation."
+msgstr "1. Geef uw mobiele telefoonnummer in. Op deze pagina zal worden aangeven dat het nummer goedgekeurd moet worden."
 
 #: templates/rsr/myakvo/mobile.html:110
 msgid ""
 "An email will be sent to you with a code. This email and others regarding "
 "SMS updating can be seen here too as Notices."
-msgstr ""
-"U krijgt een email met een code. Deze email en andere m.b.t. SMS-updates "
-"worden ook hier als Mededelingen getoond."
+msgstr "U krijgt een email met een code. Deze email en andere m.b.t. SMS-updates worden ook hier als Mededelingen getoond."
 
 #: templates/rsr/myakvo/mobile.html:111
 msgid ""
 "An SMS will be sent to your phone. Reply to this phone number with the code "
 "from your email."
-msgstr ""
-"U krijgt een SMS-bericht. Stuur naar hetzelfde telefoonnummer de code die in "
-"de email wordt gegeven."
+msgstr "U krijgt een SMS-bericht. Stuur naar hetzelfde telefoonnummer de code die in de email wordt gegeven."
 
 #: templates/rsr/myakvo/mobile.html:112
 msgid ""
 "2. When your phone has been validated, return here to select a project to "
 "send updates to from your phone."
-msgstr ""
-"2. Na goedkeuring van uw telefoon, hier terugkeren om updates via uw "
-"telefoon te versturen naar een project."
+msgstr "2. Na goedkeuring van uw telefoon, hier terugkeren om updates via uw telefoon te versturen naar een project."
 
 #: templates/rsr/myakvo/mobile.html:113
 msgid ""
 "You will be sent an SMS with the phone number you can send updates to for "
 "the selected project."
-msgstr ""
-"U krijgt een SMS-bericht met een telefoonnummer waar u updates voor het "
-"geselecteerde project naar kan sturen."
+msgstr "U krijgt een SMS-bericht met een telefoonnummer waar u updates voor het geselecteerde project naar kan sturen."
 
 #: templates/rsr/myakvo/mobile_number.html:11
 #: templates/rsr/myakvo/mobile_number.html:22
@@ -4682,9 +4380,7 @@ msgstr "Uw mobiele telefoonnummer ingeven"
 msgid ""
 "The number should be entered as numbers only, starting with your country "
 "code. Example: 46707277477"
-msgstr ""
-"Alleen nummers gebruiken voor het telefoonnummer, te beginnen met uw "
-"landnummer, bij voorbeeld: 31707277477"
+msgstr "Alleen nummers gebruiken voor het telefoonnummer, te beginnen met uw landnummer, bij voorbeeld: 31707277477"
 
 #: templates/rsr/myakvo/navigation.html:20
 msgid "Password"
@@ -4790,7 +4486,7 @@ msgstr "Meer uitgebreide financieringsinformatie"
 
 #: templates/rsr/project/project_base.html:160
 msgid "for your web site"
-msgstr ""
+msgstr "voor uw website"
 
 #: templates/rsr/project/project_base.html:162
 msgid "Subscribe"
@@ -4852,9 +4548,7 @@ msgstr "Nog geen opmerkingen."
 #, python-format
 msgid ""
 "Comment%%20abuse%%20in%%20project%%20%%23%(p_id)s%%2C%%20comment%%20#%(c_id)s"
-msgstr ""
-"Opmerking%%20misbruik%%20in%%20project%%20%%23%(p_id)s%%2C%%20opmerking%%20#%"
-"(c_id)s"
+msgstr "Opmerking%%20misbruik%%20in%%20project%%20%%23%(p_id)s%%2C%%20opmerking%%20#%(c_id)s"
 
 #: templates/rsr/project/project_comments.html:58
 msgid "Report abuse"
@@ -4864,7 +4558,7 @@ msgstr "Taalmisbruik melden"
 #: templates/rsr/project/project_directory.html:28
 #: templates/rsr/project/project_directory.html:61
 msgid "Project listing for"
-msgstr "Projectlijst voor"
+msgstr "Projectenlijst voor"
 
 #: templates/rsr/project/project_directory.html:14
 #: templates/rsr/project/project_directory.html:37
@@ -4897,30 +4591,26 @@ msgid "* The amount indicated is the donation minus transaction fees."
 msgstr "* Het aangegeven bedrag is de donatie minus de transactiekosten."
 
 #: templates/rsr/project/project_main.html:73
-#, fuzzy
 msgid "Focus area"
 msgid_plural "Focus areas"
-msgstr[0] "thema"
-msgstr[1] "thema"
+msgstr[0] "Thema"
+msgstr[1] "Thema's"
 
 #: templates/rsr/project/project_main.html:78
-#, fuzzy
 msgid "Category:"
 msgid_plural "Categories:"
 msgstr[0] "Categorie:"
-msgstr[1] "Categorie:"
+msgstr[1] "Categorieën:"
 
 #: templates/rsr/project/project_main.html:84
 msgid "Detailed information"
 msgstr "Uitgebreide informatie"
 
 #: templates/rsr/project/project_update.html:48
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "by %(user_name)s, <a href='{org_url}}'>%(user_org)s</a>, via %(update_meth)s"
-msgstr ""
-"door %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via %"
-"(update_meth)s"
+msgstr "door %(user_name)s, <a href='{org_url}}'>%(user_org)s</a>, via %(update_meth)s"
 
 #: templates/rsr/project/update_form.html:46
 msgid "Title"
@@ -5015,13 +4705,10 @@ msgid "Cannot Complete Donation"
 msgstr "De donatie kan niet afgerond worden"
 
 #: templates/rsr/project/donate/donate_500.html:17
-#, fuzzy
 msgid ""
 "We're sorry for the inconvenience, but we were not able to connect to your "
 "selected payment system at this time."
-msgstr ""
-"Onze excuses, we waren niet in staat om in  verbinding te komen met het door "
-"uw gekozen betalingssysteem."
+msgstr "Het spijt ons, we kunnen op het moment helaas geen verbinding maken met het door u gekozen betalingssysteem."
 
 #: templates/rsr/project/donate/donate_500.html:20
 msgid "No funds were transferred."
@@ -5029,8 +4716,7 @@ msgstr "Er is geen geld overgemaakt."
 
 #: templates/rsr/project/donate/donate_500.html:21
 msgid "Please try your donation again later."
-msgstr ""
-"Gelieve over enkele momenten nogmaals te proberen een donatie te maken."
+msgstr "Gelieve over enkele momenten nogmaals te proberen een donatie te maken."
 
 #: templates/rsr/project/donate/donate_base.html:6
 #: templates/rsr/project/donate/donate_step2.html:14
@@ -5077,10 +4763,7 @@ msgstr "Voor alle gebruikers"
 msgid ""
 "Akvo offers the Paypal Secure Payment&trade; system for donations in 24 "
 "currencies from 190 countries, whether or not you have a PayPal account."
-msgstr ""
-"U kunt bij Akvo het Paypal Secure Payment&trade; systeem gebruiken voor het "
-"maken van donaties in 24 verschillende valuta's uit 190 landen, of u nu een "
-"PayPal-rekening heeft of niet."
+msgstr "U kunt bij Akvo het Paypal Secure Payment&trade; systeem gebruiken voor het maken van donaties in 24 verschillende valuta's uit 190 landen, of u nu een PayPal-rekening heeft of niet."
 
 #: templates/rsr/project/donate/donate_step1.html:50
 msgid "Use PayPal"
@@ -5094,9 +4777,7 @@ msgstr "Alleen voor Nederlandse gebruikers"
 msgid ""
 "In the Netherlands, Akvo offers the iDeal system for payments directly from "
 "your bank account."
-msgstr ""
-"In Nederland kunt u het iDeal-systeem gebruiken voor rechtstreekse "
-"betalingen vanuit uw bankrekening."
+msgstr "In Nederland kunt u het iDeal-systeem gebruiken voor rechtstreekse betalingen vanuit uw bankrekening."
 
 #: templates/rsr/project/donate/donate_step1.html:68
 msgid "Use iDeal"
@@ -5106,9 +4787,7 @@ msgstr "iDeal gebruiken"
 msgid ""
 "Do you represent an institution or company interested in funding or "
 "sponsoring this project?"
-msgstr ""
-"Vertegenwoordigt u een instelling of bedrijf geïnteresseerd in fincanciering "
-"of sponsoring van dit project?"
+msgstr "Vertegenwoordigt u een instelling of bedrijf geïnteresseerd in fincanciering of sponsoring van dit project?"
 
 #: templates/rsr/project/donate/donate_step1.html:79
 msgid "Become an"
@@ -5127,16 +4806,12 @@ msgstr "Project waaraan u geld wilt doneren"
 msgid ""
 "We&#x27;re sorry, but you must have Javascript enabled in your browser to "
 "proceed."
-msgstr ""
-"Het spijt ons, maar u moet Javascript in uw browser activeren om verder te "
-"gaan."
+msgstr "Het spijt ons, maar u moet Javascript in uw browser activeren om verder te gaan."
 
 #: templates/rsr/project/donate/donate_step2.html:91
 #: templates/rsr/project/donate/donate_step3.html:89
 msgid "Akvo.org uses the PayPal Secure Payment&trade; system for donations."
-msgstr ""
-"Akvo.org maakt gebruik van het PayPal Secure Payment&trade; systeem voor "
-"donaties. "
+msgstr "Akvo.org maakt gebruik van het PayPal Secure Payment&trade; systeem voor donaties. "
 
 #: templates/rsr/project/donate/donate_step2.html:93
 #: templates/rsr/project/donate/donate_step3.html:91
@@ -5144,34 +4819,25 @@ msgid ""
 "With PayPal you may make donations via your country&#x27;s accepted credit "
 "or debit cards, or through a PayPal account if you have one. And PayPal "
 "handles the currency conversion for you."
-msgstr ""
-"U kunt met PayPal via de in uw land geaccepteerde creditcards of "
-"bankrekeningen donaties maken, of via een bestaande PayPal-rekening. PayPal "
-"zorgt voor de valuta-omrekening."
+msgstr "U kunt met PayPal via de in uw land geaccepteerde creditcards of bankrekeningen donaties maken, of via een bestaande PayPal-rekening. PayPal zorgt voor de valuta-omrekening."
 
 #: templates/rsr/project/donate/donate_step2.html:97
 #: templates/rsr/project/donate/donate_step3.html:95
-#, fuzzy, python-format
+#, python-format
 msgid ""
-"PayPal charges transaction fees of up to 3.9% of your donation amount + 35 "
+"PayPal charges transaction fees of up to 3.9%% of your donation amount + 35 "
 "Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to the "
 "selected project."
-msgstr ""
-"PayPal houdt per transactie maximaal 3,9% + 35 eurocent van uw donatie in. "
-"Als u bijv. &euro;100 doneert, gaat daarvan tenminste 95,75 naar het door u "
-"gekozen project."
+msgstr "PayPal houdt per transactie maximaal 3,9%% + 35 eurocent van uw donatie in. Als u bijv. &euro;100 doneert, gaat daarvan tenminste 95,75 naar het door u gekozen project."
 
 #: templates/rsr/project/donate/donate_step2.html:100
 #: templates/rsr/project/donate/donate_step3.html:98
-#, fuzzy, python-format
+#, python-format
 msgid ""
-"PayPal charges transaction fees of up to 3.9% of your donation amount + 30 "
-"Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to "
-"the selected project."
-msgstr ""
-"PayPal houdt per transactie maximaal 3,9% + 30 dollarcent van uw donatie in. "
-"Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar naar het "
-"door u gekozen project."
+"PayPal charges transaction fees of up to 3.9%% of your donation amount + 30 "
+"Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to"
+" the selected project."
+msgstr "PayPal houdt per transactie maximaal 3,9%% + 30 dollarcent van uw donatie in. Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar naar het door u gekozen project."
 
 #: templates/rsr/project/donate/donate_step2.html:107
 #: templates/rsr/project/donate/donate_step2.html:144
@@ -5182,9 +4848,7 @@ msgid ""
 "At this time, only residents of the following countries will be able to "
 "treat this donation as a tax-deductible charitable contribution. We are "
 "working hard to expand this list all the time!"
-msgstr ""
-"Op het ogenblik zijn donaties alleen voor inwoners van onderstaande landen "
-"fiscaal aftrekbaar. Wij zullen de lijst zo snel mogelijk uitbreiden."
+msgstr "Op het ogenblik zijn donaties alleen voor inwoners van onderstaande landen fiscaal aftrekbaar. Wij zullen de lijst zo snel mogelijk uitbreiden."
 
 #: templates/rsr/project/donate/donate_step2.html:112
 #: templates/rsr/project/donate/donate_step2.html:115
@@ -5205,40 +4869,29 @@ msgstr "Nederland"
 #: templates/rsr/project/donate/donate_step3.html:125
 msgid ""
 "Akvo.org offers the iDeal payment system for Netherlands users to make "
-"donations.  With iDEAL, you may make payments entirely within the secure and "
-"trusted environment of your own bank&#x27;s website."
-msgstr ""
-"In Nederland kunt het iDeal-betalingssysteem gebruiken om donaties aan Akvo."
-"org te maken. Met iDEAL kunt u betalingen binnen de veilige en vertrouwde "
-"omgeving van de website van uw eigen bank maken."
+"donations.  With iDEAL, you may make payments entirely within the secure and"
+" trusted environment of your own bank&#x27;s website."
+msgstr "In Nederland kunt het iDeal-betalingssysteem gebruiken om donaties aan Akvo.org te maken. Met iDEAL kunt u betalingen binnen de veilige en vertrouwde omgeving van de website van uw eigen bank maken."
 
 #: templates/rsr/project/donate/donate_step2.html:131
 #: templates/rsr/project/donate/donate_step3.html:128
 msgid "Akvo.org partners with Mollie.nl to provide iDEAL."
-msgstr ""
-"Akvo.org brengt in samenwerking met Mollie.nl het iDEAL-betalingssysteem."
+msgstr "Akvo.org brengt in samenwerking met Mollie.nl het iDEAL-betalingssysteem."
 
 #: templates/rsr/project/donate/donate_step2.html:135
 #: templates/rsr/project/donate/donate_step3.html:133
 msgid ""
-"Mollie.nl charges &euro;0.99 (excluding BTW) on every transaction. So if you "
-"donate &euro;100, &euro;98.82 Euros will go towards the selected project."
-msgstr ""
-"Mollie.nl houdt per transactie &euro;0,99 (exclusief BTW) van uw donatie in. "
-"Als u bijv. &euro;100 doneert, gaat daarvan &euro;98,82 naar het door u "
-"gekozen project."
+"Mollie.nl charges &euro;0.99 (excluding BTW) on every transaction. So if you"
+" donate &euro;100, &euro;98.82 Euros will go towards the selected project."
+msgstr "Mollie.nl houdt per transactie &euro;0,99 (exclusief BTW) van uw donatie in. Als u bijv. &euro;100 doneert, gaat daarvan &euro;98,82 naar het door u gekozen project."
 
 #: templates/rsr/project/donate/donate_step2.html:138
 #: templates/rsr/project/donate/donate_step3.html:136
-#, fuzzy
 msgid ""
 "iDeal charges up to 3.9% + 30 US Dollar cents of your donation in "
-"transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars "
-"will go towards the selected project."
-msgstr ""
-"iDeal houdt per transactie maximaal 3,9% + 30 dollarcent van uw donatie in. "
-"Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar naar het "
-"door u gekozen project."
+"transaction fees. So if you donate 100 US Dollars, at least 95.80 US Dollars"
+" will go towards the selected project."
+msgstr "iDeal houdt per transactie maximaal 3,9% + 30 dollarcent van uw donatie in. Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar naar het door u gekozen project."
 
 #: templates/rsr/project/donate/donate_step2.html:163
 msgid "Donation details"
@@ -5247,7 +4900,7 @@ msgstr "Details over de donatie"
 #: templates/rsr/project/donate/donate_step2.html:166
 #, python-format
 msgid "Amount in %(currency)s:"
-msgstr ""
+msgstr "Bedrag in %(currency)s:"
 
 #: templates/rsr/project/donate/donate_step2.html:173
 msgid "Whole numbers without decimals or commas."
@@ -5332,15 +4985,13 @@ msgid "Confirm Donation"
 msgstr "Donatie bevestigen"
 
 #: templates/rsr/project/donate/donate_step3.html:45
-#, fuzzy
 msgid ""
-"We're sorry, but you must have Javascript enabled in your browser to proceed."
-msgstr ""
-"Het spijt ons, maar u moet Javascript in uw browser activeren om verder te "
-"gaan."
+"We're sorry, but you must have Javascript enabled in your browser to "
+"proceed."
+msgstr "Het spijt ons, maar u moet Javascript in uw browser activeren om verder te gaan."
 
 #: templates/rsr/project/donate/donate_step3.html:162
-#, fuzzy, python-format
+#, python-format
 msgid "Amount you wish to donate (in %(currency)s)"
 msgstr "Bedrag dat u wenst te doneren (in %(currency)s)"
 
@@ -5351,7 +5002,7 @@ msgstr "Uw naam en emailadres"
 #: templates/rsr/project/donate/donate_step3.html:239
 #, python-format
 msgid "Click the Donate button to proceed to %(engine)s checkout."
-msgstr ""
+msgstr "Klik op \"Donate\" om verder te gaan naar %(engine)s checkout."
 
 #: templates/rsr/project/donate/donate_step3.html:240
 msgid "By clicking on the \"Donate\" button you agree to the"
@@ -5377,11 +5028,9 @@ msgstr "Bedankt voor uw donatie"
 #: templates/rsr/project/donate/donate_thanks.html:39
 #, python-format
 msgid ""
-"You will receive email confirmation from both Akvo.org and %(payment_engine)"
-"s."
-msgstr ""
-"U zult een email-bevestiging van zowel Akvo.org als %(payment_engine)s "
-"ontvangen."
+"You will receive email confirmation from both Akvo.org and "
+"%(payment_engine)s."
+msgstr "U zult een email-bevestiging van zowel Akvo.org als %(payment_engine)s ontvangen."
 
 #: templates/rsr/project/donate/donate_thanks.html:40
 msgid "You may wish to print this page for your records."
@@ -5413,7 +5062,7 @@ msgstr "Project waaraan u heeft gedoneerd"
 
 #: templates/rsr/project/donate/donate_thanks.html:157
 msgid "Updated view"
-msgstr ""
+msgstr "Bijgewerkt overzicht"
 
 #: templates/rsr/project/donate/donate_thanks.html:166
 msgid "Amount you donated"
@@ -5437,9 +5086,9 @@ msgid ""
 "Thank you for your contribution on <a href='%(site_url)s'>Akvo.org</a>. By "
 "giving, you have personally helped to improve the living conditions of "
 "people around the world. You can follow the project&#x27;s progress via <a "
-"href='%(project_updates_url)s'>updates</a> on <a href='%(site_url)s'>Akvo."
-"org</a>."
-msgstr ""
+"href='%(project_updates_url)s'>updates</a> on <a "
+"href='%(site_url)s'>Akvo.org</a>."
+msgstr "Bedankt voor uw bijdrage op <a href='%(site_url)s'>Akvo.org</a>. Met uw donatie worden de levensomstandigheden van mensen over de hele wereld verbetert. U kunt de voortgang van het project volgen via <a href='%(project_updates_url)s'>updates</a> op <a href='%(site_url)s'>Akvo.org</a>."
 
 #: templates/rsr/project/donate/donation_confirmation_email.html:17
 msgid "A summary of your contribution"
@@ -5472,22 +5121,16 @@ msgstr "Over uw bijdrage"
 #: templates/rsr/project/donate/donation_confirmation_email.html:56
 msgid ""
 "No goods or services were provided in exchange for your gift of funds. At "
-"this time, only residents of the following countries may treat this donation "
-"as a tax-deductible charitable contribution to the extent allowed by law. We "
-"are working hard to expand this list to new countries."
-msgstr ""
-"Geen goederen of diensten werden verstrekt in ruil voor uw schenking. Op het "
-"ogenblik zijn donaties alleen voor inwoners van onderstaande landen fiscaal "
-"aftrekbaar (voor zover toegestaan door de wet). Wij zullen de lijst zo snel "
-"mogelijk uitbreiden."
+"this time, only residents of the following countries may treat this donation"
+" as a tax-deductible charitable contribution to the extent allowed by law. "
+"We are working hard to expand this list to new countries."
+msgstr "Geen goederen of diensten werden verstrekt in ruil voor uw schenking. Op het ogenblik zijn donaties alleen voor inwoners van onderstaande landen fiscaal aftrekbaar (voor zover toegestaan door de wet). Wij zullen de lijst zo snel mogelijk uitbreiden."
 
 #: templates/rsr/project/donate/donation_confirmation_email.html:69
 msgid ""
 "Please retain this message as a record of your contribution. You may email "
 "us with technical questions at"
-msgstr ""
-"We raden u aan dit bericht te bewaren zodat u bewijs van uw bijdrage heeft. "
-"Als een technische vraag heeft kunt een email sturen naar"
+msgstr "We raden u aan dit bericht te bewaren zodat u bewijs van uw bijdrage heeft. Als een technische vraag heeft kunt een email sturen naar"
 
 #: templates/rsr/project/donate/donation_confirmation_email.html:69
 msgid "and please tell your friends about"
@@ -5512,17 +5155,15 @@ msgstr "Hier kunt u een widget voor uw website maken"
 #: templates/rsr/project/get-a-widget/machinery_step1.html:27
 #, python-format
 msgid ""
-"Sign in for more widget types, available to <a href='http://%(current_site)s/"
-"web/fees_plus'>Akvo RSR Plus accounts</a>."
-msgstr ""
+"Sign in for more widget types, available to <a "
+"href='http://%(current_site)s/web/fees_plus'>Akvo RSR Plus accounts</a>."
+msgstr "Gelieve in te loggen voor meer soorten widgets, verkrijgbaar  voor <a href='http://%(current_site)s/web/fees_plus'>Akvo RSR Plus accounts</a>."
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:36
 msgid ""
 "We are sorry, but you must have Javascript enabled in your browser to "
 "proceed. "
-msgstr ""
-"Het spijt ons, maar u moet Javascript in uw browser activeren om verder te "
-"gaan."
+msgstr "Het spijt ons, maar u moet Javascript in uw browser activeren om verder te gaan."
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:45
 msgid "Step 1: Select the type of widget you wish to use"
@@ -5542,11 +5183,9 @@ msgstr "A: Projectwidget met donatielink (170 pixels breed x 840 pixels hoog)"
 #: templates/rsr/project/get-a-widget/machinery_step1.html:568
 #: templates/rsr/project/get-a-widget/machinery_step1.html:641
 msgid ""
-"Shows basic description and allows donations. Users who click on this widget "
-"will go to Akvo.org."
-msgstr ""
-"De widget toont een korte beschrijving en er kunnen donaties gemaakt worden. "
-"Gebruikers die op de widget klikken gaan naar Akvo.org."
+"Shows basic description and allows donations. Users who click on this widget"
+" will go to Akvo.org."
+msgstr "De widget toont een korte beschrijving en er kunnen donaties gemaakt worden. Gebruikers die op de widget klikken gaan naar Akvo.org."
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:58
 #: templates/rsr/project/get-a-widget/machinery_step1.html:131
@@ -5600,15 +5239,12 @@ msgstr "Bijvoorbeeld"
 #: templates/rsr/project/get-a-widget/machinery_step1.html:523
 #: templates/rsr/project/get-a-widget/machinery_step1.html:596
 #: templates/rsr/project/get-a-widget/machinery_step1.html:669
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "                  Use the %(project_title)s project.\n"
 "                "
-msgstr ""
-"\n"
-"                  Akvopedia-artikel\n"
-"                "
+msgstr "\n                  Gebruik project %(project_title)s.\n                "
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:92
 #: templates/rsr/project/get-a-widget/machinery_step1.html:165
@@ -5626,17 +5262,13 @@ msgstr "Toon een willekeurig project van deze organisatie"
 msgid ""
 "Cobranded narrow project widget with Donation link (170 pixels wide by 911 "
 "pixels high)"
-msgstr ""
-"Cobranded smalle projectwidget met donatielink (170 pixels breed x 911 "
-"pixels hoog)"
+msgstr "Cobranded smalle projectwidget met donatielink (170 pixels breed x 911 pixels hoog)"
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:199
 msgid ""
 "Cobranded short project widget with Donation link (170 pixels wide by 627 "
 "pixels high)"
-msgstr ""
-"Cobranded korte projectwidget met donatielink (170 pixels breed x 627 pixels "
-"hoog)"
+msgstr "Cobranded korte projectwidget met donatielink (170 pixels breed x 627 pixels hoog)"
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:272
 msgid "Cobranded banner widget (468 pixels wide by 234 pixels high)"
@@ -5670,9 +5302,7 @@ msgstr "Widget met lijst van projecten (745 pixels breed x 730 pixels hoog)"
 msgid ""
 "Shows list of projects from your organisation. Users who click on this "
 "widget will go to Akvo.org."
-msgstr ""
-"De widget toont een lijst met projecten van uw organisatie. Gebruikers die "
-"op de widget klikken gaan naar Akvo.org."
+msgstr "De widget toont een lijst met projecten van uw organisatie. Gebruikers die op de widget klikken gaan naar Akvo.org."
 
 #: templates/rsr/project/get-a-widget/machinery_step1.html:741
 msgid "Display a project list from this organisation:"
@@ -5855,876 +5485,3 @@ msgstr "Via"
 #: templates/widgets/project_updates.html:95
 msgid "Web"
 msgstr "website"
-
-#~ msgid "featured"
-#~ msgstr "uitgelicht"
-
-#, fuzzy
-#~ msgid "update is featured"
-#~ msgstr "Aangevinkte updates uitlichten"
-
-#~ msgid "Use the"
-#~ msgstr "Gebruik het"
-
-#~ msgid "project."
-#~ msgstr "project."
-
-#, fuzzy
-#~ msgid "Project permalink"
-#~ msgstr "Waardering"
-
-#~ msgid "Expected outcomes"
-#~ msgstr "Verwachte resultaten"
-
-#, fuzzy
-#~ msgid "project.title"
-#~ msgstr "project."
-
-#, fuzzy
-#~ msgid ""
-#~ "iDeal charges up to 3.9%+30 US Dollar cents of your donation in "
-#~ "transaction fees. So if you donate 100 US Dollars, at least 95.80 US "
-#~ "Dollars will go towards the selected project."
-#~ msgstr ""
-#~ "iDeal houdt per transactie maximaal 3,9% + 30 dollarcent van uw donatie "
-#~ "in. Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar "
-#~ "naar het door u gekozen project."
-
-#, fuzzy
-#~ msgid "Add organisation"
-#~ msgstr "Organisatie"
-
-#, fuzzy
-#~ msgid "Add project"
-#~ msgstr "Alle projecten"
-
-#~ msgid "%(name)s object with primary key %(key)r does not exist."
-#~ msgstr "%(name)s object met \"primary key %(key)r\" bestaat niet."
-
-#, fuzzy
-#~ msgid "Change project"
-#~ msgstr "projecten"
-
-#~ msgid "Briefly summarize the project (220 characters)."
-#~ msgstr "Korte beschrijving van het project (max. 220 tekens)."
-
-#~ msgid "goal 1"
-#~ msgstr "doelstelling 1"
-
-#~ msgid "(60 characters)"
-#~ msgstr "(max. 60 tekens)"
-
-#~ msgid "goal 2"
-#~ msgstr "doelstelling 2"
-
-#~ msgid "goal 3"
-#~ msgstr "doelstelling 3"
-
-#~ msgid "goal 4"
-#~ msgstr "doelstelling 4"
-
-#~ msgid "goal 5"
-#~ msgstr "doelstelling 5"
-
-#~ msgid "current status detail"
-#~ msgstr "details over huidige status"
-
-#, fuzzy
-#~ msgid "project plan detail"
-#~ msgstr "details over het projectplan"
-
-#~ msgid "context"
-#~ msgstr "context"
-
-#, fuzzy
-#~ msgid "Projects home"
-#~ msgstr "Naam van project"
-
-#, fuzzy
-#~ msgid "Project map"
-#~ msgstr "Projectplan"
-
-#~ msgid "Outcomes"
-#~ msgstr "Resultaten"
-
-#~ msgid "Goals overview"
-#~ msgstr "Overzicht van doelstellingen"
-
-#, fuzzy
-#~ msgid "password reset"
-#~ msgstr "Wachtwoord-wijziging bevestigen"
-
-#~ msgid "Project name"
-#~ msgstr "Naam van project"
-
-#~ msgid ""
-#~ "\n"
-#~ "          The project information in RSR presents your water or "
-#~ "sanitation project to the Akvo community of users:\n"
-#~ "          donors, support and field partners, sector professionals, and "
-#~ "of course the wider online community.\n"
-#~ "          Tell the <i>story</i> of the project by entering complete "
-#~ "information, in common language and an active\n"
-#~ "          (doing) voice.\n"
-#~ "        "
-#~ msgstr ""
-#~ "\n"
-#~ "          De projectinformatie in RSR geeft de Akvo-gebruikers (donoren, "
-#~ "support en field partners, in de sector werkzame \n"
-#~ "          deskundigen en uiteraard de bredere online  gemeenschap) een "
-#~ "overzicht van uw water- of sanitaire project.\n"
-#~ "          Vertel het <i>verhaal</i> van het project door zo veel mogelijk "
-#~ "informatie te geven - \n"
-#~ "          in sprekende, duidelijke taal.\n"
-#~ "        "
-
-#~ msgid ""
-#~ "\n"
-#~ "          Please look over the whole page before beginning, so you can "
-#~ "see where your information belongs on\n"
-#~ "          RSR project forms.\n"
-#~ "        "
-#~ msgstr ""
-#~ "\n"
-#~ "          We raden u aan eerst de hele pagina door de lezen, zodat u kunt "
-#~ "zien waar op het\n"
-#~ "          RSR-formulier uw informatie thuishoort.\n"
-#~ "        "
-
-#~ msgid ""
-#~ "\n"
-#~ "          Click the project ID number to view detailed information about "
-#~ "a project.\n"
-#~ "          Click a column header (for example, Country) to sort the "
-#~ "project list by that criteria.\n"
-#~ "        "
-#~ msgstr ""
-#~ "\n"
-#~ "          Klik op het projectnummer voor meer informatie over het "
-#~ "project.\n"
-#~ "          Klik op een kolomkop (bijv. Land) om de projectlijst op dit "
-#~ "kenmerk te rangschikken.\n"
-#~ "        "
-
-#~ msgid ""
-#~ "\n"
-#~ "        Organisation administrators will see an <em>Add project</em> "
-#~ "button at the top right of the listing;\n"
-#~ "        push it to create a new project in RSR.\n"
-#~ "      "
-#~ msgstr ""
-#~ "\n"
-#~ "        Administrators zullen rechts bovenaan de lijst <em>Project "
-#~ "toevoegen</em> zien;\n"
-#~ "        klik hierop om een nieuw project in RSR te creëren.\n"
-#~ "      "
-
-#~ msgid "change under <a href=\"%(email_url)s\">Account</a>"
-#~ msgstr "wijziging onder <a href=\"%(email_url)s\">Account</a>"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "                  project"
-#~ msgid_plural ""
-#~ "projects \n"
-#~ "                "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "        project\n"
-#~ "      "
-#~ msgstr[1] ""
-#~ "\n"
-#~ "        projecten\n"
-#~ "      "
-
-#~ msgid "Change %s"
-#~ msgstr "%s wijzigen"
-
-#~ msgid "1 update was"
-#~ msgstr "1 update was"
-
-#~ msgid "%d updates were"
-#~ msgstr "%d updates waren"
-
-#~ msgid "%s marked as featured."
-#~ msgstr "%s aangevinkt voor Uitgelicht"
-
-#~ msgid "Mark selected updates as featured"
-#~ msgstr "Aangevinkte updates uitlichten"
-
-#~ msgid "%s removed from featured."
-#~ msgstr "%s verwijderd uit Uitgelicht"
-
-#~ msgid "Remove selected updates from featured"
-#~ msgstr "Aangevinkte updates niet langer uitlichten"
-
-#~ msgid "Invoice %d successfully voided."
-#~ msgstr "Factuur %d succesvol geannuleerd"
-
-#~ msgid "Mark selected invoices as void"
-#~ msgstr "Markeer geselecteerde facturen als nietig"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "              %(label)s:\n"
-#~ "            "
-#~ msgstr ""
-#~ "\n"
-#~ "                Thema\n"
-#~ "              "
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "              Akvopedia article\n"
-#~ "            "
-#~ msgid_plural ""
-#~ "\n"
-#~ "              Akvopedia articles\n"
-#~ "            "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "                  Akvopedia-artikel\n"
-#~ "                "
-#~ msgstr[1] ""
-#~ "\n"
-#~ "                  Akvopedia-artikelen\n"
-#~ "                "
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "              External link\n"
-#~ "            "
-#~ msgid_plural ""
-#~ "\n"
-#~ "              External links\n"
-#~ "            "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "                  Externe link\n"
-#~ "                "
-#~ msgstr[1] ""
-#~ "\n"
-#~ "                  Externe links\n"
-#~ "                "
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "          by %(user_name)s, <a href=\"%(user_org_url)s\">%(user_org)s</"
-#~ "a>, via %(update_meth)s\n"
-#~ "        "
-#~ msgstr ""
-#~ "door %(user_name)s, <a href=\"%(org_url)s\">%(user_org)s</a>, via %"
-#~ "(update_meth)s"
-
-#~ msgid "Create updates on your organisation&#x27;s projects"
-#~ msgstr "Updates toevoegen aan projecten van uw organisatie"
-
-#~ msgid ""
-#~ "\n"
-#~ "        project\n"
-#~ "      "
-#~ msgid_plural ""
-#~ "\n"
-#~ "        projects\n"
-#~ "      "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "        project\n"
-#~ "      "
-#~ msgstr[1] ""
-#~ "\n"
-#~ "        projecten\n"
-#~ "      "
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "                %(label)s:\n"
-#~ "              "
-#~ msgstr ""
-#~ "\n"
-#~ "                Thema\n"
-#~ "              "
-
-#~ msgid ""
-#~ "\n"
-#~ "                Focus area\n"
-#~ "              "
-#~ msgid_plural ""
-#~ "\n"
-#~ "                Focus areas\n"
-#~ "              "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "                Thema\n"
-#~ "              "
-#~ msgstr[1] ""
-#~ "\n"
-#~ "                Thema's\n"
-#~ "              "
-
-#~ msgid ""
-#~ "\n"
-#~ "                  Category:\n"
-#~ "                "
-#~ msgid_plural ""
-#~ "\n"
-#~ "                  Categories:\n"
-#~ "                "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "                  Categorie:\n"
-#~ "                "
-#~ msgstr[1] ""
-#~ "\n"
-#~ "                  Categorieën:\n"
-#~ "                "
-
-#~ msgid ""
-#~ "\n"
-#~ "                  External link\n"
-#~ "                "
-#~ msgid_plural ""
-#~ "\n"
-#~ "                  External links\n"
-#~ "                "
-#~ msgstr[0] ""
-#~ "\n"
-#~ "                  Externe link\n"
-#~ "                "
-#~ msgstr[1] ""
-#~ "\n"
-#~ "                  Externe links\n"
-#~ "                "
-
-#~ msgid "Gateway general info"
-#~ msgstr "Algemene informatie over gateway"
-
-#~ msgid "gateway name"
-#~ msgstr "Naam van gateway"
-
-#~ msgid "Host name to use when sending an SMS through the gateway"
-#~ msgstr ""
-#~ "Te gebruiken hostnaam bij verzending van een SMS-bericht via de gateway"
-
-#~ msgid "Path at gateway when sending an SMS"
-#~ msgstr "Pad bij gateway bij verzending van een SMS-bericht"
-
-#~ msgid "sender"
-#~ msgstr "afzender"
-
-#~ msgid "Sender's phone number"
-#~ msgstr "Telefoonnummer van afzender"
-
-#~ msgid "receiver"
-#~ msgstr "ontvanger"
-
-#~ msgid "Receiving number at gateway"
-#~ msgstr "Ontvangend nummer bij gateway"
-
-#~ msgid "message"
-#~ msgstr "bericht"
-
-#~ msgid "The message text"
-#~ msgstr "Tekst van het bericht"
-
-#~ msgid "timestamp"
-#~ msgstr "tijdstempel"
-
-#~ msgid "Gateway timestamp"
-#~ msgstr "gateway-tijdstempel"
-
-#~ msgid "Gateway message id"
-#~ msgstr "gateway-berichtidentificatie"
-
-#~ msgid "gateway number"
-#~ msgstr "gateway-nummer"
-
-#~ msgid "message ID"
-#~ msgstr "berichtidentificatie"
-
-#~ msgid ""
-#~ "<p style=\"margin-left:0; padding-left:0; margin-top:1em; width:75%;"
-#~ "\">The summary should <em>briefly</em> explain why the project is being "
-#~ "carried out, where it is taking place, who will benefit and/or "
-#~ "participate, what it specifically hopes to accomplish and how those "
-#~ "specific goals will be accomplished.</p>"
-#~ msgstr ""
-#~ "<p style=\"margin-left:0; padding-left:0; margin-top:1em; width:75%;\"> "
-#~ "Gebruik onderstaande ruimte om in het <em>kort</em> uit te leggen waarom "
-#~ "het project wordt uitgevoerd, waar het plaatsvindt, wie zullen profiteren "
-#~ "en / of deelnemen, wat u met het project hoopt te bereiken en hoe deze "
-#~ "specifieke doelstellingen zullen worden bereikt. </p>"
-
-#~ msgid "Free"
-#~ msgstr "Gratis"
-
-#~ msgid "Plus"
-#~ msgstr "Premium"
-
-#~ msgid "Premium"
-#~ msgstr "Premium"
-
-#~ msgid "account level"
-#~ msgstr "soort account"
-
-#~ msgid "organisation account"
-#~ msgstr "organisatie-account"
-
-#~ msgid "organisation accounts"
-#~ msgstr "organisatie-accounts"
-
-#~ msgid "focus area name"
-#~ msgstr "thema-naam"
-
-#~ msgid "slug"
-#~ msgstr "slug"
-
-#~ msgid "focus areas"
-#~ msgstr "thema's"
-
-#~ msgid "Ideally the image should be 645x363 pixels in size."
-#~ msgstr "Afmeting van afbeelding bij voorkeur 645 x 363 pixels."
-
-#~ msgid "MiniCMS"
-#~ msgstr "MiniCMS"
-
-#~ msgid "Current status detail"
-#~ msgstr "Details over huidige status"
-
-#~ msgid "Project plan detail"
-#~ msgstr "Details over het projectplan"
-
-#~ msgid "Date complete"
-#~ msgstr "Datum voltooid"
-
-#~ msgid "other"
-#~ msgstr "Overig"
-
-#~ msgid "Use a short, descriptive name."
-#~ msgstr "Gebruik een korte, beschrijvende titel."
-
-#~ msgid "notification email"
-#~ msgstr "bevestigingsemail"
-
-#~ msgid ""
-#~ "When a donation is completed successfully, notification emails will be "
-#~ "sent to the donor and to this address."
-#~ msgstr ""
-#~ "Wanneer een donatie succesvol afgerond is,  zal er een bevestigingsemail "
-#~ "gestuurd worden naar de donor en naar dit adres."
-
-#~ msgid "US English"
-#~ msgstr "Engels"
-
-#~ msgid "PayPal gateway"
-#~ msgstr "PayPal-betaaldienst"
-
-#~ msgid "Mollie/iDEAL gateway"
-#~ msgstr "Mollie-/iDEAL-betaaldienst"
-
-#~ msgid "Project payment gateway configuration"
-#~ msgstr "Configuratie van betaaldienst-gateway voor project"
-
-#~ msgid "Pending"
-#~ msgstr "In afwachting"
-
-#~ msgid "Void"
-#~ msgstr "Nietig"
-
-#~ msgid "Stale"
-#~ msgstr "Oud"
-
-#~ msgid "PayPal"
-#~ msgstr "PayPal"
-
-#~ msgid "iDEAL"
-#~ msgstr "iDEAL"
-
-#~ msgid "test donation"
-#~ msgstr "proefdonatie"
-
-#~ msgid "This flag is set if the donation was made in test mode."
-#~ msgstr "Deze markering toont dat er een proefdonatie is gemaakt."
-
-#~ msgid "payment engine"
-#~ msgstr "betalingssysteem"
-
-#~ msgid "Amount requested by user."
-#~ msgstr "Aangevraagde financiering"
-
-#~ msgid "Amount actually received after charges have been applied."
-#~ msgstr "Ontvangen bedrag na aftrek van Paypal kosten "
-
-#~ msgid "HTTP referer"
-#~ msgstr "HTTP referer"
-
-#~ msgid "anonymous donation"
-#~ msgstr "anonieme donatie"
-
-#~ msgid "PayPal IPN"
-#~ msgstr "PayPal-IPN"
-
-#~ msgid "mollie.nl bank ID"
-#~ msgstr "mollie.nl bank ID"
-
-#~ msgid "mollie.nl transaction ID"
-#~ msgstr "mollie.nl transactie ID"
-
-#~ msgid "invoice"
-#~ msgstr "factuur"
-
-#, fuzzy
-#~ msgid "Hostname"
-#~ msgstr "hostnaam"
-
-#, fuzzy
-#~ msgid "Image"
-#~ msgstr "foto"
-
-#, fuzzy
-#~ msgid "not"
-#~ msgstr "aantekeningen"
-
-#, fuzzy
-#~ msgid "available"
-#~ msgstr "Geen kaart beschikbaar"
-
-#~ msgid "Partnership type(s)"
-#~ msgstr "Soort partner"
-
-#~ msgid ""
-#~ "Enter a short name and subtitle for your project. Indicate the current "
-#~ "phase of the project using the Status pulldown. Select all Categories "
-#~ "which fit your project from the list. The project will appear in the "
-#~ "Focus area project listings for all categories selected."
-#~ msgstr ""
-#~ "Geef uw project een korte naam en ondertitel. Geef de huidige status aan "
-#~ "d.m.v. het Status-rolmenu. Selecteer alle categorieën die van toepassing "
-#~ "zijn. Het project zal worden getoond in de op thema gesorteerde "
-#~ "projectenlijsten voor alle geselecteerde categorieën."
-
-#~ msgid "Project summary"
-#~ msgstr "Project-samenvatting"
-
-#~ msgid ""
-#~ "Describe what the project hopes to accomplish. Keep in mind the SMART "
-#~ "criteria: Specific, Measurable, Agreed upon, Realistic and Time-specific. "
-#~ "Use the numbered fields to list specific deliverables and/or activities."
-#~ msgstr ""
-#~ "Beschrijf wat u met het project hoopt te bereiken. Houd rekening met de "
-#~ "volgende criteria: specifiek, meetbaar, overeengekomen, realistisch en "
-#~ "tijdgebonden. De genummerde velden kunnen worden gebruikt om specifieke "
-#~ "deliverables en/of aktiviteiten aan te geven."
-
-#~ msgid ""
-#~ "In-depth information about your project should be put in this section. "
-#~ "Use the fields below to tell people more about the implementation plan, "
-#~ "status, impact, technologies used, and lessons learned as the project "
-#~ "moves from the planned to complete state."
-#~ msgstr ""
-#~ "Gebruik onderstaande velden om uitgebreide informatie te geven over het "
-#~ "project."
-
-#~ msgid ""
-#~ "Set the Currency to be used in budget and on funding calculations.\n"
-#~ "                        Use the Notes and comments field to communicate "
-#~ "with other members of your organisation or\n"
-#~ "                        partners with access to your projects in the "
-#~ "Admin. Check the Showcase box to make it appear\n"
-#~ "                        in the Project focus box of the home page."
-#~ msgstr ""
-#~ "Geef de voor budgets en financieringsberekeningen te gebruiken \n"
-#~ "                        valuta aan. Gebruik Aantekeningen en opmerkingen "
-#~ "om met anderen in uw organisatie te \n"
-#~ "                        communiceren of met partners die toegang tot uw "
-#~ "project hebben."
-
-#~ msgid "Project duration"
-#~ msgstr "Duur van het project"
-
-#~ msgid ""
-#~ "The project start date is set to the date the project was entered by "
-#~ "default.If this is not correct, enter the actual start date, past or "
-#~ "future. When the project is complete, enter the End date here."
-#~ msgstr ""
-#~ "De begindatum wordt automatisch ingevuld met de datum waarop het project "
-#~ "voor het eerst in het syteem wordt gezet. Als dit niet juist is, kunt u "
-#~ "hier de werkelijke startdatum invullen. Als het project afgerond is, kunt "
-#~ "u hier de einddatum ingeven."
-
-#~ msgid "You cannot completely remove your organisation as a partner."
-#~ msgstr "Het is niet mogelijk uw organisatie als partner te verwijderen."
-
-#~ msgid ""
-#~ "Your organisation should be listed as a partner in one of these sections."
-#~ msgstr ""
-#~ "Uw organisatie moeten worden vermeld als een partner in een van deze "
-#~ "secties."
-
-#~ msgid "Your organisation should be among the partners!"
-#~ msgstr "Begunstigden"
-
-#~ msgid "field partner"
-#~ msgstr "field partner"
-
-#~ msgid "support partner"
-#~ msgstr "support partner"
-
-#~ msgid "funding partner"
-#~ msgstr "funding partner"
-
-#~ msgid "sponsor partner"
-#~ msgstr "sponsor partner"
-
-#~ msgid "video url"
-#~ msgstr "video-url"
-
-#~ msgid "The URL to the video to be shown on the home page."
-#~ msgstr "De URL van de video die op de homepagina moet worden getoond."
-
-#~ msgid "showcase"
-#~ msgstr "uitlichten"
-
-#~ msgid "deliverable or activity 1"
-#~ msgstr "deliverable of activiteit 1"
-
-#~ msgid "deliverable or activity 2"
-#~ msgstr "deliverable of activiteit 2"
-
-#~ msgid "deliverable or activity 3"
-#~ msgstr "deliverable of activiteit 3"
-
-#~ msgid "deliverable or activity 4"
-#~ msgstr "deliverable of activiteit 4"
-
-#~ msgid "deliverable or activity 5"
-#~ msgstr "deliverable of activiteit 5"
-
-#~ msgid "beneficiaries"
-#~ msgstr "begunstigden"
-
-#~ msgid "Enter the number pf people that benefit from this project."
-#~ msgstr "Aantal mensen die van dit project zullen profiteren."
-
-#~ msgid "(unlimited)"
-#~ msgstr "(u kunt zo veel tekens als u wilt gebruiken)"
-
-#~ msgid "impact"
-#~ msgstr "impact"
-
-#~ msgid "lessons learned"
-#~ msgstr "Geleerde lessen"
-
-#~ msgid "technologies used"
-#~ msgstr "gebruikte technologieën"
-
-#~ msgid "notes and comments"
-#~ msgstr "aantekeningen en opmerkingen"
-
-#~ msgid "(unlimited)."
-#~ msgstr "(u kunt zo veel tekens als u wilt gebruiken)."
-
-#~ msgid "start date"
-#~ msgstr "begindatum"
-
-#~ msgid "end date"
-#~ msgstr "einddatum"
-
-#~ msgid "total budget"
-#~ msgstr "Totale budget"
-
-#~ msgid "Enter the total budget for the project."
-#~ msgstr "Geef het totale budget voor het project in."
-
-#~ msgid "Partner"
-#~ msgstr "Partner"
-
-#~ msgid "Funder"
-#~ msgstr "Gefinancieerd door"
-
-#~ msgid "partner"
-#~ msgstr "partner"
-
-#~ msgid "images"
-#~ msgstr "foto's"
-
-#~ msgid "employment"
-#~ msgstr "Personeel"
-
-#~ msgid "building"
-#~ msgstr "Constructie"
-
-#~ msgid "training"
-#~ msgstr "Training"
-
-#~ msgid "maintenance"
-#~ msgstr "Onderhoud"
-
-#~ msgid "management"
-#~ msgstr "Management"
-
-#~ msgid "Item"
-#~ msgstr "Post"
-
-#~ msgid "Video link"
-#~ msgstr "Video-link"
-
-#~ msgid "Notice settings"
-#~ msgstr "Instellingen voor mededelingen"
-
-#~ msgid ""
-#~ "\n"
-#~ "\t\t\t\t\tProjects %(page_start)s-%(page_end)s of %(p_count)s\n"
-#~ "\t\t\t\t"
-#~ msgstr ""
-#~ "\n"
-#~ "<span class=\"whitespace other\" title=\"Tab\">»</span><span class="
-#~ "\"whitespace other\" title=\"Tab\">»</span><span class=\"whitespace other"
-#~ "\" title=\"Tab\">»</span><span class=\"whitespace other\" title=\"Tab"
-#~ "\">»</span><span class=\"whitespace other\" title=\"Tab\">»</"
-#~ "span>Projecten %(page_start)s-%(page_end)s van %(p_count)s\n"
-#~ "<span class=\"whitespace other\" title=\"Tab\">»</span><span class="
-#~ "\"whitespace other\" title=\"Tab\">»</span><span class=\"whitespace other"
-#~ "\" title=\"Tab\">»</span><span class=\"whitespace other\" title=\"Tab"
-#~ "\">»</span>"
-
-#~ msgid "This project is presented by DOW LIVE EARTH RUN FOR WATER"
-#~ msgstr "This project is presented by DOW LIVE EARTH RUN FOR WATER"
-
-#~ msgid "Embed a live link to this project to your web site or blog."
-#~ msgstr "Een live link naar dit project in uw website of blog embedden."
-
-#~ msgid "to this project."
-#~ msgstr "aan dit project."
-
-#~ msgid "to add update"
-#~ msgstr "om een update toe te voegen"
-
-#~ msgid "Employment costs"
-#~ msgstr "Personeel"
-
-#~ msgid "Building Material costs"
-#~ msgstr "Bouwmateriaal"
-
-#~ msgid "Training costs"
-#~ msgstr "Training"
-
-#~ msgid "Maintenance costs"
-#~ msgstr "Onderhoud"
-
-#~ msgid "Management costs"
-#~ msgstr "Management-kosten"
-
-#~ msgid "Other costs"
-#~ msgstr "Overige kosten"
-
-#~ msgid "United States of America"
-#~ msgstr "Verenigde Staten"
-
-#~ msgid "Error 500"
-#~ msgstr "Foutmelding 500"
-
-#~ msgid "Image missing"
-#~ msgstr "Foto ontbreekt"
-
-#~ msgid ""
-#~ "You can also <a href=\"/rsr/accounts/password/change/\">change your "
-#~ "password</a>."
-#~ msgstr ""
-#~ "U kunt ook <a href=\"/rsr/accounts/password/change/\">uw wachtwoord "
-#~ "wijzigen</a>."
-
-#~ msgid "Submit"
-#~ msgstr "Verzenden"
-
-#~ msgid "Education"
-#~ msgstr "Scholing"
-
-#~ msgid "Home"
-#~ msgstr "Home"
-
-#~ msgid "Read more"
-#~ msgstr "Lees verder"
-
-#~ msgid "Project participants"
-#~ msgstr "Projectdeelnemers"
-
-#~ msgid "Our organisations"
-#~ msgstr "Onze organisaties"
-
-#~ msgid "Page tools"
-#~ msgstr "Page tools"
-
-#~ msgid "Our projects"
-#~ msgstr "Onze projecten"
-
-#~ msgid "How many benefit?"
-#~ msgstr "Hoeveel zullen er profiteren?"
-
-#~ msgid "people"
-#~ msgstr "mensen"
-
-#~ msgid "Details"
-#~ msgstr "Details"
-
-#~ msgid "External links"
-#~ msgstr "Externe links"
-
-#~ msgid "Project update:"
-#~ msgstr "Project-update:"
-
-#~ msgid "Read full update"
-#~ msgstr "Volledige update lezen"
-
-#~ msgid "50 characters max"
-#~ msgstr "50 max. aantal tekens"
-
-#~ msgid "Photo location"
-#~ msgstr "Fotopositie"
-
-#~ msgid "characters max"
-#~ msgstr "max. aantal tekens"
-
-#~ msgid "widgets"
-#~ msgstr "widgets"
-
-#~ msgid "Select the type of widget you wish to use"
-#~ msgstr "Kies het soort widget dat u wilt gebruiken."
-
-#~ msgid "Select colours and preview your widget"
-#~ msgstr "Kies de widget-kleuren en kijk naar een voorproefje"
-
-#~ msgid "This will help us track statistics for you."
-#~ msgstr ""
-#~ "Dit helpt ons gegevens over het gebruik van de widget voor u bij te "
-#~ "houden."
-
-#~ msgid "Review your widget"
-#~ msgstr "Voorproefje van uw widget"
-
-#~ msgid "How your widget will appear (202 pixels wide by 840 pixels high)."
-#~ msgstr "Zo gaat uw widget eruit zien (202 pixels breed x 840 pixels hoog)"
-
-#~ msgid "How your widget will appear (202 pixels wide by 570 pixels high)."
-#~ msgstr "Zo gaat uw widget eruit zien (202 pixels breed x 570 pixels hoog)"
-
-#~ msgid "How your widget will appear (202 pixels wide by 900 pixels high)."
-#~ msgstr "Zo gaat uw widget eruit zien (202 pixels breed x 900 pixels hoog)"
-
-#~ msgid "How your widget will appear (745 pixels wide by 730 pixels high)."
-#~ msgstr "Zo gaat uw widget eruit zien (745 pixels breed x 730 pixels hoog)"
-
-#~ msgid "English"
-#~ msgstr "Inglés"
-
-#~ msgid "Dutch"
-#~ msgstr "Neerlandés"
-
-#~ msgid "Spanish"
-#~ msgstr "Español"
