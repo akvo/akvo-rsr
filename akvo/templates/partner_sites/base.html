@@ -58,7 +58,16 @@
     <select name="language" id="languageChooser" style="margin-top:3px; width:290px">
       {% for lang_code, lang_name in LANGUAGES %}
         <option value="/{{ lang_code }}/{{ current_path_without_lang }}" {% ifequal lang_code request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
-          {{ lang_name }}
+          {% if lang_code == "es" %}
+            Español (beta)
+          {% elif lang_code == "nl" %}
+            Nederlands (beta)
+          {% elif lang_code == "fr" %}
+            Français (bêta)
+          {% else %}
+            English
+          {% endif %}
+          {# {{ lang_name }} {% if lang_code != "en" %} ({% trans "Beta" %}) {% endif %} #}
         </option>
       {% endfor %}
     </select>

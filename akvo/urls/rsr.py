@@ -21,8 +21,11 @@ admin.autodiscover()
 import oembed
 oembed.autodiscover()
 
+
 # Multi-lingual urls
-urlpatterns = i18n_patterns('',
+# urlpatterns = i18n_patterns('',
+urlpatterns = patterns('',
+
     # Home page
     url(r'^$',
         'akvo.rsr.views.index', name='index'),
