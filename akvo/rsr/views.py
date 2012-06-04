@@ -1152,7 +1152,7 @@ def project_map_widget(request, org_id):
 @render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):
     # if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
-    if p not in Project.objects.active().status_onhold():
+    if p.funds_needed <= 0 or p not in Project.objects.active():
         return redirect('project_main', project_id=p.id)
     request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
     return {'project': p}
@@ -1161,7 +1161,7 @@ def setup_donation(request, p):
 @fetch_project
 def donate(request, p, engine):
     # if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
-    if p not in Project.objects.active().status_onhold():
+    if p.funds_needed <= 0 or p not in Project.objects.active():
         return redirect('project_main', project_id=p.id)
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
