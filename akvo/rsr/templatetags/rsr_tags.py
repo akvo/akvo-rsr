@@ -66,7 +66,11 @@ def funding_box_narrow2(context, project):
     takes_context=True)
 def partner_sites_funding_box(context, project):
     '''Funding box used on partner sites'''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'project': project}
+    return {
+        'MEDIA_URL': context['MEDIA_URL'],
+        'project': project,
+        'domin_url': context['domain_url']
+        }
 
 
 @register.inclusion_tag('inclusion_tags/individual_donate_button.html',
