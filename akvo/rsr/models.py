@@ -554,6 +554,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.OrganisationsQuerySet(self.model)
 
+
 class Project(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
@@ -568,7 +569,7 @@ class Project(models.Model):
                         _(u'project photo'),
                         blank=True,
                         upload_to=image_path,
-                        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )}, #detail is a mild sharpen
+                        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
@@ -600,6 +601,8 @@ class Project(models.Model):
     budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+
+   
 
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
