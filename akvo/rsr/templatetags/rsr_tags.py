@@ -69,7 +69,7 @@ def partner_sites_funding_box(context, project):
     return {
         'MEDIA_URL': context['MEDIA_URL'],
         'project': project,
-        'domin_url': context['domain_url']
+        'domain_url': context['domain_url']
         }
 
 
