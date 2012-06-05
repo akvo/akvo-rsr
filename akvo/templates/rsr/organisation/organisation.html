@@ -165,43 +165,6 @@
         </div>
       </div>
       <div class="small" style="margin-top:20px;">
-        <h2>{% trans 'People who get...' %}</h2>
-      </div>
-      <div class="clear"></div>
-      <div class="white_box">
-        <div class="space20">
-          <table class="org_statistics_table">
-            <tr>
-              <td style="">&nbsp;</td>
-              <td class="text_right">
-                <a href="/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a>
-              </td>
-              <td class="text_right">
-                <a href="/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:bold;">{% trans 'Water' %}:</td>
-              <td class="text_right">
-                {{organisation.published_projects.get_planned_water_calc|intcomma}}
-              </td>
-              <td class="text_right">
-                {{organisation.published_projects.get_actual_water_calc|intcomma}}
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:bold; padding-bottom:20px;">{% trans 'Sanitation' %}:</td>
-              <td class="text_right">
-                {{organisation.published_projects.get_planned_sanitation_calc|intcomma}}
-              </td>
-              <td class="text_right">
-                {{organisation.published_projects.get_actual_sanitation_calc|intcomma}}
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-      <div class="small" style="margin-top:20px;">
         <h2>{% trans 'Funding' %}</h2>
       </div>
       <div class="clear"></div>
