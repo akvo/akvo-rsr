@@ -66,7 +66,6 @@ def funding_box_narrow2(context, project):
     takes_context=True)
 def partner_sites_funding_box(context, project):
     '''Funding box used on partner sites'''
-
     return {
         'MEDIA_URL': context['MEDIA_URL'],
         'project': project,
