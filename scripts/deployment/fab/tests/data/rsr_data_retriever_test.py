@@ -54,6 +54,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
 
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback
+        mock_host_controller.sudo('chmod a+w %s' % self.data_retriever_config.rsr_log_file_path)
         self.mox.ReplayAll()
 
         self.assertIsInstance(RSRDataRetriever.create_with(database_credentials, mock_host_controller), RSRDataRetriever)

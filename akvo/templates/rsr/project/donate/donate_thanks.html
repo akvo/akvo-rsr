@@ -123,10 +123,10 @@
 		
 		<h3 style="padding-bottom:12px;">{% trans 'Project to which you donated' %}</h3>
 		<div class="donate_details_left" style="width:200px;">
-			<p>{% trans 'Project name' %}:</p>
+			<p>{% trans 'Project' %}:</p>
 		</div>
 		<div class="donate_details_right">
-			<p><a href="{% url 'project_main' project.id %}">{{ project.name }}</a></p>
+			<p><a href="{% url 'project_main' project.id %}">{{ project.title }}</a></p>
 		</div>
 		<div class="clear" style="padding-bottom:5px;"></div>
 		

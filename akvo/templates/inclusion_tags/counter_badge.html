@@ -1,10 +1,8 @@
-{% load i18n counter_tags cache humanize %}
-{% load url from future %}
+{% load i18n counter_tags humanize %}
 
-<div class="counter_badge" style="margin-top:0; margin-right:0;">
+<div class="counter_badge">
   <span style="display:none;">{% counter object %}</span>
-    {% cache 10 cache_key object.id %}
-    {{ object.view_count|intcomma }}<br />
-  {% endcache %}
+  {{ object.view_count|intcomma }}
+  <br />
   <span>{% trans 'views' %}</span>
 </div>

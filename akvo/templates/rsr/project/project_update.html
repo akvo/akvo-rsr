@@ -1,12 +1,12 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load url from future %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
 
 
 {% block breadcrum_items %}
 {{ block.super }}
 <li><a href="{% url 'project_updates' project.id %}"><span>{% trans 'Project updates' %}</span></a></li>
-<li id="last_breadcrum_item">{{ update.title|capfirst }}</li>
+<li id="last_breadcrum_item">{{ update.title|capfirst|truncatewords:3 }}</li>
 {% endblock breadcrum_items %}
 
 {% block project_left_column %}
@@ -45,17 +45,10 @@
     <h2 style="padding-top:20px;">{{ update.title|capfirst }}</h2>
     <p class="grey small">
       {{ update.time|date:"d-M-Y" }},
-      {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href="{{org_url}}">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+      {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href='{org_url}}'>{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
     </p>
   </div>
-  <div class="counter_badge">
-    <span style="display:none;">{% counter update %}</span>
-    {% cache 10 project_update_view_count project.id update.id %}
-      {{ update.view_count|intcomma }}
-    {% endcache %}
-    <br />
-    <span>{% trans 'views' %}</span>
-  </div>
+  {% counter_badge update %}
   <div class="clear"></div>
   <div class="space20">
     {% if update.text_location == 'B' %}
@@ -63,9 +56,10 @@
     {% endif %}	
     {% if update.video %}
       <div style="margin: 10px 10px 30px 20px;">
-        {% oembed 580x435 %}
-          {{ update.video }}
-        {% endoembed %}
+        {# {{ update.video|oembed:"580x435" }} #}
+        <div style="width:580px; max-width:580px; overflow:scroll">
+          {{ update.get_video_oembed }}
+        </div>
       </div>
 {% if update.video_caption or update.video_credit %}
 <p class="small lightx1">

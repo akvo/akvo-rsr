@@ -1,5 +1,5 @@
 {% extends "widgets/base_widget.html" %}
-{% load i18n rsr_tags rsr_filters thumbnail cache counter_tags humanize %}
+{% load i18n rsr_tags rsr_filters thumbnail humanize %}
 {% load url from future %}
 
 
@@ -57,11 +57,10 @@
 	
 {% block header %}
 	<h1>{% trans 'Most Recent Update' %}</h1>
-	<span style="display:none;">{% counter project %}</span>
 {% endblock header %}
 
 {% block content %}<div id="heightconstrain">
-		<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:35}}</a></h2>
+		<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.title|smart_truncate:35}}</a></h2>
 		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:60}}</p>
         <div class="photo_frame">
             <a href="{% url 'project_main' project.id %}">

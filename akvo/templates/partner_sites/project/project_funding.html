@@ -1,10 +1,10 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail humanize rsr_filters %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags humanize rsr_filters %}
 {% load url from future %}
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project|truncatewords:3}}</span></a></li>
   <li class="last_breadcrum_item">{% trans "Funding" %}</li>
 {% endblock breadcrum_items %}
 
@@ -30,19 +30,15 @@
 
       {% for item in project.budget_items.all %}
         <tr>
-          <td class="small">
-            {% blocktrans with label=item.get_label|capfirst %}
-              {{ label }}:
-            {% endblocktrans %}
-          </td>
+          <td class="small">{{ item.get_label|capfirst }}:</td>
           <td class="small txt_right">{{project.get_currency_display|safe}} {{item.amount|round|intcomma}}</td>
         </tr>
       {%  endfor %}
 
-      {% if project.budget_total %}
+      {% if project.budget %}
         <tr>
           <td class="small"><b>{% trans 'Total' %}:</b></td>
-          <td  class="small txt_right"><b>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</b></td>
+          <td  class="small txt_right"><b>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</b></td>
         </tr>
       {% else %}
         <tr>

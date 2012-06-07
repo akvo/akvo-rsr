@@ -41,7 +41,7 @@
     <div class="greybox pad10 marg_bottom10">
       <form action="." method="get" accept-charset="utf-8" name="filter_form" class="marg_bottom0">
         <div class="marg0; pad0">
-          {{ filtered_projects.form.name }}
+          {{ filtered_projects.form.title }}
           {{ filtered_projects.form.continent }}
           {{ filtered_projects.form.locations__country }}
           {{ filtered_projects.form.organisation }}
@@ -55,7 +55,7 @@
       <div class="clear"></div>
       <div style="width:45%; float:left;">
         <span class="tiny grey marg_left20">
-          {% trans 'Filter on project name or subtitle' %} 
+          {% trans 'Filter on project title or subtitle' %} 
         </span>
       </div>
       <div style="width:45%; float:right; text-align:right;">
@@ -67,40 +67,28 @@
     </div>
 
     <div class="table_top">
-      {% blocktrans count sorted_projects.count as project_count %}
-        {{ project_count }} project
-      {% plural %}
-        {{ project_count }} projects
-      {% endblocktrans %}
+      {% blocktrans count sorted_projects.count as project_count %}{{ project_count }} project{% plural %}{{ project_count }} projects{% endblocktrans %}
       
       {# TODO: this bock may need revisiting to support different languages ways of ordering stuff #}
       {% if search_country %}
-        {% blocktrans %}
-          in {{ search_country }}
-        {% endblocktrans %}
+        {% blocktrans %}in {{ search_country }}{% endblocktrans %}
       {% else %}
         {% if search_continent %}
-          {% blocktrans %}
-            in {{ search_continent }}
-          {% endblocktrans %}
+          {% blocktrans %}in {{ search_continent }}{% endblocktrans %}
         {% endif %}
       {% endif %}
       {% if search_organisation %}
-        {% blocktrans %}
-          in partnership with {{ search_organisation }}
-        {% endblocktrans %}
+        {% blocktrans %}in partnership with {{ search_organisation }}{% endblocktrans %}
       {% endif %}
-      {% if filtered_projects.form.data.name %}
-        {% blocktrans with keywords=filtered_projects.form.data.name %}
-          filtered by keywords: {{ keywords }}
-        {% endblocktrans %}
+      {% if filtered_projects.form.data.title %}
+        {% blocktrans with keywords=filtered_projects.form.data.title %}filtered by keywords: {{ keywords }}{% endblocktrans %}
       {% endif %}
       {% paginate %}
     </div>
 
     <table id="projects" class="marg_bottom0 full_width white_back">
       <tr>
-        <th class="normal">{% anchor name Name %}</th>
+        <th class="normal">{% anchor title Title %}</th>
         <th class="normal">{% trans "Location" %}</th>
         {#<th class="normal">{% anchor locations__country Location %}</th>#}
         <th class="normal">{% anchor status Status %}</th>
@@ -116,7 +104,7 @@
                 {% project_thumb project 100 75 'float:left; margin: 0 10px 10px 0; height:90px;' %}
               </a>
               <a href="{% url 'project_main' project.id %}" style="margin-bottom:0">
-                  {{project.name}}
+                  {{project.title}}
               </a>
               <p class="tiny grey">
                 {{project.project_plan_summary|capfirst|smart_truncate:250}}
@@ -150,24 +138,24 @@
           </td>
           <td class="no_right_border {% if forloop.last %}no_bottom_border{% endif %}"> {# Funding column #}
             <p class="small marg_bottom0" style="text-align:center;">
-              {{project.get_currency_display|safe}} {{project.total_budget|round|intcomma}}
+              {{project.get_currency_display|safe}} {{project.budget|round|intcomma}}
             </p>
             <div class="fundingbox-progress-bar" style="height:5px; width:60px;">
-              {% if project.total_budget %}
-                <div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funding_total_given|add:1 project.total_budget 100 %}%">
+              {% if project.budget %}
+                <div class="fundingbox-progress-bar-progress" style="width:{% widthratio_trunc project.funds|add:1 project.budget 100 %}%">
                 </div>
               {% endif %}
             </div>
             <div style="text-align:center;">
               <p class="tiny grey" style="margin:0;">
                 {# |add:1 truncates so we get truc(funding_total_given+1) #}
-                {% widthratio_trunc project.funding_total_given|add:1 project.total_budget 100 %} %
+                {% widthratio_trunc project.funds|add:1 project.budget 100 %} %
               </p>
             </div>
-            {% if project.funding_still_needed|round != 0 and not project.status == 'L' and not project.status == 'R' %}
+            {% if project.funds_needed|round != 0 and not project.status == 'L' and not project.status == 'R' %}
               <div class="txt_center">
                 <a id="filterButton" class="yellow awesome small" style="color:#fff" 
-                  href="http://akvo.org/rsr/project/{{project.id}}/donate/">
+                  href="{{domain_url}}/rsr/project/{{project.id}}/donate/">
                   <span>{% trans 'Donate' %}</span>
                 </a>
               </div>

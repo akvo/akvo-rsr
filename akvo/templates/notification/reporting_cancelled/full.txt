@@ -1,5 +1,5 @@
 {% load i18n %}
-{% blocktrans with project.pk as project_pk and project.name as project_name %}SMS updates to project {{project_pk}} - {{project_name}} are no longer enabled from your mobile phone, {{phone_number}}.
+{% blocktrans with project.pk as project_pk and project.title as project_title %}SMS updates to project {{project_pk}} - {{project_title}} are no longer enabled from your mobile phone, {{phone_number}}.
 
 If you want to resume updating via SMS please login to Akvo and select the project again.
 

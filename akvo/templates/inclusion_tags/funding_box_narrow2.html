@@ -5,14 +5,12 @@
 <div class="fundingwrap">
 	<div class="fundingboxnarrow-header"> </div>
 	<div class="fundingboxnarrow-content">
-		{% if project.funding_still_needed|round = 0 %}			
+		{% if project.funds_needed|round = 0 %}
 			<div class="fundingbox-funded">
 				<div class="fullyfunded-text">
 					<p>
 						{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-						{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}
-							Raised:&nbsp;{{currency}}&nbsp;{{funds}}
-						{% endblocktrans %}
+						{% blocktrans with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}Raised:&nbsp;{{currency}}&nbsp;{{funds}}{% endblocktrans %}
 					</p>
 				</div>
 				<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
@@ -23,21 +21,21 @@
 			<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 				<tr>
 					<th>{% trans 'Budget' %}:</th>
-					<td>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</td>
+					<td>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</td>
 				</tr>					
 			</table>
 			<div class="fundingbox-progress-bar" id="progress_back">
-				<div id="progress_green" class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%;">
+				<div id="progress_green" class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funds project.budget 100 %}%;">
 				</div>
 			</div>
 			<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 				<tr class="green">
 					<th>{% trans 'Raised' %}:</th>
-					<td>{{project.get_currency_display|safe}} {{project.funding_total_given|round|intcomma}}</td>
+					<td>{{project.get_currency_display|safe}} {{project.funds|round|intcomma}}</td>
 				</tr>
 				<tr style="color:#FF5617">
 					<th>{% trans 'Needed' %}:</th>
-					<td>{{project.get_currency_display|safe}} {{project.funding_still_needed|round|intcomma}}</td>
+					<td>{{project.get_currency_display|safe}} {{project.funds_needed|round|intcomma}}</td>
 				</tr>
 			</table>
 			{% if project.status != 'L' and project.status != 'R' %}

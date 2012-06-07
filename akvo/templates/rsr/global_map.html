@@ -1,5 +1,5 @@
 {% extends "rsr/base_sheet.html" %}
-{% load i18n thumbnail rsr_filters %}
+{% load i18n thumbnail rsr_filters l10n %}
 {% load url from future %}
 
 
@@ -50,8 +50,8 @@
 	        var center = new google.maps.LatLng(0,0);
 
 	        {% for project in projects %}
-	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude }};
-	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude }};
+	            var project_{{ project.id }}_latitude = {{ project.primary_location.latitude|unlocalize }};
+	            var project_{{ project.id }}_longitude = {{ project.primary_location.longitude|unlocalize }};
 	            var project_{{ project.id }}_coordinates = new google.maps.LatLng(project_{{ project.id }}_latitude, project_{{ project.id }}_longitude);
 	        {% endfor %}
 
@@ -75,7 +75,7 @@
 	            });
 	            var project_{{ project.id }}_info = '<div class="mapInfoWindow">' +
 					'<div class="bubble_header"><h3>{% trans 'Project' %}</h3></div>' +
-	                '<h4>{{ project.name|smart_truncate:35}}</h4>' +
+	                '<h4>{{ project.title|smart_truncate:35}}</h4>' +
 	                '<img src="{% thumbnail project.current_image 100x100 autocrop sharpen %}" alt="" />' +
 					'<p class="small grey" style="margin:0;">{% trans 'Location' %}</p>' +
 					'<div id="project_location"><p class="small">' +

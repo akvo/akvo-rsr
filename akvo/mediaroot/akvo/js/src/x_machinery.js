@@ -78,29 +78,31 @@ function preview_widget()
 		error_message += error2 + ".<br />";
 		colorsValidate = false;
 	}
+        
+        if (akvo_widget_type != 'project-map') {
 
-	// Get Titlecolor string, validate that it's 3 or 6 characters and only has 0-f characters
-	var txtcolor = '';
-	if ( jQ('#textcolor_pulldown').val() == 'x' ) {
-	    txtcolor = jQ('#textcolor_text').val();
-	} 
-	else 
-	{
-	    txtcolor = jQ('#textcolor_pulldown').val();
-	}
+            // Get Titlecolor string, validate that it's 3 or 6 characters and only has 0-f characters
+            var txtcolor = '';
+            if ( jQ('#textcolor_pulldown').val() == 'x' ) {
+                txtcolor = jQ('#textcolor_text').val();
+            } 
+            else 
+            {
+                txtcolor = jQ('#textcolor_pulldown').val();
+            }
 	    
-
-	if (!(txtcolor.length == 3 || txtcolor.length == 6))
-	{ 
-		jQ('#warning_color').animate({ opacity: "show" },"slow");
-		error_message += error3 + ".<br />";
-		colorsValidate = false;
-	}
-	else if (!hex_validator(txtcolor))
-	{
-		error_message += error4 +".<br />";
-		colorsValidate=false;
-	}
+            if (!(txtcolor.length == 3 || txtcolor.length == 6))
+            { 
+                    jQ('#warning_color').animate({ opacity: "show" },"slow");
+                    error_message += error3 + ".<br />";
+                    colorsValidate = false;
+            }
+            else if (!hex_validator(txtcolor))
+            {
+                    error_message += error4 +".<br />";
+                    colorsValidate=false;
+            }
+        }
 
 	// Main warning
 	var akvo_widget_container = jQ('#akvo_widget_container');

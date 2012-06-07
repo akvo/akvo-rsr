@@ -62,7 +62,7 @@ class SignInView(PartnerSitesMixin, FormView):
         app_domain = settings.APP_DOMAIN_NAME
         request_path = self.request.get_full_path()
         url = 'http://%s.%s%s' % (hostname, app_domain, request_path)
- 
+
         if getattr(settings, 'HTTPS_SUPPORT', True):
             return url.replace('http://', 'https://')
         return url

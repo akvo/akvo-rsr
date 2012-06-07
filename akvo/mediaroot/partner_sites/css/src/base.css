@@ -181,14 +181,15 @@ div.counter_badge span {
   background-color: #00b200 !important;
   height: 12px;
 }
-.no_border_table, .no_border_table td {
+.no_border_table,
+.no_border_table td {
   border: none;
 }
 .no_border_table td {
   padding: 5px;
 }
 /* filter form element styling */
-#id_name {
+#id_title {
   display: inline;
   width: 300px;
   margin-left: 0;
@@ -286,4 +287,8 @@ td {
 }
 .tiny_table tr {
   border: none;
+}
+#benchmarks {
+  height: 120px;
+  overflow: hidden;
 }

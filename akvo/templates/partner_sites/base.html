@@ -22,83 +22,105 @@
   </script>
 </head>
 <body>
-  <div class="bottom_gradient_bar pad_bottom10">
-    <div class="container pad_top10">
-      {% if return_url %}
-        <a href="{{return_url}}" style="text-decoration:none;">
-      {% endif %}
-      {% if logo %}
-        <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
-      {% else %}
-        <img src="{% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
-      {% endif %}
-      {% if return_url %}
-        </a>
+<div class="bottom_gradient_bar pad_bottom10">
+  <div class="container pad_top10">
+    {% if return_url %}
+      <a href="{{return_url}}" style="text-decoration:none;">
+    {% endif %}
+    {% if logo %}
+      <img src="{{MEDIA_URL}}{{logo}}" alt="{{organisation}}" />
+    {% else %}
+      <img src="{% thumbnail organisation.logo 148x36 sharpen autocrop %}" alt="{{organisation}}" />
+    {% endif %}
+    {% if return_url %}
+      </a>
       <span class="small marg_left20">
         <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} {{organisation}}</a>
       </span>
-      {% endif %}
-    </div>    
+    {% endif %}
   </div>
+</div>
 
-  <div class="container">
-    <div class="breadcrum_back marg_bottom20 clearfix">
-      <ul class="breadcrum">
-        {% block breadcrum_items %}
-          {% if return_url %}
-            <li><a href="{{ return_url }}"><span>{{organisation}}</span></a></li>
+<div class="container">
+  <article class="breadcrum_back marg_bottom20 clearfix">
+    <ul class="breadcrum">
+      {% block breadcrum_items %}
+        {% if return_url %}
+          <li><a href="{{ return_url }}"><span>{{organisation|truncatewords:3}}</span></a></li>
+        {% else %}
+          <li class="last_breadcrum_item">{{organisation|truncatewords:3}}</li>
+        {% endif %}
+      {% endblock breadcrum_items %}
+    </ul>
+  </article>
+
+  <aside>
+    <select name="language" id="languageChooser" style="margin-top:3px; width:290px">
+      {% for lang_code, lang_name in LANGUAGES %}
+        <option value="/{{ lang_code }}/{{ current_path_without_lang }}" {% ifequal lang_code request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+          {% if lang_code == "es" %}
+            Español (beta)
+          {% elif lang_code == "nl" %}
+            Nederlands (beta)
+          {% elif lang_code == "fr" %}
+            Français (bêta)
           {% else %}
-            <li class="last_breadcrum_item">{{organisation}}</li>
+            English
           {% endif %}
-        {% endblock breadcrum_items %}
-      </ul>
-    </div>
-    {% block content %}{% endblock content %}
-  </div>
+          {# {{ lang_name }} {% if lang_code != "en" %} ({% trans "Beta" %}) {% endif %} #}
+        </option>
+      {% endfor %}
+    </select>
+  </aside>
 
-  <div class="top_gradient_bar pad_bottom10 marg_top40">
-    <div class="container pad_top10">
-      <div class="two_col_left">
-          <p class="small">
-           {% trans "Contact at " %}
-            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
-            {% if app_url %}
-              |
-              {% if not user.username %}
-                <a id="main_nav_account" href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}">
-                  <span>{% trans 'Sign in' %}</span>
-                </a>
-              {% else %}
-                {% trans "Hello" %} 
-                  {% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %}!
-                  <a id="main_nav_account" href="{% url 'sign_out' %}?next={{request.path}}" title="{{user.username}}">
-                    <span>{% trans 'Sign out' %}</span>
-                  </a>
-              {% endif %}
-            {% endif %}
-          </p>
-      </div>
-      <div class="two_col_right" style="text-align:right;">
-          <p class="small">
-            <a href="{{domain_url}}">
-              <img src="{{MEDIA_URL}}widgets/img/akvo-badge.gif" width="100" height="30" alt="Akvo.org" style="vertical-align:text-bottom;" />
+  <div class="clear"></div>
+  {% block content %}{% endblock content %}
+</div>
+
+<div class="top_gradient_bar pad_bottom10 marg_top40">
+  <div class="container pad_top10">
+    <div class="two_col_left">
+      <p class="small">
+        {% trans "Contact at " %}
+        <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
+        {% if app_url %}
+          |
+          {% if not user.username %}
+            <a id="main_nav_account" href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}" target="_top">
+              <span>{% trans 'Sign in' %}</span>
             </a>
-          </p>
-      </div>
-      <div class="clear"></div>
+          {% else %}
+            {% trans "Hello" %}
+            {% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %}!
+            <a id="main_nav_account" href="{% url 'sign_out' %}?next={{request.path}}" title="{{user.username}}" target="_top">
+              <span>{% trans 'Sign out' %}</span>
+            </a>
+          {% endif %}
+        {% endif %}
+      </p>
     </div>
+    <div class="two_col_right" style="text-align:right;">
+      <p class="small">
+        <a href="{{domain_url}}">
+          <img src="{{MEDIA_URL}}widgets/img/akvo-badge.gif" width="100" height="30" alt="Akvo.org" style="vertical-align:text-bottom;" />
+        </a>
+      </p>
+    </div>
+    <div class="clear"></div>
   </div>
+</div>
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript">
-    !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.7.1.min.js"><\/script>');
-  </script>
-  {% block js %}{% endblock js %}
-  <script type="text/javascript">
-    var $ = jQ = jQuery.noConflict();
-    jQ(document).ready(function(){
-      {% block jq_ready %}{% endblock jq_ready %}
-    });
-  </script>
- </body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+  !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.7.1.min.js"><\/script>');
+</script>
+{% block js %}{% endblock js %}
+<script type="text/javascript">
+  var $ = jQ = jQuery.noConflict();
+  jQ(document).ready(function(){
+    jQ('#languageChooser').change(function() {window.location = jQ('#languageChooser option:selected').val();});
+    {% block jq_ready %}{% endblock jq_ready %}
+  });
+</script>
+</body>
 </html>

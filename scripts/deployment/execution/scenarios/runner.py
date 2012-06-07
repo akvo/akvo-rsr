@@ -7,6 +7,8 @@
 
 import os, subprocess
 
+from fab.tasks.runner import ProcessRunner
+
 DEPLOYMENT_STEPS_HOME = os.path.realpath(os.path.join(os.path.dirname(__file__), '../steps'))
 
 
@@ -18,14 +20,7 @@ class ScenarioRunner(object):
 
         if host_config_specification:
             print '>> Running deployment step [%s] with host config specification [%s]' % (step_name, host_config_specification)
-            self._run_step([deployment_script_path, host_config_specification])
+            ProcessRunner().execute([deployment_script_path, host_config_specification])
         else:
             print '>> Running deployment step [%s]' % step_name
-            self._run_step(deployment_script_path)
-
-    def _run_step(self, script_path_with_host_config):
-        try:
-            subprocess.check_call(script_path_with_host_config)
-        except subprocess.CalledProcessError:
-            # we should already see a failure message when a deployment fails
-            raise SystemExit
+            ProcessRunner().execute(deployment_script_path)

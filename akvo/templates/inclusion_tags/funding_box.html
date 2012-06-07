@@ -5,12 +5,12 @@
 <div class="fundingwrap">
 <div class="fundingbox-header"> </div>
 	<div class="fundingbox-content">
-	{% if project.funding_still_needed|round = 0 %}
-		<div class="fundingbox-funded">	
+	{% if project.funds_needed|round = 0 %}
+		<div class="fundingbox-funded">
 			<div class="fullyfunded-text">
 				<p>
 					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}
+					{% blocktrans with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}
 						{{currency}}: {{funds}}
 					{% endblocktrans %}
 				</p>
@@ -22,38 +22,38 @@
 	{% else %}
 		<table class="fundingbox-table" cellspacing="0">
 			<tr class="green">
-				<th>{% trans 'Raised' %}:</th>
+				<th style="text-align:left;">{% trans 'Raised' %}:</th>
 				<td>
 					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}
+					{% blocktrans with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}
 						{{currency}}: {{funds}}
 					{% endblocktrans %}
 				</td>
 			</tr>
 			<tr class="red">
-				<th>{% trans 'Still needed' %}:</th>
-				<td>
-					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_still_needed|round|intcomma %}
-						{{currency}}: {{funds}}
-					{% endblocktrans %}
-				</td>
+			     	<th style="text-align:left;">{% trans 'Still needed' %}:</th>
+			     	<td>
+			     		{% comment %}Translators: This sum is for the project funds box{% endcomment %}
+			     		{% blocktrans with currency=project.get_currency_display|safe funds=project.funds_needed|round|intcomma %}
+			     			{{currency}}: {{funds}}
+			     		{% endblocktrans %}
+			     	</td>
 			</tr>	
 		</table>
 		<div class="fundingbox-progress-bar">
-			{% if project.budget_total %}
-				<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> </div>
+			{% if project.budget %}
+				<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funds project.budget 100 %}%"> </div>
 			{% endif %}
 		</div>
 		<table class="fundingbox-table">
 			<tr>
-				<th>{% trans 'Total budget' %}:</th>
-				<td>
-					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.budget_total|round|intcomma %}
-						{{currency}}: {{funds}}
-					{% endblocktrans %}
-				</td>
+			     	<th style="text-align:left;">{% trans 'Total budget' %}:</th>
+			     	<td>
+			     		{% comment %}Translators: This sum is for the project funds box{% endcomment %}
+			     		{% blocktrans with currency=project.get_currency_display|safe funds=project.budget|round|intcomma %}
+			     			{{currency}}: {{funds}}
+			     		{% endblocktrans %}
+			     	</td>
 			</tr>					
 		</table>
 		{% if project.status != 'L' and project.status != 'R' %}

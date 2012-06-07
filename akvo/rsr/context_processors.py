@@ -9,3 +9,10 @@ def extra_context(request):
         current_site=current_site,
         django_version=django_version)
     return template_context
+
+def get_current_path_without_lang(request):
+    path = request.get_full_path()
+    path_bits = path.split('/')
+    path = '/'.join(path_bits[2:])
+    return {'current_path_without_lang': path}
+

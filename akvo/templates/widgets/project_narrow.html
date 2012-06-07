@@ -1,5 +1,5 @@
 {% extends "widgets/base_widget.html" %}
-{% load i18n rsr_tags rsr_filters thumbnail cache humanize %}
+{% load i18n rsr_tags rsr_filters thumbnail humanize %}
 {% load url from future %}
 
 
@@ -58,7 +58,7 @@
 
 {% block content %}
 <div id="heightconstrain">
-		<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.name|smart_truncate:33}}</a></h2>
+		<h2 id="project_title"><a href="{% url 'project_main' project.id %}">{{project.title|smart_truncate:33}}</a></h2>
 		<p id="project_subtitle" class="grey">{{project.subtitle|smart_truncate:40}}</p>	
         <div class="photo_frame">
             <a href="{% url 'project_main' project.id %}">

@@ -1,5 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail oembed_tags %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags oembed_tags %}
 {% load url from future %}
 
 
@@ -7,9 +7,9 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li><a href="{% url 'project_main' project.id %}"><span>{{project}}</span></a></li>
+  <li><a href="{% url 'project_main' project.id %}"><span>{{project|truncatewords:3}}</span></a></li>
   <li><a href="{% url 'update_list' project.id %}"><span>{% trans "Updates" %}</span></a></li>
-  <li class="last_breadcrum_item">{{update.title}}</li>
+  <li class="last_breadcrum_item">{{update.title|truncatewords:3}}</li>
 {% endblock breadcrum_items %}
 
 
@@ -23,9 +23,7 @@
       <p class="grey small">
         {{ update.time|date:"d-M-Y" }},
         {%  url 'organisation_main' update.user.userprofile.organisation.id as user_org_url %}
-        {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.get_update_method_display as update_meth %}
-          by {{user_name}}, <a href="{{user_org_url}}">{{user_org}}</a>, via {{update_meth}}
-        {% endblocktrans %}
+        {% blocktrans with user_name=update.user.get_full_name user_org=update.user.userprofile.organisation.name update_meth=update.get_update_method_display %}by {{user_name}}, <a href='{{user_org_url}}'>{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
       </p>
     </div>
     {% counter_badge update %}
@@ -49,17 +47,19 @@
         	  margin-top: 30px;
         	  margin-left: 20px;
           }
-  			</style>
-  			<div class="notice" style="background-color:#ffffe0;">
-      	  <div class="noticebutton">
-      		  <a class="aqua awesome" style="color:#fff;" href="{% url 'update_edit' project.id update.id %}">{% trans 'Edit update' %}</a>
-      		</div>
-      		<p class="nano-lede grey">{% trans "Find a typo? :)" %}</p>
-      		<p class="nano-lede grey">
-						{% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}
-							You posted this update at {{posted}}. You can edit this update until {{ expired }}, at which time it will become locked and final.	
-						{% endblocktrans %}
-					</p>
+        </style>
+        <div class="notice" style="background-color:#ffffe0;">
+          <div class="noticebutton">
+            <a class="aqua awesome" style="color:#fff;" href="{% url 'update_edit' project.id update.id %}">{% trans 'Edit update' %}</a>
+          </div>
+          <p class="nano-lede grey">
+            {% comment %}Translators: When you just have added an update you have a window of time to edit it {% endcomment %}
+            {% trans "Found a typo?" %}
+          </p>
+          <p class="nano-lede grey">
+            {% comment %}Translators: When you have added a new update. You posted this on "date". You can edit this update until "time", at which... {% endcomment %}
+            {% blocktrans with posted=update.time_gmt|date:"H:i T" expires=update.expires_at|date:"H:i T"  %}You posted this update at {{posted}}. You can edit this update until {{ expires }}; at which time it will become locked and final.{% endblocktrans %}
+          </p>
       	</div>
     	{% endif %}
     
@@ -71,7 +71,10 @@
     {% endif %}	
     {% if update.video %}
       <div class="marg20">
-        {{update.video|oembed:"580x435"}}
+        <div style="width:580px; max-width:580px; overflow:scroll">
+          {# {{update.video|oembed:"580x435"}} #}
+          {{ update.get_video_oembed }}
+        </div>
       </div>
       {% if update.video_caption or update.video_credit %}
         <p class="grey small">

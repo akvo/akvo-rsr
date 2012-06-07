@@ -28,9 +28,20 @@
 #import settings
 #setup_environ(settings)
 
-import os, sys
 from optparse import OptionParser
+import os
+import pprint
+import sys
 
+# this is the local data file
+import permissions_data
+
+def pretty():
+    pp = pprint.PrettyPrinter()
+    print "GROUP_LIST = ",
+    pp.pprint(permissions_data.GROUP_LIST)
+    print "PERMS_DICT = ",
+    pp.pprint(permissions_data.PERMS_DICT)
 
 def dump():
     from django.contrib.auth.models import Group
@@ -63,9 +74,8 @@ def dump():
     print 'Done! Groups and Permissions dumped into permissions_data.py'
 
 def load(options):
-    import permissions_data
-    from django.contrib.contenttypes.models import ContentType
     from django.contrib.auth.models import Group, Permission
+    from django.contrib.contenttypes.models import ContentType
     group_list = permissions_data.GROUP_LIST
     perms_dict = permissions_data.PERMS_DICT
     for group_name in group_list:
@@ -78,8 +88,6 @@ def load(options):
         #print group.permissions.all()
         perms_list = perms_dict.get(group_name, [])
         for perm in perms_list:
-            if options.verbose:
-                print perm
             try:
                 content_type = ContentType.objects.get(app_label=perm['app_label'], model=perm['model'])
             except:
@@ -95,12 +103,15 @@ def load(options):
                     print "Found existing permission: %s" % permission
             if not permission in group.permissions.all():
                 group.permissions.add(permission)
+                if options.verbose:
+                    print "Adding %s to %s" %(permission, group)
+
     print "Done!"
-    
+
 def get_usage():
     usage = """
   %prog [options] action:
-      action: export import
+      action: dump load pretty analyze
 """
     return usage
 
@@ -116,7 +127,6 @@ def run_terminal_command(argv=None):
     parser.add_option('-v', '--verbose', help='Verbose mode', action='store_true')
 
     options, args = parser.parse_args(argv[1:])
-
 
     if len(args) == 0:
         parser.print_help()
@@ -134,12 +144,14 @@ def run_terminal_command(argv=None):
             print "You don't appear to have a settings file in this directory!"
             print "Please run this from inside a project directory"
             sys.exit()
-            
         setup_environ(settings)
+
     if action == 'load':
         load(options)
     elif action == 'dump':
         dump()
+    elif action == 'pretty':
+        pretty()
     else:
         parser.print_help()
         

@@ -11,9 +11,7 @@
 <body>
 	<h2>{% trans 'Dear' %} {{ invoice.get_name }}</h2>
 	<p>
-		{% blocktrans %}
-		Thank you for your contribution on <a href="{{ site_url }}">Akvo.org</a>. By giving, you have personally helped to improve the living conditions of people around the world. You can follow the project&#x27;s progress via <a href="{{ project_updates_url }}">updates</a> on <a href="{{ site_url }}">Akvo.org</a>.
-    {% endblocktrans %}
+		{% blocktrans %}Thank you for your contribution on <a href='{{ site_url }}'>Akvo.org</a>. By giving, you have personally helped to improve the living conditions of people around the world. You can follow the project&#x27;s progress via <a href='{{ project_updates_url }}'>updates</a> on <a href='{{ site_url }}'>Akvo.org</a>.{% endblocktrans %}
 	</p>
 
 	<h3>{% trans 'A summary of your contribution' %}</h3>
@@ -39,7 +37,7 @@
 			{{ invoice.get_name }}<br>
 			{{ invoice.get_email }}<br>
 			<br>
-			<a href="{{ project_url }}">{{ invoice.project.name|safe }}</a><br>
+			<a href="{{ project_url }}">{{ invoice.project.title|safe }}</a><br>
 			{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}<br>
 			{{ invoice.id }}<br>
 			{% if invoice.engine = "paypal" %}

@@ -51,7 +51,7 @@ class RSRDataRetrieverConfigTest(unittest2.TestCase):
     def test_has_rsr_log_file_path(self):
         """fab.tests.config.rsr.data.retriever_config_test  Has RSR log file path"""
 
-        expected_log_file_path = os.path.join(self.data_host_paths.logging_home, "akvo.log")
+        expected_log_file_path = os.path.join(self.data_host_paths.logging_home, RSRCodebaseConfig.LOG_FILE)
 
         self.assertEqual(expected_log_file_path, self.data_retriever_config.rsr_log_file_path)
 

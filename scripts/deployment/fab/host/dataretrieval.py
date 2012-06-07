@@ -16,8 +16,8 @@ class DataRetrievalHost(object):
         self.data_retriever = data_retriever
 
     @staticmethod
-    def create_with(database_credentials):
-        return DataRetrievalHost(RSRDataRetriever.create_with(database_credentials, RemoteHostController()))
+    def create_with(database_credentials, host_controller=RemoteHostController()):
+        return DataRetrievalHost(RSRDataRetriever.create_with(database_credentials, host_controller))
 
     def fetch_latest_data(self):
         self.data_retriever.fetch_data_from_database()

@@ -2,7 +2,8 @@
 http://www.smashingmagazine.com/2009/12/02/pushing-your-buttons-with-practical-css3/ 
 http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 */
-.awesome, .awesome:visited {
+.awesome,
+.awesome:visited {
   background: #222222 url(../img/awesome_buttons/alert-overlay.png) repeat-x;
   display: inline-block;
   padding: 5px 10px 6px;
@@ -34,7 +35,8 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
   line-height: 1;
   text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
 }
-.small.awesome, .small.awesome:visited {
+.small.awesome,
+.small.awesome:visited {
   font-size: 11px;
   padding: 4px 8px 5px;
 }
@@ -44,35 +46,41 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
     font-size: 0.875em; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); 
     }
 */
-.large.awesome, .large.awesome:visited {
+.large.awesome,
+.large.awesome:visited {
   font-size: 14px;
   padding: 8px 14px 9px;
 }
-.green.awesome, .green.awesome:visited {
+.green.awesome,
+.green.awesome:visited {
   background-color: #91bd09;
 }
 .green.awesome:hover {
   background-color: #749a02;
 }
-.blue.awesome, .blue.awesome:visited {
+.blue.awesome,
+.blue.awesome:visited {
   background-color: #2daebf;
 }
 .blue.awesome:hover {
   background-color: #007d9a;
 }
-.red.awesome, .red.awesome:visited {
+.red.awesome,
+.red.awesome:visited {
   background-color: #e33100;
 }
 .red.awesome:hover {
   background-color: #872300;
 }
-.magenta.awesome, .magenta.awesome:visited {
+.magenta.awesome,
+.magenta.awesome:visited {
   background-color: #a9014b;
 }
 .magenta.awesome:hover {
   background-color: #630030;
 }
-.orange.awesome, .orange.awesome:visited {
+.orange.awesome,
+.orange.awesome:visited {
   background-color: #FFA500;
 }
 .orange.awesome:hover {
@@ -82,25 +90,29 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 .orange.awesome, .orange.awesome:visited		{ background-color: #ff5c00; }
 .orange.awesome:hover							{ background-color: #d45500; }
 */
-.yellow.awesome, .yellow.awesome:visited {
+.yellow.awesome,
+.yellow.awesome:visited {
   background-color: #ffb515;
 }
 .yellow.awesome:hover {
   background-color: #fc9200;
 }
-.aqua.awesome, .aqua.awesome:visited {
+.aqua.awesome,
+.aqua.awesome:visited {
   background-color: #4593B1;
 }
 .aqua.awesome:hover {
   background-color: #2D9CC4;
 }
-.grey.awesome, .grey.awesome:visited {
+.grey.awesome,
+.grey.awesome:visited {
   background-color: #888;
 }
 .grey.awesome:hover {
   background-color: #999;
 }
-.ok.awesome, .ok.awesome:visited {
+.ok.awesome,
+.ok.awesome:visited {
   color: #111;
   background-color: #B2FFA1;
   text-shadow: none;
@@ -108,7 +120,8 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 .ok.awesome:hover {
   background-color: #34FC53;
 }
-.maybe.awesome, .maybe.awesome:visited {
+.maybe.awesome,
+.maybe.awesome:visited {
   color: #111;
   background-color: #FEF49C;
   text-shadow: none;
@@ -116,7 +129,8 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 .maybe.awesome:hover {
   background-color: #FCFC39;
 }
-.no.awesome, .no.awesome:visited {
+.no.awesome,
+.no.awesome:visited {
   color: #111;
   background-color: #FFC7C7;
   text-shadow: none;
@@ -124,7 +138,8 @@ http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba
 .no.awesome:hover {
   background-color: #FF1314;
 }
-.hide.awesome, .hide.awesome:visited {
+.hide.awesome,
+.hide.awesome:visited {
   color: #111;
   background-color: #DBDBDB;
   text-shadow: none;

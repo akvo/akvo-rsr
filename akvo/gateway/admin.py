@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from textwrap import dedent
+
 from django.contrib import admin
 from django.db.models import get_model
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -25,15 +27,17 @@ class GatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'host_name', 'send_path', 'numbers', )
     inlines = [GatewayNumberInLine, ]
     fieldsets = (
-        (_(u'Gateway general info'), {
+        (u'Gateway general info', {
             'fields': (
                 'name', 'host_name', 'send_path',
             ),
          }),
-        (_(u'Query string variable names'), {
-            'description': _(u'''<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">
-                                The names of the query string varibles for mo sms http callback.
-                            </p>'''),
+        (u'Query string variable names', {
+            'description': dedent(
+                u'''<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%;">
+                        The names of the query string variables for mo sms http callback.
+                    </p>'''
+            ),
             'fields': (
                 'sender', 'receiver', 'message', 'timestamp', 'msg_id',
             ),

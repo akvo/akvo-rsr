@@ -3,14 +3,12 @@
 
 
 <div class="round" style="border:1px solid #65BBCE; background-color:#FBFAF6; padding:5px 0;">
-	{% if project.funding_still_needed|round = 0 %}
+	{% if project.funds_needed|round = 0 %}
 		<div style="padding:20px 0px; text-align:center;">
 			<div id="fundingbox_fully_funded">
 				<p style="margin:0;">
 					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}
-						Raised:&nbsp;{{currency}}&nbsp;{{funds}}
-					{% endblocktrans %}
+					{% blocktrans with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}Raised:&nbsp;{{currency}}&nbsp;{{funds}}{% endblocktrans %}
 				</p>
 			</div>
 			<p class="green" style="margin:0; padding:0;">
@@ -21,22 +19,22 @@
 		<table class="fundingbox-table">
 			<tr class="green">
 				<th>{% trans 'Raised' %}:</th>
-				<td>{{project.get_currency_display|safe}} {{project.funding_total_given|round|intcomma}}</td>
+				<td>{{project.get_currency_display|safe}} {{project.funds|round|intcomma}}</td>
 			</tr>
 			<tr class="red">
 				<th>{% trans 'Still needed' %}:</th>
-				<td>{{project.get_currency_display|safe}} {{project.funding_still_needed|round|intcomma}}</td>
+				<td>{{project.get_currency_display|safe}} {{project.funds_needed|round|intcomma}}</td>
 			</tr>	
 		</table>
 		<div class="fundingbox-progress-bar">
-			{% if project.budget_total %}
-			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> </div>
+			{% if project.budget %}
+			<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funds project.budget 100 %}%"> </div>
 			{% endif %}
 		</div>
 		<table class="fundingbox-table">
 			<tr class="black">
 				<th>{% trans 'Total budget' %}:</th>
-				<td>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</td>
+				<td>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</td>
 			</tr>					
 		</table>
 	{% endif %}
