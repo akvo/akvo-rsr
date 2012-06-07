@@ -9,7 +9,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.0.6 release notes
 ----
-7 June 2012, (Code name: ) dak, gvh
+7 June 2012, (Code name: Guava) gvh
 
 Overview
 ----
@@ -17,16 +17,11 @@ This release contains the Beta Version of our Multi-Lingual Interface for Partne
 
 New features & changes
 ----
-###Add Language to the URL path
-The URL paths for the entire of Akvo RSR have been modified to include a Language indicator. This first step in the Internationalisation Effort for Akvo RSR paves the way for further developments in translating the User Interface from English to other languages.
+###Multi-lingual Partners Sites Beta
+Partner Sites introduces beta support for different lanugages. The urls now have a lanauge code prefix (en/es/fe/nl) which sets the user interface language. Hence it's possible to link to a specific lanauge. The language can be changed from a drop down menu at the top right of the site.
 
-Pivotal Tracker Story:
+Pivotal Tracker Stories:
 [29702725](https://www.pivotaltracker.com/story/show/29702725)
-
-###Add a Language Chooser
-A Language Choose has been implemented on Partner Sites that allows the user to decide whether the User Interface of Akvo RSR is in English, French, Dutch or Spanish.
-
-Pivotal Tracker Story:
 [29625905](https://www.pivotaltracker.com/story/show/29625905)
 
 ###Create Partner Site Map Widget
