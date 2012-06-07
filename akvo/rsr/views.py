@@ -1276,8 +1276,7 @@ def mollie_report(request):
         else:
             invoice.status = 2
         invoice.save()
-        return HttpResponse('OK')
-    return HttpResponseServerError
+    return HttpResponse('OK')
 
 @csrf_exempt
 @require_POST
