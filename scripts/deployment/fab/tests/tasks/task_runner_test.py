@@ -68,7 +68,7 @@ class TaskRunnerTest(mox.MoxTestBase):
         """fab.tests.tasks.task_runner_test  Can run remote deployment task"""
 
         host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
-        expected_parameter_list = TaskParameters().compose_from(host_config_spec, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
+        expected_parameter_list = TaskParameters().compose_from(host_config_spec, [TaskParameters.REMOTE_HOST_CONTROLLER_MODE])
 
         self._load_host_config_from(host_config_spec)
         self.mock_process_runner.execute(self._expected_fabric_call_with(BackupRSRDatabase,

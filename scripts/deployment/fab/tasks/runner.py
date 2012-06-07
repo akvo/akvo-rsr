@@ -51,7 +51,7 @@ class TaskRunner(object):
         self._run_task(task_class, task_parameters, self.config_loader.parse(host_config_specification).ssh_connection)
 
     def run_remote_deployment_task(self, task_class, host_config_specification):
-        task_parameters = TaskParameters().compose_from(host_config_specification, TaskParameters.REMOTE_HOST_CONTROLLER_MODE)
+        task_parameters = TaskParameters().compose_from(host_config_specification, [TaskParameters.REMOTE_HOST_CONTROLLER_MODE])
         self._run_task(task_class, task_parameters, self.config_loader.parse(host_config_specification).ssh_connection)
 
     def run_data_retrieval_task(self, task_class, host_alias):
