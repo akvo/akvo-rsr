@@ -21,8 +21,7 @@ New features & changes
 Partner Sites introduces beta support for different lanugages. The urls now have a lanauge code prefix (en/es/fe/nl) which sets the user interface language. Hence it's possible to link to a specific lanauge. The language can be changed from a drop down menu at the top right of the site.
 
 Pivotal Tracker Stories:
-[29702725](https://www.pivotaltracker.com/story/show/29702725)
-[29625905](https://www.pivotaltracker.com/story/show/29625905)
+[29702725](https://www.pivotaltracker.com/story/show/29702725) and [29625905](https://www.pivotaltracker.com/story/show/29625905)
 
 ###Create Partner Site Map Widget
 We have created a new Map Widget which is available via Projects visible in Partner Sites. This has been implemented using async map loading and an API.
