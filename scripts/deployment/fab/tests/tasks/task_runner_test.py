@@ -16,6 +16,7 @@ from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias, SSHConnection
 from fab.tasks.data.retrieval import FetchRSRData
 from fab.tasks.database.backup import BackupRSRDatabase
+from fab.tasks.environment.python.installer import InstallPython
 from fab.tasks.environment.python.systempackages import UpdateSystemPythonPackages
 from fab.tasks.runner import ProcessRunner, TaskParameters, TaskRunner
 from fab.verifiers.config import ConfigFileVerifier
@@ -64,6 +65,20 @@ class TaskRunnerTest(mox.MoxTestBase):
 
         self.task_runner.run_deployment_task(UpdateSystemPythonPackages, host_config_spec)
 
+    def test_can_run_deployment_task_with_additional_custom_parameters(self):
+        """fab.tests.tasks.task_runner_test  Can run deployment task with additional custom parameters"""
+
+        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
+        expected_parameter_list = TaskParameters().compose_from(host_config_spec, ['python_version=some_version'])
+
+        self._load_host_config_from(host_config_spec)
+        self.mock_process_runner.execute(self._expected_fabric_call_with(InstallPython,
+                                                                         expected_parameter_list,
+                                                                         self.deployment_host_config.ssh_connection))
+        self.mox.ReplayAll()
+
+        self.task_runner.run_deployment_task(InstallPython, host_config_spec, ['python_version=some_version'])
+
     def test_can_run_remote_deployment_task(self):
         """fab.tests.tasks.task_runner_test  Can run remote deployment task"""
 
@@ -77,6 +92,20 @@ class TaskRunnerTest(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         self.task_runner.run_remote_deployment_task(BackupRSRDatabase, host_config_spec)
+
+    def test_can_run_remote_deployment_task_with_additional_custom_parameters(self):
+        """fab.tests.tasks.task_runner_test  Can run remote deployment task with additional custom parameters"""
+
+        host_config_spec = HostConfigSpecification().create_preconfigured_with(HostAlias.TEST)
+        expected_parameter_list = TaskParameters().compose_from(host_config_spec, [TaskParameters.REMOTE_HOST_CONTROLLER_MODE, 'python_version=some_version'])
+
+        self._load_host_config_from(host_config_spec)
+        self.mock_process_runner.execute(self._expected_fabric_call_with(InstallPython,
+                                                                         expected_parameter_list,
+                                                                         self.deployment_host_config.ssh_connection))
+        self.mox.ReplayAll()
+
+        self.task_runner.run_remote_deployment_task(InstallPython, host_config_spec, ['python_version=some_version'])
 
     def test_can_run_data_retrieval_task(self):
         """fab.tests.tasks.task_runner_test  Can run data retrieval task"""
