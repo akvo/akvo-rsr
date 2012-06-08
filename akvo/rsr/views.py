@@ -1268,7 +1268,7 @@ def mollie_report(request):
         try:
             mollie_response = query_mollie(request_dict, 'check')
         except:
-            return HttpResonseServerError
+            return HttpResponseServerError
         if mollie_response['paid'] == 'true':
             mollie_fee = get_mollie_fee()
             invoice.amount_received = invoice.amount - mollie_fee
@@ -1276,8 +1276,7 @@ def mollie_report(request):
         else:
             invoice.status = 2
         invoice.save()
-        return HttpResponse('OK')
-    return HttpResponseServerError
+    return HttpResponse('OK')
 
 @csrf_exempt
 @require_POST
