@@ -1280,7 +1280,7 @@ def void_invoice(request, invoice_id, action=None):
             return redirect('project_main', project_id=invoice.project.id)
     return redirect('project_list', slug='all')
 
-def mollie_report(request):
+def mollie_report(request, mollie_response=None):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
@@ -1289,8 +1289,8 @@ def mollie_report(request):
         try:
             mollie_response = query_mollie(request_dict, 'check')
         except:
-            return HttpResponseServerError
-        if mollie_response['paid'] == 'true':
+            pass
+        if mollie_response is not None and mollie_response['paid'] == 'true':
             mollie_fee = get_mollie_fee()
             invoice.amount_received = invoice.amount - mollie_fee
             invoice.status = 3
