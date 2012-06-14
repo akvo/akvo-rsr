@@ -15,7 +15,7 @@ from south.modelsinspector import add_introspection_rules
 
 class NullCharField(models.CharField):
 
-    description = _("CharField that stores NULL but returns an empty string")
+    description = "CharField that stores NULL but returns an empty string"
 
     def to_python(self, value):
         if isinstance(value, models.CharField):
@@ -50,7 +50,7 @@ class LongitudeField(models.FloatField):
 
 class LimitedTextField(models.TextField):
 
-    description = _("A TextField that honors the max_length param")
+    description = "A TextField that honors the max_length param"
 
     def __init__(self, *args, **kwargs):
         max_length = kwargs.pop('max_length', None)
@@ -61,7 +61,7 @@ class LimitedTextField(models.TextField):
 
 class ProjectLimitedTextField(LimitedTextField):
 
-    description = _("A TextField that honors the max_length param for 'new' projects")
+    description = "A TextField that honors the max_length param for 'new' projects"
 
     def clean(self, value, model_instance):
         """ Don't apply the MaxLengthValidator to "old" projects. OLD_PROJECT_MAX_ID should be lowered as projects are

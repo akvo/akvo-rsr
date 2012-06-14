@@ -44,6 +44,7 @@ class RSRSettingsVerifierTest(mox.MoxTestBase):
     def _verify_instance_creation_for(self, host_controller_class):
         mock_host_controller = self.mox.CreateMock(host_controller_class)
         mock_host_controller.feedback = self.mock_feedback
+        mock_host_controller.sudo('chmod a+w %s' % self.deployment_config.log_file_path)
         self.mox.ReplayAll()
 
         self.assertIsInstance(RSRSettingsVerifier.create_with(self.deployment_host_config, mock_host_controller), RSRSettingsVerifier)

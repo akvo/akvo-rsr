@@ -78,6 +78,11 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
 
         self.assertEqual('akvo_modpython.py', RSRCodebaseConfig.MOD_PYTHON_FILE)
 
+    def test_has_rsr_log_file_name(self):
+        """fab.tests.config.rsr.codebase_config_test  Has RSR log file name"""
+
+        self.assertEqual('akvo.log', RSRCodebaseConfig.LOG_FILE)
+
     def test_has_rsr_media_root(self):
         """fab.tests.config.rsr.codebase_config_test  Has RSR media root"""
 

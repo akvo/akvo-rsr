@@ -103,19 +103,46 @@
 		</div>
 	</div>
 	<div id="main_container" class="container">
-		{% block breadcrum  %}
-			<div class="span-18" style="margin-bottom:20px;">
-				<div id="breadcrum_back">
-					<ul id="breadcrum">
-						{% block breadcrum_items %}
-						<li><a href="/"><span>Home</span></a></li>
-						{% endblock breadcrum_items %}
-					</ul>
-					<div class="clear"></div>
-				</div>
-			</div>
-		{% endblock breadcrum %}
-		
+
+      {% block breadcrum %}
+
+        <div class="span-18" style="margin-bottom:20px;">
+          <div id="breadcrum_back">
+            <ul id="breadcrum">
+              {% block breadcrum_items %}
+              <li><a href="/"><span>Home</span></a></li>
+              {% endblock breadcrum_items %}
+            </ul>
+            <div class="clear"></div>
+          </div>
+        </div>
+
+				{% comment %}
+        <div class="span-18" style="margin-bottom:20px;">
+          <div class="span-14">
+            <div id="breadcrum_back">
+            <ul id="breadcrum">
+              {% block breadcrum_items %}
+              <li><a href="/"><span>{% trans "Home" %}</span></a></li>
+              {% endblock breadcrum_items %}
+            </ul>
+            <div class="clear"></div>
+          </div>
+        </div>
+        
+        <div class="span-4 last" style="margin-bottom:20px; text-align:right">
+          <select name="language" id="languageChooser" style="margin-top:3px;" class="span-4 last">
+            {% for lang_code, lang_name in LANGUAGES %}
+              <option value="/{{ lang_code }}/{{ current_path_without_lang }}" {% ifequal lang_code request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+                {{ lang_name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+			{% endcomment %}
+    {% endblock breadcrum %}
+	
 		{% block maincontent %}
 			<h1>Akvo RSR</h1>
 		{% endblock maincontent %}
@@ -123,7 +150,10 @@
 	<div id="footer">
 		<div id="footer_container" class="container">
 			<div class="span-18">
-				<h2>{% trans 'About Akvo.org' %}</h2>
+				<h2>
+					{% comment %}Translators: This is the main header in the footer{% endcomment %}
+					{% trans 'About Akvo.org' %}
+				</h2>
 				<p>
           {% blocktrans %}We are a non-profit foundation headquartered in the Netherlands. We help connect doers and donors to transform communities in some of the poorest parts of the world. The Akvo platform is open source and we encourage others to build on and improve these tools, or adapt the platform for other purposes.{% endblocktrans %}
 				</p>
@@ -144,9 +174,15 @@
 					</p>
 				</div>
 				<div class="span-3">
-					<h3>{% trans 'About' %}</h3>
+					<h3>
+						{% comment %}Translators: This is the header for the About column in the footer {% endcomment %}
+						{% trans 'About' %}
+					</h3>
 					<p class="small">
-						<a href="/web/about">{% trans 'About us' %}</a><br />
+						<a href="/web/about">
+							{% comment %}Translators: This is the About us link in the about column in footer{% endcomment %}
+							{% trans 'About us' %}
+						</a><br />
 						<a href="/web/how-it-works">{% trans 'How it works' %}</a><br />
 						<a href="/web/team">{% trans 'Team' %}</a><br />
 						<a href="/web/jobs">{% trans 'Working at Akvo' %}</a><br />
@@ -208,9 +244,11 @@
 	<script type="text/javascript">
 		var $ = jQ = jQuery.noConflict();
 		
-		jQ(document).ready(function(){
-			{% block jq_ready %}{% endblock jq_ready %}			
-		});		
+		jQ(document).ready(function() {
+			//jQ('#languageChooser').change(function() {jQ('#langugeForm').submit();});
+      // jQ('#languageChooser').change(function() {window.location = jQ('#languageChooser option:selected').val();});
+	    {% block jq_ready %}{% endblock jq_ready %}
+	  });    		
 	</script>	
 </body>
 </html>

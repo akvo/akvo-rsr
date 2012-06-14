@@ -1,5 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail counter_tags cache humanize google_maps %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags humanize google_maps %}
 {% load url from future %}
 
 
@@ -18,7 +18,7 @@
 
 {% block breadcrum_items %}
   {{block.super}}
-  <li class="last_breadcrum_item">{{project}}</li>
+  <li class="last_breadcrum_item">{{project|truncatewords:3}}</li>
 {% endblock breadcrum_items %}
 
 

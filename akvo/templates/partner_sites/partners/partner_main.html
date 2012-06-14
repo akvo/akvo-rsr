@@ -10,7 +10,7 @@
   {{block.super}}
   <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
   <li><a href="{% url 'partner_list' %}"><span>{% trans "Project partners" %}</span></a></li>
-  <li class="last_breadcrum_item">{{partner}}</li>
+  <li class="last_breadcrum_item">{{partner|truncatewords:3}}</li>
 {% endblock breadcrum_items %}
 
 
@@ -135,47 +135,43 @@
       <h2 class="marg_top20">{% trans 'Funding' %}</h2>
       <div class="pad20 whitebox">
         <table class="no_border_table full_width marg_bottom0">
-          {% if partner.published_projects.status_not_cancelled.status_not_complete.euros.count %}
+          {% if partner.euro_projects_count %}
             <tr>
               <td colspan="2" class="small"><b>
-                {{partner.published_projects.status_not_cancelled.status_not_complete.euros.count}}
-                {% trans 'project' %}{{partner.published_projects.status_not_cancelled.status_not_complete.euros.count|pluralize:"s"}} {% trans 'in Euros' %}</b>
+                {{partner.euro_projects_count}}
+                {% trans 'project' %}{{partner.euro_projects_count|pluralize:"s"}} {% trans 'in Euros' %}</b>
               </td>
             </tr>
             <tr class="green">
               <td class="small">{% trans 'Pledged' %}</td>
               <td class="small txt_right">
-                {{partner.published_projects.status_not_cancelled.status_not_complete.euros.0.get_currency_display|safe}}
-                {{partner.funding.pledged_euros|round|intcomma}}
+                € {{partner.euros_pledged|round|intcomma}}
               </td>
             </tr>
             <tr class="red">
               <td class="small">{% trans 'Still needed' %}</td>
               <td class="small txt_right">
-                {{partner.published_projects.status_not_cancelled.status_not_complete.euros.0.get_currency_display|safe}}
-                {{partner.funding.still_needed_euros|round|intcomma}}
+                € {{partner.euro_funds_needed|round|intcomma}}
               </td>
             </tr>
           {% endif %}
-          {% if partner.published_projects.status_not_cancelled.status_not_complete.dollars.count %}
+          {% if partner.dollar_projects_count %}
             <tr>
               <td colspan="2" class="small"><b>
-                {{partner.published_projects.status_not_cancelled.status_not_complete.dollars.count}}
-                {% trans 'project' %}{{partner.published_projects.status_not_cancelled.status_not_complete.dollars.count|pluralize:"s"}} {% trans 'in Dollars' %}</b>
+                {{partner.dollar_projects_count}}
+                {% trans 'project' %}{{partner.dollar_projects_count|pluralize:"s"}} {% trans 'in Dollars' %}</b>
               </td>
             </tr>
             <tr class="green">
               <td class="small">{% trans 'Pledged' %}</td>
               <td class="small txt_right">
-                {{partner.published_projects.status_not_cancelled.status_not_complete.dollars.0.get_currency_display|safe}}
-                {{partner.funding.pledged_dollars|round|intcomma}}
+                $ {{partner.dollars_pledged|round|intcomma}}
               </td>
             </tr>
             <tr class="red">
               <td class="small">{% trans 'Still needed' %}</td>
               <td class="small txt_right">
-                {{partner.published_projects.status_not_cancelled.status_not_complete.dollars.0.get_currency_display|safe}}
-                {{partner.funding.still_needed_dollars|round|intcomma}}
+                $ {{partner.dollar_funds_needed|round|intcomma}}
               </td>
             </tr>
           {% endif %} 

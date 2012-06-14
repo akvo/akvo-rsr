@@ -3,7 +3,7 @@
 {% load url from future %}
 
 
-{% block title %}{% trans 'Donate to' %} {{project.title}}{% endblock title %}
+{% block title %}{% trans 'Donate to' %} {{project.title|truncatewords:3}}{% endblock title %}
 
 {% block breadcrum_items %}
 {{block.super}}

@@ -1,5 +1,5 @@
 {% extends "rsr/project/project_base.html" %}
-{% load webdesign addparam cache humanize i18n rsr_filters rsr_tags thumbnail google_maps counter_tags %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail google_maps counter_tags %}
 {% load url from future %}
 
 
@@ -20,19 +20,14 @@
 
 {% block breadcrum_items %}
 {{block.super}}
-<li id="last_breadcrum_item">{{p.title}}</li>
+<li id="last_breadcrum_item">{{p.title|truncatewords:3}}</li>
 {% endblock breadcrum_items %}
 
 
 {% block project_left_column %}
   <div class="white_box" style="background-color:#fff;">
+    {% counter_badge project %}
     <div class="space20">
-      <div class="counter_badge" style="margin-top:0; margin-right:0;">
-        <span style="display:none;">{% counter project %}</span>
-        {% cache 10 project_view_count project.id %}{{ project.view_count|intcomma }}{% endcache %}
-        <br />
-        <span>{% trans 'views' %}</span>
-      </div>
       <h2 class="black">{% trans 'Summary' %}</h2>
       {{p.project_plan_summary|linebreaks}}
       <div style="float:left; width:338px; margin-left: -10px;">

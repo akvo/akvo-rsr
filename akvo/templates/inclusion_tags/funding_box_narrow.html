@@ -5,12 +5,12 @@
 <div class="fundingwrap">
 	<div class="fundingboxnarrow-header"> </div>
 	<div class="fundingboxnarrow-content" >
-		{% if project.funding_still_needed|round = 0 %}
-			<div class="fundingbox-funded">	
+		{% if project.funds_needed|round = 0 %}
+			<div class="fundingbox-funded">
 				<div class="fullyfunded-text">
 					<p>
 						{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-						{% blocktrans with currency=project.get_currency_display|safe funds=project.funding_total_given|round|intcomma %}Raised:&nbsp;{{currency}}&nbsp;{{funds}}{% endblocktrans %}
+						{% blocktrans with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}Raised:&nbsp;{{currency}}&nbsp;{{funds}}{% endblocktrans %}
 					</p>
 				</div>
 				<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
@@ -21,23 +21,23 @@
 			<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 				<tr class="green">
 					<th>{% trans 'Raised' %}:</th>
-					<td>{{project.get_currency_display|safe}} {{project.funding_total_given|round|intcomma}}</td>
+					<td>{{project.get_currency_display|safe}} {{project.funds|round|intcomma}}</td>
 				</tr>
 				<tr class="red">
 					<th>{% trans 'Still needed' %}:</th>
-					<td>{{project.get_currency_display|safe}} {{project.funding_still_needed|round|intcomma}}</td>
+					<td>{{project.get_currency_display|safe}} {{project.funds_needed|round|intcomma}}</td>
 				</tr>
 			</table>
 			<div class="fundingbox-progress-bar">
-				{% if project.budget_total %}
-					<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funding_total_given project.budget_total 100 %}%"> </div>
+				{% if project.budget %}
+					<div class="fundingbox-progress-bar-progress" style="width:{% widthratio project.funds project.budget 100 %}%"> </div>
 				{% endif %}
 			</div>
 			<table class="fundingbox-table" border="0" cellspacing="0" cellpadding="0" style="width:140px !important;">
 				<tr>
 					<th>{% trans 'Total budget' %}:</th>
-					<td>{{project.get_currency_display|safe}} {{project.budget_total|round|intcomma}}</td>
-				</tr>					
+					<td>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</td>
+				</tr>
 			</table>
 			{% if project.status != 'L' and project.status != 'R' %}
 				<div id="donate44" style="margin: 10px; border-bottom:1px solid #A1A0AD; padding-bottom:7px;">
