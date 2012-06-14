@@ -1,0 +1,15 @@
+{% extends "partner_sites/status/4XX_base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans 'Forbidden (403)' %}{% endblock title %}
+
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li id="last_breadcrum_item">{% trans 'Forbidden (403)' %}</li>
+{% endblock breadcrum_items %}
+
+{% block header %}{% trans 'Forbidden (403)' %}{% endblock header %}
+
+{% block message %}{% trans "We're sorry, you are not allowed to access this page." %}{% endblock message %}

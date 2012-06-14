@@ -107,6 +107,7 @@ class PartnerSitesRouterMiddleware(object):
             request.urlconf = 'akvo.urls.rsr'
         elif is_partner_site_instance(domain):  # Partner site instance
             hostname = domain.split('.')[-3]
+            request.urlconf = 'akvo.urls.partner_sites'
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
@@ -115,13 +116,13 @@ class PartnerSitesRouterMiddleware(object):
                 return redirect(PARTNER_SITES_MARKETING_SITE)
         else:  # Partner site instance on partner-nominated domain
             try:
+                request.urlconf = 'akvo.urls.partner_sites'
                 partner_site = PartnerSite.objects.get(cname=domain)
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
         if partner_site is not None and partner_site.enabled:
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.organisation_id = partner_site.organisation.id
-            request.urlconf = 'akvo.urls.partner_sites'
             request.default_language = partner_site.default_language
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
