@@ -10,7 +10,7 @@
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver)
-from django.http import Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.middleware.locale import LocaleMiddleware
 from django.shortcuts import redirect
 from django.utils import translation
@@ -66,16 +66,14 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings,
     'PARTNER_SITES_MARKETING_SITE', 'http://www.akvoapp.org/')
 
 
-def is_rsr(domain):
+def is_rsr_instance(domain):
     """Predicate to determine if an incoming request domain should be handled
     as a regular instance of Akvo RSR."""
     dev_domains = ('localhost', '127.0.0.1', 'akvo.dev')
-    if domain == 'akvo.org' or domain.endswith('.akvo.org') or domain in dev_domains:
-        return True
-    return False
+    return domain == 'akvo.org' or domain.endswith('.akvo.org') or domain in dev_domains
 
 
-def is_partner_site(domain):
+def is_partner_site_instance(domain):
     """Predicate to determine if an incoming request domain should be
     handled as a partner site instance."""
     domain_parts = tuple(domain.split('.'))
@@ -105,9 +103,9 @@ class PartnerSitesRouterMiddleware(object):
 
     def process_request(self, request, partner_site=None):
         domain = request.get_host().split(':')[0]
-        if is_rsr(domain):  # Vanilla Akvo RSR instance
+        if is_rsr_instance(domain):  # Vanilla Akvo RSR instance
             request.urlconf = 'akvo.urls.rsr'
-        elif is_partner_site(domain):  # Partner site instance
+        elif is_partner_site_instance(domain):  # Partner site instance
             hostname = domain.split('.')[-3]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
@@ -119,7 +117,7 @@ class PartnerSitesRouterMiddleware(object):
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
             except:
-                raise Http404
+                return redirect(PARTNER_SITES_MARKETING_SITE)
         if partner_site is not None and partner_site.enabled:
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.organisation_id = partner_site.organisation.id
