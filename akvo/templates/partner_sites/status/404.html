@@ -1,0 +1,15 @@
+{% extends "partner_sites/status/4XX_base.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans 'Page not found (404)' %}{% endblock title %}
+
+
+{% block breadcrum_items %}
+  {{block.super}}
+  <li id="last_breadcrum_item">{% trans 'Page not found (404)' %}</li>
+{% endblock breadcrum_items %}
+
+{% block header %}{% trans 'Page not found (error 404)' %}{% endblock header %}
+
+{% block message %}{% trans 'We&#x27;re sorry, we can&#x27;t find the page you requested.' %}{% endblock message %}
