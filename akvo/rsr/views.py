@@ -45,6 +45,7 @@ import simplejson as json
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 from notification.models import Notice
+from sorl.thumbnail import get_thumbnail
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
@@ -1336,18 +1337,25 @@ def data_overview(request):
 
 @cache_page(60 * 15)
 def global_project_map_json(request):
-    project_locations = []
+    locations = []
     for project in Project.objects.published():
         for location in project.locations.all():
-            latitude, longitude = location.latitude, location.longitude
-            project_locations.append(dict(project_id=project.id, latitude=latitude, longitude=longitude))  
-    return HttpResponse(json.dumps(project_locations), content_type="application/json")
+            locations.append(dict(id=project.id,
+                                  title=project.title,
+                                  url=project.get_absolute_url(),
+                                  image=get_thumbnail(project.current_image, '100x100', autocrop=True, sharpen=True)
+                                  latitude=location.latitude,
+                                  longitude=location.longitude))
+    return HttpResponse(json.dumps(locations), content_type="application/json")
 
 @cache_page(60 * 15)
 def global_organisation_map_json(request):
-    organisation_locations = []
+    locations = []
     for organisation in Organisation.objects.has_primary_location():
         for location in organisation.locations.all():
             latitude, longitude = location.latitude, location.longitude
-            organisation_locations.append(dict(organisation_id=organisation_id, latitude=latitude, longitude=longitude))
+            locations.append(dict(id=organisation.id,
+                                  title=organisation.title,
+                                  latitude=location.latitude,
+                                  longitude=location.longitude))
     return HttpResponse(json.dumps(organisation_locations), content_type="application/json")
