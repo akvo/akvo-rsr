@@ -40,6 +40,7 @@ from datetime import datetime
 from registration.models import RegistrationProfile
 import random
 import re
+import simplejson as json
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
@@ -1331,7 +1332,22 @@ def global_map(request):
 def data_overview(request):
     projects = Project.objects.published()
     orgs = Organisation.objects.all()
-    return dict(
-        projects=projects,
-        orgs=orgs,
-    )
+    return dict(projects=projects, orgs=orgs)
+
+@cache_page(60 * 15)
+def global_project_map_json(request):
+    project_locations = []
+    for project in Project.objects.published():
+        for location in project.locations.all():
+            latitude, longitude = location.latitude, location.longitude
+            project_locations.append(dict(project_id=project.id, latitude=latitude, longitude=longitude))  
+    return HttpResponse(json.dumps(project_locations), content_type="application/json")
+
+@cache_page(60 * 15)
+def global_organisation_map_json(request):
+    organisation_locations = []
+    for organisation in Organisation.objects.has_primary_location():
+        for location in organisation.locations.all():
+            latitude, longitude = location.latitude, location.longitude
+            organisation_locations.append(dict(organisation_id=organisation_id, latitude=latitude, longitude=longitude))
+    return HttpResponse(json.dumps(organisation_locations), content_type="application/json")
