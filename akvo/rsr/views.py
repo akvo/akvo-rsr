@@ -45,7 +45,7 @@ import simplejson as json
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 from notification.models import Notice
-from sorl.thumbnail import get_thumbnail
+
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
@@ -1340,10 +1340,8 @@ def global_project_map_json(request):
     locations = []
     for project in Project.objects.published():
         for location in project.locations.all():
-            locations.append(dict(id=project.id,
-                                  title=project.title,
+            locations.append(dict(title=project.title, #  needs to be truncated
                                   url=project.get_absolute_url(),
-                                  image=get_thumbnail(project.current_image, '100x100', autocrop=True, sharpen=True)
                                   latitude=location.latitude,
                                   longitude=location.longitude))
     return HttpResponse(json.dumps(locations), content_type="application/json")
@@ -1354,8 +1352,8 @@ def global_organisation_map_json(request):
     for organisation in Organisation.objects.has_primary_location():
         for location in organisation.locations.all():
             latitude, longitude = location.latitude, location.longitude
-            locations.append(dict(id=organisation.id,
-                                  title=organisation.title,
+            locations.append(dict(title=organisation.title,
+                                  url=organisation.get_absolute_url(),
                                   latitude=location.latitude,
                                   longitude=location.longitude))
     return HttpResponse(json.dumps(organisation_locations), content_type="application/json")
