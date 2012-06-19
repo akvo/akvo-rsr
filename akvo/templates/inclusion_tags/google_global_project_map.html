@@ -1,7 +1,7 @@
 {% load i18n l10n %}
 
+{# HTML markup #}
 <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
-
 <div class="mapInfoWindow" style="display: none;">
   <a class="title url@href" href="#"></a>
   <a class="url@href" href="#">
@@ -32,11 +32,11 @@
     streetViewControl: false
   };
   if (mapType === 'static') {
+    icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
     mapOptions.draggable = false;
     mapOptions.disableDefaultUI = true;
-    mapOptions.icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
   } else {
-    mapOptions.icon = new google.maps.MarkerImage(markerIcon);
+    icon = new google.maps.MarkerImage(markerIcon);
   }
 
   jQuery.noConflict();
@@ -45,8 +45,11 @@
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
           $('#map_canvas').gmap('addMarker', {
+            'animation': google.maps.Animation.DROP,
+            'icon': icon,
             'position': new google.maps.LatLng(project.latitude, project.longitude),
-            'bounds': true
+            'bounds': true,
+            'title': project.title
           });
         });
       });
@@ -70,6 +73,6 @@
     } else { 
       style.appendChild(rules);
     }
-      head.appendChild(style);			
-    }
+    head.appendChild(style);			
+  }
 </script>
