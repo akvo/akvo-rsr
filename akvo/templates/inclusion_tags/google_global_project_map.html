@@ -4,9 +4,6 @@
 <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
 <div class="mapInfoWindow" style="display: none;">
   <a class="title url@href" href="#"></a>
-  <a class="url@href" href="#">
-    <img class="image@src" src="#" alt="">
-  </a>
 </div>
 
 {# External scripts #}
@@ -40,8 +37,8 @@
   }
 
   jQuery.noConflict();
-  jQuery('#map_canvas').gmap(mapOptions).bind('init', function() {
-    jQuery(document).ready(function($) {
+  jQuery(document).ready(function($) {
+    jQuery('#map_canvas').gmap(mapOptions).bind('init', function() {
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
           $('#map_canvas').gmap('addMarker', {
