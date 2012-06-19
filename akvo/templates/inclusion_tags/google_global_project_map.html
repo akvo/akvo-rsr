@@ -42,7 +42,6 @@
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
           $('#map_canvas').gmap('addMarker', {
-            'animation': google.maps.Animation.DROP,
             'icon': icon,
             'position': new google.maps.LatLng(project.latitude, project.longitude),
             'bounds': true,
