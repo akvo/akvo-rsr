@@ -38,7 +38,7 @@
 
   jQuery.noConflict();
   jQuery(document).ready(function($) {
-    jQuery('#map_canvas').gmap(mapOptions).bind('init', function() {
+    $('#map_canvas').gmap(mapOptions).bind('init', function() {
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
           $('#map_canvas').gmap('addMarker', {
