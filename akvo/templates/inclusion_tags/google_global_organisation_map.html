@@ -2,9 +2,6 @@
 
 {# HTML markup #}
 <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
-<div class="mapInfoWindow" style="display: none;">
-  <a class="title url@href" href="#"></a>
-</div>
 
 {# External scripts #}
 <script src="//maps.google.com/maps/api/js?sensor=false"></script>
@@ -45,7 +42,7 @@
             'icon': icon,
             'position': new google.maps.LatLng(organisation.latitude, organisation.longitude),
             'bounds': true,
-            'title': project.title
+            'title': organisation.name
           });
         });
       });

@@ -1353,7 +1353,7 @@ def global_organisation_map_json(request):
     for organisation in Organisation.objects.has_primary_location():
         for location in organisation.locations.all():
             latitude, longitude = location.latitude, location.longitude
-            locations.append(dict(title=Truncator(organisation.title).chars(35),
+            locations.append(dict(name=organisation.name,
                                   url=organisation.get_absolute_url(),
                                   latitude=location.latitude,
                                   longitude=location.longitude))
