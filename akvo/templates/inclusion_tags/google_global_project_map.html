@@ -43,7 +43,7 @@
             'bounds': true,
             'title': project.title
           }).click(function() {
-            var content = '<a href="' + project.url '">' + project.title + '</a>';
+            var content = '<a href="' + project.url + '">' + project.title + '</a>';
             $('#map_canvas').gmap('openInfoWindow', {'content': content}, this);
         });
       });
