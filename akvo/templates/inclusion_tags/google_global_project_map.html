@@ -2,19 +2,12 @@
 
 {# HTML markup #}
 <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
-<div class="mapInfoWindow" style="display: none;">
-  <a class="title url@href" href="#"></a>
-  <a class="url@href">
-    <img class="image@src" src="" alt="" width=100 height=100>
-  </a>
-</div>
 
 {# External scripts #}
 <script src="//maps.google.com/maps/api/js?sensor=false"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 {# Local scripts #}
 <script src="{{ static_url }}core/js/jquery.ui.map.full.min.js"></script>
-<script src="{{ static_url }}core/js/pure-2.76.min.js"></script>
 
 <script>
   var dataURL, map, mapOptions, mapType, markerIcon, zoom;
@@ -50,7 +43,7 @@
             'bounds': true,
             'title': project.title
           }).click(function() {
-            var content = $('.mapInfoWindow').autoRender(project);
+            var content = '<a href="' + project.url '">' + project.title + '</a>';
             $('#map_canvas').gmap('openInfoWindow', {'content': content}, this);
         });
       });
