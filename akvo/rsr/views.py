@@ -1357,4 +1357,4 @@ def global_organisation_map_json(request):
                                   url=organisation.get_absolute_url(),
                                   latitude=location.latitude,
                                   longitude=location.longitude))
-    return HttpResponse(json.dumps(organisation_locations), content_type="application/json")
+    return HttpResponse(json.dumps(locations), content_type="application/json")
