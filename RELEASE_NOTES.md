@@ -1,4 +1,4 @@
-Last changed: 22 May 2012, pb, ogl, ac
+Last changed: 7 June 2012 ac
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -6,6 +6,79 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR ver 2.0.6 release notes
+----
+7 June 2012, (Code name: Guava) gvh
+
+Overview
+----
+This release contains the Beta Version of our Multi-Lingual Interface for Partner Sites and also the first Partner Site Widget, with a Map. Additionally, we have also performed several important de-normalisation modifications to the system to improve performance throughout the site.
+
+New features & changes
+----
+###Multi-lingual Partners Sites Beta
+Partner Sites introduces beta support for different lanugages. The URLs now have a lanauge code prefix (en/es/fe/nl) which sets the user interface language. This means it is now possible to link to a specific lanauge. The language can be changed from a drop down menu at the top right of the site.
+
+Pivotal Tracker Stories:
+[29702725](https://www.pivotaltracker.com/story/show/29702725) and [29625905](https://www.pivotaltracker.com/story/show/29625905)
+
+###Create Partner Site Map Widget
+We have created a new Map Widget which is available via Projects visible in Partner Sites. This has been implemented using async map loading and an API.
+
+Pivotal Tracker Story:
+[23693093](https://www.pivotaltracker.com/story/show/23693093)
+
+###De-normalise Financial Information for Projects and Organisations
+Some de-normalisation of Database Information that is referenced within Akvo RSR has been performed to speed up the provision of web pages. As an example the loading time of Akvo.org homepage has been significantly reduced. To achieve this improvement, jonny-cache has been implemented.
+
+Pivotal Tracker Story:
+[27249075](https://www.pivotaltracker.com/story/show/27249075)
+
+###Refactor the API for Financial Information
+As part of the de-normalisation being done in the system, the API to transfer information internally has been refactored to allow Financial Information to be delivered.
+
+Pivotal Tracker Story:
+[27250173](https://www.pivotaltracker.com/story/show/27250173)
+
+###Conversion of LICENSE file
+The LICENSE File in Guthub has been converted to Markdown format, and the root docs have been updated.
+
+Pivotal Tracker Story:
+[30320839](https://www.pivotaltracker.com/story/show/30320839)
+
+Bug Fixes
+----
+###Set Initial Partnership Inline to User's Organisation
+When a user creates a new Project now, the Organisation they belong to is automatically added as one of the Partners for the Project.
+
+Pivotal Tracker Story:
+[25288719](https://www.pivotaltracker.com/story/show/25288719)
+
+###Budget Items within RSR Admin Missing
+A problem with Permissions caused certain Data Items not to appear in RSR Admin to Users and Administrators. This has now been resolved.
+
+Pivotal Tracker Story:
+[29704531](https://www.pivotaltracker.com/story/show/29704531)
+
+###Ensure Deployment Directories have Applicable Web Group Permissions
+The Deployment Process Home and other Relevant Deployment Directories are now created with Web Group File System Permissions and Access.
+
+Pivotal Tracker Story:
+[23664419](https://www.pivotaltracker.com/story/show/23664419)
+
+###Resolve Translation Issues
+A variety of issues, queries and feedback items have been resolved resulting from the previous Translation Implementation.
+
+Pivotal Tracker Stories:
+[29976705](https://www.pivotaltracker.com/story/show/29976705) and
+[28720359](https://www.pivotaltracker.com/story/show/28720359)
+
+###Donation Engine on Test Site not working
+We have fixed a bug in the Test System caused the Donation Process to direct to the Live Donation Site.
+
+Pivotal Tracker Stories:
+[30559557](https://www.pivotaltracker.com/story/show/30559557)
 
 Akvo RSR ver 2.0.5 release notes
 ----

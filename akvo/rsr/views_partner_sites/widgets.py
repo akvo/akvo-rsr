@@ -68,7 +68,7 @@ class ProjectCordinates(TemplateView):
 
     def get_queryset(self):
         projects = get_object_or_404(Organisation, pk=self.request.organisation_id) \
-            .published_projects().funding().latest_update_fields().order_by('-id')
+            .published_projects().latest_update_fields().order_by('-id')
         return projects
 
     def render_to_response(self, context, **kwargs):

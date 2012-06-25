@@ -28,20 +28,22 @@
       <li style="padding-left:0; margin-left:0">{% trans "Step 3: Copy the HTML code to your web site." %}</li>
     </ul>
     <hr />
-    
+
     <div style="margin-left:40px;">
       <h3>{% trans "Step 1: Select the type of widget you wish to use." %}</h3>
       <p class="small grey">{% trans "You can customise the top and bottom bar and title text colours on the next step." %}</p>
       <div class="pad20 whitebox marg_bottom40">
-        <form name="projectMapForm" action="." method="post">{% csrf_token %}
+        <form name="projectMapForm" action="." method="post">
+          {% csrf_token %}
           <input type="hidden" name="widget-type" value="project-map" />
           <h3>{% trans "Project map widget" %}</h3>
-          <p class="small grey">{% trans "Shows a map of projects from your organisation. Users who click on this widget will go to Akvo.org." %}</p>
-
+          <p class="small grey">
+            {% blocktrans with partner_site_url=app_url %}Shows a map of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}
+          </p>
           <script type="text/javascript">
             document.write('<iframe src="{% url 'widget_org_map' %}" width="600" height="300" frameborder="0" allowTransparency="true"> </iframe>');
           </script>
-        
+
           <div style="text-align:center; width:600px; max-width:600px; padding-top:40px">
             <a class="aqua awesome" onclick="this.blur();" href="javascript:document.projectMapForm.submit();" >
               <span style="color:#fff">{% trans 'Select and Proceed...' %}</span>
