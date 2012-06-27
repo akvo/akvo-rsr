@@ -42,12 +42,22 @@
             'position': new google.maps.LatLng(organisation.latitude, organisation.longitude),
             'bounds': true,
             'title': organisation.name
+          }).click(function() {
+            $('#map_canvas').gmap('openInfoWindow', {'content': renderMapInfoWindow(organisation)}, this);
           });
         });
       });
       // setCSS();
     });
   });
+
+  function renderMapInfoWindow(organisation) {
+    var html;
+    html = '<div class="mapInfoWindow">';
+    html += '<a href="' + organisation.url + '">' + organisation.name + '</a>';
+    html += '</div>';
+    return html
+  }
 			
   function setCSS() {
     var css, head, style, rules;  
