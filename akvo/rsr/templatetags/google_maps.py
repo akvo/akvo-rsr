@@ -65,7 +65,6 @@ def google_global_organisation_map(map_type, width, height, zoom):
 
 @register.inclusion_tag('inclusion_tags/google_global_project_map.html')
 def google_organisation_projects_map(org, map_type, width, height, zoom):
-    #projects = org.active_projects()
     data_url = reverse('global_organisation_projects_map_json', args=[org_id])
     marker_icon = PROJECT_MARKER_ICON
     template_context = dict(
@@ -81,10 +80,11 @@ def google_organisation_projects_map(org, map_type, width, height, zoom):
 def google_queryset_projects_map(queryset, map_type, width, height, zoom):
     data_url = reverse('global_queryset_projects_map_json', args=[queryset])
     marker_icon = PROJECT_MARKER_ICON
-    template_context = dict(data_url=data_url,
-                            map_type=map_type,
-                            marker_icon=marker_icon,
-                            width=width,
-                            height=height,
-                            zoom=zoom)
+    template_context = dict(
+        data_url=data_url,
+        map_type=map_type,
+        marker_icon=marker_icon,
+        width=width,
+        height=height,
+        zoom=zoom)
     return template_context
