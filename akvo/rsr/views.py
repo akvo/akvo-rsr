@@ -1361,7 +1361,7 @@ def global_organisation_map_json(request):
     return HttpResponse(json.dumps(locations), content_type="application/json")
 
 @cache_page(60 * 15)
-def global_project_organisation_map_json(request, org_id):
+def global_organisation_projects_map_json(request, org_id):
     "Should be replaced with API calls when the API is ready."
     locations = []
     organisation = Organisation.objects.get(id=org_id)
