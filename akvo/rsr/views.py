@@ -1367,7 +1367,7 @@ def global_project_organisation_map_json(request, org_id):
     organisation = Organisation.objects.get(id=org_id)
     for project in organisation.published_projects():
         for location in project.locations.all():
-            locations.append(dict(name=project.name,
+            locations.append(dict(title=project.title,
                                   url=project.get_absolute_url(),
                                   latitude=location.latitude,
                                   longitude=location.longitude))
