@@ -35,10 +35,8 @@ def google_map(object, width, height, zoom, marker_icon=None):
 def google_global_project_map(map_type, width, height, zoom):
     data_url = reverse('global_project_map_json')
     marker_icon = PROJECT_MARKER_ICON
-    static_url = settings.STATIC_URL
     template_context = dict(
         data_url=data_url,
-        static_url=static_url,
         map_type=map_type,
         marker_icon=marker_icon,
         width=width,
@@ -51,10 +49,8 @@ def google_global_project_map(map_type, width, height, zoom):
 def google_global_organisation_map(map_type, width, height, zoom):
     data_url = reverse('global_organisation_map_json')
     marker_icon = ORGANISATION_MARKER_ICON
-    static_url = settings.STATIC_URL
     template_context = dict(
         data_url=data_url,
-        static_url=static_url,
         map_type=map_type,
         marker_icon=marker_icon,
         width=width,
