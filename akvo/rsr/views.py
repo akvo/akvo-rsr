@@ -1338,6 +1338,7 @@ def data_overview(request):
 
 @cache_page(60 * 15)
 def global_project_map_json(request):
+    "Should be replaced with API calls when he API is ready."
     locations = []
     for project in Project.objects.published():
         for location in project.locations.all():
@@ -1349,6 +1350,7 @@ def global_project_map_json(request):
 
 @cache_page(60 * 15)
 def global_organisation_map_json(request):
+    "Should be replaced with API calls when the API is ready."
     locations = []
     for organisation in Organisation.objects.has_primary_location():
         for location in organisation.locations.all():
