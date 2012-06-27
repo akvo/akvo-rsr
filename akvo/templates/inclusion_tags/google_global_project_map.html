@@ -47,14 +47,14 @@
           });
         });
       });
-      setCSS();
+      // setCSS();
     });
   });
   
   function renderMapInfoWindow(project) {
     var html;
     html = '<div class="mapInfoWindow">';
-    html += '<a href="' + project.url + '">' + project.title + '</a><br>';
+    html += '<a href="' + project.url + '">' + project.title + '</a>';
     html += '</div>';
     return html
   }
