@@ -31,6 +31,7 @@ __all__ = [
     'ProjectUpdateEditView',
     'ProjectUpdateListView',
     'ProjectUpdateView',
+    'global_organisation_projects_map_json'
     ]
 
 
