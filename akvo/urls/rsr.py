@@ -115,7 +115,7 @@ urlpatterns = patterns('',
     url(r'^rsr/maps/projects/all/json/$',
         'akvo.rsr.views.global_project_map_json',
         name='global_project_map_json'),
-    
+
     url(r'^rsr/maps/organisations/all/json/$',
         'akvo.rsr.views.global_organisation_map_json',
         name='global_organisation_map_json'),
