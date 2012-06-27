@@ -7,17 +7,20 @@
 """
 from __future__ import absolute_import
 
+from simplejson import json
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import never_cache, cache_page
 from django.views.generic.edit import FormView, UpdateView
 
 from akvo.rsr.forms import ProjectUpdateForm
-from akvo.rsr.models import Project, ProjectUpdate
+from akvo.rsr.models import Project, ProjectUpdate, Organisation
 from akvo.rsr.views_partner_sites.base import BaseProjectView, BaseListView
 
 
@@ -167,3 +170,17 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(ProjectUpdate, id=self.kwargs['update_id'])
+
+
+@cache_page(60 * 15)
+def global_organisation_projects_map_json(request, org_id):
+    "Should be replaced with API calls when the API is ready."
+    locations = []
+    organisation = Organisation.objects.get(id=org_id)
+    for project in organisation.published_projects():
+        for location in project.locations.all():
+            locations.append(dict(title=project.title,
+                                  url=project.get_absolute_url(),
+                                  latitude=location.latitude,
+                                  longitude=location.longitude))
+    return HttpResponse(json.dumps(locations), content_type="application/json")

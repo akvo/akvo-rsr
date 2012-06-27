@@ -12,7 +12,7 @@ from akvo.rsr.views_partner_sites.base import BaseProjectListView
 from akvo.rsr.views_partner_sites.partner import PartnerListView, PartnerView
 from akvo.rsr.views_partner_sites.project import (ProjectFundingView,
     ProjectMainView, ProjectUpdateAddView, ProjectUpdateEditView,
-    ProjectUpdateListView, ProjectUpdateView)
+    ProjectUpdateListView, ProjectUpdateView, global_organisation_projects_map_json)
 from akvo.rsr.views_partner_sites.widgets import (GetWidgetView,
     ProjectMapView, ProjectCordinates)
 
@@ -35,6 +35,7 @@ __all__ = [
     'ProjectCordinates',
     'FourOThreeView',
     'FourOFourView',
+    'global_organisation_projects_map_json',
     ]
 
 
