@@ -31,7 +31,6 @@ from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
-from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
 from django.views.decorators.csrf import csrf_exempt
@@ -1342,7 +1341,7 @@ def global_project_map_json(request):
     locations = []
     for project in Project.objects.published():
         for location in project.locations.all():
-            locations.append(dict(title=Truncator(project.title).chars(35),
+            locations.append(dict(title=project.title,
                                   url=project.get_absolute_url(),
                                   latitude=location.latitude,
                                   longitude=location.longitude))
