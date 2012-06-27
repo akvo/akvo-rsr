@@ -7,14 +7,13 @@
 """
 from __future__ import absolute_import
 
-from simplejson import json
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.utils import simplejson as json
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache, cache_page
 from django.views.generic.edit import FormView, UpdateView
