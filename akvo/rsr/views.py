@@ -1359,3 +1359,16 @@ def global_organisation_map_json(request):
                                   latitude=location.latitude,
                                   longitude=location.longitude))
     return HttpResponse(json.dumps(locations), content_type="application/json")
+
+@cache_page(60 * 15)
+def global_project_organisation_map_json(request, org_id):
+    "Should be replaced with API calls when the API is ready."
+    locations = []
+    organisation = Organisation.objects.get(id=org_id)
+    for project in organisation.published_projects():
+        for location in project.locations.all():
+            locations.append(dict(name=project.name,
+                                  url=project.get_absolute_url(),
+                                  latitude=location.latitude,
+                                  longitude=location.longitude))
+    return HttpResponse(json.dumps(locations), content_type="application/json")
