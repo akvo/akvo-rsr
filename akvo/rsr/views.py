@@ -1094,17 +1094,18 @@ def project_widget(request, template='feature-side', project_id=None):
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
-    
+
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
         {
             'project': p,
-            'p': p, #compatibility with new_look
+            'p': p,  #compatibility with new_look
             'request_get': request.GET,
             'bgcolor': bgcolor,
             'textcolor': textcolor,
             'site': site
         },
         context_instance=RequestContext(request))
+
 
 def project_list_widget(request, template='project-list', org_id=0):
     bgcolor = request.GET.get('bgcolor', 'B50000')
@@ -1118,9 +1119,9 @@ def project_list_widget(request, template='project-list', org_id=0):
         p = Project.objects.published().status_not_archived().status_not_cancelled()
     order_by = request.GET.get('order_by', 'title')
     #p = p.annotate(last_update=Max('project_updates__time'))
-    p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-    if order_by == 'country__continent':		
-        p = p.order_by(order_by, 'primary_location__country__name','title')
+    p = p.extra(select={'last_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+    if order_by == 'country__continent':
+        p = p.order_by(order_by, 'primary_location__country__name', 'title')
     #elif order_by == 'country__name':
     #    p = p.order_by(order_by,'name')
     #elif order_by == 'status':
@@ -1128,20 +1129,21 @@ def project_list_widget(request, template='project-list', org_id=0):
     elif order_by == 'last_update':
         p = p.order_by('-last_update', 'title')
     elif order_by in ['budget', 'funds_needed']:
-        p = p.extra(order_by = ['-%s' % order_by, 'title'])
+        p = p.extra(order_by=['-%s' % order_by, 'title'])
     else:
         p = p.order_by(order_by, 'title')
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
         {
-            'bgcolor': bgcolor, 
-            'textcolor': textcolor,  
+            'bgcolor': bgcolor,
+            'textcolor': textcolor,
             'projects': p,
-            'org_id': org_id, 
-            'request_get': request.GET, 
+            'org_id': org_id,
+            'request_get': request.GET,
             'site': site,
             'lang': get_language(),
         },
         context_instance=RequestContext(request))
+
 
 @render_to('widgets/project_map.html')
 def project_map_widget(request, org_id):
@@ -1154,16 +1156,16 @@ def project_map_widget(request, org_id):
 
     if state != 'dynamic':
         state = 'static'
-    
+
     try:
-        map_height = int(height)-24 # Since we have a bottom bar of 24px
+        map_height = int(height) - 24  # Since we have a bottom bar of 24px
     except ValueError, e:
-        map_height = 276 # 326px = default height(350px) - bottom bar(24px)
-    
-    return { 
+        map_height = 276  # 326px = default height(350px) - bottom bar(24px)
+
+    return {
         'bgcolor': bgcolor,
         'height': map_height,
-        'org': get_object_or_404(Organisation, pk=org_id), 
+        'org': get_object_or_404(Organisation, pk=org_id),
         'textcolor': textcolor,
         'width': width,
         'zoom': zoom,
@@ -1254,7 +1256,7 @@ def donate(request, p, engine):
                 return render_to_response('rsr/project/donate/donate_step3.html',
                                       {'invoice': invoice,
                                        'payment_engine': engine,
-                                       'pp_form': pp_form, 
+                                       'pp_form': pp_form,
                                        'pp_button': pp_button,
                                        'project': p,
                                        },
@@ -1267,8 +1269,9 @@ def donate(request, p, engine):
                               {'donate_form': donate_form,
                                'payment_engine': engine,
                                'project': p,
-                            }, 
+                            },
                             context_instance=RequestContext(request))
+
 
 def void_invoice(request, invoice_id, action=None):
     invoice = get_object_or_404(Invoice, pk=invoice_id)
@@ -1281,6 +1284,7 @@ def void_invoice(request, invoice_id, action=None):
         elif action == 'cancel':
             return redirect('project_main', project_id=invoice.project.id)
     return redirect('project_list', slug='all')
+
 
 def mollie_report(request, mollie_response=None):
     transaction_id = request.GET.get('transaction_id', None)
@@ -1301,6 +1305,7 @@ def mollie_report(request, mollie_response=None):
         invoice.save()
     return HttpResponse('OK')
 
+
 @csrf_exempt
 @require_POST
 def paypal_thanks(request):
@@ -1314,6 +1319,7 @@ def paypal_thanks(request):
                                   context_instance=RequestContext(request))
     return redirect('/')
 
+
 @require_GET
 @render_to('rsr/project/donate/donate_thanks.html')
 def mollie_thanks(request):
@@ -1323,17 +1329,20 @@ def mollie_thanks(request):
         return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
     return redirect('/')
 
+
 @render_to('rsr/global_map.html')
 def global_map(request):
     projects = Project.objects.published()
     marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
     return {'projects': projects, 'marker_icon': marker_icon}
 
+
 @render_to('rsr/akvo_at_a_glance.html')
 def data_overview(request):
     projects = Project.objects.published()
     orgs = Organisation.objects.all()
     return dict(projects=projects, orgs=orgs)
+
 
 @cache_page(60 * 15)
 def global_project_map_json(request):
@@ -1347,6 +1356,7 @@ def global_project_map_json(request):
                                   longitude=location.longitude))
     return HttpResponse(json.dumps(locations), content_type="application/json")
 
+
 @cache_page(60 * 15)
 def global_organisation_map_json(request):
     "Should be replaced with API calls when the API is ready."
@@ -1359,6 +1369,7 @@ def global_organisation_map_json(request):
                                   longitude=location.longitude))
     return HttpResponse(json.dumps(locations), content_type="application/json")
 
+
 @cache_page(60 * 15)
 def global_organisation_projects_map_json(request, org_id):
     "Should be replaced with API calls when the API is ready."
@@ -1370,4 +1381,9 @@ def global_organisation_projects_map_json(request, org_id):
                                   url=project.get_absolute_url(),
                                   latitude=location.latitude,
                                   longitude=location.longitude))
-    return HttpResponse(json.dumps(locations), content_type="application/json")
+    callback = request.GET.get('callback', None)
+    if callback:
+        jsonp = '%s(%s);' % (callback, locations)
+        return HttpResponse(json.dumps(jsonp), content_type="application/json")
+    else:
+        return HttpResponse(json.dumps(locations), content_type="application/json")
