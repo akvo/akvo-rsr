@@ -53,7 +53,7 @@
           <p class="small">{{organisation.get_organisation_type_display}}</p>
           {% if organisation.url %}
             <h3>{% trans 'Website' %}</h3>
-            <p class="small"><a href="{{organisation.url}}">{{organisation.url}}</a></p>
+            <p class="small"><a href="{{organisation.url}}">{{organisation.url|truncatechars:30}}</a></p>
           {% endif %}
           {% if organisation.akvopedia_entry %}
             <h3>{% trans 'Akvopedia entry' %}</h3>
@@ -81,7 +81,7 @@
           <h3>{% trans 'Contact' %}</h3>
           <p class="small">
             {{organisation.contact_person}}<br />
-            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a><br />
+            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email|truncatechars:30}}</a><br />
             <br />
             {% if organisation.phone %}
               <b>{% trans 'Phone' %}</b><br />
