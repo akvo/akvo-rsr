@@ -1381,9 +1381,8 @@ def global_organisation_projects_map_json(request, org_id):
                                   url=project.get_absolute_url(),
                                   latitude=location.latitude,
                                   longitude=location.longitude))
-    callback = request.GET.get('callback', None)
+    callback = request.GET.get('callback')
+    location_data = json.dumps(locations)
     if callback:
-        jsonp = '%s(%s);' % (callback, locations)
-        return HttpResponse(json.dumps(jsonp), content_type="application/json")
-    else:
-        return HttpResponse(json.dumps(locations), content_type="application/json")
+        location_data = '%s(%s);' % (callback, location_data)
+    return HttpResponse(location_data, content_type='application/json')
