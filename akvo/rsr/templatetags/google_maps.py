@@ -38,7 +38,7 @@ def google_map(object, width, height, zoom, marker_icon=None):
 
 @register.inclusion_tag('inclusion_tags/google_global_project_map.html')
 def google_global_project_map(map_type, width, height, zoom):
-    projects = Project.objects.published().has_primary_location()
+    projects = Project.objects.published().has_location()
     marker_icon = _PROJECT_MARKER_ICON
     template_context = dict(map_type=map_type,
         marker_icon=marker_icon,
@@ -51,7 +51,7 @@ def google_global_project_map(map_type, width, height, zoom):
 
 @register.inclusion_tag('inclusion_tags/google_global_organisation_map.html')
 def google_global_organisation_map(map_type, width, height, zoom):
-    organisations = Organisation.objects.has_primary_location()
+    organisations = Organisation.objects.has_location()
     marker_icon = _ORGANISATION_MARKER_ICON
     template_context = dict(map_type=map_type,
         marker_icon=marker_icon,
