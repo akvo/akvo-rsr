@@ -15,6 +15,8 @@ from django_counter.urls import urlpatterns as counter_urls
 from akvo.rsr import views_partner_sites as views
 from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates
 
+handler403 = views.FourOThreeView.as_view()
+handler404 = views.FourOFourView.as_view()
 
 urlpatterns = i18n_patterns('',
 
@@ -83,6 +85,11 @@ urlpatterns = i18n_patterns('',
     url(r'^rsr/signout/$',
         views.signout,
         name='sign_out'),
+
+    # Maps JSON
+    url(r'^rsr/maps/organisation/(?P<org_id>\d+)/projects/json/$',
+        views.global_organisation_projects_map_json,
+        name='global_organisation_projects_map_json'),
 )
 
 # Non i18n

@@ -1,6 +1,6 @@
 # Requirements for building selenium
-isodate==0.4.7
-rdflib==3.2.0
+isodate==0.4.8
+rdflib==3.2.1
 
 # Requirements for building splinter
 lxml==2.3.4
@@ -12,7 +12,7 @@ multiprocessing==2.6.2.1
 unittest2==0.5.1
 nose==1.1.2
 mox==0.5.3
-py==1.4.7
-selenium==2.20.0
+py==1.4.8
+selenium==2.21.3
 splinter==0.4.4
 lettuce==0.1.35

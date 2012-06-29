@@ -19,7 +19,7 @@ register = template.Library()
                         takes_context=True)
 def counter_badge(context, object):
     '''show the counter_badge'''
-    return {'MEDIA_URL': context['MEDIA_URL'], 'object': object,}
+    return {'MEDIA_URL': context['MEDIA_URL'], 'object': object}
 
 
 @register.inclusion_tag('inclusion_tags/funding_box.html', takes_context=True)
@@ -105,24 +105,24 @@ def funding_box_wide(context, project):
                         takes_context=True)
 def project_thumb(context, project, width, height, style='',):
     return {
-        'MEDIA_URL' : context['MEDIA_URL'],
-        'project'   : project,
-        'width'     : width,
-        'height'    : height,
-        'wxh'       : '%sx%s' % (width, height,),
-        'style'     : style,
+        'MEDIA_URL': context['MEDIA_URL'],
+        'project': project,
+        'width': width,
+        'height': height,
+        'wxh': '%sx%s' % (width, height,),
+        'style': style,
     }
 
 
 @register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)
 def org_logo(context, org, width, height, style=''):
     return {
-        'MEDIA_URL' : context['MEDIA_URL'],
-        'org'       : org,
-        'width'     : width,
-        'height'    : height,
-        'wxh'       : '%sx%s' % (width, height,),
-        'style'     : style,
+        'MEDIA_URL': context['MEDIA_URL'],
+        'org': org,
+        'width': width,
+        'height': height,
+        'wxh': '%sx%s' % (width, height,),
+        'style': style,
     }
 
 
@@ -130,12 +130,12 @@ def org_logo(context, org, width, height, style=''):
                         takes_context=True)
 def update_thumb(context, update, width, height, style=''):
     return {
-        'MEDIA_URL' : context['MEDIA_URL'],
-        'update'    : update,
-        'width'     : width,
-        'height'    : height,
-        'wxh'       : '%sx%s' % (width, height,),
-        'div_style' : style,
+        'MEDIA_URL': context['MEDIA_URL'],
+        'update': update,
+        'width': width,
+        'height': height,
+        'wxh': '%sx%s' % (width, height,),
+        'div_style': style,
     }
 
 
@@ -144,15 +144,15 @@ def gallery_thumb(context, image, width, height, caption='', style=''):
     '''
     '''
     return {
-        'MEDIA_URL' : context['MEDIA_URL'],
-        'image'    : image,
-        'width'     : width,
-        'height'    : height,
-        'wxh'       : '%sx%s' % (width, height,),
-        'caption'   : caption,
-        'style'     : style,
+        'MEDIA_URL': context['MEDIA_URL'],
+        'image': image,
+        'width': width,
+        'height': height,
+        'wxh': '%sx%s' % (width, height,),
+        'caption': caption,
+        'style': style,
     }
-    
+
 
 @register.inclusion_tag('inclusion_tags/asset_bundle.html',
                         takes_context=True)
@@ -204,63 +204,64 @@ def asset_bundle(context, bundle):
 def focus_area(context, focusarea, projects_link=True):
     '''
     '''
-    TITLE, BG_COLOR, OUTER_DIV, INNER_DIV, MORE_URL = 0, 1, 2, 3,4 
+    TITLE, BG_COLOR, OUTER_DIV, INNER_DIV, MORE_URL = 0, 1, 2, 3, 4
     FOCUS_AREA_DATA = {
-        'clean'         : (u'Clean water', '%spvw/img/base/focus_area/clean_water_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', '','http://%s/web/areas/cleanwater' % Site.objects.get_current()),
-        'safety'        : (u'Safety', '%spvw/img/base/focus_area/sharing_water_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px; width:350px', '','http://%s/web/areas/safety' % Site.objects.get_current()),
-        'sharing'       : (u'Sharing water', '%spvw/img/base/focus_area/governance_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', 'text-align:right; padding-left:200px;','http://%s/web/areas/sharingwater' % Site.objects.get_current()),
-        'governance'    : (u'Governance', '%spvw/img/base/focus_area/safety_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', '','http://%s/web/areas/governance' % Site.objects.get_current()),
+        'clean': (u'Clean water', '%spvw/img/base/focus_area/clean_water_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', '', 'http://%s/web/areas/cleanwater' % Site.objects.get_current()),
+        'safety': (u'Safety', '%spvw/img/base/focus_area/sharing_water_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px; width:350px', '', 'http://%s/web/areas/safety' % Site.objects.get_current()),
+        'sharing': (u'Sharing water', '%spvw/img/base/focus_area/governance_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', 'text-align:right; padding-left:200px;', 'http://%s/web/areas/sharingwater' % Site.objects.get_current()),
+        'governance': (u'Governance', '%spvw/img/base/focus_area/safety_bkgrd.jpg' % settings.MEDIA_URL, 'height:180px;', '', 'http://%s/web/areas/governance' % Site.objects.get_current()),
     }
     return {
-        'MEDIA_URL'     : context['MEDIA_URL'],
-        'focusarea'     : focusarea,
-        'title'         : FOCUS_AREA_DATA[focusarea][TITLE],
-        'bgrd'          : FOCUS_AREA_DATA[focusarea][BG_COLOR],
-        'outer_div'     : FOCUS_AREA_DATA[focusarea][OUTER_DIV],
-        'inner_div'     : FOCUS_AREA_DATA[focusarea][INNER_DIV],
-        'more_link'     : FOCUS_AREA_DATA[focusarea][MORE_URL],
-        'projects_link' : projects_link,
+        'MEDIA_URL': context['MEDIA_URL'],
+        'focusarea': focusarea,
+        'title': FOCUS_AREA_DATA[focusarea][TITLE],
+        'bgrd': FOCUS_AREA_DATA[focusarea][BG_COLOR],
+        'outer_div': FOCUS_AREA_DATA[focusarea][OUTER_DIV],
+        'inner_div': FOCUS_AREA_DATA[focusarea][INNER_DIV],
+        'more_link': FOCUS_AREA_DATA[focusarea][MORE_URL],
+        'projects_link': projects_link,
     }
 
+
 # http://www.nitinh.com/2010/02/django-template-tag-to-protect-the-e-mail-address/
-class EncryptEmail(template.Node): 
-    def __init__(self, context_var): 
-        self.context_var = template.Variable(context_var) # context_var 
-    def render(self, context): 
-        import random 
-        email_address = self.context_var.resolve(context) 
-        character_set = '+-.0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz' 
-        char_list = list(character_set) 
-        random.shuffle(char_list)   
-        
-        key = ''.join(char_list)   
-        
-        cipher_text = '' 
-        id = 'e' + str(random.randrange(1,999999999))   
-        
-        for a in email_address: 
-            cipher_text += key[ character_set.find(a) ]
-            
+class EncryptEmail(template.Node):
+    def __init__(self, context_var):
+        self.context_var = template.Variable(context_var)  # context_var
+
+    def render(self, context):
+        import random
+        email_address = self.context_var.resolve(context)
+        character_set = '+-.0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'
+        char_list = list(character_set)
+        random.shuffle(char_list)
+
+        key = ''.join(char_list)
+
+        cipher_text = ''
+        id = 'e' + str(random.randrange(1, 999999999))
+
+        for a in email_address:
+            cipher_text += key[character_set.find(a)]
+
         script = 'var a="'+key+'";var b=a.split("").sort().join("");var c="'+cipher_text+'";var d="";'
         script += 'for(var e=0;e<c.length;e++)d+=b.charAt(a.indexOf(c.charAt(e)));'
         script += 'document.getElementById("'+id+'").innerHTML="<a href=\\"mailto:"+d+"\\">"+d+"</a>"'
-        
-        script = "eval(\""+ script.replace("\\","\\\\").replace('"','\\"') + "\")" 
-        script = '<script type="text/javascript">/*<![CDATA[*/'+script+'/*]]>*/</script>'   
-        
-        return '<span id="'+ id + '">[javascript protected email address]</span>'+ script     
-        
-def encrypt_email(parser, token): 
-    '''
-    {% encrypt_email user.email %} 
-    '''   
-    tokens = token.contents.split() 
-    if len(tokens)!=2: 
-        raise template.TemplateSyntaxError("%r tag accept two argument" % tokens[0]) 
-    return EncryptEmail(tokens[1])   
-    
-register.tag('encrypt_email', encrypt_email)
 
+        script = "eval(\""+ script.replace("\\","\\\\").replace('"','\\"') + "\")"
+        script = '<script type="text/javascript">/*<![CDATA[*/'+script+'/*]]>*/</script>'
+
+        return '<span id="'+ id + '">[javascript protected email address]</span>'+ script
+
+
+def encrypt_email(parser, token):
+    '''
+    {% encrypt_email user.email %}
+    '''
+    tokens = token.contents.split()
+    if len(tokens) != 2:
+        raise template.TemplateSyntaxError("%r tag accept two argument" % tokens[0])
+    return EncryptEmail(tokens[1])
+register.tag('encrypt_email', encrypt_email)
 
 
 class WidthRatioTruncNode(WidthRatioNode):
@@ -280,6 +281,7 @@ class WidthRatioTruncNode(WidthRatioNode):
         except (ValueError, ZeroDivisionError):
             return ''
         return str(int(ratio))
+
 
 @register.tag
 def widthratio_trunc(parser, token):
@@ -316,8 +318,9 @@ class QSHiddenInputNode(template.Node):
         html = ''
         for ident in self.identifiers:
             if ident in get_values.keys():
-                html += '<input type="hidden" name="%s" value="%s"/>' %(ident, get_values[ident])
+                html += '<input type="hidden" name="%s" value="%s"/>' % (ident, get_values[ident])
         return html
+
 
 @register.tag
 def hidden_inputs_from_qs(parser, token):

@@ -45,8 +45,9 @@ class PartnerSitesMixin(object):
         context = super(PartnerSitesMixin, self).get_context_data(**kwargs)
         context['favicon'] = self.request.partner_site.favicon
         context['logo'] = self.request.partner_site.logo
-        context['organisation'] = \
-            get_object_or_404(Organisation, pk=self.request.organisation_id)
+        context['organisation'] = get_object_or_404(
+            Organisation, pk=self.request.organisation_id
+        )
         context['return_url'] = self.request.partner_site.return_url
         context['stylesheet'] = self.request.partner_site.stylesheet
 
@@ -54,7 +55,7 @@ class PartnerSitesMixin(object):
             protocol = 'https://'
         else:
             protocol = 'http://'
-        context['app_url'] = '%s%s.%s' % (protocol, \
+        context['app_url'] = '%s%s.%s' % (protocol,
                                           self.request.partner_site.hostname,
                                           settings.APP_DOMAIN_NAME)
         context['domain_url'] = '%s%s' % (protocol, settings.DOMAIN_NAME)

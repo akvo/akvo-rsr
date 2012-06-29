@@ -24,7 +24,7 @@ def when_i_navigate_to_the_project_main_page(step):
 # Scenario: I can navigate to a project main page
 @step(u'Then I am shown the main page of the project')
 def then_i_am_shown_the_main_page_of_the_project(step):
-    assert world.browser.is_text_present('Description')
+    assert world.browser.is_text_present('Summary')
     assert world.browser.is_text_present('Location')
     assert world.browser.is_text_present('Funding')
     assert world.browser.is_text_present('Latest updates')

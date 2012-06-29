@@ -40,21 +40,25 @@ from datetime import datetime
 from registration.models import RegistrationProfile
 import random
 import re
+import simplejson as json
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 from notification.models import Notice
 
+
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
+
 
 def server_error(request, template_name='500.html'):
     '''
     Overwrites the default error 500 view to pass MEDIA_URL to the template
     '''
-    t = loader.get_template(template_name) # You need to create a 500.html template.
+    t = loader.get_template(template_name)  # You need to create a 500.html template.
     return http.HttpResponseServerError(t.render(Context({
         'MEDIA_URL': settings.MEDIA_URL
     })))
+
 
 def render_to(template):
     """
@@ -76,15 +80,16 @@ def render_to(template):
             output = func(request, *args, **kw)
             if isinstance(output, (list, tuple)):
                 # add current language for template caching purposes
-                output[0].update({'lang':get_language()})
+                output[0].update({'lang': get_language()})
                 return render_to_response(output[1], output[0], RequestContext(request))
             elif isinstance(output, dict):
                 # add current language for template caching purposes
-                output.update({'lang':get_language()})
+                output.update({'lang': get_language()})
                 return render_to_response(template, output, RequestContext(request))
             return output
         return wrapper
     return renderer
+
 
 # http://www.julienphalip.com/blog/2008/08/16/adding-search-django-site-snap/
 def normalize_query(query_string,
@@ -93,21 +98,21 @@ def normalize_query(query_string,
     ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
         and grouping quoted words together.
         Example:
-        
+
         >>> normalize_query('  some random  words "with   quotes  " and   spaces')
         ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
-    
     '''
-    return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
+    return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)]
+
 
 def get_query(query_string, search_fields):
     ''' Returns a query, that is a combination of Q objects. That combination
         aims to search keywords within a model by testing the given search fields.
     '''
-    query = None # Query to search for every search term
+    query = None  # Query to search for every search term
     terms = normalize_query(query_string)
     for term in terms:
-        or_query = None # Query to search for a given term in each field
+        or_query = None  # Query to search for a given term in each field
         for field_name in search_fields:
             q = Q(**{"%s__icontains" % field_name: term})
             if or_query is None:
@@ -118,15 +123,15 @@ def get_query(query_string, search_fields):
             query = or_query
         else:
             query = query & or_query
-        
     return query
+
 
 @cache_page(getattr(settings, 'CACHE_SECONDS', 300))
 @render_to('rsr/index.html')
 def index(request, cms_id=None):
     '''
     The RSR home page.
-    '''        
+    '''
     preview = False
     focus_areas = FocusArea.objects.exclude(slug='all')
 
@@ -162,7 +167,7 @@ def index(request, cms_id=None):
     people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
     #round to nearest whole 1000
     people_served = int(people_served / 1000) * 1000
-        
+
     #get three featured updates with video and/or photo
     updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
     if news_posts:
@@ -191,9 +196,11 @@ def index(request, cms_id=None):
     })
     return context_dict
 
+
 def oldindex(request):
     "Fix for old url of old rsr front that has become the akvo home page"
     return HttpResponsePermanentRedirect('/')
+
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')
@@ -209,7 +216,7 @@ def project_list_data(request, projects):
 
 @render_to('rsr/focus_areas.html')
 def focusareas(request):
-    return {'site_section': 'areas',}
+    return {'site_section': 'areas'}
 
 
 @render_to('rsr/project/project_directory.html')
@@ -254,7 +261,8 @@ def project_list(request, slug='all'):
 
 def old_project_list(request):
     return HttpResponsePermanentRedirect(reverse('project_list', args=['all']))
-        
+
+
 @render_to('rsr/project_directory.html')
 def filteredprojectlist(request, org_id):
     '''List of  projects in RSR
@@ -271,23 +279,28 @@ def filteredprojectlist(request, org_id):
     projects = o.published_projects()
     showcases = projects.order_by('?')[:3]
     page = project_list_data(request, projects)
-    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o,}
+    return {'projs': projs, 'orgs': Organisation.objects, 'page': page, 'showcases': showcases, 'o': o}
+
 
 def _redirect_from_landing_page_with_partner_site_id(partner_site_id):
     partner_site = get_object_or_404(PartnerSite, pk=partner_site_id)
     return HttpResponseRedirect(partner_site.get_absolute_url())
 
+
 def liveearth(request):
     org_id = getattr(settings, 'LIVE_EARTH_ID', 51)
     return _redirect_from_landing_page_with_partner_site_id(org_id)
- 
+
+
 def walking_for_water(request):
     org_id = getattr(settings, 'WALKING_FOR_WATER_ID', 35)
     return _redirect_from_landing_page_with_partner_site_id(org_id)
 
+
 def rabobank(request):
     org_id = getattr(settings, 'RABOBANK_ID', 21)
     return _redirect_from_landing_page_with_partner_site_id(org_id)
+
 
 @render_to('rsr/project/project_directory.html')
 def projectlist(request):
@@ -327,6 +340,7 @@ def projectlist(request):
         'order_by': order_by,
         'last_order': last_order,
     }
+
 
 @render_to('rsr/organisation/organisation_directory.html')
 def orglist(request, org_type='all'):
@@ -387,9 +401,9 @@ def orglist(request, org_type='all'):
         'orgs': orgs,
     }
 
+
 @render_to('rsr/partners_widget.html')
 def partners_widget(request, org_type='all'):
-    
     # Set up variables with default values
     orgs = Organisation.objects.all()
     order_by = request.GET.get('order_by', 'name')
@@ -397,7 +411,7 @@ def partners_widget(request, org_type='all'):
     sort_order = request.GET.get('sort', 'desc')
     is_resort = False
     mode = 'name_desc'
-    
+
     # Check if resort and change sort order
     if order_by == prev:
         is_resort = True
@@ -415,10 +429,10 @@ def partners_widget(request, org_type='all'):
     '''
     # Mode is used to style the table according the sorting
     mode = order_by + '_' + sort_order
-    
+
     # Fix the ordering
     sort_order_value = '-' if is_resort and sort_order == 'asc' else ''
-    
+
     if order_by == 'name':
         orgs = orgs.order_by(sort_order_value+order_by, 'organisation_type','country','country__continent')
     elif order_by == 'organisation_type':
@@ -427,13 +441,14 @@ def partners_widget(request, org_type='all'):
         orgs = orgs.order_by(sort_order_value+order_by,'organisation_type','name')
     elif order_by == 'country__continent':
         orgs = orgs.order_by(sort_order_value+order_by,'country','organisation_type','name')
-    
+
     return {
         'orgs': orgs,
         'order_by': order_by,
         'sort': sort_order,
         'mode': mode,
     }
+
 
 #copied from django.contrib.auth.views to be able to customize the form widget attrs
 def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
@@ -442,7 +457,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
     # Check for exeptions to the return to start of sign in process
     if redirect_to == "/rsr/accounts/register/complete/":
         redirect_to = "/"
-    
+
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         # RSR mod to add css class to widgets
@@ -471,6 +486,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
     }, context_instance=RequestContext(request))
 login = never_cache(login)
 
+
 def signout(request):
     '''
     Sign out URL
@@ -478,6 +494,7 @@ def signout(request):
     '''
     logout(request)
     return HttpResponseRedirect('/')
+
 
 def register1(request):
     '''
@@ -488,9 +505,10 @@ def register1(request):
         if form.is_valid():
             return HttpResponseRedirect('/rsr/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
     else:
-        form = OrganisationForm()    
+        form = OrganisationForm()
     context = RequestContext(request)
-    return render_to_response('registration/registration_form1.html', { 'form': form }, context_instance=context)
+    return render_to_response('registration/registration_form1.html', {'form': form}, context_instance=context)
+
 
 def register2(request,
         form_class=RSR_RegistrationFormUniqueEmail,
@@ -509,8 +527,9 @@ def register2(request,
         form = form_class(initial={'org_id': org_id})
     context = RequestContext(request)
     return render_to_response(template_name,
-                              { 'form': form, 'organisation': organisation, },
+                              {'form': form, 'organisation': organisation},
                               context_instance=context)
+
 
 #from registraion.views, to change user.is_active and send an admin email
 def activate(request, activation_key,
@@ -519,33 +538,33 @@ def activate(request, activation_key,
     """
     Activate a ``User``'s account, if their key is valid and hasn't
     expired.
-    
+
     By default, uses the template ``registration/activate.html``; to
     change this, pass the name of a template as the keyword argument
     ``template_name``.
-    
+
     **Context:**
-    
+
     account
         The ``User`` object corresponding to the account, if the
         activation was successful. ``False`` if the activation was not
         successful.
-    
+
     expiration_days
         The number of days for which activation keys stay valid after
         registration.
-    
+
     Any values passed in the keyword argument ``extra_context`` (which
     must be a dictionary) will be added to the context as well; any
     values in ``extra_context`` which are callable will be called
     prior to being added to the context.
 
     **Template:**
-    
+
     registration/activate.html or ``template_name`` keyword argument.
-    
+
     """
-    
+
     #amalgamation of registration.views.activate and registration.models.RegistrationManager.activate_user
     #however, we don't actually acivate! Instead we use signals.
 
@@ -553,8 +572,8 @@ def activate(request, activation_key,
     import re
 
     SHA1_RE = re.compile('^[a-f0-9]{40}$')
-    
-    activation_key = activation_key.lower() # Normalize before trying anything with it.
+
+    activation_key = activation_key.lower()  # Normalize before trying anything with it.
 
     if SHA1_RE.search(activation_key):
         try:
@@ -573,12 +592,12 @@ def activate(request, activation_key,
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
     return render_to_response(template_name,
-                              { 'account': account,
+                              {'account': account,
                                 'expiration_days': getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7),
                                 'support_email': getattr(settings, 'SUPPORT_EMAIL', 'gabriel@akvo.org'),
                                 },
-                              context_instance=context)    
-    
+                              context_instance=context)
+
 
 #copied from django.contrib.auth.views to be able to customize the form widget attrs
 def password_change(request, template_name='registration/password_change_form.html',
@@ -603,6 +622,7 @@ def password_change(request, template_name='registration/password_change_form.ht
     }, context_instance=RequestContext(request))
 password_change = login_required(password_change)
 
+
 @login_required
 def update_user_profile(
     request,
@@ -619,8 +639,8 @@ def update_user_profile(
             return HttpResponseRedirect(success_url)
     else:
         form = form_class(initial={
-            'first_name':user.first_name,
-            'last_name':user.last_name,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
         })
     if extra_context is None:
         extra_context = {}
@@ -636,6 +656,7 @@ def update_user_profile(
         context_instance=context
     )
 
+
 @render_to('rsr/project/project_updates.html')
 def projectupdates(request, project_id):
     '''
@@ -644,18 +665,19 @@ def projectupdates(request, project_id):
     project: project
     updates: list of updates, ordered by time in reverse
     '''
-    project     = get_object_or_404(Project, pk=project_id)
-    updates     = project.project_updates.all().order_by('-time')
-    comments    = project.projectcomment_set.all().order_by('-time')[:3]
+    project = get_object_or_404(Project, pk=project_id)
+    updates = project.project_updates.all().order_by('-time')
+    comments = project.projectcomment_set.all().order_by('-time')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
         'project': project,
         'updates': updates,
-        'can_add_update':can_add_update,
+        'can_add_update': can_add_update,
         'hide_latest_updates': True,
         'comments': comments,
         'site_section': 'project',
         }
+
 
 @render_to('rsr/project/project_update.html')
 def projectupdate(request, project_id, update_id):
@@ -667,17 +689,18 @@ def projectupdate(request, project_id, update_id):
     can_edit_update = (update.user == request.user and can_add_update and
                        not update.edit_window_has_expired())
     comments = project.projectcomment_set.all().order_by('-time')[:3]
-    edit_timeout   = settings.PROJECT_UPDATE_TIMEOUT
+    edit_timeout = settings.PROJECT_UPDATE_TIMEOUT
     return {
-        'project'               : project,
-        'update'                : update,
-        'can_add_update'        : can_add_update, 
-        'can_edit_update'       : can_edit_update,
-        'hide_latest_updates'   : True,
-        'site_section'          : 'projects', 
-        'comments'              : comments,
-        'edit_timeout'          : edit_timeout
+        'project': project,
+        'update': update,
+        'can_add_update': can_add_update,
+        'can_edit_update': can_edit_update,
+        'hide_latest_updates': True,
+        'site_section': 'projects',
+        'comments': comments,
+        'edit_timeout': edit_timeout
         }
+
 
 @render_to('rsr/project/project_comments.html')
 def projectcomments(request, project_id):
@@ -692,10 +715,10 @@ def projectcomments(request, project_id):
     form = CommentForm()
     updates = project.project_updates.all().order_by('-time')[:3]
     return {
-        'project': project, 
-        'comments': comments, 
-        'form': form, 
-        'project_section':'comments', 
+        'project': project,
+        'comments': comments,
+        'form': form,
+        'project_section': 'comments',
         'hide_comments': True,
         'updates': updates,
         }
@@ -1071,17 +1094,18 @@ def project_widget(request, template='feature-side', project_id=None):
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
-    
+
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
         {
             'project': p,
-            'p': p, #compatibility with new_look
+            'p': p,  #compatibility with new_look
             'request_get': request.GET,
             'bgcolor': bgcolor,
             'textcolor': textcolor,
             'site': site
         },
         context_instance=RequestContext(request))
+
 
 def project_list_widget(request, template='project-list', org_id=0):
     bgcolor = request.GET.get('bgcolor', 'B50000')
@@ -1095,9 +1119,9 @@ def project_list_widget(request, template='project-list', org_id=0):
         p = Project.objects.published().status_not_archived().status_not_cancelled()
     order_by = request.GET.get('order_by', 'title')
     #p = p.annotate(last_update=Max('project_updates__time'))
-    p = p.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-    if order_by == 'country__continent':		
-        p = p.order_by(order_by, 'primary_location__country__name','title')
+    p = p.extra(select={'last_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+    if order_by == 'country__continent':
+        p = p.order_by(order_by, 'primary_location__country__name', 'title')
     #elif order_by == 'country__name':
     #    p = p.order_by(order_by,'name')
     #elif order_by == 'status':
@@ -1105,20 +1129,21 @@ def project_list_widget(request, template='project-list', org_id=0):
     elif order_by == 'last_update':
         p = p.order_by('-last_update', 'title')
     elif order_by in ['budget', 'funds_needed']:
-        p = p.extra(order_by = ['-%s' % order_by, 'title'])
+        p = p.extra(order_by=['-%s' % order_by, 'title'])
     else:
         p = p.order_by(order_by, 'title')
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
         {
-            'bgcolor': bgcolor, 
-            'textcolor': textcolor,  
+            'bgcolor': bgcolor,
+            'textcolor': textcolor,
             'projects': p,
-            'org_id': org_id, 
-            'request_get': request.GET, 
+            'org_id': org_id,
+            'request_get': request.GET,
             'site': site,
             'lang': get_language(),
         },
         context_instance=RequestContext(request))
+
 
 @render_to('widgets/project_map.html')
 def project_map_widget(request, org_id):
@@ -1131,16 +1156,16 @@ def project_map_widget(request, org_id):
 
     if state != 'dynamic':
         state = 'static'
-    
+
     try:
-        map_height = int(height)-24 # Since we have a bottom bar of 24px
+        map_height = int(height) - 24  # Since we have a bottom bar of 24px
     except ValueError, e:
-        map_height = 276 # 326px = default height(350px) - bottom bar(24px)
-    
-    return { 
+        map_height = 276  # 326px = default height(350px) - bottom bar(24px)
+
+    return {
         'bgcolor': bgcolor,
         'height': map_height,
-        'org': get_object_or_404(Organisation, pk=org_id), 
+        'org': get_object_or_404(Organisation, pk=org_id),
         'textcolor': textcolor,
         'width': width,
         'zoom': zoom,
@@ -1231,7 +1256,7 @@ def donate(request, p, engine):
                 return render_to_response('rsr/project/donate/donate_step3.html',
                                       {'invoice': invoice,
                                        'payment_engine': engine,
-                                       'pp_form': pp_form, 
+                                       'pp_form': pp_form,
                                        'pp_button': pp_button,
                                        'project': p,
                                        },
@@ -1244,8 +1269,9 @@ def donate(request, p, engine):
                               {'donate_form': donate_form,
                                'payment_engine': engine,
                                'project': p,
-                            }, 
+                            },
                             context_instance=RequestContext(request))
+
 
 def void_invoice(request, invoice_id, action=None):
     invoice = get_object_or_404(Invoice, pk=invoice_id)
@@ -1259,7 +1285,8 @@ def void_invoice(request, invoice_id, action=None):
             return redirect('project_main', project_id=invoice.project.id)
     return redirect('project_list', slug='all')
 
-def mollie_report(request):
+
+def mollie_report(request, mollie_response=None):
     transaction_id = request.GET.get('transaction_id', None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
@@ -1268,8 +1295,8 @@ def mollie_report(request):
         try:
             mollie_response = query_mollie(request_dict, 'check')
         except:
-            return HttpResponseServerError
-        if mollie_response['paid'] == 'true':
+            pass
+        if mollie_response is not None and mollie_response['paid'] == 'true':
             mollie_fee = get_mollie_fee()
             invoice.amount_received = invoice.amount - mollie_fee
             invoice.status = 3
@@ -1277,6 +1304,7 @@ def mollie_report(request):
             invoice.status = 2
         invoice.save()
     return HttpResponse('OK')
+
 
 @csrf_exempt
 @require_POST
@@ -1291,6 +1319,7 @@ def paypal_thanks(request):
                                   context_instance=RequestContext(request))
     return redirect('/')
 
+
 @require_GET
 @render_to('rsr/project/donate/donate_thanks.html')
 def mollie_thanks(request):
@@ -1300,17 +1329,60 @@ def mollie_thanks(request):
         return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
     return redirect('/')
 
+
 @render_to('rsr/global_map.html')
 def global_map(request):
     projects = Project.objects.published()
     marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
     return {'projects': projects, 'marker_icon': marker_icon}
 
+
 @render_to('rsr/akvo_at_a_glance.html')
 def data_overview(request):
     projects = Project.objects.published()
     orgs = Organisation.objects.all()
-    return dict(
-        projects=projects,
-        orgs=orgs,
-    )
+    return dict(projects=projects, orgs=orgs)
+
+
+@cache_page(60 * 15)
+def global_project_map_json(request):
+    "Should be replaced with API calls when he API is ready."
+    locations = []
+    for project in Project.objects.published():
+        for location in project.locations.all():
+            locations.append(dict(title=project.title,
+                                  url=project.get_absolute_url(),
+                                  latitude=location.latitude,
+                                  longitude=location.longitude))
+    return HttpResponse(json.dumps(locations), content_type="application/json")
+
+
+@cache_page(60 * 15)
+def global_organisation_map_json(request):
+    "Should be replaced with API calls when the API is ready."
+    locations = []
+    for organisation in Organisation.objects.has_primary_location():
+        for location in organisation.locations.all():
+            locations.append(dict(name=organisation.name,
+                                  url=organisation.get_absolute_url(),
+                                  latitude=location.latitude,
+                                  longitude=location.longitude))
+    return HttpResponse(json.dumps(locations), content_type="application/json")
+
+
+@cache_page(60 * 15)
+def global_organisation_projects_map_json(request, org_id):
+    "Should be replaced with API calls when the API is ready."
+    locations = []
+    organisation = Organisation.objects.get(id=org_id)
+    for project in organisation.published_projects():
+        for location in project.locations.all():
+            locations.append(dict(title=project.title,
+                                  url=project.get_absolute_url(),
+                                  latitude=location.latitude,
+                                  longitude=location.longitude))
+    callback = request.GET.get('callback')
+    location_data = json.dumps(locations)
+    if callback:
+        location_data = '%s(%s);' % (callback, location_data)
+    return HttpResponse(location_data, content_type='application/json')
