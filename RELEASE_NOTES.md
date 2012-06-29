@@ -20,39 +20,39 @@ New features & changes
 ### New global project and organisation maps
 The global projects and organisations maps (including the small map on the akvo.org home page) are now rendered using JSON data and AJAX. This has resulted in dramatic speed improvements to these pages.
 
-GitHub Issue:
+GitHub issue:
 [38](https://github.com/akvo/akvo-rsr/issues/38)
 
 ### "People who get..." box removal
 
 The "People who get..." box has been removed on all Organisation pages.
 
-GitHub Issue:
+GitHub issue:
 [10](https://github.com/akvo/akvo-rsr/issues/10)
 
-### Partner Site Error Pages
+### Partner site error pages
 
 Specific HTTP status code 403, 404 and 500 error pages now exist for partner sites.
 
-GitHub Issue:
+GitHub issue:
 [31](https://github.com/akvo/akvo-rsr/issues/31)
 
-### Partner Site Widget Wording
+### Partner site widget wording
 
 The page for getting a PS Widget, displays incorrect information about how to widget will work. It says that the widget will redirect back to the Akvo.org page and it will redirect back to the original partner site page. The wording on this widget has been fixed.
 
-GitHub Issue:
+GitHub issue:
 [25](https://github.com/akvo/akvo-rsr/issues/25)
 
-Bug Fixes
+Bug fixes
 ----
 ### Partner list navigation
 The navigation of multiple pages of partners in Akvo RSR was not working correctly. This has been fixed.
 
-GitHub Issue:
+GitHub issue:
 [26](https://github.com/akvo/akvo-rsr/issues/26)
 
-### Sorting on continent/country in listing widget broken
+### Sorting on continent/country in listing widget
 Due to complexity in the way we are currently storing location data, continent and country sorting in listing widgets is broken. This sorting has been disabled until we change the way location data is handled in the system.
 
 GitHub Issue:
