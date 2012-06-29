@@ -1,4 +1,4 @@
-Last changed: 7 June 2012 ac
+Last changed: 29 June 2012 pb
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -6,6 +6,54 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR ver 2.0.7 release notes
+----
+29 June 2012, (Code name: Hawthorn) pb
+
+Overview
+----
+This release contains improvements to the way global maps are rendered in Akvo RSR. These maps are now rendered using AJAX calls resulting in dramatically reduced template size and rendering times for the pages in question.
+
+New features & changes
+----
+### New global project and organisation maps
+The global projects and organisations maps (including the small map on the akvo.org home page) are now rendered using JSON data and AJAX. This has resulted in dramatic speed improvements to these pages.
+
+GitHub Issue:
+[38](https://github.com/akvo/akvo-rsr/issues/38)
+
+### "People who get..." box removal
+
+The "People who get..." box has been removed on all Organisation pages.
+
+GitHub Issue:
+[10](https://github.com/akvo/akvo-rsr/issues/10)
+
+### Partner Site Error Pages
+
+Specific HTTP status code 403, 404 and 500 error pages now exist for partner sites.
+
+### Partner Site Widget Wording
+
+The page for getting a PS Widget, displays incorrect information about how to widget will work. It says that the widget will redirect back to the Akvo.org page and it will redirect back to the original partner site page. The wording on this widget has been fixed.
+
+GitHub Issue:
+[25](https://github.com/akvo/akvo-rsr/issues/25)
+
+Bug Fixes
+----
+### Partner list navigation
+The navigation of multiple pages of partners in Akvo RSR was not working correctly. This has been fixed.
+
+GitHub Issue:
+[26](https://github.com/akvo/akvo-rsr/issues/26)
+
+### Sorting on continent/country in listing widget broken
+Due to complexity in the way we are currently storing location data, continent and country sorting in listing widgets is broken. This sorting has been disabled until we change the way location data is handled in the system.
+
+GitHub Issue:
+[11](https://github.com/akvo/akvo-rsr/issues/11)
 
 Akvo RSR ver 2.0.6 release notes
 ----
