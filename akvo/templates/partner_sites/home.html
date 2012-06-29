@@ -33,7 +33,7 @@
     </div>
   </div>
   <div class="two_col_right whitebox">
-    {% google_queryset_projects_map sorted_projects 'dynamic' 470 250 1 %}
+    {% google_organisation_projects_map request.organisation_id 'dynamic' 470 250 1 %}
   </div>
   <div class="clear"></div>
   <h1 class="marg_top20">{% trans "Find projects" %}</h1>

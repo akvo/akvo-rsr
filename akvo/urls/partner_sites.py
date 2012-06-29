@@ -85,6 +85,11 @@ urlpatterns = i18n_patterns('',
     url(r'^rsr/signout/$',
         views.signout,
         name='sign_out'),
+
+    # Maps JSON
+    url(r'^rsr/maps/organisation/(?P<org_id>\d+)/projects/json/$',
+        views.global_organisation_projects_map_json,
+        name='global_organisation_projects_map_json'),
 )
 
 # Non i18n
