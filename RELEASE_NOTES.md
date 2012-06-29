@@ -34,6 +34,9 @@ GitHub Issue:
 
 Specific HTTP status code 403, 404 and 500 error pages now exist for partner sites.
 
+GitHub Issue:
+[31](https://github.com/akvo/akvo-rsr/issues/31)
+
 ### Partner Site Widget Wording
 
 The page for getting a PS Widget, displays incorrect information about how to widget will work. It says that the widget will redirect back to the Akvo.org page and it will redirect back to the original partner site page. The wording on this widget has been fixed.
