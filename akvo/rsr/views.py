@@ -1361,7 +1361,7 @@ def global_project_map_json(request):
 def global_organisation_map_json(request):
     "Should be replaced with API calls when the API is ready."
     locations = []
-    for organisation in Organisation.objects.has_primary_location():
+    for organisation in Organisation.objects.has_location():
         for location in organisation.locations.all():
             locations.append(dict(name=organisation.name,
                                   url=organisation.get_absolute_url(),

@@ -257,7 +257,7 @@ class Organisation(models.Model):
     description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.') )
 
 #    old_locations = generic.GenericRelation(Location)
-    primary_location = models.ForeignKey('OrganisationLocation')
+    primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
 
     #Managers, one default, one custom
     #objects = models.Manager()
@@ -280,13 +280,8 @@ class Organisation(models.Model):
 
 
     class QuerySet(QuerySet):
-        def has_primary_location(self):
-            content_type = ContentType.objects.get_for_model(Organisation)
-            locations = Location.objects.filter(content_type=content_type,
-                primary=True)
-            locations = locations.exclude(latitude=0, longitude=0)
-            project_ids = [location.object_id for location in locations]
-            return self.filter(id__in=project_ids)
+        def has_location(self):
+            return self.filter(primary_location__isnull=False)
 
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
@@ -635,7 +630,7 @@ class Project(models.Model):
     date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
 #    old_locations = generic.GenericRelation(Location)
-    primary_location = models.ForeignKey(ProjectLocation)
+    primary_location = models.ForeignKey(ProjectLocation, null=True, on_delete=models.SET_NULL)
 
     # denormalized data
     # =================
@@ -738,7 +733,7 @@ class Project(models.Model):
     class QuerySet(QuerySet):
 
         def has_location(self):
-            return self.filter(primary_location__exact=True)
+            return self.filter(primary_location__isnull=False)
 
         def published(self):
             return self.filter(publishingstatus__status='published')

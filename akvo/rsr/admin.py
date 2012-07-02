@@ -85,9 +85,25 @@ class CountryAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
 
+class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        if self.forms:
+            # keep track of how many non-deleted forms we have and how many primary locations are ticked
+            form_count = primary_count = 0
+            for form in self.forms:
+                if not form.cleaned_data.get('DELETE', False):
+                    form_count += 1
+                    primary_count += 1 if form.cleaned_data['primary'] else 0
+                # if we have any forms left there must be exactly 1 primary location
+            if form_count > 0 and not primary_count == 1:
+                self._non_form_errors = ErrorList([
+                    _(u'The project must have exactly one primary location if any locations at all are to be included')
+                ])
+
 class OrganisationLocationInline(admin.StackedInline):
     model = get_model('rsr', 'organisationlocation')
     extra = 0
+    formset = RSR_LocationFormFormSet
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -394,20 +410,6 @@ class PartnershipInline(admin.TabularInline):
         formset.request = request
         return formset
 
-class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
-    def clean(self):
-        if self.forms:
-            # keep track of how many non-deleted forms we have and how many primary locations are ticked
-            form_count = primary_count = 0
-            for form in self.forms:
-                if not form.cleaned_data.get('DELETE', False):
-                    form_count += 1
-                    primary_count += 1 if form.cleaned_data['primary'] else 0
-            # if we have any forms left there must be exactly 1 primary location
-            if form_count > 0 and not primary_count == 1:
-                self._non_form_errors = ErrorList([
-                    _(u'The project must have exactly one primary location if any locations at all are to be included')
-                ])
 
 class ProjectLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectlocation')
