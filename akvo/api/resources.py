@@ -9,17 +9,21 @@ from tastypie import fields
 from tastypie.resources import ModelResource
 
 #.GenericRelation(Location)
-from akvo.rsr.models import Organisation, Project, Category, Link, Partnership, Country, ProjectLocation
+from akvo.rsr.models import (
+    Organisation, Project, Category, Link, Partnership, Country, ProjectLocation, OrganisationLocation
+)
 
 
 class CategoryResource(ModelResource):
     class Meta:
+        allowed_methods = ['get']
         queryset = Category.objects.all()
         resource_name = 'category'
 
 
 class CountryResource(ModelResource):
     class Meta:
+        allowed_methods = ['get']
         queryset = Country.objects.all()
         resource_name = 'country'
 
@@ -29,10 +33,12 @@ class OrganisationResource(ModelResource):
         'akvo.api.resources.PartnershipResource',
         'partnership_set',
         related_name='organisation',
-        help_text='Show the projects the org is related to and how.'
+        help_text='Show the projects the organisation is related to and how.'
     )
+    locations   = fields.ToManyField('akvo.api.resources.OrganisationLocationResource', 'locations')
 
     class Meta:
+        allowed_methods = ['get']
         queryset        = Organisation.objects.all()
         resource_name   = 'organisation'
 
@@ -42,12 +48,15 @@ class PartnershipResource(ModelResource):
     project         = fields.ToOneField('akvo.api.resources.ProjectResource', 'project')
 
     def __init__(self, api_name=None):
+        """ override to be able to create custom help_text on the partner_type field
+        """
         super(PartnershipResource, self).__init__(api_name=None)
         self.fields['partner_type'].help_text = "Uses the following key-value pair list: %s" % ', '.join(
             ["%s: %s" % (k, v) for k, v in Partnership.PARTNER_TYPES]
         )
 
     class Meta:
+        allowed_methods = ['get']
         queryset        = Partnership.objects.all()
         resource_name   = 'partnership'
 
@@ -59,6 +68,7 @@ class ProjectResource(ModelResource):
     locations   = fields.ToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
 
     class Meta:
+        allowed_methods = ['get']
         queryset        = Project.objects.all()
         resource_name   = 'project'
 
@@ -67,17 +77,19 @@ class LinkResource(ModelResource):
     project = fields.ToOneField(ProjectResource, 'project')
 
     class Meta:
+        allowed_methods = ['get']
         queryset        = Link.objects.all()
         resource_name   = 'link'
 
 
 class OrganisationLocationResource(ModelResource):
-    organisation = fields.ToOneField(OrganisationResource, 'organisation')
+    organisation = fields.ToOneField(OrganisationResource, 'location_target')
     country = fields.ToOneField(CountryResource, 'country')
 
     class Meta:
-        queryset        = ProjectLocation.objects.all()
-        resource_name   = 'project_location'
+        allowed_methods = ['get']
+        queryset        = OrganisationLocation.objects.all()
+        resource_name   = 'organisation_location'
 
 
 class ProjectLocationResource(ModelResource):
@@ -85,6 +97,7 @@ class ProjectLocationResource(ModelResource):
     country = fields.ToOneField(CountryResource, 'country')
 
     class Meta:
+        allowed_methods = ['get']
         queryset        = ProjectLocation.objects.all()
         resource_name   = 'project_location'
 

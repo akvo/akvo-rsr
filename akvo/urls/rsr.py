@@ -25,7 +25,7 @@ oembed.autodiscover()
 from tastypie.api import Api
 from akvo.api.resources import (
     ProjectResource, CategoryResource, LinkResource, OrganisationResource, PartnershipResource,
-    ProjectLocationResource, CountryResource
+    ProjectLocationResource, CountryResource, OrganisationLocationResource
 )
 
 v1_api = Api(api_name='v1')
@@ -36,6 +36,7 @@ v1_api.register(ProjectResource())
 v1_api.register(OrganisationResource())
 v1_api.register(PartnershipResource())
 v1_api.register(ProjectLocationResource())
+v1_api.register(OrganisationLocationResource())
 
 
 # Multi-lingual urls
