@@ -1,27 +1,32 @@
-{% load i18n l10n %}
+{% load i18n l10n templatetag_handlebars %}
 
 {# HTML markup #}
 <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
+{% tplhandlebars "map_info_window_template" %}
+<div id="mapInfoWindow">
+  <a href="{{url}}">{{title}}</a>
+</div>
+{% endtplhandlebars %}
 
 {# External scripts #}
 <script src="//maps.google.com/maps/api/js?sensor=false"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+
 {# Local scripts #}
 <script src="{{MEDIA_URL}}core/js/jquery.ui.map.full.min.js"></script>
+{% handlebars_js %}
 
 <script>
-  var dataURL, map, mapOptions, mapType, markerIcon, zoom;
+  var dataURL, map, mapOptions, mapType, markerIcon;
 
   dataURL = "{{ data_url }}";
   markerIcon = "{{ marker_icon }}";
   mapType = "{{ map_type }}";
-  zoom = {{ zoom }};
 
   mapOptions = {
     center: new google.maps.LatLng(0, 0),
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     scrollwheel: false,
-    zoom: zoom,
     streetViewControl: false
   };
   if (mapType === "static") {
@@ -34,30 +39,24 @@
 
   jQuery.noConflict();
   jQuery(document).ready(function($) {
-    $('#map_canvas').gmap(mapOptions).bind('init', function() {
+    var map_canvas = $('#map_canvas');
+    map_canvas.gmap(mapOptions).bind('init', function() {
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
-          $('#map_canvas').gmap('addMarker', {
-            'icon': icon,
-            'position': new google.maps.LatLng(project.latitude, project.longitude),
-            'bounds': true,
-            'title': project.title
-          }).click(function() {
-            $('#map_canvas').gmap('openInfoWindow', {'content': renderMapInfoWindow(project)}, this);
-          });
+          var handlebarsTemplate, infoWindowContent, position;
+          handlebarsTemplate = Handlebars.compile($('#map_info_window_template').html());
+          infoWindowContent = handlebarsTemplate(project);
+          position = new google.maps.LatLng(project.latitude, project.longitude);
+          map_canvas
+            .gmap('addMarker', {'icon': icon, 'position': position, 'bounds': true, 'title': project.title})
+            .click(function() {
+              map_canvas.gmap('openInfoWindow', {'content': infoWindowContent}, this);
+            });
         });
       });
       // setCSS();
     });
   });
-  
-  function renderMapInfoWindow(project) {
-    var html;
-    html = '<div class="mapInfoWindow">';
-    html += '<a href="' + project.url + '">' + project.title + '</a>';
-    html += '</div>';
-    return html
-  }
   
   function setCSS() {
     var css, head, style, rules;  
