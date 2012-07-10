@@ -19,9 +19,9 @@
 <script>
   var dataURL, map, mapOptions, mapType, markerIcon;
 
-  dataURL = "{{ data_url }}";
-  markerIcon = "{{ marker_icon }}";
-  mapType = "{{ map_type }}";
+  dataURL = '{{ data_url }}';
+  markerIcon = '{{ marker_icon }}';
+  mapType = '{{ map_type }}';
 
   mapOptions = {
     center: new google.maps.LatLng(0, 0),
@@ -29,7 +29,8 @@
     scrollwheel: false,
     streetViewControl: false
   };
-  if (mapType === "static") {
+
+  if (mapType === 'static') {
     icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
     mapOptions.draggable = false;
     mapOptions.disableDefaultUI = true;
@@ -48,9 +49,16 @@
           infoWindowContent = handlebarsTemplate(project);
           position = new google.maps.LatLng(project.latitude, project.longitude);
           map_canvas
-            .gmap('addMarker', {'icon': icon, 'position': position, 'bounds': true, 'title': project.title})
+            .gmap('addMarker', {
+              'icon': icon,
+              'position': position,
+              'bounds': true,
+              'title': project.title
+            })
             .click(function() {
-              map_canvas.gmap('openInfoWindow', {'content': infoWindowContent}, this);
+              map_canvas.gmap('openInfoWindow', {
+                'content': infoWindowContent
+              }, this);
             });
         });
       });
