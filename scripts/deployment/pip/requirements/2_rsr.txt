@@ -8,13 +8,13 @@ django-pagination==1.0.7
 django-paypal==0.1.2
 django-piston==0.2.3
 django-registration==0.8
-django-rosetta==0.6.6
+django-rosetta==0.6.8
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
 -e git://github.com/alex/django-filter.git@51b39fca089f2cb1d3d3501d2e164635fbe52864#egg=django-filter
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
--e git://github.com/worldcompany/djangoembed.git#egg=djangoembed
+-e git://github.com/worldcompany/djangoembed.git@f3f2be283441d91d1f89db780444dc75f7b51902#egg=djangoembed
 
 # Akvonaut apps
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
@@ -27,10 +27,10 @@ BeautifulSoup==3.2.1
 httplib2==0.7.4
 lxml==2.3.4
 pytz==2012c
-simplejson==2.5.2
+simplejson==2.6.0
 
 # RSR requirements
-Markdown==2.1.1
+Markdown==2.2.0
 PIL==1.1.7
 python-memcached==1.48
 template-utils==0.4p2
@@ -40,5 +40,5 @@ MySQL-python==1.2.3
 South==0.7.5
 
 # App container
-gunicorn==0.14.3
+gunicorn==0.14.5
 wsgiref==0.1.2
