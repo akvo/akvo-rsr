@@ -11,8 +11,7 @@
 
 <script>
   var dataURL, map, mapOptions, mapType, markerIcon, zoom;
-
-  dataURL = "{{ data_url }}";
+  dataURL = "http://localhost:8000/api/v1/project_location/?format=jsonp&project__partners=43&limit=0&distinct=True&callback=?";
   markerIcon = "{{ marker_icon }}";
   mapType = "{{ map_type }}";
   zoom = {{ zoom }};
@@ -25,7 +24,8 @@
     streetViewControl: false
   };
   if (mapType === "static") {
-    icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
+//    icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
+    icon = new google.maps.MarkerImage(markerIcon);
     mapOptions.draggable = false;
     mapOptions.disableDefaultUI = true;
   } else {
@@ -36,22 +36,25 @@
   jQuery(document).ready(function($) {
     $('#map_canvas').gmap(mapOptions).bind('init', function() {
       $.getJSON(dataURL, function(data) {
-        $.each(data, function(i, project) {
+        $.each(data['objects'], function(i, location) {
           $('#map_canvas').gmap('addMarker', {
             'icon': icon,
-            'position': new google.maps.LatLng(project.latitude, project.longitude),
+            'position': new google.maps.LatLng(location.latitude, location.longitude),
             'bounds': true,
-            'title': project.title
+            'title': location.city
           }).click(function() {
-            $('#map_canvas').gmap('openInfoWindow', {'content': renderMapInfoWindow(project)}, this);
+            $.getJSON("http://localhost:8000" + location.project + "?format=jsonp&callback=?", function(data) {
+              $('#map_canvas').gmap('openInfoWindow', {'content': renderMapInfoWindow(data)}, this);
+            });
+          }, this);
           });
         });
       });
       // setCSS();
     });
-  });
-  
+
   function renderMapInfoWindow(project) {
+    alert(project.title);
     var html;
     html = '<div class="mapInfoWindow">';
     html += '<a href="' + project.url + '">' + project.title + '</a>';

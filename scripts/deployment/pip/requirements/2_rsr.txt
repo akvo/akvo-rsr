@@ -42,3 +42,7 @@ South==0.7.5
 # App container
 gunicorn==0.14.5
 wsgiref==0.1.2
+
+# API framework
+django-tastypie
+
