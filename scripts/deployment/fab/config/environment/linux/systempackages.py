@@ -93,8 +93,6 @@ class SystemPackageSpecifications(object):
                                      {'name': 'libgcrypt11',        'version': '1.2.4-2ubuntu7'},
                                      {'name': 'libxslt1.1',         'version': '1.1.22-1ubuntu1.2'},
                                      {'name': 'libxslt1-dev',       'version': '1.1.22-1ubuntu1.2'},
-                                     {'name': 'python-libxml2',     'version': '2.6.31.dfsg-2ubuntu1.6'},
-                                     {'name': 'python-libxslt1',    'version': '1.1.22-1ubuntu1.2'},
                                      {'name': 'libfreetype6',       'version': '2.3.5-1ubuntu4.8.04.7'},
                                      {'name': 'libjpeg62',          'version': '6b-14'},
                                      {'name': 'libjpeg62-dev',      'version': '6b-14'}]
@@ -121,8 +119,7 @@ class SystemPackageSpecifications(object):
                  {'name': 'sed',                    'version': '4.1.5-5'},
                  {'name': 'lsb-base',               'version': '4.0-0ubuntu0.8.04.1'},
                  {'name': 'psmisc',                 'version': '22.6-1'},
-                 {'name': 'mysql-server-5.0',       'version': '5.0.51a-3ubuntu5.8'},
-                 {'name': 'python-mysqldb',         'version': '1.2.2-5ubuntu1'}]
+                 {'name': 'mysql-server-5.0',       'version': '5.0.51a-3ubuntu5.8'}]
 
     WEB_SERVER =    [{'name': 'openssl',            'version': '0.9.8g-4ubuntu3.13'},
                      {'name': 'libpcrecpp0',        'version': '7.4-1ubuntu2.1'},
