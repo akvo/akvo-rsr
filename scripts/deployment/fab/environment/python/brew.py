@@ -7,7 +7,7 @@
 
 class PythonBrew(object):
 
-    PYTHONBREW_VERSION = "1.1"
+    PYTHONBREW_VERSION = "1.3"
 
     def __init__(self, host_controller):
         self.host_controller = host_controller
