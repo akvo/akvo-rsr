@@ -12,11 +12,9 @@ class TaskParameters(object):
 
     REMOTE_HOST_CONTROLLER_MODE = 'host_controller_mode=remote'
 
-    def compose_from(self, host_config_specification, additional_task_parameters=None):
+    def compose_from(self, host_config_specification, additional_task_parameters=[]):
         parameter_list = []
         parameter_list.append('%s=%s' % ('host_config_specification', host_config_specification))
-
-        if additional_task_parameters:
-            parameter_list.append(additional_task_parameters)
+        parameter_list.extend(additional_task_parameters)
 
         return ','.join(parameter_list)
