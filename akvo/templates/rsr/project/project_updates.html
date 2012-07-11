@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load url from future %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail markup %}
 {% load url from future %}
 
 
@@ -52,7 +52,7 @@
                     <a href="{{ update.get_absolute_url }}">{{update.title|capfirst}}</a><br />
                   {% endif %}
                   {% if update.text %}
-                    <span class="grey small">{{update.text|smart_truncate:150}}</span>
+                    <span class="grey small">{{update.text|smart_truncate:150|markdown:"safe"}}</span>
                   {% endif %}
                 </p>
               </div>
