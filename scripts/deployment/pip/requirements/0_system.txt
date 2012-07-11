@@ -1,8 +1,4 @@
-# Requirements for building supervisor
-meld3==0.6.8
-
 # System modules -- these would normally be installed outside a virtualenv
 distribute==0.6.27
 virtualenv==1.7.1.2
 virtualenvwrapper==3.4
-supervisor==3.0a12 # currently only operates outside virtualenv
