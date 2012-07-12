@@ -39,7 +39,7 @@
   jQuery.noConflict();
   jQuery(document).ready(function($) {
     var map_canvas = $('#map_canvas');
-    map_canvas.gmap(mapOptions).bind('init', function() {
+    map_canvas.gmap(map_options).bind('init', function() {
       $.getJSON(data_url, function(data) {
         $.each(data, function(i, project) {
           var position = new google.maps.LatLng(project.latitude, project.longitude);
