@@ -68,6 +68,7 @@ def permissions(self):
         change='no',
         delete='no',
         rsr_limited_change='no',
+        publish='no',
         admin_media=settings.MEDIA_URL+'admin/'
     )
 
@@ -89,6 +90,7 @@ def permissions(self):
                 <td style="border:none;"><img src="%(admin_media)simg/icon-%(add)s.gif"></td>
                 <td style="border:none;"><img src="%(admin_media)simg/icon-%(change)s.gif"></td>
                 <td style="border:none;"><img src="%(admin_media)simg/icon-%(delete)s.gif"></td>
+                <td style="border:none;"><img src="%(admin_media)simg/icon-%(publish)s.gif"></td>
                 <td style="border:none;"><img src="%(admin_media)simg/icon-%(rsr_limited_change)s.gif"></td>
             <tr>
         ''' % row
@@ -122,6 +124,7 @@ def permissions(self):
                 <th style="border:none; width:50px;">Add</th>
                 <th style="border:none; width:50px;">Change</th>
                 <th style="border:none; width:50px;">Delete</th>
+                <th style="border:none; width:50px;">Publish</th>
                 <th style="border:none; width:150px;">RSR limited change</th>
             </tr>
             %s

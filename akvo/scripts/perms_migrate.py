@@ -91,7 +91,8 @@ def load(options):
             try:
                 content_type = ContentType.objects.get(app_label=perm['app_label'], model=perm['model'])
             except:
-                return "Content type %s_%s does not exist in this DB" % (perm['app_label'], perm['model'])
+                print "*** Error: Content type %s_%s does not exist in this DB ***" % (perm['app_label'], perm['model'])
+                return
             permission, created = Permission.objects.get_or_create(
                 codename=perm['codename'], content_type=content_type, defaults={'name': perm['name']}
 
@@ -111,9 +112,9 @@ def load(options):
 def get_usage():
     usage = """
   %prog [options] action:
-      action: dump load pretty analyze
+      action: dump load pretty
 """
-    return usage
+    return
 
 
 def run_terminal_command(argv=None):

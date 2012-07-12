@@ -391,26 +391,7 @@ class Organisation(models.Model):
         "How much is still needed to fully fund all projects with $ budget that the organiastion is a partner to"
         return self.published_projects().dollars().distinct().aggregate(
             dollar_funds_needed=Sum('funds_needed'))['dollar_funds_needed'] or 0
-
     # New API end
-
-#    def funding(self):
-#        my_projs = self.active_projects()
-#        # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
-#        # work because values_list used in qs_column_sum will not return more
-#        # than one of the same value. This leads to the wrong sum when same amount
-#        # has been pledged to multiple projects
-#        all_active = Project.objects.published().status_not_cancelled().status_not_archived()
-#        return {
-#            'total_euros': my_projs.euros().total_total_budget(),
-#            'donated_euros': my_projs.euros().total_donated(),
-#            'pledged_euros': all_active.euros().total_pledged(self),
-#            'still_needed_euros': my_projs.euros().total_funds_needed(),
-#            'total_dollars': my_projs.dollars().total_total_budget(),
-#            'donated_dollars': my_projs.dollars().total_donated(),
-#            'pledged_dollars': all_active.dollars().total_pledged(self),
-#            'still_needed_dollars': my_projs.dollars().total_funds_needed()
-#        }
 
     class Meta:
         verbose_name=_(u'organisation')
@@ -591,6 +572,13 @@ class OrganisationsQuerySetManager(QuerySetManager):
 
 
 class Project(models.Model):
+    PUBLISHING_STATUS_UNPUBLISHED   = 'unpublished'
+    PUBLISHING_STATUS_PUBLISHED     = 'published'
+    PUBLISHING_STATUS = (
+        (PUBLISHING_STATUS_UNPUBLISHED, _(u'Unpublished')),
+        (PUBLISHING_STATUS_PUBLISHED, _(u'Published')),
+    )
+
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
@@ -601,28 +589,24 @@ class Project(models.Model):
     partners = models.ManyToManyField(Organisation, verbose_name=_(u'partners'), through=Partnership, related_name='projects',)
     project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=400, help_text=_(u'Briefly summarize the project (400 characters).'))
     current_image = ImageWithThumbnailsField(
-                        _(u'project photo'),
-                        blank=True,
-                        upload_to=image_path,
-                        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-                        help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
-                    )
+        _(u'project photo'),
+        blank=True,
+        upload_to=image_path,
+        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+        help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
+    )
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
-
-#    goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-#    goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
-#    goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
-#    goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
-#    goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
 
     current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
     project_plan = models.TextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
     sustainability = models.TextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
     background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
 
+    # meta
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
+    publishing_status = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default=PUBLISHING_STATUS_UNPUBLISHED)
 
     #budget
     currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
@@ -720,26 +704,16 @@ class Project(models.Model):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
 
-#    @property
-#    def primary_location(self, location=None):
-#        '''Return a project's primary location'''
-#        qs = self.locations.filter(primary=True)
-#        qs = qs.exclude(latitude=0, longitude=0)
-#        if qs:
-#            location = qs[0]
-#            return location
-#        return
-
     class QuerySet(QuerySet):
 
         def has_location(self):
             return self.filter(primary_location__isnull=False)
 
         def published(self):
-            return self.filter(publishingstatus__status='published')
+            return self.filter(publishing_status=Project.PUBLISHING_STATUS_PUBLISHED)
 
         def unpublished(self):
-            return self.filter(publishingstatus__status='unpublished')
+            return self.filter(publishing_status=Project.PUBLISHING_STATUS_UNPUBLISHED)
 
         def status_none(self):
             return self.filter(status__exact='N')
@@ -787,155 +761,6 @@ class Project(models.Model):
                 n.b. non-chainable, doesn't return a QS
             '''
             return self.aggregate(budget=Sum('budget'),)
-
-#        def pledged(self, org=None):
-#            if org:
-#                self.filter(funding_organisation__exact=org)
-#            return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
-
-#        def funding(self, organisation=None):
-#            '''create extra columns "funds_needed", "pledged" and "donated"
-#            that calculate the respective values for each project in the queryset
-#            '''
-#            funding_queries = {
-#                #how much money does the project need to be fully funded, given that all pending donations complete
-#                'funds_needed':
-#                    ''' (SELECT DISTINCT (
-#                            SELECT CASE
-#                                WHEN Sum(amount) IS NULL THEN 0
-#                                ELSE Sum(amount)
-#                            END
-#                            FROM  rsr_budgetitem
-#                            WHERE rsr_budgetitem.project_id = rsr_project.id
-#                        ) - (
-#                            SELECT CASE
-#                                WHEN Sum(funding_amount) IS NULL THEN 0
-#                                ELSE Sum(funding_amount)
-#                            END
-#                            FROM  rsr_partnership
-#                            WHERE rsr_partnership.project_id = rsr_project.id
-#                            AND   rsr_partnership.partner_type = '%s'
-#                        ) - (
-#                            SELECT CASE
-#                                WHEN Sum(amount) IS NULL THEN 0
-#                                ELSE Sum(amount)
-#                            END
-#                            FROM  rsr_invoice
-#                            WHERE rsr_invoice.project_id = rsr_project.id
-#                            AND   rsr_invoice.status = %d
-#                        ) - (
-#                            SELECT CASE
-#                                WHEN Sum(amount_received) IS NULL THEN 0
-#                                ELSE Sum(amount_received)
-#                            END
-#                            FROM  rsr_invoice
-#                            WHERE rsr_invoice.project_id = rsr_project.id
-#                            AND   rsr_invoice.status = %d
-#                        ))
-#                        ''' % (
-#                            Partnership.FUNDING_PARTNER,
-#                            PAYPAL_INVOICE_STATUS_PENDING,
-#                            PAYPAL_INVOICE_STATUS_COMPLETE
-#                        ),
-#                    #how much money has been donated by individual donors, including pending donations
-#                    'donated':
-#                        ''' (SELECT DISTINCT (
-#                                SELECT CASE
-#                                    WHEN Sum(amount) IS NULL THEN 0
-#                                    ELSE Sum(amount)
-#                                END
-#                                FROM rsr_invoice
-#                                WHERE rsr_invoice.project_id = rsr_project.id
-#                                AND rsr_invoice.status = %d
-#                            ) + (
-#                                SELECT CASE
-#                                    WHEN Sum(amount_received) IS NULL THEN 0
-#                                    ELSE Sum(amount_received)
-#                                END
-#                                FROM rsr_invoice
-#                                WHERE rsr_invoice.project_id = rsr_project.id
-#                                AND rsr_invoice.status = %d
-#                            ))
-#                        ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
-#                    #how much donated money from individuals is pending
-#                    'pending':
-#                        ''' (SELECT CASE
-#                                WHEN Sum(amount) IS NULL THEN 0
-#                                ELSE Sum(amount)
-#                            END
-#                            FROM rsr_invoice
-#                            WHERE rsr_invoice.project_id = rsr_project.id
-#                                AND rsr_invoice.status = %d
-#                            )
-#                        ''' % PAYPAL_INVOICE_STATUS_PENDING,
-#                    #the total budget for the project as per the budgetitems
-#                    'total_budget':
-#                        ''' (SELECT CASE
-#                                WHEN SUM(amount) IS NULL THEN 0
-#                                ELSE SUM(amount)
-#                            END
-#                            FROM rsr_budgetitem
-#                            WHERE rsr_budgetitem.project_id = rsr_project.id)
-#                        ''',
-#                }
-#                #how much has been pledged by organisations. if an org param is supplied
-#                #this is modified to show huw much _that_ org has pledged to each project
-#            pledged = {
-#                'pledged':
-#                    ''' (SELECT CASE
-#                            WHEN Sum(funding_amount) IS NULL THEN 0
-#                            ELSE Sum(funding_amount)
-#                        END
-#                        FROM rsr_partnership
-#                        WHERE rsr_partnership.project_id = rsr_project.id
-#                        AND   rsr_partnership.partner_type = '%s'
-#                    ''' % (Partnership.FUNDING_PARTNER,)
-#            }
-#            if organisation:
-#                pledged['pledged'] = '''%s
-#                    AND rsr_partnership.organisation_id = %d''' % (
-#                        pledged['pledged'], organisation.pk
-#                    )
-#            pledged['pledged'] = "%s)" % pledged['pledged']
-#            funding_queries.update(pledged)
-#            return self.extra(select=funding_queries)
-
-#        def need_funding(self):
-#            "projects that projects need funding"
-#            #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
-#            #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
-#            return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
-
-#        def need_funding_count(self):
-#            "how many projects need funding"
-#            return len(self.need_funding())
-#
-#        def total_funds_needed(self):
-#            "how much money the projects still need"
-#            return qs_column_sum(self.funding(), 'funds_needed')
-#
-#        def total_total_budget(self):
-#            "how much money the projects still need"
-#            return qs_column_sum(self.funding(), 'total_budget')
-#
-#        def total_pledged(self, org=None):
-#            '''
-#            how much money has been commited to the projects
-#            if org is supplied, only money pledeg by that org is calculated
-#            '''
-#            return qs_column_sum(self.funding(org), 'pledged')
-#
-#        def total_donated(self):
-#            "how much money has bee donated by individuals"
-#            return qs_column_sum(self.funding(), 'donated')
-#
-#        def total_pending(self):
-#            "individual donations still pending"
-#            return qs_column_sum(self.funding(), 'pending')
-#
-#        def total_pending_negative(self):
-#            "individual donations still pending NEGATIVE (used by akvo at a glance)"
-#            return -qs_column_sum(self.funding(), 'pending')
 
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
@@ -1078,37 +903,15 @@ class Project(models.Model):
         return is_connected
 
     def is_published(self):
-        if self.publishingstatus:
-            return self.publishingstatus.status == 'published'
-        return False
+        return self.publishing_status == self.PUBLISHING_STATUS_PUBLISHED
     is_published.boolean = True
+    is_published.admin_order_field = 'publishing_status'
 
     def akvopedia_links(self):
         return self.links.filter(kind='A')
 
     def external_links(self):
         return self.links.filter(kind='E')
-
-#    #shortcuts to funding/budget data for a single project
-#    def funding_pledged(self, organisation=None):
-#        return Project.objects.funding(organisation).get(pk=self.pk).pledged
-#
-#    def funding_donated(self):
-#        return Project.objects.funding().get(pk=self.pk).donated
-#
-#    def funding_total_given(self):
-#        # Decimal(str(result)) conversion is necessary
-#        # because SQLite doesn't handle decimals natively
-#        # See item 16 here: http://www.sqlite.org/faq.html
-#        # MySQL and PostgreSQL are not affected by this limitation
-#        result = self.funding_pledged() + self.funding_donated()
-#        decimal_result = Decimal(str(result))
-#        return decimal_result
-#
-#    def funding_still_needed(self):
-#        result =  Project.objects.funding().get(pk=self.pk).funds_needed
-#        decimal_result = Decimal(str(result))
-#        return decimal_result
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
@@ -1170,6 +973,7 @@ class Project(models.Model):
     class Meta:
         permissions         = (
             ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
+            ("publish_project", u'Can publish project'),
         )
         verbose_name        = _(u'project')
         verbose_name_plural = _(u'projects')
@@ -1247,29 +1051,6 @@ class BudgetItem(models.Model):
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
-
-
-class PublishingStatus(models.Model):
-    """
-    Keep track of publishing status. Only for projects now, but possible to
-    extend to other object types.
-    """
-    PUBLISHING_STATUS = (
-        ('unpublished', _(u'Unpublished')),
-        ('published', _(u'Published')),
-    )
-    #TODO: change to a generic relation if we want to have publishing stats on
-    #other objects than projects
-    project = models.OneToOneField(Project,)
-    status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
-
-    class Meta:
-        verbose_name        = _(u'publishing status')
-        verbose_name_plural = _(u'publishing statuses')
-        ordering            = ('-status', 'project')
-
-    def project_info(self):
-        return self.project
 
 
 class Link(models.Model):
@@ -1389,7 +1170,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         else:
             return None
 
-    #methods that insteract with the User model
+    #methods that interact with the User model
     def get_is_active(self):
         return self.user.is_active
     get_is_active.boolean = True #make pretty icons in the admin list view
