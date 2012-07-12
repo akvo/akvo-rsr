@@ -3,7 +3,7 @@
 {# HTML markup #}
 <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
 {% tplhandlebars 'map_info_window_template' %}
-<div id="mapInfoWindow">
+<div class="map_info_window">
   <a href="{{url}}">{{title}}</a>
   <p class="small gray">More information goes here...</p>
 </div>
@@ -18,32 +18,32 @@
 {% handlebars_js %}
 
 <script>
-  var dataURL, map, mapOptions, mapType, markerIcon;
+  var data_url, map_options, map_type, marker_icon;
 
-  dataURL = '{{ data_url }}';
-  markerIcon = '{{ marker_icon }}';
-  mapType = '{{ map_type }}';
+  data_url = '{{ data_url }}';
+  map_type = '{{ map_type }}';
+  marker_icon = '{{ marker_icon }}';
 
-  mapOptions = {
+  map_options = {
     center: new google.maps.LatLng(0, 0),
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    mapTypeId: google.maps.mapTypeId.ROADMAP,
     scrollwheel: false,
     streetViewControl: false
   };
 
-  if (mapType === 'static') {
-    icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
-    mapOptions.draggable = false;
-    mapOptions.disableDefaultUI = true;
+  if (map_type === 'static') {
+    icon = new google.maps.MarkerImage(marker_icon, null, null, null, new google.maps.Size(10.5,17));
+    map_options.draggable = false;
+    map_options.disableDefaultUI = true;
   } else {
-    icon = new google.maps.MarkerImage(markerIcon);
+    icon = new google.maps.MarkerImage(marker_icon);
   }
 
   jQuery.noConflict();
   jQuery(document).ready(function($) {
     var map_canvas = $('#map_canvas');
     map_canvas.gmap(mapOptions).bind('init', function() {
-      $.getJSON(dataURL, function(data) {
+      $.getJSON(data_url, function(data) {
         $.each(data, function(i, project) {
           var position = new google.maps.LatLng(project.latitude, project.longitude);
           map_canvas.gmap('addMarker', {
@@ -52,6 +52,7 @@
               'position': position,
               'title': project.title
           })
+          .gmap('addBounds', position)
           .click(function() {
             var content, template;
             template = Handlebars.compile($('#map_info_window_template').html());
@@ -68,7 +69,7 @@
     var css, head, style, rules;  
 
     css = '#map_canvas {font-size: 12px; font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;}';
-    css += '.mapInfoWindow {min-height: 150px;}';
+    css += '.map_info_window {min-height: 150px;}';
       
     head = document.getElementsByTagName('head')[0];
     style = document.createElement('style');
