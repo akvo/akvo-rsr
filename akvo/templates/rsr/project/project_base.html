@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags markup %}
 {% load url from future %}
 
 
@@ -83,7 +83,7 @@
                             <div style="float:left; width:175px;">
                                 <p class="small last" style="padding:5px 5px 0 5px;">
                                     <b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b>
-                                    <br/>{{update.text|smart_truncate:50}}
+                                    <br/>{{update.text|smart_truncate:50|markdown:"safe"}}
                                 </p>
                             </div>
                             <div style="float:right; width:116px;">
@@ -98,7 +98,7 @@
                 <div style="float:left; width:175px;">
                   <p class="small last" style="padding:5px 5px 0 5px;">
                               <b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b>
-                    <br/>{{update.text|smart_truncate:50}}
+                    <br/>{{update.text|smart_truncate:50|markdown:"safe"}}
                   </p>
                 </div>
                 <div style="float:right; width:116px; height: 100px; text-align:right;">
@@ -110,7 +110,7 @@
               {% else %}
                 <p class="small" style="padding:5px; margin-bottom:5px;">
                   <b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b><br />
-                  {{update.text|smart_truncate:150}}
+                  {{update.text|smart_truncate:150|markdown:"safe"}}
                 </p>
               {% endif %}
                         {% endif %}

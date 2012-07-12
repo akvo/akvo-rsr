@@ -17,10 +17,26 @@ from paypal.standard.ipn.views import ipn as paypal_ipn
 # The next two lines enable the admin and load each admin.py file:
 from django.contrib import admin
 admin.autodiscover()
+
 # The next two lines enable djangoembed in the admin
 import oembed
 oembed.autodiscover()
 
+# tastypie (api)
+from tastypie.api import Api
+from akvo.api.resources import (
+    ProjectResource, CategoryResource, LinkResource, OrganisationResource, PartnershipResource,
+    ProjectLocationResource, CountryResource, OrganisationLocationResource,
+)
+v1_api = Api(api_name='v1')
+v1_api.register(CategoryResource())
+v1_api.register(CountryResource())
+v1_api.register(LinkResource())
+v1_api.register(ProjectResource())
+v1_api.register(OrganisationResource())
+v1_api.register(PartnershipResource())
+v1_api.register(ProjectLocationResource())
+v1_api.register(OrganisationLocationResource())
 
 # Multi-lingual urls
 # urlpatterns = i18n_patterns('',
@@ -145,6 +161,7 @@ urlpatterns = patterns('',
         'akvo.rsr.views.myakvo_cancel_reporter', name='myakvo_cancel_reporter'),
 
     url(r'^rsr/myakvo/$', 'akvo.rsr.views.update_user_profile', name='myakvo'),
+
 )
 
 # Non muli-lingual urls
@@ -237,7 +254,10 @@ urlpatterns += patterns('',
 # API
 urlpatterns += patterns('',
     #django-piston
-    (r'^rsr/api/', include('akvo.api.urls')),
+    (r'^rsr/api/', include('akvo.api.piston_urls')),
+
+    #tastypie
+    (r'^api/', include(v1_api.urls)),
 )
 
 # Widgets

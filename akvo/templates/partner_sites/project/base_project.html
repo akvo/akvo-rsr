@@ -1,5 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail rsr_filters humanize %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters humanize markup %}
 {% load url from future %}
 
 
@@ -81,7 +81,7 @@
                 <div style="float:left; width:170px;">
                   <p class="small marg_bottom0" style="margin-top: 15px;">
                     <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b>
-                    <br/>{{update.text|smart_truncate:50}}
+                    <br/>{{update.text|smart_truncate:50|markdown:"safe"}}
                   </p>
                 </div>
                 {% if update.video %}
@@ -105,7 +105,7 @@
                 <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
                 <p class="small marg_bottom0" style="margin-top: 15px;">
                   <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
-                  {{update.text|smart_truncate:120}}
+                  {{update.text|smart_truncate:120|markdown:"safe"}}
                 </p>
               </div>
             {% endif %}

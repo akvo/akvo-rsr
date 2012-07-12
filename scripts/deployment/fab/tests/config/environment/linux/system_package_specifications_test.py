@@ -68,9 +68,8 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
     def test_has_expected_package_specifications_for_python_package_dependencies(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected package specifications for Python package dependencies"""
 
-        expected_packages = ['python-support', 'python-central', 'libxml2', 'libxml2-dev', 'libgpg-error0',
-                             'libgcrypt11', 'libxslt1.1', 'libxslt1-dev', 'python-libxml2', 'python-libxslt1',
-                             'libfreetype6', 'libjpeg62', 'libjpeg62-dev']
+        expected_packages = ['python-support', 'python-central', 'libxml2', 'libxml2-dev', 'libgpg-error0', 'libgcrypt11',
+                             'libxslt1.1', 'libxslt1-dev', 'libfreetype6', 'libjpeg62', 'libjpeg62-dev']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.PYTHON_PACKAGE_DEPENDENCIES))
 
@@ -87,7 +86,7 @@ class SystemPackageSpecificationsTest(unittest2.TestCase):
 
         expected_packages = ['mysql-common', 'libmysqlclient15off', 'libmysqlclient15-dev', 'libnet-daemon-perl',
                              'libplrpc-perl', 'libdbi-perl', 'libdbd-mysql-perl', 'libwrap0', 'mysql-client-5.0',
-                             'ncurses-bin', 'sed', 'lsb-base', 'psmisc', 'mysql-server-5.0', 'python-mysqldb']
+                             'ncurses-bin', 'sed', 'lsb-base', 'psmisc', 'mysql-server-5.0']
 
         self.assertEqual(expected_packages, self._package_names_in(SystemPackageSpecifications.DATABASE))
 

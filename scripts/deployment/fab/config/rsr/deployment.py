@@ -12,7 +12,7 @@ from fab.config.rsr.codebase import RSRCodebaseConfig
 
 class RSRDeploymentConfig(object):
 
-    DJANGO_LIB_PATH = 'lib/python2.5/site-packages/django'
+    DJANGO_LIB_PATH = 'lib/python2.7/site-packages/django'
 
     def __init__(self, deployment_host_paths, deployment_user, codebase_config):
         self.deployment_user = deployment_user

@@ -1,5 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail humanize rsr_filters %}
+{% load i18n rsr_tags webdesign thumbnail humanize rsr_filters markup %}
 {% load url from future %}
 
 
@@ -50,7 +50,7 @@
                   <a href="{% url 'update_main' project.id update.id %}">{{update.title|capfirst}}</a><br />
                 {% endif %}
                 {% if update.text %}
-                  <span class="grey small">{{update.text|smart_truncate:150}}</span>
+                  <span class="grey small">{{update.text|smart_truncate:150|markdown:"safe"}}</span>
                 {% endif %}
               </p>
             </div>
