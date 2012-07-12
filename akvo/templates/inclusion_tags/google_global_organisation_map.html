@@ -17,21 +17,18 @@
 {% handlebars_js %}
 
 <script>
-  var data_url, map_options, map_type, marker_icon;
-
-  data_url = '{{ data_url }}'; {# to be replaced with Akvo RSR API resource #}
-  marker_icon = '{{ marker_icon }}';
-  map_type = '{{ map_type }}';
-
-	map_options = {
-	  center: new google.maps.LatLng(0, 0),
-	  mapTypeId: google.maps.MapTypeId.ROADMAP,
-	  scrollwheel: false,
-    streetViewControl: false
-  };
+  var data_url = '{{ data_url }}', {# to be replaced with Akvo RSR API resource #}
+	    map_options = {
+	      center: new google.maps.LatLng(0, 0),
+	      mapTypeId: google.maps.MapTypeId.ROADMAP,
+	      scrollwheel: false,
+        streetViewControl: false
+      },
+      map_type = '{{ map_type }}',
+      marker_icon = '{{ marker_icon }}';
 
   if (map_type === 'static') {
-    icon = new google.maps.MarkerImage(marker_icon, null, null, null, new google.maps.Size(10.5,17));
+    icon = new google.maps.MarkerImage(marker_icon, null, null, null, new google.maps.Size(10.5, 17));
     map_options.draggable = false;
     map_options.disableDefaultUI = true;
   } else {
@@ -52,9 +49,8 @@
             'title': organisation.name
           })
           .click(function() {
-            var content, template;
-            template = Handlebars.compile($('#map_info_window_template').html());
-            content = handlebarsTemplate(organisation);
+            var template = Handlebars.compile($('#map_info_window_template').html()),
+                content = handlebarsTemplate(organisation);
             map_canvas.gmap('openInfoWindow', {'content': content}, this);
           });
         });
