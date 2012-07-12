@@ -44,10 +44,10 @@
         $.each(data, function(i, project) {
           var position = new google.maps.LatLng(project.latitude, project.longitude);
           map_canvas.gmap('addMarker', {
-              'bounds': true,
-              'icon': icon,
-              'position': position,
-              'title': project.title
+            'bounds': true,
+            'icon': icon,
+            'position': position,
+            'title': project.title
           })
           .click(function() {
             var template = Handlebars.compile($('#map_info_window_template').html()),
