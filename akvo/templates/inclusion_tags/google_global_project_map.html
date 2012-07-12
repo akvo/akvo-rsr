@@ -2,7 +2,7 @@
 
 {# HTML markup #}
 <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
-{% tplhandlebars "map_info_window_template" %}
+{% tplhandlebars 'map_info_window_template' %}
 <div id="mapInfoWindow">
   <a href="{{url}}">{{title}}</a>
   <p class="small gray">More information goes here...</p>
@@ -45,10 +45,7 @@
     map_canvas.gmap(mapOptions).bind('init', function() {
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
-          var handlebarsTemplate, infoWindowContent, position;
-          handlebarsTemplate = Handlebars.compile($('#map_info_window_template').html());
-          infoWindowContent = handlebarsTemplate(project);
-          position = new google.maps.LatLng(project.latitude, project.longitude);
+          var position = new google.maps.LatLng(project.latitude, project.longitude);
           map_canvas
             .gmap('addMarker', {
               'bounds': true,
@@ -57,9 +54,10 @@
               'title': project.title
             })
             .click(function() {
-              map_canvas.gmap('openInfoWindow', {
-                'content': infoWindowContent
-              }, this);
+              var content, template;
+              template = Handlebars.compile($('#map_info_window_template').html());
+              content = handlebarsTemplate(project);
+              map_canvas.gmap('openInfoWindow', {'content': content}, this);
             });
         });
       });

@@ -44,10 +44,7 @@
     map_canvas.gmap(mapOptions).bind('init', function() {
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, organisation) {
-          var handlebarsTemplate, inforWindowContent, position;
-          handlebarsTemplate = Handlebars.compile($('#map_info_window_template').html());
-          infoWindowContent = handlebarsTemplate(organisation);
-          position = new google.maps.LatLng(organisation.latitude, organisation.longitude);
+          var position = new google.maps.LatLng(organisation.latitude, organisation.longitude);
           map_canvas.gmap('addMarker', {
             'bounds': true,
             'icon': icon,
@@ -55,9 +52,10 @@
             'title': organisation.name
           })
           .click(function() {
-            map_canvas.gmap('openInfoWindow', {
-              'content': infoWindowContent
-            }, this)
+            var content, template;
+            template = Handlebars.compile($('#map_info_window_template').html());
+            content = handlebarsTemplate(organisation);
+            map_canvas.gmap('openInfoWindow', {'content': content}, this);
           });
         });
       });
