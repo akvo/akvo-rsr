@@ -9,6 +9,7 @@ django-paypal==0.1.2
 django-piston==0.2.3
 django-registration==0.8
 django-rosetta==0.6.8
+django-templatetag-handlebars==1.2.0
 sorl-thumbnail==3.2.5
 
 # Django apps from VCS web services
