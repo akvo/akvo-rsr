@@ -5,6 +5,7 @@
 {% tplhandlebars "map_info_window_template" %}
 <div id="mapInfoWindow">
   <a href="{{url}}">{{title}}</a>
+  <p class="small gray">More information goes here...</p>
 </div>
 {% endtplhandlebars %}
 
@@ -50,9 +51,9 @@
           position = new google.maps.LatLng(project.latitude, project.longitude);
           map_canvas
             .gmap('addMarker', {
+              'bounds': true,
               'icon': icon,
               'position': position,
-              'bounds': true,
               'title': project.title
             })
             .click(function() {
