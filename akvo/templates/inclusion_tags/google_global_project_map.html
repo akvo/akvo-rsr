@@ -39,19 +39,19 @@
   jQuery.noConflict();
   jQuery(document).ready(function($) {
     var map_canvas = $('#map_canvas');
-    map_canvas.gmap(mapOptions).bind('init', function() {
+    map_canvas.gmap(map_options).bind('init', function() {
       $.getJSON(data_url, function(data) {
         $.each(data, function(i, project) {
           var position = new google.maps.LatLng(project.latitude, project.longitude);
           map_canvas.gmap('addMarker', {
-              'bounds': true,
-              'icon': icon,
-              'position': position,
-              'title': project.title
+            'bounds': true,
+            'icon': icon,
+            'position': position,
+            'title': project.title
           })
           .click(function() {
             var template = Handlebars.compile($('#map_info_window_template').html()),
-                content = handlebarsTemplate(project);
+                content = template(project);
             map_canvas.gmap('openInfoWindow', {'content': content}, this);
           });
         });

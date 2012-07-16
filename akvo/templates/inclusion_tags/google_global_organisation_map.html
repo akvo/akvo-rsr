@@ -50,7 +50,7 @@
           })
           .click(function() {
             var template = Handlebars.compile($('#map_info_window_template').html()),
-                content = handlebarsTemplate(organisation);
+                content = template(organisation);
             map_canvas.gmap('openInfoWindow', {'content': content}, this);
           });
         });
