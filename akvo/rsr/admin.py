@@ -172,6 +172,9 @@ class OrganisationAccountAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
+#class LinkAdmin(admin.ModelAdmin):
+#    list_display = ('url', 'caption', 'show_link', )
+
 class LinkInline(admin.TabularInline):
     model = get_model('rsr', 'link')
     extra = 3
@@ -307,6 +310,22 @@ class BudgetAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budget')
 
 
+class PublishingStatusAdmin(admin.ModelAdmin):
+    list_display = (u'project_info', u'status', )
+
+admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
+
+
+#class ProjectAdminForm(forms.ModelForm):
+#    class Meta:
+#        model = get_model('rsr', 'project')
+#
+#    def clean(self):
+#        return self.cleaned_data
+#
+#admin.site.register(get_model('rsr', 'location'))
+
+
 class FocusAreaAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'FocusArea')
     list_display = ('name', 'slug', 'image',)
@@ -405,23 +424,15 @@ class ProjectAdmin(admin.ModelAdmin):
     )
     save_as = True
     fieldsets = (
-        (_(u'Publishing status'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Blurb about publishing status'
-            ),
-            'fields': (
-                'publishing_status',
-                ),
-            }),
         (_(u'Project description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Give your project a short title and subtitle in RSR. These fields are the '
                 u'newspaper headline for your project: use them to attract attention to what you are doing.'
             ),
-            'fields': (
-                'title', 'subtitle', 'status',
-                ),
-            }),
+           'fields': (
+               'title', 'subtitle', 'status',
+           ),
+        }),
         (_(u'Categories'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Please select all categories applicable to your project. '
@@ -478,7 +489,16 @@ class ProjectAdmin(admin.ModelAdmin):
         )
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     list_filter = ('currency', 'status', )
+    readonly_fields = ('budget', 'funds',  'funds_needed',)
     #form = ProjectAdminForm
+
+    def get_actions(self, request):
+        """ Remove delete admin action for "non certified" users"""
+        actions = super(ProjectAdmin, self).get_actions(request)
+        opts = self.opts
+        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+            del actions['delete_selected']
+        return actions
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
@@ -488,14 +508,6 @@ class ProjectAdmin(admin.ModelAdmin):
         """
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
         super(ProjectAdmin, self).__init__(model, admin_site)
-
-    def get_actions(self, request):
-        """ Remove delete admin action for "non certified" users"""
-        actions = super(ProjectAdmin, self).get_actions(request)
-        opts = self.opts
-        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
-            del actions['delete_selected']
-        return actions
 
     def queryset(self, request):
         """
@@ -511,12 +523,6 @@ class ProjectAdmin(admin.ModelAdmin):
             return qs.filter(pk__in=projects)
         else:
             raise PermissionDenied
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = ['budget', 'funds',  'funds_needed',]
-        if not request.user.has_perm('rsr.publish_project'):
-            readonly_fields += ['publishing_status']
-        return readonly_fields
 
     def has_change_permission(self, request, obj=None):
         """
