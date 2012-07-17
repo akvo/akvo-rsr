@@ -1,5 +1,5 @@
 {% extends "widgets/base_widget.html" %}
-{% load i18n rsr_tags rsr_filters thumbnail humanize %}
+{% load i18n rsr_tags rsr_filters thumbnail humanize markdown %}
 {% load url from future %}
 
 
@@ -109,7 +109,7 @@
 					</div>
 			    {% endif %}
 				<p class="smallFont" style="margin-top:3px;">
-					{{latest_update.text|smart_truncate:120}}					
+					{{latest_update.text|smart_truncate:120|markdown:"safe"}}
 					<a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
 				</p>
 			{% else %}

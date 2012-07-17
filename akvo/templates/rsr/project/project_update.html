@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load url from future %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags markup %}
 
 
 {% block breadcrum_items %}
@@ -52,7 +52,7 @@
   <div class="clear"></div>
   <div class="space20">
     {% if update.text_location == 'B' %}
-      {{ update.text|linebreaks }}
+      {{ update.text|markdown:"safe"|urlize }}
     {% endif %}	
     {% if update.video %}
       <div style="margin: 10px 10px 30px 20px;">
@@ -76,7 +76,7 @@
       {% update_thumb update 580 435 %}
     {% endif %}   	
     {% if update.text_location == 'E' %}
-      {{ update.text|linebreaks }}
+      {{ update.text|markdown:"safe" }}
     {% endif %}
     <hr style="margin-bottom:5px;" />
     <div class="text_right">
