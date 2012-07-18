@@ -46,7 +46,7 @@
         map_canvas = $('#map_canvas');
     $.ajaxSetup({
       complete: function() {
-        $('#ajax_loader').fadeOut();
+        ajax_loader.fadeOut();
       }
     });
     map_canvas.gmap(map_options).bind('init', function() {
