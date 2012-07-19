@@ -9,7 +9,9 @@
 {% tplhandlebars "map_info_window_template" %}
 <div class="map_info_window">
   <a href="{{url}}">{{title}}</a>
+  {{#if image_url}}
   <img src="{{image_url}}" alt="">
+  {{/if}}
 </div>
 {% endtplhandlebars %}
 
