@@ -42,7 +42,6 @@ import random
 import re
 import simplejson as json
 
-from easy_thumbnails.files import get_thumbnailer
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 from notification.models import Notice
@@ -1347,31 +1346,30 @@ def data_overview(request):
 
 @cache_page(60 * 15)
 def global_project_map_json(request):
-    "Should be replaced with API calls when he API is ready."
+    "Should be replaced with API calls when the API is ready."
     data = []
     for project in Project.objects.published():
-        image_options = dict(size=(100, 100), crop=True)
-        image_url = get_thumbnailer(project.current_image).get_thumbnail(image_options).url
         for location in project.locations.all():
             data.append(dict(title=project.title,
                              url=project.get_absolute_url(),
                              latitude=location.latitude,
                              longitude=location.longitude,
-                             image_url=image_url))
+                             image_url=project.current_image.url))
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @cache_page(60 * 15)
 def global_organisation_map_json(request):
     "Should be replaced with API calls when the API is ready."
-    locations = []
+    data = []
     for organisation in Organisation.objects.has_location():
         for location in organisation.locations.all():
-            locations.append(dict(name=organisation.name,
-                                  url=organisation.get_absolute_url(),
-                                  latitude=location.latitude,
-                                  longitude=location.longitude))
-    return HttpResponse(json.dumps(locations), content_type="application/json")
+            data.append(dict(name=organisation.name,
+                             url=organisation.get_absolute_url(),
+                             latitude=location.latitude,
+                             longitude=location.longitude,
+                             logo_url=organisation.logo.url))
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @cache_page(60 * 15)
@@ -1384,7 +1382,8 @@ def global_organisation_projects_map_json(request, org_id):
             locations.append(dict(title=project.title,
                                   url=project.get_absolute_url(),
                                   latitude=location.latitude,
-                                  longitude=location.longitude))
+                                  longitude=location.longitude,
+                                  image_url=project.current_image.url))
     callback = request.GET.get('callback')
     location_data = json.dumps(locations)
     if callback:
