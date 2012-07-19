@@ -42,6 +42,7 @@ import random
 import re
 import simplejson as json
 
+from easy_thumbnails.files import get_thumbnailer
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
 from notification.models import Notice
@@ -1347,14 +1348,17 @@ def data_overview(request):
 @cache_page(60 * 15)
 def global_project_map_json(request):
     "Should be replaced with API calls when he API is ready."
-    locations = []
+    data = []
     for project in Project.objects.published():
+        image_options = dict(size=(100, 100), crop=True)
+        image_url = get_thumbnailer(project.current_image).get_thumbnail(image_options).url
         for location in project.locations.all():
-            locations.append(dict(title=project.title,
-                                  url=project.get_absolute_url(),
-                                  latitude=location.latitude,
-                                  longitude=location.longitude))
-    return HttpResponse(json.dumps(locations), content_type="application/json")
+            data.append(dict(title=project.title,
+                             url=project.get_absolute_url(),
+                             latitude=location.latitude,
+                             longitude=location.longitude,
+                             image_url=image_url))
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @cache_page(60 * 15)

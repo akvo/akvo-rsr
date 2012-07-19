@@ -1,7 +1,7 @@
 {% load i18n l10n templatetag_handlebars %}
 
 {# HTML markup #}
-<div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;">
+<div id="map_canvas" style="width: {{width}}px; height: {{height}}px;">
   <div id="ajax_loader">
     <img src="{{MEDIA_URL}}core/img/ajax-loader.gif" alt="">
   </div>
@@ -9,7 +9,7 @@
 {% tplhandlebars "map_info_window_template" %}
 <div class="map_info_window">
   <a href="{{url}}">{{title}}</a>
-  <p class="small gray">More information goes here...</p>
+  <img src="{{image_url}}" alt="">
 </div>
 {% endtplhandlebars %}
 
@@ -22,15 +22,15 @@
 <script src="{{MEDIA_URL}}core/js/handlebars-1.0.0.beta.6.min.js"></script>
 
 <script>
-  var data_url = '{{ data_url }}',
+  var data_url = '{{data_url}}',
       map_options = {
         center: new google.maps.LatLng(0, 0),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         scrollwheel: false,
         streetViewControl: false
       },
-      map_type = '{{ map_type }}',
-      marker_icon = '{{ marker_icon }}';
+      map_type = '{{map_type}}',
+      marker_icon = '{{marker_icon}}';
 
   if (map_type === 'static') {
     icon = new google.maps.MarkerImage(marker_icon, null, null, null, new google.maps.Size(10.5, 17));
