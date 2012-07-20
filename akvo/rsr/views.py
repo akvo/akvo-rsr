@@ -1345,45 +1345,51 @@ def data_overview(request):
 
 
 @cache_page(60 * 15)
-def global_project_map_json(request):
+def global_project_map_json(request, image_url=""):
     "Should be replaced with API calls when the API is ready."
     data = []
     for project in Project.objects.published():
+        if project.current_image:
+            image_url = project.current_image.url
         for location in project.locations.all():
             data.append(dict(title=project.title,
                              url=project.get_absolute_url(),
                              latitude=location.latitude,
                              longitude=location.longitude,
-                             image_url=project.current_image.url))
+                             image_url=image_url))
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @cache_page(60 * 15)
-def global_organisation_map_json(request):
+def global_organisation_map_json(request, logo_url=""):
     "Should be replaced with API calls when the API is ready."
     data = []
     for organisation in Organisation.objects.has_location():
+        if organisation.logo:
+            logo_url = organisation.logo.url
         for location in organisation.locations.all():
             data.append(dict(name=organisation.name,
                              url=organisation.get_absolute_url(),
                              latitude=location.latitude,
                              longitude=location.longitude,
-                             logo_url=organisation.logo.url))
+                             logo_url=logo_url))
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @cache_page(60 * 15)
-def global_organisation_projects_map_json(request, org_id):
+def global_organisation_projects_map_json(request, org_id, image_url=""):
     "Should be replaced with API calls when the API is ready."
     locations = []
     organisation = Organisation.objects.get(id=org_id)
     for project in organisation.published_projects():
+        if project.current_image:
+            image_url = project.current_image.url
         for location in project.locations.all():
             locations.append(dict(title=project.title,
                                   url=project.get_absolute_url(),
                                   latitude=location.latitude,
                                   longitude=location.longitude,
-                                  image_url=project.current_image.url))
+                                  image_url=image_url))
     callback = request.GET.get('callback')
     location_data = json.dumps(locations)
     if callback:
