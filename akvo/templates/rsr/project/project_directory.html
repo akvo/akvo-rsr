@@ -122,7 +122,7 @@
               <th>
                 {% anchor title Title %}
               </th>
-              <th>{% anchor locations__country__name Location %}</th>
+              <th>{% anchor primary_location__country__name Location %}</th>
               <th>
                 {% anchor status Status %}
               </th>
@@ -155,8 +155,24 @@
                   </div>
                 </td>
                 <td>
-                  <p class="td-text">{{project.primary_location.country}}</p>
-                  <p class="td-text">{{project.primary_location.country.continent}}</p>
+                  {# if the project has multiple locations #}
+                  {% if project|countries_list|length > 1 %}
+                    {# add a title attribute listing all countries where the project has locations and mark the primary location with a * #}
+                    <p class="td-text" title="Multiple locations in&#10;{{ project|countries_list|rsr_sorted_set|join:"&#10;" }}">
+                      * {{project.primary_location.country}}
+                    </p>
+                  {%  else %}
+                    <p class="td-text">{{project.primary_location.country}}</p>
+                  {%  endif %}
+                  {# if the project has locations on multiple continents #}
+                  {% if project|continents_list|rsr_sorted_set|length > 1 %}
+                    {# add a title attribute listing all continents where the project has locations and mark the primary location with a * #}
+                    <p class="td-text" title="Multiple locations in&#10;{{ project|continents_list|rsr_sorted_set|join:"&#10;" }}">
+                      * {{project.primary_location.country.continent}}
+                    </p>
+                  {%  else %}
+                    <p class="td-text">{{project.primary_location.country.continent}}</p>
+                  {%  endif %}
                 </td>
                 <td>
                   <p class="td-text green">{{project.show_status}}</p>
@@ -234,7 +250,7 @@
 {% block jq_ready %}
 
 	{{block.super}}
-  
+
 	var qDefaultValue = jQ('#q').val();
 	jQ('#organisation').val({{org.id}});
 		
