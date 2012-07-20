@@ -1,70 +1,75 @@
 {% load i18n l10n templatetag_handlebars %}
 
-{# HTML markup #}
-<div id="map_canvas" style="width: {{width}}px; height: {{height}}px;">
-  <div id="ajax_loader">
+<div id="mapCanvas" style="width: {{width}}px; height: {{height}}px;">
+  <div id="ajaxLoader">
     <img src="{{MEDIA_URL}}core/img/ajax-loader.gif" alt="">
   </div>
 </div>
-{% tplhandlebars "map_info_window_template" %}
-<div class="map_info_window">
+
+{% tplhandlebars "mapInfoWindowTemplate" %}
+<div class="mapInfoWindow">
   <a href="{{url}}">{{title}}</a>
   {{#if image_url}}
-  <img src="{{image_url}}" alt="" width="100" height="100">
+    <img src="{{image_url}}" alt="" width="100" height="100">
   {{/if}}
 </div>
 {% endtplhandlebars %}
 
-{# External scripts #}
 <script src="//maps.google.com/maps/api/js?sensor=false"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 
-{# Local scripts #}
 <script src="{{MEDIA_URL}}core/js/jquery.ui.map.full.min.js"></script>
 <script src="{{MEDIA_URL}}core/js/handlebars-1.0.0.beta.6.min.js"></script>
 
 <script>
-  var data_url = '{{data_url}}',
-      map_options = {
-        center: new google.maps.LatLng(0, 0),
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        scrollwheel: false,
-        streetViewControl: false
-      },
-      map_type = '{{map_type}}',
-      marker_icon = '{{marker_icon}}';
+  var dataURL, icon, mapOptions, mapType, markerIcon;
 
-  if (map_type === 'static') {
-    icon = new google.maps.MarkerImage(marker_icon, null, null, null, new google.maps.Size(10.5, 17));
-    map_options.draggable = false;
-    map_options.disableDefaultUI = true;
+  // Django variables
+  dataURL = "{{data_url}}";
+  mapType = "{{map_type}}";
+  markerIcon = "{{marker_icon}}";
+
+  mapOptions = {
+    center: new google.maps.LatLng(0, 0),
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    scrollwheel: false,
+    streetViewControl: false
+  };
+
+  if (mapType === "static") {
+    icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5, 17));
+    mapOptions.draggable = false;
+    mapOptions.disableDefaultUI = true;
   } else {
-    icon = new google.maps.MarkerImage(marker_icon);
+    icon = new google.maps.MarkerImage(markerIcon);
   }
 
   jQuery.noConflict();
   jQuery(document).ready(function($) {
-    var ajax_loader = $('#ajax_loader'),
-        map_canvas = $('#map_canvas');
+    var ajaxLoader, mapCanvas;
+    ajaxLoader = $("#ajaxLoader");
+    mapCanvas = $("#mapCanvas");
     $.ajaxSetup({
       complete: function() {
-        ajax_loader.fadeOut();
+        ajaxLoader.fadeOut();
       }
     });
-    map_canvas.gmap(map_options).bind('init', function() {
-      $.getJSON(data_url, function(data) {
+    mapCanvas.gmap(mapOptions).bind("init", function() {
+      $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
-          var position = new google.maps.LatLng(project.latitude, project.longitude);
-          map_canvas.gmap('addMarker', {
+          mapCanvas.gmap("addMarker", {
             bounds: true,
             icon: icon,
-            position: position,
+            position: new google.maps.LatLng(project.latitude, project.longitude),
             title: project.title
           })
           .click(function() {
-            var template = Handlebars.compile($('#map_info_window_template').html()),
-                content = template(project);
-            map_canvas.gmap('openInfoWindow', {content: content}, this);
+            if (mapType !== "static") {
+              var content, template;
+              template = Handlebars.compile($("#mapInfoWindowTemplate").html());
+              content = template(project);
+              mapCanvas.gmap("openInfoWindow", {content: content}, this);
+            }
           });
         });
       });
@@ -75,15 +80,15 @@
   function setCSS() {
     var css, head, style, rules;  
 
-    css = '#map_canvas {font-size: 12px; font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;}';
-    css += '.map_info_window {min-height: 150px;}';
+    css = "#mapCanvas {font-size: 12px; font-family: Arial, Helvetica, \"Liberation Sans\", FreeSans, sans-serif;}";
+    css += ".mapInfoWindow {min-height: 150px;}";
       
-    head = document.getElementsByTagName('head')[0];
-    style = document.createElement('style');
+    head = document.getElementsByTagName("head")[0];
+    style = document.createElement("style");
     rules = document.createTextNode(css);
 
-    style.type = 'text/css';
-    if(style.styleSheet){
+    style.type = "text/css";
+    if (style.styleSheet) {
       style.styleSheet.cssText = rules.nodeValue;
     } else { 
       style.appendChild(rules);
