@@ -1306,28 +1306,32 @@ def data_overview(request):
 
 @cache_page(60 * 15)
 def global_project_map_json(request):
-    "Should be replaced with API calls when he API is ready."
-    locations = []
+    "Should be replaced with API calls when the API is ready."
+    data = []
     for project in Project.objects.published():
+        image_url = project.current_image.url or ""
         for location in project.locations.all():
-            locations.append(dict(title=project.title,
-                                  url=project.get_absolute_url(),
-                                  latitude=location.latitude,
-                                  longitude=location.longitude))
-    return HttpResponse(json.dumps(locations), content_type="application/json")
+            data.append(dict(title=project.title,
+                             url=project.get_absolute_url(),
+                             latitude=location.latitude,
+                             longitude=location.longitude,
+                             image_url=image_url))
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @cache_page(60 * 15)
 def global_organisation_map_json(request):
     "Should be replaced with API calls when the API is ready."
-    locations = []
+    data = []
     for organisation in Organisation.objects.has_location():
+        logo_url = organisation.logo.url or ""
         for location in organisation.locations.all():
-            locations.append(dict(name=organisation.name,
-                                  url=organisation.get_absolute_url(),
-                                  latitude=location.latitude,
-                                  longitude=location.longitude))
-    return HttpResponse(json.dumps(locations), content_type="application/json")
+            data.append(dict(name=organisation.name,
+                             url=organisation.get_absolute_url(),
+                             latitude=location.latitude,
+                             longitude=location.longitude,
+                             logo_url=logo_url))
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @cache_page(60 * 15)
@@ -1336,11 +1340,13 @@ def global_organisation_projects_map_json(request, org_id):
     locations = []
     organisation = Organisation.objects.get(id=org_id)
     for project in organisation.published_projects():
+        image_url = project.current_image.url or ""
         for location in project.locations.all():
             locations.append(dict(title=project.title,
                                   url=project.get_absolute_url(),
                                   latitude=location.latitude,
-                                  longitude=location.longitude))
+                                  longitude=location.longitude,
+                                  image_url=image_url))
     callback = request.GET.get('callback')
     location_data = json.dumps(locations)
     if callback:

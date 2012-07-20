@@ -15,6 +15,9 @@ akvo/settings/6*.conf
 akvo/settings/backup
 akvo/testing.py
 
+dev-env
+scripts/dev-vm
+
 ## Deployment
 scripts/deployment/builders/osx/config/python_system.config
 scripts/deployment/builders/osx/config/rsr_env.config
