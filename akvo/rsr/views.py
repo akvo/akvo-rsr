@@ -246,8 +246,8 @@ def project_list(request, slug='all'):
         else:
             queryset = Project.objects.published().filter(categories__focus_area=focus_area)
 
-    queryset = queryset.latest_update_fields().distinct().order_by('-pk')
-
+    # not sure prefetch_related helps since the filtering is applied afterwards. Profiling needed.
+    queryset = queryset.latest_update_fields().distinct().order_by('-pk')#.prefetch_related('locations')
     filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
 
     return {
@@ -300,46 +300,6 @@ def walking_for_water(request):
 def rabobank(request):
     org_id = getattr(settings, 'RABOBANK_ID', 21)
     return _redirect_from_landing_page_with_partner_site_id(org_id)
-
-
-@render_to('rsr/project/project_directory.html')
-def projectlist(request):
-    '''List of relevant projects in RSR
-    To preserve good url practice (one url == one dataset); links for the sorting is handled in the template.
-    '''
-    # Get relevant projects
-    projects = Project.objects.published().status_not_archived().select_related()
-    # Get projects either by using the query or all
-    query_string = ''
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-    #project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state','goals_overview','current_status_detail','project_plan_detail','sustainability','context','notes',])
-    project_query = get_query(query_string, ['name', 'subtitle','country__name','city','state',])
-    projects = projects.filter(project_query)
-    # Add extra last_update column
-    projects = projects.extra(select={'last_update':'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
-    # Setup sort query
-    order_by = request.GET.get('order_by', 'name')
-    last_order = request.GET.get('last_order')
-    sort = request.GET.get('sort', 'asc')
-    # sort desv or asc
-    if sort == 'asc':
-        projects = projects.order_by(order_by, 'name')
-    else:
-        projects = projects.order_by('-%s' % order_by, 'name')
-    # Setup paginator
-    PROJECTS_PER_PAGE = 10
-    paginator = Paginator(projects, PROJECTS_PER_PAGE)
-    page = paginator.page(request.GET.get('page', 1))
-    return {
-        'site_section': 'projects',
-        'page': page,
-        'query_string': query_string,
-        'request_get': request.GET,
-        'sort': sort,
-        'order_by': order_by,
-        'last_order': last_order,
-    }
 
 
 @render_to('rsr/organisation/organisation_directory.html')
