@@ -382,35 +382,20 @@ class Organisation(models.Model):
         "How many projects with budget in $ the organisation is a partner to"
         return self.published_projects().dollars().distinct().count()
 
+    def _aggregate_funds_needed(self, projects):
+        return sum(projects.values_list('funds_needed', flat=True))
+
     def euro_funds_needed(self):
         "How much is still needed to fully fund all projects with € budget that the organiastion is a partner to"
-        return self.published_projects().euros().distinct().aggregate(
-            euro_funds_needed=Sum('funds_needed'))['euro_funds_needed'] or 0
+        # the ORM aggregate() doesn't work here since we may have multiple partnership relations to the same project
+        return self._aggregate_funds_needed(self.published_projects().euros().distinct())
 
     def dollar_funds_needed(self):
         "How much is still needed to fully fund all projects with $ budget that the organiastion is a partner to"
-        return self.published_projects().dollars().distinct().aggregate(
-            dollar_funds_needed=Sum('funds_needed'))['dollar_funds_needed'] or 0
+        # the ORM aggregate() doesn't work here since we may have multiple partnership relations to the same project
+        return self._aggregate_funds_needed(self.published_projects().dollars().distinct())
 
     # New API end
-
-#    def funding(self):
-#        my_projs = self.active_projects()
-#        # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
-#        # work because values_list used in qs_column_sum will not return more
-#        # than one of the same value. This leads to the wrong sum when same amount
-#        # has been pledged to multiple projects
-#        all_active = Project.objects.published().status_not_cancelled().status_not_archived()
-#        return {
-#            'total_euros': my_projs.euros().total_total_budget(),
-#            'donated_euros': my_projs.euros().total_donated(),
-#            'pledged_euros': all_active.euros().total_pledged(self),
-#            'still_needed_euros': my_projs.euros().total_funds_needed(),
-#            'total_dollars': my_projs.dollars().total_total_budget(),
-#            'donated_dollars': my_projs.dollars().total_donated(),
-#            'pledged_dollars': all_active.dollars().total_pledged(self),
-#            'still_needed_dollars': my_projs.dollars().total_funds_needed()
-#        }
 
     class Meta:
         verbose_name=_(u'organisation')
