@@ -25,39 +25,45 @@
 <script src="{{MEDIA_URL}}core/js/handlebars-1.0.0.beta.6.min.js"></script>
 
 <script>
-  var dataURL, icon, mapOptions, mapType, markerIcon;
-
-  // Django variables
-  dataURL = "{{data_url}}";
-  mapType = "{{map_type}}";
-  markerIcon = "{{marker_icon}}";
-
-  mapOptions = {
-    center: new google.maps.LatLng(0, 0),
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    scrollwheel: false,
-    streetViewControl: false
-  };
-
-  if (mapType === "static") {
-    icon = new google.maps.MarkerImage(markerIcon, null, null, null,
-        new google.maps.Size(10.5, 17));
-    mapOptions.draggable = false;
-    mapOptions.disableDefaultUI = true;
-  } else {
-    icon = new google.maps.MarkerImage(markerIcon);
-  }
-
   jQuery.noConflict();
   jQuery(document).ready(function($) {
-    var ajaxLoader, mapCanvas;
-    ajaxLoader = $("#ajaxLoader");
-    mapCanvas = $("#mapCanvas");
+
+    // Django variables
+    var dataURL = "{{data_url}}",
+        mapType = "{{map_type}}",
+        markerIcon = "{{marker_icon}}";
+
+    // HTML target elements
+    var ajaxLoader = $("#ajaxLoader"),
+        mapCanvas = $("#mapCanvas"),
+        mapInfoWindowTemplate = $("#mapInfoWindowTemplate");
+
+    // Map options
+    var mapOptions = {
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: false,
+      streetViewControl: false
+    };
+
+    var icon;
+    if (mapType === "static") {
+      icon = new google.maps.MarkerImage(markerIcon, null, null, null,
+          new google.maps.Size(10.5, 17));
+      mapOptions.draggable = false;
+      mapOptions.disableDefaultUI = true;
+    } else {
+      icon = new google.maps.MarkerImage(markerIcon);
+    }
+
+    // AJAX setup 
     $.ajaxSetup({
       complete: function() {
         ajaxLoader.fadeOut();
       }
     });
+
+    // Map
     mapCanvas.gmap(mapOptions).bind("init", function() {
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
@@ -69,18 +75,18 @@
           })
           .click(function() {
             if (mapType !== "static") {
-              var content, template;
-              template = Handlebars.compile($("#mapInfoWindowTemplate").html());
-              content = template(project);
-              mapCanvas.gmap("openInfoWindow", {content: content}, this);
+              var handlebarsTemplate = Handlebars.compile(mapInfoWindowTemplate.html());
+              mapCanvas.gmap("openInfoWindow", {
+                content: handlebarsTemplate(project)
+              }, this);
             }
           });
         });
       });
-      // setCSS();
     });
   });
-  
+
+  /*
   function setCSS() {
     var css, head, style, rules;  
 
@@ -99,4 +105,5 @@
     }
     head.appendChild(style);      
   }
+  */
 </script>
