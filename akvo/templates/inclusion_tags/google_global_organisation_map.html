@@ -27,26 +27,27 @@
 <script>
   jQuery.noConflict();
   jQuery(document).ready(function($) {
+    var ajaxLoader, dataURL, handlebarsTemplate, icon,
+        mapCanvas, mapInfoWindowTemplate, mapOptions, mapType, markerIcon;
 
     // Django variables
-    var dataURL = "{{data_url}}",
-        mapType = "{{map_type}}",
-        markerIcon = "{{marker_icon}}";
+    dataURL = "{{data_url}}";
+    mapType = "{{map_type}}";
+    markerIcon = "{{marker_icon}}";
 
     // HTML target elements
-    var ajaxLoader = $("#ajaxLoader"),
-        mapCanvas = $("#mapCanvas"),
-        mapInfoWindowTemplate = $("#mapInfoWindowTemplate");
+    ajaxLoader = $("#ajaxLoader");
+    mapCanvas = $("#mapCanvas");
+    mapInfoWindowTemplate = $("#mapInfoWindowTemplate");
 
     // Map options
-  	var mapOptions = {
+    mapOptions = {
 	    center: new google.maps.LatLng(0, 0),
 	    mapTypeId: google.maps.MapTypeId.ROADMAP,
 	    scrollwheel: false,
       streetViewControl: false
     };
 
-    var icon;
     if (mapType === "static") {
       icon = new google.maps.MarkerImage(markerIcon, null, null, null,
           new google.maps.Size(10.5, 17));
@@ -75,7 +76,7 @@
           })
           .click(function() {
             if (mapType !== "static") {
-              var handlebarsTemplate = Handlebars.compile(mapInfoWindowTemplate.html());
+              handlebarsTemplate = Handlebars.compile(mapInfoWindowTemplate.html());
               mapCanvas.gmap("openInfoWindow", {
                 content: handlebarsTemplate(organisation)
               }, this);
