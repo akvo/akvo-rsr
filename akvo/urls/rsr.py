@@ -5,6 +5,7 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib.auth import views as auth_views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 from django.conf.urls.i18n import i18n_patterns
@@ -306,3 +307,5 @@ if 'rosetta' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
         url(r'^rsr/rosetta/', include('rosetta.urls')),
     )
+
+urlpatterns += staticfiles_urlpatterns()
