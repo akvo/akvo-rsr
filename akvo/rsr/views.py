@@ -1309,11 +1309,16 @@ def global_project_map_json(request):
     "Should be replaced with API calls when the API is ready."
     data = []
     for project in Project.objects.published():
+        try:
+            image_url = project.current_image.thumbnail.url
+        except:
+            image_url = ""
         for location in project.locations.all():
             data.append(dict(title=project.title,
                              url=project.get_absolute_url(),
                              latitude=location.latitude,
-                             longitude=location.longitude))
+                             longitude=location.longitude,
+                             image_url=image_url))
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
