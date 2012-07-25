@@ -1310,7 +1310,7 @@ def global_project_map_json(request):
     data = []
     for project in Project.objects.published():
         try:
-            image_url = project.current_image.thumbnail.url
+            image_url = project.current_image.url
         except:
             image_url = ""
         for location in project.locations.all():
@@ -1341,11 +1341,16 @@ def global_organisation_projects_map_json(request, org_id):
     locations = []
     organisation = Organisation.objects.get(id=org_id)
     for project in organisation.published_projects():
+        try:
+            image_url = project.current_image.url
+        except:
+            image_url = ""
         for location in project.locations.all():
             locations.append(dict(title=project.title,
                                   url=project.get_absolute_url(),
                                   latitude=location.latitude,
-                                  longitude=location.longitude))
+                                  longitude=location.longitude,
+                                  image_url=image_url))
     callback = request.GET.get('callback')
     location_data = json.dumps(locations)
     if callback:
