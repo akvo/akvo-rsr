@@ -1327,11 +1327,16 @@ def global_organisation_map_json(request):
     "Should be replaced with API calls when the API is ready."
     data = []
     for organisation in Organisation.objects.has_location():
+        try:
+            image_url = organisation.logo.url
+        except:
+            image_url = ""
         for location in organisation.locations.all():
             data.append(dict(name=organisation.name,
                              url=organisation.get_absolute_url(),
                              latitude=location.latitude,
-                             longitude=location.longitude))
+                             longitude=location.longitude,
+                             image_url=image_url))
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 

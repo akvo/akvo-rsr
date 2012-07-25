@@ -7,8 +7,13 @@
 </div>
 
 {% tplhandlebars "mapInfoWindowTemplate" %}
-<div class="mapInfoWindow">
+<div class="mapInfoWindow" style="min-height: 150px;">
   <a href="{{url}}">{{name}}</a>
+  {{#if image_url}}
+  <a href="{{url}}">
+    <img src="{{image_url}}" alt="" width="120">
+  </a>
+  {{/if}}
 </div>
 {% endtplhandlebars %}
 
