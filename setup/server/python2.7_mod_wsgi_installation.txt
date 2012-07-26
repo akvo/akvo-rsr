@@ -74,7 +74,7 @@ Reinstall the virtualenv tools
  3) Update the system Python packges on the remote server:
         workon rsr_develop
         cd scripts/deployment/execution/steps
-        ./2_update_system_python_packages.py "preconfigured:test" [or "preconfigured:uat", etc.]
+        ./2_update_system_python_packages.py "preconfigured:test" [or "preconfigured:live", etc.]
  4) Back on the host, pip freeze should list:
         distribute==0.6.27
         virtualenv==1.7.2
@@ -120,14 +120,16 @@ LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so
 
  6) Update the Apache config files as follows: (adjust any paths as necessary)
     a) create copies of the /etc/apache2/sites-available files in /usr/local/etc/akvo/apache2
+       - rename the default file to default.conf
     b) edit the copied files in /usr/local/etc/akvo/apache2 only
-    c) add the following directives to the top of the file, above any VirtualHost sections:
+    c) add the following directive to the top of the file, above any VirtualHost sections:
 
-WSGIScriptAlias / /var/git/current/akvo/handler.py
 WSGIPythonPath /var/git/current:/var/virtualenvs/current/lib/python2.7/site-packages
 
     d) withing the VirtualHost section and below the static content Directory directives, add the following:
 
+WSGIScriptAlias /api /var/git/current/akvo/handler.py
+WSGIScriptAlias / /var/git/current/akvo/handler.py
 <Directory /var/git/current/akvo>
     <Files handler.py>
         Order deny,allow
@@ -144,10 +146,10 @@ CustomLog /var/log/apache2/access.log proxy env=forwarded
     g) create symlinks for the new config files
         cd /etc/apache2/sites-available
         sudo rm default
-        sudo rm akvotest.org.conf [or variant]
-        sudo ln -s /usr/local/etc/akvo/apache2/default
-        sudo ln -s /usr/local/etc/akvo/apache2/akvotest.org.conf
-
+        sudo rm akvotest.org.conf [or akvoapp.org.conf, etc]
+        sudo ln -s /usr/local/etc/akvo/apache2/default.conf
+        sudo ln -s /usr/local/etc/akvo/apache2/akvotest.org.conf [or akvoapp.org.conf, etc]
+    h) ensure the symlinks in /etc/apache2/sites-enabled are unbroken and valid
  7) Enable the mod_wsgi module and restart Apache:
         sudo a2enmod mod_wsgi
         sudo /etc/init.d/apache2 force-reload
