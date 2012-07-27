@@ -1,88 +1,110 @@
 {% load i18n l10n templatetag_handlebars %}
 
-{# HTML markup #}
-<div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
-{% tplhandlebars "map_info_window_template" %}
-<div id="mapInfoWindow">
+<div id="mapCanvas" style="width: {{width}}px; height: {{height}}px;">
+  <div id="ajaxLoader">
+    <img src="{{MEDIA_URL}}core/img/ajax-loader.gif" alt="">
+  </div>
+</div>
+
+{% tplhandlebars "mapInfoWindowTemplate" %}
+<div class="mapInfoWindow" style="min-height: 150px;">
   <a href="{{url}}">{{title}}</a>
-  <p class="small gray">More information goes here...</p>
+  {{#if image_url}}
+  <br><br>
+  <a href="{{url}}">
+    <img src="{{image_url}}" alt="" width="120">
+  </a>
+  {{/if}}
 </div>
 {% endtplhandlebars %}
 
-{# External scripts #}
 <script src="//maps.google.com/maps/api/js?sensor=false"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 
-{# Local scripts #}
 <script src="{{MEDIA_URL}}core/js/jquery.ui.map.full.min.js"></script>
-{% handlebars_js %}
+<script src="{{MEDIA_URL}}core/js/handlebars-1.0.0.beta.6.min.js"></script>
 
 <script>
-  var dataURL, map, mapOptions, mapType, markerIcon;
-
-  dataURL = '{{ data_url }}';
-  markerIcon = '{{ marker_icon }}';
-  mapType = '{{ map_type }}';
-
-  mapOptions = {
-    center: new google.maps.LatLng(0, 0),
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    scrollwheel: false,
-    streetViewControl: false
-  };
-
-  if (mapType === 'static') {
-    icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
-    mapOptions.draggable = false;
-    mapOptions.disableDefaultUI = true;
-  } else {
-    icon = new google.maps.MarkerImage(markerIcon);
-  }
-
   jQuery.noConflict();
   jQuery(document).ready(function($) {
-    var map_canvas = $('#map_canvas');
-    map_canvas.gmap(mapOptions).bind('init', function() {
+    var ajaxLoader, dataURL, handlebarsTemplate, icon,
+        mapCanvas, mapInfoWindowTemplate, mapOptions, mapType, markerIcon;
+        
+    // Django variables
+    dataURL = "{{data_url}}";
+    mapType = "{{map_type}}";
+    markerIcon = "{{marker_icon}}";
+
+    // HTML target elements
+    ajaxLoader = $("#ajaxLoader");
+    mapCanvas = $("#mapCanvas");
+    mapInfoWindowTemplate = $("#mapInfoWindowTemplate");
+
+    // Map options
+    mapOptions = {
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: false,
+      streetViewControl: false
+    };
+
+    if (mapType === "static") {
+      icon = new google.maps.MarkerImage(markerIcon, null, null, null,
+          new google.maps.Size(10.5, 17));
+      mapOptions.draggable = false;
+      mapOptions.disableDefaultUI = true;
+    } else {
+      icon = new google.maps.MarkerImage(markerIcon);
+    }
+
+    // AJAX setup 
+    $.ajaxSetup({
+      complete: function() {
+        ajaxLoader.fadeOut();
+      }
+    });
+
+    // Map
+    mapCanvas.gmap(mapOptions).bind("init", function() {
       $.getJSON(dataURL, function(data) {
         $.each(data, function(i, project) {
-          var handlebarsTemplate, infoWindowContent, position;
-          handlebarsTemplate = Handlebars.compile($('#map_info_window_template').html());
-          infoWindowContent = handlebarsTemplate(project);
-          position = new google.maps.LatLng(project.latitude, project.longitude);
-          map_canvas
-            .gmap('addMarker', {
-              'bounds': true,
-              'icon': icon,
-              'position': position,
-              'title': project.title
-            })
-            .click(function() {
-              map_canvas.gmap('openInfoWindow', {
-                'content': infoWindowContent
+          mapCanvas.gmap("addMarker", {
+            bounds: true,
+            icon: icon,
+            position: new google.maps.LatLng(project.latitude, project.longitude),
+            title: project.title
+          })
+          .click(function() {
+            if (mapType !== "static") {
+              handlebarsTemplate = Handlebars.compile(mapInfoWindowTemplate.html());
+              mapCanvas.gmap("openInfoWindow", {
+                content: handlebarsTemplate(project)
               }, this);
-            });
+            }
+          });
         });
       });
-      // setCSS();
     });
   });
-  
+
+  /*
   function setCSS() {
     var css, head, style, rules;  
 
-    css = '#map_canvas {font-size: 12px; font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;}';
-    css += '.mapInfoWindow {min-height: 150px;}';
+    css = "#mapCanvas {font-size: 12px; font-family: Arial, Helvetica, \"Liberation Sans\", FreeSans, sans-serif;}";
+    css += ".mapInfoWindow {min-height: 150px;}";
       
-    head = document.getElementsByTagName('head')[0];
-    style = document.createElement('style');
+    head = document.getElementsByTagName("head")[0];
+    style = document.createElement("style");
     rules = document.createTextNode(css);
 
-    style.type = 'text/css';
-    if(style.styleSheet){
+    style.type = "text/css";
+    if (style.styleSheet) {
       style.styleSheet.cssText = rules.nodeValue;
     } else { 
       style.appendChild(rules);
     }
     head.appendChild(style);      
   }
+  */
 </script>

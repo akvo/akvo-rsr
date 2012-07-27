@@ -112,26 +112,6 @@
           </tr>
         </table>
       </div>
-      <h2 class="marg_top20">{% trans 'People who get' %}</h2>
-      <div class="pad20 whitebox">
-        <table class="no_border_table full_width marg_bottom0">
-          <tr>
-            <td>&nbsp;</td>
-            <td class="small txt_right"><a href="http://www.akvo.org/web/help_akvo_at_a_glance">{% trans 'Upcoming' %}</a></td>
-            <td class="small txt_right"><a href="http://www.akvo.org/web/help_akvo_at_a_glance">{% trans 'Delivered' %}</a></td>
-          </tr>
-          <tr>
-            <td class="small">{% trans 'Water' %}:</td>
-            <td class="small txt_right">{{partner.published_projects.get_planned_water_calc|intcomma}}</td>
-            <td class="small txt_right">{{partner.published_projects.get_actual_water_calc|intcomma}}</td>
-          </tr>
-          <tr>
-            <td class="small">{% trans 'Sanitation' %}:</td>
-            <td class="small txt_right">{{partner.published_projects.get_planned_sanitation_calc|intcomma}}</td>
-            <td class="small txt_right">{{partner.published_projects.get_actual_sanitation_calc|intcomma}}</td>
-          </tr>
-        </table>
-      </div>
       <h2 class="marg_top20">{% trans 'Funding' %}</h2>
       <div class="pad20 whitebox">
         <table class="no_border_table full_width marg_bottom0">

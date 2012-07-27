@@ -11,6 +11,7 @@ import os
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
 
@@ -232,15 +233,20 @@ def cleanup_reporters(profile, user):
     if not profile.validation == profile.VALIDATED:
         get_model('rsr', 'SmsReporter').objects.filter(userprofile=profile).delete()
 
+
 def update_project_budget(sender, **kwargs):
     """
     called when BudgetItem objects are added/changed/deleted
     """
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):
-        kwargs['instance'].project.update_budget()
-        kwargs['instance'].project.update_funds()
-        kwargs['instance'].project.update_funds_needed()
+        try:
+            kwargs['instance'].project.update_budget()
+            kwargs['instance'].project.update_funds()
+            kwargs['instance'].project.update_funds_needed()
+        except ObjectDoesNotExist:
+            # this happens when a project is deleted, and thus any invoices linked to it go the same way.
+            pass
 
 def update_project_funding(sender, **kwargs):
     """
@@ -248,5 +254,9 @@ def update_project_funding(sender, **kwargs):
     """
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):
-        kwargs['instance'].project.update_funds()
-        kwargs['instance'].project.update_funds_needed()
+        try:
+            kwargs['instance'].project.update_funds()
+            kwargs['instance'].project.update_funds_needed()
+        except ObjectDoesNotExist:
+            # this happens when a project is deleted, and thus any invoices linked to it go the same way.
+            pass
