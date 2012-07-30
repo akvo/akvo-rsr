@@ -67,8 +67,8 @@
 
     // Map
     mapCanvas.gmap(mapOptions).bind("init", function() {
-      $.getJSON(dataURL, function(data) {
-        $.each(data, function(i, project) {
+      $.getJSON(dataURL, function(projects) {
+        $.each(projects, function(i, project) {
           mapCanvas.gmap("addMarker", {
             bounds: true,
             icon: icon,
@@ -84,6 +84,9 @@
             }
           });
         });
+        if (projects.length <= 3) {
+          mapCanvas.gmap("option", "zoom", 8);
+        }
       });
     });
   });
