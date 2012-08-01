@@ -46,7 +46,7 @@
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       scrollwheel: false,
       streetViewControl: false,
-      zoom: 8
+      zoom: 1
     };
 
     if (mapType === "static") {
@@ -85,7 +85,7 @@
           });
         });
         if (projects.length === 1) {
-          mapCanvas.gmap("option", "zoom", 8);
+          mapCanvas.gmap("option", "zoom", 6);
         }
       });
     });
