@@ -1,80 +1,114 @@
-{% load i18n l10n %}
+{% load i18n l10n templatetag_handlebars %}
 
-{# HTML markup #}
-<div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
+<div id="mapCanvas" style="width: {{width}}px; height: {{height}}px;">
+  <div id="ajaxLoader">
+    <img src="{{MEDIA_URL}}core/img/ajax-loader.gif" alt="">
+  </div>
+</div>
 
-{# External scripts #}
+{% tplhandlebars "mapInfoWindowTemplate" %}
+<div class="mapInfoWindow" style="min-height: 150px;">
+  <a href="{{url}}">{{title}}</a>
+  {{#if image_url}}
+  <br><br>
+  <a href="{{url}}">
+    <img src="{{image_url}}" alt="" width="120">
+  </a>
+  {{/if}}
+</div>
+{% endtplhandlebars %}
+
 <script src="//maps.google.com/maps/api/js?sensor=false"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-{# Local scripts #}
+
 <script src="{{MEDIA_URL}}core/js/jquery.ui.map.full.min.js"></script>
+<script src="{{MEDIA_URL}}core/js/handlebars-1.0.0.beta.6.min.js"></script>
 
 <script>
-  var dataURL, map, mapOptions, mapType, markerIcon, zoom;
-
-  dataURL = "{{ data_url }}";
-  markerIcon = "{{ marker_icon }}";
-  mapType = "{{ map_type }}";
-  zoom = {{ zoom }};
-
-  mapOptions = {
-    center: new google.maps.LatLng(0, 0),
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    scrollwheel: false,
-    zoom: zoom,
-    streetViewControl: false
-  };
-  if (mapType === "static") {
-    icon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
-    mapOptions.draggable = false;
-    mapOptions.disableDefaultUI = true;
-  } else {
-    icon = new google.maps.MarkerImage(markerIcon);
-  }
-
   jQuery.noConflict();
   jQuery(document).ready(function($) {
-    $('#map_canvas').gmap(mapOptions).bind('init', function() {
-      $.getJSON(dataURL, function(data) {
-        $.each(data, function(i, project) {
-          $('#map_canvas').gmap('addMarker', {
-            'icon': icon,
-            'position': new google.maps.LatLng(project.latitude, project.longitude),
-            'bounds': true,
-            'title': project.title
-          }).click(function() {
-            $('#map_canvas').gmap('openInfoWindow', {'content': renderMapInfoWindow(project)}, this);
+    var ajaxLoader, dataURL, handlebarsTemplate, icon,
+        mapCanvas, mapInfoWindowTemplate, mapOptions, mapType, markerIcon;
+        
+    // Django variables
+    dataURL = "{{data_url}}";
+    mapType = "{{map_type}}";
+    markerIcon = "{{marker_icon}}";
+
+    // HTML target elements
+    ajaxLoader = $("#ajaxLoader");
+    mapCanvas = $("#mapCanvas");
+    mapInfoWindowTemplate = $("#mapInfoWindowTemplate");
+
+    // Map options
+    mapOptions = {
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: false,
+      streetViewControl: false,
+      zoom: 1
+    };
+
+    if (mapType === "static") {
+      icon = new google.maps.MarkerImage(markerIcon, null, null, null,
+          new google.maps.Size(10.5, 17));
+      mapOptions.draggable = false;
+      mapOptions.disableDefaultUI = true;
+    } else {
+      icon = new google.maps.MarkerImage(markerIcon);
+    }
+
+    // AJAX setup 
+    $.ajaxSetup({
+      complete: function() {
+        ajaxLoader.fadeOut();
+      }
+    });
+
+    // Map
+    mapCanvas.gmap(mapOptions).bind("init", function() {
+      $.getJSON(dataURL, function(projects) {
+        $.each(projects, function(i, project) {
+          mapCanvas.gmap("addMarker", {
+            bounds: true,
+            icon: icon,
+            position: new google.maps.LatLng(project.latitude, project.longitude),
+            title: project.title
+          })
+          .click(function() {
+            if (mapType !== "static") {
+              handlebarsTemplate = Handlebars.compile(mapInfoWindowTemplate.html());
+              mapCanvas.gmap("openInfoWindow", {
+                content: handlebarsTemplate(project)
+              }, this);
+            }
           });
         });
+        if (projects.length === 1) {
+          mapCanvas.gmap("option", "zoom", 6);
+        }
       });
-      // setCSS();
     });
   });
-  
-  function renderMapInfoWindow(project) {
-    var html;
-    html = '<div class="mapInfoWindow">';
-    html += '<a href="' + project.url + '">' + project.title + '</a>';
-    html += '</div>';
-    return html
-  }
-  
+
+  /*
   function setCSS() {
     var css, head, style, rules;  
 
-    css = '#map_canvas {font-size: 12px; font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;}';
-    css += '.mapInfoWindow {min-height: 150px;}';
+    css = "#mapCanvas {font-size: 12px; font-family: Arial, Helvetica, \"Liberation Sans\", FreeSans, sans-serif;}";
+    css += ".mapInfoWindow {min-height: 150px;}";
       
-    head = document.getElementsByTagName('head')[0];
-    style = document.createElement('style');
+    head = document.getElementsByTagName("head")[0];
+    style = document.createElement("style");
     rules = document.createTextNode(css);
 
-    style.type = 'text/css';
-    if(style.styleSheet){
+    style.type = "text/css";
+    if (style.styleSheet) {
       style.styleSheet.cssText = rules.nodeValue;
     } else { 
       style.appendChild(rules);
     }
     head.appendChild(style);      
   }
+  */
 </script>

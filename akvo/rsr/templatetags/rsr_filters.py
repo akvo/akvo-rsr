@@ -43,3 +43,25 @@ def round(value, decimal_places=DECIMAL_PLACES):
         return 0 if decimal_result <=0 else decimal_result
 round.is_safe = True
 
+@register.filter
+def countries_list(obj):
+    """ return a list of the countries of all locations of an object.
+    currently works for Project and Organisation """
+    return obj.locations.values_list('country__name', flat=True)
+
+@register.filter
+def continents_list(obj):
+    """return a list of the continents of all locations of an object"
+    currently works for Project and Organisation """
+    return obj.locations.values_list('country__continent', flat=True)
+
+@register.filter
+def rsr_sorted_set(iterable):
+    """ create a set of the iterable to eliminate duplicates
+    then make a list of the set and sort it
+    used with countries_list and continents_list
+    """
+    set_list = list(frozenset(iterable))
+    set_list.sort()
+    return set_list
+

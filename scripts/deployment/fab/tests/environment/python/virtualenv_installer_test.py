@@ -117,7 +117,7 @@ class VirtualEnvInstallerTest(mox.MoxTestBase):
         else:
             self.mock_file_system.directory_exists(self.virtualenv_installer_config.rsr_env_path).MultipleTimes().AndReturn(False)
 
-        expected_virtualenv_creation_command = "virtualenv --no-site-packages --distribute %s" % self.virtualenv_installer_config.rsr_env_path
+        expected_virtualenv_creation_command = "virtualenv --distribute %s" % self.virtualenv_installer_config.rsr_env_path
 
         self.mock_feedback.comment("Creating new virtualenv at %s" % self.virtualenv_installer_config.rsr_env_path)
         self.mock_host_controller.run(expected_virtualenv_creation_command)

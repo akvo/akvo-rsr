@@ -85,9 +85,25 @@ class CountryAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
 
-class LocationInline(generic.GenericStackedInline):
-    model = get_model('rsr', 'location')
+class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        if self.forms:
+            # keep track of how many non-deleted forms we have and how many primary locations are ticked
+            form_count = primary_count = 0
+            for form in self.forms:
+                if not form.cleaned_data.get('DELETE', False):
+                    form_count += 1
+                    primary_count += 1 if form.cleaned_data['primary'] else 0
+                # if we have any forms left there must be exactly 1 primary location
+            if form_count > 0 and not primary_count == 1:
+                self._non_form_errors = ErrorList([
+                    _(u'The project must have exactly one primary location if any locations at all are to be included')
+                ])
+
+class OrganisationLocationInline(admin.StackedInline):
+    model = get_model('rsr', 'organisationlocation')
     extra = 0
+    formset = RSR_LocationFormFormSet
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -95,7 +111,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
     )
-    inlines = (LocationInline,)
+    inlines = (OrganisationLocationInline,)
     list_display = ('name', 'long_name', 'website', )
 
     def get_actions(self, request):
@@ -360,29 +376,53 @@ class GoalInline(admin.TabularInline):
 
 class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
+        def duplicates_in_list(seq):
+            "return True if the list contains duplicate items"
+            seq_set = list(set(seq))
+            # need to sort since set() doesn't preserver order
+            seq.sort()
+            seq_set.sort()
+            return seq != seq_set
+
         user = self.request.user
         user_profile = user.get_profile()
+        errors = []
         # superusers can do whatever they like!
         if user.is_superuser:
-            found = True
+            my_org_found = True
         # if the user is a partner org we try to avoid foot shooting
         elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
             my_org = user_profile.organisation
-            found = False
-            for i in range(0, self.total_form_count()):
-                form = self.forms[i]
+            my_org_found = False
+            for form in self.forms:
                 try:
                     form_org = form.cleaned_data['organisation']
                     if not form.cleaned_data.get('DELETE', False) and my_org == form_org:
                         # found our own org, all is well move on!
-                        found = True
+                        my_org_found = True
                         break
                 except:
                     pass
         else:
-            found = True
-        if not found:
-            self._non_form_errors = ErrorList([_(u'Your organisation should be somewhere here.')])
+            my_org_found = True
+        if not my_org_found:
+            errors += [_(u'Your organisation should be somewhere here.')]
+
+        # now check that the same org isn't assigned the same partner_type more than once
+        partner_types = {}
+        for form in self.forms:
+            # populate a dict with org names as keys and a list of partner_types as values
+            try:
+                if not form.cleaned_data.get('DELETE', False):
+                    partner_types.setdefault(form.cleaned_data['organisation'], []).append(form.cleaned_data['partner_type'])
+            except:
+                pass
+        for org, types in partner_types.items():
+            # are there duplicates in the list of partner_types?
+            if duplicates_in_list(types):
+                errors += [_(u'%s has duplicate partner types of the same kind.' % org)]
+        self._non_form_errors = ErrorList(errors)
+
 
 class PartnershipInline(admin.TabularInline):
     model = get_model('rsr', 'Partnership')
@@ -390,15 +430,22 @@ class PartnershipInline(admin.TabularInline):
     formset = RSR_PartnershipInlineFormFormSet
 
     def get_formset(self, request, *args, **kwargs):
+        "Add the request to the formset for use in RSR_PartnershipInlineFormFormSet.clean()"
         formset = super(PartnershipInline, self).get_formset(request, *args, **kwargs)
         formset.request = request
         return formset
+
+
+class ProjectLocationInline(admin.StackedInline):
+    model = get_model('rsr', 'projectlocation')
+    extra = 0
+    formset = RSR_LocationFormFormSet
 
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
         GoalInline, BudgetItemAdminInLine, LinkInline, PartnershipInline,
-        LocationInline, BenchmarkInline
+        ProjectLocationInline, BenchmarkInline
     )
     save_as = True
     fieldsets = (

@@ -1,5 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail counter_tags oembed_tags %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags oembed_tags markup %}
 {% load url from future %}
 
 
@@ -66,7 +66,7 @@
     
     {% if update.text_location == 'B' %}
       <p class="small grey">
-        {{ update.text|linebreaks }}
+        {{ update.text|markdown:"safe" }}
       </p>
     {% endif %}	
     {% if update.video %}
@@ -94,7 +94,7 @@
     {% endif %}
     {% if update.text_location == 'E' %}
       <p class="small grey">
-        {{ update.text|linebreaks }}
+        {{ update.text|markdown:"safe"}}
       </p>
     {% endif %}
     <hr style="margin-bottom:5px;" />

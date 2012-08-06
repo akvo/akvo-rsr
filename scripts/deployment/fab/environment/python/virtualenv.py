@@ -81,7 +81,7 @@ class VirtualEnvInstaller(object):
             self.delete_existing_virtualenv()
 
         self.feedback.comment("Creating new virtualenv at %s" % self.virtualenv_path)
-        self.host_controller.run("virtualenv --no-site-packages --distribute %s" % self.virtualenv_path)
+        self.host_controller.run("virtualenv --distribute %s" % self.virtualenv_path)
         self.virtualenv.list_installed_packages()
 
     def install_packages(self, pip_requirements_file_url, quietly=False):

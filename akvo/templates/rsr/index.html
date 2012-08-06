@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load i18n webdesign rsr_filters thumbnail counter_tags humanize %}
+{% load i18n webdesign rsr_filters thumbnail counter_tags humanize markup %}
 {% load oembed_tags markup_tags google_maps %}
 {% load url from future %}
 
@@ -72,7 +72,7 @@
 					{% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth and update.time|date:"Y-m-d" as update_time %}By {{user_name}}, <a href='{{org_url}}'>{{user_org}}</a>, via {{update_meth}} on {{update_time}}{% endblocktrans %}
 					<br/>{{update.project.primary_location.country}}
 				</p>
-				<p class="small last">{{update.text|smart_truncate:100}}</p>
+				<p class="small last">{{update.text|smart_truncate:100|markdown:"safe"}}</p>
 				</div>
 					</div>
 				</div>

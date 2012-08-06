@@ -12,7 +12,7 @@ from fab.config.rsr.codebase import RSRCodebaseConfig
 
 class RSRDeploymentConfig(object):
 
-    DJANGO_LIB_PATH = 'lib/python2.5/site-packages/django'
+    DJANGO_LIB_PATH = 'lib/python2.7/site-packages/django'
 
     def __init__(self, deployment_host_paths, deployment_user, codebase_config):
         self.deployment_user = deployment_user
@@ -37,8 +37,6 @@ class RSRDeploymentConfig(object):
         self.host_config_home                   = deployment_host_paths.config_home
         self.local_rsr_settings_file_name       = RSRCodebaseConfig.LOCAL_SETTINGS_FILE
         self.deployed_rsr_settings_file         = os.path.join(self.host_config_home, self.local_rsr_settings_file_name)
-        self.mod_python_file_name               = RSRCodebaseConfig.MOD_PYTHON_FILE
-        self.deployed_mod_python_file           = os.path.join(self.host_config_home, self.mod_python_file_name)
         self.log_file_path                      = os.path.join(deployment_host_paths.logging_home, RSRCodebaseConfig.LOG_FILE)
 
     @staticmethod

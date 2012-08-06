@@ -105,7 +105,40 @@ class Country(models.Model):
         ordering = ['name']
 
 
-class Location(models.Model):
+#class Location(models.Model):
+#    _help_text = _(u"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> "
+#                   u'to get the decimal coordinates of your project.')
+#    latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
+#    longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
+#    city = models.CharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
+#    state = models.CharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
+#    country = models.ForeignKey(Country, verbose_name=_(u'country'))
+#    address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
+#    address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
+#    postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
+#    content_type = models.ForeignKey(ContentType)
+#    object_id = models.PositiveIntegerField()
+#    content_object = generic.GenericForeignKey('content_type', 'object_id')
+#    primary = models.BooleanField(_(u'primary location'), default=True)
+#
+#    def __unicode__(self):
+#        return u'%s, %s (%s)' % (self.city, self.state, self.country)
+#
+#    def save(self, *args, **kwargs):
+#        if self.primary:
+#            qs = Location.objects.filter(content_type=self.content_type,
+#                                         object_id=self.object_id, primary=True)
+#            if self.pk:
+#                qs = qs.exclude(pk=self.pk)
+#                if qs.count() != 0:
+#                    self.primary = False
+#        super(Location, self).save(*args, **kwargs)
+#
+#    class Meta:
+#        ordering = ['-primary',]
+
+
+class BaseLocation(models.Model):
     _help_text = _(u"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> "
                    u'to get the decimal coordinates of your project.')
     latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
@@ -116,9 +149,6 @@ class Location(models.Model):
     address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
     address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
     postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
     primary = models.BooleanField(_(u'primary location'), default=True)
 
     def __unicode__(self):
@@ -126,16 +156,25 @@ class Location(models.Model):
 
     def save(self, *args, **kwargs):
         if self.primary:
-            qs = Location.objects.filter(content_type=self.content_type,
-                    object_id=self.object_id, primary=True)
-            if self.pk:
-                qs = qs.exclude(pk=self.pk)
-                if qs.count() != 0:
-                    self.primary = False
-        super(Location, self).save(*args, **kwargs)
+            location_target = self.location_target
+            # this is probably redundant since the admin form saving should handle this
+            # but if we ever save a location from other code it's an extra safety
+            location_target.locations.exclude(pk__exact=self.pk).update(primary=False)
+            location_target.primary_location = self
+            location_target.save()
+        super(BaseLocation, self).save(*args, **kwargs)
 
     class Meta:
+        abstract = True
         ordering = ['-primary',]
+
+class OrganisationLocation(BaseLocation):
+    # the organisation that's related to this location
+    location_target = models.ForeignKey('Organisation', null=True, related_name='locations')
+
+class ProjectLocation(BaseLocation):
+    # the project that's related to this location
+    location_target = models.ForeignKey('Project', null=True, related_name='locations')
 
 
 class Partnership(models.Model):
@@ -217,7 +256,8 @@ class Organisation(models.Model):
     contact_email = models.CharField(_(u'contact email'), blank=True, max_length=50, help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'))
     description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.') )
 
-    locations = generic.GenericRelation(Location)
+#    old_locations = generic.GenericRelation(Location)
+    primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
 
     #Managers, one default, one custom
     #objects = models.Manager()
@@ -228,25 +268,20 @@ class Organisation(models.Model):
     def get_absolute_url(self):
         return ('organisation_main', (), {'org_id': self.pk})
 
-    @property
-    def primary_location(self):
-        '''Returns an organisations's primary location'''
-        qs = self.locations.filter(primary=True)
-        qs = qs.exclude(latitude=0, longitude=0)
-        if qs:
-            location = qs[0]
-            return location
-        return
+#    @property
+#    def primary_location(self):
+#        '''Returns an organisations's primary location'''
+#        qs = self.locations.filter(primary=True)
+#        qs = qs.exclude(latitude=0, longitude=0)
+#        if qs:
+#            location = qs[0]
+#            return location
+#        return
 
 
     class QuerySet(QuerySet):
-        def has_primary_location(self):
-            content_type = ContentType.objects.get_for_model(Organisation)
-            locations = Location.objects.filter(content_type=content_type,
-                primary=True)
-            locations = locations.exclude(latitude=0, longitude=0)
-            project_ids = [location.object_id for location in locations]
-            return self.filter(id__in=project_ids)
+        def has_location(self):
+            return self.filter(primary_location__isnull=False)
 
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
@@ -347,35 +382,20 @@ class Organisation(models.Model):
         "How many projects with budget in $ the organisation is a partner to"
         return self.published_projects().dollars().distinct().count()
 
+    def _aggregate_funds_needed(self, projects):
+        return sum(projects.values_list('funds_needed', flat=True))
+
     def euro_funds_needed(self):
         "How much is still needed to fully fund all projects with € budget that the organiastion is a partner to"
-        return self.published_projects().euros().distinct().aggregate(
-            euro_funds_needed=Sum('funds_needed'))['euro_funds_needed'] or 0
+        # the ORM aggregate() doesn't work here since we may have multiple partnership relations to the same project
+        return self._aggregate_funds_needed(self.published_projects().euros().distinct())
 
     def dollar_funds_needed(self):
         "How much is still needed to fully fund all projects with $ budget that the organiastion is a partner to"
-        return self.published_projects().dollars().distinct().aggregate(
-            dollar_funds_needed=Sum('funds_needed'))['dollar_funds_needed'] or 0
+        # the ORM aggregate() doesn't work here since we may have multiple partnership relations to the same project
+        return self._aggregate_funds_needed(self.published_projects().dollars().distinct())
 
     # New API end
-
-#    def funding(self):
-#        my_projs = self.active_projects()
-#        # Fix for problem with pledged. my_projs.euros().total_pledged(self) won't
-#        # work because values_list used in qs_column_sum will not return more
-#        # than one of the same value. This leads to the wrong sum when same amount
-#        # has been pledged to multiple projects
-#        all_active = Project.objects.published().status_not_cancelled().status_not_archived()
-#        return {
-#            'total_euros': my_projs.euros().total_total_budget(),
-#            'donated_euros': my_projs.euros().total_donated(),
-#            'pledged_euros': all_active.euros().total_pledged(self),
-#            'still_needed_euros': my_projs.euros().total_funds_needed(),
-#            'total_dollars': my_projs.dollars().total_total_budget(),
-#            'donated_dollars': my_projs.dollars().total_donated(),
-#            'pledged_dollars': all_active.dollars().total_pledged(self),
-#            'still_needed_dollars': my_projs.dollars().total_funds_needed()
-#        }
 
     class Meta:
         verbose_name=_(u'organisation')
@@ -594,15 +614,14 @@ class Project(models.Model):
     date_request_posted = models.DateField(_(u'date request posted'), default=date.today)
     date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
-    locations = generic.GenericRelation(Location)
+#    old_locations = generic.GenericRelation(Location)
+    primary_location = models.ForeignKey(ProjectLocation, null=True, on_delete=models.SET_NULL)
 
     # denormalized data
     # =================
     budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
-
-   
 
     #Custom manager
     #based on http://www.djangosnippets.org/snippets/562/ and
@@ -686,24 +705,20 @@ class Project(models.Model):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
 
-    @property
-    def primary_location(self, location=None):
-        '''Return a project's primary location'''
-        qs = self.locations.filter(primary=True)
-        qs = qs.exclude(latitude=0, longitude=0)
-        if qs:
-            location = qs[0]
-            return location
-        return
+#    @property
+#    def primary_location(self, location=None):
+#        '''Return a project's primary location'''
+#        qs = self.locations.filter(primary=True)
+#        qs = qs.exclude(latitude=0, longitude=0)
+#        if qs:
+#            location = qs[0]
+#            return location
+#        return
 
     class QuerySet(QuerySet):
 
-        def has_primary_location(self):
-            content_type = ContentType.objects.get_for_model(Project)
-            locations = Location.objects.filter(content_type=content_type, primary=True)
-            locations = locations.exclude(latitude=0, longitude=0)
-            project_ids = [location.object_id for location in locations]
-            return self.filter(id__in=project_ids)
+        def has_location(self):
+            return self.filter(primary_location__isnull=False)
 
         def published(self):
             return self.filter(publishingstatus__status='published')
@@ -2228,6 +2243,5 @@ post_save.connect(update_project_funding, sender=Partnership)
 post_delete.connect(update_project_budget, sender=BudgetItem)
 post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
-
 
 #m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)

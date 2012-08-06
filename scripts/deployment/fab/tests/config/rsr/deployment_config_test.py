@@ -133,24 +133,12 @@ class RSRDeploymentConfigTest(unittest2.TestCase):
 
         self.assertEqual(expected_deployed_settings_file_path, self.deployment_config.deployed_rsr_settings_file)
 
-    def test_has_mod_python_file_name(self):
-        """fab.tests.config.rsr.deployment_config_test  Has mod_python file name"""
-
-        self.assertEqual(RSRCodebaseConfig.MOD_PYTHON_FILE, self.deployment_config.mod_python_file_name)
-
     def test_has_log_file_path(self):
         """fab.tests.config.rsr.deployment_config_test  Has RSR log file path"""
 
         expected_log_file_path = os.path.join(self.deployment_host_paths.logging_home, RSRCodebaseConfig.LOG_FILE)
 
         self.assertEqual(expected_log_file_path, self.deployment_config.log_file_path)
-
-    def test_has_deployed_mod_python_file_path(self):
-        """fab.tests.config.rsr.deployment_config_test  Has deployed mod_python file path"""
-
-        expected_deployed_mod_python_file_path = os.path.join(self.deployment_host_paths.config_home, RSRCodebaseConfig.MOD_PYTHON_FILE)
-
-        self.assertEqual(expected_deployed_mod_python_file_path, self.deployment_config.deployed_mod_python_file)
 
 
 def suite():
