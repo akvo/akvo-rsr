@@ -1,4 +1,4 @@
-Last changed: 29 June 2012 pb
+Last changed: 6 August 2012 ac
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -6,6 +6,133 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR ver 2.1.0 release notes
+----
+2 August 2012, (Code name: Iyokan) ac
+
+Overview
+----
+This release contains improvements to the map functionality that was implemented in the previous release. As well as some structural changes to the database to facilitate this functionality. We've also squeezed in more than a handful of bug fixes as well.
+
+New features & changes
+----
+
+###TastyPie API
+This release brings the first prototype of our API into play. This is a simple model to begin with, but we will be working with some close partners to pad out the functionality to provide exactly what everyone wants from this functionality.
+More information about this can be found on this subject on the Github wiki page for the [Akvo RSR API](https://github.com/akvo/akvo-rsr/wiki/Akvo-RSR-API).
+
+Github issue: [21](https://github.com/akvo/akvo-rsr/issues/21)
+
+###Text Formatting in Project Updates
+We have added the ability to use some Markdown formatting when submitting project updates to RSR. We have restricted the language to a relevant sub-set and will be providing partners with information on how to utilise this feature in the update process.
+
+Github issue: [24](https://github.com/akvo/akvo-rsr/issues/24)
+
+###Map info bubbles
+In our last release we introduced a new style of maps. In this release the info windows contained only a link to the object. Now we have embellished this a little further to also include the primary image for the object. Further work on these windows is still to be completed.
+
+###Map zoom level outliers
+
+We have implemented a new style of maps on the system which will enable us to use more geospacial tools and tricks going forwards. However there was an issue that for Partner Sites which had only 1 project, the map zoomed so far that it occasionally looked as though there was no map loaded in the background. We have now applied a default zoom level to maps that only have a single pin.
+
+GitHub issue: [46](https://github.com/akvo/akvo-rsr/issues/46)
+
+###People who get...
+
+We have removed the 'People who get' box from Organisation pages as this was often providing misleading results. We will be working to determine what information should be displayed in this location.
+
+GitHub issue: [10](https://github.com/akvo/akvo-rsr/issues/10)
+
+###Searching on secondary locations
+
+Within the work we have done on locations, we have improved the search filter in the application to include the information in secondary locations.
+
+GitHub issue: [18](https://github.com/akvo/akvo-rsr/issues/18)
+
+###RSR API
+
+We have implemented the first draft prototype for the RSR API. This will be utilised and tested further internally before we roll this out to our partners.
+
+GitHub issue: [21](https://github.com/akvo/akvo-rsr/issues/21)
+
+###Location Refactor
+
+We have changed the way locations are stored and served in the system. Now a location can be either a project location or an organisation location. This provides us with the additional flexibility required to provide better information and functionality in maps and location functions.
+
+GitHub issue: [27](https://github.com/akvo/akvo-rsr/issues/27)
+
+###Adding Kosovo to our country list
+
+Kosovo declared [independence](http://en.wikipedia.org/wiki/2008_Kosovo_declaration_of_independence) in 2008, however to date it has not been allocated an ISO country code. We have recently partnered with an organisation working in Kosovo and so have added it to our country list.
+
+GitHub issue: [56](https://github.com/akvo/akvo-rsr/issues/56)
+
+###AJAX Loading Animation
+
+While we have made many changes to improve the speed and performance of the site, it still occasionally happens that a map needs some time to load in the browser before being visible. In this instance we needed a loading animation, so we put one in. If you want to see this then you'll need to be quick as it doesn't hang around for long.
+
+GitHub issue: [42](https://github.com/akvo/akvo-rsr/issues/42)
+
+Bug fixes
+----
+
+###Multiple Primary Locations Bug
+
+We fixed an issue which created an error when a project was labelled with multiple primary locations. All duplicates have now been removed and the fix also prevents this from reoccurring.
+
+GitHub issue: [7](https://github.com/akvo/akvo-rsr/issues/7)
+
+###PayPal Donations blank confirmation page
+
+PayPal changed it's methods to use HTTP GET in place of HTTP POST. This had an effect that after making a donation, the confirmation page was not served to the user.
+
+GitHub issue: [63](https://github.com/akvo/akvo-rsr/issues/63)
+
+###Runtime error when removing projects
+
+We fixed an issue which caused errors when making major changes to projects and the connected database items.
+
+GitHub issue: [59](https://github.com/akvo/akvo-rsr/issues/59)
+
+###Partner Map Widget Error
+
+The Map Widgets for Partner Sites were not working due to an error in the templates. This is resolved and they have been fully functional for several weeks now, but the full fix is being checked in with this release.
+
+GitHub issue: [45](https://github.com/akvo/akvo-rsr/issues/45)
+
+###Resolving some display issues
+
+Some organisations had contact details such as websites or email addresses, which were too long for the fields in the application. So we've made a change to truncate these items whilst continuing to provide the full clickable link.
+[How it used to look](https://www.dropbox.com/s/pvlxism0hdkkfij/Screen%20Shot%202012-07-25%20at%2013.51.20%20PM.png) and [how it looks now]{(https://www.dropbox.com/s/gvps4pbfufn2zqo/Screen%20Shot%202012-07-25%20at%2013.51.26%20PM.png)
+
+GitHub issue: [36](https://github.com/akvo/akvo-rsr/issues/36)
+
+We noticed that in some partner sites, the funding box on project pages was over-running it's boundaries and obscuring the figures. We made a change to hide some of the text when this spills over to preserve the numbers.
+[Originally](https://www.dropbox.com/s/0cxjsu8e3upvlfx/Screen%20Shot%202012-07-25%20at%2013.55.10%20PM.png) and now [with the fix.](https://www.dropbox.com/s/oe6vo8sqqgyl738/Screen%20Shot%202012-07-25%20at%2013.56.23%20PM.png)
+
+GitHub issue: [40](https://github.com/akvo/akvo-rsr/issues/40)
+
+###Project to organisation relationship duplicates
+
+We have fixed an error in the system which was caused by a project being linked to an organisation twice with the same type of relationship. This had the knock-on effect of doubling amounts related to funding and budgets for the project. It is no longer possible to create this situation, and we have resolved all the previous instances.
+
+GitHub issue: [35](https://github.com/akvo/akvo-rsr/issues/35) & [58](https://github.com/akvo/akvo-rsr/issues/58)
+
+Non-functional changes
+----
+
+###Python 2.7 Upgrade
+
+Various Python packages are no longer supported on Python 2.5, so we needed to upgrade our servers to use the 2.7 version.
+
+GitHub issue: [9](https://github.com/akvo/akvo-rsr/issues/9)
+
+###Web server to use mod_wsgi
+
+The web server components have been upgraded to use the newer [mod_wsgi](https://docs.djangoproject.com/en/1.4/howto/deployment/wsgi/modwsgi/) app handler since mod_python is now [deprecated](https://docs.djangoproject.com/en/1.4/howto/deployment/modpython/) and support will be removed in Django 1.5.
+
+GitHub issue: [55](https://github.com/akvo/akvo-rsr/issues/55)
 
 Akvo RSR ver 2.0.7 release notes
 ----

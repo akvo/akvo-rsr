@@ -46,7 +46,7 @@
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       scrollwheel: false,
       streetViewControl: false,
-      zoom: 8
+      zoom: 1
     };
 
     if (mapType === "static") {
@@ -67,8 +67,8 @@
 
     // Map
     mapCanvas.gmap(mapOptions).bind("init", function() {
-      $.getJSON(dataURL, function(data) {
-        $.each(data, function(i, project) {
+      $.getJSON(dataURL, function(projects) {
+        $.each(projects, function(i, project) {
           mapCanvas.gmap("addMarker", {
             bounds: true,
             icon: icon,
@@ -84,6 +84,9 @@
             }
           });
         });
+        if (projects.length === 1) {
+          mapCanvas.gmap("option", "zoom", 6);
+        }
       });
     });
   });
