@@ -128,7 +128,6 @@ WSGIPythonPath /var/git/current:/var/virtualenvs/current/lib/python2.7/site-pack
 
     d) withing the VirtualHost section and below the static content Directory directives, add the following:
 
-WSGIScriptAlias /api /var/git/current/akvo/handler.py
 WSGIScriptAlias / /var/git/current/akvo/handler.py
 <Directory /var/git/current/akvo>
     <Files handler.py>
