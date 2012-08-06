@@ -1,4 +1,4 @@
-Last changed: 2 August 2012 ac
+Last changed: 6 August 2012 ac
 
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
@@ -17,6 +17,17 @@ This release contains improvements to the map functionality that was implemented
 
 New features & changes
 ----
+
+###TastyPie API
+This release brings the first prototype of our API into play. This is a simple model to begin with, but we will be working with some close partners to pad out the functionality to provide exactly what everyone wants from this functionality.
+More information about this can be found on this subject on the Github wiki page for the [Akvo RSR API](https://github.com/akvo/akvo-rsr/wiki/Akvo-RSR-API).
+
+Github issue: [21](https://github.com/akvo/akvo-rsr/issues/21)
+
+###Text Formatting in Project Updates
+We have added the ability to use some Markdown formatting when submitting project updates to RSR. We have restricted the language to a relevant sub-set and will be providing partners with information on how to utilise this feature in the update process.
+
+Github issue: [24](https://github.com/akvo/akvo-rsr/issues/24)
 
 ###Map info bubbles
 In our last release we introduced a new style of maps. In this release the info windows contained only a link to the object. Now we have embellished this a little further to also include the primary image for the object. Further work on these windows is still to be completed.
