@@ -87,3 +87,9 @@ div#gallery_box_slider {
     height:120px;
     overflow:hidden;
   }
+
+.update_preview {
+    font-size: 0.9em;
+    padding-left: 5px;
+    padding-right: 5px;
+}

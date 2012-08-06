@@ -25,7 +25,7 @@ function ensure_rsr_virtualenv_exists
 {
     if [ ! -d "$RSR_VIRTUALENV_PATH" ]; then
         printf "\n>> Creating RSR virtualenv at $RSR_VIRTUALENV_PATH\n"
-        virtualenv --no-site-packages --distribute "$RSR_VIRTUALENV_PATH"
+        virtualenv --distribute "$RSR_VIRTUALENV_PATH"
     else
         printf "\n>> Updating existing RSR virtualenv at $RSR_VIRTUALENV_PATH\n"
     fi

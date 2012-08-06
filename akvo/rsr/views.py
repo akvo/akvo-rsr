@@ -1266,16 +1266,13 @@ def mollie_report(request, mollie_response=None):
     return HttpResponse('OK')
 
 
-@csrf_exempt
-@require_POST
+@require_GET
 def paypal_thanks(request):
-    invoice_id = request.POST.get('invoice', None)
+    invoice_id = request.GET.get("invoice", None)
     if invoice_id:
         invoice = Invoice.objects.get(pk=invoice_id)
-        return render_to_response('rsr/project/donate/donate_thanks.html',
-                                  {'invoice': invoice,
-                                   'project': invoice.project,
-                                   'user': invoice.user},
+        return render_to_response("rsr/project/donate/donate_thanks.html",
+                                  dict(invoice=invoice, project=invoice.project, user=invoice.user),
                                   context_instance=RequestContext(request))
     return redirect('/')
 
