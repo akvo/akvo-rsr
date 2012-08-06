@@ -1,5 +1,5 @@
 # Package installation requirements
-distribute==0.6.27
+distribute==0.6.28
 
 # Package inspection requirements
 pypi-tools==0.0.2
