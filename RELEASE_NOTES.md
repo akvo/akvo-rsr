@@ -19,8 +19,9 @@ New features & changes
 ----
 
 ###TastyPie API
-This release brings the first prototype of our API into play. This is a simple model to begin with, but we will be working with some close partners to pad out the functionality to provide exactly what everyone wants from this functionality.
+This release brings the first prototype of our new API into play. This is a simple model to begin with, but we will be working with some close partners to pad out the functionality to provide exactly what everyone wants from this functionality.
 More information about this can be found on this subject on the Github wiki page for the [Akvo RSR API](https://github.com/akvo/akvo-rsr/wiki/Akvo-RSR-API).
+The existing API will shortly be depreciated in favour of this one.
 
 Github issue: [21](https://github.com/akvo/akvo-rsr/issues/21)
 
@@ -49,12 +50,6 @@ GitHub issue: [10](https://github.com/akvo/akvo-rsr/issues/10)
 Within the work we have done on locations, we have improved the search filter in the application to include the information in secondary locations.
 
 GitHub issue: [18](https://github.com/akvo/akvo-rsr/issues/18)
-
-###RSR API
-
-We have implemented the first draft prototype for the RSR API. This will be utilised and tested further internally before we roll this out to our partners.
-
-GitHub issue: [21](https://github.com/akvo/akvo-rsr/issues/21)
 
 ###Location Refactor
 
