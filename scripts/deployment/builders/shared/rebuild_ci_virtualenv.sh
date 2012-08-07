@@ -28,7 +28,7 @@ function ensure_ci_virtualenv_exists
 {
     if [ ! -d "$CI_VIRTUALENV_PATH" ]; then
         printf "\n>> Creating CI virtualenv at $CI_VIRTUALENV_PATH\n"
-        virtualenv --no-site-packages --distribute "$CI_VIRTUALENV_PATH"
+        virtualenv --distribute "$CI_VIRTUALENV_PATH"
     else
         printf "\n>> Updating existing CI virtualenv at $CI_VIRTUALENV_PATH\n"
     fi

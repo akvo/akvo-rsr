@@ -6,7 +6,7 @@ Housekeeping
  2) Remove any old backup databases through the mysql command-line tool:
         rsrdb_xxx_timestamp
  3) Remove unused system packages:
-        sudo aptitude purge python-libxml2, pythonlibxslt1 and python-mysqldb
+        sudo aptitude purge python-libxml2 python-libxslt1 python-mysqldb
  4) List any broken packages then purge them if they're not needed:
         sudo aptitude install
  5) Update any out of date system packages with aptitude
@@ -23,7 +23,7 @@ Pre-installation tidy-up
  2) Run pip freeze to see which system Python packages are installed.
  3) Remove any extraneous packages, esp. the following:
         sudo pip uninstall supervisor meld3 mercurial
-        sudo pip uninstall virtualenvwrapper virtual
+        sudo pip uninstall virtualenvwrapper virtualenv
     The only packges that should remain are: distribute, wsgiref and mod-python (though this will be uninstalled later)
  4) Ensure /usr/bin does not have any of the following binaries:
         pip (this will have to be removed)
@@ -128,7 +128,6 @@ WSGIPythonPath /var/git/current:/var/virtualenvs/current/lib/python2.7/site-pack
 
     d) withing the VirtualHost section and below the static content Directory directives, add the following:
 
-WSGIScriptAlias /api /var/git/current/akvo/handler.py
 WSGIScriptAlias / /var/git/current/akvo/handler.py
 <Directory /var/git/current/akvo>
     <Files handler.py>
