@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module. 
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from datetime import date, datetime, timedelta
@@ -62,6 +62,7 @@ from akvo.rsr.signals import (
 
 from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
 
+
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
 #http://simonwillison.net/2008/May/1/orm/
@@ -83,6 +84,7 @@ OLD_CONTINENTS = (
     ("5", _(u'North America')),
     ("6", _(u'South America')),
 )
+
 
 class Country(models.Model):
 
@@ -166,11 +168,13 @@ class BaseLocation(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['-primary',]
+        ordering = ['-primary', ]
+
 
 class OrganisationLocation(BaseLocation):
     # the organisation that's related to this location
     location_target = models.ForeignKey('Organisation', null=True, related_name='locations')
+
 
 class ProjectLocation(BaseLocation):
     # the project that's related to this location
@@ -178,14 +182,14 @@ class ProjectLocation(BaseLocation):
 
 
 class Partnership(models.Model):
-    FIELD_PARTNER       = u'field'
-    FUNDING_PARTNER     = u'funding'
-    SPONSOR_PARTNER     = u'sponsor'
-    SUPPORT_PARTNER     = u'support'
+    FIELD_PARTNER = u'field'
+    FUNDING_PARTNER = u'funding'
+    SPONSOR_PARTNER = u'sponsor'
+    SUPPORT_PARTNER = u'support'
 
-    PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
-    PARTNER_LABELS      = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'),]
-    PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+    PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
+    PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
+    PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'))
     project = models.ForeignKey('Project', verbose_name=_(u'project'),)
@@ -197,6 +201,7 @@ class Partnership(models.Model):
         blank=True,
         null=True
     )
+    iati_id = models.CharField(_(u'IATI ID'), verbose_name=_(u'IATI identifier'))
 
     class Meta:
         verbose_name = _(u'project partner')
