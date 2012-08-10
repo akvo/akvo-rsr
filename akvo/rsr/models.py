@@ -201,7 +201,7 @@ class Partnership(models.Model):
         blank=True,
         null=True
     )
-    iati_id = models.CharField(_(u'IATI ID'), max_length=75)
+    iati_id = models.CharField(_(u'IATI ID'), max_length=75, null=True)
 
     class Meta:
         verbose_name = _(u'project partner')
