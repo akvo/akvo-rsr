@@ -244,6 +244,7 @@ class Organisation(models.Model):
     name = models.CharField(_(u'name'), max_length=25, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
     long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
+    iati_id = models.CharField(_(u'IATI ID'), max_length=75, null=True)
 
     logo = ImageWithThumbnailsField(_(u'logo'),
                                     blank=True,
