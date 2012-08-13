@@ -98,6 +98,13 @@ def validate_iati_id(iati_id):
 
     Validation is not very strict since information about the rules where
     not easy to find.
+
+    >>> validate_iati_id("SE-AD-123")
+    >>>
+
+    >>> validate_iati_id("non valid id")
+    ValidationError: [u'se- is not a valid IATI identifier']
+
     """
     pattern = r'(^[A-Z]{2}[-]{1}[A-Z]{3}[-]{1}[A-Z0-9_\-]{2,}$)'
     if not re.match(pattern, iati_id):
