@@ -25,19 +25,28 @@ oembed.autodiscover()
 
 # tastypie (api)
 from tastypie.api import Api
-from akvo.api.resources import (
-    ProjectResource, CategoryResource, LinkResource, OrganisationResource, PartnershipResource,
-    ProjectLocationResource, CountryResource, OrganisationLocationResource,
-)
+import akvo.api.resources as resources
 v1_api = Api(api_name='v1')
-v1_api.register(CategoryResource())
-v1_api.register(CountryResource())
-v1_api.register(LinkResource())
-v1_api.register(ProjectResource())
-v1_api.register(OrganisationResource())
-v1_api.register(PartnershipResource())
-v1_api.register(ProjectLocationResource())
-v1_api.register(OrganisationLocationResource())
+for resource in resources.__all__:
+    v1_api.register(getattr(resources, resource)())
+
+#v1_api.register(BenchmarknameResource())
+#v1_api.register(BudgetItemResource())
+#v1_api.register(BudgetItemLabelResource())
+#v1_api.register(CategoryResource())
+#v1_api.register(CountryResource())
+#v1_api.register(GoalResource())
+#v1_api.register(FocusAreaResource())
+#v1_api.register(LinkResource())
+#v1_api.register(OrganisationResource())
+#v1_api.register(OrganisationLocationResource())
+#v1_api.register(PartnershipResource())
+#v1_api.register(ProjectResource())
+#v1_api.register(FullProjectResource())
+#v1_api.register(ProjectCommentResource())
+#v1_api.register(ProjectLocationResource())
+#v1_api.register(ProjectUpdateResource())
+
 
 # Multi-lingual urls
 # urlpatterns = i18n_patterns('',

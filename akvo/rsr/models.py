@@ -188,7 +188,7 @@ class Partnership(models.Model):
     PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'))
-    project = models.ForeignKey('Project', verbose_name=_(u'project'),)
+    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = models.CharField(_(u'partner type'), max_length=8, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
         _(u'funding amount'),
@@ -1210,7 +1210,7 @@ class BudgetItem(models.Model):
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
-    # Translators: This is the amount of an budget item in a currancy (€ or $)
+    # Translators: This is the amount of an budget item in a currency (€ or $)
     amount      = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     def __unicode__(self):
@@ -1910,7 +1910,7 @@ class ProjectUpdate(models.Model):
 
 
 class ProjectComment(models.Model):
-    project = models.ForeignKey(Project, verbose_name=_(u'project'))
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='comments')
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     comment = models.TextField(_(u'comment'))
     time = models.DateTimeField(_(u'time'))
