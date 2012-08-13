@@ -30,15 +30,13 @@ from akvo.rsr.forms import PartnerSiteAdminForm
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
 from akvo.rsr.utils import get_rsr_limited_change_permission, permissions
 
-
 NON_FIELD_ERRORS = '__all__'
-
 csrf_protect_m = method_decorator(csrf_protect)
 
-
 admin.site.unregister(Group)
-class RSRGroupAdmin(GroupAdmin):
 
+
+class RSRGroupAdmin(GroupAdmin):
     list_display = GroupAdmin.list_display + (permissions,)
 
 admin.site.register(Group, RSRGroupAdmin)
@@ -46,7 +44,7 @@ admin.site.register(Group, RSRGroupAdmin)
 
 class PermissionAdmin(admin.ModelAdmin):
     list_display = (u'__unicode__', u'content_type', )
-    list_filter  = (u'content_type', )
+    list_filter = (u'content_type', )
     ordering = (u'content_type', )
 
 admin.site.register(get_model('auth', 'permission'), PermissionAdmin)
@@ -54,7 +52,7 @@ admin.site.register(get_model('auth', 'permission'), PermissionAdmin)
 
 class CountryAdmin(admin.ModelAdmin):
     list_display = (u'name', u'iso_code', u'continent', u'continent_code', )
-    list_filter  = (u'continent', )
+    list_filter = (u'continent', )
     readonly_fields = (u'name', u'continent', u'continent_code')
 
     def get_actions(self, request):
@@ -72,7 +70,7 @@ class CountryAdmin(admin.ModelAdmin):
 
             obj.name = dict(ISO_3166_COUNTRIES)[iso_code]
             obj.continent = dict(CONTINENTS)[continent_code]
-            obj.continent_code =continent_code
+            obj.continent_code = continent_code
         obj.save()
 
     def get_readonly_fields(self, request, obj=None):
@@ -100,14 +98,16 @@ class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
                     _(u'The project must have exactly one primary location if any locations at all are to be included')
                 ])
 
+
 class OrganisationLocationInline(admin.StackedInline):
     model = get_model('rsr', 'organisationlocation')
     extra = 0
     formset = RSR_LocationFormFormSet
 
+
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
-        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', )}),
+        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', 'iati_id', )}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
     )
@@ -128,7 +128,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         Override to add self.formfield_overrides.
         Needed to get the ImageWithThumbnailsField working in the admin.
         """
-        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
+        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
 
     def queryset(self, request):
@@ -179,6 +179,7 @@ class LinkInline(admin.TabularInline):
     model = get_model('rsr', 'link')
     extra = 3
     list_display = ('url', 'caption', 'show_link')
+
 
 def partner_clean(obj, field_name='organisation'):
     """
@@ -250,6 +251,7 @@ class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         partner_clean(self, 'field_organisation')
 
+
 class FieldPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'fieldpartner')
     extra = 1
@@ -260,10 +262,12 @@ class FieldPartnerInline(admin.TabularInline):
         formset.request = request
         return formset
 
+
 #see above
 class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         partner_clean(self, 'support_organisation')
+
 
 class SupportPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'supportpartner')
@@ -275,10 +279,12 @@ class SupportPartnerInline(admin.TabularInline):
         formset.request = request
         return formset
 
+
 #see above
 class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         partner_clean(self, 'sponsor_organisation')
+
 
 class SponsorPartnerInline(admin.TabularInline):
     model = get_model('rsr', 'sponsorpartner')
@@ -300,11 +306,13 @@ admin.site.register(get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
 class BudgetItemAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budgetitem')
     extra = 1
+
     class Media:
-        css = {'all': (os.path.join(settings.MEDIA_URL, 'akvo/css/src/rsr_admin.css').replace('\\','/'),)}
-        js = (os.path.join(settings.MEDIA_URL, 'akvo/js/src/rsr_admin.js').replace('\\','/'),)
+        css = {'all': (os.path.join(settings.MEDIA_URL, 'akvo/css/src/rsr_admin.css').replace('\\', '/'),)}
+        js = (os.path.join(settings.MEDIA_URL, 'akvo/js/src/rsr_admin.js').replace('\\', '/'),)
 
 #admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
+
 
 class BudgetAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budget')
@@ -441,6 +449,7 @@ class ProjectLocationInline(admin.StackedInline):
     extra = 0
     formset = RSR_LocationFormFormSet
 
+
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
@@ -531,7 +540,7 @@ class ProjectAdmin(admin.ModelAdmin):
         Override to add self.formfield_overrides.
         Needed to get the ImageWithThumbnailsField working in the admin.
         """
-        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
+        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectAdmin, self).__init__(model, admin_site)
 
     def queryset(self, request):
@@ -675,8 +684,6 @@ class ProjectAdmin(admin.ModelAdmin):
 
 # benchmark change, budgetitem all, goal all, location all,
 
-
-
 #    @csrf_protect_m
 #    @transaction.commit_on_success
 #    def change_view(self, request, object_id, extra_context=None):
@@ -816,30 +823,31 @@ class UserProfileAdminForm(forms.ModelForm):
     class Meta:
         model = get_model('rsr', 'userprofile')
 
-    is_active       = forms.BooleanField(required=False, label=_(u'account is active'),)
-    is_org_admin    = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
-    is_org_editor   = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
-    is_sms_updater  = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
-    
+    is_active = forms.BooleanField(required=False, label=_(u'account is active'),)
+    is_org_admin = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
+    is_org_editor = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
+    is_sms_updater = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
+
     def __init__(self, *args, **kwargs):
         initial_data = {}
         instance = kwargs.get('instance', None)
         if instance:
-            initial_data['is_active']       = instance.get_is_active()
-            initial_data['is_org_admin']    = instance.get_is_org_admin()
-            initial_data['is_org_editor']   = instance.get_is_org_editor()
-            initial_data['is_sms_updater']  = instance.has_perm_add_sms_updates()
+            initial_data['is_active'] = instance.get_is_active()
+            initial_data['is_org_admin'] = instance.get_is_org_admin()
+            initial_data['is_org_editor'] = instance.get_is_org_editor()
+            initial_data['is_sms_updater'] = instance.has_perm_add_sms_updates()
             kwargs.update({'initial': initial_data})
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
+
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'has_perm_add_sms_updates', 'latest_update_date',)
     search_fields = ('user__username', 'organisation__name', 'organisation__long_name',)
-    list_filter  = ('organisation',)
+    list_filter = ('organisation',)
     ordering = ("user__username",)
-    inlines = [SmsReporterInline,]
+    inlines = [SmsReporterInline, ]
     form = UserProfileAdminForm
-    
+
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
         actions = super(UserProfileAdmin, self).get_actions(request)
@@ -853,14 +861,14 @@ class UserProfileAdmin(admin.ModelAdmin):
         # non-superusers don't get to see it all
         if not request.user.is_superuser:
             # hide sms-related stuff
-            self.exclude =  ('phone_number', 'validation',)
+            self.exclude = ('phone_number', 'validation',)
             # user and org are only shown as text, not select widget
             #self.readonly_fields = ('user', 'organisation',)
         # this is needed to remove some kind of caching on exclude and readonly_fk,
         # resulting in the above fields being hidden/changed from superusers after
         # a vanilla user has accessed the form!
         else:
-            self.exclude =  None
+            self.exclude = None
             #self.readonly_fields = ()
         form = super(UserProfileAdmin, self).get_form(request, obj, **kwargs)
         if not request.user.is_superuser and obj.validation != obj.VALIDATED:
@@ -876,12 +884,11 @@ class UserProfileAdmin(admin.ModelAdmin):
             self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
             self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
             # user and org are only shown as text, not select widget
-            return ['user', 'organisation',]
+            return ['user', 'organisation', ]
         else:
             self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
             self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
             return []
-
 
     def queryset(self, request):
         """
@@ -924,14 +931,14 @@ class UserProfileAdmin(admin.ModelAdmin):
         override of django.contrib.admin.options.save_model
         """
         # Act upon the checkboxes that fake admin settings for the partner users.
-        is_active       = form.cleaned_data['is_active']
-        is_admin        = form.cleaned_data['is_org_admin']
-        is_editor       = form.cleaned_data['is_org_editor']
-        is_sms_updater  = form.cleaned_data['is_sms_updater']
-        obj.set_is_active(is_active) #master switch
-        obj.set_is_org_admin(is_admin) #can modify other users user profile and own organisation
-        obj.set_is_org_editor(is_editor) #can edit projects
-        obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser) #implicitly needed to log in to admin
+        is_active = form.cleaned_data['is_active']
+        is_admin = form.cleaned_data['is_org_admin']
+        is_editor = form.cleaned_data['is_org_editor']
+        is_sms_updater = form.cleaned_data['is_sms_updater']
+        obj.set_is_active(is_active)  # master switch
+        obj.set_is_org_admin(is_admin)  # can modify other users user profile and own organisation
+        obj.set_is_org_editor(is_editor)  # can edit projects
+        obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser)  # implicitly needed to log in to admin
         # TODO: fix "real" permissions, currently only superusers can change sms updter status
         if is_sms_updater:
             obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
@@ -945,49 +952,48 @@ admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):
-    list_display    = ('project', 'user', 'comment', 'time', )    
-    list_filter     = ('project', 'time', )
+    list_display = ('project', 'user', 'comment', 'time', )
+    list_filter = ('project', 'time', )
 
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 
 class ProjectUpdateAdmin(admin.ModelAdmin):
 
-    list_display    = ('id', 'project', 'user', 'text', 'time', 'img',)    
-    list_filter     = ('time', 'project', )
-    
+    list_display = ('id', 'project', 'user', 'text', 'time', 'img',)
+    list_filter = ('time', 'project', )
+
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
         """
         Override to add self.formfield_overrides.
         Needed to get the ImageWithThumbnailsField working in the admin.
         """
-        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget},}
+        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
-    
+
 
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'engine', 'status', 'test', 'is_anonymous')
-    list_filter = ('engine', 'status', 'test', 'is_anonymous')  
+    list_filter = ('engine', 'status', 'test', 'is_anonymous')
     actions = ('void_invoices',)
-        
+
     def void_invoices(self, request, queryset):
         """Manually void invoices with a status of 1 (Pending) or 4 (Stale)
-            
+
         Checks for invalid invoice selections, refuses to operate on them
         and flags up a notification.
-        
+
         Status codes:
-       
+
             1 - Pending (valid for voiding)
             2 - Void (invalid)
             3 - Complete (invalid)
-            4 - Stale (valid)     
-        
+            4 - Stale (valid)
         """
-        valid_invoices = queryset.filter(status__in=[1,4])
-        invalid_invoices = queryset.filter(status__in=[2,3])
+        valid_invoices = queryset.filter(status__in=[1, 4])
+        invalid_invoices = queryset.filter(status__in=[2, 3])
         if invalid_invoices:
             if valid_invoices:
                 for invoice in valid_invoices:
@@ -1005,24 +1011,26 @@ class InvoiceAdmin(admin.ModelAdmin):
                 self.message_user(request, 'Invoice %d successfully voided.' % int(invoice.pk))
                 queryset.update(status=2)
     void_invoices.short_description = u'Mark selected invoices as void'
-    
+
 admin.site.register(get_model('rsr', 'invoice'), InvoiceAdmin)
-    
+
 
 class PayPalGatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'account_email', 'description', 'currency', 'locale', 'notification_email')
-    
+
 admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
-    
+
+
 class MollieGatewayAdmin(admin.ModelAdmin):
     list_display = ('name', 'partner_id', 'description', 'currency', 'notification_email')
-    
+
 admin.site.register(get_model('rsr', 'molliegateway'), MollieGatewayAdmin)
-    
+
+
 class PaymentGatewaySelectorAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'paypal_gateway', 'mollie_gateway')
     list_filter = ('paypal_gateway', 'mollie_gateway')
-    
+
 admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 
 
