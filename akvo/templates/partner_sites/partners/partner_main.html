@@ -32,14 +32,14 @@
           </p>
           <h3>{% trans 'Type' %}</h3>
           <p class="small">{{partner.get_organisation_type_display}}</p>
-            {% if partner.url %}
-              <h3>{% trans 'Website' %}</h3>
-              <p class="small"><a href="{{partner.url}}">{{partner.url}}</a></p>
-            {% endif %}
-            {% if partner.akvopedia_entry %}
-              <h3>{% trans 'Akvopedia entry' %}</h3>
-              <p class="small">{{partner.akvopedia_entry}}</p>
-            {% endif %}
+          {% if partner.akvopedia_entry %}
+            <h3>{% trans 'Akvopedia entry' %}</h3>
+            <p class="small">{{partner.akvopedia_entry}}</p>
+          {% endif %}
+          {% if partner.iati_id %}
+            <h3>{% trans 'IATI ID' %}</h3>
+            <p class="small">{{partner.iati_id}}</p>
+          {% endif %}
         </div>
         <div class="content_three_col marg_left20 cut_flow">
           <h3>{% trans 'Location' %}</h3>
@@ -79,6 +79,10 @@
               <br />
             {% endif %}
           </p>
+          {% if partner.url %}
+            <h3>{% trans 'Website' %}</h3>
+            <p class="small"><a href="{{partner.url}}">{{partner.url}}</a></p>
+          {% endif %}
         </div>
         <div class="clear"></div>
         <hr />

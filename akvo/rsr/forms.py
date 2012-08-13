@@ -99,8 +99,42 @@ class RSR_PasswordChangeForm(PasswordChangeForm):
             RSR_PasswordField(field_name="new_password2", length=30, max_length=30, is_required=True),
         )
 
-class OrganisationForm(forms.Form):
-    organisation = forms.ModelChoiceField(queryset=Organisation.objects.all(), widget=forms.Select(attrs={ 'style': 'margin: 10px 50px; display: block' }))
+
+#class OrganisationForm(forms.Form):
+class RegistrationForm1(forms.Form):
+    organisation = forms.ModelChoiceField(queryset=Organisation.objects.all(), widget=forms.Select(attrs={'style': 'margin: 10px 50px; display: block'}))
+
+# class OrganisationForm(forms.Form):
+#class OrganisationForm(forms.ModelForm):
+    #iati_id = forms.CharField(max_length=75, min_length=3)
+
+ #   class Meta:
+ #       model = Organisation
+
+    #def clean_iati_id(self):
+        #iati_id = self.data['iati_id']
+    #    return self.cleaned_data
+    #   iati_id = self.cleaned_data.get('iati_id')
+
+
+    #def clean_iati_id(self):
+    #   iati_id = self.cleaned_data.get('iati_id')
+        #import re
+        #pattern = r'[^\.a-z0-9]'
+        #if re.search(pattern, iati_id):
+        #    raise forms.ValidationError(_(u'Invalid IATI ID'))
+    #    return self.cleaned_data
+
+    #organisation = forms.ModelChoiceField(queryset=Organisation.objects.all(), widget=forms.Select(attrs={ 'style': 'margin: 10px 50px; display: block' }))
+
+    # def clean(self):
+    #     print "Cleaning"
+    #     iati_id = self.cleaned_data.get('iati_id')
+    #     import re
+    #     pattern = r'[^\.a-z0-9]'
+    #     if re.search(pattern, iati_id):
+    #         raise forms.ValidationError(_(u'Invalid IATI ID'))
+    #     return self.cleaned_data
 
 
 class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):

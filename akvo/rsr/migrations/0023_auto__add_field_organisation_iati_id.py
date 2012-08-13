@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Organisation.iati_id'
         db.add_column('rsr_organisation', 'iati_id',
-                      self.gf('django.db.models.fields.CharField')(max_length=75, null=True),
+                      self.gf('django.db.models.fields.CharField')(max_length=75, null=True, blank=True),
                       keep_default=False)
 
 
@@ -184,7 +184,7 @@ class Migration(SchemaMigration):
             'contact_person': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'iati_id': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True'}),
+            'iati_id': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'logo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'long_name': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
@@ -217,7 +217,7 @@ class Migration(SchemaMigration):
         'rsr.partnership': {
             'Meta': {'ordering': "['partner_type']", 'object_name': 'Partnership'},
             'funding_amount': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
-            'iati_id': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True'}),
+            'iati_id': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
             'partner_type': ('django.db.models.fields.CharField', [], {'max_length': '8'}),

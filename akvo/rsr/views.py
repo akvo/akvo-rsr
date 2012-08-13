@@ -8,7 +8,7 @@ from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
                              UserProfile, Invoice, SmsReporter, PartnerSite)
-from akvo.rsr.forms import (InvoiceForm, OrganisationForm, RSR_RegistrationFormUniqueEmail,
+from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
 from akvo.rsr.decorators import fetch_project
@@ -461,11 +461,11 @@ def register1(request):
     The user chooses organisation as a preliminary step to registering an Akvo RSR account.
     '''
     if request.method == 'POST':
-        form = OrganisationForm(data=request.POST)
+        form = RegistrationForm1(data=request.POST)
         if form.is_valid():
             return HttpResponseRedirect('/rsr/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
     else:
-        form = OrganisationForm()
+        form = RegistrationForm1()
     context = RequestContext(request)
     return render_to_response('registration/registration_form1.html', {'form': form}, context_instance=context)
 
