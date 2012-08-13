@@ -155,6 +155,7 @@ class BaseLocation(models.Model):
         return u'%s, %s (%s)' % (self.city, self.state, self.country)
 
     def save(self, *args, **kwargs):
+        super(BaseLocation, self).save(*args, **kwargs)
         if self.primary:
             location_target = self.location_target
             # this is probably redundant since the admin form saving should handle this
@@ -162,7 +163,6 @@ class BaseLocation(models.Model):
             location_target.locations.exclude(pk__exact=self.pk).update(primary=False)
             location_target.primary_location = self
             location_target.save()
-        super(BaseLocation, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
