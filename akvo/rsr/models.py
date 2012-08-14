@@ -120,7 +120,7 @@ def validate_iati_id(iati_id):
         ...
     ValidationError: [u'SE-FKR-??? is not a valid IATI identifier']
     """
-    pattern = r'(^[A-Z]{2}[-]{1}[A-Z]{3}[-]{1}[A-Z0-9_\-]{2,}$)'
+    pattern = r'(^[A-Z]{2}\-[A-Z]{3}\-[A-Z0-9_\-]{2,}$)'
     if not re.match(pattern, iati_id):
         raise ValidationError(u'%s is not a valid IATI identifier' % iati_id)
 
