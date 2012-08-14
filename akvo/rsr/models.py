@@ -13,6 +13,7 @@ logger = logging.getLogger('akvo.rsr')
 
 import oembed
 import re
+from moka import List
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -623,7 +624,7 @@ class MiniCMS(models.Model):
     class Meta:
         verbose_name = u'MiniCMS'
         verbose_name_plural = u'MiniCMS'
-        ordering = ['-active', '-id',]
+        ordering = ['-active', '-id', ]
 
 
 class OrganisationsQuerySetManager(QuerySetManager):
@@ -651,11 +652,11 @@ class Project(models.Model):
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
 
-#    goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-#    goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
-#    goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
-#    goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
-#    goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
+    # goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
+    # goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
+    # goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
+    # goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
+    # goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
 
     current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
     project_plan = models.TextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
@@ -665,12 +666,12 @@ class Project(models.Model):
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
 
-    #budget
+    # budget
     currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
     date_request_posted = models.DateField(_(u'date request posted'), default=date.today)
     date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
-#    old_locations = generic.GenericRelation(Location)
+    # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey(ProjectLocation, null=True, on_delete=models.SET_NULL)
 
     # denormalized data
@@ -679,9 +680,9 @@ class Project(models.Model):
     funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
 
-    #Custom manager
-    #based on http://www.djangosnippets.org/snippets/562/ and
-    #http://simonwillison.net/2008/May/1/orm/
+    # Custom manager
+    # based on http://www.djangosnippets.org/snippets/562/ and
+    # http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
 
@@ -980,17 +981,17 @@ class Project(models.Model):
 
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
-                result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for categories in cats
+                result = self.filter(  # filter finds largest "benchmarkname" value in benchmarks for categories in cats
                     benchmarks__name__name=benchmarkname,
                     benchmarks__category__name__in=cats
                 )
             else:
-                result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for all categories
+                result = self.filter(  # filter finds largest "benchmarkname" value in benchmarks for all categories
                     benchmarks__name__name=benchmarkname
                 )
-            return result.annotate( #annotate the greatest of the "benchmarkname" values into max_value
-                                   max_value=Max('benchmarks__value')).aggregate( #sum max_value for all projects
-                                   Sum('max_value'))['max_value__sum'] or 0 #we want to return 0 instead of an empty QS
+            return result.annotate(  # annotate the greatest of the "benchmarkname" values into max_value
+                                   max_value=Max('benchmarks__value')).aggregate(  # sum max_value for all projects
+                                   Sum('max_value'))['max_value__sum'] or 0  # we want to return 0 instead of an empty QS
 
         def get_planned_water_calc(self):
             "how many will get improved water"
@@ -1029,7 +1030,7 @@ class Project(models.Model):
         def latest_update_fields(self):
             #used in project_list view
             #cheating slightly, counting on that both id and time are the largest for the latest update
-            return self.annotate(latest_update_id=Max('project_updates__id'),latest_update_date=Max('project_updates__time'))
+            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__time'))
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
@@ -1037,7 +1038,7 @@ class Project(models.Model):
             if partner_type:
                 orgs = orgs.filter(partnership__partner_type=partner_type)
             return orgs.distinct()
-        
+
         def field_partners(self):
             return self._partners(Partnership.FIELD_PARTNER)
 
@@ -1075,9 +1076,9 @@ class Project(models.Model):
             update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.time,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
-                update_info  = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email,)
+                update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email, )
             else:
-                update_info  = '%s<br/>' % update_info
+                update_info = '%s<br/>' % update_info
         else:
             update_info = u'%s<br/><br/>' % (ugettext(u'No update yet'),)
         # links to the project's support partners
@@ -1195,6 +1196,28 @@ class Project(models.Model):
 
     def all_partners(self):
         return self._partners()
+
+    def all_partnerships(self):
+
+        print type(self.partnership_set.all())
+        #x = List(self.partnership_set.all())
+        #print x.rem(iati_id=None)
+        #partners = self.all_partners()
+        #partnerships = project.partnership_set.all()
+
+        def filter_none(l):
+            if not l.iati_id:
+                return False
+            return True
+
+        iati_partnerships = filter(filter_none, self.partnership_set.all())
+        return iati_partnerships
+
+        # for partnership in self.partnership_set.all():
+        #for partnership in iati_partnerships:
+        #    print partnership.iati_id
+        #return self.partnership_set.all()
+        #partnerships = []
 
     def funding_partner_info(self):
         "Return the Partnership objects associated with the project that have funding information"

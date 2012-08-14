@@ -28,13 +28,12 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
 from django.forms import ModelForm
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET
 
 from datetime import datetime
 from registration.models import RegistrationProfile
@@ -889,7 +888,6 @@ def projectmain(request, project_id):
     admin_change_url: url to the change view in the admin for the project, set to None if the user is not allowed to edit
     comments: the three latest comments
     site_section: for use in the main nav hilighting
-    slider_width: used by the thumbnail image slider
     '''
     project = get_object_or_404(Project, pk=project_id)
     related = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
@@ -912,6 +910,10 @@ def projectmain(request, project_id):
         admin_change_url = admin_change_url[0]  # don't friggin ask why!!!
     else:
         admin_change_url = None
+
+    #Partnership
+    #partnerships = project.partnership_set.all()
+
     return {
         'project': project,
         'p': project,  # compatibility with new_look
@@ -923,6 +925,7 @@ def projectmain(request, project_id):
         'admin_change_url': admin_change_url,
         'comments': comments,
         'site_section': 'projects',
+     #   'partnerships': partnerships,
     }
 
 

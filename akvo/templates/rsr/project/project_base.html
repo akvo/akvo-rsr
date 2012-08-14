@@ -188,7 +188,17 @@
       </div>
     </div>
   {% endif %}
-	
+
+  {% for partnership in project.all_partnerships  %}
+    {{partnership.iati_id}}
+  {% endfor %}
+
+  {% comment %}
+  {% for partnership in partnerships %}
+    {{partnership.iati_id}}
+  {% endfor %}
+  {% endcomment %}
+
   {% if not hide_comments %}
     <div class="two_column_right_inner" style="margin-top:20px;">
       <div class="small" style="float:left; width:130px;">
