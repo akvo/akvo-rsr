@@ -1209,13 +1209,12 @@ class Project(models.Model):
         )
 
     class Meta:
-        permissions         = (
+        permissions = (
             ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
         )
-        verbose_name        = _(u'project')
+        verbose_name = _(u'project')
         verbose_name_plural = _(u'projects')
-        ordering            = ['-id',]
-
+        ordering = ['-id', ]
 
 
 class Goal(models.Model):
@@ -1239,8 +1238,8 @@ class Benchmark(models.Model):
         }
 
     class Meta:
-        ordering            =  ('category__name', 'name__order')
-        verbose_name        = _(u'benchmark')
+        ordering = ('category__name', 'name__order')
+        verbose_name = _(u'benchmark')
         verbose_name_plural = _(u'benchmarks')
 
 
@@ -1251,8 +1250,8 @@ class BudgetItemLabel(models.Model):
         return self.label
 
     class Meta:
-        ordering            = ('label',)
-        verbose_name        = _(u'budget item label')
+        ordering = ('label',)
+        verbose_name = _(u'budget item label')
         verbose_name_plural = _(u'budget item labels')
 
 
@@ -1260,14 +1259,14 @@ class BudgetItem(models.Model):
     # DON'T translate. Need model translations for this to work
     OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
 
-    project     = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
-    label       = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
+    label = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
     other_extra = models.CharField(
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
     # Translators: This is the amount of an budget item in a currancy (€ or $)
-    amount      = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
+    amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     def __unicode__(self):
         return self.label.__unicode__()
@@ -1281,10 +1280,10 @@ class BudgetItem(models.Model):
             return self.__unicode__()
 
     class Meta:
-        ordering            = ('label',)
-        verbose_name        = _(u'budget item')
+        ordering = ('label',)
+        verbose_name = _(u'budget item')
         verbose_name_plural = _(u'budget items')
-        unique_together     = ('project', 'label')
+        unique_together = ('project', 'label')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
@@ -1302,12 +1301,12 @@ class PublishingStatus(models.Model):
     #TODO: change to a generic relation if we want to have publishing stats on
     #other objects than projects
     project = models.OneToOneField(Project,)
-    status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
+    status = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
 
     class Meta:
-        verbose_name        = _(u'publishing status')
+        verbose_name = _(u'publishing status')
         verbose_name_plural = _(u'publishing statuses')
-        ordering            = ('-status', 'project')
+        ordering = ('-status', 'project')
 
     def project_info(self):
         return self.project
@@ -1344,10 +1343,11 @@ UPDATE_METHODS = (
     ('S', _(u'SMS')),
 )
 
+
 class UserProfileManager(models.Manager):
     def process_sms(self, mo_sms):
         try:
-            profile = self.get(phone_number__exact=mo_sms.sender) # ??? reporter instead ???
+            profile = self.get(phone_number__exact=mo_sms.sender)  # ??? reporter instead ???
             #state = get_state(profile)
             #if state:
             if state_equals(profile, profile.STATE_PHONE_NUMBER_ADDED):
@@ -1373,13 +1373,14 @@ class UserProfileManager(models.Manager):
         except Exception, e:
             logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
 
+
 class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
     user = models.OneToOneField(User)
     organisation = models.ForeignKey(Organisation)
-    phone_number = models.CharField(max_length=50, blank=True)# TODO: check uniqueness if non-empty
+    phone_number = models.CharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
     validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
     objects = UserProfileManager()
