@@ -596,7 +596,7 @@ class ProjectAdmin(admin.ModelAdmin):
             prefixes = {}
             for FormSet, inline in zip(self.get_formsets(request), inline_instances):
                 prefix = FormSet.get_default_prefix()
-                # add to add_view() from jango 1.4
+                # add to add_view() from django 1.4
                 # check if we're trying to create a new project by copying an existing one. If so we ignore
                 # location and benchmark inlines
                 if not "_saveasnew" in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
