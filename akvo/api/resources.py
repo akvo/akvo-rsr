@@ -155,38 +155,39 @@ class PartnershipResource(ModelResource):
 
 
 class ProjectResource(ModelResource):
-    benchmarks      = fields.ToManyField('akvo.api.resources.BenchmarkResource', 'benchmarks')
+    benchmarks          = fields.ToManyField('akvo.api.resources.BenchmarkResource', 'benchmarks')
     budget_items        = fields.ToManyField('akvo.api.resources.BudgetItemResource', 'budget_items')
     categories          = fields.ToManyField('akvo.api.resources.CategoryResource', 'categories')
     goals               = fields.ToManyField('akvo.api.resources.GoalResource', 'goals')
     links               = fields.ToManyField('akvo.api.resources.LinkResource', 'links')
     locations           = fields.ToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
     partnerships        = fields.ToManyField('akvo.api.resources.PartnershipResource', 'partnerships')
-    project_comments    = fields.ToManyField('akvo.api.resources.ProjectCommentResource', 'project_comments')
+    project_comments    = fields.ToManyField('akvo.api.resources.ProjectCommentResource', 'comments')
     project_updates     = fields.ToManyField('akvo.api.resources.ProjectUpdateResource', 'project_updates')
 
     class Meta:
         allowed_methods = ['get']
-        queryset        = Project.objects.all()
+        queryset        = Project.objects.published()
         resource_name   = 'project'
         filtering       = dict(partners=ALL_WITH_RELATIONS)
 
 
-class FullProjectResource(ModelResource):
-    benchmarks          = fields.ToManyField('akvo.api.resources.BenchmarkResource', 'benchmarks', full=True)
-    budget_items        = fields.ToManyField('akvo.api.resources.BudgetItemResource', 'budget_items', full=True)
-    categories          = fields.ToManyField('akvo.api.resources.CategoryResource', 'categories', full=True)
-    goals               = fields.ToManyField('akvo.api.resources.GoalResource', 'goals', full=True)
-    links               = fields.ToManyField('akvo.api.resources.LinkResource', 'links', full=True)
-    locations           = fields.ToManyField('akvo.api.resources.ProjectLocationResource', 'locations', full=True)
-    partnerships        = fields.ToManyField('akvo.api.resources.PartnershipResource', 'partnerships', full=True)
-    project_comments    = fields.ToManyField('akvo.api.resources.ProjectCommentResource', 'project_comments', full=True)
-    project_updates     = fields.ToManyField('akvo.api.resources.ProjectUpdateResource', 'project_updates', full=True)
+class FullProjectResource(ProjectResource):
+    """ return Project data with all related data inline, rather than as resource URLs
+    """
+    def __init__(self, api_name=None):
+        """ set full=True for all ToManyFields
+        """
+        super(FullProjectResource, self).__init__(api_name)
+        for field in self.fields:
+            if type(self.fields[field]) == fields.ToManyField:
+                self.fields[field].full = True
 
     class Meta:
+        # TODO: don't think Meta is inherited, but may be investigated
         allowed_methods = ['get']
-        queryset        = Project.objects.all()
-        resource_name   = 'full_project'
+        queryset        = Project.objects.published()
+        resource_name   = 'project_full'
         filtering       = dict(partners=ALL_WITH_RELATIONS)
 
 
