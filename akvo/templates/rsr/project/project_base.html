@@ -154,6 +154,8 @@
   </div>
 	
   {% if not hide_project_partners %}
+    {% comment %}
+      
     <div class="two_column_right_inner" style="margin-top:20px;">
       <div class="small" style="float:left; width:130px;">
         <h2>{% trans 'Project partners' %}</h2>
@@ -177,6 +179,9 @@
                   {{partner.primary_location.city}},
                 {% endif %}
                 {{partner.primary_location.country}}
+                {% if partner.iati_id %}
+                  {{iati_id}}
+                {% endif %}
               </p>
             </div>
             <div class="clear"></div>
@@ -187,17 +192,47 @@
         </div>
       </div>
     </div>
+    {% endcomment %}
+    {# start #}
+    <div class="two_column_right_inner" style="margin-top:20px;">
+      <div class="small" style="float:left; width:130px;">
+        <h2>{% trans 'Project partners' %}</h2>
+      </div>
+      <div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
+        <a class="small" href="{% url 'project_partners' project.id %}">{% trans 'See details' %} &#x25BA;</a>
+      </div>
+      <div class="clear"></div>
+      <div class="white_box">
+        <div class="space10">
+          {% for partnership in project.all_partnerships %}
+            <div style="float:left; width:100px;">
+              <a href="{{partnership.organisation.get_absolute_url}}">
+                {% org_logo partnership.organisation 90 60 'margin:0;' %}
+              </a>
+            </div>
+            <div style="float:left; width:170px;">
+              <p class="small grey" style="margin:0; padding:=;">
+                <a href="{{partnership.organisation.get_absolute_url}}">{{partnership.organisation.name}}</a><br />
+                {% if partnership.organisation.primary_location.city %}
+                  {{partnership.organisation.primary_location.city}},
+                {% endif %}
+                {{partnership.organisation.primary_location.country}}
+                {% if partnership.iati_id %}
+                  <br /><span class="grey">IATI ID: {{partnership.iati_id}}</span>
+                {% endif %}
+              </p>
+            </div>
+            <div class="clear"></div>
+            {% if not forloop.last %}
+              <hr style="margin-bottom:12px; margin-top:10px;"/>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {# stop #}
+
   {% endif %}
-
-  {% for partnership in project.all_partnerships  %}
-    {{partnership.iati_id}}
-  {% endfor %}
-
-  {% comment %}
-  {% for partnership in partnerships %}
-    {{partnership.iati_id}}
-  {% endfor %}
-  {% endcomment %}
 
   {% if not hide_comments %}
     <div class="two_column_right_inner" style="margin-top:20px;">

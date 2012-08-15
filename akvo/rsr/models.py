@@ -1198,20 +1198,102 @@ class Project(models.Model):
         return self._partners()
 
     def all_partnerships(self):
+        return self.partnership_set.all().order_by('organisation')
+        #return self.all_partners()
+        # partners = self.all_partners().extra(
+        # # partners = Organisation.objects.extra(
+        #     select={'iati_id': 'rsr_partnership.iati_id'}
+        # )
+        # partners.query.join(None, 'rsr_partnership', None, None)
+        # connection = (
+        #     'rsr_organisation',
+        #     'rsr_partnership_organisation',
+        #     'id',
+        #     'organisation_id'
+        #     )
+        # partners.query.join(connection, promte=True)
 
-        print type(self.partnership_set.all())
-        #x = List(self.partnership_set.all())
-        #print x.rem(iati_id=None)
-        #partners = self.all_partners()
-        #partnerships = project.partnership_set.all()
+        # # partners = self.all_partners().join()
+        #     # select={
+        #     #     #'iati_id': 'SELECT iati_id FROM rsr_partnership WHERE organisation_id = id'
+        #     #     }
+        #     # )
+        # if partners:
+        #     for partner in partners:
+        #         print partner
+        # else:
+        #     print "No partners left"
 
-        def filter_none(l):
-            if not l.iati_id:
-                return False
-            return True
+        # return partners
 
-        iati_partnerships = filter(filter_none, self.partnership_set.all())
-        return iati_partnerships
+        # qs = qs.extra(select = {'show': 'foobar_bar.show',},
+        #       where = "(show=TRUE OR show=NULL) AND ctype = `foobar_bar`.`content_type_id`")
+
+        # Blog.objects.extra(
+        #     select={
+        #         'entry_count': 'SELECT COUNT(*) FROM blog_entry WHERE blog_entry.blog_id = blog_blog.id'
+        #     },
+        # )
+
+        # partners = self.all_partners().extra(
+        #     select={
+        #         #'iati_id': 'SELECT iati_id FROM rsr_partnership WHERE organisation_id = id'
+        #         'iati_id': 'SELECT COUNT(*) FROM rsr_partnership WHERE organisation_id = id'
+        #         }
+        #     )
+
+        # for partner in partners:
+        #     print partner
+        #     if partner.iati_id:
+        #         print partner.iati_id
+
+        # return partners
+
+        # ------------------------------
+        # partners = self.all_partners()
+
+        # partnerships = self.partnership_set.all()
+        # iati_partnerships = partnerships.exclude(iati_id=None)
+        # for partnership in iati_partnerships:
+        #     print partnership.iati_id
+        #     partners.get(id=partnership.organisation.id).iati_id = partnership.iati_id
+        #     #self.all_partners().get(id=partnership.organisation.id).iati_id = partnership.iati_id
+        #     # partner = self.all_partners().get(id=partnership.organisation.id)
+        #     # partner.iati_id = partnership.iati_id
+
+        #     #print partner.iati_id
+
+        # for partner in partners:
+        #     print "Org:%s IATI id: %s" % (partner, partner.iati_id)
+
+        # # print partners
+        # return iati_partnerships
+
+        # ---------------------------------------
+        # def filter_none(l):
+        #     if not l.iati_id:
+        #         return False
+        #     return True
+        # iati_partnerships = filter(filter_none, self.partnership_set.all())
+
+        # partners = self.all_partners()
+        # for partner in partners:
+        #     if partner.id == 42:
+        #         print partner
+
+        # for partnership in iati_partnerships:
+        #     partner['id'][partnership.organisation.id].iati_id = partnership.iati_id
+        #     print partnership.organisation.id
+
+        # return iati_partnerships
+
+        # ---------------------------------------
+
+        # print type(self.partnership_set.all())
+        # x = List(self.partnership_set.all())
+        # print x.rem(iati_id=None)
+        # partners = self.all_partners()
+        # partnerships = project.partnership_set.all()
 
         # for partnership in self.partnership_set.all():
         #for partnership in iati_partnerships:
