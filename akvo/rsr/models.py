@@ -13,7 +13,6 @@ logger = logging.getLogger('akvo.rsr')
 
 import oembed
 import re
-from moka import List
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
