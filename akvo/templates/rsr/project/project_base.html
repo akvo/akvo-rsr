@@ -154,46 +154,6 @@
   </div>
 	
   {% if not hide_project_partners %}
-    {% comment %}
-      
-    <div class="two_column_right_inner" style="margin-top:20px;">
-      <div class="small" style="float:left; width:130px;">
-        <h2>{% trans 'Project partners' %}</h2>
-      </div>
-      <div class="small" style="margin:2px 0; float:right; width:130px; text-align:right;">
-        <a class="small" href="{% url 'project_partners' project.id %}">{% trans 'See details' %} &#x25BA;</a>
-      </div>
-      <div class="clear"></div>
-      <div class="white_box">
-        <div class="space10">
-          {% for partner in project.all_partners %}
-            <div style="float:left; width:100px;">
-              <a href="{{partner.get_absolute_url}}">
-                {% org_logo partner 90 60 'margin:0;' %}
-              </a>
-            </div>
-            <div style="float:left; width:170px;">
-              <p class="small grey" style="margin:0; padding:=;">
-                <a href="{{partner.get_absolute_url}}">{{partner.name}}</a><br />
-                {% if partner.primary_location.city %}
-                  {{partner.primary_location.city}},
-                {% endif %}
-                {{partner.primary_location.country}}
-                {% if partner.iati_id %}
-                  {{iati_id}}
-                {% endif %}
-              </p>
-            </div>
-            <div class="clear"></div>
-            {% if not forloop.last %}
-              <hr style="margin-bottom:12px; margin-top:10px;"/>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endcomment %}
-    {# start #}
     <div class="two_column_right_inner" style="margin-top:20px;">
       <div class="small" style="float:left; width:130px;">
         <h2>{% trans 'Project partners' %}</h2>
@@ -218,7 +178,7 @@
                 {% endif %}
                 {{partnership.organisation.primary_location.country}}
                 {% if partnership.iati_id %}
-                  <br /><span class="grey">IATI ID: {{partnership.iati_id}}</span>
+                  <br /><span class="grey">{% trans "IATI ID" %}: {{partnership.iati_id}}</span>
                 {% endif %}
               </p>
             </div>
@@ -230,8 +190,6 @@
         </div>
       </div>
     </div>
-    {# stop #}
-
   {% endif %}
 
   {% if not hide_comments %}
