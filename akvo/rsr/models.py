@@ -13,6 +13,7 @@ logger = logging.getLogger('akvo.rsr')
 
 import oembed
 import re
+from moka import List
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -120,7 +121,7 @@ def validate_iati_id(iati_id):
         ...
     ValidationError: [u'SE-FKR-??? is not a valid IATI identifier']
     """
-    pattern = r'(^[A-Z]{2}[-]{1}[A-Z]{3}[-]{1}[A-Z0-9_\-]{2,}$)'
+    pattern = r'(^[A-Z]{2}\-[A-Z]{3}\-[A-Z0-9_\-]{2,}$)'
     if not re.match(pattern, iati_id):
         raise ValidationError(u'%s is not a valid IATI identifier' % iati_id)
 
@@ -623,7 +624,7 @@ class MiniCMS(models.Model):
     class Meta:
         verbose_name = u'MiniCMS'
         verbose_name_plural = u'MiniCMS'
-        ordering = ['-active', '-id',]
+        ordering = ['-active', '-id', ]
 
 
 class OrganisationsQuerySetManager(QuerySetManager):
@@ -651,11 +652,11 @@ class Project(models.Model):
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
 
-#    goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-#    goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
-#    goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
-#    goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
-#    goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
+    # goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
+    # goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
+    # goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
+    # goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
+    # goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
 
     current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
     project_plan = models.TextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
@@ -665,12 +666,12 @@ class Project(models.Model):
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
 
-    #budget
+    # budget
     currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
     date_request_posted = models.DateField(_(u'date request posted'), default=date.today)
     date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
-#    old_locations = generic.GenericRelation(Location)
+    # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey(ProjectLocation, null=True, on_delete=models.SET_NULL)
 
     # denormalized data
@@ -679,9 +680,9 @@ class Project(models.Model):
     funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
 
-    #Custom manager
-    #based on http://www.djangosnippets.org/snippets/562/ and
-    #http://simonwillison.net/2008/May/1/orm/
+    # Custom manager
+    # based on http://www.djangosnippets.org/snippets/562/ and
+    # http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
 
@@ -980,17 +981,17 @@ class Project(models.Model):
 
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
-                result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for categories in cats
+                result = self.filter(  # filter finds largest "benchmarkname" value in benchmarks for categories in cats
                     benchmarks__name__name=benchmarkname,
                     benchmarks__category__name__in=cats
                 )
             else:
-                result = self.filter( #filter finds largest "benchmarkname" value in benchmarks for all categories
+                result = self.filter(  # filter finds largest "benchmarkname" value in benchmarks for all categories
                     benchmarks__name__name=benchmarkname
                 )
-            return result.annotate( #annotate the greatest of the "benchmarkname" values into max_value
-                                   max_value=Max('benchmarks__value')).aggregate( #sum max_value for all projects
-                                   Sum('max_value'))['max_value__sum'] or 0 #we want to return 0 instead of an empty QS
+            return result.annotate(  # annotate the greatest of the "benchmarkname" values into max_value
+                                   max_value=Max('benchmarks__value')).aggregate(  # sum max_value for all projects
+                                   Sum('max_value'))['max_value__sum'] or 0  # we want to return 0 instead of an empty QS
 
         def get_planned_water_calc(self):
             "how many will get improved water"
@@ -1029,7 +1030,7 @@ class Project(models.Model):
         def latest_update_fields(self):
             #used in project_list view
             #cheating slightly, counting on that both id and time are the largest for the latest update
-            return self.annotate(latest_update_id=Max('project_updates__id'),latest_update_date=Max('project_updates__time'))
+            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__time'))
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
@@ -1037,7 +1038,7 @@ class Project(models.Model):
             if partner_type:
                 orgs = orgs.filter(partnership__partner_type=partner_type)
             return orgs.distinct()
-        
+
         def field_partners(self):
             return self._partners(Partnership.FIELD_PARTNER)
 
@@ -1075,9 +1076,9 @@ class Project(models.Model):
             update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.time,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
-                update_info  = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email,)
+                update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email, )
             else:
-                update_info  = '%s<br/>' % update_info
+                update_info = '%s<br/>' % update_info
         else:
             update_info = u'%s<br/><br/>' % (ugettext(u'No update yet'),)
         # links to the project's support partners
@@ -1196,6 +1197,9 @@ class Project(models.Model):
     def all_partners(self):
         return self._partners()
 
+    def all_partnerships(self):
+        return self.partnership_set.all().order_by('organisation')
+
     def funding_partner_info(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnership_set.filter(partner_type=Partnership.FUNDING_PARTNER)
@@ -1209,13 +1213,12 @@ class Project(models.Model):
         )
 
     class Meta:
-        permissions         = (
+        permissions = (
             ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
         )
-        verbose_name        = _(u'project')
+        verbose_name = _(u'project')
         verbose_name_plural = _(u'projects')
-        ordering            = ['-id',]
-
+        ordering = ['-id', ]
 
 
 class Goal(models.Model):
@@ -1239,8 +1242,8 @@ class Benchmark(models.Model):
         }
 
     class Meta:
-        ordering            =  ('category__name', 'name__order')
-        verbose_name        = _(u'benchmark')
+        ordering = ('category__name', 'name__order')
+        verbose_name = _(u'benchmark')
         verbose_name_plural = _(u'benchmarks')
 
 
@@ -1251,8 +1254,8 @@ class BudgetItemLabel(models.Model):
         return self.label
 
     class Meta:
-        ordering            = ('label',)
-        verbose_name        = _(u'budget item label')
+        ordering = ('label',)
+        verbose_name = _(u'budget item label')
         verbose_name_plural = _(u'budget item labels')
 
 
@@ -1260,14 +1263,14 @@ class BudgetItem(models.Model):
     # DON'T translate. Need model translations for this to work
     OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
 
-    project     = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
-    label       = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
+    label = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
     other_extra = models.CharField(
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
     # Translators: This is the amount of an budget item in a currancy (€ or $)
-    amount      = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
+    amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     def __unicode__(self):
         return self.label.__unicode__()
@@ -1281,10 +1284,10 @@ class BudgetItem(models.Model):
             return self.__unicode__()
 
     class Meta:
-        ordering            = ('label',)
-        verbose_name        = _(u'budget item')
+        ordering = ('label',)
+        verbose_name = _(u'budget item')
         verbose_name_plural = _(u'budget items')
-        unique_together     = ('project', 'label')
+        unique_together = ('project', 'label')
         permissions = (
             ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
         )
@@ -1302,12 +1305,12 @@ class PublishingStatus(models.Model):
     #TODO: change to a generic relation if we want to have publishing stats on
     #other objects than projects
     project = models.OneToOneField(Project,)
-    status  = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
+    status = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
 
     class Meta:
-        verbose_name        = _(u'publishing status')
+        verbose_name = _(u'publishing status')
         verbose_name_plural = _(u'publishing statuses')
-        ordering            = ('-status', 'project')
+        ordering = ('-status', 'project')
 
     def project_info(self):
         return self.project
@@ -1344,10 +1347,11 @@ UPDATE_METHODS = (
     ('S', _(u'SMS')),
 )
 
+
 class UserProfileManager(models.Manager):
     def process_sms(self, mo_sms):
         try:
-            profile = self.get(phone_number__exact=mo_sms.sender) # ??? reporter instead ???
+            profile = self.get(phone_number__exact=mo_sms.sender)  # ??? reporter instead ???
             #state = get_state(profile)
             #if state:
             if state_equals(profile, profile.STATE_PHONE_NUMBER_ADDED):
@@ -1373,13 +1377,14 @@ class UserProfileManager(models.Manager):
         except Exception, e:
             logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
 
+
 class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
     user = models.OneToOneField(User)
     organisation = models.ForeignKey(Organisation)
-    phone_number = models.CharField(max_length=50, blank=True)# TODO: check uniqueness if non-empty
+    phone_number = models.CharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
     validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
     objects = UserProfileManager()

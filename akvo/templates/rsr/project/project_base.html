@@ -164,19 +164,22 @@
       <div class="clear"></div>
       <div class="white_box">
         <div class="space10">
-          {% for partner in project.all_partners %}
+          {% for partnership in project.all_partnerships %}
             <div style="float:left; width:100px;">
-              <a href="{{partner.get_absolute_url}}">
-                {% org_logo partner 90 60 'margin:0;' %}
+              <a href="{{partnership.organisation.get_absolute_url}}">
+                {% org_logo partnership.organisation 90 60 'margin:0;' %}
               </a>
             </div>
             <div style="float:left; width:170px;">
               <p class="small grey" style="margin:0; padding:=;">
-                <a href="{{partner.get_absolute_url}}">{{partner.name}}</a><br />
-                {% if partner.primary_location.city %}
-                  {{partner.primary_location.city}},
+                <a href="{{partnership.organisation.get_absolute_url}}">{{partnership.organisation.name}}</a><br />
+                {% if partnership.organisation.primary_location.city %}
+                  {{partnership.organisation.primary_location.city}},
                 {% endif %}
-                {{partner.primary_location.country}}
+                {{partnership.organisation.primary_location.country}}
+                {% if partnership.iati_id %}
+                  <br /><span class="grey">{% trans "IATI ID" %}: {{partnership.iati_id}}</span>
+                {% endif %}
               </p>
             </div>
             <div class="clear"></div>
@@ -188,7 +191,7 @@
       </div>
     </div>
   {% endif %}
-	
+
   {% if not hide_comments %}
     <div class="two_column_right_inner" style="margin-top:20px;">
       <div class="small" style="float:left; width:130px;">
