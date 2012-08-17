@@ -57,7 +57,7 @@
             </div>
           </div>
           {% block project_aside_funding_link %}
-          <a href="{% url 'project_funding' project.id %}" class="tiny" style="color:yellow">
+          <a id="project_funding_details_link" href="{% url 'project_funding' project.id %}" class="tiny" style="color:yellow">
             {% trans "See funding and milestone details" %} &#x25BA;
           </a>
           {% endblock project_aside_funding_link %}
