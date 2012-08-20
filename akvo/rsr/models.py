@@ -1866,7 +1866,7 @@ class ProjectUpdate(models.Model):
         blank=True,
         upload_to=image_path,
         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
-        help_text = _(u'The image should have 4:3 height:width ratio for best displaying result'),
+        help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
     )
     photo_location = models.CharField(_(u'photo location'), max_length=1, choices=PHOTO_LOCATIONS)
     photo_caption = models.CharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
@@ -1883,7 +1883,7 @@ class ProjectUpdate(models.Model):
         get_latest_by = "time"
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')
-        ordering = ['-id',]
+        ordering = ['-id', ]
 
     def img(self, value=''):
         try:
