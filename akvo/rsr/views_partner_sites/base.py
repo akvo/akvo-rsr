@@ -9,6 +9,7 @@ from __future__ import absolute_import
 
 from django.conf import settings
 from django.http import Http404
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView
 from django.core.urlresolvers import reverse
@@ -79,16 +80,27 @@ class BaseProjectView(BaseView):
     def get_context_data(self, **kwargs):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        if project not in context['organisation'].published_projects():
+        privileged_user = project.connected_to_user(self.request.user)
+
+        # Check for 404 & 403 cases, additional logic with connected user
+        # in the draft section at the project base template
+        if not project.is_published() and self.request.user.is_authenticated() and not privileged_user:
+            raise PermissionDenied
+        if not project.is_published() and not privileged_user:
             raise Http404
+        draft = False
+        if not project.is_published() and privileged_user:
+            draft = True
+
         updates = project.project_updates.all().order_by('-time')
         updates_with_images = updates.exclude(photo__exact='')
-        can_add_update = project.connected_to_user(self.request.user)
+
         context.update({
             'project': project,
             'updates': updates,
             'updates_with_images': updates_with_images,
-            'can_add_update': can_add_update,
+            'can_add_update': privileged_user,
+            'draft': draft
         })
         return context
 
