@@ -11,7 +11,7 @@ from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
-from akvo.rsr.decorators import fetch_project
+from akvo.rsr.decorators import fetch_project, project_page
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
 from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
@@ -21,9 +21,11 @@ from django import forms
 from django import http
 from django.conf import settings
 from django.contrib.auth import login, logout, REDIRECT_FIELD_NAME
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.sites.models import RequestSite
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
@@ -49,11 +51,28 @@ from notification.models import Notice
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
 
+def forbidden(request, template_name='403.html'):
+    '''
+    Overwrites the default error 403 view to pass MEDIA_URL & error_message
+    to the template.
+
+    Decorator expectes to find a 403.html in templates folder
+    '''
+
+    t = loader.get_template(template_name)
+    return http.HttpResponseForbidden(t.render(Context({
+        'error_message': request.error_message,
+        'MEDIA_URL': settings.MEDIA_URL
+    })))
+
+
 def server_error(request, template_name='500.html'):
     '''
     Overwrites the default error 500 view to pass MEDIA_URL to the template
+
+    Decorator expectes to find a 500.html in templates folder
     '''
-    t = loader.get_template(template_name)  # You need to create a 500.html template.
+    t = loader.get_template(template_name)
     return http.HttpResponseServerError(t.render(Context({
         'MEDIA_URL': settings.MEDIA_URL
     })))
@@ -61,8 +80,8 @@ def server_error(request, template_name='500.html'):
 
 def render_to(template):
     """
-    Decorator for Django views that sends returned dict to render_to_response function
-    with given template and RequestContext as context instance.
+    Decorator for Django views that sends returned dict to render_to_response
+    function with given template and RequestContext as context instance.
 
     If view doesn't return dict then decorator simply returns output.
     Additionally view can return two-tuple, which must contain dict as first
@@ -80,11 +99,13 @@ def render_to(template):
             if isinstance(output, (list, tuple)):
                 # add current language for template caching purposes
                 output[0].update({'lang': get_language()})
-                return render_to_response(output[1], output[0], RequestContext(request))
+                return render_to_response(output[1], output[0],
+                    RequestContext(request))
             elif isinstance(output, dict):
                 # add current language for template caching purposes
                 output.update({'lang': get_language()})
-                return render_to_response(template, output, RequestContext(request))
+                return render_to_response(template, output,
+                    RequestContext(request))
             return output
         return wrapper
     return renderer
@@ -683,7 +704,7 @@ def projectcomments(request, project_id):
         }
 
 
-@login_required()
+# @login_required()
 def updateform(request, project_id,
                edit_mode=False,
                form_class=ProjectUpdateForm,
@@ -699,15 +720,23 @@ def updateform(request, project_id,
     project = get_object_or_404(Project, id=project_id)
     user_is_authorized = project.connected_to_user(request.user)
 
+    if not request.user.is_authenticated():
+        return redirect_to_login(request.path)
+
+    if not project.is_published():
+        request.error_message = u'You can\'t add updates to unpublished projects.'
+        raise PermissionDenied
+
     if not user_is_authorized:
-        return redirect('access_denied')
+        request.error_message = u'You don\'t have permission to add updates to this project.'
+        raise PermissionDenied
 
     if update_id is not None:
         edit_mode = True
         update = get_object_or_404(ProjectUpdate, id=update_id)
-
-        if not (user_is_authorized and request.user == update.user):
-            return redirect('access_denied')
+        if not request.user == update.user:
+            request.error_message = u'You can only edit your own updates.'
+            raise PermissionDenied
 
         if update.edit_window_has_expired():
             return render_to_response('rsr/project/update_form_timeout.html',
@@ -875,8 +904,9 @@ def orgdetail(request, org_id):
         }
 
 
+@project_page
 @render_to('rsr/project/project_main.html')
-def projectmain(request, project_id):
+def projectmain(request, project):
     '''
     The project overview page
     Context:
@@ -889,7 +919,7 @@ def projectmain(request, project_id):
     comments: the three latest comments
     site_section: for use in the main nav hilighting
     '''
-    project = get_object_or_404(Project, pk=project_id)
+    #project = get_object_or_404(Project, pk=project_id)
     related = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
     related = get_random_from_qs(related, 2)
     all_updates = project.project_updates.all().order_by('-time')
@@ -911,21 +941,18 @@ def projectmain(request, project_id):
     else:
         admin_change_url = None
 
-    #Partnership
-    #partnerships = project.partnership_set.all()
-
     return {
-        'project': project,
-        'p': project,  # compatibility with new_look
-        'related': related,
-        'updates': all_updates[:3],
-        'benchmarks': benchmarks,
-        'updates_with_images': updates_with_images,
-        'can_add_update': project.connected_to_user(request.user),
         'admin_change_url': admin_change_url,
+        'benchmarks': benchmarks,
+        'can_add_update': request.privileged_user,
         'comments': comments,
+        'draft': request.draft,
+        'p': project,  # compatibility with new_look
+        'project': project,
+        'related': related,
         'site_section': 'projects',
-     #   'partnerships': partnerships,
+        'updates': all_updates[:3],
+        'updates_with_images': updates_with_images,
     }
 
 
@@ -934,30 +961,32 @@ def projectdetails(request, project_id):
     return http.HttpResponsePermanentRedirect('/rsr/project/%s/' % project_id)
 
 
+@project_page
 @render_to('rsr/project/project_partners.html')
-def projectpartners(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
+def projectpartners(request, project):
     updates = project.project_updates.all().order_by('-time')[:3]
     comments = project.projectcomment_set.all().order_by('-time')[:3]
     return {
+        'can_add_update': request.privileged_user,
+        'comments': comments,
+        'draft': request.draft,
+        'hide_project_partners': True,
         'project': project,
         'site_section': 'projects',
         'updates': updates,
-        'hide_project_partners': True,
-        'can_add_update': project.connected_to_user(request.user),
-        'comments': comments,
     }
 
 
+@project_page
 @render_to('rsr/project/project_funding.html')
-def projectfunding(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
+def projectfunding(request, project):
     public_donations = project.public_donations()
     updates = project.project_updates.all().order_by('-time')[:3]
     comments = project.projectcomment_set.all().order_by('-time')[:3]
     return {
-        'can_add_update': project.connected_to_user(request.user),
+        'can_add_update': request.privileged_user,
         'comments': comments,
+        'draft': request.draft,
         'hide_funding_link': True,
         'project': project,
         'public_donations': public_donations,
@@ -966,7 +995,8 @@ def projectfunding(request, project_id):
     }
 
 
-def getwidget(request, project_id):
+@project_page
+def getwidget(request, project):
     '''
     user_level is None, 1 or 2. No user level check on step 2
     '''
@@ -975,11 +1005,13 @@ def getwidget(request, project_id):
             account_level = request.user.get_profile().organisation.organisationaccount.account_level
         except:
             account_level = 'free'
-        project = get_object_or_404(Project.objects, pk=project_id)
+        # project = get_object_or_404(Project.objects, pk=project_id)
         orgs = project.all_partners()
         return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {
+                'account_level': account_level,
+                'draft': request.draft,
+                'organisations': orgs,
                 'project': project,
-                'account_level': account_level, 'organisations': orgs,
                 'site_section': 'projects',
             }, context_instance=RequestContext(request)
         )
@@ -993,7 +1025,7 @@ def getwidget(request, project_id):
             o = get_object_or_404(Organisation, pk=request.POST['widget-organisations'])
         else:
             o = None
-        project = get_object_or_404(Project, pk=project_id)
+        # project = get_object_or_404(Project, pk=project_id)
         return render_to_response('rsr/project/get-a-widget/machinery_step2.html', {
             'project': project,
             'organisation': o,
@@ -1001,6 +1033,7 @@ def getwidget(request, project_id):
             'widget_type': widget_type,
             'widget_site': widget_site,
             'site_section': 'projects',
+            'draft': request.draft,
         }, context_instance=RequestContext(request))
 
 

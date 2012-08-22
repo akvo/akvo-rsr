@@ -290,7 +290,7 @@ urlpatterns += patterns('',
         name='project_map_widget_for_org',),
 )
 
-
+handler403 = 'akvo.rsr.views.forbidden'
 handler500 = 'akvo.rsr.views.server_error'
 if settings.DEBUG:
     urlpatterns += patterns('',

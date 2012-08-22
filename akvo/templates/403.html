@@ -1,0 +1,21 @@
+{% extends "rsr/base_message.html" %}
+{% load i18n %}
+{% load url from future %}
+
+
+{% block title %}{% trans 'Forbidden (403)' %}{% endblock title %}
+
+{% block breadcrum_items %}
+{{block.super}}
+<li id="last_breadcrum_item">{% trans 'Forbidden' %}</li>
+{% endblock breadcrum_items %}
+
+{% block message_head %}
+  {% trans 'Forbidden (error 403)' %}
+{% endblock message_head %}
+
+{% block message_body %}
+  <p>
+    {{error_message}}
+  </p>
+{% endblock message_body %}
