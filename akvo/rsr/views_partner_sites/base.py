@@ -80,16 +80,20 @@ class BaseProjectView(BaseView):
     def get_context_data(self, **kwargs):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        privileged_user = project.connected_to_user(self.request.user)
 
-        # Check for 404 & 403 cases, additional logic with connected user
-        # in the draft section at the project base template
-        if not project.is_published() and self.request.user.is_authenticated() and not privileged_user:
-            raise PermissionDenied
-        if not project.is_published() and not privileged_user:
-            raise Http404
+        privileged_user = project.connected_to_user(self.request.user)
+        unprivileged_user = not privileged_user
+        authenticated_user = self.request.user.is_authenticated()
+        unpublished_project = not project.is_published()
         draft = False
-        if not project.is_published() and privileged_user:
+
+        # Enable draft preview for privileged users, additional logic in
+        # the draft section of project pages templates
+        if unpublished_project and authenticated_user and unprivileged_user:
+            raise PermissionDenied
+        if unpublished_project and unprivileged_user:
+            raise Http404
+        if unpublished_project and privileged_user:
             draft = True
 
         updates = project.project_updates.all().order_by('-time')

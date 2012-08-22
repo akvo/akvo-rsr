@@ -9,7 +9,8 @@ from __future__ import absolute_import
 
 from akvo.rsr.views import global_organisation_projects_map_json
 
-from akvo.rsr.views_partner_sites.auth import SignInView, signout, FourOThreeView, FourOFourView
+from akvo.rsr.views_partner_sites.auth import (SignInView, signout,
+    FourOThreeView, FourOFourView)
 from akvo.rsr.views_partner_sites.base import BaseProjectListView
 from akvo.rsr.views_partner_sites.partner import PartnerListView, PartnerView
 from akvo.rsr.views_partner_sites.project import (ProjectFundingView,
@@ -44,4 +45,3 @@ __all__ = [
 class HomeView(BaseProjectListView):
     """Represents the home page (/) on a partner site"""
     template_name = 'partner_sites/home.html'
-
