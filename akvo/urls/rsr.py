@@ -12,6 +12,7 @@ from django.conf.urls.i18n import i18n_patterns
 
 from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
+from akvo.api.urls import named_api
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
 
@@ -22,31 +23,6 @@ admin.autodiscover()
 # The next two lines enable djangoembed in the admin
 import oembed
 oembed.autodiscover()
-
-# tastypie (api)
-from tastypie.api import Api
-import akvo.api.resources as resources
-v1_api = Api(api_name='v1')
-for resource in resources.__all__:
-    v1_api.register(getattr(resources, resource)())
-
-#v1_api.register(BenchmarknameResource())
-#v1_api.register(BudgetItemResource())
-#v1_api.register(BudgetItemLabelResource())
-#v1_api.register(CategoryResource())
-#v1_api.register(CountryResource())
-#v1_api.register(GoalResource())
-#v1_api.register(FocusAreaResource())
-#v1_api.register(LinkResource())
-#v1_api.register(OrganisationResource())
-#v1_api.register(OrganisationLocationResource())
-#v1_api.register(PartnershipResource())
-#v1_api.register(ProjectResource())
-#v1_api.register(FullProjectResource())
-#v1_api.register(ProjectCommentResource())
-#v1_api.register(ProjectLocationResource())
-#v1_api.register(ProjectUpdateResource())
-
 
 # Multi-lingual urls
 # urlpatterns = i18n_patterns('',
@@ -267,7 +243,8 @@ urlpatterns += patterns('',
     (r'^rsr/api/', include('akvo.api.piston_urls')),
 
     #tastypie
-    (r'^api/', include(v1_api.urls)),
+    # generate all resource urls for version one of the api, e.g. /api/v1/project/
+    (r'^api/', include(named_api('v1').urls)),
 )
 
 # Widgets
