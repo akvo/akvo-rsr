@@ -810,7 +810,7 @@ class SmsReporterInline(admin.TabularInline):
 
 class UserProfileAdminForm(forms.ModelForm):
     """
-    This form dispalys two extra fields that show if the user belongs to the groups
+    This form displays two extra fields that show if the user belongs to the groups
     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
     """
     class Meta:

@@ -37,6 +37,7 @@ from workflows import WorkflowBase
 from permissions import PermissionBase
 from permissions.models import Role
 
+from akvo.api.models import create_api_key
 from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
@@ -2002,7 +2003,7 @@ class Invoice(models.Model):
     test            = models.BooleanField(u'test donation', help_text=u'This flag is set if the donation was made in test mode.')
     engine          = models.CharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
     user            = models.ForeignKey(User, blank=True, null=True)
-    project         = models.ForeignKey(Project)
+    project         = models.ForeignKey(Project, related_name='invoices')
     # Common
     amount          = models.PositiveIntegerField(help_text=u'Amount requested by user.')
     amount_received = models.DecimalField(
@@ -2244,4 +2245,5 @@ post_delete.connect(update_project_budget, sender=BudgetItem)
 post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
 
+post_save.connect(create_api_key, sender=UserProfile)
 #m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)
