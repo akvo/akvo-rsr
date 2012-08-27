@@ -95,11 +95,14 @@ class ProjectUpdateFormView(BaseProjectView):
     template_name = "partner_sites/project/update_form.html"
     form_class = ProjectUpdateForm
 
-    @method_decorator(login_required)
+    # @method_decorator(login_required)
     @method_decorator(never_cache)
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         """Make sure login is required."""
-        return super(ProjectUpdateFormView, self).dispatch(*args, **kwargs)
+        #
+        # request.error_message = "yay"
+        # raise PermissionDenied
+        return super(ProjectUpdateFormView, self).dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -123,8 +126,23 @@ class ProjectUpdateAddView(ProjectUpdateFormView, FormView):
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateAddView, self).get_context_data(**kwargs)
         user_is_authorized = context['project'].connected_to_user(self.request.user)
-        if not user_is_authorized:
+        print "one"
+
+        if not self.request.user.is_authenticated():
+            self.request.error_message = u'You need to sign in to make updates.'
+            print "two"
             raise PermissionDenied
+
+        if not self.project.is_published():
+            self.request.error_message = u'You can\'t add updates to unpublished projects.'
+            print "three"
+            raise PermissionDenied
+
+        if not user_is_authorized:
+            self.request.error_message = u'You don\'t have permission to add updates to this project.'
+            print "four"
+            raise PermissionDenied
+
         update = None
         try:
             update_id = self.kwargs['update_id']
