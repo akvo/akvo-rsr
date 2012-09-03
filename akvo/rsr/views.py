@@ -627,7 +627,7 @@ def projectupdates(request, project_id):
     '''
     project = get_object_or_404(Project, pk=project_id)
     updates = project.project_updates.all().order_by('-time')
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
         'project': project,
@@ -648,7 +648,7 @@ def projectupdate(request, project_id, update_id):
     can_add_update = project.connected_to_user(request.user)
     can_edit_update = (update.user == request.user and can_add_update and
                        not update.edit_window_has_expired())
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     edit_timeout = settings.PROJECT_UPDATE_TIMEOUT
     return {
         'project': project,
@@ -671,7 +671,7 @@ def projectcomments(request, project_id):
     updates: list of updates, ordered by time in reverse
     '''
     project = get_object_or_404(Project, pk=project_id)
-    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
+    comments = Project.objects.get(id=project_id).comments.all().order_by('-time')
     form = CommentForm()
     updates = project.project_updates.all().order_by('-time')[:3]
     return {
@@ -888,7 +888,7 @@ def projectmain(request, project_id):
     all_updates = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
     #slider_width = (len(updates_with_images) + 1) * 115    
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     # comprehensions are fun! here we use it to get the categories that 
     # don't contain only 0 value benchmarks
     benchmarks = project.benchmarks.filter(
@@ -927,7 +927,7 @@ def projectdetails(request, project_id):
 def projectpartners(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     updates = project.project_updates.all().order_by('-time')[:3]
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     return { 
         'project': project, 
         'site_section': 'projects', 
@@ -942,7 +942,7 @@ def projectfunding(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     public_donations = project.public_donations()
     updates = project.project_updates.all().order_by('-time')[:3]
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     return { 
         'can_add_update': project.connected_to_user(request.user),
         'comments': comments,
@@ -1023,7 +1023,7 @@ def templatedev(request, template_name):
     SAMPLE_ORG_ID = 42
     p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
     updates     = Project.objects.get(id=SAMPLE_PROJECT_ID).project_updates.all().order_by('-time')[:3]
-    comments    = Project.objects.get(id=SAMPLE_PROJECT_ID).projectcomment_set.all().order_by('-time')[:3]
+    comments    = Project.objects.get(id=SAMPLE_PROJECT_ID).comments.all().order_by('-time')[:3]
     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
     projects = Project.objects.published()

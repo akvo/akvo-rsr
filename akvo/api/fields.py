@@ -12,6 +12,10 @@ from tastypie.exceptions import ApiFieldError
 
 
 def bundle_related_data_info_factory(request=None, parent_bundle=None):
+    """ Create and return a BundleRelatedDataInfo object
+    If we have a request this is a "top" bundle i.e. it has no parents and the BundleRelatedDataInfo should reflect this
+    If we receive a parent_bundle we decrement the depth and add the parent_bundle to ancestors unless it's already there
+    """
     if request:
         try:
             depth = int(request.GET.get('depth', 'not an int'))
@@ -41,7 +45,15 @@ def bundle_related_data_info_factory(request=None, parent_bundle=None):
 
 
 class BundleRelatedDataInfo(object):
-    """ helper object for storing info about the inclusion of related data in resources
+    """ Helper object for storing info about the inclusion of related data in resources
+
+    The idea is to allow resources to be automatically included with their full data if they are not more than "depth"
+    relations away from the root ancestor resource. For example if we request the ProjectResource with depth=2 we get
+    full data inline for Partnership and Organisation resources since they are 1 and 2 foreign key away respectively,
+    but we get a path to OrgansiationLocationResource since it's 3 relations away.
+
+    If self.full is set to True full data is returned even when the same object is visited more than once, otherwise it's
+    substituted by a path after the first time
     """
     def __init__(self, depth, ancestors, full):
         self.depth = depth
@@ -105,9 +117,7 @@ class ConditionalFullToManyField(ConditionalFullFieldMixin, fields.ToManyField):
         the_m2ms = None
 
         if isinstance(self.attribute, basestring):
-            import pdb
-            pdb.set_trace()
-            the_m2ms = getattr(bundle.obj, self.attribute)
+                the_m2ms = getattr(bundle.obj, self.attribute)
         elif callable(self.attribute):
             the_m2ms = self.attribute(bundle)
 

@@ -188,7 +188,7 @@ class Partnership(models.Model):
     PARTNER_LABELS      = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'),]
     PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
-    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'))
+    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = models.CharField(_(u'partner type'), max_length=8, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
@@ -286,7 +286,7 @@ class Organisation(models.Model):
 
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
-            return self.filter(partnership__partner_type__exact=partner_type).distinct()
+            return self.filter(partnerships__partner_type__exact=partner_type).distinct()
         
         def allpartners(self):
             return self.distinct()
@@ -320,7 +320,7 @@ class Organisation(models.Model):
 
     def is_partner_type(self, partner_type):
         "returns True if the organisation is a partner of type partner_type to at least one project"
-        return self.partnership_set.filter(partner_type__exact=partner_type).count() > 0
+        return self.partnerships.filter(partner_type__exact=partner_type).count() > 0
 
     def is_field_partner(self):
         "returns True if the organisation is a field partner to at least one project"
@@ -362,17 +362,17 @@ class Organisation(models.Model):
     def euros_pledged(self):
         "How much € the organisation has pledged to projects it is a partner to"
         return self.active_projects().euros().filter(
-            partnership__organisation__exact=self, partnership__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__organisation__exact=self, partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
         ).aggregate(
-            euros_pledged=Sum('partnership__funding_amount')
+            euros_pledged=Sum('partnerships__funding_amount')
         )['euros_pledged'] or 0
 
     def dollars_pledged(self):
         "How much $ the organisation has pledged to projects"
         return self.active_projects().dollars().filter(
-            partnership__organisation__exact=self, partnership__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__organisation__exact=self, partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
         ).aggregate(
-            dollars_pledged=Sum('partnership__funding_amount')
+            dollars_pledged=Sum('partnerships__funding_amount')
         )['dollars_pledged'] or 0
 
     def euro_projects_count(self):
@@ -978,9 +978,9 @@ class Project(models.Model):
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
-            orgs = Organisation.objects.filter(partnership__project__in=self)
+            orgs = Organisation.objects.filter(partnerships__project__in=self)
             if partner_type:
-                orgs = orgs.filter(partnership__partner_type=partner_type)
+                orgs = orgs.filter(partnerships__partner_type=partner_type)
             return orgs.distinct()
         
         def field_partners(self):
@@ -1122,7 +1122,7 @@ class Project(models.Model):
         """
         orgs = self.partners.all()
         if partner_type:
-            return orgs.filter(partnership__partner_type=partner_type).distinct()
+            return orgs.filter(partnerships__partner_type=partner_type).distinct()
         else:
             return orgs.distinct()
 
@@ -1143,7 +1143,7 @@ class Project(models.Model):
 
     def funding_partner_info(self):
         "Return the Partnership objects associated with the project that have funding information"
-        return self.partnership_set.filter(partner_type=Partnership.FUNDING_PARTNER)
+        return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
 
     def show_status_large(self):
         "Show the current project status with background"
