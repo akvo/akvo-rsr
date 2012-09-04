@@ -94,7 +94,7 @@ def validate_iati_id(iati_id):
     http://iatistandard.org/guides/organisation-data/organisation-identifiers
 
     For example "SE-FKR-QWERTY" where:
-    "SE-FKR" is the namespace code given by IATI supporrt
+    "SE-FKR" is the namespace code given by IATI support
     "-QWERTY" is the organisations own identifier
 
     Validation is not very strict since information about the rules where
@@ -241,12 +241,21 @@ class Partnership(models.Model):
         blank=True,
         null=True
     )
-    iati_id = models.CharField(_(u'IATI ID'),
+    iati_activity_id = models.CharField(
+        _(u'IATI ID'),
         max_length=75,
         blank=True,
         null=True,
-        help_text=_(u'IATI ID format e.g. have to start with the following format "SE-FKR-"'),
-        validators=[validate_iati_id])
+        help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". <br />More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
+        validators=[validate_iati_id]
+    )
+    internal_id = models.CharField(
+        _(u'Internal ID'),
+        max_length=75,
+        blank=True,
+        null=True,
+        help_text=_(u"The organisation's internal ID for the project"),
+    )
 
     class Meta:
         verbose_name = _(u'project partner')
@@ -289,20 +298,21 @@ class Organisation(models.Model):
     name = models.CharField(_(u'name'), max_length=25, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
     long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
-    iati_id = models.CharField(_(u'IATI ID'),
+    iati_org_id = models.CharField(
+        _(u'IATI organisation ID'),
         max_length=75,
         blank=True,
         null=True,
-        help_text=_(u'IATI ID format e.g. have to start with the following format "SE-FKR-"'),
+        help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
         validators=[validate_iati_id]
-        )
-
-    logo = ImageWithThumbnailsField(_(u'logo'),
-                                    blank=True,
-                                    upload_to=image_path,
-                                    thumbnail={'size': (360, 270)},
-                                    help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
-                                   )
+    )
+    logo = ImageWithThumbnailsField(
+        _(u'logo'),
+        blank=True,
+        upload_to=image_path,
+        thumbnail={'size': (360, 270)},
+        help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
+   )
 
     url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
 
