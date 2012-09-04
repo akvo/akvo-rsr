@@ -933,7 +933,7 @@ def projectdetails(request, project_id):
 def projectpartners(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     updates = project.project_updates.all().order_by('-time')[:3]
-    comments = project.commens.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     return {
         'project': project,
         'site_section': 'projects',
