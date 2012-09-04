@@ -643,7 +643,7 @@ class ProjectAdmin(admin.ModelAdmin):
                     prefix = "%s-%s" % (prefix, prefixes[prefix])
 
                 # hack by GvH to get user's organisation preset as partner when adding a new project
-                if prefix == 'partnership_set':
+                if prefix == 'partnerships':
                     formset = FormSet(instance=self.model(), prefix=prefix,
                                       initial=[{'organisation': request.user.get_profile().organisation}],
                                       queryset=inline.queryset(request))
@@ -817,7 +817,7 @@ class SmsReporterInline(admin.TabularInline):
 
 class UserProfileAdminForm(forms.ModelForm):
     """
-    This form dispalys two extra fields that show if the user belongs to the groups
+    This form displays two extra fields that show if the user belongs to the groups
     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
     """
     class Meta:

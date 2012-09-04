@@ -20,7 +20,7 @@
     <div class="clear"></div>
 		<div class="space20">
 
-      {% for partner in project.partnership_set.all %}
+      {% for partner in project.partnerships.all %}
         {% ifchanged partner.partner_type %}
           {% if not forloop.first %}
             <br/><br/>

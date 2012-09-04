@@ -39,6 +39,7 @@ from workflows import WorkflowBase
 from permissions import PermissionBase
 from permissions.models import Role
 
+from akvo.api.models import create_api_key
 from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
@@ -221,17 +222,17 @@ class ProjectLocation(BaseLocation):
 
 
 class Partnership(models.Model):
-    FIELD_PARTNER = u'field'
-    FUNDING_PARTNER = u'funding'
-    SPONSOR_PARTNER = u'sponsor'
-    SUPPORT_PARTNER = u'support'
+    FIELD_PARTNER       = u'field'
+    FUNDING_PARTNER     = u'funding'
+    SPONSOR_PARTNER     = u'sponsor'
+    SUPPORT_PARTNER     = u'support'
 
-    PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
-    PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
-    PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+    PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
+    PARTNER_LABELS      = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'),]
+    PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
-    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'))
-    project = models.ForeignKey('Project', verbose_name=_(u'project'),)
+    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
+    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = models.CharField(_(u'partner type'), max_length=8, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
         _(u'funding amount'),
@@ -259,7 +260,6 @@ class Partnership(models.Model):
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.ProjectsQuerySet(self.model)
-
 
 class Organisation(models.Model):
     """
@@ -341,8 +341,8 @@ class Organisation(models.Model):
 
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
-            return self.filter(partnership__partner_type__exact=partner_type).distinct()
-
+            return self.filter(partnerships__partner_type__exact=partner_type).distinct()
+        
         def allpartners(self):
             return self.distinct()
 
@@ -375,7 +375,7 @@ class Organisation(models.Model):
 
     def is_partner_type(self, partner_type):
         "returns True if the organisation is a partner of type partner_type to at least one project"
-        return self.partnership_set.filter(partner_type__exact=partner_type).count() > 0
+        return self.partnerships.filter(partner_type__exact=partner_type).count() > 0
 
     def is_field_partner(self):
         "returns True if the organisation is a field partner to at least one project"
@@ -417,17 +417,17 @@ class Organisation(models.Model):
     def euros_pledged(self):
         "How much € the organisation has pledged to projects it is a partner to"
         return self.active_projects().euros().filter(
-            partnership__organisation__exact=self, partnership__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__organisation__exact=self, partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
         ).aggregate(
-            euros_pledged=Sum('partnership__funding_amount')
+            euros_pledged=Sum('partnerships__funding_amount')
         )['euros_pledged'] or 0
 
     def dollars_pledged(self):
         "How much $ the organisation has pledged to projects"
         return self.active_projects().dollars().filter(
-            partnership__organisation__exact=self, partnership__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__organisation__exact=self, partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
         ).aggregate(
-            dollars_pledged=Sum('partnership__funding_amount')
+            dollars_pledged=Sum('partnerships__funding_amount')
         )['dollars_pledged'] or 0
 
     def euro_projects_count(self):
@@ -623,7 +623,7 @@ class MiniCMS(models.Model):
     class Meta:
         verbose_name = u'MiniCMS'
         verbose_name_plural = u'MiniCMS'
-        ordering = ['-active', '-id', ]
+        ordering = ['-active', '-id',]
 
 
 class OrganisationsQuerySetManager(QuerySetManager):
@@ -1033,9 +1033,9 @@ class Project(models.Model):
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
-            orgs = Organisation.objects.filter(partnership__project__in=self)
+            orgs = Organisation.objects.filter(partnerships__project__in=self)
             if partner_type:
-                orgs = orgs.filter(partnership__partner_type=partner_type)
+                orgs = orgs.filter(partnerships__partner_type=partner_type)
             return orgs.distinct()
 
         def field_partners(self):
@@ -1177,7 +1177,7 @@ class Project(models.Model):
         """
         orgs = self.partners.all()
         if partner_type:
-            return orgs.filter(partnership__partner_type=partner_type).distinct()
+            return orgs.filter(partnerships__partner_type=partner_type).distinct()
         else:
             return orgs.distinct()
 
@@ -1196,12 +1196,9 @@ class Project(models.Model):
     def all_partners(self):
         return self._partners()
 
-    def all_partnerships(self):
-        return self.partnership_set.all().order_by('organisation')
-
     def funding_partner_info(self):
         "Return the Partnership objects associated with the project that have funding information"
-        return self.partnership_set.filter(partner_type=Partnership.FUNDING_PARTNER)
+        return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
 
     def show_status_large(self):
         "Show the current project status with background"
@@ -1262,14 +1259,14 @@ class BudgetItem(models.Model):
     # DON'T translate. Need model translations for this to work
     OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
 
-    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
-    label = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
+    project     = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
+    label       = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
     other_extra = models.CharField(
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
-    # Translators: This is the amount of an budget item in a currancy (€ or $)
-    amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
+    # Translators: This is the amount of an budget item in a currency (€ or $)
+    amount      = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     def __unicode__(self):
         return self.label.__unicode__()
@@ -1970,7 +1967,7 @@ class ProjectUpdate(models.Model):
 
 
 class ProjectComment(models.Model):
-    project = models.ForeignKey(Project, verbose_name=_(u'project'))
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='comments')
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     comment = models.TextField(_(u'comment'))
     time = models.DateTimeField(_(u'time'))
@@ -2062,7 +2059,7 @@ class Invoice(models.Model):
     test            = models.BooleanField(u'test donation', help_text=u'This flag is set if the donation was made in test mode.')
     engine          = models.CharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
     user            = models.ForeignKey(User, blank=True, null=True)
-    project         = models.ForeignKey(Project)
+    project         = models.ForeignKey(Project, related_name='invoices')
     # Common
     amount          = models.PositiveIntegerField(help_text=u'Amount requested by user.')
     amount_received = models.DecimalField(
@@ -2304,4 +2301,5 @@ post_delete.connect(update_project_budget, sender=BudgetItem)
 post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
 
+post_save.connect(create_api_key, sender=UserProfile)
 #m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)
