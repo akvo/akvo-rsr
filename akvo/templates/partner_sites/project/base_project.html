@@ -160,8 +160,11 @@
                   {{partnership.organisation.primary_location.city}},
                 {% endif %}
                 {{partnership.organisation.primary_location.country}}
-                {% if partnership.iati_id %}
-                  <br /><span class="small grey">{% trans "IATI ID" %}: {{partnership.iati_id}}</span>
+                {% if partnership.iati_activity_id %}
+                  <br /><span class="small grey">
+                  {% trans "IATI activity ID" %}:
+                  <br/>{{partnership.iati_activity_id}}
+                  </span>
                 {% endif %}
               </p>
             </div>

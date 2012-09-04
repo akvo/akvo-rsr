@@ -55,9 +55,9 @@
             <h3>{% trans 'Akvopedia entry' %}</h3>
             <p class="small">{{organisation.akvopedia_entry}}</p>
           {% endif %}
-          {% if organisation.iati_id %}
-            <h3>{% trans 'IATI ID' %}</h3>
-            <p class="small">{{organisation.iati_id|truncatechars:30}}</p>
+          {% if organisation.iati_org_id %}
+            <h3>{% trans 'IATI organisation ID' %}</h3>
+            <p class="small">{{organisation.iati_org_id|truncatechars:30}}</p>
           {% endif %}
         </div>
         <div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
