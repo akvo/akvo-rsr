@@ -118,6 +118,7 @@ class BenchmarkResource(ConditionalFullResource):
             project     = ALL_WITH_RELATIONS,
         )
 
+
 class BenchmarknameResource(ConditionalFullResource):
     class Meta:
         allowed_methods = ['get']
@@ -265,30 +266,6 @@ class OrganisationResource(ConditionalFullResource):
         )
 
 
-#class OrganisationFullResource(OrganisationResource):
-#    """ return Project data with all related data inline, rather than as resource URLs
-#    """
-#    partnerships = ConditionalFullToManyField(
-#        'akvo.api.resources.PartnershipFullResource',
-#        'partnership_set',
-#        related_name='organisation',
-#        help_text='Show the projects the organisation is related to and how.',
-#    )
-#
-#    def __init__(self, api_name=None):
-#        """ set full=True for all ToManyFields
-#        """
-#        super(OrganisationFullResource, self).__init__(api_name)
-#        for field in self.fields:
-#            if type(self.fields[field]) == ConditionalFullToManyField and field == 'locations':
-#                self.fields[field].full = True
-#
-#    class Meta:
-#        allowed_methods = ['get']
-#        queryset        = Organisation.objects.all()
-#        resource_name   = 'organisation_full'
-
-
 class OrganisationLocationResource(ConditionalFullResource):
     organisation    = ConditionalFullToOneField(OrganisationResource, 'location_target')
     country         = ConditionalFullToOneField(CountryResource, 'country')
@@ -329,6 +306,7 @@ class PartnershipResource(ConditionalFullResource):
             project     = ALL_WITH_RELATIONS,
         )
 
+
 class ProjectResource(ConditionalFullResource):
     benchmarks          = ConditionalFullToManyField('akvo.api.resources.BenchmarkResource', 'benchmarks',)
     budget_items        = ConditionalFullToManyField('akvo.api.resources.BudgetItemResource', 'budget_items')
@@ -364,25 +342,6 @@ class ProjectResource(ConditionalFullResource):
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,
         )
-
-#class ProjectFullResource(ProjectResource):
-#    """ Return Project data with all related data inline, rather than as resource URLs
-#    """
-##    partnerships        = ConditionalFullToManyField('akvo.api.resources.PartnershipFullResource', 'partnerships')
-#
-#    def __init__(self, api_name=None):
-#        """ set full=True for all ToManyFields
-#        """
-#        super(ProjectFullResource, self).__init__(api_name)
-#        for field in self.fields:
-#            if type(self.fields[field]) == ConditionalFullToManyField:
-#                self.fields[field].full = True
-#
-#    class Meta:
-#        allowed_methods = ['get']
-#        queryset        = Project.objects.published()
-#        resource_name   = 'project_full'
-#        filtering       = dict(partners=ALL_WITH_RELATIONS)
 
 
 class ProjectCommentResource(ConditionalFullResource):
@@ -506,15 +465,17 @@ class UserResource(ConditionalFullResource):
             So instead of having username in the fields list we add it here
 
             The adding is conditional, only add fields for users in the same organisation
-            as request.user which is the API key user
+            as request.user which is the API key owner
 
             For other users delete the user_profile field
         """
         if self._meta.authentication.is_authenticated(bundle.request):
             if getattr(bundle.request.user, 'get_profile', False):
+                # get the org of the API key owner
                 organisation = bundle.request.user.get_profile().organisation
             else:
                 organisation = None
+            # find out if the user has a profile that's associated with the API key owner org
             profile = UserProfile.objects.filter(organisation=organisation, user__id=bundle.obj.id)
         if profile:
             bundle.data['username'] = bundle.obj.username
