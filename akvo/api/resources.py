@@ -49,6 +49,29 @@ __all__ = [
 
 
 class ConditionalFullResource(ModelResource):
+    def dehydrate(self, bundle):
+        try:
+            bundle.data['path'] = bundle.obj.get_absolute_url()
+        except:
+            pass
+        return bundle
+
+    def apply_filters(self, request, applicable_filters):
+        """
+        An ORM-specific implementation of ``apply_filters``.
+
+        The default simply applies the ``applicable_filters`` as ``**kwargs``,
+        but should make it possible to do more advanced things.
+
+        Here we override to check for a 'distinct' query string variable,
+        if it's equal to True we apply distinct() to the queryset after filtering.
+        """
+        distinct = request.GET.get('distinct', False) == 'True'
+        if distinct:
+            return self.get_object_list(request).filter(**applicable_filters).distinct()
+        else:
+            return self.get_object_list(request).filter(**applicable_filters)
+
     def get_list(self, request, **kwargs):
         """
         Returns a serialized list of resources.
@@ -365,22 +388,6 @@ class ProjectCommentResource(ConditionalFullResource):
 class ProjectLocationResource(ConditionalFullResource):
     project = ConditionalFullToOneField(ProjectResource, 'location_target')
     country = ConditionalFullToOneField(CountryResource, 'country')
-
-    def apply_filters(self, request, applicable_filters):
-        """
-        An ORM-specific implementation of ``apply_filters``.
-
-        The default simply applies the ``applicable_filters`` as ``**kwargs``,
-        but should make it possible to do more advanced things.
-
-        Here we override to check for a 'distinct' query string variable,
-        if it's equal to True we apply distinct() to the queryset after filtering.
-        """
-        distinct = request.GET.get('distinct', False) == 'True'
-        if distinct:
-            return self.get_object_list(request).filter(**applicable_filters).distinct()
-        else:
-            return self.get_object_list(request).filter(**applicable_filters)
 
     class Meta:
         allowed_methods = ['get']
