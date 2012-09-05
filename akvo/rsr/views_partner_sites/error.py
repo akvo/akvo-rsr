@@ -7,6 +7,7 @@
 """
 from __future__ import absolute_import
 
+from django.utils.translation import ugettext_lazy as _
 from akvo.rsr.views_partner_sites.base import BaseView
 
 __all__ = [
@@ -20,16 +21,16 @@ class ForbiddenView(BaseView):
     template_name = "partner_sites/status/403.html"
 
     def render_to_response(self, context, **kwargs):
-        kwargs.update(dict(status = 403))
+        kwargs.update(dict(status=403))
         # template needs to be rendered for later middleware not to complain
         return super(ForbiddenView, self).render_to_response(context, **kwargs).render()
-  
+
     def get_context_data(self, **kwargs):
         context = super(ForbiddenView, self).get_context_data(**kwargs)
         try:
             message = self.request.error_message
-        except AttributeError, e:
-            message = u'We\'re sorry, you are not allowed to access this page.'
+        except AttributeError:
+            message = _(u'We\'re sorry, you are not allowed to access this page.')
         context['error_message'] = message
         return context
 
@@ -39,6 +40,6 @@ class NotFoundView(BaseView):
     template_name = 'partner_sites/status/404.html'
 
     def render_to_response(self, context, **kwargs):
-        kwargs.update(dict(status = 404))
+        kwargs.update(dict(status=404))
         # template needs to be rendered for later middleware not to complain
         return super(NotFoundView, self).render_to_response(context, **kwargs).render()

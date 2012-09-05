@@ -473,8 +473,8 @@ class OrganisationAccount(models.Model):
         ('plus', u'Plus'),
         ('premium', u'Premium'),
     )
-    organisation    = models.OneToOneField(Organisation, verbose_name=u'organisation', primary_key=True)
-    account_level   = models.CharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
+    organisation = models.OneToOneField(Organisation, verbose_name=u'organisation', primary_key=True)
+    account_level = models.CharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
     class Meta:
         verbose_name = u'organisation account'

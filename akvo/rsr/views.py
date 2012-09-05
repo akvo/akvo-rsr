@@ -59,9 +59,14 @@ def forbidden(request, template_name='403.html'):
     Decorator expectes to find a 403.html in templates folder
     '''
 
+    try:
+        message = request.error_message
+    except AttributeError:
+        message = _(u'We\'re sorry, you are not allowed to access this page.')
+
     t = loader.get_template(template_name)
     return http.HttpResponseForbidden(t.render(Context({
-        'error_message': request.error_message,
+        'error_message': message,
         'MEDIA_URL': settings.MEDIA_URL
     })))
 
