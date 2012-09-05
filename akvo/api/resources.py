@@ -258,6 +258,7 @@ class OrganisationResource(ConditionalFullResource):
         resource_name   = 'organisation'
         filtering       = dict(
             # other fields
+            iati_org_id         = ALL,
             name                = ALL,
             organisation_type   = ALL,
             # foreign keys
@@ -300,10 +301,12 @@ class PartnershipResource(ConditionalFullResource):
         filtering       = dict(organisation=ALL_WITH_RELATIONS)
         filtering       = dict(
             # other fields
-            partner_type= ALL,
+            iati_activity_id    = ALL,
+            internal_id         = ALL,
+            partner_type        = ALL,
             # foreign keys
-            organisation= ALL_WITH_RELATIONS,
-            project     = ALL_WITH_RELATIONS,
+            organisation        = ALL_WITH_RELATIONS,
+            project             = ALL_WITH_RELATIONS,
         )
 
 
