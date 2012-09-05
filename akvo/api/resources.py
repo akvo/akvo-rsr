@@ -191,7 +191,6 @@ class FocusAreaResource(ConditionalFullResource):
         filtering       = dict(
             # other fields
             slug        = ALL,
-            name        = ALL,
         )
 
 
@@ -204,7 +203,7 @@ class GoalResource(ConditionalFullResource):
         resource_name   = 'goal'
         filtering       = dict(
             # foreign keys
-            paroject  = ALL_WITH_RELATIONS,
+            project     = ALL_WITH_RELATIONS,
         )
 
 
@@ -215,11 +214,11 @@ class InvoiceResource(ConditionalFullResource):
         allowed_methods = ['get']
         queryset        = Invoice.objects.filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE)
         resource_name   = 'invoice'
-        fields = ['amount', 'amount_received', 'user', 'is_anonymous',]
+        fields          = ['amount', 'amount_received', 'user', 'is_anonymous',]
         filtering       = dict(
             # foreign keys
             project     = ALL_WITH_RELATIONS,
-            user     = ALL_WITH_RELATIONS,
+            user        = ALL_WITH_RELATIONS,
         )
 
     def dehydrate(self, bundle):
@@ -410,6 +409,7 @@ class ProjectUpdateResource(ConditionalFullResource):
             # other fields
             time                = ALL,
             time_last_updated   = ALL,
+            title               = ALL,
             update_method       = ALL,
             # foreign keys
             project             = ALL_WITH_RELATIONS,

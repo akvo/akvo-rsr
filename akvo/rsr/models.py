@@ -129,9 +129,9 @@ def validate_iati_id(iati_id):
 class Country(models.Model):
 
     name = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
-    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, choices=ISO_3166_COUNTRIES,)
+    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES,)
     continent = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
-    continent_code = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS,)
+    continent_code = models.CharField(_(u'continent code'), max_length=2, db_index=True , choices=CONTINENTS,)
 
 #    name = models.CharField(_(u'country name'), max_length=50,)
 #    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
@@ -183,15 +183,15 @@ class Country(models.Model):
 class BaseLocation(models.Model):
     _help_text = _(u"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> "
                    u'to get the decimal coordinates of your project.')
-    latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
-    longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
+    latitude = LatitudeField(_(u'latitude'), db_index=True, default=0, help_text=_help_text)
+    longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
     city = models.CharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
     state = models.CharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
     country = models.ForeignKey(Country, verbose_name=_(u'country'))
     address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
     address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
     postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
-    primary = models.BooleanField(_(u'primary location'), default=True)
+    primary = models.BooleanField(_(u'primary location'), db_index=True, default=True)
 
     def __unicode__(self):
         return u'%s, %s (%s)' % (self.city, self.state, self.country)
@@ -233,27 +233,18 @@ class Partnership(models.Model):
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
-    partner_type = models.CharField(_(u'partner type'), max_length=8, choices=PARTNER_TYPES,)
+    partner_type = models.CharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
-        _(u'funding amount'),
-        max_digits=10,
-        decimal_places=2,
-        blank=True,
-        null=True
+        _(u'funding amount'), max_digits=10, decimal_places=2,
+        blank=True, null=True, db_index=True
     )
     iati_activity_id = models.CharField(
-        _(u'IATI ID'),
-        max_length=75,
-        blank=True,
-        null=True,
-        help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". <br />More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
+        _(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,
+        help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
         validators=[validate_iati_id]
     )
     internal_id = models.CharField(
-        _(u'Internal ID'),
-        max_length=75,
-        blank=True,
-        null=True,
+        _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
 
@@ -295,24 +286,18 @@ class Organisation(models.Model):
 #    funding_partner = models.BooleanField(_(u'funding partner'))
 #    sponsor_partner = models.BooleanField(_(u'sponsor partner'))
 
-    name = models.CharField(_(u'name'), max_length=25, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
+    name = models.CharField(_(u'name'), max_length=25, db_index=True, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
     long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
-    organisation_type = models.CharField(_(u'organisation type'), max_length=1, choices=ORG_TYPES)
+    organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
     iati_org_id = models.CharField(
-        _(u'IATI organisation ID'),
-        max_length=75,
-        blank=True,
-        null=True,
+        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
         validators=[validate_iati_id]
     )
     logo = ImageWithThumbnailsField(
-        _(u'logo'),
-        blank=True,
-        upload_to=image_path,
-        thumbnail={'size': (360, 270)},
+        _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
-   )
+    )
 
     url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
 
@@ -495,7 +480,7 @@ class FocusArea(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
     name = models.CharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
-    slug = models.SlugField(u'slug', max_length=50, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
+    slug = models.SlugField(u'slug', max_length=50, db_index=True, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
     description = models.TextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
     image = ImageWithThumbnailsField(
                     _(u'focus area image'),
@@ -539,16 +524,18 @@ class Category(models.Model):
     #def image_path(instance, file_name):
     #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
 
-    name = models.CharField(_(u'category name'), max_length=50, help_text=_(u'Enter a name for the category. (50 characters).'))
-    #icon                    = ImageWithThumbnailsField(
-    #                            _('category icon'),
-    #                            blank=True,
-    #                            upload_to=image_path,
-    #                            thumbnail={'size': (20, 20), 'options': ('crop', )},
-    #                            help_text=_('Icon size must 20 pixels square, preferably a .png or .gif'),
-    #                        )
-    focus_area = models.ManyToManyField(FocusArea, verbose_name=_(u'focus area'), related_name='categories', help_text=_(u'Select the Focus area(s) the category belongs to.'), )
-    benchmarknames = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_(u'Select the benchmark names for the category.'), )
+    name = models.CharField(
+        _(u'category name'), max_length=50, db_index=True,
+        help_text=_(u'Enter a name for the category. (50 characters).')
+    )
+    focus_area = models.ManyToManyField(
+        FocusArea, verbose_name=_(u'focus area'), related_name='categories',
+        help_text=_(u'Select the Focus area(s) the category belongs to.')
+    )
+    benchmarknames = models.ManyToManyField(
+        Benchmarkname, verbose_name=_(u'benchmark names'),
+        blank=True, help_text=_(u'Select the benchmark names for the category.')
+    )
 
     class Meta:
         verbose_name = _(u'category')
@@ -644,9 +631,9 @@ class Project(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
-    title = models.CharField(_(u'title'), max_length=45, help_text=_(u'A short descriptive title for your project (45 characters).'))
+    title = models.CharField(_(u'title'), max_length=45, db_index=True, help_text=_(u'A short descriptive title for your project (45 characters).'))
     subtitle = models.CharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
-    status = models.CharField(_(u'status'), max_length=1, choices=STATUSES, default='N', help_text=_(u'Current project state.'))
+    status = models.CharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default='N', help_text=_(u'Current project state.'))
     categories = models.ManyToManyField(Category, verbose_name=_(u'categories'), related_name='projects',)
     partners = models.ManyToManyField(Organisation, verbose_name=_(u'partners'), through=Partnership, related_name='projects',)
     project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=400, help_text=_(u'Briefly summarize the project (400 characters).'))
@@ -684,9 +671,9 @@ class Project(models.Model):
 
     # denormalized data
     # =================
-    budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, default=0)
-    funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
-    funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
+    budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
+    funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
+    funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
 
     # Custom manager
     # based on http://www.djangosnippets.org/snippets/562/ and
@@ -1253,7 +1240,7 @@ class Benchmark(models.Model):
 
 
 class BudgetItemLabel(models.Model):
-    label = models.CharField(_(u'label'), max_length=20, unique=True)
+    label = models.CharField(_(u'label'), max_length=20, unique=True, db_index=True)
 
     def __unicode__(self):
         return self.label
@@ -1865,7 +1852,7 @@ class ProjectUpdate(models.Model):
 
     project = models.ForeignKey(Project, related_name='project_updates', verbose_name=_(u'project'))
     user = models.ForeignKey(User, verbose_name=_(u'user'))
-    title = models.CharField(_(u'title'), max_length=50, help_text=_(u'50 characters'))
+    title = models.CharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = models.TextField(_(u'text'), blank=True)
     #status = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo = ImageWithThumbnailsField(
@@ -1881,9 +1868,9 @@ class ProjectUpdate(models.Model):
     video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
     video_caption = models.CharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     video_credit = models.CharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
-    update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, default='W')
-    time = models.DateTimeField(_(u'time'), auto_now_add=True)
-    time_last_updated = models.DateTimeField(_(u'time last updated'), auto_now=True)
+    update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
+    time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
+    time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
     # featured = models.BooleanField(_(u'featured'))
 
     class Meta:
@@ -1980,7 +1967,7 @@ class ProjectComment(models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='comments')
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     comment = models.TextField(_(u'comment'))
-    time = models.DateTimeField(_(u'time'))
+    time = models.DateTimeField(_(u'time'), db_index=True)
 
     class Meta:
         verbose_name = _(u'project comment')
