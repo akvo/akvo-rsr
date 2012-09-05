@@ -37,9 +37,9 @@ def bundle_related_data_info_factory(request=None, parent_bundle=None):
     else:
         parent_info = parent_bundle.related_info
         depth = parent_info.depth - 1
-        ancestors = parent_info.ancestors
-        if not parent_bundle.obj in parent_info.ancestors:
-            ancestors.append(parent_bundle.obj)
+        ancestors = parent_info.ancestors[:] # Create a copy of the list
+        if not parent_bundle.obj.__class__ in parent_info.ancestors:
+            ancestors.append(parent_bundle.obj.__class__)
         full = parent_info.full
     return BundleRelatedDataInfo(depth, ancestors, full)
 
@@ -67,6 +67,10 @@ class ConditionalFullFieldMixin(object):
         """
         Based on the ``full_resource``, returns either the endpoint or the data
         from ``full_dehydrate`` for the related resource.
+
+        Modified to handle related resources automatically. If the parent bundle has a "related_info" attribute we
+        look into it to see if "depth" is greater than 0. If so we are close enough to the ancestor resource that we
+        should return data and not a URI
         """
         if self.full:
             # ZOMG extra data and big payloads.
@@ -74,7 +78,7 @@ class ConditionalFullFieldMixin(object):
             return related_resource.full_dehydrate(new_bundle)
 
         parent_info = getattr(bundle, 'related_info', False)
-        if parent_info and parent_info.depth > 0 and (not related_resource.instance in parent_info.ancestors or parent_info.full):
+        if parent_info and parent_info.depth > 0 and (not related_resource.instance.__class__ in parent_info.ancestors or parent_info.full):
             new_bundle = related_resource.build_bundle(obj=related_resource.instance, request=bundle.request)
             new_bundle.related_info = bundle_related_data_info_factory(parent_bundle=bundle)
             return related_resource.full_dehydrate(new_bundle)
