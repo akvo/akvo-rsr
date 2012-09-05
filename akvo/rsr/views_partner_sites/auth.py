@@ -7,24 +7,20 @@
 """
 from __future__ import absolute_import
 
-from django import http
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
-from django.template import Context, loader
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from django.views.generic.base import TemplateView
+
 from django.views.generic.edit import FormView
 
-from akvo.rsr.views_partner_sites.base import PartnerSitesMixin, BaseView
+from akvo.rsr.views_partner_sites.base import PartnerSitesMixin
 
 __all__ = [
     'SignInView',
     'signout',
-    'FourOThreeView',
-    'FourOFourView',
 ]
 
 
@@ -84,24 +80,3 @@ def signout(request):
     """Signs out a user from partner sites."""
     logout(request)
     return HttpResponseRedirect(request.GET.get('next', '/'))
-
-
-
-class FourOThreeView(BaseView):
-    "View returning http status 403, forbidden"
-    template_name = 'partner_sites/status/403.html'
-
-    def render_to_response(self, context, **kwargs):
-        kwargs.update(dict(status = 403))
-        # template needs to be rendered for later middleware not to complain
-        return super(FourOThreeView, self).render_to_response(context, **kwargs).render()
-
-
-class FourOFourView(BaseView):
-    "View returning http status 404, not found"
-    template_name = 'partner_sites/status/404.html'
-
-    def render_to_response(self, context, **kwargs):
-        kwargs.update(dict(status = 404))
-        # template needs to be rendered for later middleware not to complain
-        return super(FourOFourView, self).render_to_response(context, **kwargs).render()

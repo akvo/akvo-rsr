@@ -5,6 +5,14 @@
 
 {% block title %}{{project}} - {% endblock title %}
 
+{% block draft %}
+  {% if draft %}
+    <div style="background-color:#E04F46; color:#fff; padding:10px; text-align:center;">
+      {% trans "This is project is a draft and can only be seen by projects members" %}
+    </div>
+  {% endif %}
+{% endblock draft %}
+
 {% block breadcrum_right %}
   {{block.super}}
   | <a href="#">{% trans "Project updates" %}</a>
