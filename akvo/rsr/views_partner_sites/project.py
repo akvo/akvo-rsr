@@ -95,11 +95,15 @@ class ProjectUpdateFormView(BaseProjectView):
     template_name = "partner_sites/project/update_form.html"
     form_class = ProjectUpdateForm
 
-    @method_decorator(login_required)
+    # @method_decorator(login_required)
     @method_decorator(never_cache)
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         """Make sure login is required."""
-        return super(ProjectUpdateFormView, self).dispatch(*args, **kwargs)
+        #
+        # request.error_message = "yay"
+        # raise PermissionDenied
+        self.project = get_object_or_404(Project, pk=kwargs['project_id'])
+        return super(ProjectUpdateFormView, self).dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -108,9 +112,9 @@ class ProjectUpdateFormView(BaseProjectView):
 
     def form_valid(self, form):
         """On valid form login and redirect the user to the appropriate url"""
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        # project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         update = form.save(commit=False)
-        update.project = project
+        update.project = self.project
         update.user = self.request.user
         update.update_method = 'W'
         update.save()
@@ -123,8 +127,19 @@ class ProjectUpdateAddView(ProjectUpdateFormView, FormView):
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateAddView, self).get_context_data(**kwargs)
         user_is_authorized = context['project'].connected_to_user(self.request.user)
-        if not user_is_authorized:
+
+        if not self.request.user.is_authenticated():
+            self.request.error_message = u'You need to sign in to make updates.'
             raise PermissionDenied
+
+        if not self.project.is_published():
+            self.request.error_message = u'You can\'t add updates to unpublished projects.'
+            raise PermissionDenied
+
+        if not user_is_authorized:
+            self.request.error_message = u'You don\'t have permission to add updates to this project.'
+            raise PermissionDenied
+
         update = None
         try:
             update_id = self.kwargs['update_id']
@@ -167,4 +182,3 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(ProjectUpdate, id=self.kwargs['update_id'])
-

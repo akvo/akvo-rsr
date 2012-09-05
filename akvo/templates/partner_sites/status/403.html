@@ -12,4 +12,10 @@
 
 {% block header %}{% trans 'Forbidden (403)' %}{% endblock header %}
 
-{% block message %}{% trans "We're sorry, you are not allowed to access this page." %}{% endblock message %}
+{% block message %}
+  {% if error_message %}
+    {{error_message}}
+  {% else %}
+    {% trans "We're sorry, you are not allowed to access this page." %}
+  {% endif %}
+{% endblock message %}

@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
-from django.conf.urls.i18n import i18n_patterns
+# from django.conf.urls.i18n import i18n_patterns
 
 from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
@@ -276,7 +276,7 @@ urlpatterns += patterns('',
         name='project_map_widget_for_org',),
 )
 
-
+handler403 = 'akvo.rsr.views.forbidden'
 handler500 = 'akvo.rsr.views.server_error'
 if settings.DEBUG:
     urlpatterns += patterns('',
