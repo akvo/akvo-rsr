@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^projects\.(?P<emitter_format>[A-Za-z]+)/$', project_handler), # format "filtetype" eg projects.json
     url(r'^projects/live-earth/$', le_project_handler), # Live Earth projects /projects/live-earth/
     url(r'^projects\.(?P<emitter_format>[A-Za-z]+)/live-earth/$', le_project_handler), # /projects.xml/live-earth/
-    
+
     url(r'^project/(?P<pk>\d+)/$', project_handler), # one project: /project/42/
     url(r'^project\.(?P<emitter_format>[A-Za-z]+)/(?P<pk>\d+)/$', project_handler), # one project, filetype specified eg /project.xml/42/
 

@@ -652,7 +652,7 @@ def projectupdates(request, project_id):
     '''
     project = get_object_or_404(Project, pk=project_id)
     updates = project.project_updates.all().order_by('-time')
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
         'project': project,
@@ -673,7 +673,7 @@ def projectupdate(request, project_id, update_id):
     can_add_update = project.connected_to_user(request.user)
     can_edit_update = (update.user == request.user and can_add_update and
                        not update.edit_window_has_expired())
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     edit_timeout = settings.PROJECT_UPDATE_TIMEOUT
     return {
         'project': project,
@@ -696,7 +696,7 @@ def projectcomments(request, project_id):
     updates: list of updates, ordered by time in reverse
     '''
     project = get_object_or_404(Project, pk=project_id)
-    comments = Project.objects.get(id=project_id).projectcomment_set.all().order_by('-time')
+    comments = Project.objects.get(id=project_id).comments.all().order_by('-time')
     form = CommentForm()
     updates = project.project_updates.all().order_by('-time')[:3]
     return {
@@ -929,7 +929,7 @@ def projectmain(request, project):
     related = get_random_from_qs(related, 2)
     all_updates = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     # comprehensions are fun! here we use it to get the categories that
     # don't contain only 0 value benchmarks
     benchmarks = project.benchmarks.filter(
@@ -970,7 +970,7 @@ def projectdetails(request, project_id):
 @render_to('rsr/project/project_partners.html')
 def projectpartners(request, project):
     updates = project.project_updates.all().order_by('-time')[:3]
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     return {
         'can_add_update': request.privileged_user,
         'comments': comments,
@@ -987,7 +987,7 @@ def projectpartners(request, project):
 def projectfunding(request, project):
     public_donations = project.public_donations()
     updates = project.project_updates.all().order_by('-time')[:3]
-    comments = project.projectcomment_set.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-time')[:3]
     return {
         'can_add_update': request.privileged_user,
         'comments': comments,
@@ -1042,31 +1042,31 @@ def getwidget(request, project):
         }, context_instance=RequestContext(request))
 
 
-def fundingbarimg(request):
-    '''
-    create an image for use in the funding bar graphic
-    '''
-    import Image, ImageDraw
+# def fundingbarimg(request):
+#     '''
+#     create an image for use in the funding bar graphic
+#     '''
+#     import Image, ImageDraw
 
-    size = (100, 20)  # size of the image to create
-    im = Image.new('RGB', size, '#fff')  # create the image
-    draw = ImageDraw.Draw(im)  # create a drawing object that is
-                                # used to draw on the new image
-    # Now, we'll do the drawing:
-    pct = request.GET.get('pct', 0)
-    if pct:
-        box = [(0,0),(min(int(pct), 100),20)]
-        draw.rectangle(box, fill='#99ff99')
+#     size = (100, 20)  # size of the image to create
+#     im = Image.new('RGB', size, '#fff')  # create the image
+#     draw = ImageDraw.Draw(im)  # create a drawing object that is
+#                                 # used to draw on the new image
+#     # Now, we'll do the drawing:
+#     pct = request.GET.get('pct', 0)
+#     if pct:
+#         box = [(0,0),(min(int(pct), 100),20)]
+#         draw.rectangle(box, fill='#99ff99')
 
-    del draw # I'm done drawing so I don't need this anymore
+#     del draw # I'm done drawing so I don't need this anymore
 
-    # We need an HttpResponse object with the correct mimetype
-    response = HttpResponse(mimetype="image/png")
-    # now, we tell the image to save as a PNG to the
-    # provided file-like object
-    im.save(response, 'PNG')
+#     # We need an HttpResponse object with the correct mimetype
+#     response = HttpResponse(mimetype="image/png")
+#     # now, we tell the image to save as a PNG to the
+#     # provided file-like object
+#     im.save(response, 'PNG')
 
-    return response # and we're done!
+#     return response # and we're done!
 
 
 def templatedev(request, template_name):
@@ -1076,7 +1076,7 @@ def templatedev(request, template_name):
     SAMPLE_ORG_ID = 42
     p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
     updates = Project.objects.get(id=SAMPLE_PROJECT_ID).project_updates.all().order_by('-time')[:3]
-    comments = Project.objects.get(id=SAMPLE_PROJECT_ID).projectcomment_set.all().order_by('-time')[:3]
+    comments = Project.objects.get(id=SAMPLE_PROJECT_ID).comments.all().order_by('-time')[:3]
     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
     projects = Project.objects.published()
@@ -1174,7 +1174,7 @@ def project_map_widget(request, org_id):
 
     try:
         map_height = int(height) - 24  # Since we have a bottom bar of 24px
-    except ValueError, e:
+    except ValueError:
         map_height = 276  # 326px = default height(350px) - bottom bar(24px)
 
     return {

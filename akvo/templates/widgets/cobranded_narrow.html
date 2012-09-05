@@ -107,7 +107,7 @@
 	<div style="height:95px;">
 		<div id="partnerspace" style="text-align:center;">
 
-      {% with project.partnership_set.all.0 as first_partner %}
+      {% with project.partnerships.all.0 as first_partner %}
         <p class="smallFont grey left">
           {% if first_partner.partner_type == 'field' %}{% trans 'Implemented by' %}{% endif %}
           {% if first_partner.partner_type == 'funding' %}{% trans 'Underwritten by' %}{% endif %}
@@ -151,7 +151,7 @@
 	
 	var partners = [];
 
-  {% for partner in project.partnership_set.all %}
+  {% for partner in project.partnerships.all %}
     partners[partners.length] = new Partner('{{partner}}',
             '{% org_logo partner.organisation 70 30 "margin-top:10px; margin-bottom:5px;" %}',
             '{{partner.partner_type}}',

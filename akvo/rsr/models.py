@@ -39,6 +39,7 @@ from workflows import WorkflowBase
 from permissions import PermissionBase
 from permissions.models import Role
 
+from akvo.api.models import create_api_key
 from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
@@ -221,17 +222,17 @@ class ProjectLocation(BaseLocation):
 
 
 class Partnership(models.Model):
-    FIELD_PARTNER = u'field'
-    FUNDING_PARTNER = u'funding'
-    SPONSOR_PARTNER = u'sponsor'
-    SUPPORT_PARTNER = u'support'
+    FIELD_PARTNER       = u'field'
+    FUNDING_PARTNER     = u'funding'
+    SPONSOR_PARTNER     = u'sponsor'
+    SUPPORT_PARTNER     = u'support'
 
-    PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
-    PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
-    PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+    PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
+    PARTNER_LABELS      = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'),]
+    PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
-    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'))
-    project = models.ForeignKey('Project', verbose_name=_(u'project'),)
+    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
+    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = models.CharField(_(u'partner type'), max_length=8, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
         _(u'funding amount'),
@@ -259,7 +260,6 @@ class Partnership(models.Model):
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.ProjectsQuerySet(self.model)
-
 
 class Organisation(models.Model):
     """
@@ -341,8 +341,8 @@ class Organisation(models.Model):
 
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
-            return self.filter(partnership__partner_type__exact=partner_type).distinct()
-
+            return self.filter(partnerships__partner_type__exact=partner_type).distinct()
+        
         def allpartners(self):
             return self.distinct()
 
@@ -375,7 +375,7 @@ class Organisation(models.Model):
 
     def is_partner_type(self, partner_type):
         "returns True if the organisation is a partner of type partner_type to at least one project"
-        return self.partnership_set.filter(partner_type__exact=partner_type).count() > 0
+        return self.partnerships.filter(partner_type__exact=partner_type).count() > 0
 
     def is_field_partner(self):
         "returns True if the organisation is a field partner to at least one project"
@@ -417,17 +417,17 @@ class Organisation(models.Model):
     def euros_pledged(self):
         "How much € the organisation has pledged to projects it is a partner to"
         return self.active_projects().euros().filter(
-            partnership__organisation__exact=self, partnership__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__organisation__exact=self, partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
         ).aggregate(
-            euros_pledged=Sum('partnership__funding_amount')
+            euros_pledged=Sum('partnerships__funding_amount')
         )['euros_pledged'] or 0
 
     def dollars_pledged(self):
         "How much $ the organisation has pledged to projects"
         return self.active_projects().dollars().filter(
-            partnership__organisation__exact=self, partnership__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__organisation__exact=self, partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
         ).aggregate(
-            dollars_pledged=Sum('partnership__funding_amount')
+            dollars_pledged=Sum('partnerships__funding_amount')
         )['dollars_pledged'] or 0
 
     def euro_projects_count(self):
@@ -484,16 +484,16 @@ class OrganisationAccount(models.Model):
 class FocusArea(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
-    name        = models.CharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
-    slug        = models.SlugField(u'slug', max_length=50, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
+    name = models.CharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
+    slug = models.SlugField(u'slug', max_length=50, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
     description = models.TextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
-    image       = ImageWithThumbnailsField(
+    image = ImageWithThumbnailsField(
                     _(u'focus area image'),
                     upload_to=image_path,
                     thumbnail={'size': (20, 20), 'options': ('crop', )},
                     help_text=_(u'The image that will appear on the focus area project listing page.'),
                 )
-    link_to     = models.URLField(_(u'accordion link'), max_length=200, blank=True, help_text=_(u'Where the link in the accordion for the focus area points if other than the focus area project listing.'))
+    link_to = models.URLField(_(u'accordion link'), max_length=200, blank=True, help_text=_(u'Where the link in the accordion for the focus area points if other than the focus area project listing.'))
 
     @models.permalink
     def get_absolute_url(self):
@@ -509,18 +509,18 @@ class FocusArea(models.Model):
     class Meta:
         verbose_name = u'focus area'
         verbose_name_plural = u'focus areas'
-        ordering = ['name',]
+        ordering = ['name', ]
 
 
 class Benchmarkname(models.Model):
-    name    = models.CharField(_(u'benchmark name'), max_length=50, help_text=_(u'Enter a name for the benchmark. (50 characters).'))
-    order   = models.IntegerField(_(u'order'), default=0, help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
+    name = models.CharField(_(u'benchmark name'), max_length=50, help_text=_(u'Enter a name for the benchmark. (50 characters).'))
+    order = models.IntegerField(_(u'order'), default=0, help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
 
     def __unicode__(self):
         return self.name
 
     class Meta:
-        ordering = ['order', 'name',]
+        ordering = ['order', 'name', ]
         verbose_name = _(u'benchmark name')
         verbose_name_plural = _(u'benchmark names')
 
@@ -541,9 +541,9 @@ class Category(models.Model):
     benchmarknames = models.ManyToManyField(Benchmarkname, verbose_name=_(u'benchmark names'), blank=True, help_text=_(u'Select the benchmark names for the category.'), )
 
     class Meta:
-        verbose_name=_(u'category')
-        verbose_name_plural=_(u'categories')
-        ordering = ['name',]
+        verbose_name = _(u'category')
+        verbose_name_plural = _(u'categories')
+        ordering = ['name', ]
 
     def __unicode__(self):
         return '%s (%s)' % (self.name, self.focus_areas())
@@ -561,7 +561,6 @@ class Category(models.Model):
     focus_areas_html.allow_tags = True
 
 
-
 CURRENCY_CHOICES = (
     ('USD', '$'),
     ('EUR', '€'),
@@ -575,7 +574,7 @@ STATUSES = (
     ('L', _(u'Cancelled')),
     ('R', _(u'Archived')),
 )
-STATUSES_COLORS = {'N':'black', 'A':'#AFF167', 'H':'orange', 'C':'grey', 'R':'grey', 'L':'red', }
+STATUSES_COLORS = {'N': 'black', 'A': '#AFF167', 'H': 'orange', 'C': 'grey', 'R': 'grey', 'L': 'red', }
 
 
 class MiniCMS(models.Model):
@@ -1033,9 +1032,9 @@ class Project(models.Model):
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
-            orgs = Organisation.objects.filter(partnership__project__in=self)
+            orgs = Organisation.objects.filter(partnerships__project__in=self)
             if partner_type:
-                orgs = orgs.filter(partnership__partner_type=partner_type)
+                orgs = orgs.filter(partnerships__partner_type=partner_type)
             return orgs.distinct()
 
         def field_partners(self):
@@ -1177,7 +1176,7 @@ class Project(models.Model):
         """
         orgs = self.partners.all()
         if partner_type:
-            return orgs.filter(partnership__partner_type=partner_type).distinct()
+            return orgs.filter(partnerships__partner_type=partner_type).distinct()
         else:
             return orgs.distinct()
 
@@ -1196,12 +1195,9 @@ class Project(models.Model):
     def all_partners(self):
         return self._partners()
 
-    def all_partnerships(self):
-        return self.partnership_set.all().order_by('organisation')
-
     def funding_partner_info(self):
         "Return the Partnership objects associated with the project that have funding information"
-        return self.partnership_set.filter(partner_type=Partnership.FUNDING_PARTNER)
+        return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
 
     def show_status_large(self):
         "Show the current project status with background"
@@ -1262,14 +1258,14 @@ class BudgetItem(models.Model):
     # DON'T translate. Need model translations for this to work
     OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
 
-    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
-    label = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
+    project     = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
+    label       = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
     other_extra = models.CharField(
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
-    # Translators: This is the amount of an budget item in a currancy (€ or $)
-    amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
+    # Translators: This is the amount of an budget item in a currency (€ or $)
+    amount      = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     def __unicode__(self):
         return self.label.__unicode__()
@@ -1389,12 +1385,12 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     objects = UserProfileManager()
 
     # "constants" for use with SMS updating workflow
-    VALIDATED = u'IS_VALID' # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED
-    WORKFLOW_SMS_UPDATE = u'SMS update' #Name of workflow for SMS updating
-    STATE_PHONE_NUMBER_ADDED = u'Phone number added' #Phone number has been added to the profile
+    VALIDATED = u'IS_VALID'  # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED
+    WORKFLOW_SMS_UPDATE = u'SMS update'  # Name of workflow for SMS updating
+    STATE_PHONE_NUMBER_ADDED = u'Phone number added'  # Phone number has been added to the profile
     #STATE_PHONE_NUMBER_VALIDATED = u'Phone number validated' #The phone has been validated with a validation code SMS
-    STATE_UPDATES_ENABLED = u'Updates enabled' #The phone is enabled, registered reporters will create updates on respective project
-    STATE_PHONE_DISABLED = u'Phone disabled' #The phone is disabled, preventing the processing of incoming SMSs
+    STATE_UPDATES_ENABLED = u'Updates enabled'  # The phone is enabled, registered reporters will create updates on respective project
+    STATE_PHONE_DISABLED = u'Phone disabled'  # The phone is disabled, preventing the processing of incoming SMSs
     TRANSITION_ADD_PHONE_NUMBER = u'Add phone number'
     TRANSITION_VALIDATE_PHONE_NUMBER = u'Validate phone number'
     TRANSITION_ENABLE_UPDATING = u'Enable updating'
@@ -1410,7 +1406,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     class Meta:
         verbose_name = _(u'user profile')
         verbose_name_plural = _(u'user profiles')
-        ordering = ['user__username',]
+        ordering = ['user__username', ]
 
     def __unicode__(self):
         return self.user.username
@@ -1437,7 +1433,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     #methods that insteract with the User model
     def get_is_active(self):
         return self.user.is_active
-    get_is_active.boolean = True #make pretty icons in the admin list view
+    get_is_active.boolean = True  # make pretty icons in the admin list view
     get_is_active.short_description = _(u'user is activated (may log in)')
 
     def set_is_active(self, set_it):
@@ -1446,7 +1442,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
     def get_is_staff(self):
         return self.user.is_staff
-    get_is_staff.boolean = True #make pretty icons in the admin list view
+    get_is_staff.boolean = True  # make pretty icons in the admin list view
 
     def set_is_staff(self, set_it):
         self.user.is_staff = set_it
@@ -1457,7 +1453,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
     def get_is_org_admin(self):
         return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self.user)
-    get_is_org_admin.boolean = True #make pretty icons in the admin list view
+    get_is_org_admin.boolean = True  # make pretty icons in the admin list view
     get_is_org_admin.short_description = _(u'user is an organisation administrator')
 
     def set_is_org_admin(self, set_it):
@@ -1468,7 +1464,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
     def get_is_org_editor(self):
         return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self.user)
-    get_is_org_editor.boolean = True #make pretty icons in the admin list view
+    get_is_org_editor.boolean = True  # make pretty icons in the admin list view
     get_is_org_editor.short_description = _(u'user is a project editor')
 
     def set_is_org_editor(self, set_it):
@@ -1558,7 +1554,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         if reporter and reporter.project:
             reporters = [reporter]
         else:
-            reporters = self.reporters.exclude(project=None) #exclude reporter that's not set up with a project
+            reporters = self.reporters.exclude(project=None)  # exclude reporter that's not set up with a project
         for sms_reporter in reporters:
             try:
                 sms_reporter.reporting_cancelled()
@@ -1606,7 +1602,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
                 logger.error('Error in UserProfileManager.disable_sms_update_workflow: Locals:\n %s\n\n' % (locals(),))
                 logger.debug("Exiting: %s()" % who_am_i())
                 return
-            send_now([user], 'phone_disabled', extra_context={'phone_number':self.phone_number}, on_site=True)
+            send_now([user], 'phone_disabled', extra_context={'phone_number': self.phone_number}, on_site=True)
             self.disable_all_reporters()
             logger.info('SMS updating disabled for user %s' % user.username)
         except Exception, e:
@@ -1678,7 +1674,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         self.set_workflow(workflow)
         if state_equals(self, self.STATE_UPDATES_ENABLED):
             self.disable_all_reporters()
-        self.set_initial_state() #Phone disabled
+        self.set_initial_state()  # Phone disabled
         logger.debug("Exiting: %s()" % who_am_i())
 
     def add_phone_number(self, phone_number):
@@ -1723,7 +1719,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
             self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or
             self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
         )
-    has_perm_add_sms_updates.boolean = True #make pretty icons in the admin list view
+    has_perm_add_sms_updates.boolean = True  # make pretty icons in the admin list view
     has_perm_add_sms_updates.short_description = _('may create SMS project updates')
 
 
@@ -1745,6 +1741,7 @@ class SmsReporterManager(models.Manager):
             else:
                 return self.get(userprofile=profile, project=project)
         raise SmsReporter.DoesNotExists
+
 
 class SmsReporter(models.Model):
     """
@@ -1798,11 +1795,11 @@ class SmsReporter(models.Model):
     def update_received(self, update):
         profile = self.userprofile
         extra_context = {
-            'gw_number'     : self.gw_number,
-            'phone_number'  : profile.phone_number,
-            'project'       : self.project,
-            'update'        : update,
-            'domain'        : Site.objects.get_current().domain,
+            'gw_number': self.gw_number,
+            'phone_number': profile.phone_number,
+            'project': self.project,
+            'update': update,
+            'domain': Site.objects.get_current().domain,
         }
         send_now([profile.user], 'update_received', extra_context=extra_context, on_site=True)
 
@@ -1810,18 +1807,18 @@ class SmsReporter(models.Model):
         profile = self.userprofile
         #self.delete = set_delete
         extra_context = {
-            'gw_number'     : self.gw_number,
-            'phone_number'  : profile.phone_number,
-            'project'       : self.project,
+            'gw_number': self.gw_number,
+            'phone_number': profile.phone_number,
+            'project': self.project,
         }
         send_now([profile.user], 'reporting_cancelled', extra_context=extra_context, on_site=True)
 
     def reporting_enabled(self):
         profile = self.userprofile
         extra_context = {
-            'gw_number'     : self.gw_number,
-            'phone_number'  : profile.phone_number,
-            'project'       : self.project,
+            'gw_number': self.gw_number,
+            'phone_number': profile.phone_number,
+            'project': self.project,
         }
         send_now([profile.user], 'reporting_enabled', extra_context=extra_context, on_site=True)
 
@@ -1834,18 +1831,18 @@ class SmsReporter(models.Model):
         profile = self.userprofile
         if profile.validation != profile.VALIDATED:
             extra_context = {
-                'gw_number'     : self.gw_number,
-                'validation'    : profile.validation,
-                'phone_number'  : profile.phone_number,
+                'gw_number': self.gw_number,
+                'validation': profile.validation,
+                'phone_number': profile.phone_number,
             }
             send_now([profile.user], 'phone_added', extra_context=extra_context, on_site=True)
 
     def phone_confirmation(self):
         profile = self.userprofile
         extra_context = {
-            'gw_number'     : self.gw_number,
-            'phone_number'  : profile.phone_number,
-            'domain'        : Site.objects.get_current().domain,
+            'gw_number': self.gw_number,
+            'phone_number': profile.phone_number,
+            'domain': Site.objects.get_current().domain,
         }
         send_now([profile.user], 'phone_confirmed', extra_context=extra_context, on_site=True)
 
@@ -1970,7 +1967,7 @@ class ProjectUpdate(models.Model):
 
 
 class ProjectComment(models.Model):
-    project = models.ForeignKey(Project, verbose_name=_(u'project'))
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='comments')
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     comment = models.TextField(_(u'comment'))
     time = models.DateTimeField(_(u'time'))
@@ -1995,6 +1992,7 @@ class PaymentGateway(models.Model):
     class Meta:
         abstract = True
 
+
 class PayPalGateway(PaymentGateway):
     PAYPAL_LOCALE_CHOICES = (
         ('US', u'US English'),
@@ -2005,11 +2003,13 @@ class PayPalGateway(PaymentGateway):
     class Meta:
         verbose_name = u'PayPal gateway'
 
+
 class MollieGateway(PaymentGateway):
     partner_id = models.CharField(max_length=10)
 
     class Meta:
         verbose_name = u'Mollie/iDEAL gateway'
+
 
 class PaymentGatewaySelector(models.Model):
     project = models.OneToOneField(Project)
@@ -2021,6 +2021,7 @@ class PaymentGatewaySelector(models.Model):
 
     class Meta:
         verbose_name = u'Project payment gateway configuration'
+
 
 class InvoiceManager(models.Manager):
     def get_query_set(self):
@@ -2047,6 +2048,7 @@ class InvoiceManager(models.Manager):
         qs = self.filter(status=3)
         return qs
 
+
 class Invoice(models.Model):
     STATUS_CHOICES = (
         (PAYPAL_INVOICE_STATUS_PENDING, 'Pending'),
@@ -2059,34 +2061,34 @@ class Invoice(models.Model):
         ('ideal', u'iDEAL'),
     )
     # Setup
-    test            = models.BooleanField(u'test donation', help_text=u'This flag is set if the donation was made in test mode.')
-    engine          = models.CharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
-    user            = models.ForeignKey(User, blank=True, null=True)
-    project         = models.ForeignKey(Project)
+    test = models.BooleanField(u'test donation', help_text=u'This flag is set if the donation was made in test mode.')
+    engine = models.CharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
+    user = models.ForeignKey(User, blank=True, null=True)
+    project = models.ForeignKey(Project, related_name='invoices')
     # Common
-    amount          = models.PositiveIntegerField(help_text=u'Amount requested by user.')
+    amount = models.PositiveIntegerField(help_text=u'Amount requested by user.')
     amount_received = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True,
         help_text=u'Amount actually received after charges have been applied.'
     )
-    time            = models.DateTimeField(auto_now_add=True)
-    name            = models.CharField(max_length=75, blank=True, null=True)
-    email           = models.EmailField(blank=True, null=True)
-    status          = models.PositiveSmallIntegerField('status', choices=STATUS_CHOICES, default=1)
-    http_referer    = models.CharField(u'HTTP referer', max_length=255, blank=True)
-    campaign_code   = models.CharField(u'Campaign code', blank=True, max_length=15)
-    is_anonymous    = models.BooleanField(u'anonymous donation')
+    time = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=75, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    status = models.PositiveSmallIntegerField('status', choices=STATUS_CHOICES, default=1)
+    http_referer = models.CharField(u'HTTP referer', max_length=255, blank=True)
+    campaign_code = models.CharField(u'Campaign code', blank=True, max_length=15)
+    is_anonymous = models.BooleanField(u'anonymous donation')
     # PayPal
-    ipn             = models.CharField(u'PayPal IPN', blank=True, null=True, max_length=75)
+    ipn = models.CharField(u'PayPal IPN', blank=True, null=True, max_length=75)
     # Mollie
-    bank            = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
-    transaction_id  = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
+    bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
+    transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
 
     def get_favicon(self):
-        pass #TODO: @ grab favicon from HTTP_REFERER site
+        pass  # TODO: @ grab favicon from HTTP_REFERER site
 
     @property
     def get_name(self):
@@ -2131,12 +2133,12 @@ class Invoice(models.Model):
 
     def __unicode__(self):
         return u'Invoice %(invoice_id)s (Project: %(project_name)s)' % {
-            'invoice_id': self.id, 'project_name':self.project
+            'invoice_id': self.id, 'project_name': self.project
         }
 
     class Meta:
         verbose_name = u'invoice'
-        ordering = ['-id',]
+        ordering = ['-id', ]
 
 
 # PayPal IPN listener
@@ -2247,7 +2249,6 @@ class PartnerSite(models.Model):
 
     @property
     def return_url(self):
-        domain_name = 'http://%s' % settings.DOMAIN_NAME
         return self.custom_return_url or self.organisation.url
 
     @property
@@ -2262,11 +2263,11 @@ class PartnerSite(models.Model):
         url = ''
         if self.cname:
             return self.cname
-    
+
         protocol = 'http'
         if getattr(settings, 'HTTPS_SUPPORT', True):
             protocol = '%ss' % protocol
-    
+
         url = '%s://%s.%s' % (protocol, self.hostname, settings.APP_DOMAIN_NAME)
         return url
 
@@ -2304,4 +2305,5 @@ post_delete.connect(update_project_budget, sender=BudgetItem)
 post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
 
+post_save.connect(create_api_key, sender=UserProfile)
 #m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)

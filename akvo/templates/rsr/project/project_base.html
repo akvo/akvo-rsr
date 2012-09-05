@@ -164,7 +164,7 @@
       <div class="clear"></div>
       <div class="white_box">
         <div class="space10">
-          {% for partnership in project.all_partnerships %}
+          {% for partnership in project.partnerships.all %}
             <div style="float:left; width:100px;">
               <a href="{{partnership.organisation.get_absolute_url}}">
                 {% org_logo partnership.organisation 90 60 'margin:0;' %}
