@@ -23,8 +23,12 @@ source "$CONFIG_DIR/load_config.sh" "rsr_env.config" $DEV_EXECUTION_MODE
 
 function ensure_virtualenvs_home_exists
 {
-    if [ ! -d "$VIRTUALENVS_HOME"]; then
-        mkdir -p "$VIRTUALENVS_HOME"
+    CURRENT_USER=`whoami`
+    USER_GROUP=`id -ng $CURRENT_USER`
+
+    if [ ! -d "$VIRTUALENVS_HOME" ]; then
+        sudo mkdir -p "$VIRTUALENVS_HOME"
+        sudo chown $CURRENT_USER:$USER_GROUP "$VIRTUALENVS_HOME"
     fi
 }
 
