@@ -21,8 +21,17 @@ DEV_EXECUTION_MODE='dev'
 
 source "$CONFIG_DIR/load_config.sh" "rsr_env.config" $DEV_EXECUTION_MODE
 
+function ensure_virtualenvs_home_exists
+{
+    if [ ! -d "$VIRTUALENVS_HOME"]; then
+        mkdir -p "$VIRTUALENVS_HOME"
+    fi
+}
+
 function ensure_rsr_virtualenv_exists
 {
+    ensure_virtualenvs_home_exists
+
     if [ ! -d "$RSR_VIRTUALENV_PATH" ]; then
         printf "\n>> Creating RSR virtualenv at $RSR_VIRTUALENV_PATH\n"
         virtualenv --distribute "$RSR_VIRTUALENV_PATH"
