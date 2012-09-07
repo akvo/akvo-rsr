@@ -89,49 +89,12 @@ OLD_CONTINENTS = (
 )
 
 
-def validate_iati_id(iati_id):
-    """Validates that the iati_id string follows the guide lines at
-    http://iatistandard.org/guides/organisation-data/organisation-identifiers
-
-    For example "SE-FKR-QWERTY" where:
-    "SE-FKR" is the namespace code given by IATI support
-    "-QWERTY" is the organisations own identifier
-
-    Validation is not very strict since information about the rules where
-    not easy to find.
-
-    >>> validate_iati_id("NL-AKV-123")
-    >>>
-
-    >>> validate_iati_id("NL-AKV-1234_ALLOWED_CHARACTERS_A-Z_0-9_DASH_UNDERSCORE")
-    >>>
-
-    >>> validate_iati_id("")
-    Traceback (most recent call last):
-        ...
-    ValidationError: [u' is not a valid IATI identifier']
-
-    >>> validate_iati_id("nl-fkr-non-caps")
-    Traceback (most recent call last):
-        ...
-    ValidationError: [u'nl-fkr-non-caps is not a valid IATI identifier']
-
-    >>> validate_iati_id("SE-FKR-???")
-    Traceback (most recent call last):
-        ...
-    ValidationError: [u'SE-FKR-??? is not a valid IATI identifier']
-    """
-    pattern = r'(^[A-Z]{2}\-[A-Z]{3}\-[A-Z0-9_\-]{2,}$)'
-    if not re.match(pattern, iati_id):
-        raise ValidationError(u'%s is not a valid IATI identifier' % iati_id)
-
-
 class Country(models.Model):
 
     name = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
     iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES,)
     continent = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
-    continent_code = models.CharField(_(u'continent code'), max_length=2, db_index=True , choices=CONTINENTS,)
+    continent_code = models.CharField(_(u'continent code'), max_length=2, db_index=True, choices=CONTINENTS)
 
 #    name = models.CharField(_(u'country name'), max_length=50,)
 #    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
@@ -238,11 +201,7 @@ class Partnership(models.Model):
         _(u'funding amount'), max_digits=10, decimal_places=2,
         blank=True, null=True, db_index=True
     )
-    iati_activity_id = models.CharField(
-        _(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,
-        help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
-        validators=[validate_iati_id]
-    )
+    iati_activity_id = models.CharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
     internal_id = models.CharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
@@ -289,11 +248,8 @@ class Organisation(models.Model):
     name = models.CharField(_(u'name'), max_length=25, db_index=True, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
     long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
-    iati_org_id = models.CharField(
-        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True,
-        help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
-        validators=[validate_iati_id]
-    )
+    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True)
+
     logo = ImageWithThumbnailsField(
         _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
