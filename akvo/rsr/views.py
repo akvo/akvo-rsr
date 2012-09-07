@@ -3,6 +3,8 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+from itertools import groupby
+from django.db.models.aggregates import Count
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
@@ -186,7 +188,6 @@ def index(request, cms_id=None):
     news_title = ''
 
     projects = Project.objects.published()
-    projects_budget = projects.budget()['budget'] or 0
     orgs = Organisation.objects.all()
 
     people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
@@ -216,7 +217,7 @@ def index(request, cms_id=None):
         'orgs': orgs,
         'projects': projects,
         'people_served': people_served,
-        'projects_budget': round(projects_budget / 100000) / 10.0,
+        'projects_budget': round(projects.budget_sum() / 100000) / 10.0,
         'updates': updates,
     })
     return context_dict
@@ -1348,12 +1349,42 @@ def global_map(request):
     marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
     return {'projects': projects, 'marker_icon': marker_icon}
 
+def get_update_month_and_year(update):
+    return (update.time.date().month, update.time.date().year)
+
+def get_country(project):
+    return project.primary_location.country.name
 
 @render_to('rsr/akvo_at_a_glance.html')
 def data_overview(request):
-    projects = Project.objects.published()
+    MONTHS = [
+        u'Jan',
+        u'Feb',
+        u'Mar',
+        u'Apr',
+        u'May',
+        u'Jun',
+        u'Jul',
+        u'Aug',
+        u'Sep',
+        u'Oct',
+        u'Nov',
+        u'Dec',
+    ]
+    projects = Project.objects.published().order_by('primary_location__country')
     orgs = Organisation.objects.all()
-    return dict(projects=projects, orgs=orgs)
+
+    projects_by_country = [['Country', 'No. of Projects']]
+    country_projects = groupby(projects.filter(primary_location__isnull=False), get_country)
+    projects_by_country.extend([[country_project[0], len(list(country_project[1]))] for country_project in country_projects])
+    country_lookup = dict([ (country.name, country.pk) for country in Country.objects.all()])
+
+    updates = ProjectUpdate.objects.all().order_by('time')
+    groupdates = groupby(updates, get_update_month_and_year)
+    updates_by_month = [['Month', 'Updates']]
+    updates_by_month.extend([['%s %s' % (MONTHS[groupdate[0][0]-1], str(groupdate[0][1])), len(list(groupdate[1]))] for groupdate in groupdates])
+
+    return dict(projects=projects, orgs=orgs, updates_by_month=json.dumps(updates_by_month), projects_by_country=json.dumps(projects_by_country), country_lookup=json.dumps(country_lookup))
 
 
 @cache_page(60 * 15)
