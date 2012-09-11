@@ -24,8 +24,21 @@ source "$CONFIG_DIR/load_config.sh" "python_system.config" $CI_EXECUTION_MODE
 VIRTUALENV_NAME="ci_develop"
 CI_VIRTUALENV_PATH="$VIRTUALENVS_HOME/$VIRTUALENV_NAME"
 
+function ensure_virtualenvs_home_exists
+{
+    CURRENT_USER=`whoami`
+    USER_GROUP=`id -ng $CURRENT_USER`
+
+    if [ ! -d "$VIRTUALENVS_HOME" ]; then
+        sudo mkdir -p "$VIRTUALENVS_HOME"
+        sudo chown $CURRENT_USER:$USER_GROUP "$VIRTUALENVS_HOME"
+    fi
+}
+
 function ensure_ci_virtualenv_exists
 {
+    ensure_virtualenvs_home_exists
+
     if [ ! -d "$CI_VIRTUALENV_PATH" ]; then
         printf "\n>> Creating CI virtualenv at $CI_VIRTUALENV_PATH\n"
         virtualenv --distribute "$CI_VIRTUALENV_PATH"
