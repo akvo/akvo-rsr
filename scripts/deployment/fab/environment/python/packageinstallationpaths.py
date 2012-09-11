@@ -10,7 +10,7 @@ import os
 
 class SystemPackageInstallationPaths(object):
 
-    PIP_VERSION = "1.1"
+    PIP_VERSION = "1.2.1"
 
     def __init__(self, deployment_host_paths):
         self.package_download_dir   = os.path.join(deployment_host_paths.deployment_processing_home, 'python_packages')

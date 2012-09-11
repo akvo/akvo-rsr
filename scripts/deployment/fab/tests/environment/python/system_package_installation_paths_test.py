@@ -25,7 +25,7 @@ class SystemPackageInstallationPathsTest(unittest2.TestCase):
     def test_has_explicit_pip_version(self):
         """fab.tests.environment.python.system_package_installation_paths_test  Has explicit pip version"""
 
-        self.assertEqual("1.1", SystemPackageInstallationPaths.PIP_VERSION)
+        self.assertEqual("1.2.1", SystemPackageInstallationPaths.PIP_VERSION)
 
     def test_has_package_download_dir(self):
         """fab.tests.environment.python.system_package_installation_paths_test  Has package download directory"""
