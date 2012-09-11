@@ -7,87 +7,169 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    # some indices may be already be created, use try:except to avoid explosions
     def forwards(self, orm):
-        # Adding index on 'Organisation', fields ['organisation_type']
-        db.create_index('rsr_organisation', ['organisation_type'])
+        try:
+            # Adding index on 'Organisation', fields ['organisation_type']
+            db.create_index('rsr_organisation', ['organisation_type'])
+        except:
+            pass
 
-        # Adding index on 'Organisation', fields ['name']
-        db.create_index('rsr_organisation', ['name'])
+        try:
+            # Adding index on 'Organisation', fields ['name']
+            db.create_index('rsr_organisation', ['name'])
+        except:
+            pass
 
-        # Adding index on 'Organisation', fields ['iati_org_id']
-        db.create_index('rsr_organisation', ['iati_org_id'])
+        try:
+            # Adding index on 'Organisation', fields ['iati_org_id']
+            db.create_index('rsr_organisation', ['iati_org_id'])
+        except:
+            pass
 
-        # Adding index on 'Category', fields ['name']
-        db.create_index('rsr_category', ['name'])
+        try:
+            # Adding index on 'Category', fields ['name']
+            db.create_index('rsr_category', ['name'])
+        except:
+            pass
 
-        # Adding index on 'Project', fields ['status']
-        db.create_index('rsr_project', ['status'])
+        try:
+            # Adding index on 'Project', fields ['status']
+            db.create_index('rsr_project', ['status'])
+        except:
+            pass
 
-        # Adding index on 'Project', fields ['title']
-        db.create_index('rsr_project', ['title'])
+        try:
+            # Adding index on 'Project', fields ['title']
+            db.create_index('rsr_project', ['title'])
+        except:
+            pass
 
-        # Adding index on 'Project', fields ['funds']
-        db.create_index('rsr_project', ['funds'])
+        try:
+            # Adding index on 'Project', fields ['funds']
+            db.create_index('rsr_project', ['funds'])
+        except:
+            pass
 
-        # Adding index on 'Project', fields ['funds_needed']
-        db.create_index('rsr_project', ['funds_needed'])
+        try:
+            # Adding index on 'Project', fields ['funds_needed']
+            db.create_index('rsr_project', ['funds_needed'])
+        except:
+            pass
 
-        # Adding index on 'Project', fields ['budget']
-        db.create_index('rsr_project', ['budget'])
+        try:
+            # Adding index on 'Project', fields ['budget']
+            db.create_index('rsr_project', ['budget'])
+        except:
+            pass
 
-        # Adding index on 'Partnership', fields ['iati_activity_id']
-        db.create_index('rsr_partnership', ['iati_activity_id'])
+        try:
+            # Adding index on 'Partnership', fields ['iati_activity_id']
+            db.create_index('rsr_partnership', ['iati_activity_id'])
+        except:
+            pass
 
-        # Adding index on 'Partnership', fields ['internal_id']
-        db.create_index('rsr_partnership', ['internal_id'])
+        try:
+            # Adding index on 'Partnership', fields ['internal_id']
+            db.create_index('rsr_partnership', ['internal_id'])
+        except:
+            pass
 
-        # Adding index on 'Partnership', fields ['partner_type']
-        db.create_index('rsr_partnership', ['partner_type'])
+        try:
+            # Adding index on 'Partnership', fields ['partner_type']
+            db.create_index('rsr_partnership', ['partner_type'])
+        except:
+            pass
 
-        # Adding index on 'Partnership', fields ['funding_amount']
-        db.create_index('rsr_partnership', ['funding_amount'])
+        try:
+            # Adding index on 'Partnership', fields ['funding_amount']
+            db.create_index('rsr_partnership', ['funding_amount'])
+        except:
+            pass
 
-        # Adding index on 'BudgetItemLabel', fields ['label']
-        db.create_index('rsr_budgetitemlabel', ['label'])
+        try:
+            # Adding index on 'BudgetItemLabel', fields ['label']
+            db.create_index('rsr_budgetitemlabel', ['label'])
+        except:
+            pass
 
-        # Adding index on 'ProjectLocation', fields ['primary']
-        db.create_index('rsr_projectlocation', ['primary'])
+        try:
+            # Adding index on 'ProjectLocation', fields ['primary']
+            db.create_index('rsr_projectlocation', ['primary'])
+        except:
+            pass
 
-        # Adding index on 'ProjectLocation', fields ['longitude']
-        db.create_index('rsr_projectlocation', ['longitude'])
+        try:
+            # Adding index on 'ProjectLocation', fields ['longitude']
+            db.create_index('rsr_projectlocation', ['longitude'])
+        except:
+            pass
 
-        # Adding index on 'ProjectLocation', fields ['latitude']
-        db.create_index('rsr_projectlocation', ['latitude'])
+        try:
+            # Adding index on 'ProjectLocation', fields ['latitude']
+            db.create_index('rsr_projectlocation', ['latitude'])
+        except:
+            pass
 
-        # Adding index on 'Country', fields ['iso_code']
-        db.create_index('rsr_country', ['iso_code'])
+        try:
+            # Adding index on 'Country', fields ['iso_code']
+            db.create_index('rsr_country', ['iso_code'])
+        except:
+            pass
 
-        # Adding index on 'Country', fields ['continent_code']
-        db.create_index('rsr_country', ['continent_code'])
+        try:
+            # Adding index on 'Country', fields ['continent_code']
+            db.create_index('rsr_country', ['continent_code'])
+        except:
+            pass
 
-        # Adding index on 'OrganisationLocation', fields ['primary']
-        db.create_index('rsr_organisationlocation', ['primary'])
+        try:
+            # Adding index on 'OrganisationLocation', fields ['primary']
+            db.create_index('rsr_organisationlocation', ['primary'])
+        except:
+            pass
 
-        # Adding index on 'OrganisationLocation', fields ['longitude']
-        db.create_index('rsr_organisationlocation', ['longitude'])
+        try:
+            # Adding index on 'OrganisationLocation', fields ['longitude']
+            db.create_index('rsr_organisationlocation', ['longitude'])
+        except:
+            pass
 
-        # Adding index on 'OrganisationLocation', fields ['latitude']
-        db.create_index('rsr_organisationlocation', ['latitude'])
+        try:
+            # Adding index on 'OrganisationLocation', fields ['latitude']
+            db.create_index('rsr_organisationlocation', ['latitude'])
+        except:
+            pass
 
-        # Adding index on 'ProjectUpdate', fields ['update_method']
-        db.create_index('rsr_projectupdate', ['update_method'])
+        try:
+            # Adding index on 'ProjectUpdate', fields ['update_method']
+            db.create_index('rsr_projectupdate', ['update_method'])
+        except:
+            pass
 
-        # Adding index on 'ProjectUpdate', fields ['title']
-        db.create_index('rsr_projectupdate', ['title'])
+        try:
+            # Adding index on 'ProjectUpdate', fields ['title']
+            db.create_index('rsr_projectupdate', ['title'])
+        except:
+            pass
 
-        # Adding index on 'ProjectUpdate', fields ['time']
-        db.create_index('rsr_projectupdate', ['time'])
+        try:
+            # Adding index on 'ProjectUpdate', fields ['time']
+            db.create_index('rsr_projectupdate', ['time'])
+        except:
+            pass
 
-        # Adding index on 'ProjectUpdate', fields ['time_last_updated']
-        db.create_index('rsr_projectupdate', ['time_last_updated'])
+        try:
+            # Adding index on 'ProjectUpdate', fields ['time_last_updated']
+            db.create_index('rsr_projectupdate', ['time_last_updated'])
+        except:
+            pass
 
-        # Adding index on 'ProjectComment', fields ['time']
-        db.create_index('rsr_projectcomment', ['time'])
+        try:
+            # Adding index on 'ProjectComment', fields ['time']
+            db.create_index('rsr_projectcomment', ['time'])
+        except:
+            pass
 
 
     def backwards(self, orm):
