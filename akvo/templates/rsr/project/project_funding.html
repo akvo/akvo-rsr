@@ -105,6 +105,10 @@
             <div style="float:left; width:100px; margin-left:20px;">
               <p class="small">
                 {% trans 'Grant' %}: {{project.get_currency_display|safe}} {{funding_info.funding_amount|round|intcomma}}
+                {% if funding_info.iati_activity_id %}
+                  <br /><span class="grey">{% trans "IATI activity ID" %}:
+                  <br/>{{funding_info.iati_activity_id}}</span>
+                {% endif %}
               </p>
             </div>
             <div class="clear"></div>
