@@ -17,6 +17,8 @@ akvo/testing.py
 scripts/dev-vm/
 
 dev-env
+.vagrant
+venv
 scripts/dev-vm
 
 ## Deployment
