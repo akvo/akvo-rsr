@@ -113,6 +113,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     )
     inlines = (OrganisationLocationInline,)
     list_display = ('name', 'long_name', 'website', )
+    search_fields = ('name', 'long_name', 'website',)
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
