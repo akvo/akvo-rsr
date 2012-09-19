@@ -5,6 +5,14 @@
 
 {% block title %}{{project}} - {% endblock title %}
 
+{% block draft %}
+  {% if draft %}
+    <div style="background-color:#E04F46; color:#fff; padding:10px; text-align:center;">
+      {% trans "This is project is a draft and can only be seen by projects members" %}
+    </div>
+  {% endif %}
+{% endblock draft %}
+
 {% block breadcrum_right %}
   {{block.super}}
   | <a href="#">{% trans "Project updates" %}</a>
@@ -57,7 +65,7 @@
             </div>
           </div>
           {% block project_aside_funding_link %}
-          <a href="{% url 'project_funding' project.id %}" class="tiny" style="color:yellow">
+          <a id="project_funding_details_link" href="{% url 'project_funding' project.id %}" class="tiny" style="color:yellow">
             {% trans "See funding and milestone details" %} &#x25BA;
           </a>
           {% endblock project_aside_funding_link %}
@@ -147,19 +155,25 @@
       {% block project_aside_partners %}
         <h2 class="marg_top40"><a href="{% url 'partner_list' %}">{% trans "Project partners" %}</a></h2>
         <div class="whitebox pad_top20 pad5">
-          {% for partner in project.all_partners %}
+          {% for partnership in project.partnerships.all  %}
             <div style="float:left; width:100px;">
-              <a href="{{partner.get_absolute_url}}">
-                {% org_logo partner 90 60 'margin:0;' %}
+              <a href="{{partnership.organisation.get_absolute_url}}">
+                {% org_logo partnership.organisation 90 60 'margin:0;' %}
               </a>
             </div>
             <div style="float:left; width:165px;">
               <p class="small grey" style="margin:0;">
-                <a href="{{partner.get_absolute_url}}">{{partner.name}}</a><br />
-                {% if partner.primary_location.city %}
-                  {{partner.primary_location.city}},
+                <a href="{{partnership.organisation.get_absolute_url}}">{{partnership.organisation.name}}</a><br />
+                {% if partnership.organisation.primary_location.city %}
+                  {{partnership.organisation.primary_location.city}},
                 {% endif %}
-                {{partner.primary_location.country}}
+                {{partnership.organisation.primary_location.country}}
+                {% if partnership.iati_activity_id %}
+                  <br /><span class="small grey">
+                  {% trans "IATI activity ID" %}:
+                  <br/>{{partnership.iati_activity_id}}
+                  </span>
+                {% endif %}
               </p>
             </div>
             <div class="clear"></div>

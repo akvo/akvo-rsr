@@ -8,10 +8,11 @@ from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
-from django.conf.urls.i18n import i18n_patterns
+# from django.conf.urls.i18n import i18n_patterns
 
 from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
 from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
+from akvo.api.urls import named_api
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
 
@@ -22,22 +23,6 @@ admin.autodiscover()
 # The next two lines enable djangoembed in the admin
 import oembed
 oembed.autodiscover()
-
-# tastypie (api)
-from tastypie.api import Api
-from akvo.api.resources import (
-    ProjectResource, CategoryResource, LinkResource, OrganisationResource, PartnershipResource,
-    ProjectLocationResource, CountryResource, OrganisationLocationResource,
-)
-v1_api = Api(api_name='v1')
-v1_api.register(CategoryResource())
-v1_api.register(CountryResource())
-v1_api.register(LinkResource())
-v1_api.register(ProjectResource())
-v1_api.register(OrganisationResource())
-v1_api.register(PartnershipResource())
-v1_api.register(ProjectLocationResource())
-v1_api.register(OrganisationLocationResource())
 
 # Multi-lingual urls
 # urlpatterns = i18n_patterns('',
@@ -132,7 +117,7 @@ urlpatterns = patterns('',
     url(r'^rsr/maps/projects/all/json/$',
         'akvo.rsr.views.global_project_map_json',
         name='global_project_map_json'),
-   
+
     url(r'^rsr/maps/organisation/(?P<org_id>\d+)/projects/json/$',
         'akvo.rsr.views.global_organisation_projects_map_json',
         name='global_organisation_projects_map_json'),
@@ -258,7 +243,8 @@ urlpatterns += patterns('',
     (r'^rsr/api/', include('akvo.api.piston_urls')),
 
     #tastypie
-    (r'^api/', include(v1_api.urls)),
+    # generate all resource urls for version one of the api, e.g. /api/v1/project/
+    (r'^api/', include(named_api('v1').urls)),
 )
 
 # Widgets
@@ -290,7 +276,7 @@ urlpatterns += patterns('',
         name='project_map_widget_for_org',),
 )
 
-
+handler403 = 'akvo.rsr.views.forbidden'
 handler500 = 'akvo.rsr.views.server_error'
 if settings.DEBUG:
     urlpatterns += patterns('',

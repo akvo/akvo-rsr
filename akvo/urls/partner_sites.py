@@ -16,8 +16,9 @@ from django_counter.urls import urlpatterns as counter_urls
 from akvo.rsr import views_partner_sites as views
 from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates
 
-handler403 = views.FourOThreeView.as_view()
-handler404 = views.FourOFourView.as_view()
+
+handler403 = views.ForbiddenView.as_view()
+handler404 = views.NotFoundView.as_view()
 
 urlpatterns = i18n_patterns('',
 

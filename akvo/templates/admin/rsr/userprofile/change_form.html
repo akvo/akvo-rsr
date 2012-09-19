@@ -1,0 +1,38 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_related_objects %}
+  {% if original.user.api_key %}
+    <fieldset class="module">
+      <h2>API authentication key</h2>
+      <table width="100%">
+        <thead>
+
+          <tr>
+            <th>Key</th>
+            <th>Created</th>
+            <th>Usage</th>
+          </tr>
+
+        </thead>
+        <tbody>
+
+          <tr class="form-row  "id="reporters-0">
+
+            <td class="field-gw_number">
+              {{ original.user.api_key.key }}
+            </td>
+
+            <td class="field-project">
+              {{ original.user.api_key.created }}
+            </td>
+            <td class="field-project">
+              ?api_key={{ original.user.api_key.key }}&username={{ original.user }}
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </fieldset>
+  {% endif %}
+
+{% endblock %}

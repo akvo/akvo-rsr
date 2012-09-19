@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: https://akvo.lighthouseapp.com/projects/46515-akvo-rsr/tickets\n"
 "POT-Creation-Date: 2012-05-22 07:25-0700\n"
-"PO-Revision-Date: 2012-05-29 21:44+0000\n"
-"Last-Translator: Anke van Lenteren <anke@vanlenteren.com>\n"
-"Language-Team: French (http://www.transifex.net/projects/p/akvo-rsr/language/fr/)\n"
+"PO-Revision-Date: 2012-07-09 11:44+0000\n"
+"Last-Translator: IzziOli <isabelle.olivetti@virgin.net>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/akvo-rsr/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: gateway/utils.py:219 rsr/utils.py:219
 msgid "Thank you from Akvo.org!"
@@ -1672,7 +1672,7 @@ msgstr "Financement requis"
 #: templates/rsr/akvo_at_a_glance.html:44
 #: templates/rsr/organisation/organisation.html:126
 msgid "Active"
-msgstr "Actif"
+msgstr "Actif(s)"
 
 #: rsr/models.py:461 templates/partner_sites/partners/partner_main.html:102
 #: templates/rsr/akvo_at_a_glance.html:60
@@ -1684,7 +1684,7 @@ msgstr "Terminé"
 #: templates/rsr/akvo_at_a_glance.html:68
 #: templates/rsr/organisation/organisation.html:150
 msgid "Cancelled"
-msgstr "Annulé"
+msgstr "Annulé(s)"
 
 #: rsr/models.py:463
 msgid "Archived"
@@ -2323,7 +2323,7 @@ msgstr "Lorsque le groupe Présenté contient moins de 3 mises à jour, les 3 de
 #: templates/widgets/project_map.html:33
 #: templates/widgets/project_small.html:49
 msgid "views"
-msgstr "affichages"
+msgstr "vues"
 
 #. Translators: This sum is for the project funds box
 #: templates/inclusion_tags/funding_box.html:13
@@ -2363,7 +2363,7 @@ msgstr "Entièrement financé"
 #: templates/rsr/akvo_at_a_glance.html:147
 #: templates/rsr/akvo_at_a_glance.html:159
 msgid "Raised"
-msgstr "Montant réuni"
+msgstr "Somme réunie"
 
 #: templates/inclusion_tags/funding_box.html:30
 #: templates/inclusion_tags/funding_box_narrow.html:27
@@ -2377,7 +2377,7 @@ msgstr "Montant réuni"
 #: templates/rsr/organisation/organisation.html:226
 #: templates/rsr/organisation/organisation.html:253
 msgid "Still needed"
-msgstr "Somme restant à réunir"
+msgstr "Somme restant à trouver"
 
 #: templates/inclusion_tags/funding_box.html:44
 #: templates/inclusion_tags/funding_box_narrow.html:38
@@ -2426,7 +2426,7 @@ msgstr "Sponsor"
 #: templates/inclusion_tags/funding_table.html:11
 #, python-format
 msgid "Raised:&nbsp;%(currency)s&nbsp;%(funds)s"
-msgstr "Montant réuni :&nbsp;%(currency)s&nbsp;%(funds)s"
+msgstr "Somme réunie :&nbsp;%(currency)s&nbsp;%(funds)s"
 
 #: templates/inclusion_tags/funding_box_narrow2.html:23
 #: templates/inclusion_tags/project_budget.html:7
@@ -2460,7 +2460,7 @@ msgstr "Nécessaire"
 #: templates/widgets/project_small.html:62
 #: templates/widgets/project_updates.html:76
 msgid "Location"
-msgstr "Emplacement géographique"
+msgstr "Localisation"
 
 #: templates/inclusion_tags/outcomes.html:7
 msgid "functioning water systems"
@@ -2680,7 +2680,7 @@ msgstr "Retour à"
 
 #: templates/partner_sites/base.html:77
 msgid "Contact at "
-msgstr "Contact chez"
+msgstr "Nous contacter à"
 
 #: templates/partner_sites/base.html:83
 #: templates/partner_sites/auth/sign-in.html:47 templates/rsr/base.html:93
@@ -2720,7 +2720,7 @@ msgstr "Projets"
 
 #: templates/partner_sites/home.html:39
 msgid "Find projects"
-msgstr "Trouver des projets"
+msgstr "Rechercher des projets"
 
 #: templates/partner_sites/home.html:50
 #: templates/rsr/project/project_directory.html:100
@@ -2812,7 +2812,7 @@ msgstr "J'ai oublié mon nom d'utilisateur et/ou mon mot de passe"
 
 #: templates/partner_sites/inclusion_tags/partner_sites_funding_box.html:28
 msgid "Requested"
-msgstr "Requis"
+msgstr "Somme demandée"
 
 #: templates/partner_sites/partners/partner_list.html:12
 #: templates/partner_sites/partners/partner_list.html:21
@@ -2901,19 +2901,19 @@ msgstr "Nombre total de projets"
 
 #: templates/partner_sites/partners/partner_main.html:115
 msgid "People who get"
-msgstr "Personnes qui bénéficient de"
+msgstr "Nombre de bénéficiaires"
 
 #: templates/partner_sites/partners/partner_main.html:120
 #: templates/rsr/akvo_at_a_glance.html:91
 #: templates/rsr/organisation/organisation.html:177
 msgid "Upcoming"
-msgstr "Prochainement"
+msgstr "En cours"
 
 #: templates/partner_sites/partners/partner_main.html:121
 #: templates/rsr/akvo_at_a_glance.html:92
 #: templates/rsr/organisation/organisation.html:180
 msgid "Delivered"
-msgstr "Réalisé"
+msgstr "Teminé"
 
 #: templates/partner_sites/partners/partner_main.html:124
 #: templates/rsr/akvo_at_a_glance.html:95
@@ -2975,11 +2975,11 @@ msgstr "Planning"
 
 #: templates/partner_sites/project/base_project.html:46
 msgid "Begun"
-msgstr "Commencé"
+msgstr "Commencé le"
 
 #: templates/partner_sites/project/base_project.html:50
 msgid "Completed"
-msgstr "Terminé"
+msgstr "Achevé le"
 
 #: templates/partner_sites/project/base_project.html:61
 msgid "See funding and milestone details"
@@ -3080,7 +3080,7 @@ msgstr "Détails du financement"
 #: templates/partner_sites/project/project_funding.html:20
 #: templates/rsr/project/project_funding.html:19
 msgid "Request posted"
-msgstr "Demande publiée"
+msgstr "Demande publiée le"
 
 #: templates/partner_sites/project/project_funding.html:40
 #: templates/partner_sites/project/project_funding.html:45
@@ -3106,7 +3106,7 @@ msgstr "Anonyme"
 
 #: templates/partner_sites/project/project_funding.html:91
 msgid "Raised equals donations minus transaction fees."
-msgstr "Le montant réuni correspond au total des dons effectués moins les frais de transaction."
+msgstr "La somme réunie correspond au total des dons effectués moins les frais de transaction."
 
 #: templates/partner_sites/project/project_funding.html:98
 #: templates/rsr/project/project_funding.html:89
@@ -3126,12 +3126,12 @@ msgstr "Résumé"
 #: templates/partner_sites/project/project_main.html:35
 #: templates/rsr/project/project_main.html:44
 msgid "Who will benefit?"
-msgstr "Qui en bénéficiera ?"
+msgstr "Bénéficiaires"
 
 #: templates/partner_sites/project/project_main.html:55
 #: templates/rsr/project/project_main.html:67
 msgid "Project in depth"
-msgstr "Projet en profondeur"
+msgstr "Analyse approfondie"
 
 #: templates/partner_sites/project/project_main.html:60
 #: templates/rsr/project/project_main.html:87
@@ -3351,7 +3351,7 @@ msgstr "Ce widget affichera les projets des organisations suivantes"
 #: templates/partner_sites/widgets/get_widget2.html:29
 #: templates/rsr/project/get-a-widget/machinery_step2.html:80
 msgid "Step 2: Select colours for your widget and preview"
-msgstr "Étape 2 : Sélectionner les couleurs du widget et afficher un aperçu"
+msgstr "Étape 2 : Sélectionnez les couleurs du widget et afficher un aperçu"
 
 #: templates/partner_sites/widgets/get_widget2.html:31
 msgid "A: Bottom coloured bar"
@@ -3500,11 +3500,11 @@ msgstr "B : Définissez la hauteur du widget"
 
 #: templates/partner_sites/widgets/get_widget2.html:89
 msgid "C: Set width of the widget"
-msgstr "A : Régler la largeur du widget"
+msgstr "A : Définissez la largeur du widget"
 
 #: templates/partner_sites/widgets/get_widget2.html:94
 msgid "D: Set map state"
-msgstr "D : Définir l'état de la carte"
+msgstr "D : Définissez l'état de la carte"
 
 #: templates/partner_sites/widgets/get_widget2.html:105
 #: templates/registration/password_change_form.html:72
@@ -3540,7 +3540,7 @@ msgstr "Aperçu"
 
 #: templates/partner_sites/widgets/get_widget2.html:114
 msgid "E: Review your widget"
-msgstr "E : Vérifier le widget"
+msgstr "E : Vérifiez le widget"
 
 #: templates/partner_sites/widgets/get_widget2.html:118
 #: templates/rsr/project/get-a-widget/machinery_step2.html:235
@@ -3959,7 +3959,7 @@ msgstr "Projets présentés dans Akvo"
 #: templates/rsr/akvo_at_a_glance.html:86
 #: templates/rsr/organisation/organisation.html:168
 msgid "People who get..."
-msgstr "Personnes qui bénéficient de..."
+msgstr "Bénéficiaires..."
 
 #: templates/rsr/akvo_at_a_glance.html:109
 #: templates/rsr/akvo_at_a_glance.html:112

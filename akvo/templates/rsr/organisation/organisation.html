@@ -51,13 +51,13 @@
           </p>
           <h3>{% trans 'Type' %}</h3>
           <p class="small">{{organisation.get_organisation_type_display}}</p>
-          {% if organisation.url %}
-            <h3>{% trans 'Website' %}</h3>
-            <p class="small"><a href="{{organisation.url}}">{{organisation.url|truncatechars:30}}</a></p>
-          {% endif %}
           {% if organisation.akvopedia_entry %}
             <h3>{% trans 'Akvopedia entry' %}</h3>
             <p class="small">{{organisation.akvopedia_entry}}</p>
+          {% endif %}
+          {% if organisation.iati_org_id %}
+            <h3>{% trans 'IATI organisation ID' %}</h3>
+            <p class="small">{{organisation.iati_org_id|truncatechars:30}}</p>
           {% endif %}
         </div>
         <div style="float:left; width:196px; border-left:1px solid #ccc; padding-left:15px; height:280px">
@@ -70,7 +70,6 @@
             {% if organisation.primary_location.state %}{{organisation.primary_location.state}}<br />{% endif %}
             {% if organisation.primary_location.country %}{{organisation.primary_location.country}}{% endif %}
           </p>
-
           {% if organisation.primary_location %}
             {% google_map organisation 180 135 6 %}
           {% else %}
@@ -99,6 +98,10 @@
               <br />
             {% endif %}
           </p>
+          {% if organisation.url %}
+            <h3>{% trans 'Website' %}</h3>
+            <p class="small"><a href="{{organisation.url}}">{{organisation.url|truncatechars:30}}</a></p>
+          {% endif %}
         </div>
         <div class="clear"></div>
         <br /><br />
