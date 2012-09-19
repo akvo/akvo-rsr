@@ -7,6 +7,75 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR ver 2.1.1 release notes
+---
+17 September 2012, (Code name: Jujube) ac
+
+Overview
+----
+We have release several items in this version focusing around permissions and IATI identification. Along with a few bug fixes for good measure.
+
+New features & changes
+----
+
+###Extension of the Akvo API
+We have improved the functionality of the Akvo API to improve usability all-round. This feature now enables users to authenticate their access using an API key linked to an Akvo RSR User account. This allows a little more access in terms of information as now user details can also be passed through a correctly authenticated access request.
+We've also included a "depth" option to the querying. This enables the requester to choose how much information is pulled alongside the item they are looking at - for example linking to a project, you will also want to pull information from tables linked to the project table. The depth option provides this opportunity.
+
+Further information on the API is available in the [Github Akvo RSR Wiki](https://github.com/akvo/akvo-rsr/wiki/Akvo-RSR-API)
+
+Github issue: [72](https://github.com/akvo/akvo-rsr/issues/72) & [75](https://github.com/akvo/akvo-rsr/issues/75)
+
+###IATI Identifiers
+This feature is to implement the ability to add an IATI activity identifier to Projects and IATI identifiers for Organisations.
+
+This is the first step in an end-to-end transparency initiative to enable navigation from the original funding source present on the OpenAid website at http://openaid.nl through to the RSR Organisations and Projects where this money is being spent.
+
+Github issue: [69](https://github.com/akvo/akvo-rsr/issues/69) & [74](https://github.com/akvo/akvo-rsr/issues/74)
+
+### Partner Identifier
+Partners are now able to add an Identifier to projects via the Akvo RSR Admin. This field can be used by Partner Administrators to track the identity of their own projects. This can be anything the Partner wishes, but the main purpose we expect is to use the Id that is being used for the project in their internal systems.
+
+This Id is usable in the API, allowing partners to query their data in RSR using the Ids in their own systems.
+
+Github issue: [86](https://github.com/akvo/akvo-rsr/issues/86)
+
+###Public viewing of Unpublished projects
+This developed feature is in multiple parts.
+
+A change has been made to make unpublished projects in RSR only visible to those who are logged in to RSR AND are connected to the project. This moves the functionality in line with what most people expect - unpublished means that it is not public.
+
+If you are not logged into RSR at all, then when you view an unpublished project [such as project 609](http://akvo.org/rsr/project/609/) then you are presented with a [404 Error - page does not exist](https://raw.github.com/akvo/akvo-rsr-docs/master/image/404_not_found_unpublished.png).
+
+If you are logged into RSR, but are not connected to the project then you are presented with a [403 Error - forbidden access](https://raw.github.com/akvo/akvo-rsr-docs/master/image/403_no_access_to_unpublished.png).
+
+If you are logged in and connected to an unpublished project, then you are able to access the page, but this displays clearly that [the project is not live](https://raw.github.com/akvo/akvo-rsr-docs/master/image/access_to_unpublished.png).
+
+Github issue: [39](https://github.com/akvo/akvo-rsr/issues/39)
+
+Bug fixes
+----
+
+###Add Update Page Layout Issue
+There was a slight mis-alignment of the foem fields on the Add an Update page. This has now been corrected.
+
+Github issue: [83](https://github.com/akvo/akvo-rsr/issues/83)
+
+###Incorrect Errors in Update process
+We noticed that on certain actions when trying to add Updates to projects, the wrong error message was being displayed. We have corrected this so that if the issue is related to permissions then this is displayed.
+
+Github issue: [39](https://github.com/akvo/akvo-rsr/issues/39)
+
+###Akvo Stats Page
+There was an error in the Overview page following an update to the database fields. This has been rectified, so we now see all the data on [this page](http://www.akvo.org/rsr/data/overview/) again!
+
+Github issue: [68](https://github.com/akvo/akvo-rsr/issues/68)
+
+###Global Map Info Window Scrollbar
+When pictures in portrait format were displayed in the info windows for the global project or organisation map, then a scrollbar was appearing on the right hand side of the window. This was not necessary as the window resized to accommodate the image - so we've removed it.
+
+Github issue: [66](https://github.com/akvo/akvo-rsr/issues/66)
+
 Akvo RSR ver 2.1.0 release notes
 ----
 2 August 2012, (Code name: Iyokan) ac
