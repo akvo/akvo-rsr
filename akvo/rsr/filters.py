@@ -74,7 +74,7 @@ class ProjectFilterSet(django_filters.FilterSet):
             return qs.filter(**{'total_budget__range': (int(what.start) if what.start else 0, int(what.stop) if what.stop else sys.maxint)})
         return qs
 
-    title            = django_filters.CharFilter(action=filter_by_project_title)
+    title           = django_filters.CharFilter(action=filter_by_project_title)
     andor           = django_filters.BooleanFilter(widget=widgets.CheckboxInput(check_test=check_test), action=filter_andor, label=_(u'All words'))
     continent       = django_filters.ChoiceFilter(name='locations__country__continent_code')
     organisation    = django_filters.ModelChoiceFilter(name='name', action=filter_by_org,)

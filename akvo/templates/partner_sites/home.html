@@ -88,13 +88,25 @@
 
     <table id="projects" class="marg_bottom0 full_width white_back">
       <tr>
-        <th class="normal">{% anchor title Title %}</th>
+        {# The hidden strings are there to feed the the translation machinery :-) #}
+        <th class="normal">
+          {% translated_anchor title Title asc %}
+          <span style="display: none;">{% trans "Title" %}</span>
+        </th>
         <th class="normal">{% trans "Location" %}</th>
-        {#<th class="normal">{% anchor locations__country Location %}</th>#}
-        <th class="normal">{% anchor status Status %}</th>
+        <th class="normal">
+          {% translated_anchor status Status asc %}
+          <span style="display: none;">{% trans "Status" %}</span>
+        </th>
         <th class="normal">{% trans "Partners" %}</th>
-        <th class="normal">{% anchor latest_update_date 'Updated' %}</th>
-        <th class="normal">{% anchor funds_needed Funding %}</th>
+        <th class="normal">
+          {% translated_anchor latest_update_date Updated %}
+          <span style="display: none;">{% trans "Updated" %}</span>
+        </th>
+        <th class="normal">
+          {% translated_anchor funds_needed Funding %}
+          <span style="display: none;">{% trans "Funding" %}</span>
+        </th>
       </tr>
       {% for project in project_list %}
         <tr>
