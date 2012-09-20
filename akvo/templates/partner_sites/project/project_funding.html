@@ -92,14 +92,15 @@
       </p>
     {% endif %}
 
-    {% if project.funding_partner_info %}
+    {% if project.funding_partnerships %}
       <table class="no_border_table marg_top20">
         <tr>
           <td><h3>{% trans 'Current funders' %}</h3></td>
+          <td style="width: 250px;">&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
-        {% for funding_info in project.funding_partner_info %}
-          {% with organisation=funding_info.organisation %}
+        {% for partnership in project.funding_partnerships %}
+          {% with organisation=partnership.organisation %}
             <tr>
               <td class="small">
                 <a href="{{organisation.get_absolute_url}}">
@@ -116,8 +117,14 @@
                   {{location.country}}
                 {% endwith %}
               </td>
-              <td class="small txt_right">
-                <br /><b>{% trans "Grant" %}: {{project.get_currency_display|safe}} {{funding_info.funding_amount|round|intcomma}}</b>
+              <td class="small">
+                <br /><b>{% trans "Grant" %}: {{project.get_currency_display|safe}} {{partnership.funding_amount|round|intcomma}}</b>
+                {% if partnership.iati_activity_id %}
+                  <br /><span class="small grey">
+                    {% trans "IATI activity ID" %}:
+                    <br/>{{partnership.iati_activity_id}}
+                  </span>
+                {% endif %}
               </td>
             </tr>
           {% endwith %}

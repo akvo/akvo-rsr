@@ -155,25 +155,19 @@
       {% block project_aside_partners %}
         <h2 class="marg_top40"><a href="{% url 'partner_list' %}">{% trans "Project partners" %}</a></h2>
         <div class="whitebox pad_top20 pad5">
-          {% for partnership in project.partnerships.all  %}
+          {% for organisation in project.partners.all.distinct  %}
             <div style="float:left; width:100px;">
-              <a href="{{partnership.organisation.get_absolute_url}}">
-                {% org_logo partnership.organisation 90 60 'margin:0;' %}
+              <a href="{{organisation.get_absolute_url}}">
+                {% org_logo organisation 90 60 'margin:0;' %}
               </a>
             </div>
             <div style="float:left; width:165px;">
               <p class="small grey" style="margin:0;">
-                <a href="{{partnership.organisation.get_absolute_url}}">{{partnership.organisation.name}}</a><br />
-                {% if partnership.organisation.primary_location.city %}
-                  {{partnership.organisation.primary_location.city}},
+                <a href="{{organisation.get_absolute_url}}">{{organisation.name}}</a><br />
+                {% if organisation.primary_location.city %}
+                  {{organisation.primary_location.city}},
                 {% endif %}
-                {{partnership.organisation.primary_location.country}}
-                {% if partnership.iati_activity_id %}
-                  <br /><span class="small grey">
-                  {% trans "IATI activity ID" %}:
-                  <br/>{{partnership.iati_activity_id}}
-                  </span>
-                {% endif %}
+                {{organisation.primary_location.country}}
               </p>
             </div>
             <div class="clear"></div>

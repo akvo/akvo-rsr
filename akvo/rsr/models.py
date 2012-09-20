@@ -1012,7 +1012,7 @@ class Project(models.Model):
     def all_partners(self):
         return self._partners()
 
-    def funding_partner_info(self):
+    def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
 
