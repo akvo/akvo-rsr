@@ -93,7 +93,10 @@
           {% translated_anchor title Title asc %}
           <span style="display: none;">{% trans "Title" %}</span>
         </th>
-        <th class="normal">{% trans "Location" %}</th>
+        <th class="normal">
+          {% translated_anchor primary_location__country__name Location asc %}
+          <span style="display: none;">{% trans "Location" %}</span>
+        </th>
         <th class="normal">
           {% translated_anchor status Status asc %}
           <span style="display: none;">{% trans "Status" %}</span>
