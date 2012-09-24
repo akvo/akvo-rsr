@@ -1393,7 +1393,7 @@ def global_project_map_json(request):
     data = []
     for project in Project.objects.published():
         try:
-            image_url = project.current_image.url
+            image_url = project.current_image.extra_thumbnails['map_thumb'].absolute_url
         except:
             image_url = ""
         for location in project.locations.all():
@@ -1411,7 +1411,7 @@ def global_organisation_map_json(request):
     data = []
     for organisation in Organisation.objects.has_location():
         try:
-            image_url = organisation.logo.url
+            image_url = organisation.logo.extra_thumbnails['map_thumb'].absolute_url
         except:
             image_url = ""
         for location in organisation.locations.all():
