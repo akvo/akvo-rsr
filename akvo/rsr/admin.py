@@ -523,6 +523,7 @@ class ProjectAdmin(admin.ModelAdmin):
         }),
         )
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
+    search_fields = ('title', 'status', 'project_plan_summary', )
     list_filter = ('currency', 'status', )
     readonly_fields = ('budget', 'funds',  'funds_needed',)
     #form = ProjectAdminForm
@@ -955,6 +956,7 @@ admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 class ProjectCommentAdmin(admin.ModelAdmin):
     list_display = ('project', 'user', 'comment', 'time', )
     list_filter = ('project', 'time', )
+    search_fields = ('project', 'user', 'comment', )
 
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
@@ -963,6 +965,7 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'project', 'user', 'text', 'time', 'img',)
     list_filter = ('time', 'project', )
+    search_fields = ('project', 'user', 'text', )
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
