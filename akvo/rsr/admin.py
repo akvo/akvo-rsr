@@ -322,7 +322,7 @@ class BudgetAdminInLine(admin.TabularInline):
 class PublishingStatusAdmin(admin.ModelAdmin):
     list_display = (u'project_info', u'status', )
     search_fields = ('project_info', 'status', )
-	list_filter = ('status', )
+    list_filter = ('status', )
 
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
