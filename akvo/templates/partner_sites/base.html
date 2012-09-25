@@ -8,6 +8,58 @@
 <!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
+	<script type=&quot;<span style="color: #8b0000">text/javascript</span>&quot; 
+	        src=&quot;<span style="color: #8b0000">http://www.google.com/jsapi</span>&quot;></script>
+	<script type=&quot;<span style="color: #8b0000">text/javascript</span>&quot;>
+	 <span style="color: #008000">// Initialize version 1.0 of Google AJAX API</span>
+	 google.load(&quot;<span style="color: #8b0000">language</span>&quot;, &quot;<span style="color: #8b0000">1</span>&quot;);
+	 <span style="color: #0000ff">function</span> translate(lang) {
+	   <span style="color: #0000ff">var</span> source = <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">article</span>&quot;).innerHTML;
+	   <span style="color: #0000ff">var</span> len = content.<span style="color: #0000ff">length</span>;
+	   <span style="color: #008000">// Google Language API accepts 500 characters per request </span>
+	   <span style="color: #0000ff">var</span> words = 500;
+	   <span style="color: #008000">// This is for English pages, you can change the</span>
+	   <span style="color: #008000">// sourcelang variable for other languages</span>
+	   <span style="color: #0000ff">var</span> sourcelang = &quot;en&quot;;
+	   <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">translation</span>&quot;).innerHTML = &quot;<span style="color: #8b0000"></span>&quot;;
+	   <span style="color: #0000ff">for</span>(i=0; i<=(len/words); i++) {
+	     google.language.translate (source.substr(i*words, words), 
+	                 &quot;<span style="color: #8b0000">en</span>&quot;, lang, <span style="color: #0000ff">function</span> (result) {
+	     <span style="color: #0000ff">if</span> (!result.error) {
+	     <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">translation</span>&quot;).innerHTML
+	           = <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">translation</span>&quot;).innerHTML 
+	           + result.translation;
+	    } }); }  
+
+	  <span style="color: #008000">// Hide the text written in the original language</span>
+	  <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">article</span>&quot;).style.display = 'none';
+	  <span style="color: #0000ff">return</span> <span style="color: #0000ff">false</span>;
+	 }
+	 <span style="color: #008000">// Switch to the original language</span>
+	 <span style="color: #0000ff">function</span> original() {
+	  <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">translation</span>&quot;).style.display='none';
+	  <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">article</span>&quot;).style.display = 'block';   
+	  <span style="color: #0000ff">return</span> <span style="color: #0000ff">false</span>;
+	 }
+	</script>
+	<a href=&quot;<span style="color: #8b0000">#</span>&quot; onclick=&quot;<span style="color: #8b0000">original();</span>&quot;>Switch to English</a> 
+	<select onchange=&quot;<span style="color: #8b0000">translate(this.options[this.selectedIndex].value);</span>&quot;>
+	<option value=<span style="color: #8b0000">&quot;de&quot;</span>>deutsch</option> 
+	<option value=<span style="color: #8b0000">&quot;pt&quot;</span>>portuguÃªs</option> 
+	<option value=<span style="color: #8b0000">&quot;fr&quot;</span>>franÃ§ais</option> 
+	<option value=<span style="color: #8b0000">&quot;ja&quot;</span>>æ—¥æœ¬èªž</option> 
+	<option value=<span style="color: #8b0000">&quot;ar&quot;</span>>Ø¹ÙŽØ±ÙŽØ¨ÙŠÙ’</option> 
+	<option value=<span style="color: #8b0000">&quot;it&quot;</span>>italiano</option> 
+	<option value=<span style="color: #8b0000">&quot;ru&quot;</span>>pÑƒÑÑÐºÐ¸Ð¹</option> 
+	<option value=<span style="color: #8b0000">&quot;po&quot;</span>>polski</option> 
+	<option value=<span style="color: #8b0000">&quot;zh-CN&quot;</span>>ä¸­æ–‡</option> 
+	<option value=<span style="color: #8b0000">&quot;es&quot;</span>>espaÃ±ol</option> 
+	<option value=<span style="color: #8b0000">&quot;ko&quot;</span>>í•œêµ­ì–´</option> 
+	<option value=<span style="color: #8b0000">&quot;nl&quot;</span>>nederlands</option> 
+	<option value=<span style="color: #8b0000">&quot;hi&quot;</span>>à¤¹à¤¿à¤¨à¥à¤¦à¥€ </option> 
+	<option value=<span style="color: #8b0000">&quot;el&quot;</span>>Î•Î»Î»Î·Î½Î¹ÎºÎ®</option> 
+	<option value=<span style="color: #8b0000">&quot;ro&quot;</span>>romÃ¢nÄƒ</option> 
+	</select>
   <meta charset="utf-8">
   <title>{% block title %}{% endblock title %}{{organisation}}</title>
 
