@@ -13,7 +13,7 @@ from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
-from akvo.rsr.decorators import fetch_project, project_page
+from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
 from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
@@ -910,9 +910,9 @@ def orgdetail(request, org_id):
         }
 
 
-@project_page
+@project_viewing_permissions
 @render_to('rsr/project/project_main.html')
-def projectmain(request, project):
+def projectmain(request, project, draft=False, can_add_update=False):
     '''
     The project overview page
     Context:
@@ -926,17 +926,19 @@ def projectmain(request, project):
     site_section: for use in the main nav hilighting
     '''
     #project = get_object_or_404(Project, pk=project_id)
-    related = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
-    related = get_random_from_qs(related, 2)
+#    related = Project.objects.filter(
+#        categories__in=Category.objects.filter(projects=project)
+#    ).distinct().exclude(pk=project.pk).published()
+#    related = get_random_from_qs(related, 2)
     all_updates = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
     comments = project.comments.all().order_by('-time')[:3]
     # comprehensions are fun! here we use it to get the categories that
     # don't contain only 0 value benchmarks
     benchmarks = project.benchmarks.filter(
-        category__in=[category for category in project.categories.all()
-        if project.benchmarks.filter(category=category) \
-            .aggregate(Sum('value'))['value__sum']
+        category__in=[
+            category for category in project.categories.all()
+            if project.benchmarks.filter(category=category).aggregate(Sum('value'))['value__sum']
         ])
 
     # a little model meta data magic
@@ -950,12 +952,12 @@ def projectmain(request, project):
     return {
         'admin_change_url': admin_change_url,
         'benchmarks': benchmarks,
-        'can_add_update': request.privileged_user,
+        'can_add_update': can_add_update,
+        'draft': draft,
         'comments': comments,
-        'draft': request.draft,
         'p': project,  # compatibility with new_look
         'project': project,
-        'related': related,
+#        'related': related,
         'site_section': 'projects',
         'updates': all_updates[:3],
         'updates_with_images': updates_with_images,
@@ -967,15 +969,15 @@ def projectdetails(request, project_id):
     return http.HttpResponsePermanentRedirect('/rsr/project/%s/' % project_id)
 
 
-@project_page
+@project_viewing_permissions
 @render_to('rsr/project/project_partners.html')
-def projectpartners(request, project):
+def projectpartners(request, project, draft=False, can_add_update=False):
     updates = project.project_updates.all().order_by('-time')[:3]
     comments = project.comments.all().order_by('-time')[:3]
     return {
-        'can_add_update': request.privileged_user,
+        'can_add_update': can_add_update,
+        'draft': draft,
         'comments': comments,
-        'draft': request.draft,
         'hide_project_partners': True,
         'project': project,
         'site_section': 'projects',
@@ -983,16 +985,16 @@ def projectpartners(request, project):
     }
 
 
-@project_page
+@project_viewing_permissions
 @render_to('rsr/project/project_funding.html')
-def projectfunding(request, project):
+def projectfunding(request, project, draft=False, can_add_update=False):
     public_donations = project.public_donations()
     updates = project.project_updates.all().order_by('-time')[:3]
     comments = project.comments.all().order_by('-time')[:3]
     return {
-        'can_add_update': request.privileged_user,
+        'can_add_update': can_add_update,
+        'draft': draft,
         'comments': comments,
-        'draft': request.draft,
         'hide_funding_link': True,
         'project': project,
         'public_donations': public_donations,
@@ -1001,8 +1003,8 @@ def projectfunding(request, project):
     }
 
 
-@project_page
-def getwidget(request, project):
+@project_viewing_permissions
+def getwidget(request, project, draft=False, can_add_update=False):
     '''
     user_level is None, 1 or 2. No user level check on step 2
     '''
@@ -1015,7 +1017,7 @@ def getwidget(request, project):
         orgs = project.all_partners()
         return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {
                 'account_level': account_level,
-                'draft': request.draft,
+                'draft': kwargs.get("draft", False),
                 'organisations': orgs,
                 'project': project,
                 'site_section': 'projects',
@@ -1039,8 +1041,8 @@ def getwidget(request, project):
             'widget_type': widget_type,
             'widget_site': widget_site,
             'site_section': 'projects',
-            'draft': request.draft,
-        }, context_instance=RequestContext(request))
+            'draft': draft,
+            }, context_instance=RequestContext(request))
 
 
 # def fundingbarimg(request):

@@ -35,25 +35,28 @@ def fetch_project(view):
     return wrapper
 
 
-def project_page(view):
+def project_viewing_permissions(view):
     """
     Work as @fetch_project with additional logic for draft capability.
     - Published projects can be seen by anyone.
-    - A user can see own unpublished projects in "draft" state (a red banner
+    - A user can see "own" unpublished projects in "draft" state (a red banner
         on the top)
-    - A signed in user gets a 403 on non published projects
-    - Any non user will get a 404 on non publised projects
+    - A user with the "view project drafts" permission can see an unpublished project
+    - A signed in user gets a 403 on unpublished projects that aren't "owned"
+    - Anyone not signed in will get a 404 on unpublished projects
     ...
     """
     @wraps(view)
     def wrapper(request, project_id, *args, **kwargs):
         project = get_object_or_404(Project, id=int(project_id))
-        privileged_user = project.connected_to_user(request.user)
+        # you are privileged if you are connected to the project through your organisation or if you have the
+        # change_project permission, given to Akvo staff groups
+        privileged_user = project.connected_to_user(request.user) or request.user.has_perm('rsr.change_project')
         unprivileged_user = not privileged_user
         authenticated_user = request.user.is_authenticated()
         unpublished_project = not project.is_published()
-        request.draft = False
-        request.privileged_user = privileged_user
+        draft = False
+#        request.privileged_user = privileged_user
 
         # Enable draft preview for privileged users, additional logic in
         # the draft section of project pages templates
@@ -62,7 +65,8 @@ def project_page(view):
         if unpublished_project and unprivileged_user:
             raise Http404
         if unpublished_project and privileged_user:
-            request.draft = True
+            draft = True
 
+        kwargs.update(draft=draft, can_add_update=privileged_user)
         return view(request, project=project, *args, **kwargs)
     return wrapper

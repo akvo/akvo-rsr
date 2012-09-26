@@ -1249,7 +1249,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         else:
             return None
 
-    #methods that insteract with the User model
+    #methods that interact with the User model
     def get_is_active(self):
         return self.user.is_active
     get_is_active.boolean = True  # make pretty icons in the admin list view
