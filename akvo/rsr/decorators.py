@@ -55,11 +55,11 @@ def project_viewing_permissions(view):
         unprivileged_user = not privileged_user
         authenticated_user = request.user.is_authenticated()
         unpublished_project = not project.is_published()
-        draft = False
 #        request.privileged_user = privileged_user
 
         # Enable draft preview for privileged users, additional logic in
         # the draft section of project pages templates
+        draft = False
         if unpublished_project and authenticated_user and unprivileged_user:
             raise PermissionDenied
         if unpublished_project and unprivileged_user:

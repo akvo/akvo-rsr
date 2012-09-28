@@ -730,11 +730,11 @@ def updateform(request, project_id,
         return redirect_to_login(request.path)
 
     if not project.is_published():
-        request.error_message = u'You can\'t add updates to unpublished projects.'
+        request.error_message = u"You can't add updates to unpublished projects."
         raise PermissionDenied
 
     if not user_is_authorized:
-        request.error_message = u'You don\'t have permission to add updates to this project.'
+        request.error_message = u"You don't have permission to add updates to this project."
         raise PermissionDenied
 
     if update_id is not None:
@@ -1017,7 +1017,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
         orgs = project.all_partners()
         return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {
                 'account_level': account_level,
-                'draft': kwargs.get("draft", False),
+                'draft': draft,
                 'organisations': orgs,
                 'project': project,
                 'site_section': 'projects',
