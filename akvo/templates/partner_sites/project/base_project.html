@@ -27,7 +27,8 @@
   {% endif %}
 {% endblock breadcrum_items %}
 {% block content %}
-  <div class="clearfix">
+<div id="projectarticle"> 
+ <div class="clearfix">
     <article>
       <h1 style="margin-bottom:4px">
         <a href="{% url 'project_main' project.id %}">{{project}}</a>
@@ -182,4 +183,6 @@
 
     </aside>
   </div>
+</div>
+<div id="translation"></div>
 {% endblock content %}
