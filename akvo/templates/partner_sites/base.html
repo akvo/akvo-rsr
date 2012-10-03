@@ -14,7 +14,7 @@
 	 <span style="color: #008000">// Initialize version 1.0 of Google AJAX API</span>
 	 google.load(&quot;<span style="color: #8b0000">language</span>&quot;, &quot;<span style="color: #8b0000">1</span>&quot;);
 	 <span style="color: #0000ff">function</span> translate(lang) {
-	   <span style="color: #0000ff">var</span> source = <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">projectarticle</span>&quot;).innerHTML;
+	   <span style="color: #0000ff">var</span> source = <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">article</span>&quot;).innerHTML;
 	   <span style="color: #0000ff">var</span> len = content.<span style="color: #0000ff">length</span>;
 	   <span style="color: #008000">// Google Language API accepts 500 characters per request </span>
 	   <span style="color: #0000ff">var</span> words = 500;
@@ -32,13 +32,13 @@
 	    } }); }  
 
 	  <span style="color: #008000">// Hide the text written in the original language</span>
-	  <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">projectarticle</span>&quot;).style.display = 'none';
+	  <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">article</span>&quot;).style.display = 'none';
 	  <span style="color: #0000ff">return</span> <span style="color: #0000ff">false</span>;
 	 }
 	 <span style="color: #008000">// Switch to the original language</span>
 	 <span style="color: #0000ff">function</span> original() {
 	  <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">translation</span>&quot;).style.display='none';
-	  <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">projectarticle</span>&quot;).style.display = 'block';   
+	  <span style="color: #0000ff">document</span>.getElementById(&quot;<span style="color: #8b0000">article</span>&quot;).style.display = 'block';   
 	  <span style="color: #0000ff">return</span> <span style="color: #0000ff">false</span>;
 	 }
 	</script>
