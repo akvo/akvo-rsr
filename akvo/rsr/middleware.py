@@ -106,10 +106,10 @@ class PartnerSitesRouterMiddleware(object):
         if is_rsr_instance(domain):  # Vanilla Akvo RSR instance
             request.urlconf = 'akvo.urls.rsr'
         elif is_partner_site_instance(domain):  # Partner site instance
-            hostname = domain.split('.')[-3]
+            domain = domain.split('.')[-3]
             request.urlconf = 'akvo.urls.partner_sites'
             try:
-                partner_site = PartnerSite.objects.get(hostname=hostname)
+                partner_site = PartnerSite.objects.get(hostname=domain)
             except:
                 pass
             if partner_site is None or not partner_site.enabled:
