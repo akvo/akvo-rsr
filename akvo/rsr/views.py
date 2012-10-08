@@ -1191,20 +1191,25 @@ def project_map_widget(request, org_id):
         }
 
 
+def can_donate_to_project(project):
+    "Predicate to determine if a project can be donated to."
+    return not (project.funds_needed <= 0 or project not in Project.objects.active())
+
+
 @fetch_project
 @render_to('rsr/project/donate/donate_step1.html')
 def setup_donation(request, p):
     # if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
-    if p.funds_needed <= 0 or p not in Project.objects.active():
+    if not can_donate_to_project(p):
         return redirect('project_main', project_id=p.id)
     request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
-    return {'project': p}
+    return dict(project=p)
 
 
 @fetch_project
 def donate(request, p, engine):
     # if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
-    if p.funds_needed <= 0 or p not in Project.objects.active():
+    if not can_donate_to_project(p):
         return redirect('project_main', project_id=p.id)
     if request.method == 'POST':
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
@@ -1228,14 +1233,13 @@ def donate(request, p, engine):
                 invoice.test = True
             if engine == 'ideal':
                 invoice.bank = cd['bank']
-                mollie_dict = {
-                    'amount': invoice.amount * 100,
-                    'bank_id': invoice.bank,
-                    'partnerid': invoice.gateway,
-                    'description': description,
-                    'reporturl': getattr(settings, 'MOLLIE_REPORT_URL', 'http://www.akvo.org/rsr/mollie/report/'),
-                    'returnurl': getattr(settings, 'MOLLIE_RETURN_URL', 'http://www.akvo.org/rsr/donate/ideal/thanks/'),
-                }
+                mollie_dict = dict(
+                    amount=invoice.amount * 100,
+                    bank_id=invoice.bank,
+                    partnerid=invoice.gateway,
+                    description=description,
+                    reporturl=reporturl,
+                    returnurl=returnurl)
                 try:
                     mollie_response = query_mollie(mollie_dict, 'fetch')
                     invoice.transaction_id = mollie_response['transaction_id']
@@ -1244,51 +1248,50 @@ def donate(request, p, engine):
                 except:
                     return redirect('donate_500')
                 return render_to_response('rsr/project/donate/donate_step3.html',
-                    {
-                        'invoice': invoice,
-                        'project': p,
-                        'payment_engine': engine,
-                        'mollie_order_url': order_url,
-                    },
+                    dict(invoice=invoice,
+                         project=p,
+                         payment_engine=engine, 
+                         mollie_order_url=order_url),
                     context_instance=RequestContext(request))
             elif engine == 'paypal':
                 invoice.save()
-                pp_dict = {
-                    'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
-                    'currency_code': invoice.currency,
-                    'business': invoice.gateway,
-                    'amount': invoice.amount,
-                    'item_name': description,
-                    'invoice': int(invoice.id),
-                    'lc': invoice.locale,
-                    'notify_url': getattr(settings, 'PAYPAL_NOTIFY_URL', 'http://www.akvo.org/rsr/donate/paypal/ipn/'),
-                    'return_url': getattr(settings, 'PAYPAL_RETURN_URL', 'http://www.akvo.org/rsr/donate/paypal/thanks/'),
-                    'cancel_url': getattr(settings, 'PAYPAL_CANCEL_URL', 'http://www.akvo.org/'),
-                }
+                notify_url = 
+                return_url = 
+                cancel_url = 
+                pp_dict = dict(
+                    cmd='_donations',
+                    currency_code=invoice.currency,
+                    business=invoice.gateway,
+                    amount=invoice.amount,
+                    item_name=description,
+                    invoice=int(invoice.id),
+                    lc=invoice.locale,
+                    notify_url=notify_url,
+                    return_url=return_url,
+                    cancel_url=cancel_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if getattr(settings, 'PAYPAL_TEST', False):
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
                 action = request.POST.get('action', None)
-                return render_to_response('rsr/project/donate/donate_step3.html',
-                                      {'invoice': invoice,
-                                       'payment_engine': engine,
-                                       'pp_form': pp_form,
-                                       'pp_button': pp_button,
-                                       'project': p,
-                                       },
-                                      context_instance=RequestContext(request))
+                return render_to_response(
+                           'rsr/project/donate/donate_step3.html',
+                           dict(invoice=invoice,
+                                payment_engine=engine,
+                                pp_form=pp_form,
+                                pp_button=pp_button,
+                                project=p),
+                           context_instance=RequestContext(request))
     else:
         donate_form = InvoiceForm(project=p,
                                   engine=engine,
                                   initial=dict(is_public=True))
     return render_to_response('rsr/project/donate/donate_step2.html',
-                              {'donate_form': donate_form,
-                               'payment_engine': engine,
-                               'project': p,
-                            },
-                            context_instance=RequestContext(request))
+               dict(donate_form=donate_form,
+                    payment_engine=engine,
+                    project=p),
+               context_instance=RequestContext(request))
 
 
 def void_invoice(request, invoice_id, action=None):
