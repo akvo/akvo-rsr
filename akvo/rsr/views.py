@@ -1207,8 +1207,6 @@ def setup_donation(request, p):
 
 @fetch_project
 def donate(request, p, engine):
-    host = urlsplit(request.get_host())
-    base_site_url = "%s://%s" % (host.scheme, host.netloc)
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
     if request.method == "POST":
@@ -1231,6 +1229,8 @@ def donate(request, p, engine):
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
             if getattr(settings, "DONATION_TEST", False):
                 invoice.test = True
+            host = urlsplit(request.get_host())
+            base_site_url = "%s://%s" % (host.scheme, host.netloc)
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -1379,7 +1379,7 @@ def data_overview(request):
     projects_by_country = [['Country', 'No. of Projects']]
     country_projects = groupby(projects.filter(primary_location__isnull=False), get_country)
     projects_by_country.extend([[country_project[0], len(list(country_project[1]))] for country_project in country_projects])
-    country_lookup = dict([ (country.name, country.pk) for country in Country.objects.all()])
+    country_lookup = dict([(country.name, country.pk) for country in Country.objects.all()])
 
     updates = ProjectUpdate.objects.all().order_by('time')
     groupdates = groupby(updates, get_update_month_and_year)
