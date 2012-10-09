@@ -1263,7 +1263,7 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=reverse("paypal_notify"),
+                    notify_url=reverse("paypal_ipn"),
                     return_url=urljoin(base_site_url, reverse("paypal_thanks")),
                     cancel_url=reverse("index"))
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
