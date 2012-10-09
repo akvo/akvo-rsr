@@ -77,12 +77,12 @@
 				<p class="small grey">{% trans '* The amount indicated is the donation minus transaction fees.' %}</p>
 			{% endif %}
 			
-			{% if project.funding_partner_info %}
+			{% if project.funding_partnerships %}
 			<hr />
 			<h3>{% trans 'Current funders' %}</h3>
 			{% endif %}
-			{% for funding_info in project.funding_partner_info %}
-        {% with organisation=funding_info.organisation %}
+			{% for partnership in project.funding_partnerships %}
+        {% with organisation=partnership.organisation %}
           <div style="{% if not forloop.last %}border-bottom:1px solid #ccc;{% endif %} padding:10px; background-color:#fff;">
             <div style="float:left; width:140px;">
               <a href="{{organisation.get_absolute_url}}">
@@ -104,7 +104,11 @@
             </div>
             <div style="float:left; width:100px; margin-left:20px;">
               <p class="small">
-                {% trans 'Grant' %}: {{project.get_currency_display|safe}} {{funding_info.funding_amount|round|intcomma}}
+                {% trans 'Grant' %}: {{project.get_currency_display|safe}} {{partnership.funding_amount|round|intcomma}}
+                {% if partnership.iati_activity_id %}
+                  <br /><span class="grey">{% trans "IATI activity ID" %}:
+                  <br/>{{partnership.iati_activity_id}}</span>
+                {% endif %}
               </p>
             </div>
             <div class="clear"></div>

@@ -11,7 +11,11 @@ from django import template
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.template.defaulttags import WidthRatioNode
+from django.template.base import TemplateSyntaxError
+from django.utils.translation import ugettext as _
+
 from akvo.scripts.asset_manager import map, asset_bundles
+
 register = template.Library()
 
 
@@ -335,3 +339,98 @@ def hidden_inputs_from_qs(parser, token):
         raise template.TemplateSyntaxError("The %r tag requires at least one argument" % token.contents.split()[0])
 
     return QSHiddenInputNode(identifiers)
+
+########################################################################################################################
+# This bit originates at https://github.com/bradjasper/django-sorting/ which is a fork of django-sorting that adds a
+# param to the anchor tag to determine sort order.
+# On top of that is added translation of the anchor label
+########################################################################################################################
+
+DEFAULT_SORT_UP = getattr(settings, 'DEFAULT_SORT_UP' , '&uarr;')
+DEFAULT_SORT_DOWN = getattr(settings, 'DEFAULT_SORT_DOWN' , '&darr;')
+INVALID_FIELD_RAISES_404 = getattr(settings,
+                                   'SORTING_INVALID_FIELD_RAISES_404' , False)
+
+sort_directions = {
+    'asc': {'icon':DEFAULT_SORT_UP, 'inverse': 'desc'},
+    'desc': {'icon':DEFAULT_SORT_DOWN, 'inverse': 'asc'},
+    '': {'icon':DEFAULT_SORT_DOWN, 'inverse': 'asc'},
+    }
+
+class SortAnchorNode(template.Node):
+    """
+    Renders an <a> HTML tag with a link which href attribute
+    includes the field on which we sort and the direction.
+    and adds an up or down arrow if the field is the one
+    currently being sorted on.
+
+    Eg.
+        {% anchor name Name asc %} generates
+        <a href="/the/current/path/?sort=name&dir=asc" title="Name">Name</a>
+
+    """
+    def __init__(self, field, title, sortdir):
+        self.field = field
+        self.title = title
+        self.sortdir = sortdir
+
+    def render(self, context):
+        request = context['request']
+        getvars = request.GET.copy()
+        if 'sort' in getvars:
+            sortby = getvars['sort']
+            del getvars['sort']
+        else:
+            sortby = ''
+
+        if 'dir' in getvars:
+            sortdir = getvars['dir']
+            del getvars['dir']
+        else:
+            sortdir = self.sortdir
+
+        if sortby == self.field:
+            getvars['dir'] = sort_directions[sortdir]['inverse']
+            icon = sort_directions[sortdir]['icon']
+        else:
+            # If we're not on the current field, use the default sortdir
+            # rather than the order
+            if self.sortdir:
+                getvars['dir'] = self.sortdir
+            icon = ''
+
+        if len(getvars.keys()) > 0:
+            urlappend = "&%s" % getvars.urlencode()
+        else:
+            urlappend = ''
+
+        if icon:
+            title = "%s %s" % (self.title, icon)
+        else:
+            title = self.title
+
+        url = '%s?sort=%s%s' % (request.path, self.field, urlappend)
+        return '<a href="%s" title="%s">%s</a>' % (url, self.title, title)
+
+@register.tag
+def translated_anchor(parser, token):
+    """
+    Parses a tag that's supposed to be in this format: {% translated_anchor field title sortdir %}
+    This is modified from django_sorting/templatetags/sorting_tags.py to handle translation of the anchor label
+    """
+    bits = [b.strip('"\'') for b in token.split_contents()]
+
+    if len(bits) < 2:
+        raise TemplateSyntaxError, "anchor tag takes at least 1 argument"
+
+    field = bits[1].strip()
+    title = field.capitalize()
+    sortdir = ''
+
+    if len(bits) >= 3:
+        title = bits[2]
+
+    if len(bits) == 4:
+        sortdir = bits[3]
+
+    return SortAnchorNode(field, _(title.strip()), sortdir)

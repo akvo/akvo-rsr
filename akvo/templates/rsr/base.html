@@ -106,7 +106,7 @@
 		{% block draft %}
   		{% if draft %}
     		<div style="background-color:#E04F46; color:#fff; padding:10px; text-align:center; margin-bottom:20px;">
-      	{% trans "This is project is a draft and can only be seen by projects members" %}
+          {% trans "This is a draft view of the project. It can only be seen by projects members and Akvo administrators." %}
     		</div>
   		{% endif %}
 		{% endblock draft %}
@@ -117,7 +117,7 @@
           <div id="breadcrum_back">
             <ul id="breadcrum">
               {% block breadcrum_items %}
-              <li><a href="/"><span>Home</span></a></li>
+              <li><a href="/"><span>{% trans "Home" %}</span></a></li>
               {% endblock breadcrum_items %}
             </ul>
             <div class="clear"></div>

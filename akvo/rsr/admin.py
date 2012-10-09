@@ -113,6 +113,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     )
     inlines = (OrganisationLocationInline,)
     list_display = ('name', 'long_name', 'website', )
+    search_fields = ('name', 'long_name', )
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -320,6 +321,8 @@ class BudgetAdminInLine(admin.TabularInline):
 
 class PublishingStatusAdmin(admin.ModelAdmin):
     list_display = (u'project_info', u'status', )
+    search_fields = ('project_info', 'status', )
+    list_filter = ('status', )
 
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
@@ -522,6 +525,7 @@ class ProjectAdmin(admin.ModelAdmin):
         }),
         )
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
+    search_fields = ('title', 'status', 'project_plan_summary', )
     list_filter = ('currency', 'status', )
     readonly_fields = ('budget', 'funds',  'funds_needed',)
     #form = ProjectAdminForm
@@ -954,6 +958,7 @@ admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 class ProjectCommentAdmin(admin.ModelAdmin):
     list_display = ('project', 'user', 'comment', 'time', )
     list_filter = ('project', 'time', )
+    search_fields = ('project', 'user', )
 
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
@@ -962,6 +967,7 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'project', 'user', 'text', 'time', 'img',)
     list_filter = ('time', 'project', )
+    search_fields = ('id', 'project', 'user', )
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):

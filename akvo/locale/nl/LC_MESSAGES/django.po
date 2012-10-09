@@ -4825,19 +4825,19 @@ msgstr "U kunt met PayPal via de in uw land geaccepteerde creditcards of bankrek
 #: templates/rsr/project/donate/donate_step3.html:95
 #, python-format
 msgid ""
-"PayPal charges transaction fees of up to 3.9% of your donation amount + 35 "
+"PayPal charges transaction fees of up to 3.9%% of your donation amount + 35 "
 "Euro cents. So if you donate &euro;100, at a minimum 95.75 will go to the "
 "selected project."
-msgstr "PayPal houdt per transactie maximaal 3,9% + 35 eurocent van uw donatie in. Als u bijv. &euro;100 doneert, gaat daarvan tenminste 95,75 naar het door u gekozen project."
+msgstr "PayPal houdt per transactie maximaal 3,9%% + 35 eurocent van uw donatie in. Als u bijv. &euro;100 doneert, gaat daarvan tenminste 95,75 naar het door u gekozen project."
 
 #: templates/rsr/project/donate/donate_step2.html:100
 #: templates/rsr/project/donate/donate_step3.html:98
 #, python-format
 msgid ""
-"PayPal charges transaction fees of up to 3.9% of your donation amount + 30 "
+"PayPal charges transaction fees of up to 3.9%% of your donation amount + 30 "
 "Dollar cents. So if you donate 100 US Dollars, at a minimum 95.80 will go to"
 " the selected project."
-msgstr "PayPal houdt per transactie maximaal 3,9% + 30 dollarcent van uw donatie in. Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar naar het door u gekozen project."
+msgstr "PayPal houdt per transactie maximaal 3,9%% + 30 dollarcent van uw donatie in. Als u bijv. 100 dollar doneert, gaat daarvan tenminste 95,80 dollar naar het door u gekozen project."
 
 #: templates/rsr/project/donate/donate_step2.html:107
 #: templates/rsr/project/donate/donate_step2.html:144

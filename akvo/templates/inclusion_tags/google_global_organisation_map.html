@@ -10,10 +10,11 @@
 <div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">
   <a href="{{url}}">{{name}}</a>
   {{#if image_url}}
-  <br><br>
-  <a href="{{url}}">
-    <img src="{{image_url}}" alt="" width="120">
-  </a>
+    <div style="text-align: center; margin-top: 10px;">
+      <a href="{{url}}" title="{{name}}">
+        <img src="{{image_url}}" alt="">
+      </a>
+    </div>
   {{/if}}
 </div>
 {% endtplhandlebars %}
@@ -42,9 +43,9 @@
 
     // Map options
     mapOptions = {
-	  center: new google.maps.LatLng(0, 0),
-	  mapTypeId: google.maps.MapTypeId.ROADMAP,
-	  scrollwheel: false,
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: true,
       streetViewControl: false,
       zoom: 1
     };

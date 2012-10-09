@@ -3,6 +3,8 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+from itertools import groupby
+from django.db.models.aggregates import Count
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
@@ -11,7 +13,7 @@ from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
-from akvo.rsr.decorators import fetch_project, project_page
+from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
 from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
@@ -186,7 +188,6 @@ def index(request, cms_id=None):
     news_title = ''
 
     projects = Project.objects.published()
-    projects_budget = projects.budget()['budget'] or 0
     orgs = Organisation.objects.all()
 
     people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
@@ -216,7 +217,7 @@ def index(request, cms_id=None):
         'orgs': orgs,
         'projects': projects,
         'people_served': people_served,
-        'projects_budget': round(projects_budget / 100000) / 10.0,
+        'projects_budget': round(projects.budget_sum() / 100000) / 10.0,
         'updates': updates,
     })
     return context_dict
@@ -729,11 +730,11 @@ def updateform(request, project_id,
         return redirect_to_login(request.path)
 
     if not project.is_published():
-        request.error_message = u'You can\'t add updates to unpublished projects.'
+        request.error_message = u"You can't add updates to unpublished projects."
         raise PermissionDenied
 
     if not user_is_authorized:
-        request.error_message = u'You don\'t have permission to add updates to this project.'
+        request.error_message = u"You don't have permission to add updates to this project."
         raise PermissionDenied
 
     if update_id is not None:
@@ -909,9 +910,9 @@ def orgdetail(request, org_id):
         }
 
 
-@project_page
+@project_viewing_permissions
 @render_to('rsr/project/project_main.html')
-def projectmain(request, project):
+def projectmain(request, project, draft=False, can_add_update=False):
     '''
     The project overview page
     Context:
@@ -925,17 +926,19 @@ def projectmain(request, project):
     site_section: for use in the main nav hilighting
     '''
     #project = get_object_or_404(Project, pk=project_id)
-    related = Project.objects.filter(categories__in=Category.objects.filter(projects=project)).distinct().exclude(pk=project.pk).published()
-    related = get_random_from_qs(related, 2)
+#    related = Project.objects.filter(
+#        categories__in=Category.objects.filter(projects=project)
+#    ).distinct().exclude(pk=project.pk).published()
+#    related = get_random_from_qs(related, 2)
     all_updates = project.project_updates.all().order_by('-time')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
     comments = project.comments.all().order_by('-time')[:3]
     # comprehensions are fun! here we use it to get the categories that
     # don't contain only 0 value benchmarks
     benchmarks = project.benchmarks.filter(
-        category__in=[category for category in project.categories.all()
-        if project.benchmarks.filter(category=category) \
-            .aggregate(Sum('value'))['value__sum']
+        category__in=[
+            category for category in project.categories.all()
+            if project.benchmarks.filter(category=category).aggregate(Sum('value'))['value__sum']
         ])
 
     # a little model meta data magic
@@ -949,12 +952,12 @@ def projectmain(request, project):
     return {
         'admin_change_url': admin_change_url,
         'benchmarks': benchmarks,
-        'can_add_update': request.privileged_user,
+        'can_add_update': can_add_update,
+        'draft': draft,
         'comments': comments,
-        'draft': request.draft,
         'p': project,  # compatibility with new_look
         'project': project,
-        'related': related,
+#        'related': related,
         'site_section': 'projects',
         'updates': all_updates[:3],
         'updates_with_images': updates_with_images,
@@ -966,15 +969,15 @@ def projectdetails(request, project_id):
     return http.HttpResponsePermanentRedirect('/rsr/project/%s/' % project_id)
 
 
-@project_page
+@project_viewing_permissions
 @render_to('rsr/project/project_partners.html')
-def projectpartners(request, project):
+def projectpartners(request, project, draft=False, can_add_update=False):
     updates = project.project_updates.all().order_by('-time')[:3]
     comments = project.comments.all().order_by('-time')[:3]
     return {
-        'can_add_update': request.privileged_user,
+        'can_add_update': can_add_update,
+        'draft': draft,
         'comments': comments,
-        'draft': request.draft,
         'hide_project_partners': True,
         'project': project,
         'site_section': 'projects',
@@ -982,16 +985,16 @@ def projectpartners(request, project):
     }
 
 
-@project_page
+@project_viewing_permissions
 @render_to('rsr/project/project_funding.html')
-def projectfunding(request, project):
+def projectfunding(request, project, draft=False, can_add_update=False):
     public_donations = project.public_donations()
     updates = project.project_updates.all().order_by('-time')[:3]
     comments = project.comments.all().order_by('-time')[:3]
     return {
-        'can_add_update': request.privileged_user,
+        'can_add_update': can_add_update,
+        'draft': draft,
         'comments': comments,
-        'draft': request.draft,
         'hide_funding_link': True,
         'project': project,
         'public_donations': public_donations,
@@ -1000,8 +1003,8 @@ def projectfunding(request, project):
     }
 
 
-@project_page
-def getwidget(request, project):
+@project_viewing_permissions
+def getwidget(request, project, draft=False, can_add_update=False):
     '''
     user_level is None, 1 or 2. No user level check on step 2
     '''
@@ -1014,7 +1017,7 @@ def getwidget(request, project):
         orgs = project.all_partners()
         return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {
                 'account_level': account_level,
-                'draft': request.draft,
+                'draft': draft,
                 'organisations': orgs,
                 'project': project,
                 'site_section': 'projects',
@@ -1038,8 +1041,8 @@ def getwidget(request, project):
             'widget_type': widget_type,
             'widget_site': widget_site,
             'site_section': 'projects',
-            'draft': request.draft,
-        }, context_instance=RequestContext(request))
+            'draft': draft,
+            }, context_instance=RequestContext(request))
 
 
 # def fundingbarimg(request):
@@ -1348,12 +1351,42 @@ def global_map(request):
     marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
     return {'projects': projects, 'marker_icon': marker_icon}
 
+def get_update_month_and_year(update):
+    return (update.time.date().month, update.time.date().year)
+
+def get_country(project):
+    return project.primary_location.country.name
 
 @render_to('rsr/akvo_at_a_glance.html')
 def data_overview(request):
-    projects = Project.objects.published()
+    MONTHS = [
+        u'Jan',
+        u'Feb',
+        u'Mar',
+        u'Apr',
+        u'May',
+        u'Jun',
+        u'Jul',
+        u'Aug',
+        u'Sep',
+        u'Oct',
+        u'Nov',
+        u'Dec',
+    ]
+    projects = Project.objects.published().order_by('primary_location__country')
     orgs = Organisation.objects.all()
-    return dict(projects=projects, orgs=orgs)
+
+    projects_by_country = [['Country', 'No. of Projects']]
+    country_projects = groupby(projects.filter(primary_location__isnull=False), get_country)
+    projects_by_country.extend([[country_project[0], len(list(country_project[1]))] for country_project in country_projects])
+    country_lookup = dict([ (country.name, country.pk) for country in Country.objects.all()])
+
+    updates = ProjectUpdate.objects.all().order_by('time')
+    groupdates = groupby(updates, get_update_month_and_year)
+    updates_by_month = [['Month', 'Updates']]
+    updates_by_month.extend([['%s %s' % (MONTHS[groupdate[0][0]-1], str(groupdate[0][1])), len(list(groupdate[1]))] for groupdate in groupdates])
+
+    return dict(projects=projects, orgs=orgs, updates_by_month=json.dumps(updates_by_month), projects_by_country=json.dumps(projects_by_country), country_lookup=json.dumps(country_lookup))
 
 
 @cache_page(60 * 15)
@@ -1362,7 +1395,7 @@ def global_project_map_json(request):
     data = []
     for project in Project.objects.published():
         try:
-            image_url = project.current_image.url
+            image_url = project.current_image.extra_thumbnails['map_thumb'].absolute_url
         except:
             image_url = ""
         for location in project.locations.all():
@@ -1380,7 +1413,7 @@ def global_organisation_map_json(request):
     data = []
     for organisation in Organisation.objects.has_location():
         try:
-            image_url = organisation.logo.url
+            image_url = organisation.logo.extra_thumbnails['map_thumb'].absolute_url
         except:
             image_url = ""
         for location in organisation.locations.all():

@@ -89,49 +89,12 @@ OLD_CONTINENTS = (
 )
 
 
-def validate_iati_id(iati_id):
-    """Validates that the iati_id string follows the guide lines at
-    http://iatistandard.org/guides/organisation-data/organisation-identifiers
-
-    For example "SE-FKR-QWERTY" where:
-    "SE-FKR" is the namespace code given by IATI support
-    "-QWERTY" is the organisations own identifier
-
-    Validation is not very strict since information about the rules where
-    not easy to find.
-
-    >>> validate_iati_id("NL-AKV-123")
-    >>>
-
-    >>> validate_iati_id("NL-AKV-1234_ALLOWED_CHARACTERS_A-Z_0-9_DASH_UNDERSCORE")
-    >>>
-
-    >>> validate_iati_id("")
-    Traceback (most recent call last):
-        ...
-    ValidationError: [u' is not a valid IATI identifier']
-
-    >>> validate_iati_id("nl-fkr-non-caps")
-    Traceback (most recent call last):
-        ...
-    ValidationError: [u'nl-fkr-non-caps is not a valid IATI identifier']
-
-    >>> validate_iati_id("SE-FKR-???")
-    Traceback (most recent call last):
-        ...
-    ValidationError: [u'SE-FKR-??? is not a valid IATI identifier']
-    """
-    pattern = r'(^[A-Z]{2}\-[A-Z]{3}\-[A-Z0-9_\-]{2,}$)'
-    if not re.match(pattern, iati_id):
-        raise ValidationError(u'%s is not a valid IATI identifier' % iati_id)
-
-
 class Country(models.Model):
 
     name = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
     iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES,)
     continent = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
-    continent_code = models.CharField(_(u'continent code'), max_length=2, db_index=True , choices=CONTINENTS,)
+    continent_code = models.CharField(_(u'continent code'), max_length=2, db_index=True, choices=CONTINENTS)
 
 #    name = models.CharField(_(u'country name'), max_length=50,)
 #    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
@@ -238,11 +201,7 @@ class Partnership(models.Model):
         _(u'funding amount'), max_digits=10, decimal_places=2,
         blank=True, null=True, db_index=True
     )
-    iati_activity_id = models.CharField(
-        _(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,
-        help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
-        validators=[validate_iati_id]
-    )
+    iati_activity_id = models.CharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
     internal_id = models.CharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
@@ -289,13 +248,11 @@ class Organisation(models.Model):
     name = models.CharField(_(u'name'), max_length=25, db_index=True, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
     long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
-    iati_org_id = models.CharField(
-        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True,
-        help_text=_(u'The ID must have the format NN-NNN-... e.g. "SE-FKR-A0BCD12". More info at http://iatistandard.org/guides/organisation-data/organisation-identifiers'),
-        validators=[validate_iati_id]
-    )
+    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True)
+
     logo = ImageWithThumbnailsField(
         _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
+        extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop',)}},
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
 
@@ -642,6 +599,7 @@ class Project(models.Model):
                         blank=True,
                         upload_to=image_path,
                         thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+                        extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )}},  # detail is a mild sharpen
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
@@ -818,161 +776,25 @@ class Project(models.Model):
         def donated(self):
             return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(donated=Sum('invoice__amount_received'),).distinct()
 
-        #
-        def budget(self):
+        # aggregates
+        def budget_sum(self):
             ''' aggregates the budgets of all the projects in the QS
                 n.b. non-chainable, doesn't return a QS
             '''
-            return self.aggregate(budget=Sum('budget'),)
+            return self.aggregate(budget=Sum('budget'),)['budget'] or 0
 
-#        def pledged(self, org=None):
-#            if org:
-#                self.filter(funding_organisation__exact=org)
-#            return self.annotate(pledged=Sum('fundingpartner__funding_amount'),)
+        def funds_sum(self):
+            ''' aggregates the funds of all the projects in the QS
+                n.b. non-chainable, doesn't return a QS
+            '''
+            return self.aggregate(funds=Sum('funds'),)['funds'] or 0
 
-#        def funding(self, organisation=None):
-#            '''create extra columns "funds_needed", "pledged" and "donated"
-#            that calculate the respective values for each project in the queryset
-#            '''
-#            funding_queries = {
-#                #how much money does the project need to be fully funded, given that all pending donations complete
-#                'funds_needed':
-#                    ''' (SELECT DISTINCT (
-#                            SELECT CASE
-#                                WHEN Sum(amount) IS NULL THEN 0
-#                                ELSE Sum(amount)
-#                            END
-#                            FROM  rsr_budgetitem
-#                            WHERE rsr_budgetitem.project_id = rsr_project.id
-#                        ) - (
-#                            SELECT CASE
-#                                WHEN Sum(funding_amount) IS NULL THEN 0
-#                                ELSE Sum(funding_amount)
-#                            END
-#                            FROM  rsr_partnership
-#                            WHERE rsr_partnership.project_id = rsr_project.id
-#                            AND   rsr_partnership.partner_type = '%s'
-#                        ) - (
-#                            SELECT CASE
-#                                WHEN Sum(amount) IS NULL THEN 0
-#                                ELSE Sum(amount)
-#                            END
-#                            FROM  rsr_invoice
-#                            WHERE rsr_invoice.project_id = rsr_project.id
-#                            AND   rsr_invoice.status = %d
-#                        ) - (
-#                            SELECT CASE
-#                                WHEN Sum(amount_received) IS NULL THEN 0
-#                                ELSE Sum(amount_received)
-#                            END
-#                            FROM  rsr_invoice
-#                            WHERE rsr_invoice.project_id = rsr_project.id
-#                            AND   rsr_invoice.status = %d
-#                        ))
-#                        ''' % (
-#                            Partnership.FUNDING_PARTNER,
-#                            PAYPAL_INVOICE_STATUS_PENDING,
-#                            PAYPAL_INVOICE_STATUS_COMPLETE
-#                        ),
-#                    #how much money has been donated by individual donors, including pending donations
-#                    'donated':
-#                        ''' (SELECT DISTINCT (
-#                                SELECT CASE
-#                                    WHEN Sum(amount) IS NULL THEN 0
-#                                    ELSE Sum(amount)
-#                                END
-#                                FROM rsr_invoice
-#                                WHERE rsr_invoice.project_id = rsr_project.id
-#                                AND rsr_invoice.status = %d
-#                            ) + (
-#                                SELECT CASE
-#                                    WHEN Sum(amount_received) IS NULL THEN 0
-#                                    ELSE Sum(amount_received)
-#                                END
-#                                FROM rsr_invoice
-#                                WHERE rsr_invoice.project_id = rsr_project.id
-#                                AND rsr_invoice.status = %d
-#                            ))
-#                        ''' % (PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE),
-#                    #how much donated money from individuals is pending
-#                    'pending':
-#                        ''' (SELECT CASE
-#                                WHEN Sum(amount) IS NULL THEN 0
-#                                ELSE Sum(amount)
-#                            END
-#                            FROM rsr_invoice
-#                            WHERE rsr_invoice.project_id = rsr_project.id
-#                                AND rsr_invoice.status = %d
-#                            )
-#                        ''' % PAYPAL_INVOICE_STATUS_PENDING,
-#                    #the total budget for the project as per the budgetitems
-#                    'total_budget':
-#                        ''' (SELECT CASE
-#                                WHEN SUM(amount) IS NULL THEN 0
-#                                ELSE SUM(amount)
-#                            END
-#                            FROM rsr_budgetitem
-#                            WHERE rsr_budgetitem.project_id = rsr_project.id)
-#                        ''',
-#                }
-#                #how much has been pledged by organisations. if an org param is supplied
-#                #this is modified to show huw much _that_ org has pledged to each project
-#            pledged = {
-#                'pledged':
-#                    ''' (SELECT CASE
-#                            WHEN Sum(funding_amount) IS NULL THEN 0
-#                            ELSE Sum(funding_amount)
-#                        END
-#                        FROM rsr_partnership
-#                        WHERE rsr_partnership.project_id = rsr_project.id
-#                        AND   rsr_partnership.partner_type = '%s'
-#                    ''' % (Partnership.FUNDING_PARTNER,)
-#            }
-#            if organisation:
-#                pledged['pledged'] = '''%s
-#                    AND rsr_partnership.organisation_id = %d''' % (
-#                        pledged['pledged'], organisation.pk
-#                    )
-#            pledged['pledged'] = "%s)" % pledged['pledged']
-#            funding_queries.update(pledged)
-#            return self.extra(select=funding_queries)
+        def funds_needed_sum(self):
+            ''' aggregates the funds of all the projects in the QS
+                n.b. non-chainable, doesn't return a QS
+            '''
+            return self.aggregate(funds_needed=Sum('funds_needed'),)['funds_needed'] or 0
 
-#        def need_funding(self):
-#            "projects that projects need funding"
-#            #this hack is needed because mysql doesn't allow WHERE clause to refer to a calculated column, in this case funds_needed
-#            #so instead we order by funds_needed and create a list of pk:s from all projects with funds_needed > 0 and filter on those
-#            return self.filter(pk__in=[pk for pk, fn in self.funding().extra(order_by=['-funds_needed']).values_list('pk', 'funds_needed') if fn > 0])
-
-#        def need_funding_count(self):
-#            "how many projects need funding"
-#            return len(self.need_funding())
-#
-#        def total_funds_needed(self):
-#            "how much money the projects still need"
-#            return qs_column_sum(self.funding(), 'funds_needed')
-#
-#        def total_total_budget(self):
-#            "how much money the projects still need"
-#            return qs_column_sum(self.funding(), 'total_budget')
-#
-#        def total_pledged(self, org=None):
-#            '''
-#            how much money has been commited to the projects
-#            if org is supplied, only money pledeg by that org is calculated
-#            '''
-#            return qs_column_sum(self.funding(org), 'pledged')
-#
-#        def total_donated(self):
-#            "how much money has bee donated by individuals"
-#            return qs_column_sum(self.funding(), 'donated')
-#
-#        def total_pending(self):
-#            "individual donations still pending"
-#            return qs_column_sum(self.funding(), 'pending')
-#
-#        def total_pending_negative(self):
-#            "individual donations still pending NEGATIVE (used by akvo at a glance)"
-#            return -qs_column_sum(self.funding(), 'pending')
 
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
@@ -1192,7 +1014,7 @@ class Project(models.Model):
     def all_partners(self):
         return self._partners()
 
-    def funding_partner_info(self):
+    def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
 
@@ -1427,7 +1249,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         else:
             return None
 
-    #methods that insteract with the User model
+    #methods that interact with the User model
     def get_is_active(self):
         return self.user.is_active
     get_is_active.boolean = True  # make pretty icons in the admin list view

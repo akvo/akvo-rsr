@@ -237,7 +237,7 @@ class InvoiceResource(ConditionalFullResource):
         allowed_methods = ['get']
         queryset        = Invoice.objects.filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE)
         resource_name   = 'invoice'
-        fields          = ['amount', 'amount_received', 'user', 'is_anonymous',]
+        fields          = ['amount', 'amount_received', 'is_anonymous',]
         filtering       = dict(
             # foreign keys
             project     = ALL_WITH_RELATIONS,
@@ -245,7 +245,7 @@ class InvoiceResource(ConditionalFullResource):
         )
 
     def dehydrate(self, bundle):
-        """ Add meta fields showing if the user profile is an organisation admin or an organisation editor
+        """ Add name and email for non-anonymous donators
         """
         if not bundle.obj.is_anonymous:
             bundle.data['email'] = bundle.obj.email
