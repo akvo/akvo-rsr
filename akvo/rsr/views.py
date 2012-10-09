@@ -5,10 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from itertools import groupby
 from urlparse import urljoin, urlsplit
-from django.db.models.aggregates import Count
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
-from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
+from akvo.rsr.models import (MiniCMS, FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
                              UserProfile, Invoice, SmsReporter, PartnerSite)
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
@@ -1188,8 +1187,8 @@ def project_map_widget(request, org_id):
         'textcolor': textcolor,
         'width': width,
         'zoom': zoom,
-        'state': state,
-        }
+        'state': state
+    }
 
 
 def can_donate_to_project(project):
@@ -1239,7 +1238,7 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=reverse("mollie_report")
+                    reporturl=reverse("mollie_report"),
                     returnurl=urljoin(base_site_url, reverse("mollie_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
@@ -1272,7 +1271,6 @@ def donate(request, p, engine):
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
-                action = request.POST.get("action", None)
                 return render_to_response(
                            "rsr/project/donate/donate_step3.html",
                            dict(invoice=invoice,
@@ -1415,7 +1413,7 @@ def global_organisation_map_json(request):
     data = []
     for organisation in Organisation.objects.has_location():
         try:
-            image_url = organisation.logo.extra_thumbnails['map_thumb'].absolute_url
+            image_url = organisation.logo.extra_thumbnails["map_thumb"].absolute_url
         except:
             image_url = ""
         for location in organisation.locations.all():
