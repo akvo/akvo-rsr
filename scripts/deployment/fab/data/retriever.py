@@ -49,11 +49,11 @@ class RSRDataRetriever(object):
         self._exit_if_rsr_env_paths_not_found()
         self._ensure_rsr_log_file_is_writable()
 
-        data_export_file_name = '%s.sql' % self.time_stamp_formatter.append_timestamp('rsrdb')
-        rsr_data_export_path = os.path.join(self.config.data_archives_home, data_export_file_name)
+        data_extract_file_name = '%s.sql' % self.time_stamp_formatter.append_timestamp('rsrdb')
+        rsr_data_extract_path = os.path.join(self.config.data_archives_home, data_extract_file_name)
 
-        self._extract_data_to(rsr_data_export_path)
-        self._compress_and_download_data_extract(rsr_data_export_path)
+        self._extract_data_to(rsr_data_extract_path)
+        self._compress_and_download_data_extract(rsr_data_extract_path)
 
     def _ensure_data_archives_can_be_stored(self):
         self.local_file_system.ensure_directory_exists(self.config.data_archives_home)
@@ -68,10 +68,11 @@ class RSRDataRetriever(object):
         self.feedback.comment('Ensuring RSR log file is writable')
         self.data_host_file_system.make_file_writable_for_all_users(self.config.rsr_log_file_path)
 
-    def _extract_data_to(self, data_export_file_path):
-        self.data_handler.extract_data_to(data_export_file_path, self.settings_reader.rsr_database_name())
+    def _extract_data_to(self, data_extract_file_path):
+        self.data_handler.extract_data_to(data_extract_file_path, self.settings_reader.rsr_database_name())
 
-    def _compress_and_download_data_extract(self, data_export_file_path):
-        self.data_host_file_system.compress_file(data_export_file_path)
-        self.data_host_file_system.delete_file(data_export_file_path)
-        self.data_host_file_system.download_file('%s.zip' % data_export_file_path, self.config.data_archives_home)
+    def _compress_and_download_data_extract(self, data_extract_file_path):
+        self.data_host_file_system.compress_file(data_extract_file_path)
+        self.data_host_file_system.delete_file(data_extract_file_path)
+        self.data_host_file_system.download_file('%s.zip' % data_extract_file_path, self.config.data_archives_home)
+        # self.data_host_file_system.delete_file(data_extract_file_path)
