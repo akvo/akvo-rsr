@@ -78,6 +78,7 @@ class RSRDataPopulator(object):
         with self.data_host_file_system.cd(self.config.rsr_deployment_home):
             self.feedback.comment('Loading RSR data')
             self.data_handler.load_data_from(data_extract_file_path, rsr_database_name)
+            self.data_host_file_system.delete_file(data_extract_file_path)
 
     def _data_archive_path(self, latest_data_archive_name):
         return os.path.join(self.config.data_archives_home, latest_data_archive_name)
