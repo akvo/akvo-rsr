@@ -49,7 +49,7 @@ class RSRDataRetriever(object):
         self._exit_if_rsr_env_paths_not_found()
         self._ensure_rsr_log_file_is_writable()
 
-        data_extract_file_name = '%s.sql' % self.time_stamp_formatter.append_timestamp('rsrdb')
+        data_extract_file_name = self.time_stamp_formatter.append_timestamp('rsrdb') + '.sql'
         rsr_data_extract_path = os.path.join(self.config.data_archives_home, data_extract_file_name)
 
         self._extract_data_to(rsr_data_extract_path)
@@ -72,7 +72,8 @@ class RSRDataRetriever(object):
         self.data_handler.extract_data_to(data_extract_file_path, self.settings_reader.rsr_database_name())
 
     def _compress_and_download_data_extract(self, data_extract_file_path):
+        data_archive_path = data_extract_file_path + '.zip'
         self.data_host_file_system.compress_file(data_extract_file_path)
+        self.data_host_file_system.download_file(data_archive_path, self.config.data_archives_home)
         self.data_host_file_system.delete_file(data_extract_file_path)
-        self.data_host_file_system.download_file('%s.zip' % data_extract_file_path, self.config.data_archives_home)
-        # self.data_host_file_system.delete_file(data_extract_file_path)
+        self.data_host_file_system.delete_file(data_archive_path)

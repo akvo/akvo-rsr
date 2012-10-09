@@ -64,7 +64,7 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
 
         time_stamped_data_extract_name = 'rsrdb_utc_timestamp'
         self.mock_time_stamp_formatter.append_timestamp('rsrdb').AndReturn(time_stamped_data_extract_name)
-        rsr_data_extract_path = os.path.join(self.data_retriever_config.data_archives_home, '%s.sql' % time_stamped_data_extract_name)
+        rsr_data_extract_path = os.path.join(self.data_retriever_config.data_archives_home, time_stamped_data_extract_name + '.sql')
 
         self._ensure_data_archives_can_be_stored()
         self._exit_if_rsr_env_paths_not_found()
@@ -93,9 +93,11 @@ class RSRDataRetrieverTest(mox.MoxTestBase):
         self.mock_data_handler.extract_data_to(data_extract_path, 'some_rsrdb')
 
     def _compress_and_download_data_extract(self, data_extract_path):
+        data_archive_path = data_extract_path + '.zip'
         self.mock_data_host_file_system.compress_file(data_extract_path)
+        self.mock_data_host_file_system.download_file(data_archive_path, self.data_retriever_config.data_archives_home)
         self.mock_data_host_file_system.delete_file(data_extract_path)
-        self.mock_data_host_file_system.download_file('%s.zip' % data_extract_path, self.data_retriever_config.data_archives_home)
+        self.mock_data_host_file_system.delete_file(data_archive_path)
 
     def _change_dir_to(self, expected_directory):
         self.mock_data_host_file_system.cd(expected_directory).AndReturn(fabric.api.cd(expected_directory))
