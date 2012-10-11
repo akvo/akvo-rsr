@@ -186,7 +186,9 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
 
 class ProjectDonationThanksView(BaseView):
     "Render a thankyou page after a successful donation"
-
+    
+    template_name = "partner_sites/project/donate/donate_thanks.html"
+    
     def get_context_data(self, invoice=None, **kwargs):
         context = super(BaseView, self).get_context_data(**kwargs)
         invoice_id = self.request.GET.get("invoice", None)
