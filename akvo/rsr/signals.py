@@ -123,8 +123,6 @@ def donation_completed(instance, created, **kwargs):
     invoice = instance
     if not created and invoice.status == 3 and not invoice.confirmation_email_sent:
         send_donation_confirmation_emails(invoice.id)
-        invoice.confirmation_email_sent = True
-        invoice.save()
 
 def set_active_cms(instance, created, **kwargs):
     MiniCMS = get_model('rsr', 'MiniCMS')

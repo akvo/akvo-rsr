@@ -227,6 +227,8 @@ def send_donation_confirmation_emails(invoice_id):
     msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
     msg.content_subtype = "html"
     msg.send()
+    invoice.confirmation_email_sent = True
+    invoice.save()
     
 
 def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
