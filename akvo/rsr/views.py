@@ -1249,11 +1249,11 @@ def donate(request, p, engine):
                 except:
                     return redirect("donate_500")
                 return render_to_response("rsr/project/donate/donate_step3.html",
-                    dict(invoice=invoice,
-                         project=p,
-                         payment_engine=engine, 
-                         mollie_order_url=order_url),
-                    context_instance=RequestContext(request))
+                                          dict(invoice=invoice,
+                                               project=p,
+                                               payment_engine=engine, 
+                                               mollie_order_url=order_url),
+                                          context_instance=RequestContext(request))
             elif engine == "paypal":
                 invoice.save()
                 pp_dict = dict(
@@ -1272,23 +1272,22 @@ def donate(request, p, engine):
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
-                return render_to_response(
-                           "rsr/project/donate/donate_step3.html",
-                           dict(invoice=invoice,
-                                payment_engine=engine,
-                                pp_form=pp_form,
-                                pp_button=pp_button,
-                                project=p),
-                           context_instance=RequestContext(request))
+                return render_to_response("rsr/project/donate/donate_step3.html",
+                                          dict(invoice=invoice,
+                                               payment_engine=engine,
+                                               pp_form=pp_form,
+                                               pp_button=pp_button,
+                                               project=p),
+                                          context_instance=RequestContext(request))
     else:
         donate_form = InvoiceForm(project=p,
                                   engine=engine,
                                   initial=dict(is_public=True))
     return render_to_response("rsr/project/donate/donate_step2.html",
-               dict(donate_form=donate_form,
-                    payment_engine=engine,
-                    project=p),
-               context_instance=RequestContext(request))
+                              dict(donate_form=donate_form,
+                                   payment_engine=engine,
+                                   project=p),
+                              context_instance=RequestContext(request))
 
 
 def void_invoice(request, invoice_id, action=None):
