@@ -1902,6 +1902,8 @@ class Invoice(models.Model):
     # Mollie
     bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
+    confirmation_email_sent = models.BooleanField(u'Email confirmation of successful donation sent to user?',
+                                                  default=False)
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
