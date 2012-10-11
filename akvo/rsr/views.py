@@ -1231,6 +1231,7 @@ def donate(request, p, engine):
                 invoice.test = True
             host = urlsplit(request.get_host())
             base_site_url = "%s://%s" % (host.scheme, host.netloc)
+            akvo_url = "http://www.akvo.org/"
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -1238,7 +1239,7 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=reverse("mollie_report"),
+                    reporturl=urljoin(akvo_url, reverse("mollie_report")),
                     returnurl=urljoin(base_site_url, reverse("mollie_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
@@ -1263,9 +1264,9 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=reverse("paypal_ipn"),
+                    notify_url=urljoin(akvo_url, reverse("paypal_ipn")),
                     return_url=urljoin(base_site_url, reverse("paypal_thanks")),
-                    cancel_url=reverse("index"))
+                    cancel_url=akvo_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if getattr(settings, "PAYPAL_TEST", False):
                     pp_button = pp_form.sandbox()
