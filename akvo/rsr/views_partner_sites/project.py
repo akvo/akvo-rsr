@@ -190,7 +190,7 @@ class ProjectDonationThanksView(BaseView):
     template_name = "partner_sites/project/donate/donate_thanks.html"
     
     def get_context_data(self, invoice=None, **kwargs):
-        context = super(BaseView, self).get_context_data(**kwargs)
+        context = super(ProjectDonationThanksView, self).get_context_data(**kwargs)
         invoice_id = self.request.GET.get("invoice", None)
         transaction_id = self.request.GET.get("transaction_id", None)
         if invoice_id is not None:
