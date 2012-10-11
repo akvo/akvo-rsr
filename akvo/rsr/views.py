@@ -1326,20 +1326,22 @@ def mollie_report(request, mollie_response=None):
 @require_GET
 def mollie_thanks(request, invoice=None, template="rsr/project/donate/donate_thanks.html"):
     transaction_id = request.GET.get("transaction_id", None)
-    invoice = Invoice.objects.get(transaction_id=transaction_id)
-    return render_to_response(template,
-                              dict(invoice=invoice),
-                              context_instance=RequestContext(request))
+    if transaction_id is not None:
+        invoice = Invoice.objects.get(transaction_id=transaction_id)
+        return render_to_response(template,
+                                  dict(invoice=invoice),
+                                  context_instance=RequestContext(request))
     return redirect("index")
 
 
 @require_GET
 def paypal_thanks(request, template="rsr/project/donate/donate_thanks.html"):
     invoice_id = request.GET.get("invoice", None)
-    invoice = Invoice.objects.get(pk=invoice_id)
-    return render_to_response(template,
-                              dict(invoice=invoice),
-                              context_instance=RequestContext(request))
+    if invoice_id is not None:
+        invoice = Invoice.objects.get(pk=invoice_id)
+        return render_to_response(template,
+                                  dict(invoice=invoice),
+                                  context_instance=RequestContext(request))
     return redirect("index")
 
 
