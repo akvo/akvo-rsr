@@ -18,7 +18,7 @@ from django.views.generic.edit import FormView, UpdateView
 
 from akvo.rsr.forms import ProjectUpdateForm
 from akvo.rsr.models import Project, ProjectUpdate
-from akvo.rsr.views_partner_sites.base import BaseProjectView, BaseListView
+from akvo.rsr.views_partner_sites.base import BaseProjectView, BaseListView, BaseView
 
 
 __all__ = [
