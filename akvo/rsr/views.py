@@ -1231,7 +1231,7 @@ def donate(request, p, engine):
                 invoice.test = True
             host = urlsplit(request.get_host())
             base_site_url = "%s://%s" % (host.scheme, host.netloc)
-            akvo_url = "http://www.akvo.org/"
+            akvo_url = "http://%s" % settings.DOMAIN_NAME
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
