@@ -182,3 +182,18 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(ProjectUpdate, id=self.kwargs['update_id'])
+
+
+class ProjectDonationThanksView(BaseView):
+    "Render a thankyou page after a successful donation"
+
+    def get_context_data(self, invoice=None, **kwargs):
+        context = super(BaseView, self).get_context_data(**kwargs)
+        invoice_id = self.request.GET.get("invoice", None)
+        transaction_id = self.request.GET.get("transaction_id", None)
+        if invoice_id is not None:
+            invoice = Invoice.objects.get(pk=invoice_id)
+        if transction_id is not None:
+            invoice = Invoice.objects.get(transaction_id=transaction_id)
+        context["invoice"] = invoice
+        return context

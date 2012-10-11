@@ -9,7 +9,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver)
+from django.core.urlresolvers import LocaleRegexURLResolver, is_valid_path, get_resolver
 from django.http import HttpResponseRedirect
 from django.middleware.locale import LocaleMiddleware
 from django.shortcuts import redirect
@@ -51,8 +51,8 @@ DEFAULT_PARTNER_SITE = getattr(settings, 'PARTNER_SITE', None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
 PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings,
-                                        'PARTNER_SITES_DEVELOPMENT_DOMAIN',
-                                        'akvoapp.dev')
+                                           'PARTNER_SITES_DEVELOPMENT_DOMAIN',
+                                           'akvoapp.dev')
 PARTNER_SITES_DOMAINS = getattr(settings,
                                 'PARTNER_SITES_DOMAINS',
                                 (
@@ -63,7 +63,8 @@ PARTNER_SITES_DOMAINS = getattr(settings,
                                     PARTNER_SITES_DEVELOPMENT_DOMAIN
                                 ))
 PARTNER_SITES_MARKETING_SITE = getattr(settings,
-    'PARTNER_SITES_MARKETING_SITE', 'http://www.akvoapp.org/')
+                                       'PARTNER_SITES_MARKETING_SITE',
+                                       'http://www.akvoapp.org/')
 
 
 def is_rsr_instance(domain):

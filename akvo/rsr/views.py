@@ -1197,11 +1197,11 @@ def can_donate_to_project(project):
 
 
 @fetch_project
-@render_to('rsr/project/donate/donate_step1.html')
+@render_to("rsr/project/donate/donate_step1.html")
 def setup_donation(request, p):
     if not can_donate_to_project(p):
-        return redirect('project_main', project_id=p.id)
-    request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
+        return redirect("project_main", project_id=p.id)
+    request.session["original_http_referer"] = request.META.get("HTTP_REFERER", None)
     return dict(project=p)
 
 
@@ -1296,8 +1296,9 @@ def void_invoice(request, invoice_id, action=None):
         invoice.status = 2
         invoice.save()
         if action == "back":
-            return redirect("complete_donation", project_id=invoice.project.id,
-                engine=invoice.engine)
+            return redirect("complete_donation",
+                            project_id=invoice.project.id,
+                            engine=invoice.engine)
         elif action == "cancel":
             return redirect("project_main", project_id=invoice.project.id)
     return redirect("project_list", slug="all")
@@ -1323,25 +1324,26 @@ def mollie_report(request, mollie_response=None):
 
 
 @require_GET
-def paypal_thanks(request):
-    invoice_id = request.GET.get("invoice", None)
-    if invoice_id:
-        invoice = Invoice.objects.get(pk=invoice_id)
-        return render_to_response("rsr/project/donate/donate_thanks.html",
-                                  dict(invoice=invoice,
-                                       project=invoice.project,
-                                       user=invoice.user),
-                                  context_instance=RequestContext(request))
+def mollie_thanks(request, invoice=None, template="rsr/project/donate/donate_thanks.html"):
+    transaction_id = request.GET.get("transaction_id", None)
+    invoice = Invoice.objects.get(transaction_id=transaction_id)
+    return render_to_response(template,
+                              dict(invoice=invoice,
+                                   project=invoice.project,
+                                   user=invoice.user),
+                              context_instance=RequestContext(request))
     return redirect("index")
 
 
 @require_GET
-@render_to("rsr/project/donate/donate_thanks.html")
-def mollie_thanks(request):
-    transaction_id = request.GET.get("transaction_id", None)
-    if transaction_id:
-        invoice = Invoice.objects.get(transaction_id=transaction_id)
-        return dict(invoice=invoice, project=invoice.project, user=invoice.user)
+def paypal_thanks(request, template="rsr/project/donate/donate_thanks.html"):
+    invoice_id = request.GET.get("invoice", None)
+    invoice = Invoice.objects.get(pk=invoice_id)
+    return render_to_response(template,
+                              dict(invoice=invoice,
+                                   project=invoice.project,
+                                   user=invoice.user),
+                              context_instance=RequestContext(request))
     return redirect("index")
 
 
