@@ -1328,9 +1328,7 @@ def mollie_thanks(request, invoice=None, template="rsr/project/donate/donate_tha
     transaction_id = request.GET.get("transaction_id", None)
     invoice = Invoice.objects.get(transaction_id=transaction_id)
     return render_to_response(template,
-                              dict(invoice=invoice,
-                                   project=invoice.project,
-                                   user=invoice.user),
+                              dict(invoice=invoice),
                               context_instance=RequestContext(request))
     return redirect("index")
 
@@ -1340,9 +1338,7 @@ def paypal_thanks(request, template="rsr/project/donate/donate_thanks.html"):
     invoice_id = request.GET.get("invoice", None)
     invoice = Invoice.objects.get(pk=invoice_id)
     return render_to_response(template,
-                              dict(invoice=invoice,
-                                   project=invoice.project,
-                                   user=invoice.user),
+                              dict(invoice=invoice),
                               context_instance=RequestContext(request))
     return redirect("index")
 
