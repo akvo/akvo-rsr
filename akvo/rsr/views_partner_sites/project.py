@@ -7,7 +7,6 @@
 """
 from __future__ import absolute_import
 
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
