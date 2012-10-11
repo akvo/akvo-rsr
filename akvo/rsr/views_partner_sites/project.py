@@ -17,7 +17,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.edit import FormView, UpdateView
 
 from akvo.rsr.forms import ProjectUpdateForm
-from akvo.rsr.models import Project, ProjectUpdate
+from akvo.rsr.models import Invoice, Project, ProjectUpdate
 from akvo.rsr.views_partner_sites.base import BaseProjectView, BaseListView, BaseView
 
 
@@ -195,7 +195,7 @@ class ProjectDonationThanksView(BaseView):
         transaction_id = self.request.GET.get("transaction_id", None)
         if invoice_id is not None:
             invoice = Invoice.objects.get(pk=invoice_id)
-        if transction_id is not None:
+        if transaction_id is not None:
             invoice = Invoice.objects.get(transaction_id=transaction_id)
         context["invoice"] = invoice
         return context
