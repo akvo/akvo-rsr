@@ -210,23 +210,23 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 
 def send_donation_confirmation_emails(invoice_id):
-    invoice = get_model('rsr', 'invoice').objects.get(pk=invoice_id)
-    site_url = 'http://%s' % getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
-    base_project_url = reverse('project_main', kwargs=dict(project_id=invoice.project.id))
+    invoice = get_model("rsr", "invoice").objects.get(pk=invoice_id)
+    site_url = 'http://%s' % getattr(settings, "DOMAIN_NAME", "www.akvo.org")
+    base_project_url = reverse("project_main", kwargs=dict(project_id=invoice.project.id))
     project_url = site_url + base_project_url
-    base_project_updates_url = reverse('project_updates', kwargs=dict(project_id=invoice.project.id))
+    base_project_updates_url = reverse("project_updates", kwargs=dict(project_id=invoice.project.id))
     project_updates_url = site_url + base_project_updates_url
-    t = loader.get_template('rsr/project/donate/donation_confirmation_email.html')
+    t = loader.get_template("rsr/project/donate/donation_confirmation_email.html")
     c = Context(dict(invoice=invoice, site_url=site_url,
                      project_url=project_url, project_updates_url=project_updates_url))
     message_body = t.render(c)
-    subject_field = _(u'Thank you from Akvo.org!')
-    from_field = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@akvo.org')
+    subject_field = _("Thank you from Akvo.org!")
+    from_field = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org")
     bcc_field = [invoice.notification_email]
     to_field = [invoice.get_email]
     msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
     msg.content_subtype = "html"
-    msg.send()
+    msg.send(fail_silently=True)
     invoice.confirmation_email_sent = True
     invoice.save()
     
