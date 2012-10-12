@@ -55,19 +55,18 @@ PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings,
                                            'akvoapp.dev')
 PARTNER_SITES_DOMAINS = getattr(settings,
                                 'PARTNER_SITES_DOMAINS',
-                                (
-                                    'akvoapp.org',
-                                    'akvotest.org',
-                                    'akvotest2.org',
-                                    'akvotest3.org',
-                                    PARTNER_SITES_DEVELOPMENT_DOMAIN
-                                ))
+                                ('akvoapp.org',
+                                 'akvotest.org',
+                                 'akvotest2.org',
+                                 'akvotest3.org',
+                                 PARTNER_SITES_DEVELOPMENT_DOMAIN))
 PARTNER_SITES_MARKETING_SITE = getattr(settings,
                                        'PARTNER_SITES_MARKETING_SITE',
                                        'http://www.akvoapp.org/')
 
 
-def normalize_domain(domain):
+def get_domain(request):
+    domain = request.get_host().split(":")[0]
     domain_parts = domain.split(".")
     if len(domain_parts) > 3:
         domain = "%s.%s.%s" % tuple(domain_parts[-3:])
@@ -84,7 +83,7 @@ def is_rsr_instance(domain):
 def is_partner_site_instance(domain):
     """Predicate to determine if an incoming request domain should be
     handled as a partner site instance."""
-    domain_parts = domain.split('.')
+    domain_parts = domain.split(".")
     if len(domain_parts) >= 3:
         domain_name = "%s.%s" % tuple(domain_parts[-2:])
         if domain_name in PARTNER_SITES_DOMAINS:
@@ -112,7 +111,7 @@ def get_or_create_site(domain):
 class PartnerSitesRouterMiddleware(object):
 
     def process_request(self, request, partner_site=None):
-        domain = normalize_domain(request.get_host().split(':')[0])
+        domain = get_domain(request)
         if is_rsr_instance(domain):  # Vanilla Akvo RSR instance
             request.urlconf = 'akvo.urls.rsr'
         elif is_partner_site_instance(domain):  # Partner site instance
