@@ -67,6 +67,13 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings,
                                        'http://www.akvoapp.org/')
 
 
+def normalize_domain(domain):
+    domain_parts = domain.split(".")
+    if len(domain_parts) > 3:
+        domain = "%s.%s.%s" % tuple(domain_parts[-3:])
+    return domain
+
+
 def is_rsr_instance(domain):
     """Predicate to determine if an incoming request domain should be handled
     as a regular instance of Akvo RSR."""
@@ -77,9 +84,9 @@ def is_rsr_instance(domain):
 def is_partner_site_instance(domain):
     """Predicate to determine if an incoming request domain should be
     handled as a partner site instance."""
-    domain_parts = tuple(domain.split('.'))
+    domain_parts = domain.split('.')
     if len(domain_parts) >= 3:
-        domain_name = '%s.%s' % domain_parts[-2:]
+        domain_name = "%s.%s" % tuple(domain_parts[-2:])
         if domain_name in PARTNER_SITES_DOMAINS:
             return True
     return False
@@ -88,6 +95,8 @@ def is_partner_site_instance(domain):
 def get_or_create_site(domain):
     """Helper function to get or create a `django.contrib.sites.models.Site` object.
     Also takes care of removing any duplicates."""
+    if domain == "akvo.org":
+        domain = "www.akvo.org"
     sites = Site.objects.filter(domain=domain)
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
@@ -103,25 +112,24 @@ def get_or_create_site(domain):
 class PartnerSitesRouterMiddleware(object):
 
     def process_request(self, request, partner_site=None):
-        domain = request.get_host().split(':')[0]
+        domain = normalize_domain(request.get_host().split(':')[0])
         if is_rsr_instance(domain):  # Vanilla Akvo RSR instance
             request.urlconf = 'akvo.urls.rsr'
         elif is_partner_site_instance(domain):  # Partner site instance
-            domain = domain.split('.')[-3]
-            request.urlconf = 'akvo.urls.partner_sites'
+            hostname = domain.split('.')[-3]
             try:
-                partner_site = PartnerSite.objects.get(hostname=domain)
+                partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
             if partner_site is None or not partner_site.enabled:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
         else:  # Partner site instance on partner-nominated domain
             try:
-                request.urlconf = 'akvo.urls.partner_sites'
                 partner_site = PartnerSite.objects.get(cname=domain)
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
         if partner_site is not None and partner_site.enabled:
+            request.urlconf = 'akvo.urls.partner_sites'
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
