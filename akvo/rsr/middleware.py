@@ -72,13 +72,13 @@ def get_domain(request):
     domain = request.get_host().split(":")[0]
     domain_parts = domain.split(".")
     if len(domain_parts) > 3:
-        domain = "%s.%s.%s" % tuple(domain_parts[-3:])
+        domain = u"%s.%s.%s" % tuple(domain_parts[-3:])
     return domain
 
 
 def get_host_url(request):
     host = urlsplit(request.get_host())
-    return "%s://%s" % (host.scheme, host.netloc)
+    return u"%s://%s" % (host.scheme, host.netloc)
 
 
 def is_rsr_instance(domain):
