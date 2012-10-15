@@ -44,25 +44,25 @@ def make_tls_property(default=None):
     return TLSProperty()
 
 
-DEFAULT_SITE_ID = getattr(settings, 'SITE_ID', None)
+DEFAULT_SITE_ID = getattr(settings, "SITE_ID", None)
 settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 
-DEFAULT_PARTNER_SITE = getattr(settings, 'PARTNER_SITE', None)
+DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
 PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings,
-                                           'PARTNER_SITES_DEVELOPMENT_DOMAIN',
-                                           'akvoapp.dev')
+                                           "PARTNER_SITES_DEVELOPMENT_DOMAIN",
+                                           "akvoapp.dev")
 PARTNER_SITES_DOMAINS = getattr(settings,
-                                'PARTNER_SITES_DOMAINS',
-                                ('akvoapp.org',
-                                 'akvotest.org',
-                                 'akvotest2.org',
-                                 'akvotest3.org',
+                                "PARTNER_SITES_DOMAINS",
+                                ("akvoapp.org",
+                                 "akvotest.org",
+                                 "akvotest2.org",
+                                 "akvotest3.org",
                                  PARTNER_SITES_DEVELOPMENT_DOMAIN))
 PARTNER_SITES_MARKETING_SITE = getattr(settings,
-                                       'PARTNER_SITES_MARKETING_SITE',
-                                       'http://www.akvoapp.org/')
+                                       "PARTNER_SITES_MARKETING_SITE",
+                                       "http://www.akvoapp.org/")
 
 
 def get_domain(request):
@@ -76,24 +76,28 @@ def get_domain(request):
 def is_rsr_instance(domain):
     """Predicate to determine if an incoming request domain should be handled
     as a regular instance of Akvo RSR."""
-    dev_domains = ('localhost', '127.0.0.1', 'akvo.dev', '77.53.15.119')
-    return domain == 'akvo.org' or domain.endswith('.akvo.org') or domain in dev_domains
+    dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
+    return domain == "akvo.org" or domain.endswith(".akvo.org") or domain in dev_domains
 
 
 def is_partner_site_instance(domain):
     """Predicate to determine if an incoming request domain should be
-    handled as a partner site instance."""
+    handled as a partner site instance.
+
+    """
     domain_parts = domain.split(".")
     if len(domain_parts) >= 3:
-        domain_name = "%s.%s" % tuple(domain_parts[-2:])
-        if domain_name in PARTNER_SITES_DOMAINS:
+        domain = "%s.%s" % tuple(domain_parts[-2:])
+        if domain in PARTNER_SITES_DOMAINS:
             return True
     return False
 
 
 def get_or_create_site(domain):
     """Helper function to get or create a `django.contrib.sites.models.Site` object.
-    Also takes care of removing any duplicates."""
+    Also takes care of removing any duplicates.
+
+    """
     if domain == "akvo.org":
         domain = "www.akvo.org"
     sites = Site.objects.filter(domain=domain)
