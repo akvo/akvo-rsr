@@ -5,7 +5,10 @@
     See more details in the license.txt file located at the root folder of the
     Akvo RSR module. For additional details on the GNU license please
     see < http://www.gnu.org/licenses/agpl.html >.
+
 """
+
+from urlparse import urlsplit
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -73,6 +76,11 @@ def get_domain(request):
     return domain
 
 
+def get_host_url(request):
+    host = urlsplit(request.get_host())
+    return "%s://%s" % (host.scheme, host.netloc)
+
+
 def is_rsr_instance(domain):
     """Predicate to determine if an incoming request domain should be handled
     as a regular instance of Akvo RSR."""
@@ -117,9 +125,9 @@ class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, partner_site=None):
         domain = get_domain(request)
         if is_rsr_instance(domain):  # Vanilla Akvo RSR instance
-            request.urlconf = 'akvo.urls.rsr'
+            request.urlconf = "akvo.urls.rsr"
         elif is_partner_site_instance(domain):  # Partner site instance
-            hostname = domain.split('.')[-3]
+            hostname = domain.split(".")[-3]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
@@ -132,19 +140,22 @@ class PartnerSitesRouterMiddleware(object):
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
         if partner_site is not None and partner_site.enabled:
-            request.urlconf = 'akvo.urls.partner_sites'
+            request.urlconf = "akvo.urls.partner_sites"
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
+        request.host_url = get_host_url(request)
         return
 
 
 class PartnerSitesLocaleMiddleware(LocaleMiddleware):
     """Partner sites aware version of Django's LocaleMiddleware. Since we
     swap out the root urlconf for a partner sites specific one, and the
-    original Django LocaleMiddleware didn't like that."""
+    original Django LocaleMiddleware didn't like that.
+    
+    """
 
     def process_request(self, request):
         check_path = self.is_language_prefix_patterns_used(request)

@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from itertools import groupby
-from urlparse import urljoin, urlsplit
+from urlparse import urljoin
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (MiniCMS, FocusArea, Organisation,
@@ -1229,8 +1229,6 @@ def donate(request, p, engine):
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
             if getattr(settings, "DONATION_TEST", False):
                 invoice.test = True
-            host = urlsplit(request.get_host())
-            base_site_url = "%s://%s" % (host.scheme, host.netloc)
             akvo_url = "http://%s/" % settings.DOMAIN_NAME
             if engine == "ideal":
                 invoice.bank = cd["bank"]
@@ -1240,7 +1238,7 @@ def donate(request, p, engine):
                     partnerid=invoice.gateway,
                     description=description,
                     reporturl=urljoin(akvo_url, reverse("mollie_report")),
-                    returnurl=urljoin(base_site_url, reverse("mollie_thanks")))
+                    returnurl=urljoin(request.host_url, reverse("mollie_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]
@@ -1265,7 +1263,7 @@ def donate(request, p, engine):
                     invoice=int(invoice.id),
                     lc=invoice.locale,
                     notify_url=urljoin(akvo_url, reverse("paypal_ipn")),
-                    return_url=urljoin(base_site_url, reverse("paypal_thanks")),
+                    return_url=urljoin(request.host_url, reverse("paypal_thanks")),
                     cancel_url=akvo_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if getattr(settings, "PAYPAL_TEST", False):
