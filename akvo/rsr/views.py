@@ -1238,7 +1238,7 @@ def donate(request, p, engine):
                     partnerid=invoice.gateway,
                     description=description,
                     reporturl=urljoin(akvo_url, reverse("mollie_report")),
-                    returnurl=urljoin(request.host_url, reverse("mollie_thanks")))
+                    returnurl=urljoin(request.base_host_url, reverse("mollie_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]

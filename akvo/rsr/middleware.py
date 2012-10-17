@@ -53,51 +53,50 @@ settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings,
-                                           "PARTNER_SITES_DEVELOPMENT_DOMAIN",
+PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings, "PARTNER_SITES_DEVELOPMENT_DOMAIN",
                                            "akvoapp.dev")
-PARTNER_SITES_DOMAINS = getattr(settings,
-                                "PARTNER_SITES_DOMAINS",
+PARTNER_SITES_DOMAINS = getattr(settings, "PARTNER_SITES_DOMAINS",
                                 ("akvoapp.org",
                                  "akvotest.org",
                                  "akvotest2.org",
                                  "akvotest3.org",
                                  PARTNER_SITES_DEVELOPMENT_DOMAIN))
-PARTNER_SITES_MARKETING_SITE = getattr(settings,
-                                       "PARTNER_SITES_MARKETING_SITE",
+PARTNER_SITES_MARKETING_SITE = getattr(settings, "PARTNER_SITES_MARKETING_SITE",
                                        "http://www.akvoapp.org/")
 
 
 def get_domain(request):
+    "Return a standardized domain for the current request host."
     domain = request.get_host().split(":")[0]
     domain_parts = domain.split(".")
     if len(domain_parts) > 3:
-        domain = u"%s.%s.%s" % tuple(domain_parts[-3:])
+        domain = "%s.%s.%s" % tuple(domain_parts[-3:])
     return domain
 
 
-def get_host_url(request):
+def get_base_host_url(request):
+    "Return a standardized full URL for the current request host."
     host = urlsplit(request.get_host())
-    return u"%s://%s" % (host.scheme, host.netloc)
+    return "%s://%s" % (host.scheme, host.netloc)
 
 
 def is_rsr_instance(domain):
     """Predicate to determine if an incoming request domain should be handled
-    as a regular instance of Akvo RSR."""
+    as a regular instance of Akvo RSR.
+    
+    """
     dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
     return domain == "akvo.org" or domain.endswith(".akvo.org") or domain in dev_domains
 
 
 def is_partner_site_instance(domain):
-    """Predicate to determine if an incoming request domain should be
-    handled as a partner site instance.
+    """Predicate to determine if an incoming request domain should be handled
+    as a partner site instance.
 
     """
-    domain_parts = domain.split(".")
-    if len(domain_parts) >= 3:
-        domain = "%s.%s" % tuple(domain_parts[-2:])
-        if domain in PARTNER_SITES_DOMAINS:
-            return True
+    base_domain = "%s.%s" % tuple(domain.split(".")[-2:])
+    if base_domain in PARTNER_SITES_DOMAINS:
+        return True
     return False
 
 
@@ -146,7 +145,7 @@ class PartnerSitesRouterMiddleware(object):
             request.default_language = partner_site.default_language
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
-        request.host_url = get_host_url(request)
+        request.base_host_url = get_base_host_url(request)
         return
 
 
