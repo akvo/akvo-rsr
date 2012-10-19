@@ -67,10 +67,10 @@ class PartnerSitesRouterMiddleware(object):
 
     def get_domain(self, request):
         domain = request.get_host().split(":")[0]
-        domain_parts = domain.split(".")                                                     
-        if len(domain_parts) > 3:                                                            
-            domain = "%s.%s.%s" % tuple(domain_parts[-3:])                                   
-        return domain 
+        domain_parts = domain.split(".")
+        if len(domain_parts) > 3:
+            domain = "%s.%s.%s" % tuple(domain_parts[-3:])
+        return domain
 
     def is_rsr_instance(self, domain):
         dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
@@ -129,7 +129,7 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
     """Partner sites aware version of Django's LocaleMiddleware. Since we
     swap out the root urlconf for a partner sites specific one, and the
     original Django LocaleMiddleware didn't like that.
-    
+
     """
 
     def process_request(self, request):
@@ -148,8 +148,8 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
 
         language = translation.get_language()
         if (response.status_code == 404 and
-                not translation.get_language_from_path(request.path_info)
-                    and self.is_language_prefix_patterns_used(request)):
+                not translation.get_language_from_path(request.path_info) and
+                self.is_language_prefix_patterns_used(request)):
             urlconf = getattr(request, 'urlconf', None)
             language_path = '/%s%s' % (language, request.path_info)
             if settings.APPEND_SLASH and not language_path.endswith('/'):
