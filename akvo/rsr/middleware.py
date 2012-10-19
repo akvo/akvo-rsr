@@ -8,8 +8,6 @@
 
 """
 
-from urlparse import urlsplit
-
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import LocaleRegexURLResolver, is_valid_path, get_resolver
@@ -72,12 +70,6 @@ def get_domain(request):
     if len(domain_parts) > 3:
         domain = "%s.%s.%s" % tuple(domain_parts[-3:])
     return domain
-
-
-def get_base_host_url(request):
-    "Return a standardized full URL for the current request host."
-    host = urlsplit(request.get_host())
-    return "%s://%s" % (host.scheme, host.netloc)
 
 
 def is_rsr_instance(domain):
@@ -145,7 +137,6 @@ class PartnerSitesRouterMiddleware(object):
             request.default_language = partner_site.default_language
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
-        request.base_host_url = get_base_host_url(request)
         return
 
 

@@ -1229,7 +1229,8 @@ def donate(request, p, engine):
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
             if getattr(settings, "DONATION_TEST", False):
                 invoice.test = True
-            akvo_url = "http://%s/" % settings.DOMAIN_NAME
+            root_akvo_url = "http://%s/" % settings.DOMAIN_NAME
+            root_host_url = "http://%s/" % request.get_host()
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -1237,8 +1238,8 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=urljoin(akvo_url, reverse("mollie_report")),
-                    returnurl=urljoin(request.base_host_url, reverse("mollie_thanks")))
+                    reporturl=urljoin(root_akvo_url, reverse("mollie_report")),
+                    returnurl=urljoin(root_host_url, reverse("mollie_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]
@@ -1262,9 +1263,9 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=urljoin(akvo_url, reverse("paypal_ipn")),
-                    return_url=urljoin(request.host_url, reverse("paypal_thanks")),
-                    cancel_url=akvo_url)
+                    notify_url=urljoin(root_akvo_url, reverse("paypal_ipn")),
+                    return_url=urljoin(root_host_url, reverse("paypal_thanks")),
+                    cancel_url=root_akvo_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if getattr(settings, "PAYPAL_TEST", False):
                     pp_button = pp_form.sandbox()
