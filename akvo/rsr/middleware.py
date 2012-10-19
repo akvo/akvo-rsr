@@ -66,15 +66,15 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings, "PARTNER_SITES_MARKETING_SITE",
 class PartnerSitesRouterMiddleware(object):
 
     def get_domain(self, request):
-         domain = request.get_host().split(":")[0]
-         domain_parts = domain.split(".")                                                     
-         if len(domain_parts) > 3:                                                            
+        domain = request.get_host().split(":")[0]
+        domain_parts = domain.split(".")                                                     
+        if len(domain_parts) > 3:                                                            
             domain = "%s.%s.%s" % tuple(domain_parts[-3:])                                   
-         return domain 
+        return domain 
 
     def is_rsr_instance(self, domain):
-         dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
-         return domain == "akvo.org" or domain.endswith(".akvo.org") or domain in dev_domains
+        dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
+        return domain == "akvo.org" or domain.endswith(".akvo.org") or domain in dev_domains
 
     def is_partner_site_instance(self, domain):
         base_domain = "%s.%s" % tuple(domain.split(".")[-2:])
@@ -101,7 +101,7 @@ class PartnerSitesRouterMiddleware(object):
         if self.is_rsr_instance(domain):  # Vanilla Akvo RSR instance
             request.urlconf = "akvo.urls.rsr"
         elif self.is_partner_site_instance(domain):  # Partner site instance
-            hostname = self.domain.split(".")[-3]
+            hostname = domain.split(".")[-3]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
