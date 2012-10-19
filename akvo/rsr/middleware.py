@@ -63,62 +63,45 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings, "PARTNER_SITES_MARKETING_SITE",
                                        "http://www.akvoapp.org/")
 
 
-def get_domain(request):
-    "Return a standardized domain for the current request host."
-    domain = request.get_host().split(":")[0]
-    domain_parts = domain.split(".")
-    if len(domain_parts) > 3:
-        domain = "%s.%s.%s" % tuple(domain_parts[-3:])
-    return domain
-
-
-def is_rsr_instance(domain):
-    """Predicate to determine if an incoming request domain should be handled
-    as a regular instance of Akvo RSR.
-    
-    """
-    dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
-    return domain == "akvo.org" or domain.endswith(".akvo.org") or domain in dev_domains
-
-
-def is_partner_site_instance(domain):
-    """Predicate to determine if an incoming request domain should be handled
-    as a partner site instance.
-
-    """
-    base_domain = "%s.%s" % tuple(domain.split(".")[-2:])
-    if base_domain in PARTNER_SITES_DOMAINS:
-        return True
-    return False
-
-
-def get_or_create_site(domain):
-    """Helper function to get or create a `django.contrib.sites.models.Site` object.
-    Also takes care of removing any duplicates.
-
-    """
-    if domain == "akvo.org":
-        domain = "www.akvo.org"
-    sites = Site.objects.filter(domain=domain)
-    if sites.count() >= 1:
-        site, duplicates = sites[0], sites[1:]
-        if duplicates:
-            for duplicate in duplicates:
-                duplicate.delete()
-    else:
-        site = Site(domain=domain, name=domain)
-        site.save()
-    return site
-
-
 class PartnerSitesRouterMiddleware(object):
 
+    def get_domain(self, request):
+         domain = request.get_host().split(":")[0]
+         domain_parts = domain.split(".")                                                     
+         if len(domain_parts) > 3:                                                            
+            domain = "%s.%s.%s" % tuple(domain_parts[-3:])                                   
+         return domain 
+
+    def is_rsr_instance(self, domain):
+         dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
+         return domain == "akvo.org" or domain.endswith(".akvo.org") or domain in dev_domains
+
+    def is_partner_site_instance(self, domain):
+        base_domain = "%s.%s" % tuple(domain.split(".")[-2:])
+        if base_domain in PARTNER_SITES_DOMAINS:
+            return True
+        return False
+
+    def get_or_create_site(self, domain):
+        if domain == "akvo.org":
+            domain = "www.akvo.org"
+        sites = Site.objects.filter(domain=domain)
+        if sites.count() >= 1:
+            site, duplicates = sites[0], sites[1:]
+            if duplicates:
+                for duplicate in duplicates:
+                    duplicate.delete()
+        else:
+            site = Site(domain=domain, name=domain)
+            site.save()
+        return site
+
     def process_request(self, request, partner_site=None):
-        domain = get_domain(request)
-        if is_rsr_instance(domain):  # Vanilla Akvo RSR instance
+        domain = self.get_domain(request)
+        if self.is_rsr_instance(domain):  # Vanilla Akvo RSR instance
             request.urlconf = "akvo.urls.rsr"
-        elif is_partner_site_instance(domain):  # Partner site instance
-            hostname = domain.split(".")[-3]
+        elif self.is_partner_site_instance(domain):  # Partner site instance
+            hostname = self.domain.split(".")[-3]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
@@ -135,7 +118,7 @@ class PartnerSitesRouterMiddleware(object):
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
-        site = get_or_create_site(domain)
+        site = self.get_or_create_site(domain)
         settings.SITE_ID = site.id
         return
 
