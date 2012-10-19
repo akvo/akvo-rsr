@@ -74,7 +74,9 @@ class PartnerSitesRouterMiddleware(object):
 
     def is_rsr_instance(self, domain):
         dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
-        return domain == "akvo.org" or domain.endswith(".akvo.org") or domain in dev_domains
+        return (domain == "akvo.org" or
+                domain.endswith(".akvo.org") or
+                domain in dev_domains)
 
     def is_partner_site_instance(self, domain):
         base_domain = "%s.%s" % tuple(domain.split(".")[-2:])
@@ -83,8 +85,8 @@ class PartnerSitesRouterMiddleware(object):
         return False
 
     def get_or_create_site(self, domain):
-        if domain == "akvo.org":
-            domain = "www.akvo.org"
+        if domain == "www.akvo.org":
+            domain = "akvo.org"
         sites = Site.objects.filter(domain=domain)
         if sites.count() >= 1:
             site, duplicates = sites[0], sites[1:]
@@ -98,9 +100,9 @@ class PartnerSitesRouterMiddleware(object):
 
     def process_request(self, request, partner_site=None):
         domain = self.get_domain(request)
-        if self.is_rsr_instance(domain):  # Vanilla Akvo RSR instance
+        if self.is_rsr_instance(domain):
             request.urlconf = "akvo.urls.rsr"
-        elif self.is_partner_site_instance(domain):  # Partner site instance
+        elif self.is_partner_site_instance(domain):
             hostname = domain.split(".")[-3]
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
@@ -108,7 +110,7 @@ class PartnerSitesRouterMiddleware(object):
                 pass
             if partner_site is None or not partner_site.enabled:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
-        else:  # Partner site instance on partner-nominated domain
+        else:  # Probably a partner site instance on partner-nominated domain
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
             except:
