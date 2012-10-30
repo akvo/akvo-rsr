@@ -73,11 +73,23 @@
     </div>
   {% endif %}
   <div class="clear"></div>	
-  <p style="margin-left:20px; margin-top:20px;">
-    {% trans 'Do you represent an institution or company interested in funding or sponsoring this project?' %}<br />
-    <br />
-    {% trans 'Become an' %} <a href="/web/how_to_fund_a_project">{% trans 'Akvo funding partner' %}</a>!
-  </p>
+  <div style="border:1px solid #000; margin-left:20px; padding:20px; margin-right:20px;">
+    <div style="width:651px; float:left; margin-right:20px">
+      <h3>{% trans "For organisations" %}</h3>
+      <p class="small">
+        {% trans "Do you represent an institution or company interested in funding or sponsoring this project?" %}
+        <br />
+        {% blocktrans with funding_url="http://www.akvo.org/web/how_to_fund_a_project" %}
+          Become an <a href="{{funding_url}}">Akvo funding partner</a>.
+        {% endblocktrans %}
+      </p>
+    </div>
+    <div style="width:200px; float:left;">
+      <img src="{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo.png" alt="" />
+    </div>
+    <div class="clear"></div>
+  </div>
+  
   <div style="height:40px">&nbsp;</div>
 </div>
 
