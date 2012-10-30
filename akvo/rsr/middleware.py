@@ -10,7 +10,8 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import LocaleRegexURLResolver, is_valid_path, get_resolver
+from django.core.urlresolvers import (LocaleRegexURLResolver,
+                                      is_valid_path, get_resolver)
 from django.http import HttpResponseRedirect
 from django.middleware.locale import LocaleMiddleware
 from django.shortcuts import redirect
@@ -56,16 +57,25 @@ settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings, "PARTNER_SITES_DEVELOPMENT_DOMAIN",
-                                           "akvoapp.dev")
-PARTNER_SITES_DOMAINS = getattr(settings, "PARTNER_SITES_DOMAINS",
-                                ("akvoapp.org",
-                                 "akvotest.org",
-                                 "akvotest2.org",
-                                 "akvotest3.org",
-                                 PARTNER_SITES_DEVELOPMENT_DOMAIN))
-PARTNER_SITES_MARKETING_SITE = getattr(settings, "PARTNER_SITES_MARKETING_SITE",
-                                       "http://www.akvoapp.org/")
+PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(
+    settings,
+    "PARTNER_SITES_DEVELOPMENT_DOMAIN",
+    "akvoapp.dev"
+)
+PARTNER_SITES_DOMAINS = getattr(
+    settings,
+    "PARTNER_SITES_DOMAINS",
+    ("akvoapp.org",
+     "akvotest.org",
+     "akvotest2.org",
+     "akvotest3.org",
+     PARTNER_SITES_DEVELOPMENT_DOMAIN)
+)
+PARTNER_SITES_MARKETING_SITE = getattr(
+    settings,
+    "PARTNER_SITES_MARKETING_SITE",
+    "http://www.akvoapp.org/"
+)
 
 
 class PartnerSitesRouterMiddleware(object):
