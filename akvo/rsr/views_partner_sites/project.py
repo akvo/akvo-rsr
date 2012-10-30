@@ -28,7 +28,7 @@ __all__ = [
     'ProjectUpdateListView',
     'ProjectUpdateView',
     'ProjectDonationThanksView'
-    ]
+]
 
 
 class ProjectFundingView(BaseProjectView):
