@@ -141,7 +141,8 @@ class PartnerSitesRouterMiddleware(object):
 
 
 class PartnerSitesLocaleMiddleware(LocaleMiddleware):
-    """Partner sites aware version of Django's LocaleMiddleware. Since we
+    """
+    Partner sites aware version of Django's LocaleMiddleware. Since we
     swap out the root urlconf for a partner sites specific one, and the
     original Django LocaleMiddleware didn't like that.
 
@@ -186,6 +187,7 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
         """
         Returns `True` if the `LocaleRegexURLResolver` is used
         at root level of the urlpatterns, else it returns `False`.
+        
         """
         for url_pattern in get_resolver(request.urlconf).url_patterns:
             if isinstance(url_pattern, LocaleRegexURLResolver):
