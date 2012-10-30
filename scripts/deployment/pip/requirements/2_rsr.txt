@@ -1,5 +1,5 @@
 # Django
-Django==1.4
+Django==1.4.2
 
 # Django apps
 django-counter==0.1.6
