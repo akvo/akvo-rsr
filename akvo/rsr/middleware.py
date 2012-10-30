@@ -20,6 +20,11 @@ from django.utils.cache import patch_vary_headers
 from akvo.rsr.models import PartnerSite
 
 
+__all__ = ["PartnerSitesLocaleMiddleware",
+           "PartnerSitesRouterMiddleware",
+           "make_tls_property"]
+
+
 def make_tls_property(default=None):
     "Creates a class-wide instance property with a thread-specific value."
     class TLSProperty(object):
