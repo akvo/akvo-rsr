@@ -195,9 +195,9 @@ class ProjectDonationThanksView(BaseView):
         context = super(ProjectDonationThanksView, self).get_context_data(**kwargs)
         invoice_id = self.request.GET.get("invoice", None)
         transaction_id = self.request.GET.get("transaction_id", None)
-        if invoice_id is not None:
+        if invoice_id is not None:  # PayPal
             invoice = Invoice.objects.get(pk=invoice_id)
-        elif transaction_id is not None:
+        elif transaction_id is not None:  # Mollie/iDEAL
             invoice = Invoice.objects.get(transaction_id=transaction_id)
         context["invoice"] = invoice
         return context

@@ -1240,7 +1240,7 @@ def donate(request, p, engine):
                     partnerid=invoice.gateway,
                     description=description,
                     reporturl=urljoin(root_akvo_url, reverse("mollie_report")),
-                    returnurl=urljoin(root_host_url, reverse("mollie_thanks")))
+                    returnurl=urljoin(root_host_url, reverse("donate_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]
@@ -1265,7 +1265,7 @@ def donate(request, p, engine):
                     invoice=int(invoice.id),
                     lc=invoice.locale,
                     notify_url=urljoin(root_akvo_url, reverse("paypal_ipn")),
-                    return_url=urljoin(root_host_url, reverse("paypal_thanks")),
+                    return_url=urljoin(root_host_url, reverse("donate_thanks")),
                     cancel_url=root_akvo_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if getattr(settings, "PAYPAL_TEST", False):
@@ -1324,24 +1324,16 @@ def mollie_report(request, mollie_response=None):
 
 
 @require_GET
-def mollie_thanks(request, invoice=None, template="rsr/project/donate/donate_thanks.html"):
+def donate_thanks(request, invoice=None, template="rsr/project/donate/donate_thanks.html"):
+    invoice_id = request.GET.get("invoice_id", None)
     transaction_id = request.GET.get("transaction_id", None)
-    if transaction_id is not None:
-        invoice = Invoice.objects.get(transaction_id=transaction_id)
-        return render_to_response(template,
-                                  dict(invoice=invoice),
-                                  context_instance=RequestContext(request))
-    return redirect("index")
-
-
-@require_GET
-def paypal_thanks(request, template="rsr/project/donate/donate_thanks.html"):
-    invoice_id = request.GET.get("invoice", None)
     if invoice_id is not None:
-        invoice = Invoice.objects.get(pk=invoice_id)
-        return render_to_response(template,
-                                  dict(invoice=invoice),
-                                  context_instance=RequestContext(request))
+        invoice = Invoice.objects.get(pk=invoice.id)
+    elif transaction_id is not None:
+        invoice = Invoice.objects.get(transaction_id=transaction_id)
+    return render_to_response(template,
+                              dict(invoice=invoice),
+                              context_instance=RequestContext(request))
     return redirect("index")
 
 
