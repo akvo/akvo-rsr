@@ -7,6 +7,28 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+
+Akvo RSR ver 2.1.2 release notes
+---
+30 October 2012, (Code name: Kiwi) kardan
+
+Overview
+----
+...
+
+New features & changes
+----
+...
+
+Bug fixes
+----
+###Image slider thumbs not faded on init
+There was a slight UI issue with the image slider on project pages.
+
+Github issue: [50](https://github.com/akvo/akvo-rsr/issues/50)
+
+---------------------------------------------
+
 Akvo RSR ver 2.1.1 release notes
 ---
 17 September 2012, (Code name: Jujube) ac
@@ -17,6 +39,7 @@ We have release several items in this version focusing around permissions and IA
 
 New features & changes
 ----
+
 
 ###Extension of the Akvo API
 We have improved the functionality of the Akvo API to improve usability all-round. This feature now enables users to authenticate their access using an API key linked to an Akvo RSR User account. This allows a little more access in terms of information as now user details can also be passed through a correctly authenticated access request.
