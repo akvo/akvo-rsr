@@ -64,6 +64,7 @@ Session.vim
 
 ## SublimeText
 /*.sublime-project
+/*.sublime-workspace
 
 ## Textmate
 *.tmproj
