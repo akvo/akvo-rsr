@@ -1193,8 +1193,9 @@ def project_map_widget(request, org_id):
 
 def can_donate_to_project(project):
     "Predicate to determine if a project can be donated to."
-    return (not project.funds_needed <= 0 or
-            project not in Project.objects.active())
+    funds_needed = project.funds_needed > 0
+    active = project in Project.objects.active()
+    return funds_needed and active
 
 
 @fetch_project
@@ -1324,7 +1325,9 @@ def mollie_report(request, mollie_response=None):
 
 
 @require_GET
-def donate_thanks(request, invoice=None, template="rsr/project/donate/donate_thanks.html"):
+def donate_thanks(request,
+                  invoice=None,
+                  template="rsr/project/donate/donate_thanks.html"):
     invoice_id = request.GET.get("invoice_id", None)
     transaction_id = request.GET.get("transaction_id", None)
     if invoice_id is not None:
@@ -1334,7 +1337,6 @@ def donate_thanks(request, invoice=None, template="rsr/project/donate/donate_tha
     return render_to_response(template,
                               dict(invoice=invoice),
                               context_instance=RequestContext(request))
-    return redirect("index")
 
 
 @render_to("rsr/global_map.html")
