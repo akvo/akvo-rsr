@@ -1,12 +1,13 @@
-/* Galleria Classic Theme 2012-08-07 | https://raw.github.com/aino/galleria/master/LICENSE | (c) Aino */
-
-#galleria-loader{height:1px!important}
-
+/*
+ * Galleria Classic Theme
+ * Copyright (c) 2010, Aino
+ * Licensed under the MIT license.
+ */
+ 
 .galleria-container {
     position: relative;
     overflow: hidden;
-    /*background: #000;*/
-    background: #fff;
+    background: #000;
 }
 .galleria-container img {
     -moz-user-select: none;
@@ -36,10 +37,9 @@
 .galleria-thumbnails .galleria-image {
     height: 40px;
     width: 60px;
-    /*background: #000;*/
-    background: #fff;
+    background: #000;
     margin: 0 5px 0 0;
-    border: 1px solid #ccc;
+    border: 1px solid #000;;
     float: left;
     cursor: pointer;
 }
@@ -50,7 +50,7 @@
     text-align: right;
     color: #fff;
     font: normal 11px/1 arial,sans-serif;
-    z-index: 1;
+    z-index: 2;
 }
 .galleria-loader {
     background: #000;
@@ -80,7 +80,7 @@
     font: bold 12px/1.1 arial,sans-serif;
     margin: 0;
     color: #fff;
-    margin-bottom: 7px;
+	margin-bottom: 7px;
 }
 .galleria-info-description {
     font: italic 12px/1.4 georgia,serif;
@@ -99,11 +99,7 @@
     cursor: pointer;
     display: none;
 }
-.notouch .galleria-info-close:hover{
-    opacity:1;
-    filter: alpha(opacity=100);
-}
-.touch .galleria-info-close:active{
+.galleria-info-close:hover{
     opacity:1;
     filter: alpha(opacity=100);
 }
@@ -117,11 +113,7 @@
     cursor: pointer;
     background-color: #000;
 }
-.notouch .galleria-info-link:hover {
-    opacity: 1;
-    filter: alpha(opacity=100);
-}
-.touch .galleria-info-link:active {
+.galleria-info-link:hover {
     opacity: 1;
     filter: alpha(opacity=100);
 }
@@ -151,13 +143,8 @@
     background-position: -254px 46px;
     z-index: 2;
 }
-.notouch .galleria-image-nav-left:hover,
-.notouch .galleria-image-nav-right:hover {
-    opacity: 1;
-    filter: alpha(opacity=100);
-}
-.touch .galleria-image-nav-left:active,
-.touch .galleria-image-nav-right:active {
+.galleria-image-nav-left:hover,
+.galleria-image-nav-right:hover {
     opacity: 1;
     filter: alpha(opacity=100);
 }
@@ -174,7 +161,6 @@
     z-index: 3;
     opacity: .8;
     filter: alpha(opacity=80);
-    background-color: #ccc;
 }
 .galleria-thumb-nav-right {
     background-position: -578px 5px;
@@ -187,20 +173,14 @@
     filter: alpha(opacity=20);
     cursor: default;
 }
-.notouch .galleria-thumb-nav-left:hover,
-.notouch .galleria-thumb-nav-right:hover {
+.galleria-thumb-nav-left:hover,
+.galleria-thumb-nav-right:hover {
     opacity: 1;
     filter: alpha(opacity=100);
     background-color: #111;
 }
-.touch .galleria-thumb-nav-left:active,
-.touch .galleria-thumb-nav-right:active {
-    opacity: 1;
-    filter: alpha(opacity=100);
-    background-color: #111;
-}
-.notouch .galleria-thumbnails-container .disabled:hover {
-    opacity: .2;
+.galleria-thumbnails-container .disabled:hover {
+    opacity: 0.2;
     filter: alpha(opacity=20);
     background-color: transparent;
 }

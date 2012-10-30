@@ -161,7 +161,7 @@
 
 {% block js %}
   {{ block.super }}
-  <script src="{{MEDIA_URL}}core/galleria/galleria_1.2.2.js"></script>
+  <script src="{{MEDIA_URL}}core/galleria/galleria-1.2.8.js"></script>
   <script>
     var galleria_data = [
         {
@@ -225,7 +225,11 @@
 {% block jq_ready %}
   jQ('#project_tabs').tabs();
   {{block.super}}
-  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white-old/galleria.classic.js');
+  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic/galleria.classic.min.js');
+  Galleria.configure({
+    showInfo: false
+  });
+
   $('#galleria').galleria({data_source: galleria_data});
   init_benchmarks();
   $('#benchmarks_switch').click(function () { handle_benchmarks() });
