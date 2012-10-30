@@ -1328,7 +1328,7 @@ def donate_thanks(request, invoice=None, template="rsr/project/donate/donate_tha
     invoice_id = request.GET.get("invoice_id", None)
     transaction_id = request.GET.get("transaction_id", None)
     if invoice_id is not None:
-        invoice = Invoice.objects.get(pk=invoice.id)
+        invoice = Invoice.objects.get(pk=invoice_id)
     elif transaction_id is not None:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
     return render_to_response(template,
