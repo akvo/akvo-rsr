@@ -1,5 +1,3 @@
-Last changed: 6 August 2012 ac
-
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
 We provide Akvo RSR as a service on your own URL and with your own branding, as well as and on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
@@ -18,7 +16,13 @@ Overview
 
 New features & changes
 ----
-...
+###Donation Initial Page Restyle/Addition
+
+On the first page of the donation process (http://www.akvo.org/rsr/project/613/donate/) there is currently the option of donating by PayPal or iDeal. At the bottom of the page there is also the option to donate as an Organisation which follows a different process.
+
+This alternative process have been more apparent to prevent organisations to participate in the workflow that is aimed at individuals.
+
+Github issue: [98](https://github.com/akvo/akvo-rsr/issues/98)
 
 Bug fixes
 ----
