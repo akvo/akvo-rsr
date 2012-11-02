@@ -229,7 +229,6 @@ def send_donation_confirmation_emails(invoice_id):
     msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
     msg.content_subtype = "html"
     msg.send(fail_silently=True)
-    invoice.confirmation_email_sent = True
     invoice.save()
     
 

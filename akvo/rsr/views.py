@@ -1193,9 +1193,9 @@ def project_map_widget(request, org_id):
 
 def can_donate_to_project(project):
     "Predicate to determine if a project can be donated to."
-    funds_needed = project.funds_needed > 0
     active = project in Project.objects.active()
-    return funds_needed and active
+    funds_needed = project.funds_needed > 0
+    return active and funds_needed
 
 
 @fetch_project
