@@ -33,7 +33,7 @@ class RSRCodebaseConfig(object):
         self.repo_branch = repository_branch
         self.repo_branch_without_type = self._branch_without_type()
 
-        self.rsr_archive_url = os.path.join('http://nodeload.github.com/akvo/akvo-rsr/zipball', self.repo_branch)
+        self.rsr_archive_url = os.path.join('https://github.com/akvo/akvo-rsr/archive', self.repo_branch + '.zip')
 
         pip_requirements_base_url = os.path.join('https://raw.github.com/akvo/akvo-rsr', self.repo_branch, self.PIP_REQUIREMENTS_PATH)
         self.system_requirements_file_url   = os.path.join(pip_requirements_base_url, self.SYSTEM_REQUIREMENTS_FILE)

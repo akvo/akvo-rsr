@@ -36,7 +36,7 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
     def test_has_rsr_code_archive_url(self):
         """fab.tests.config.rsr.codebase_config_test  Has RSR code archive URL"""
 
-        self.assertEqual('http://nodeload.github.com/akvo/akvo-rsr/zipball/feature/sms', self.codebase_config.rsr_archive_url)
+        self.assertEqual('https://github.com/akvo/akvo-rsr/archive/feature/sms.zip', self.codebase_config.rsr_archive_url)
 
     def test_has_unpacked_rsr_archive_directory_mask(self):
         """fab.tests.config.rsr.codebase_config_test  Has unpacked RSR archive directory mask"""
