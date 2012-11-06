@@ -135,7 +135,7 @@ class RSRAppDeployerTest(mox.MoxTestBase):
 
     def _link_current_deployment_home(self):
         self._change_dir_to(self.deployment_config.repo_checkout_home)
-        self.mock_deployment_host.ensure_symlink_exists("current", self.deployment_config.rsr_deployment_home)
+        self.mock_deployment_host.ensure_symlink_exists("current", self.deployment_config.rsr_deployment_dir_name)
 
     def _link_static_media_directories(self):
         self._change_dir_to(self.deployment_config.rsr_static_media_home)

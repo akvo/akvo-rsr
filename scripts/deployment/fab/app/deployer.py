@@ -75,7 +75,7 @@ class RSRAppDeployer(object):
 
     def _link_current_deployment_home(self):
         with self.deployment_host.cd(self.config.repo_checkout_home):
-            self.deployment_host.ensure_symlink_exists("current", self.config.rsr_deployment_home)
+            self.deployment_host.ensure_symlink_exists("current", self.config.rsr_deployment_dir_name)
 
     def _link_static_media_directories(self):
         with self.deployment_host.cd(self.config.rsr_static_media_home):
