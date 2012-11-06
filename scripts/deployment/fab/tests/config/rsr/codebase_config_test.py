@@ -41,7 +41,7 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
     def test_has_unpacked_rsr_archive_directory_mask(self):
         """fab.tests.config.rsr.codebase_config_test  Has unpacked RSR archive directory mask"""
 
-        self.assertEqual('akvo-akvo-rsr-*', RSRCodebaseConfig.UNPACKED_RSR_ARCHIVE_DIR_MASK)
+        self.assertEqual('akvo-rsr-*', RSRCodebaseConfig.UNPACKED_RSR_ARCHIVE_DIR_MASK)
 
     def test_has_pip_requirements_path(self):
         """fab.tests.config.rsr.codebase_config_test  Has pip requirements path"""

@@ -11,7 +11,7 @@ import os
 class RSRCodebaseConfig(object):
     """RSRCodebaseConfig represents paths and configuration values specific to the RSR codebase"""
 
-    UNPACKED_RSR_ARCHIVE_DIR_MASK = 'akvo-akvo-rsr-*'
+    UNPACKED_RSR_ARCHIVE_DIR_MASK = 'akvo-rsr-*'
 
     PIP_REQUIREMENTS_PATH       = 'scripts/deployment/pip/requirements'
     SYSTEM_REQUIREMENTS_FILE    = '0_system.txt'
