@@ -34,12 +34,8 @@ class RSRAppDeployer(object):
         self._unpack_rsr_archive(archive_file_on_host)
 
     def _download_rsr_archive(self, rsr_archive_url, archive_file_on_host):
-        self.feedback.comment("Downloading RSR archive file")
-        if self.deployment_host.file_exists(archive_file_on_host):
-            self.feedback.comment("Latest archive already exists at: %s" % archive_file_on_host)
-        else:
-            self.feedback.comment("Fetching RSR archive from Github")
-            self.deployment_host.download_file_at_url_as(archive_file_on_host, rsr_archive_url)
+        self.feedback.comment("Downloading RSR archive from Github")
+        self.deployment_host.download_file_at_url_as(archive_file_on_host, rsr_archive_url)
 
     def _unpack_rsr_archive(self, archive_file_on_host):
         self.feedback.comment("Unpacking RSR archive in %s" % self.config.rsr_deployment_home)
