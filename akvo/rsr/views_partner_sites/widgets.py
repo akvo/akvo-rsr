@@ -7,10 +7,11 @@
 """
 from __future__ import absolute_import
 
+from json
+
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.utils import simplejson
 from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
 
@@ -131,4 +132,4 @@ class ProjectCordinates(TemplateView):
                                             ))
         # Build jsonp with callback
         callback = self.request.GET.get('callback', '')
-        return callback + '(' + simplejson.dumps(content) + ');'
+        return callback + '(' + json.dumps(content) + ');'

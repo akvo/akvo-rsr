@@ -28,7 +28,6 @@ BeautifulSoup==3.2.1
 httplib2==0.7.4
 lxml==2.3.4
 pytz==2012c
-simplejson==2.6.0
 
 # RSR requirements
 Markdown==2.2.0
