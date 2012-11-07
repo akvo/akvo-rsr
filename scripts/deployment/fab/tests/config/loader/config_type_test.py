@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.loader import ConfigType
 
 
-class ConfigTypeTest(unittest2.TestCase):
+class ConfigTypeTest(unittest.TestCase):
 
     def test_has_expected_config_types(self):
         """fab.tests.config.loader.config_type_test  Has expected configuration types"""

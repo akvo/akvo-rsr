@@ -6,7 +6,7 @@
 
 
 import fabric.api
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -15,7 +15,7 @@ from fab.config.rsr.credentials.user import User
 from fab.tasks.base import BaseDeploymentTask
 
 
-class BaseDeploymentTaskTest(unittest2.TestCase):
+class BaseDeploymentTaskTest(unittest.TestCase):
 
     def test_initialiser_sets_deployment_user(self):
         """fab.tests.tasks.base_deployment_task_test  Initialiser sets deployment user"""

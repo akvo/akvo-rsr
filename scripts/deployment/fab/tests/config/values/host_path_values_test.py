@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.values.host import HostPathValues
 
 
-class HostPathValuesTest(unittest2.TestCase):
+class HostPathValuesTest(unittest.TestCase):
 
     def test_has_default_host_paths(self):
         """fab.tests.config.values.host_path_values_test  Has default host paths"""

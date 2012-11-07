@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.values.host import DataHostPaths, HostPathValues
 
 
-class DataHostPathsTest(unittest2.TestCase):
+class DataHostPathsTest(unittest.TestCase):
 
     def test_has_config_home(self):
         """fab.tests.config.values.data_host_paths_test  Has configuration home"""

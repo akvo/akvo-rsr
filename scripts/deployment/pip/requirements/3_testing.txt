@@ -1,22 +1,14 @@
-# Requirements for building selenium
-isodate==0.4.8
-rdflib==3.2.1
-
 # Requirements for building splinter
-lxml==2.3.4
+lxml==2.3.6
 
 # Requirements for building lettuce
 fuzzywuzzy==0.1
-ipdb==0.7
-ipython==0.13
-multiprocessing==2.6.2.1
-sure==0.10.3
+sure==1.0.6
 
 # Modules used for app testing
-unittest2==0.5.1
-nose==1.1.2
+nose==1.2.1
 mox==0.5.3
-py==1.4.9
-selenium==2.24.0
-splinter==0.4.5
-lettuce==0.2.5
+py==1.4.12
+selenium==2.26.0
+splinter==0.4.8
+lettuce==0.2.10
