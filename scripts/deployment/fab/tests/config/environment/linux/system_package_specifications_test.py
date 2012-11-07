@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.environment.linux.systempackages import SystemPackageSpecifications
 
 
-class SystemPackageSpecificationsTest(unittest2.TestCase):
+class SystemPackageSpecificationsTest(unittest.TestCase):
 
     def test_has_expected_compilation_package_specifications(self):
         """fab.tests.config.environment.linux.system_package_specifications_test  Has expected compilation package specifications"""

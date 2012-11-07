@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.os.linux.packageinfo import UbuntuPackageInfo
 
 
-class UbuntuPackageInfoTest(unittest2.TestCase):
+class UbuntuPackageInfoTest(unittest.TestCase):
 
     def setUp(self):
         self.package_info = UbuntuPackageInfo.from_text(self._installed_package_info_full())

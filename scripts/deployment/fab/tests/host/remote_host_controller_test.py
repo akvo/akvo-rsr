@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -13,7 +13,7 @@ from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import RemoteHostController
 
 
-class RemoteHostControllerTest(unittest2.TestCase):
+class RemoteHostControllerTest(unittest.TestCase):
 
     def test_can_create_instance_with_feedback_member(self):
         """fab.tests.host.remote_host_controller_test  Can create a RemoteHostController instance with an ExecutionFeedback member"""

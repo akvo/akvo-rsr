@@ -13,7 +13,6 @@ multiprocessing==2.6.2.1
 sure==0.10.3
 
 # Modules used for app testing
-unittest2==0.5.1
 nose==1.1.2
 mox==0.5.3
 py==1.4.9

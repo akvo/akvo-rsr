@@ -5,12 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import py, subprocess, unittest2
+import py, subprocess, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 
-class FabFileTest(unittest2.TestCase):
+class FabFileTest(unittest.TestCase):
 
     def test_can_list_available_fabric_tasks(self):
         """fab.tests.fabfile_test  Can list available Fabric tasks"""

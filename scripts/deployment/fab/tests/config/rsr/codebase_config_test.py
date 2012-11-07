@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, unittest2
+import os, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 
 
-class RSRCodebaseConfigTest(unittest2.TestCase):
+class RSRCodebaseConfigTest(unittest.TestCase):
 
     def setUp(self):
         super(RSRCodebaseConfigTest, self).setUp()

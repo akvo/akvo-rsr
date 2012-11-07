@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, subprocess, unittest2
+import os, subprocess, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.rsr.credentials.user import SSHIDPath, SudoPassword, User, UserCredentials
 
 
-class UserCredentialsTest(unittest2.TestCase):
+class UserCredentialsTest(unittest.TestCase):
 
     def test_has_current_user_name(self):
         """fab.tests.config.rsr.credentials.user_credentials_test  Has current user name"""
