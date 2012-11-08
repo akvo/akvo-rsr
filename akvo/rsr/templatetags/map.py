@@ -21,8 +21,10 @@ def map(object, width, height, zoom, marker_icon=None):
     is_organisation = isinstance(object, Organisation)
     if is_project:
         marker_icon = PROJECT_MARKER_ICON
+        template_context = dict(type="project", object=object, width=width, height=height,
+            zoom=zoom, marker_icon=marker_icon)
     elif is_organisation:
         marker_icon = ORGANISATION_MARKER_ICON
-    template_context = dict(object=object, width=width, height=height,
-        zoom=zoom, marker_icon=marker_icon)
+        template_context = dict(typ="objects", object=object, width=width, height=height,
+            zoom=zoom, marker_icon=marker_icon)
     return template_context

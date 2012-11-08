@@ -1,25 +1,38 @@
 {% load google_maps i18n l10n %}
 
-<div id="map_canvas" style="width:{{width}}px;height:{{height}}px;"></div>
+<div class="akvo_map" id="akvoMaps_12345" style="width:{{width}}px;height:{{height}}px;"></div>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript">  
-
-  var akvoMap = {
-    getLocations: function() {
-      var resouceUrl= "http://akvo.dev/api/v1/project_location/?format=jsonp&project=436";
-
-      $.getJSON(resouceUrl + "?callback=", function(data) {
-        $.each(data.objects, function(i, location) {
-          console.log(location.city);
-        });
-      });
-    }
-  };
-  
-  window.onload = function() {
-    akvoMap.getLocations()
-  };
+<script type="text/javascript">
+  akvoMaps_12345 = {
+    "type": "{{type}}",
+    "objectId": {{object.id}},
+    "Lat": {{object.primary_location.latitude|unlocalize}},
+    "Lng": {{object.primary_location.longitude|unlocalize}},
+    "zoom": {{zoom}}
+  }
 </script>
+
+
+{% comment %}
+<script type="text/javascript"> 
+
+//   var akvoMap = {
+//     getLocations: function() {
+//       var resouceUrl= "http://akvo.dev/api/v1/project_location/?format=jsonp&project=436";
+
+//       $.getJSON(resouceUrl + "?callback=", function(data) {
+//         $.each(data.objects, function(i, location) {
+//           console.log(location.city);
+//         });
+//       });
+//     }
+//   };
+  
+//   window.onload = function() {
+//     akvoMap.getLocations()
+//   };
+// </script>
+{% endcomment %}
 
 
 

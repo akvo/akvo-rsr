@@ -245,6 +245,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
 	{% endif %}
 
+  {% asset_bundle 'akvo_script' %}
+
 	<script type="text/javascript">{% block inline_js %}{% endblock inline_js %}</script>
 	{% block js %}{% endblock js %}
 	
