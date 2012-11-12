@@ -11,17 +11,8 @@ logger = logging.getLogger('akvo.rsr')
 
 import sys
 
-# embedly imports json directly  - 
-# the following ensures support for Python 2.5 as well
-try:
-    import json
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        from django.utils import simplejson as json
-    sys.modules['json'] = json
-
+# embedly imports json directly
+import json
 import pytz
 
 from workflows.models import State
@@ -139,7 +130,7 @@ def groups_from_user(user):
     """
     return [group.name for group in user.groups.all()]
 
-        
+
 #Modeled on Options method get_change_permission in django/db/models/options.py
 def get_rsr_limited_change_permission(obj):
     return '%s_%s' % (RSR_LIMITED_CHANGE, obj.object_name.lower())
@@ -177,7 +168,7 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
     msg_context.update({'site': current_site})
-    message = loader.render_to_string(message, msg_context)    
+    message = loader.render_to_string(message, msg_context)
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, to_list)
 
 
@@ -227,7 +218,7 @@ def send_donation_confirmation_emails(invoice_id):
     msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
     msg.content_subtype = "html"
     msg.send()
-    
+
 
 def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
     """get a number of blog posts from wordpress
@@ -242,7 +233,7 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
         site_url = option_rows[0][0]
     except:
         site_url = 'http://akvo.org/blog'
-    
+
     try:
         if category_id:
             cursor.execute("""
@@ -285,7 +276,7 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
             post_p = post_content_soup('p')[0].contents
         except: # no p-tags
             post_p = ''.join(post_content_soup.findAll(text=True))
-            
+
         posts.append({ 'title': post[1], 'image': post_img, 'text': post_p, 'date': post[3], 'url': '%s/?p=%s' % (site_url, post[0]), 'author': post[4]})
 
     return posts
@@ -311,7 +302,7 @@ def who_is_parent():
 def send_now(users, label, extra_context=None, on_site=True, sender=None):
     """
     GvH: Modified version of notification.models.send_now
-    
+
     Creates a new notice.
 
     This is intended to be how other apps create new notices.
@@ -320,19 +311,19 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
         'spam': 'eggs',
         'foo': 'bar',
     )
-    
+
     You can pass in on_site=False to prevent the notice emitted from being
     displayed on the site.
     """
     logger.debug("Entering: %s()" % who_am_i())
     if extra_context is None:
         extra_context = {}
-    
+
     notice_type = NoticeType.objects.get(label=label)
 
     protocol = getattr(settings, "DEFAULT_HTTP_PROTOCOL", "http")
     current_site = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
-    
+
     notices_url = u"%s://%s%s" % (
         protocol,
         unicode(current_site),
@@ -393,7 +384,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
             # don't send anything in debug/develop mode
             if not getattr(settings, 'SMS_DEBUG', False):
                 send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipients)
-            
+
             if should_send(user, notice_type, "sms") and user.get_profile().phone_number: # SMS
                 # strip newlines
                 sms = ''.join(render_to_string('notification/email_subject.txt', {
@@ -415,7 +406,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
 
 def state_equals(obj, state):
     if type(state) != type([]):
-        state = [state] 
+        state = [state]
     return get_state(obj) in State.objects.filter(name__in=state)
 
 

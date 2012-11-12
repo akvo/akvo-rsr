@@ -43,7 +43,7 @@ from datetime import datetime
 from registration.models import RegistrationProfile
 import random
 import re
-import simplejson as json
+import json
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm

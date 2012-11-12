@@ -431,6 +431,16 @@ class FileSystemTest(mox.MoxTestBase):
         self.mock_host_controller.run("zip -r %s %s" % (expected_archive_file, expected_archive_name))
         self.mox.ReplayAll()
 
+    def test_can_read_file(self):
+        """fab.tests.os.file_system_test  Can read the contents of a file"""
+
+        host_file_path = '/some/remote/file.txt'
+
+        self.mock_host_controller.run('cat ' + host_file_path)
+        self.mox.ReplayAll()
+
+        self.file_system.read_file(host_file_path)
+
     def test_can_download_file(self):
         """fab.tests.os.file_system_test  Can download a file"""
 

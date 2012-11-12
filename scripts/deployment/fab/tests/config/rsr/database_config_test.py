@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -13,7 +13,7 @@ from fab.config.rsr.database import RSRDatabaseConfig
 from fab.tests.template.loader import TemplateLoader
 
 
-class RSRDatabaseConfigTest(unittest2.TestCase):
+class RSRDatabaseConfigTest(unittest.TestCase):
 
     def setUp(self):
         super(RSRDatabaseConfigTest, self).setUp()

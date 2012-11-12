@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, unittest2
+import os, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.security.crypto import FileCrypter
 
 
-class FileCrypterTest(unittest2.TestCase):
+class FileCrypterTest(unittest.TestCase):
 
     test_file_path = os.path.realpath(__file__)
 

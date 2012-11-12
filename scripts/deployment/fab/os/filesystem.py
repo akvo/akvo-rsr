@@ -150,6 +150,9 @@ class FileSystem(object):
         with self.host_controller.cd(parent_dir):
             self.host_controller.run("zip -r %s %s" % (archive_file_name, resource_to_compress))
 
+    def read_file(self, host_file_path):
+        return self.host_controller.run('cat ' + host_file_path)
+
     def download_file(self, host_file_path, local_dir):
         self.host_controller.get(host_file_path, local_dir)
 

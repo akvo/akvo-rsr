@@ -71,27 +71,13 @@ class RSRAppDeployerTest(mox.MoxTestBase):
 
         self.app_deployer.download_and_unpack_rsr_archive()
 
-    def test_does_not_download_rsr_code_archive_if_available_on_deployment_host(self):
-        """fab.tests.app.rsr_app_deployer_test  Does not download RSR code archive if already available on deployment host"""
-
-        self._download_and_unpack_rsr_archive(archive_exists_on_host=True)
-        self.mox.ReplayAll()
-
-        self.app_deployer.download_and_unpack_rsr_archive()
-
     def _download_and_unpack_rsr_archive(self, archive_exists_on_host):
-        archive_file_name       = "rsr_v1.0.9.zip"
+        archive_file_name       = "rsr_develop.zip"
         archive_file_on_host    = os.path.join(self.deployment_config.repo_archives_dir, archive_file_name)
 
         self.mock_deployment_host.file_name_from_url_headers(self.deployment_config.rsr_archive_url).AndReturn(archive_file_name)
-        self.mock_feedback.comment("Downloading RSR archive file")
-        self.mock_deployment_host.file_exists(archive_file_on_host).AndReturn(archive_exists_on_host)
-
-        if archive_exists_on_host:
-            self.mock_feedback.comment("Latest archive already exists at: %s" % archive_file_on_host)
-        else:
-            self.mock_feedback.comment("Fetching RSR archive from Github")
-            self.mock_deployment_host.download_file_at_url_as(archive_file_on_host, self.deployment_config.rsr_archive_url)
+        self.mock_feedback.comment("Downloading RSR archive from Github")
+        self.mock_deployment_host.download_file_at_url_as(archive_file_on_host, self.deployment_config.rsr_archive_url)
 
         self._unpack_code_archive(archive_file_on_host)
 
@@ -135,7 +121,7 @@ class RSRAppDeployerTest(mox.MoxTestBase):
 
     def _link_current_deployment_home(self):
         self._change_dir_to(self.deployment_config.repo_checkout_home)
-        self.mock_deployment_host.ensure_symlink_exists("current", self.deployment_config.rsr_deployment_home)
+        self.mock_deployment_host.ensure_symlink_exists("current", self.deployment_config.rsr_deployment_dir_name)
 
     def _link_static_media_directories(self):
         self._change_dir_to(self.deployment_config.rsr_static_media_home)

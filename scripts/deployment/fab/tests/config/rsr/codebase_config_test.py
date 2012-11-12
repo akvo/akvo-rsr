@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, unittest2
+import os, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.rsr.codebase import RSRCodebaseConfig
 
 
-class RSRCodebaseConfigTest(unittest2.TestCase):
+class RSRCodebaseConfigTest(unittest.TestCase):
 
     def setUp(self):
         super(RSRCodebaseConfigTest, self).setUp()
@@ -36,12 +36,12 @@ class RSRCodebaseConfigTest(unittest2.TestCase):
     def test_has_rsr_code_archive_url(self):
         """fab.tests.config.rsr.codebase_config_test  Has RSR code archive URL"""
 
-        self.assertEqual('http://nodeload.github.com/akvo/akvo-rsr/zipball/feature/sms', self.codebase_config.rsr_archive_url)
+        self.assertEqual('https://github.com/akvo/akvo-rsr/archive/feature/sms.zip', self.codebase_config.rsr_archive_url)
 
     def test_has_unpacked_rsr_archive_directory_mask(self):
         """fab.tests.config.rsr.codebase_config_test  Has unpacked RSR archive directory mask"""
 
-        self.assertEqual('akvo-akvo-rsr-*', RSRCodebaseConfig.UNPACKED_RSR_ARCHIVE_DIR_MASK)
+        self.assertEqual('akvo-rsr-*', RSRCodebaseConfig.UNPACKED_RSR_ARCHIVE_DIR_MASK)
 
     def test_has_pip_requirements_path(self):
         """fab.tests.config.rsr.codebase_config_test  Has pip requirements path"""

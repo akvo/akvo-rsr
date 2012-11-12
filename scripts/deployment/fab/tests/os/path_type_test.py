@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -13,7 +13,7 @@ from fab.os.path import PathType
 from fab.os.system import SystemType
 
 
-class PathTypeTest(unittest2.TestCase):
+class PathTypeTest(unittest.TestCase):
 
     def setUp(self):
         super(PathTypeTest, self).setUp()
