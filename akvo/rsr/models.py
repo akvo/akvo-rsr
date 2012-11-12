@@ -1126,8 +1126,8 @@ class PublishingStatus(models.Model):
         verbose_name_plural = _(u'publishing statuses')
         ordering = ('-status', 'project')
 
-    def project_info(self):
-        return self.project
+#    def project_info(self):
+#        return "%d: %s" % (self.project.pk, self.project.title)
 
 
 class Link(models.Model):

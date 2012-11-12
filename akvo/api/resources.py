@@ -47,6 +47,12 @@ __all__ = [
     'UserProfileResource',
 ]
 
+def get_extra_thumbnails(image_field):
+    try:
+        thumbs = image_field.extra_thumbnails
+        return dict([(key, thumbs[key].absolute_url) for key in thumbs.keys()])
+    except:
+        return None
 
 class ConditionalFullResource(ModelResource):
     def dehydrate(self, bundle):
@@ -267,12 +273,13 @@ class LinkResource(ConditionalFullResource):
 
 
 class OrganisationResource(ConditionalFullResource):
-    partnerships = ConditionalFullToManyField(
+    partnerships        = ConditionalFullToManyField(
         'akvo.api.resources.PartnershipResource',
         'partnerships',
         help_text='Show the projects the organisation is related to and how.'
     )
-    locations   = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations')
+    locations           = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations')
+    primary_location    = fields.ToOneField('akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True)
 
     class Meta:
         allowed_methods = ['get']
@@ -287,6 +294,15 @@ class OrganisationResource(ConditionalFullResource):
             locations           = ALL_WITH_RELATIONS,
             partnerships        = ALL_WITH_RELATIONS,
         )
+
+    def dehydrate(self, bundle):
+        """ add thumbnails inline info for Organisation.logo
+        """
+        bundle.data['logo'] = {
+            'original': bundle.data['logo'],
+            'thumbnails': get_extra_thumbnails(bundle.obj.logo),
+        }
+        return bundle
 
 
 class OrganisationLocationResource(ConditionalFullResource):
@@ -341,6 +357,7 @@ class ProjectResource(ConditionalFullResource):
     links               = ConditionalFullToManyField('akvo.api.resources.LinkResource', 'links')
     locations           = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
     partnerships        = ConditionalFullToManyField('akvo.api.resources.PartnershipResource', 'partnerships',)
+    primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True)
     project_comments    = ConditionalFullToManyField('akvo.api.resources.ProjectCommentResource', 'comments')
     project_updates     = ConditionalFullToManyField('akvo.api.resources.ProjectUpdateResource', 'project_updates')
 
@@ -367,6 +384,15 @@ class ProjectResource(ConditionalFullResource):
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,
         )
+
+    def dehydrate(self, bundle):
+        """ add thumbnails inline info for Project.current_image
+        """
+        bundle.data['current_image'] = {
+            'original': bundle.data['current_image'],
+            'thumbnails': get_extra_thumbnails(bundle.obj.current_image),
+        }
+        return bundle
 
 
 class ProjectCommentResource(ConditionalFullResource):

@@ -320,8 +320,8 @@ class BudgetAdminInLine(admin.TabularInline):
 
 
 class PublishingStatusAdmin(admin.ModelAdmin):
-    list_display = (u'project_info', u'status', )
-    search_fields = ('project_info', 'status', )
+    list_display = (u'project', u'status', )
+    search_fields = ('project__title', 'status', )
     list_filter = ('status', )
 
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
@@ -958,7 +958,7 @@ admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 class ProjectCommentAdmin(admin.ModelAdmin):
     list_display = ('project', 'user', 'comment', 'time', )
     list_filter = ('project', 'time', )
-    search_fields = ('project', 'user', )
+    search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
 
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
@@ -967,7 +967,7 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'project', 'user', 'text', 'time', 'img',)
     list_filter = ('time', 'project', )
-    search_fields = ('id', 'project', 'user', )
+    search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
