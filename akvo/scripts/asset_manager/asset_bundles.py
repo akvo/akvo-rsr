@@ -29,6 +29,7 @@ ASSET_BUNDLES = {
         'compress': True,
         'files': [
             'galleria.1.1.95.js',
+            'jquery.ui.map.full.min.js',
             'akvo-maps.js'
         ],
     },
