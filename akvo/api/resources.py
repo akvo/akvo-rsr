@@ -47,6 +47,12 @@ __all__ = [
     'UserProfileResource',
 ]
 
+def get_extra_thumbnails(image_field):
+    try:
+        thumbs = image_field.extra_thumbnails
+        return dict([(key, thumbs[key].absolute_url) for key in thumbs.keys()])
+    except:
+        return None
 
 class ConditionalFullResource(ModelResource):
     def dehydrate(self, bundle):
@@ -289,6 +295,15 @@ class OrganisationResource(ConditionalFullResource):
             partnerships        = ALL_WITH_RELATIONS,
         )
 
+    def dehydrate(self, bundle):
+        """ add thumbnails inline info for Organisation.logo
+        """
+        bundle.data['logo'] = {
+            'original': bundle.data['logo'],
+            'thumbnails': get_extra_thumbnails(bundle.obj.logo),
+        }
+        return bundle
+
 
 class OrganisationLocationResource(ConditionalFullResource):
     organisation    = ConditionalFullToOneField(OrganisationResource, 'location_target')
@@ -369,6 +384,15 @@ class ProjectResource(ConditionalFullResource):
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,
         )
+
+    def dehydrate(self, bundle):
+        """ add thumbnails inline info for Project.current_image
+        """
+        bundle.data['current_image'] = {
+            'original': bundle.data['current_image'],
+            'thumbnails': get_extra_thumbnails(bundle.obj.current_image),
+        }
+        return bundle
 
 
 class ProjectCommentResource(ConditionalFullResource):
