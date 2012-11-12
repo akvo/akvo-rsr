@@ -7,41 +7,72 @@ $(document).ready(function() {
     var objectId = mapOpts.objectId;
 
 
-    var googleMap = {
-      canvas: mapElement,
-      options: {
-        zoom: mapOpts.zoom,
-        center: new google.maps.LatLng(mapOpts.Lat, mapOpts.Lng),
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        scrollwheel: false,
-        streetViewControl: false
-      },
-      load: function() {
-        var map = new google.maps.Map(this.canvas, this.options);
+    var options = {
+      zoom: mapOpts.zoom,
+      center: new google.maps.LatLng(mapOpts.Lat, mapOpts.Lng),
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: false,
+      streetViewControl: false
+      };
+
+    var map = new google.maps.Map(mapElement, options);
+
+  
+
+    // var googleMap = {
+    //   canvas: mapElement,
+    //   options: {
+    //     zoom: mapOpts.zoom,
+    //     center: new google.maps.LatLng(mapOpts.Lat, mapOpts.Lng),
+    //     mapTypeId: google.maps.MapTypeId.ROADMAP,
+    //     scrollwheel: false,
+    //     streetViewControl: false
+    //   },
+    //   load: function() {
+    //     var map = new google.maps.Map(this.canvas, this.options);
+    //     var marker = new google.maps.Marker({
+    //       icon: '/rsr/media/core/img/blueMarker.png',
+    //       map: map,
+    //       position: this.options.center,
+    //       clickable: false
+    //     });
+    //   }
+    // };
+    // googleMap.load();
+
+    var akvoMap = {
+      // resourceURL: 'http://akvo.dev/api/v1/project_location/?format=jsonp&project=' + objectId + '&callback=?',
+      resourceURL: 'http://akvo.dev/api/v1/project/' + objectId + '/?format=json&depth=1&callback=?',
+
+      load: function(callback) {
+        $.getJSON(this.resourceURL, function(data) {
+          var items = [];
+          var title = data.title;
+          $.each(data.locations, function(i, location) {
+            items.push({
+              'project': location.project,
+              'latitude': location.latitude,
+              'longitude': location.longitude,
+              'primary': location.primary,
+              'city': location.city
+            });
+          });
+          callback(items);
+        });
+      }
+    };
+
+    akvoMap.load(function(locations){
+      $.each(locations, function(index, location){
+        console.log(location.city);
         var marker = new google.maps.Marker({
           icon: '/rsr/media/core/img/blueMarker.png',
           map: map,
-          position: this.options.center,
+          position: new google.maps.LatLng(location.latitude, location.longitude),
           clickable: false
         });
-      }
-    };
-    googleMap.load();
-
-    var akvoMap = {
-      resourceURL: 'http://akvo.dev/api/v1/project_location/?format=jsonp&project=' + objectId + '&callback=?',
-
-      load: function() {
-        $.getJSON(this.resourceURL, function(data) {
-          console.log(data.objects);
-          $.each(data.objects, function(i, location) {
-            console.log(location.city);
-          });
-        });
-
-      }
-    };
-    akvoMap.load();
+      });
+    });
 
   });
 });
