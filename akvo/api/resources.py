@@ -267,12 +267,13 @@ class LinkResource(ConditionalFullResource):
 
 
 class OrganisationResource(ConditionalFullResource):
-    partnerships = ConditionalFullToManyField(
+    partnerships        = ConditionalFullToManyField(
         'akvo.api.resources.PartnershipResource',
         'partnerships',
         help_text='Show the projects the organisation is related to and how.'
     )
-    locations   = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations')
+    locations           = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations')
+    primary_location    = fields.ToOneField('akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True)
 
     class Meta:
         allowed_methods = ['get']
@@ -341,6 +342,7 @@ class ProjectResource(ConditionalFullResource):
     links               = ConditionalFullToManyField('akvo.api.resources.LinkResource', 'links')
     locations           = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
     partnerships        = ConditionalFullToManyField('akvo.api.resources.PartnershipResource', 'partnerships',)
+    primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True)
     project_comments    = ConditionalFullToManyField('akvo.api.resources.ProjectCommentResource', 'comments')
     project_updates     = ConditionalFullToManyField('akvo.api.resources.ProjectUpdateResource', 'project_updates')
 
