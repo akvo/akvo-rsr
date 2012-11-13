@@ -55,12 +55,6 @@ def get_extra_thumbnails(image_field):
         return None
 
 class ConditionalFullResource(ModelResource):
-    def dehydrate(self, bundle):
-        try:
-            bundle.data['path'] = bundle.obj.get_absolute_url()
-        except:
-            pass
-        return bundle
 
     def apply_filters(self, request, applicable_filters):
         """
@@ -104,7 +98,6 @@ class ConditionalFullResource(ModelResource):
         to_be_serialized['objects'] = [self.full_dehydrate(bundle) for bundle in bundles]
         to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
         return self.create_response(request, to_be_serialized)
-
 
     def get_detail(self, request, **kwargs):
         """
@@ -253,6 +246,7 @@ class InvoiceResource(ConditionalFullResource):
     def dehydrate(self, bundle):
         """ Add name and email for non-anonymous donators
         """
+        bundle = super(InvoiceResource, self).dehydrate(bundle)
         if not bundle.obj.is_anonymous:
             bundle.data['email'] = bundle.obj.email
             bundle.data['name'] = bundle.obj.name
@@ -282,9 +276,11 @@ class OrganisationResource(ConditionalFullResource):
     primary_location    = fields.ToOneField('akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True)
 
     class Meta:
-        allowed_methods = ['get']
-        queryset        = Organisation.objects.all()
-        resource_name   = 'organisation'
+        allowed_methods         = ['get']
+        queryset                = Organisation.objects.all()
+        resource_name           = 'organisation'
+        include_absolute_url    = True
+
         filtering       = dict(
             # other fields
             iati_org_id         = ALL,
@@ -298,6 +294,7 @@ class OrganisationResource(ConditionalFullResource):
     def dehydrate(self, bundle):
         """ add thumbnails inline info for Organisation.logo
         """
+        bundle = super(OrganisationResource, self).dehydrate(bundle)
         bundle.data['logo'] = {
             'original': bundle.data['logo'],
             'thumbnails': get_extra_thumbnails(bundle.obj.logo),
@@ -362,10 +359,12 @@ class ProjectResource(ConditionalFullResource):
     project_updates     = ConditionalFullToManyField('akvo.api.resources.ProjectUpdateResource', 'project_updates')
 
     class Meta:
-        allowed_methods = ['get']
-        queryset        = Project.objects.published()
-        resource_name   = 'project'
-        filtering       = dict(
+        allowed_methods         = ['get']
+        queryset                = Project.objects.published()
+        resource_name           = 'project'
+        include_absolute_url    = True
+
+        filtering               = dict(
             # other fields
             status              = ALL,
             title               = ALL,
@@ -388,6 +387,7 @@ class ProjectResource(ConditionalFullResource):
     def dehydrate(self, bundle):
         """ add thumbnails inline info for Project.current_image
         """
+        bundle = super(ProjectResource, self).dehydrate(bundle)
         bundle.data['current_image'] = {
             'original': bundle.data['current_image'],
             'thumbnails': get_extra_thumbnails(bundle.obj.current_image),
@@ -435,10 +435,12 @@ class ProjectUpdateResource(ConditionalFullResource):
     user    = ConditionalFullToOneField('akvo.api.resources.UserResource', 'user')
 
     class Meta:
-        allowed_methods = ['get']
-        queryset        = ProjectUpdate.objects.all()
-        resource_name   = 'project_update'
-        filtering       = dict(
+        allowed_methods         = ['get']
+        queryset                = ProjectUpdate.objects.all()
+        resource_name           = 'project_update'
+        include_absolute_url    = True
+
+        filtering               = dict(
             # other fields
             time                = ALL,
             time_last_updated   = ALL,
@@ -475,6 +477,7 @@ class UserProfileResource(ConditionalFullResource):
     def dehydrate(self, bundle):
         """ Add meta fields showing if the user profile is an organisation admin or an organisation editor
         """
+        bundle = super(UserProfileResource, self).dehydrate(bundle)
         bundle.data['is_org_admin'] = bundle.obj.get_is_org_admin()
         bundle.data['is_org_editor'] = bundle.obj.get_is_org_editor()
         return bundle
@@ -505,6 +508,7 @@ class UserResource(ConditionalFullResource):
 
             For other users delete the user_profile field
         """
+        bundle = super(UserResource, self).dehydrate(bundle)
         if self._meta.authentication.is_authenticated(bundle.request):
             if getattr(bundle.request.user, 'get_profile', False):
                 # get the org of the API key owner
