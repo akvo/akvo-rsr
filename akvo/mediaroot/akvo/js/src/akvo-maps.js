@@ -1,17 +1,4 @@
 
-// "extra_thumbnails": [{
-//     "map_thumb": "/rsr/media/db/project/339/Project_339_current_image_2012-11-12_15.59.49_jpg_160x120_autocrop_detail_q85.jpg"
-//   }],
-
-// {
-// ...
-//   "current_image": null,
-// ...
-//   "extra_thumbnails": null,
-// ...
-// }
-
-
 $(document).ready(function() {
   $('.akvo_map').each(function() {
     var mapId = $(this).attr('id');
@@ -23,29 +10,42 @@ $(document).ready(function() {
       resourceURL = 'http://akvo.dev/api/v1/project/' + objectId + '/?format=jsonp&depth=1&callback=?';
       $(this).gmap('option', 'disableDefaultUI', true);
 
-    
-      $.getJSON(resourceURL, function(data) {
-        var projectTitle = data.title;
-        var projectPath = data.path;
-        var projectImage = data.current_image;
+      var tmplSrc = '<div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">' +
+                      '<a href="{{projectUrl}}">{{projectTitle}}</a>' +
+                      '{{#if projectImage}}' +
+                        '<div style="text-align: center; margin-top: 10px;">' +
+                          '<a href="{{projectUrl}}" title="{{projectTitle}}">' +
+                            '<img src="{{projectImage}}" alt="">' +
+                          '</a>' +
+                        '</div>' +
+                      '{{/if}}' +
+                    '</div>';
+      var mapInfoWindowTemplate = Handlebars.compile(tmplSrc);
 
+      $.getJSON(resourceURL, function(data) {
         $.each(data.locations, function(i, location) {
+          location.projectTitle = data.title;
+          location.projectUrl = data.absolute_url;
+          if (location.projectUrl == 'null') {
+            location.projectUrl = '#';
+          }
+
+          try {
+            location.projectImage = data.current_image.thumbnails.map_thumb;
+          }
+          catch (e) {
+            location.projectImage = '';
+          }
+
           $(mapElement).gmap('addMarker', {
             'position': new google.maps.LatLng(location.latitude, location.longitude),
-            'clickable': false,
+            // 'clickable': false,
             'bounds': true
-            // 'streetViewControl': false
           }).click(function() {
-            var content = '<div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">';
-            content += '<a href="' + projectPath + '">' + projectTitle + '</a>';
-            content += '<div style="text-align: center; margin-top: 10px;">';
-            content += '<a href="' + projectPath + '" title="' + projectPath +'">';
-            // content += '<img src="' + location.extra_thumbnails[0].map_thumb  + '" alt="">';
-            content += '<img src="' + projectImage  + '" alt="">';
-            content += '</a></div></div>';
             $(mapElement).gmap('openInfoWindow', {
-              'content': content
+              'content': mapInfoWindowTemplate(location)
             }, this);
+
           });
         });
         

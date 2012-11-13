@@ -30,6 +30,7 @@ ASSET_BUNDLES = {
         'files': [
             'galleria.1.1.95.js',
             'jquery.ui.map.full.min.js',
+            'handlebars-1.0.rc.1.js',
             'akvo-maps.js'
         ],
     },
