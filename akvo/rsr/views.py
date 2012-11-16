@@ -319,6 +319,7 @@ def iati_organisation_list(request, iati_activity_id):
         'organisations': organisations
     }
 
+
 def old_project_list(request):
     return HttpResponsePermanentRedirect(reverse('project_list', args=['all']))
 
