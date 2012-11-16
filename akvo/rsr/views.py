@@ -32,7 +32,8 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
 from django.forms import ModelForm
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import (HttpResponse, HttpResponseRedirect,
+    HttpResponsePermanentRedirect, Http404)
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
@@ -284,6 +285,39 @@ def project_list(request, slug='all'):
         'slug': slug
     }
 
+
+@render_to('rsr/project/iati_project_directory.html')
+def iati_project_list(request, iati_activity_id):
+    """Project list page that only shows project connected to a specific
+    IATI id.
+    """
+    projects = Project.objects.published().filter(
+        partnerships__iati_activity_id=iati_activity_id).latest_update_fields().distinct()
+
+    if not projects:
+        raise Http404
+
+    return {
+        'iati_id': iati_activity_id,
+        'projects': projects
+    }
+
+
+@render_to('rsr/organisation/iati_organisation_directory.html')
+def iati_organisation_list(request, iati_activity_id):
+    """Project list page that only shows project connected to a specific
+    IATI id.
+    """
+    organisations = Organisation.objects.filter(
+        partnerships__iati_activity_id=iati_activity_id).distinct()
+
+    if not organisations:
+        raise Http404
+
+    return {
+        'iati_id': iati_activity_id,
+        'organisations': organisations
+    }
 
 def old_project_list(request):
     return HttpResponsePermanentRedirect(reverse('project_list', args=['all']))

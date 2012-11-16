@@ -185,14 +185,14 @@ class ProjectLocation(BaseLocation):
 
 
 class Partnership(models.Model):
-    FIELD_PARTNER       = u'field'
-    FUNDING_PARTNER     = u'funding'
-    SPONSOR_PARTNER     = u'sponsor'
-    SUPPORT_PARTNER     = u'support'
+    FIELD_PARTNER = u'field'
+    FUNDING_PARTNER = u'funding'
+    SPONSOR_PARTNER = u'sponsor'
+    SUPPORT_PARTNER = u'support'
 
-    PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
-    PARTNER_LABELS      = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'),]
-    PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+    PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
+    PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
+    PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
@@ -206,6 +206,7 @@ class Partnership(models.Model):
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
+    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
 
     class Meta:
         verbose_name = _(u'project partner')
@@ -219,6 +220,7 @@ class Partnership(models.Model):
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.ProjectsQuerySet(self.model)
+
 
 class Organisation(models.Model):
     """

@@ -1,0 +1,111 @@
+{% extends "rsr/base.html" %}
+{% load i18n thumbnail pagination_tags sorting_tags rsr_tags rsr_filters humanize %}
+{% load url from future %}
+
+
+{% block title %}
+  {{iati_id}}
+{% endblock title %}
+
+{% block breadcrum_items %}
+  {{block.super}}
+   <li id="last_breadcrum_item">
+    {% trans "Organisations for IATI id:" %} {{iati_id}}
+  </li>
+{% endblock breadcrum_items %}
+
+{% block maincontent %}
+  {% autosort organisations %}
+  {% autopaginate organisations 10 %}
+
+  <div class='container'>
+    <div class='column span-18 last'>
+      <h1 class="h0">{% trans "Organisation list for IATI id:" %} {{iati_id}}</h1>
+      <div class='column span-18 last' style="margin-top:15px;">
+        <div class="white_box">
+          {% paginate %}
+          <table id="projects">
+            <tr>
+              <th>
+                {% translated_anchor name Name asc %}
+              </th>
+              <th>
+                {% translated_anchor organisation_type Type asc %}
+              </th>
+              <th>
+                {% translated_anchor primary_location__country__name Location asc %}
+              </th>
+              {% comment %}
+              <th>
+                {% translated_anchor project Project asc %}
+              </th>
+              <th style="border-right: 0;">
+                {% translated_anchor budget Budget %}
+              </th>
+              {% endcomment %}
+            </tr>
+            {% for organisation in organisations %}
+              <tr>
+                <td>
+                  <div class="space10">
+                    <a href="{% url 'organisation_main' organisation.id %}">
+                      {% project_thumb organisation 100 75 'float:left; margin: 0 10px 10px 0;' %}
+                      <p class="link_blue strong" style="margin-bottom:0">
+                        {{organisation.name}}
+                      </p>
+                    </a>
+                    <p class="tiny grey">
+                      {{organisation.long_name|capfirst|smart_truncate:100}}
+                    </p>
+                  </div>
+                </td>
+                <td>
+                  <div class="space10">
+                    <p class="td-text green">{{organisation.get_organisation_type_display}}</p>
+                  </div>
+                </td>
+                <td>
+                  <div class="space10">
+                    {# if the organisation has multiple locations #}
+                    {% if organisation|countries_list|length > 1 %}
+                      {# add a title attribute listing all countries where the organisation has locations and mark the primary location with a * #}
+                      <p class="td-text" title="Multiple locations in&#10;{{ organisation|countries_list|rsr_sorted_set|join:"&#10;" }}">
+                        * {{organisation.primary_location.country}}
+                      </p>
+                    {%  else %}
+                      <p class="td-text">{{organisation.primary_location.country}}</p>
+                    {%  endif %}
+                    {# if the organisation has locations on multiple continents #}
+                    {% if organisation|continents_list|rsr_sorted_set|length > 1 %}
+                      {# add a title attribute listing all continents where the project has locations and mark the primary location with a * #}
+                      <p class="td-text" title="Multiple locations in&#10;{{ organisation|continents_list|rsr_sorted_set|join:"&#10;" }}">
+                        * {{organisation.primary_location.country.continent}}
+                      </p>
+                    {%  else %}
+                      <p class="td-text">{{organisation.primary_location.country.continent}}</p>
+                    {%  endif %}
+                  </div>
+                </td>
+                {% comment %}
+                <td>
+                  ...
+                </td>
+                <td>
+                  {{organisation.funding_amount}}
+                </td>
+                {% endcomment %}
+              </tr>
+            {% endfor %}
+          </table>
+          {% paginate %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock maincontent %}
+
+{% block jq_ready %}
+  {{block.super}}
+
+{% endblock jq_ready %}
