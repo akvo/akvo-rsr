@@ -206,6 +206,7 @@ class Partnership(models.Model):
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
+    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
 
     class Meta:
         verbose_name = _(u'project partner')

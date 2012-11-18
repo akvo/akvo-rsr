@@ -106,8 +106,15 @@
               <p class="small">
                 {% trans 'Grant' %}: {{project.get_currency_display|safe}} {{partnership.funding_amount|round|intcomma}}
                 {% if partnership.iati_activity_id %}
-                  <br /><span class="grey">{% trans "IATI activity ID" %}:
-                  <br/>{{partnership.iati_activity_id}}</span>
+                  <br />
+                  <span class="grey">
+                    {% trans "IATI activity ID" %}:<br/>
+                    {% if partnership.iati_url %}
+                      <a href="{{partnership.iati_url}}">{{partnership.iati_activity_id}}</a>
+                    {% else %}
+                      {{partnership.iati_activity_id}}
+                    {% endif %}
+                  </span>
                 {% endif %}
               </p>
             </div>
