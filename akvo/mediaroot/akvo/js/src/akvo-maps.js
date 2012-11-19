@@ -1,19 +1,51 @@
 
+
 $(document).ready(function() {
   $('.akvo_map').each(function() {
+    var resourceURL;
     var mapId = $(this).attr('id');
     var mapElement = document.getElementById(mapId);
     var mapOpts = window[mapId];
     var objectId = mapOpts.objectId;
+    var blueMarker = mapOpts.marker_icon;
+    
+    var options;
+    if (mapOpts.type == "static" ) {
+      options = {
+        'draggable': false,
+        'mapTypeControl': false,
+        'navigationControl': true,
+        'scaleControl': false,
+        'scrollwheel': false,
+        'streetViewControl': false
+      };
+    } else {
+      options = {
+        'draggable': true,
+        'mapTypeControl': true,
+        'navigationControl': true,
+        'scaleControl': true,
+        'scrollwheel': false,
+        'streetViewControl': false
+      };
 
-    $(mapElement).gmap().bind('init', function() {
-      resourceURL = 'http://akvo.dev/api/v1/project/' + objectId + '/?format=jsonp&depth=1&callback=?';
-      $(this).gmap('option', 'disableDefaultUI', true);
+    }
 
+    $(mapElement).gmap(options).bind('init', function() {
+
+      if (objectId == 'projects') {
+        resourceURL =  'http://akvo.dev/api/v1/project/?format=jsonp&depth=1&callback=?';
+      }
+      else if (objectId == 'organisations') {
+        resourceURL =  'http://akvo.dev/api/v1/organisation/?format=jsonp&depth=1&callback=?';
+      } else {
+        resourceURL = 'http://akvo.dev/api/v1/project/' + objectId + '/?format=jsonp&depth=1&callback=?';
+      }
+      
       var tmplSrc = '<div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">' +
-                      '<a href="{{projectUrl}}">{{projectTitle}}</a>' +
+                      '<a class="small" href="{{projectUrl}}">{{projectTitle}}</a>' +
                       '{{#if projectImage}}' +
-                        '<div style="text-align: center; margin-top: 10px;">' +
+                        '<div style="text-align: center; margin-top: 5px;">' +
                           '<a href="{{projectUrl}}" title="{{projectTitle}}">' +
                             '<img src="{{projectImage}}" alt="">' +
                           '</a>' +
@@ -37,16 +69,27 @@ $(document).ready(function() {
             location.projectImage = '';
           }
 
-          $(mapElement).gmap('addMarker', {
-            'position': new google.maps.LatLng(location.latitude, location.longitude),
-            // 'clickable': false,
-            'bounds': true
-          }).click(function() {
-            $(mapElement).gmap('openInfoWindow', {
-              'content': mapInfoWindowTemplate(location)
-            }, this);
+          if (mapOpts.type == "static" ) {
+            $(mapElement).gmap('addMarker', {
+              'position': new google.maps.LatLng(location.latitude, location.longitude),
+              'clickable': false,
+              'icon': '{{marker_icon}}',
+              'bounds': true
+            });
+          } else {
+            $(mapElement).gmap('addMarker', {
+              'position': new google.maps.LatLng(location.latitude, location.longitude),
+              // 'clickable': false,
+              'bounds': true
+            }).click(function() {
+              $(mapElement).gmap('openInfoWindow', {
+                'content': mapInfoWindowTemplate(location)
+              }, this);
+            });
 
-          });
+          }
+
+          
         });
         
       });
@@ -56,7 +99,7 @@ $(document).ready(function() {
 });
 
 
-
+// ------------------------------------------------------------------------------------------------
 
 
 

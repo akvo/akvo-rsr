@@ -50,7 +50,7 @@
         </p>
         {# Google Map #}
         {% if p.primary_location %}
-          {% map project 260 180 3 %}
+          {% map project 260 180 "static" %}
         {% else %}
           <p style="color: red;">{% trans 'No map available' %}</p>
         {% endif %}

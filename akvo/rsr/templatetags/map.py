@@ -22,16 +22,22 @@ ORGANISATION_MARKER_ICON = getattr(settings,
 
 
 @register.inclusion_tag('inclusion_tags/map.html')
-def map(object, width, height, zoom, marker_icon=None):
+def map(object, width, height, type="dynamic", marker_icon=None):
     is_project = isinstance(object, Project)
     is_organisation = isinstance(object, Organisation)
+    is_all_projects = isinstance(object, basestring) and (object == 'projects')
+
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
     if is_project:
         marker_icon = PROJECT_MARKER_ICON
-        template_context = dict(type="project", object=object, width=width,
-            height=height, zoom=zoom, marker_icon=marker_icon, map_id=map_id)
+        template_context = dict(type=type, object=object.id, width=width,
+            height=height, marker_icon=marker_icon, map_id=map_id)
     elif is_organisation:
         marker_icon = ORGANISATION_MARKER_ICON
-        template_context = dict(typ="objects", object=object, width=width,
-            height=height, zoom=zoom, marker_icon=marker_icon, map_id=map_id)
+        template_context = dict(type=type, object=object.id, width=width,
+            height=height, marker_icon=marker_icon, map_id=map_id)
+    elif is_all_projects:
+        marker_icon = PROJECT_MARKER_ICON
+        template_context = dict(type=type, object=object, width=width,
+            height=height, marker_icon=marker_icon, map_id=map_id)
     return template_context
