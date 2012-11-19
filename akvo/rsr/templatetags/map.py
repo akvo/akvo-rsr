@@ -19,6 +19,14 @@ PROJECT_MARKER_ICON = getattr(settings,
     'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
 ORGANISATION_MARKER_ICON = getattr(settings,
     'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
+RAW_HOST = getattr(settings,
+    'DOMAIN_NAME', 'akvo.org')
+
+# Production server uses leading 'www'
+if RAW_HOST == 'akvo.org':
+    HOST = 'http://www.akvo.org/'
+else:
+    HOST = 'http://%s/' % RAW_HOST
 
 
 @register.inclusion_tag('inclusion_tags/map.html')
@@ -31,13 +39,13 @@ def map(object, width, height, type="dynamic", marker_icon=None):
     if is_project:
         marker_icon = PROJECT_MARKER_ICON
         template_context = dict(type=type, object=object.id, width=width,
-            height=height, marker_icon=marker_icon, map_id=map_id)
+            height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
     elif is_organisation:
         marker_icon = ORGANISATION_MARKER_ICON
         template_context = dict(type=type, object=object.id, width=width,
-            height=height, marker_icon=marker_icon, map_id=map_id)
+            height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
     elif is_all_projects:
         marker_icon = PROJECT_MARKER_ICON
         template_context = dict(type=type, object=object, width=width,
-            height=height, marker_icon=marker_icon, map_id=map_id)
+            height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
     return template_context
