@@ -296,7 +296,7 @@ class Organisation(models.Model):
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
             return self.filter(partnerships__partner_type__exact=partner_type).distinct()
-        
+
         def allpartners(self):
             return self.distinct()
 
@@ -796,7 +796,6 @@ class Project(models.Model):
                 n.b. non-chainable, doesn't return a QS
             '''
             return self.aggregate(funds_needed=Sum('funds_needed'),)['funds_needed'] or 0
-
 
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
