@@ -47,7 +47,7 @@
         } else if (map.mapOpts.objectType === 'projects') {
             return url + 'project/?format=jsonp&depth=1&limit=20&callback=?';
         } else if (map.mapOpts.objectType === 'organisations') {
-            return url + 'organisations/?format=jsonp&depth=1&limit=20&callback=?';
+            return url + 'organisation/?format=jsonp&depth=1&limit=20&callback=?';
         }
     };
 
@@ -102,16 +102,28 @@
 
     // Add a single pin
     addPin = function (map, location, template) {
+        var marker, objectType;
+        marker = map.mapOpts.host + '/rsr/media/core/img/';
+        objectType = map.mapOpts.objectType;
+
+        if (objectType == 'organisation' || objectType == 'organisations') {
+            marker = marker + 'redMarker.png';
+        } else {
+            marker = marker + 'blueMarker.png';
+        }
+
+
         if (map.mapOpts.type === 'static') {
             $(map.mapElement).gmap('addMarker', {
                 'position': new google.maps.LatLng(location.latitude, location.longitude),
                 'clickable': false,
-                // 'icon': blueMarker,
+                'icon': marker,
                 'bounds': true
             });
         } else {
             $(map.mapElement).gmap('addMarker', {
                 'position': new google.maps.LatLng(location.latitude, location.longitude),
+                'icon': marker,
                 'bounds': true
             }).click(function () {
                 $(map.mapElement).gmap('openInfoWindow', {
