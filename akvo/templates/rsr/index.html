@@ -164,7 +164,8 @@
 		</div>
 			<div class="span-6 first last">
 				<a href="{% url 'global_project_map' %}">    
-					{% google_global_project_map 'static' 315 190 1 %}
+					{# google_global_project_map 'static' 315 190 1 #}
+          {% map 'projects' 315 190 'static' %}     
 				</a>
 			</div>
 		<div style="padding: .5em .5em .7em .5em;">

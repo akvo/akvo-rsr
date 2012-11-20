@@ -36,21 +36,26 @@ def map(object, width, height, type="dynamic", marker_icon=None):
     is_all_projects = isinstance(object, basestring) and (object == 'projects')
     is_all_organisations = isinstance(object, basestring) and (object == 'organisations')
 
+    # We want a unique id for each map element id
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+    template_context = {
+        'map_id': map_id,
+        'type': type,
+        'width': width,
+        'height': height,
+        'host': HOST,
+    }
+
     if is_project:
-        marker_icon = PROJECT_MARKER_ICON
-        template_context = dict(type=type, object=object.id, objectType='project', width=width,
-            height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
-    elif is_organisation:
-        marker_icon = ORGANISATION_MARKER_ICON
-        template_context = dict(type=type, object=object.id, objectType='organisation', width=width,
-            height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
+        template_context['object'] = object.id
+        template_context['objectType'] = 'project'
     elif is_all_projects:
-        marker_icon = PROJECT_MARKER_ICON
-        template_context = dict(type=type, object=object, objectType='projects', width=width,
-            height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
+        template_context['object'] = object
+        template_context['objectType'] = 'projects'
+    elif is_organisation:
+        template_context['object'] = object.id
+        template_context['objectType'] = 'organisation'
     elif is_all_organisations:
-        marker_icon = ORGANISATION_MARKER_ICON
-        template_context = dict(type=type, object=object, objectType='organisations', width=width,
-            height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
+        template_context['object'] = object
+        template_context['objectType'] = 'organisations'
     return template_context
