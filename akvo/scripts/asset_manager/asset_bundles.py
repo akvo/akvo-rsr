@@ -65,14 +65,14 @@ ASSET_BUNDLES = {
             'get_widget.css'
             ],
     },
-    # 'partner_sites_script': {
-    #     'type': 'js',
-    #     'path': 'partner_sites/js/',
-    #     'compress': True,
-    #     'files': [
-    #         'galleria.js',
-    #         ],
-    # },
+    'partner_sites_script': {
+        'type': 'js',
+        'path': 'partner_sites/js/',
+        'compress': True,
+        'files': [
+            'galleria.js',
+            ],
+    },
     'akvo_ps_machinery_js': {
         'type': 'js',
         'path': 'partner_sites/js/',

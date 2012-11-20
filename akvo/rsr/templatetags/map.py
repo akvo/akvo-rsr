@@ -34,18 +34,23 @@ def map(object, width, height, type="dynamic", marker_icon=None):
     is_project = isinstance(object, Project)
     is_organisation = isinstance(object, Organisation)
     is_all_projects = isinstance(object, basestring) and (object == 'projects')
+    is_all_organisations = isinstance(object, basestring) and (object == 'organisations')
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
     if is_project:
         marker_icon = PROJECT_MARKER_ICON
-        template_context = dict(type=type, object=object.id, width=width,
+        template_context = dict(type=type, object=object.id, objectType='project', width=width,
             height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
     elif is_organisation:
         marker_icon = ORGANISATION_MARKER_ICON
-        template_context = dict(type=type, object=object.id, width=width,
+        template_context = dict(type=type, object=object.id, objectType='organisation', width=width,
             height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
     elif is_all_projects:
         marker_icon = PROJECT_MARKER_ICON
-        template_context = dict(type=type, object=object, width=width,
+        template_context = dict(type=type, object=object, objectType='projects', width=width,
+            height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
+    elif is_all_organisations:
+        marker_icon = ORGANISATION_MARKER_ICON
+        template_context = dict(type=type, object=object, objectType='organisations', width=width,
             height=height, marker_icon=marker_icon, map_id=map_id, host=HOST)
     return template_context

@@ -10,7 +10,7 @@
     // a JavaScript litteral with data which are used to create a map with
     // corresponding locations from the RSR API
 
-    var addMap, addPin, populateMap, mapOptions, prepareNextRequest;
+    var addMap, addPin, populateMap, mapOptions, prepareNextRequest, getResourceUrl;
 
 
     // For each .akvo_map element on the page, read options
@@ -26,31 +26,47 @@
         });
     });
 
+
     // Creates the map with options and makes the initial AJAX request
     addMap = function (map) {
         $(map.mapElement).gmap(mapOptions(map.mapOpts.type)).bind('init', function () {
-
-            // TODO
-            // Handle other resources
-            // if (objectId == 'projects') {
-            //     resourceURL =  'http://akvo.dev/api/v1/project/?format=jsonp&depth=1&callback=?';
-            // }
-            // else if (objectId == 'organisations') {
-            //     resourceURL =  'http://akvo.dev/api/v1/organisation/?format=jsonp&depth=1&callback=?';
-            // } else {
-            //     resourceURL = 'http://akvo.dev/api/v1/project/' + objectId + '/?format=jsonp&depth=1&callback=?';
-            // }
-
-            var resourceURL =  map.mapOpts.host + 'api/v1/project/?format=jsonp&depth=1&limit=20&callback=?';
-            $.getJSON(resourceURL, function (data) {
+            $.getJSON(getResourceUrl(map), function (data) {
                 populateMap(map, data);
             });
         });
     };
 
+
+    // Creates resource URLS based on map options
+    getResourceUrl = function (map) {
+        var url = map.mapOpts.host + 'api/v1/';
+        if (map.mapOpts.objectType === 'project') {
+            return url + 'project/' + map.mapOpts.object + '/?format=jsonp&depth=1&callback=?';
+        } else if (map.mapOpts.objectType === 'organisation') {
+            return url + 'organisation/' + map.mapOpts.object + '/?format=jsonp&depth=1&callback=?';
+        } else if (map.mapOpts.objectType === 'projects') {
+            return url + 'project/?format=jsonp&depth=1&limit=20&callback=?';
+        } else if (map.mapOpts.objectType === 'organisations') {
+            return url + 'organisations/?format=jsonp&depth=1&limit=20&callback=?';
+        }
+    };
+
+
+
     // Populates the map with data
     populateMap = function (map, data) {
-        var projects = data.objects, pinTmpl = Handlebars.compile(
+        var objects, pinTmpl;
+
+        // Since API resources that list multiple objects (projects or organisations) include
+        // a objects array we need to add the single project or organisation to an array. This Since
+        // we want to keep using the same logic for both cases
+        if (isNaN(map.mapOpts.object)) {
+            objects = data.objects;
+        } else {
+            objects = [data];
+        }
+
+        pinTmpl = Handlebars.compile(
             '<div class="mapInfoWindow"' +
                 'style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">' +
                 '<a class="small" href="{{url}}">{{title}}</a>' +
@@ -64,21 +80,22 @@
                 '</div>'
         );
 
-        $.each(projects, function (i, project) {
-            $.each(project.locations, function (k, location) {
+        $.each(objects, function (i, object) {
+            $.each(object.locations, function (k, location) {
                 // Add project data to the location
-                location.url = project.absolute_url;
-                location.title = project.title;
+                location.url = object.absolute_url;
+                location.title = object.title;
                 try {
-                    location.thumb = project.current_image.thumbnails.map_thumb;
+                    location.thumb = object.current_image.thumbnails.map_thumb;
                 } catch (e) { location.thumb = ''; }
 
                 addPin(map, location, pinTmpl);
             });
         });
 
-        // If there is to grap from the resource make go
-        if (data.meta.next !== null) {
+        // If we are rendering multiple objects and there are more objects to
+        // grab from the API
+        if (isNaN(map.mapOpts.object) && data.meta.next !== null) {
             prepareNextRequest(map, data.meta.next);
         }
     };
@@ -133,7 +150,8 @@
                 'navigationControl': true,
                 'scaleControl': false,
                 'scrollwheel': false,
-                'streetViewControl': false
+                'streetViewControl': false,
+                'zoom': 2
             };
         } else {
             options = {
@@ -142,7 +160,8 @@
                 'navigationControl': true,
                 'scaleControl': true,
                 'scrollwheel': false,
-                'streetViewControl': false
+                'streetViewControl': false,
+                'zoom': 2
             };
         }
         return options;
