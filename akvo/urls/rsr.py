@@ -35,6 +35,13 @@ urlpatterns = patterns('',
     url(r'^rsr/index-preview/(?P<cms_id>\d+)/$',
         'akvo.rsr.views.index', name='index_preview'),
 
+    # IATI lists
+    url(r'^rsr/iati/projects/(?P<iati_activity_id>[_\-a-zA-Z0-9]+)/$',
+        'akvo.rsr.views.iati_project_list', name='iati_project_list'),
+
+    url(r'^rsr/iati/organisations/(?P<iati_activity_id>[_\-a-zA-Z0-9]+)/$',
+        'akvo.rsr.views.iati_organisation_list', name='iati_organisation_list'),
+
     # Project list
     url(r'^rsr/projects/$',
         'akvo.rsr.views.old_project_list', name='old_project_list'),

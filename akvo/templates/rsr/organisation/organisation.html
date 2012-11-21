@@ -8,7 +8,7 @@
 {% block head %}
   <link
     rel="alternate" type="application/rss+xml"
-    title="{% blocktrans with org_name=organisation.name%}Project updates for projects partnered by {{org_name}}{% endblocktrans %}
+    title="{% blocktrans with org_name=organisation.name%}Project updates for projects partnered by {{org_name}}{% endblocktrans %}"
     id="gallery" href="{% url 'rss_org_updates' organisation.id %}"
   >
 {% endblock head %}

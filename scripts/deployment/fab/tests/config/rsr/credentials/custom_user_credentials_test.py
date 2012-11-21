@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os, unittest2
+import imp, os, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -17,7 +17,7 @@ from user_credentials import CustomUserCredentials
 from fab.config.rsr.credentials.user import SSHIDPath, User, UserCredentials
 
 
-class CustomUserCredentialsTest(unittest2.TestCase):
+class CustomUserCredentialsTest(unittest.TestCase):
 
     def test_can_create_custom_user_credentials(self):
         """fab.tests.config.rsr.credentials.custom_user_credentials_test  Can create custom user credentials"""

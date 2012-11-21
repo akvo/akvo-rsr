@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, unittest2
+import os, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -13,7 +13,7 @@ from fab.config.rsr.host import CIDeploymentHostConfig
 from fab.environment.python.packageinstallationpaths import SystemPackageInstallationPaths
 
 
-class SystemPackageInstallationPathsTest(unittest2.TestCase):
+class SystemPackageInstallationPathsTest(unittest.TestCase):
 
     def setUp(self):
         super(SystemPackageInstallationPathsTest, self).setUp()

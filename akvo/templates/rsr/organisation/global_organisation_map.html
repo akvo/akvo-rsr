@@ -1,5 +1,5 @@
 {% extends 'rsr/base.html' %}
-{% load i18n google_maps %}
+{% load i18n google_maps map %}
 {% load url from future %}
 
 
@@ -23,5 +23,5 @@
     <h1>
         {% trans 'Map of all organisations' %}
     </h1>
-    {% google_global_organisation_map 'dynamic' 975 600 2 %}
+    {% map 'organisations' 975 600 'dynamic' %}
 {% endblock %}

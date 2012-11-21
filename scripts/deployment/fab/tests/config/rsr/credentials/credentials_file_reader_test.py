@@ -5,8 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import fabric.api
 import mox, os
-import simplejson as json
+import json
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -14,8 +15,7 @@ from fab.config.rsr.credentials.reader import CredentialsFileReader, RemoteCrede
 from fab.config.values.host import DataHostPaths, DeploymentHostPaths
 from fab.helpers.feedback import ExecutionFeedback
 from fab.host.controller import LocalHostController, RemoteHostController
-from fab.os.filesystem import FileSystem, LocalFileSystem
-from fab.tests.template.loader import TemplateLoader
+from fab.os.filesystem import FileSystem
 
 
 class CredentialsFileReaderTest(mox.MoxTestBase):
@@ -24,11 +24,11 @@ class CredentialsFileReaderTest(mox.MoxTestBase):
         super(CredentialsFileReaderTest, self).setUp()
         self.host_paths = DeploymentHostPaths.default()
         self.mock_host_file_system = self.mox.CreateMock(FileSystem)
-        self.mock_local_file_system = self.mox.CreateMock(LocalFileSystem)
+        self.mock_host_controller = self.mox.CreateMock(RemoteHostController)
 
         self.credentials_file_reader = CredentialsFileReader(DeploymentHostPaths.default(),
                                                              self.mock_host_file_system,
-                                                             self.mock_local_file_system)
+                                                             self.mock_host_controller)
 
     def test_can_create_instance_for_local_deployment_host(self):
         """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can create CredentialsFileReader instance for a local deployment host"""
@@ -63,64 +63,18 @@ class CredentialsFileReaderTest(mox.MoxTestBase):
 
         RemoteCredentialsFileReader.create_with(DataHostPaths())
 
-    def test_can_read_local_credentials_file(self):
-        """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can read a local credentials file"""
-
-        self._read_local_credentials_file('local_credentials_file.json', delete_after_reading=False)
-        self.mox.ReplayAll()
-
-        self.assertEqual(json.load(self._open_credentials_data_file()),
-                         self.credentials_file_reader.read_local_credentials('local_credentials_file.json'))
-
-    def test_can_read_local_credentials_file_and_delete_file_afterwards(self):
-        """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can read a local credentials file and delete the file afterwards"""
-
-        self._read_local_credentials_file('local_credentials_file.json', delete_after_reading=True)
-        self.mox.ReplayAll()
-
-        self.assertEqual(json.load(self._open_credentials_data_file()),
-                         self.credentials_file_reader.read_local_credentials('local_credentials_file.json', delete_after_reading=True))
-
-    def _read_local_credentials_file(self, credentials_file_name, delete_after_reading):
-        local_credentials_home = os.path.join(self.host_paths.deployment_processing_home, 'credentials')
-        local_credentials_file = os.path.join(local_credentials_home, credentials_file_name)
-
-        self.mock_local_file_system.exit_if_file_does_not_exist(local_credentials_file)
-        self.mock_local_file_system.open_file(local_credentials_file).AndReturn(self._open_credentials_data_file())
-
-        if delete_after_reading:
-            self.mock_local_file_system.delete_file(local_credentials_file)
-
     def test_can_read_deployed_credentials_file(self):
         """fab.tests.config.rsr.credentials.credentials_file_reader_test  Can read a deployed credentials file"""
 
-        deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials/some_credentials_file.json')
-        local_credentials_home = os.path.join(self.host_paths.deployment_processing_home, 'credentials')
+        deployed_credentials_file = os.path.join(self.host_paths.config_home, 'credentials', 'some_credentials_file.json')
+        fake_credentials = '{ "some_user": "user", "some_password": "password" }'
 
         self.mock_host_file_system.exit_if_file_does_not_exist(deployed_credentials_file)
-        self.mock_host_file_system.download_file(deployed_credentials_file, local_credentials_home)
-        self._read_local_credentials_file('some_credentials_file.json', delete_after_reading=True)
+        self.mock_host_controller.hide_command_and_output().AndReturn(fabric.api.hide('running', 'stdout'))
+        self.mock_host_file_system.read_file(deployed_credentials_file).AndReturn(fake_credentials)
         self.mox.ReplayAll()
 
-        self.assertEqual(json.load(self._open_credentials_data_file()),
-                         self.credentials_file_reader.read_deployed_credentials('some_credentials_file.json'))
-
-    def _open_credentials_data_file(self):
-        return open(TemplateLoader.CREDENTIALS_TEMPLATE_PATH, 'r')
-
-    def test_will_exit_if_local_credentials_file_is_unavailable(self):
-        """fab.tests.config.rsr.credentials.credentials_file_reader_test  Will exit if local credentials file is unavailable"""
-
-        local_credentials_file = os.path.join(self.host_paths.deployment_processing_home, 'credentials/non_existent_credentials_file.json')
-        file_not_found_message = 'Some file not found message'
-
-        self.mock_local_file_system.exit_if_file_does_not_exist(local_credentials_file).AndRaise(SystemExit(file_not_found_message))
-        self.mox.ReplayAll()
-
-        with self.assertRaises(SystemExit) as raised:
-            self.credentials_file_reader.read_local_credentials('non_existent_credentials_file.json')
-
-        self.assertEqual(file_not_found_message, raised.exception.message)
+        self.assertEqual(json.loads(fake_credentials), self.credentials_file_reader.read_deployed_credentials('some_credentials_file.json'))
 
     def test_will_exit_if_deployed_credentials_file_is_unavailable(self):
         """fab.tests.config.rsr.credentials.credentials_file_reader_test  Will exit if deployed credentials file is unavailable"""

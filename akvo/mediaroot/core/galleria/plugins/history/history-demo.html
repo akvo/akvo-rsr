@@ -2,9 +2,9 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Galleria Classic Theme</title>
+        <title>Galleria History Plugin</title>
         <style>
-        
+
             /* Demo styles */
             html,body{background:#222;margin:0;}
             body{border-top:4px solid #000;}
@@ -13,32 +13,35 @@
             p{margin:0 0 20px}
             a {color:#22BCB9;text-decoration:none;}
             .cred{margin-top:20px;font-size:11px;}
-            
+
             /* This rule is read by Galleria to define the gallery height: */
-            #galleria{height:320px;}
-            
+            #galleria{height:320px}
+
         </style>
-        
+
         <!-- load jQuery -->
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
-        
+
         <!-- load Galleria -->
-        <script src="../../galleria.js"></script>
+        <script src="../../galleria-1.2.8.min.js"></script>
+
+        <!-- load the History plugin, no need for further scripting -->
+        <script src="galleria.history.min.js"></script>
 
     </head>
 <body>
     <div class="content">
-        <h1>Galleria Classic Theme</h1>
-        <p>Demonstrating a basic gallery example.</p>
-        
+        <h1>Galleria History Plugin</h1>
+        <p>Demonstrating a basic history example. Supports most browsers, including FF 3.0+ and IE 7+</p>
+
         <!-- Adding gallery images. We use resized thumbnails here for better performance, but it’s not necessary -->
-        
+
         <div id="galleria">
-            <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Locomotives-Roundhouse2.jpg/1000px-Locomotives-Roundhouse2.jpg">
-            	<img title="Locomotives Roundhouse"
-            	     alt="Steam locomotives of the Chicago &amp; North Western Railway." 
-            	     src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Locomotives-Roundhouse2.jpg/100px-Locomotives-Roundhouse2.jpg">
-        	</a>
+            <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Locomotives-Roundhouse2.jpg/800px-Locomotives-Roundhouse2.jpg">
+                <img title="Locomotives Roundhouse"
+                     alt="Steam locomotives of the Chicago &amp; North Western Railway."
+                     src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Locomotives-Roundhouse2.jpg/100px-Locomotives-Roundhouse2.jpg">
+            </a>
             <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Icebergs_in_the_High_Arctic_-_20050907.jpg/1000px-Icebergs_in_the_High_Arctic_-_20050907.jpg">
                 <img title="Icebergs in the High Arctic"
                      alt="”The debris loading isn't particularly extensive, but the color is usual.”"
@@ -80,16 +83,17 @@
                 <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Antennae%2C_Hubble_images.jpg/100px-Antennae%2C_Hubble_images.jpg">
             </a>
         </div>
-        
+
         <p class="cred">Made by <a href="http://galleria.aino.se">Galleria</a>.</p>
     </div>
+
     <script>
 
     // Load the classic theme
-    Galleria.loadTheme('galleria.classic.js');
-    
+    Galleria.loadTheme('../../themes/classic/galleria.classic.min.js');
+
     // Initialize Galleria
-    $('#galleria').galleria();
+    Galleria.run('#galleria');
 
     </script>
     </body>
