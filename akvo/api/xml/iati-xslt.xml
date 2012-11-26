@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Edited by XMLSpy® -->
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:akvo="http://www.akvo.org/api/v1/iati_activity">
+
+  <xsl:template match="iati-activities">
+    <xsl:apply-templates select="iati-activity" />
+  </xsl:template>
+
+  <xsl:template match="iati-activity">
+    <object>
+      <xsl:apply-templates select="title" />
+      <xsl:apply-templates select="@default-currency" />
+      <xsl:apply-templates select="activity-status" />
+      
+      <xsl:apply-templates select="activity-date[@type='start-actual']" />
+      <xsl:apply-templates select="activity-date[@type='end-actual']" />
+      
+      <xsl:apply-templates select="description[@type='General']" />
+      <xsl:apply-templates select="description[@type='Objectives']" />
+      <xsl:apply-templates select="description[@akvo:type='Current status']" />
+      <xsl:apply-templates select="description[@akvo:type='Sustainability']" />
+      <goals type="list">
+        <xsl:apply-templates select="description[@akvo:type='Objectives detail']" />
+      </goals>
+
+      <xsl:apply-templates select="document-link[@format='image/jpeg']" />
+      
+      <locations type="list">
+        <xsl:apply-templates select="location" />
+      </locations>
+    </object>
+  </xsl:template>
+
+  
+  <!-- title -->
+  <xsl:template match="title">
+    <title>
+      <xsl:value-of select="." />
+    </title>
+  </xsl:template>
+
+  <!-- subtitle -->
+
+  <!-- status -->
+  <xsl:template match="activity-status[@code='1']">
+    <status>H</status>
+  </xsl:template>
+  
+  <xsl:template match="activity-status[@code='2']">
+    <status>A</status>
+  </xsl:template>
+  
+  <xsl:template match="activity-status[@code='3']">
+    <status>C</status>
+  </xsl:template>
+  
+  <xsl:template match="activity-status[@code='4']">
+    <status>A</status>
+  </xsl:template>
+  
+  <!-- categories ManyToManyField -->
+
+  <!-- partners ManyToManyField -->
+
+  <!-- project_plan_summary -->
+  <xsl:template match="description[@type='General']">
+    <project_plan_summary>
+      <xsl:value-of select="." />
+    </project_plan_summary>
+  </xsl:template>
+  
+  <!-- current_image -->
+  <xsl:template match="document-link[@format='image/jpeg']">
+    <current_image>
+      <xsl:apply-templates select="@url"/>
+    </current_image>
+    <current_image_caption>
+      <xsl:apply-templates select="akvo:caption"/>      
+    </current_image_caption>
+  </xsl:template>
+
+  <xsl:template match="@url">
+    <xsl:value-of select="." />    
+  </xsl:template>
+  
+  <xsl:template match="akvo:caption">
+    <xsl:value-of select="." />    
+  </xsl:template>
+  
+  <!-- current_image_caption -->
+
+  <!-- goals_overview -->
+  <xsl:template match="description[@type='Objectives']">
+    <goals_overview>
+      <xsl:value-of select="." />
+    </goals_overview>
+  </xsl:template>
+  
+  <!-- current_status -->
+  <xsl:template match="description[@akvo:type='Current status']">
+    <current_status>
+      <xsl:value-of select="." />
+    </current_status>
+  </xsl:template>
+  
+  <!-- project_plan -->
+
+  <!-- sustainability -->
+  <xsl:template match="description[@akvo:type='Sustainability']">
+    <sustainability>
+      <xsl:value-of select="." />
+    </sustainability>
+  </xsl:template>
+  
+  <!-- background -->
+
+  <!-- project_rating Currently not used-->
+
+  <!-- notes Currently not used -->
+
+  <!-- currency -->
+  <xsl:template match="@default-currency">
+    <currency>
+      <xsl:value-of select="." />
+    </currency>
+  </xsl:template>
+
+  <!-- date_request_posted -->
+  <xsl:template match="activity-date[@type='start-actual']">
+    <date_request_posted>
+      <xsl:value-of select="." />
+    </date_request_posted>
+  </xsl:template>
+
+  <!-- date_complete -->
+  <xsl:template match="activity-date[@type='end-actual']">
+    <date_complete>
+      <xsl:value-of select="." />
+    </date_complete>
+  </xsl:template>
+
+  <!-- primary_location ForeignKey -->
+    <!-- set when locations are created -->
+  
+  <!-- budget Denormalized field-->
+
+  <!-- funds Denormalized field-->
+
+  <!-- funds_needed Denormalized field-->
+
+  <!-- ************************** related resources ************************** -->
+  
+  <!-- location -->
+  <xsl:template match="location">
+    <object>
+      <xsl:apply-templates select="coordinates" />
+      <xsl:apply-templates select="administrative" />
+    </object>
+  </xsl:template>
+
+  <xsl:template match="coordinates">
+    <xsl:apply-templates select="@latitude"/>
+    <xsl:apply-templates select="@longitude"/>
+  </xsl:template>
+  
+  <xsl:template match="@latitude">
+    <latitude type="float">
+      <xsl:value-of select="." />
+    </latitude>
+  </xsl:template>
+  
+  <xsl:template match="@longitude">
+    <longitude type="float">
+      <xsl:value-of select="." />
+    </longitude>
+  </xsl:template>
+
+  <xsl:template match="administrative">
+    <xsl:apply-templates select="@country"/>
+  </xsl:template>
+
+  <xsl:template match="@country">
+    <country>
+      <xsl:value-of select="." />
+    </country>
+  </xsl:template>
+
+  <!-- goal -->
+  <xsl:template match="description[@akvo:type='Objectives detail']">
+    <object>
+      <text>
+        <xsl:value-of select="." />
+      </text>
+    </object>
+  </xsl:template>
+  
+</xsl:stylesheet>
+
+
