@@ -6,24 +6,29 @@
 from copy import deepcopy
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.forms.models import ModelForm
 
 from tastypie import fields
 from tastypie import http
+from tastypie.authorization import Authorization
+from tastypie.serializers import Serializer
 from tastypie.bundle import Bundle
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import ApiFieldError
 from tastypie.fields import ApiField, NOT_PROVIDED
 from tastypie.resources import ModelResource
 from tastypie.authentication import ApiKeyAuthentication
+from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
+from akvo.api.serializers import IATISerializer
+from akvo.api.validation import ModelFormValidation
 
 from akvo.rsr.models import (
     Benchmark, Benchmarkname, BudgetItem, BudgetItemLabel, Category, Country, FocusArea, Goal, Link,
     Organisation, OrganisationLocation, Partnership, Project, ProjectLocation, ProjectUpdate,
     ProjectComment, UserProfile, Invoice
 )
-
-from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE
+from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE, custom_get_or_create_country
 
 __all__ = [
     'BenchmarkResource',
@@ -34,6 +39,8 @@ __all__ = [
     'CountryResource',
     'FocusAreaResource',
     'GoalResource',
+    'IATIProjectLocationResource',
+    'IATIProjectResource',
     'InvoiceResource',
     'LinkResource',
     'OrganisationResource',
@@ -50,7 +57,7 @@ __all__ = [
 def get_extra_thumbnails(image_field):
     try:
         thumbs = image_field.extra_thumbnails
-        return dict([(key, thumbs[key].absolute_url) for key in thumbs.keys()])
+        return {key: thumbs[key].absolute_url for key in thumbs.keys()}
     except:
         return None
 
@@ -86,7 +93,7 @@ class ConditionalFullResource(ModelResource):
         objects = self.obj_get_list(request=request, **self.remove_api_resource_names(kwargs))
         sorted_objects = self.apply_sorting(objects, options=request.GET)
 
-        paginator = self._meta.paginator_class(request.GET, sorted_objects, resource_uri=self.get_resource_list_uri(), limit=self._meta.limit)
+        paginator = self._meta.paginator_class(request.GET, sorted_objects, resource_uri=self.get_resource_uri(), limit=self._meta.limit, max_limit=self._meta.max_limit, collection_name=self._meta.collection_name)
         to_be_serialized = paginator.page()
 
         # Dehydrate the bundles in preparation for serialization.
@@ -122,6 +129,93 @@ class ConditionalFullResource(ModelResource):
         bundle = self.full_dehydrate(bundle)
         bundle = self.alter_detail_data_to_serialize(request, bundle)
         return self.create_response(request, bundle)
+
+
+class IATIProjectResource(ModelResource):
+
+    goals       = ConditionalFullToManyField('akvo.api.resources.IATIGoalResource', 'goals', full=True, related_name='project')
+    locations   = fields.ToManyField('akvo.api.resources.IATIProjectLocationResource', 'locations', full=True, related_name='location_target')
+
+    class Meta:
+        allowed_methods = ['post']
+        resource_name   = 'iati_activity'
+        authorization   = Authorization()
+        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
+        serializer      = IATISerializer()
+        queryset        = Project.objects.all()
+
+    def alter_deserialized_detail_data(self, request, data):
+        # hack to set the first location as primary
+        if data.get('locations'):
+            data['locations'][0]['primary'] = True
+            for location in data['locations'][1:]:
+                location['primary'] = False
+        return data
+
+    def hydrate_date_complete(self, bundle):
+        date_complete = bundle.data.get('date_complete')
+        if date_complete and date_complete[-1] == 'Z':
+            bundle.data['date_complete'] = date_complete[:-1]
+        return bundle
+
+    def hydrate_date_request_posted(self, bundle):
+        date_request_posted = bundle.data.get('date_request_posted')
+        if date_request_posted and date_request_posted[-1] == 'Z':
+            bundle.data['date_request_posted'] = date_request_posted[:-1]
+        return bundle
+
+    def hydrate_current_image(self, bundle):
+        import pdb
+        pdb.set_trace()
+        import requests
+
+        from django.core.files import File
+        from django.core.files.temp import NamedTemporaryFile
+
+        def save_image_from_url(model, url):
+            r = requests.get(url)
+
+            img_temp = NamedTemporaryFile(delete=True)
+            img_temp.write(r.content)
+            img_temp.flush()
+
+            img_name = "%s_%s_%s_%s%s" % (
+                bundle.obj._meta.object_name,
+                bundle.obj.pk or '',
+                'current_image',
+                datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
+                os.path.splitext(img.name)[1],
+            )
+            Project.current_image.save("image.jpg", File(img_temp), save=True)
+
+
+class IATIGoalResource(ModelResource):
+    project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project', full=True,)
+
+    class Meta:
+        allowed_methods = ['post']
+        resource_name   = 'iati_goal'
+        authorization   = Authorization()
+        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
+        queryset        = Goal.objects.all()
+
+
+class IATIProjectLocationResource(ModelResource):
+    project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'location_target', full=True,)
+    country = fields.ToOneField('akvo.api.resources.CountryResource', 'country')
+
+    class Meta:
+        allowed_methods = ['post']
+        resource_name   = 'iati_project_location'
+        authorization   = Authorization()
+        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
+        queryset        = ProjectLocation.objects.all()
+
+    def hydrate_country(self, bundle):
+        country = custom_get_or_create_country(bundle.data['country'])
+        # TODO: use reverse to generate path
+        bundle.data['country'] = '/api/v1/country/%d/' % country.pk
+        return bundle
 
 
 class BenchmarkResource(ConditionalFullResource):
@@ -273,7 +367,7 @@ class OrganisationResource(ConditionalFullResource):
         help_text='Show the projects the organisation is related to and how.'
     )
     locations           = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations')
-    primary_location    = fields.ToOneField('akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True)
+    primary_location    = fields.ToOneField('akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True, blank=True)
 
     class Meta:
         allowed_methods         = ['get']
@@ -354,7 +448,7 @@ class ProjectResource(ConditionalFullResource):
     links               = ConditionalFullToManyField('akvo.api.resources.LinkResource', 'links')
     locations           = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
     partnerships        = ConditionalFullToManyField('akvo.api.resources.PartnershipResource', 'partnerships',)
-    primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True)
+    primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True, blank=True)
     project_comments    = ConditionalFullToManyField('akvo.api.resources.ProjectCommentResource', 'comments')
     project_updates     = ConditionalFullToManyField('akvo.api.resources.ProjectUpdateResource', 'project_updates')
 
@@ -430,12 +524,20 @@ class ProjectLocationResource(ConditionalFullResource):
         )
 
 
+class ProjectUpdateModelForm(ModelForm):
+    class Meta:
+        model = ProjectUpdate
+
+
 class ProjectUpdateResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
     user    = ConditionalFullToOneField('akvo.api.resources.UserResource', 'user')
 
     class Meta:
-        allowed_methods         = ['get']
+        allowed_methods         = ['get', 'post']
+        authorization           = Authorization()
+        authentication          = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
+        validation              = ModelFormValidation(form_class=ProjectUpdateModelForm)
         queryset                = ProjectUpdate.objects.all()
         resource_name           = 'project_update'
         include_absolute_url    = True

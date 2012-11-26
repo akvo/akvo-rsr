@@ -156,8 +156,8 @@ class BaseLocation(models.Model):
     postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
     primary = models.BooleanField(_(u'primary location'), db_index=True, default=True)
 
-    def __unicode__(self):
-        return u'%s, %s (%s)' % (self.city, self.state, self.country)
+#    def __unicode__(self):
+#        return u'%s, %s (%s)' % (self.city, self.state, self.country)
 
     def save(self, *args, **kwargs):
         super(BaseLocation, self).save(*args, **kwargs)
