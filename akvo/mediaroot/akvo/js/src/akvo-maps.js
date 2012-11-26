@@ -185,7 +185,7 @@
                 'mapTypeControl': true,
                 'navigationControl': true,
                 'scaleControl': true,
-                'scrollwheel': false,
+                'scrollwheel': true,
                 'streetViewControl': false,
                 'zoom': 2
             };
