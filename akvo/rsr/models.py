@@ -194,12 +194,23 @@ class Partnership(models.Model):
     PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
     PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
+    ALLIANCE_PARTNER = u'alliance'
+    KNOWLEDGE_PARTNER = u'knowledge'
+    NETWORK_PARTNER = u'network'
+    PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
+    PARTNER_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
+    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_LIST, PARTNER_EXTRA_LABELS)
+
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = models.CharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2,
         blank=True, null=True, db_index=True
+    )
+    partner_type_extra = models.CharField(
+        _(u'partner type extra'), max_length=30,
+        blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
     )
     iati_activity_id = models.CharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
     internal_id = models.CharField(
