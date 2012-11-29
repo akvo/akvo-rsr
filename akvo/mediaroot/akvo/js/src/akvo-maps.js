@@ -40,15 +40,16 @@
     // Creates resource URLS based on map options
     getResourceUrl = function (map) {
         var url = map.mapOpts.host + 'api/v1/',
-        limit = 20;
+        //limit = 0 means all objects. If this becomes too heavy limit can be set to get the objects in multiple chunks
+        limit = 0;
         if (map.mapOpts.objectType === 'project') {
             return url + 'project/' + map.mapOpts.object + '/?format=jsonp&depth=1&callback=?';
         } else if (map.mapOpts.objectType === 'organisation') {
             return url + 'organisation/' + map.mapOpts.object + '/?format=jsonp&depth=1&callback=?';
         } else if (map.mapOpts.objectType === 'projects') {
-            return url + 'project/?format=jsonp&depth=1&limit=' + limit + '&callback=?';
+            return url + 'project/?format=jsonp&limit=' + limit + '&callback=?';
         } else if (map.mapOpts.objectType === 'organisations') {
-            return url + 'organisation/?format=jsonp&depth=1&limit=' + limit + '&callback=?';
+            return url + 'organisation/?format=jsonp&limit=' + limit + '&callback=?';
         }
     };
 
@@ -56,11 +57,11 @@
 
     // Populates the map with data
     populateMap = function (map, data) {
-        var objects, objectType, pinTmpl;
+        var objects, objectType, pinTmpl, addOrganisationData, addProjectData;
         objectType = map.mapOpts.objectType;
 
         // Since API resources that list multiple objects (projects or organisations) include
-        // a objects array we need to add the single project or organisation to an array. This Since
+        // an objects array we need to add the single project or organisation to an array. This Since
         // we want to keep using the same logic for both cases
         if (isNaN(map.mapOpts.object)) {
             objects = data.objects;
@@ -82,29 +83,48 @@
                 '</div>'
         );
 
+        // populate the location object with data from the Organisation
+        addOrganisationData = function (object, location) {
+            location.url = object.absolute_url;
+            location.title = object.name;
+            try {
+                location.thumb = object.logo.thumbnails.map_thumb;
+            } catch (e0) { location.thumb = ''; }
+            return location;
+        }
+
+        // populate the location object with data from the Project
+        addProjectData = function (object, location) {
+            location.url = object.absolute_url;
+            location.title = object.title;
+            try {
+                location.thumb = object.current_image.thumbnails.map_thumb;
+            } catch (e1) { location.thumb = ''; }
+            return location;
+        }
+
         $.each(objects, function (i, object) {
-            $.each(object.locations, function (k, location) {
-
-                // Since organisation and projects have different data fields for
-                // name, title and current_image and logo we need to make sure the location
-                // object holds the wanted data
-                if (objectType === 'organisation' || objectType === 'organisations') {
-                    location.url = object.absolute_url;
-                    location.title = object.name;
-                    try {
-                        location.thumb = object.logo.thumbnails.map_thumb;
-                    } catch (e0) { location.thumb = ''; }
-
+            // if we're displaying multiple objects we only show the primary locations
+            if (objectType === 'projects' || objectType === 'organisations') {
+                var location;
+                location = object.primary_location;
+                if (objectType === 'organisations') {
+                    location = addOrganisationData(object, location);
                 } else {
-                    location.url = object.absolute_url;
-                    location.title = object.title;
-                    try {
-                        location.thumb = object.current_image.thumbnails.map_thumb;
-                    } catch (e1) { location.thumb = ''; }
+                    location = addProjectData(object, location);
                 }
-
                 addPin(map, location, pinTmpl);
-            });
+            // for single objects show all locations
+            } else {
+                $.each(object.locations, function (k, location) {
+                    if (objectType === 'organisation') {
+                        location = addOrganisationData(object, location);
+                    } else {
+                        location = addProjectData(object, location);
+                    }
+                    addPin(map, location, pinTmpl);
+                });
+            }
         });
 
         // If we are rendering multiple objects and there are more objects to
@@ -117,7 +137,7 @@
     // Add a single pin
     addPin = function (map, location, template) {
         var marker, objectType;
-        marker = map.mapOpts.host + '/rsr/media/core/img/';
+        marker = map.mapOpts.host + 'rsr/media/core/img/';
         objectType = map.mapOpts.objectType;
 
         if (objectType === 'organisation' || objectType === 'organisations') {
