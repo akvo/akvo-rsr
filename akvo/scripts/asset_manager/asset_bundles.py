@@ -29,6 +29,10 @@ ASSET_BUNDLES = {
         'compress': True,
         'files': [
             'galleria.1.1.95.js',
+            'jquery.ui.map.full.min.js',
+            'handlebars-1.0.rc.1.js',
+            'purl-2.2.1.js',
+            'akvo-maps.js'
         ],
     },
     'akvo_ie6_style': {
@@ -61,14 +65,14 @@ ASSET_BUNDLES = {
             'get_widget.css'
             ],
     },
-    # 'partner_sites_script': {
-    #     'type': 'js',
-    #     'path': 'partner_sites/js/',
-    #     'compress': True,
-    #     'files': [
-    #         'galleria.js',
-    #         ],
-    # },
+    'partner_sites_script': {
+        'type': 'js',
+        'path': 'partner_sites/js/',
+        'compress': True,
+        'files': [
+            'galleria.js',
+            ],
+    },
     'akvo_ps_machinery_js': {
         'type': 'js',
         'path': 'partner_sites/js/',
