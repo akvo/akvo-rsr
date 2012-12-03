@@ -108,13 +108,15 @@
             if (objectType === 'projects' || objectType === 'organisations') {
                 var location;
                 location = object.primary_location;
-                if (objectType === 'organisations') {
-                    location = addOrganisationData(object, location);
-                } else {
-                    location = addProjectData(object, location);
+                if (location) {
+                    if (objectType === 'organisations') {
+                        location = addOrganisationData(object, location);
+                    } else {
+                        location = addProjectData(object, location);
+                    }
+                    addPin(map, location, pinTmpl);
                 }
-                addPin(map, location, pinTmpl);
-            // for single objects show all locations
+                // for single objects show all locations
             } else {
                 $.each(object.locations, function (k, location) {
                     if (objectType === 'organisation') {
@@ -154,6 +156,9 @@
                 'icon': marker,
                 'bounds': true
             });
+            if ($(map.mapElement).gmap('get', 'map').getZoom() > 8) {
+                $(map.mapElement).gmap('get', 'map').setZoom(8)
+            }
         } else {
             $(map.mapElement).gmap('addMarker', {
                 'position': new google.maps.LatLng(location.latitude, location.longitude),
@@ -197,7 +202,7 @@
                 'scaleControl': false,
                 'scrollwheel': false,
                 'streetViewControl': false,
-                'zoom': 2
+                'zoom': 0,
             };
         } else {
             options = {
@@ -207,7 +212,7 @@
                 'scaleControl': true,
                 'scrollwheel': true,
                 'streetViewControl': false,
-                'zoom': 2
+                'zoom': 2,
             };
         }
         return options;
