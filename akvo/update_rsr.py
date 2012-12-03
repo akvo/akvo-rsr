@@ -4,7 +4,6 @@
 #to be run in the akvo rsr root folder. setting up all projects as published, if they have no status
 # and setting all orgs to free account if they have none
 
-from __future__ import with_statement
 from django.core.management import setup_environ
 import settings
 setup_environ(settings)
@@ -46,17 +45,17 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
         datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
         splitext(img_name)[1],
     )
-    
+
 def update_publishing_status():
     projects = Project.objects.all()
     for p in projects:
         try:
-            ps = PublishingStatus.objects.get(project=p)    
+            ps = PublishingStatus.objects.get(project=p)
             #print "Found project %s, already %s" % (ps.project, ps.status)
         except:
             new_ps = PublishingStatus(project=p, status='unpublished')
             new_ps.save()
-        
+
 def update_organisation_account():
     orgs = Organisation.objects.all()
     for o in orgs:
@@ -103,7 +102,7 @@ def budget_refactor():
             if p.budget.other:
                 BudgetItem.objects.create(project=p, item='other', amount=p.budget.other, currency='EUR')
         except:
-            print "Error importing project budget, for id:", p.id 
+            print "Error importing project budget, for id:", p.id
 
 def create_primary_project_locations():
     content_type = ContentType.objects.get_for_model(get_model('rsr', 'project'))

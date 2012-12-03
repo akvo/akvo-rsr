@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.host.controller import HostControllerMode
 
 
-class HostControllerModeTest(unittest2.TestCase):
+class HostControllerModeTest(unittest.TestCase):
 
     def test_has_local_and_remote_host_controller_modes(self):
         """fab.tests.host.host_controller_mode_test  Has local and remote host controller modes"""

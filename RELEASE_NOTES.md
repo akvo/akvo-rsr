@@ -8,7 +8,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.1.2 release notes
 ---
-30 October 2012, (Code name: Kiwi) kardan
+30 October 2012, (Code name: Kiwi) kardan, adriancollier
 
 Overview
 ----
@@ -20,16 +20,72 @@ New features & changes
 
 On the first page of the donation process (http://www.akvo.org/rsr/project/613/donate/) there is currently the option of donating by PayPal or iDeal. At the bottom of the page there is also the option to donate as an Organisation which follows a different process.
 
-This alternative process have been more apparent to prevent organisations to participate in the workflow that is aimed at individuals.
+This alternative process has been made more apparent to ensure organisations follow the correct path rather than to participate in the workflow that is aimed at individual donors.
 
 Github issue: [98](https://github.com/akvo/akvo-rsr/issues/98)
 
+###API Changes
+
+We have added the Primary Location to the Inline Project Resource in the API. This allows for the location to be collected directly when obtaining the details for the project. As the location is one of the most useful pieces of information present in a project but not being located within the project table in the database - it makes a lot of sense that this should be accessible easily - so we did it.
+
+Github issue: [124](https://github.com/akvo/akvo-rsr/issues/124)
+
+We have also added the project image thumbnails to the resources available to the API. This allows the images to be collected and used for lists and maps where the full-sized image is not needed, or where many images are needed to be downloaded and so downloading and resizing all of the originals would take too much time and server capacity. So, if you want a thumbnail - you can get it directly from the API.
+
+Github issue: [123](https://github.com/akvo/akvo-rsr/issues/123)
+
+###Sorting on Locations
+
+The ability to sort projects in a list based on Location was disabled some time back when we made changes to the location model. It has now been reinstated, so it'll be easier once more to find those projects near each other.
+
+Github issue: [99](https://github.com/akvo/akvo-rsr/issues/99)
+
+###Map Images
+
+Previously we were pulling and displaying original project images on our maps. This looked fine in general, but it had a huge impact on performance as all the images needed to be downloaded when the map was displayed to the user...not the most efficient.
+
+Seeing as the images are small on the map pop-up anyway, we have modified the interface to use the thumbnail image rather than the original image. Reducing the loading time for users, and the impact on our server resources - for which we are grateful.
+
+Github issue: [65](https://github.com/akvo/akvo-rsr/issues/65)
+
+###Map Scrolling
+
+This improvement is a great addition. We have enabled Global map zooming in and out using the scrollwheel on your mouse. If you don't use the scrollwheel on your mouse, then you'll probably not notice anything. If you do use it - then I hope you get as excited about this as I did!
+
+Github issue: [43](https://github.com/akvo/akvo-rsr/issues/43)
+
+###Akvo RSR in German
+
+Working closely with one of our Partners Mars Chocolates, we have made significant progress in translating the Akvo RSR User Interface into German. We have checked this well, but we are still ironing out all of the kinks and making sure it all makes sense. If you spot any inaccurately translated items, please let us know. Online translation tools don't let you see things in context, so it's a lot of guesswork until it's seen in action.
+
+Github issue: [116](https://github.com/akvo/akvo-rsr/issues/116)
+
 Bug fixes
 ----
-###Image slider thumbs not faded on init
+###Image slider thumbs not faded on initialisation
 There was a slight UI issue with the image slider on project pages.
 
 Github issue: [50](https://github.com/akvo/akvo-rsr/issues/50)
+
+###Video Updates Scrollbar
+
+We found that some videos were being bordered by scrollbars when showing on the RSR Update page. This made them look more than a little messy. So after some poking, we've fixed it and removed those unsightly bars.
+
+Github issue: [104](https://github.com/akvo/akvo-rsr/issues/104)
+
+###Unpublished Projects Administration
+
+After making some major changes to the way unpublished projects are visible in RSR, we have made a further change to allow easier administration and maintenance by Akvo Staff of these projects. In short, it's now possible to do the things we need to do, without any jiggery-pokery - sweet.
+
+Github issue: [91](https://github.com/akvo/akvo-rsr/issues/91)
+
+###Translation of Listing Headings
+
+A while back we made a large effort to translate our user interface into multiple languages. Almost all of the non-user-generated content within RSR is now available in different languages. Some items however missed out...
+
+We have now updated this so that the project listing pages such as http://akvo.akvoapp.org have all the column titles translated - not just the select ones from before.
+
+Github issue: [48](https://github.com/akvo/akvo-rsr/issues/48)
 
 ---------------------------------------------
 
@@ -2052,4 +2108,3 @@ A detailed list (including in process development bugs) can be found at: http://
 
 
 ====END OF RELEASE NOTES====
-

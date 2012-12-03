@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, unittest2
+import os, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -14,7 +14,7 @@ from fab.config.values.host import HostAlias
 from fab.tasks.parameters import TaskParameters
 
 
-class TaskParametersTest(unittest2.TestCase):
+class TaskParametersTest(unittest.TestCase):
 
     CUSTOM_DEPLOYMENT_CONFIG_TEMPLATE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../config/custom.py.template'))
 
