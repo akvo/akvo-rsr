@@ -217,7 +217,7 @@ class Partnership(models.Model):
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
-    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
+    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.'))
 
     class Meta:
         verbose_name = _(u'project partner')
