@@ -16,6 +16,17 @@ Overview
 
 New features & changes
 ----
+
+###End to End Transparency with OpenAid.nl and Akvo RSR
+
+The term "World First" is not something that can be batted around lightly, but with this feature I feel we have come so close to this that I can't resist the urge! In this release we have made a firm link between the Financial Information published by the Dutch Government at OpenAid.nl and Akvo RSR. Pending a change in the OepnAid.nl source code which should be pushed later this week, you will now be able to navigate between Funding Activities in OpenAid.nl and projects being implemented using those funds on Akvo RSR.
+
+So, links on the OpenAid.nl site will provide you with a list of RSR projects or a list of participating organisations. From the Funding Pages on Akvo RSR you'll be able to go directly to the original funding activity in OpenAid.nl.
+
+You can read more about this on our [Blog Post](www.akvo.org/blog) on this feature!
+
+Github issue: [69](https://github.com/akvo/akvo-rsr/issues/69) & [87](https://github.com/akvo/akvo-rsr/issues/87)
+
 ###Donation Initial Page Restyle/Addition
 
 On the first page of the donation process (http://www.akvo.org/rsr/project/613/donate/) there is currently the option of donating by PayPal or iDeal. At the bottom of the page there is also the option to donate as an Organisation which follows a different process.
@@ -60,6 +71,12 @@ Working closely with one of our Partners Mars Chocolates, we have made significa
 
 Github issue: [116](https://github.com/akvo/akvo-rsr/issues/116)
 
+###Automated Donation Testing Scripts
+
+This might sound tedious, but these amazingly powerful Lettuce scripts allow us to run through the Donation Process automatically in under 2 minutes! They check that everything's working as expected, that all the numbers and figures are adding up and the connections are still responsive. It's a great addition to our testing process and will save us hours of manual testing in the weeks, months and years to come.
+
+Github issue: [131](https://github.com/akvo/akvo-rsr/issues/113)
+
 Bug fixes
 ----
 ###Image slider thumbs not faded on initialisation
@@ -86,6 +103,12 @@ A while back we made a large effort to translate our user interface into multipl
 We have now updated this so that the project listing pages such as http://akvo.akvoapp.org have all the column titles translated - not just the select ones from before.
 
 Github issue: [48](https://github.com/akvo/akvo-rsr/issues/48)
+
+###Duplication of Partners on Project Page
+
+The list of partners presented on the Project page was for a while showing the same organisations multiple times when this partner was connected to a project with multiple roles - such as Support Partner and also as Funding Partner. We've fixed the filter again now so no matter how many times a parter is linked they will be shown just the once. If however you go through to the Partners page for that project, you'll be able to see each partner and the roles they perform. So we've not lost anything, just tidied it all up a little.
+
+Github issue: [127](https://github.com/akvo/akvo-rsr/issues/127)
 
 ---------------------------------------------
 
