@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import os, unittest2
+import os, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -15,7 +15,7 @@ from fab.config.rsr.deployment import RSRDeploymentConfig
 from fab.config.rsr.host import CIDeploymentHostConfig
 
 
-class RSRDataPopulatorConfigTest(unittest2.TestCase):
+class RSRDataPopulatorConfigTest(unittest.TestCase):
 
     def setUp(self):
         super(RSRDataPopulatorConfigTest, self).setUp()

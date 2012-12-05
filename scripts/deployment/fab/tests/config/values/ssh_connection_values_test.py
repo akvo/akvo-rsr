@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.config.values.host import HostAlias, SSHConnection
 
 
-class SSHConnectionValuesTest(unittest2.TestCase):
+class SSHConnectionValuesTest(unittest.TestCase):
 
     def test_has_connection_string_for_live_host(self):
         """fab.tests.config.values.ssh_connection_values_test  Has SSH connection string for live host"""

@@ -71,7 +71,7 @@
     {% endif %}	
     {% if update.video %}
       <div class="marg20">
-        <div style="width:580px; max-width:580px; overflow:scroll">
+        <div style="width:580px; max-width:580px; overflow:auto;">
           {# {{update.video|oembed:"580x435"}} #}
           {{ update.get_video_oembed }}
         </div>

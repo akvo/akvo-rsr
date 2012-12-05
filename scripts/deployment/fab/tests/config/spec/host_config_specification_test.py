@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -15,7 +15,7 @@ from fab.config.spec import HostConfigSpecification
 from fab.config.values.host import HostAlias
 
 
-class HostConfigSpecificationTest(unittest2.TestCase):
+class HostConfigSpecificationTest(unittest.TestCase):
 
     def test_can_create_preconfigured_host_config_specification(self):
         """fab.tests.config.spec.host_config_specification_test  Can create a preconfigured host configuration specification"""

@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import imp, os, unittest2
+import imp, os, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -14,7 +14,7 @@ from fab.config.rsr.data.retriever import RSRDataRetrieverConfig
 from fab.config.values.host import DataHostPaths
 
 
-class RSRDataRetrieverConfigTest(unittest2.TestCase):
+class RSRDataRetrieverConfigTest(unittest.TestCase):
 
     def setUp(self):
         super(RSRDataRetrieverConfigTest, self).setUp()

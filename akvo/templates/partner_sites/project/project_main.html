@@ -47,7 +47,7 @@
           {{ project.primary_location.latitude }},
           {{ project.primary_location.longitude }}
         </p>
-        {% google_map project 260 180 3 %}
+        {% google_map project 260 180 8 %}
       {% else %}
         <p style="color: red;">{% trans 'No map available' %}</p>
       {% endif %}
@@ -134,12 +134,15 @@
 
 {% block js %}
   {{ block.super }}
+
   {% if debug %}
-    <script src="{{MEDIA_URL}}core/js/jquery-ui.1.8.9.min.js"></script>
+    <script src="{{MEDIA_URL}}core/js/jquery-ui.1.8.9.js"></script>
   {% else %}
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
   {% endif %}
-  {% asset_bundle 'partner_sites_script' %}
+
+  {# {% asset_bundle 'partner_sites_script' %} #}
+  <script src="{{MEDIA_URL}}core/galleria/galleria-1.2.8.js"></script>
   <script>
     var galleria_data = [
       {
@@ -206,7 +209,10 @@
 {% block jq_ready %}
   {{block.super}}
   jQ('#project_tabs').tabs();
-  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic-white-old/galleria.classic.js');
+  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic/galleria.classic.min.js');
+  Galleria.configure({
+    showInfo: false
+  });
   jQ('#galleria').galleria({data_source: galleria_data});
 
   init_benchmarks();
