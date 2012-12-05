@@ -71,8 +71,7 @@
             {% if organisation.primary_location.country %}{{organisation.primary_location.country}}{% endif %}
           </p>
           {% if organisation.primary_location %}
-            {% map organisation 180 135 "static" %}
-{#            {% google_map organisation 180 135 6 %}#}
+            {% map organisation 180 135 "small" %}
           {% else %}
             <p class="small" style="color: red;">{% trans 'No map available' %}</p>
           {% endif %}
