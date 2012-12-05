@@ -6,7 +6,7 @@
 
 
 import mox
-import simplejson as json
+import json
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 

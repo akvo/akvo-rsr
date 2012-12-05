@@ -52,7 +52,7 @@
             {% if partner.primary_location.country %}{{partner.primary_location.country}}{% endif %}
           </p>
           {% if partner.primary_location %}
-            {% google_map partner 195 160 6 %}
+            {% google_map partner 195 160 8 %}
           {% else %}
             <p class="small" style="color: red;">{% trans 'No map available' %}</p>
           {% endif %}

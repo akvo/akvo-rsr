@@ -87,8 +87,8 @@ class SystemPackageSpecifications(object):
 
     PYTHON_PACKAGE_DEPENDENCIES =   [{'name': 'python-support',     'version': '0.7.5ubuntu1'},
                                      {'name': 'python-central',     'version': '0.6.7ubuntu0.1'},
-                                     {'name': 'libxml2',            'version': '2.6.31.dfsg-2ubuntu1.6'},
-                                     {'name': 'libxml2-dev',        'version': '2.6.31.dfsg-2ubuntu1.6'},
+                                     {'name': 'libxml2',            'version': '2.6.31.dfsg-2ubuntu1.10'},
+                                     {'name': 'libxml2-dev',        'version': '2.6.31.dfsg-2ubuntu1.10'},
                                      {'name': 'libgpg-error0',      'version': '1.4-2ubuntu7'},
                                      {'name': 'libgcrypt11',        'version': '1.2.4-2ubuntu7'},
                                      {'name': 'libxslt1.1',         'version': '1.1.22-1ubuntu1.2'},

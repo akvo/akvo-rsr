@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -13,7 +13,7 @@ from fab.os.command.stat import StatCommand
 from fab.os.system import SystemType
 
 
-class StatCommandTest(unittest2.TestCase):
+class StatCommandTest(unittest.TestCase):
 
     def setUp(self):
         super(StatCommandTest, self).setUp()
