@@ -9,6 +9,7 @@
 import os
 from django import template
 from django.conf import settings
+from django.http import Http404
 
 from akvo.rsr.models import Project, Organisation
 
@@ -18,24 +19,22 @@ register = template.Library()
 #PROJECT_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
 #ORGANISATION_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
 
-#RAW_HOST = getattr(settings, 'DOMAIN_NAME', 'akvo.org')
-#
-## Production server uses leading 'www'
-#if RAW_HOST == 'akvo.org':
-#    HOST = 'http://www.akvo.org/'
-#else:
-#    HOST = 'http://%s/' % RAW_HOST
 
-# TODO: this will break on partner sites I think
+# TODO: this should be fixed so partner sites use their own domain
 HOST = 'http://%s/' % getattr(settings, 'DOMAIN_NAME', 'akvo.org')
 
 @register.inclusion_tag('inclusion_tags/map.html')
 def map(resource, width, height, type="dynamic", marker_icon=""):
-
-    is_project = isinstance(object, Project)
-    is_organisation = isinstance(object, Organisation)
-    is_all_projects = isinstance(object, basestring) and (object == 'projects')
-    is_all_organisations = isinstance(object, basestring) and (object == 'organisations')
+    """
+    Generic google map inclusion tag tha ses the RSR api to fetch data
+    params:
+        resource: the name of the resource as a string or an object of that resource's model
+            currently "project" and "organisation" can be used
+        width, height: the dimensions of the map
+        type: there are three types currently: "dynamic", "static" and "small" the two first are used for global maps
+            the "small" map is used for a single project or organisation's marker(s)
+        marker_icon: the name of an icon to use rather than the default. the icon must be in mediaroot/core/img/
+    """
 
     # We want a unique id for each map element id
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
@@ -47,27 +46,13 @@ def map(resource, width, height, type="dynamic", marker_icon=""):
         'host': HOST,
         'marker_icon': marker_icon,
     }
-
+    #extend this to support more models that have a location
     supported_models = (Project, Organisation)
 
-    if isinstance(resource, basestring):
+    # determine if we have the name of the resource or an object of that kind
+    if isinstance(resource, basestring) and resource in [model_name.__name__.lower() for model_name in supported_models]:
         template_context['resource'] = resource
     elif isinstance(resource, supported_models):
         template_context['resource'] = resource.__class__.__name__.lower()
         template_context['object_id'] = resource.id
     return template_context
-
-
-#    if is_project:
-#        template_context['object'] = object.id
-#        template_context['objectType'] = 'project'
-#    elif is_all_projects:
-#        template_context['object'] = object
-#        template_context['objectType'] = 'projects'
-#    elif is_organisation:
-#        template_context['object'] = object.id
-#        template_context['objectType'] = 'organisation'
-#    elif is_all_organisations:
-#        template_context['object'] = object
-#        template_context['objectType'] = 'organisations'
-#    return template_context
