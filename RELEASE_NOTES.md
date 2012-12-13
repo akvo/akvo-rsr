@@ -19,7 +19,7 @@ New features & changes
 
 ###End to End Transparency with Openaid.nl and Akvo RSR
 
-The term "World First" is not something that can be batted around lightly, but with this feature I feel we have come so close to this that I can't resist the urge! In this release we have made a firm link between the Financial Information published by the Dutch Government at Openaid.nl and Akvo RSR. Pending a change in the Openaid.nl source code which should be pushed later this week, you will now be able to navigate between Funding Activities in Openaid.nl and projects being implemented using those funds on Akvo RSR.
+In this release we have made a firm link between the Financial Information published by the Dutch Government at Openaid.nl and Akvo RSR. Pending a change in the Openaid.nl source code which should be pushed later this week, you will now be able to navigate between Funding Activities in Openaid.nl and projects being implemented using those funds on Akvo RSR.
 
 So, links on the Openaid.nl site will provide you with a list of RSR projects or a list of participating organisations. From the Funding Pages on Akvo RSR you'll be able to go directly to the original funding activity in OpenAid.nl.
 
@@ -103,7 +103,7 @@ Github issue: [116](https://github.com/akvo/akvo-rsr/issues/116)
 
 ###Automated Donation Testing Scripts
 
-This might sound tedious, but these amazingly powerful Lettuce scripts allow us to run through the Donation Process automatically in under 2 minutes! They check that everything's working as expected, that all the numbers and figures are adding up and the connections are still responsive. It's a great addition to our testing process and will save us hours of manual testing in the weeks, months and years to come.
+We have written some powerful Lettuce scripts allow us to run through the Donation Process automatically in under 2 minutes. They check that everything's working as expected, that all the numbers and figures are adding up and the connections are still responsive. It's a great addition to our testing process and will save hours of manual testing in the weeks, months and years to come.
 
 Github issue: [131](https://github.com/akvo/akvo-rsr/issues/113)
 
@@ -122,7 +122,7 @@ Github issue: [104](https://github.com/akvo/akvo-rsr/issues/104)
 
 ###Unpublished Projects Administration
 
-After making some major changes to the way unpublished projects are visible in RSR, we have made a further change to allow easier administration and maintenance by Akvo Staff of these projects. In short, it's now possible to do the things we need to do, without any jiggery-pokery - sweet.
+After making some major changes to the way unpublished projects are visible in RSR, we have made a further change to allow easier administration and maintenance by Akvo Staff of these projects. In short, it's now possible to do the things we need to do, without any jiggery-pokery.
 
 Github issue: [91](https://github.com/akvo/akvo-rsr/issues/91)
 
