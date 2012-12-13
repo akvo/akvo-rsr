@@ -9,6 +9,10 @@
     // Django template tag. Each map element will have a div element and
     // a JavaScript literal with data which are used to create a map with
     // corresponding locations from the RSR API
+    // There are currently three kinds of maps:
+    //      "static" is used on the RSR home page where we want a world map with small markers
+    //      "small" is used for the single object maps for projects and organisations
+    //      "dynamic" are the large all-object maps for projects and organisations
 
     var addMap, addPin, populateMap, mapOptions, prepareNextRequest, getResourceUrl;
 
@@ -41,25 +45,19 @@
     getResourceUrl = function (map) {
         var opts, url, limit;
         opts = map.mapOpts;
-        url = opts.host + 'api/v1/' + opts.resource + '/';
+        // call /api/v1/map_for_project/ or /api/v1/map_for_organisation/ resources
+        //TODO: derive the host from the current page URL instead maybe?
+        url = opts.host + 'api/v1/map_for_' + opts.resource + '/';
         //limit = 0 means all objects. If this becomes too heavy limit can be set to get the objects in multiple chunks
         limit = 0;
+        // if object_id holds a value then that's the ID of the object we want to fetch
         if (opts.object_id) {
-            url += opts.object_id + '/?format=jsonp&depth=1&callback=?'
+            url += opts.object_id + '/?format=jsonp&depth=1&callback=?';
+        // otherwise we want all objects of the resource's type
         } else {
-            url += '?format=jsonp&limit=' + limit + '&callback=?'
+            url += '?format=jsonp&limit=' + limit + '&callback=?';
         }
         return url;
-
-//        if (map.mapOpts.objectType === 'project') {
-//            return url + 'project/' + map.mapOpts.object + '/?format=jsonp&depth=1&callback=?';
-//        } else if (map.mapOpts.objectType === 'organisation') {
-//            return url + 'organisation/' + map.mapOpts.object + '/?format=jsonp&depth=1&callback=?';
-//        } else if (map.mapOpts.objectType === 'projects') {
-//            return url + 'project/?format=jsonp&limit=' + limit + '&callback=?';
-//        } else if (map.mapOpts.objectType === 'organisations') {
-//            return url + 'organisation/?format=jsonp&limit=' + limit + '&callback=?';
-//        }
     };
 
 
@@ -89,10 +87,9 @@
                         '</a>' +
                     '</div>' +
                 '{{/if}}' +
-                '</div>'
-        );
+                '</div>');
 
-        // populate the location object with data from the Organisation
+        // populate the location object with data from an Organisation model object
         addOrganisationData = function (object, location) {
             location.url = object.absolute_url;
             location.title = object.name;
@@ -102,7 +99,7 @@
             return location;
         };
 
-        // populate the location object with data from the Project
+        // populate the location object with data from a Project model object
         addProjectData = function (object, location) {
             location.url = object.absolute_url;
             location.title = object.title;
@@ -152,6 +149,7 @@
         opts = map.mapOpts;
         marker = opts.host + 'rsr/media/core/img/';
 
+        // get a custom marker if there is one, otherwise it's red for organisations and blue for projects
         if (opts.marker_icon) {
             marker = marker + opts.marker_icon;
         } else if (opts.resource === 'organisation') {
@@ -161,6 +159,7 @@
         }
 
         if (opts.type === 'static' || opts.type === 'small') {
+            // shrink the marker for "static" maps
             if (opts.type === 'static') {
                 marker = new google.maps.MarkerImage(marker, null, null, null, new google.maps.Size(10.5, 17));
             }
@@ -170,9 +169,11 @@
                 'icon': marker,
                 'bounds': true
             });
+            // if the map is zoomed in a lot we zoom out a bit
             if ($(map.mapElement).gmap('get', 'map').getZoom() > 8) {
-                $(map.mapElement).gmap('get', 'map').setZoom(8)
+                $(map.mapElement).gmap('get', 'map').setZoom(8);
             }
+        // "dynamic"
         } else {
             $(map.mapElement).gmap('addMarker', {
                 'position': new google.maps.LatLng(location.latitude, location.longitude),
@@ -204,10 +205,10 @@
         });
     };
 
-
-    // Static or dynamic map options
     mapOptions = function (mapType) {
         var options;
+        // "static" and "small" are set to zoom 0 to begin with so that you see a world map until it has been populated
+        // scroll wheel zoom is only enabled for the large "dynamic" maps
         if (mapType === 'static') {
             options = {
                 'draggable': false,

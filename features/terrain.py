@@ -3,7 +3,7 @@
 from lettuce import after, before, step, world
 from splinter.browser import Browser
 
-world.SITE_UNDER_TEST = 'uat.akvo.org/rsr/projects'
+world.SITE_UNDER_TEST = 'uat.akvo.org'
 world.PAYPAL_MASTER_USER ='test@akvo.org'
 world.PAYPAL_MASTER_PASSWORD = 'akvotest'
 world.PAYPAL_TEST_USER = 'test_1352204974_per@akvo.org'

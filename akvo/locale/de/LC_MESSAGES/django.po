@@ -1678,7 +1678,7 @@ msgstr "Keine"
 
 #: rsr/models.py:538
 msgid "Needs funding"
-msgstr "Es besteht Finanzierungsbedarf."
+msgstr "Finanzierungsbedarf"
 
 #: rsr/models.py:539 templates/partner_sites/partners/partner_main.html:98
 #: templates/rsr/akvo_at_a_glance.html:102
@@ -2853,7 +2853,7 @@ msgstr ""
 
 #: templates/partner_sites/base.html:39
 msgid "Back to"
-msgstr "Zurück"
+msgstr "Zurück zu"
 
 #: templates/partner_sites/base.html:86
 msgid "Contact at "
@@ -2993,7 +2993,7 @@ msgstr "Partner"
 #: templates/partner_sites/home.html:107
 #, fuzzy
 msgid "Updated"
-msgstr "Updates"
+msgstr "Neuester Stand"
 
 #: templates/partner_sites/home.html:111
 #: templates/partner_sites/partners/partner_main.html:119
@@ -3021,7 +3021,7 @@ msgstr "Finanzierung"
 #: templates/widgets/project_narrow.html:87
 #: templates/widgets/project_updates.html:116
 msgid "Not yet"
-msgstr "Bisher keine"
+msgstr "Noch kein Update"
 
 #: templates/partner_sites/home.html:183
 #, python-format

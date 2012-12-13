@@ -2,11 +2,10 @@
 
 from lettuce import step, world, before
 
-
 @before.each_feature
 def get_project_info(feature):
     '''Figure out the title of the project update and the URL to the project'''
-    world.browser.visit('http://%s' % world.SITE_UNDER_TEST)
+    world.browser.visit('http://%s/' % world.SITE_UNDER_TEST)
     element = world.browser.find_by_css('#project_update_0').first
     world.project_update_title = element.find_by_tag('h2').first.text
     world.project_URL = '/'.join(element.find_by_tag('a').first['href'].split('/')[:-3]) + '/'
@@ -24,16 +23,11 @@ def when_i_navigate_to_the_project_main_page(step):
 # Scenario: I can navigate to a project main page
 @step(u'Then I am shown the main page of the project')
 def then_i_am_shown_the_main_page_of_the_project(step):
-    assert world.browser.is_text_present('Summary')
-    assert world.browser.is_text_present('Location')
-    assert world.browser.is_text_present('Funding')
-    assert world.browser.is_text_present('Latest updates')
-    assert world.browser.is_text_present('Tools for this page')
-    assert world.browser.is_text_present('Project partners')
-    assert world.browser.is_text_present('Project in depth')
-    assert world.browser.is_text_present('Related to this project')
-    assert world.browser.is_text_present('Comments')
-    assert world.browser.is_text_present('About Akvo.org')
+    key_words = ('Summary', 'Location', 'Funding', 'Latest updates', 'Tools for this page', 'Project partners',
+        'Project in depth', 'Related to this project', 'Comments', 'About Akvo.org',
+        )
+    for key_word in key_words:
+        assert world.browser.is_text_present(key_word)
 
 
 # Scenario: I can navigate to a project update page

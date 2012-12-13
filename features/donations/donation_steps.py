@@ -19,7 +19,7 @@ def log_in_to_paypal_test_environment(feature):
 
 @before.each_scenario
 def navigate_to_homepage(scenario):
-    world.browser.visit('http://%s' % world.SITE_UNDER_TEST)
+    world.browser.visit('http://%s/rsr/projects/' % world.SITE_UNDER_TEST)
 
 @step(u'When I go to project listing page')
 def when_i_go_to_project_listing_page(step):
@@ -32,10 +32,10 @@ def when_i_find_the_first_project_still_to_be_funded_in(step):
     project_rows = project_table.find_by_tag('tr')
     count = 0
     while count < len(project_rows):
-    	if 'Donate' in project_rows[count].text and u"€" in project_rows[count].text:
+        if 'Donate' in project_rows[count].text and u"€" in project_rows[count].text:
             element = project_rows[count].find_by_css('a').last
-    	    world.project_needing_euro_URL = '/'.join(element['href'].split('/')[:-2]) + '/'
-    	    break
+            world.project_needing_euro_URL = '/'.join(element['href'].split('/')[:-2]) + '/'
+            break
         count = count + 1
 
     row_text = project_rows[count].text.split('\n')
@@ -69,7 +69,7 @@ def then_these_amounts_should_agree_with_those_on_the_project_listing_page(step)
 
 @step(u'When I click on the "([^"]*)" link')
 def when_i_click_on_the_group1_link(step, link_name):
-	#world.browser.driver.execute_script('window.onbeforeunload = function() {}')
+    #world.browser.driver.execute_script('window.onbeforeunload = function() {}')
 	world.browser.click_link_by_text(link_name)
 
 @step(u'When I click on the link with "([^"]*)" in the URL for the project')
@@ -78,7 +78,7 @@ def when_i_click_on_the_link_with_group1_in_the_url_for_the_project(step, link_n
 
 @step(u'When I enter "([^"]*)" in the "([^"]*)" field')
 def when_i_enter_group1_in_the_group2_field(step, input_value, field_name):
-	world.browser.fill(field_name, input_value)
+    world.browser.fill(field_name, input_value)
 
 @step(u'When I click on the donate button')
 def when_i_click_on_the_donate_button(step):
