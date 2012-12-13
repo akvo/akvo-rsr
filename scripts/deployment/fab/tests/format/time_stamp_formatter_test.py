@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import datetime, unittest2
+import datetime, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -22,7 +22,7 @@ class StubbedTimeStampFormatter(TimeStampFormatter):
         return self.stubbed_utc_datetime_now
 
 
-class TimeStampFormatterTest(unittest2.TestCase):
+class TimeStampFormatterTest(unittest.TestCase):
 
     def setUp(self):
         super(TimeStampFormatterTest, self).setUp()

@@ -6,7 +6,7 @@
 
 
 import os
-import simplejson as json
+import json
 
 from fab.config.rsr.credentials.database import DatabaseCredentials
 

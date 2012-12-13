@@ -185,14 +185,21 @@ class ProjectLocation(BaseLocation):
 
 
 class Partnership(models.Model):
-    FIELD_PARTNER       = u'field'
-    FUNDING_PARTNER     = u'funding'
-    SPONSOR_PARTNER     = u'sponsor'
-    SUPPORT_PARTNER     = u'support'
+    FIELD_PARTNER = u'field'
+    FUNDING_PARTNER = u'funding'
+    SPONSOR_PARTNER = u'sponsor'
+    SUPPORT_PARTNER = u'support'
 
-    PARTNER_TYPE_LIST   = [FIELD_PARTNER,      FUNDING_PARTNER,      SPONSOR_PARTNER,      SUPPORT_PARTNER,]
-    PARTNER_LABELS      = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'),]
-    PARTNER_TYPES       = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+    PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
+    PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
+    PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+
+    ALLIANCE_PARTNER = u'alliance'
+    KNOWLEDGE_PARTNER = u'knowledge'
+    NETWORK_PARTNER = u'network'
+    PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
+    PARTNER_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
+    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_LIST, PARTNER_EXTRA_LABELS)
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
@@ -201,11 +208,16 @@ class Partnership(models.Model):
         _(u'funding amount'), max_digits=10, decimal_places=2,
         blank=True, null=True, db_index=True
     )
+    partner_type_extra = models.CharField(
+        _(u'partner type extra'), max_length=30,
+        blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
+    )
     iati_activity_id = models.CharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
     internal_id = models.CharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
+    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.'))
 
     class Meta:
         verbose_name = _(u'project partner')
@@ -219,6 +231,7 @@ class Partnership(models.Model):
 class ProjectsQuerySetManager(QuerySetManager):
     def get_query_set(self):
         return self.model.ProjectsQuerySet(self.model)
+
 
 class Organisation(models.Model):
     """
@@ -252,6 +265,7 @@ class Organisation(models.Model):
 
     logo = ImageWithThumbnailsField(
         _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
+        extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop',)}},
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
 
@@ -293,7 +307,7 @@ class Organisation(models.Model):
         def partners(self, partner_type):
             "return the organisations in the queryset that are partners of type partner_type"
             return self.filter(partnerships__partner_type__exact=partner_type).distinct()
-        
+
         def allpartners(self):
             return self.distinct()
 
@@ -598,6 +612,7 @@ class Project(models.Model):
                         blank=True,
                         upload_to=image_path,
                         thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+                        extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )}},  # detail is a mild sharpen
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
@@ -792,7 +807,6 @@ class Project(models.Model):
                 n.b. non-chainable, doesn't return a QS
             '''
             return self.aggregate(funds_needed=Sum('funds_needed'),)['funds_needed'] or 0
-
 
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
@@ -1012,7 +1026,7 @@ class Project(models.Model):
     def all_partners(self):
         return self._partners()
 
-    def funding_partner_info(self):
+    def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
 
@@ -1124,8 +1138,8 @@ class PublishingStatus(models.Model):
         verbose_name_plural = _(u'publishing statuses')
         ordering = ('-status', 'project')
 
-    def project_info(self):
-        return self.project
+#    def project_info(self):
+#        return "%d: %s" % (self.project.pk, self.project.title)
 
 
 class Link(models.Model):
@@ -1247,7 +1261,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         else:
             return None
 
-    #methods that insteract with the User model
+    #methods that interact with the User model
     def get_is_active(self):
         return self.user.is_active
     get_is_active.boolean = True  # make pretty icons in the admin list view

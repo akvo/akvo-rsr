@@ -149,6 +149,7 @@ class RSRDataPopulatorTest(mox.MoxTestBase):
         self._change_remote_dir_to(self.data_populator_config.rsr_deployment_home)
         self.mock_feedback.comment('Loading RSR data')
         self.mock_data_handler.load_data_from(data_extract_file_path, database_name)
+        self.mock_data_host_file_system.delete_file(data_extract_file_path)
 
     def test_can_run_new_rsr_migrations(self):
         """fab.tests.data.rsr_data_populator_test  Can run new RSR migrations"""

@@ -1,11 +1,146 @@
-Last changed: 6 August 2012 ac
-
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
 We provide Akvo RSR as a service on your own URL and with your own branding, as well as and on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+
+Akvo RSR ver 2.1.2 release notes
+---
+10 December 2012, (Code name: Kiwi) kardan, adriancollier, zzgvh
+
+Overview
+----
+...
+
+New features & changes
+----
+
+###End to End Transparency with Openaid.nl and Akvo RSR
+
+The term "World First" is not something that can be batted around lightly, but with this feature I feel we have come so close to this that I can't resist the urge! In this release we have made a firm link between the Financial Information published by the Dutch Government at Openaid.nl and Akvo RSR. Pending a change in the Openaid.nl source code which should be pushed later this week, you will now be able to navigate between Funding Activities in Openaid.nl and projects being implemented using those funds on Akvo RSR.
+
+So, links on the Openaid.nl site will provide you with a list of RSR projects or a list of participating organisations. From the Funding Pages on Akvo RSR you'll be able to go directly to the original funding activity in OpenAid.nl.
+
+You can read more about this on our [Blog Post](http://www.akvo.org/blog/?p=7962) on this feature!
+
+Github issue: [69](https://github.com/akvo/akvo-rsr/issues/69) & [87](https://github.com/akvo/akvo-rsr/issues/87)
+
+###Donation Initial Page Restyle/Addition
+
+On the first page of the donation process (http://www.akvo.org/rsr/project/613/donate/) there is currently the option of donating by PayPal or iDeal. At the bottom of the page there is also the option to donate as an Organisation which follows a different process.
+
+This alternative process has been made more apparent to ensure organisations follow the correct path rather than to participate in the workflow that is aimed at individual donors.
+
+Github issue: [98](https://github.com/akvo/akvo-rsr/issues/98)
+
+###API Changes
+
+We have added the "primary_location" field as inline data to the "project" and "organisation" resources in the API. This allows for the primary location to be collected directly when obtaining the project and organisation resources. Being one of the more useful pieces of information that is not part of the project or organisation database tables it makes a lot of sense to make this information accessible as a part of these resources directly.
+
+In JSON the "primary_location" looks like this:
+
+```js
+    "primary_location": {
+          "address_1": "",
+          "address_2": "",
+          "city": "Freetown",
+          "country": "/api/v1/country/42/",
+          "id": 779,
+          "latitude": 8.371664,
+          "longitude": -13.189087,
+          "postcode": "",
+          "primary": true,
+          "project": "/api/v1/project/672/",
+          "resource_uri": "/api/v1/project_location/779/",
+          "state": ""
+        },
+```
+
+Github issue: [124](https://github.com/akvo/akvo-rsr/issues/124)
+
+We have also expanded the "current_image" field of the "project" resource and the "logo" field of the "organisation" to include a sub-object with two fields, "original" which is the URI for the original image, and "thumbnails" which is an object with named thumbnails of the image. Currently there is only one thumbnail, "map_thumb" that is used by RSR itself for some of the maps. With this change it will be easy to add other thumbnail formats in the future.
+
+In JSON the new format for "current_image" (and "logo" in the organisation) is:
+
+```js
+    "current_image": {
+        "original": "http://uat.akvo.org/rsr/media/db/project/672/Project_672_current_image_2012-11-06_15.22.42.jpg",
+        "thumbnails": {
+            "map_thumb": "http://uat.akvo.org/rsr/media/db/project/672/Project_672_current_image_2012-11-06_15.22.42_jpg_160x120_autocrop_detail_q85.jpg"
+        }
+    },
+```
+
+Github issue: [123](https://github.com/akvo/akvo-rsr/issues/123)
+
+###Sorting on country
+
+The ability to sort projects in a list based on which country they are located in was disabled some time back when we made changes to the location model. It has now been reinstated, so it'll be easier once more to find projects in the same country. We have also fixed the sorting direction to use logical defaults for all columns of the project listing pages.
+
+Github issue: [99](https://github.com/akvo/akvo-rsr/issues/99)
+
+###Map Images
+
+Previously we were pulling and displaying original project images on our maps. This looked fine in general, but it had a huge impact on performance as all the images needed to be downloaded when the map was displayed to the user...not the most efficient.
+
+Seeing as the images are small on the map pop-up anyway, we have modified the interface to use the thumbnail image rather than the original image. Reducing the loading time for users, and the impact on our server resources - for which we are grateful.
+
+Github issue: [65](https://github.com/akvo/akvo-rsr/issues/65)
+
+###Map Scrolling
+
+This improvement is a great addition. We have enabled Global map zooming in and out using the scrollwheel on your mouse. If you don't use the scrollwheel on your mouse, then you'll probably not notice anything. If you do use it - then I hope you get as excited about this as I did!
+
+Github issue: [43](https://github.com/akvo/akvo-rsr/issues/43)
+
+###Akvo RSR in German
+
+Working closely with one of our Partners Mars Chocolates, we have made significant progress in translating the Akvo RSR User Interface into German. We have checked this well, but we are still ironing out all of the kinks and making sure it all makes sense. If you spot any inaccurately translated items, please let us know. Online translation tools don't let you see things in context, so it's a lot of guesswork until it's seen in action.
+
+Github issue: [116](https://github.com/akvo/akvo-rsr/issues/116)
+
+###Automated Donation Testing Scripts
+
+This might sound tedious, but these amazingly powerful Lettuce scripts allow us to run through the Donation Process automatically in under 2 minutes! They check that everything's working as expected, that all the numbers and figures are adding up and the connections are still responsive. It's a great addition to our testing process and will save us hours of manual testing in the weeks, months and years to come.
+
+Github issue: [131](https://github.com/akvo/akvo-rsr/issues/113)
+
+Bug fixes
+----
+###Image slider thumbs not faded on initialisation
+There was a slight UI issue with the image slider on project pages.
+
+Github issue: [50](https://github.com/akvo/akvo-rsr/issues/50)
+
+###Video Updates Scrollbar
+
+We found that some videos were being bordered by scrollbars when showing on the RSR Update page. This made them look more than a little messy. So after some poking, we've fixed it and removed those unsightly bars.
+
+Github issue: [104](https://github.com/akvo/akvo-rsr/issues/104)
+
+###Unpublished Projects Administration
+
+After making some major changes to the way unpublished projects are visible in RSR, we have made a further change to allow easier administration and maintenance by Akvo Staff of these projects. In short, it's now possible to do the things we need to do, without any jiggery-pokery - sweet.
+
+Github issue: [91](https://github.com/akvo/akvo-rsr/issues/91)
+
+###Translation of Listing Headings
+
+A while back we made a large effort to translate our user interface into multiple languages. Almost all of the non-user-generated content within RSR is now available in different languages. Some items however missed out...
+
+We have now updated this so that the project listing pages such as http://akvo.akvoapp.org have all the column titles translated - not just the select ones from before.
+
+Github issue: [48](https://github.com/akvo/akvo-rsr/issues/48)
+
+###Duplication of Partners on Project Page
+
+The list of partners presented on the Project page was for a while showing the same organisations multiple times when this partner was connected to a project with multiple roles - such as Support Partner and also as Funding Partner. We've fixed the filter again now so no matter how many times a parter is linked they will be shown just the once. If however you go through to the Partners page for that project, you'll be able to see each partner and the roles they perform. So we've not lost anything, just tidied it all up a little.
+
+Github issue: [127](https://github.com/akvo/akvo-rsr/issues/127)
+
+---------------------------------------------
 
 Akvo RSR ver 2.1.1 release notes
 ---
@@ -17,6 +152,7 @@ We have release several items in this version focusing around permissions and IA
 
 New features & changes
 ----
+
 
 ###Extension of the Akvo API
 We have improved the functionality of the Akvo API to improve usability all-round. This feature now enables users to authenticate their access using an API key linked to an Akvo RSR User account. This allows a little more access in terms of information as now user details can also be passed through a correctly authenticated access request.
@@ -2025,4 +2161,3 @@ A detailed list (including in process development bugs) can be found at: http://
 
 
 ====END OF RELEASE NOTES====
-

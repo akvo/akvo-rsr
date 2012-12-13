@@ -26,28 +26,28 @@
             <br/><br/>
           {% endif %}
           {% if partner.partner_type == 'field' %}
-            {% if partproject.ner.field_partners.count > 1 %}
+            {% if partner.project.field_partners.count > 1 %}
               <h3>{% trans 'Field partners' %}</h3>
             {%  else %}
               <h3>{% trans 'Field partner' %}</h3>
             {% endif %}
           {% else %}
             {% if partner.partner_type == 'funding' %}
-              {% if partproject.ner.funding_partners.count > 1 %}
+              {% if partner.project.funding_partners.count > 1 %}
                 <h3>{% trans 'Funding partners' %}</h3>
               {%  else %}
                 <h3>{% trans 'Funding partner' %}</h3>
               {% endif %}
             {% else %}
               {% if partner.partner_type == 'sponsor' %}
-                {% if partproject.ner.sponsor_partners.count > 1 %}
+                {% if partner.project.sponsor_partners.count > 1 %}
                   <h3>{% trans 'Sponsor partners' %}</h3>
                 {%  else %}
                   <h3>{% trans 'Sponsor partner' %}</h3>
                 {% endif %}
               {% else %}
                 {% if partner.partner_type == 'support' %}
-                  {% if partproject.ner.support_partners.count > 1 %}
+                  {% if partner.project.support_partners.count > 1 %}
                     <h3>{% trans 'Support partners' %}</h3>
                   {%  else %}
                     <h3>{% trans 'Support partner' %}</h3>

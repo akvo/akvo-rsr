@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import unittest2
+import unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
@@ -13,7 +13,7 @@ from fab.config.values.host import DataHostPaths, HostAlias
 from fab.config.rsr.host import DataHostConfig, SSHConnection
 
 
-class DataHostConfigTest(unittest2.TestCase):
+class DataHostConfigTest(unittest.TestCase):
 
     def test_can_create_deployment_host_config_for_test_host(self):
         """fab.tests.config.rsr.data_host_config_test  Can create data host config"""

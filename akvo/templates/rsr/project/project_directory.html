@@ -120,23 +120,25 @@
             <colgroup span="6" class="colgroup"></colgroup>
             <tr>
               <th>
-                {% anchor title Title %}
+                {% translated_anchor title Title asc %}
               </th>
-              <th>{% anchor primary_location__country__name Location %}</th>
               <th>
-                {% anchor status Status %}
+                {% translated_anchor primary_location__country__name Location asc %}
+              </th>
+              <th>
+                {% translated_anchor status Status asc %}
               </th>
               <th>
                 <span class="small">Partners</span>
               </th>
               <th>
-                {% anchor latest_update_date 'Updated' %}
+                {% translated_anchor latest_update_date Updated %}
               </th>
               <th>
                 <span class="small">Focus area</span>
               </th>
               <th style="border-right: 0;">
-                {% anchor funds_needed Funding %}
+                {% translated_anchor funds_needed Funding %}
               </th>
             </tr>
             {% for project in projects %}

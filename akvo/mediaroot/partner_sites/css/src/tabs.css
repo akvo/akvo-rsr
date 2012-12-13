@@ -87,8 +87,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
   min-width: 64px;
   height: 18px;
-  /* IE 6 treats height as min-height */
-
   min-height: 18px;
   height: 22px;
   /* IE 6 treats height as min-height */

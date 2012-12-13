@@ -5,14 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import mox, unittest2
+import mox, unittest
 
 from testing.helpers.execution import TestRunner, TestSuiteLoader
 
 from fab.database.mysql.commandexecution import MySQLResponseData
 
 
-class MySQLResponseDataTest(unittest2.TestCase):
+class MySQLResponseDataTest(unittest.TestCase):
 
     def setUp(self):
         super(MySQLResponseDataTest, self).setUp()

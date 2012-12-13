@@ -65,6 +65,8 @@
             Nederlands (beta)
           {% elif lang_code == "fr" %}
             Français (bêta)
+          {% elif lang_code == "de" %}
+            Deutsch (beta)
           {% else %}
             English
           {% endif %}
@@ -73,7 +75,6 @@
       {% endfor %}
     </select>
   </aside>
-
   <div class="clear"></div>
   {% block content %}{% endblock content %}
 </div>
@@ -111,10 +112,15 @@
   </div>
 </div>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script type="text/javascript">
-  !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.7.1.min.js"><\/script>');
-</script>
+{% if debug %}
+  <script src="{{MEDIA_URL}}core/js/jquery-1.7.1.js"></script>
+{% else %}
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.7.1.min.js"><\/script>');
+  </script>
+{% endif %}
+
 {% block js %}{% endblock js %}
 <script type="text/javascript">
   var $ = jQ = jQuery.noConflict();
