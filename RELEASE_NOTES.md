@@ -8,7 +8,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.1.2 release notes
 ---
-30 October 2012, (Code name: Kiwi) kardan, adriancollier
+10 December 2012, (Code name: Kiwi) kardan, adriancollier, zzgvh
 
 Overview
 ----
@@ -21,9 +21,9 @@ New features & changes
 
 The term "World First" is not something that can be batted around lightly, but with this feature I feel we have come so close to this that I can't resist the urge! In this release we have made a firm link between the Financial Information published by the Dutch Government at Openaid.nl and Akvo RSR. Pending a change in the Openaid.nl source code which should be pushed later this week, you will now be able to navigate between Funding Activities in Openaid.nl and projects being implemented using those funds on Akvo RSR.
 
-So, links on the OpenAid.nl site will provide you with a list of RSR projects or a list of participating organisations. From the Funding Pages on Akvo RSR you'll be able to go directly to the original funding activity in OpenAid.nl.
+So, links on the Openaid.nl site will provide you with a list of RSR projects or a list of participating organisations. From the Funding Pages on Akvo RSR you'll be able to go directly to the original funding activity in OpenAid.nl.
 
-You can read more about this on our [Blog Post](www.akvo.org/blog) on this feature!
+You can read more about this on our [Blog Post](http://www.akvo.org/blog/?p=7962) on this feature!
 
 Github issue: [69](https://github.com/akvo/akvo-rsr/issues/69) & [87](https://github.com/akvo/akvo-rsr/issues/87)
 
