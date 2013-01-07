@@ -7,7 +7,8 @@
 """
 from __future__ import absolute_import
 
-from django.contrib.auth.decorators import login_required
+#from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
@@ -28,7 +29,7 @@ __all__ = [
     'ProjectUpdateEditView',
     'ProjectUpdateListView',
     'ProjectUpdateView',
-    ]
+]
 
 
 class ProjectFundingView(BaseProjectView):
@@ -65,13 +66,11 @@ class ProjectUpdateListView(BaseListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateListView, self).get_context_data(**kwargs)
-        context['project'] = get_object_or_404(Project, \
-                                               pk=self.kwargs['project_id'])
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
         return context
 
     def get_queryset(self):
-        return get_object_or_404(Project, pk=self.kwargs['project_id']) \
-            .project_updates.all().order_by('-time')
+        return get_object_or_404(Project, pk=self.kwargs['project_id']).project_updates.all().order_by('-time')
 
 
 class ProjectUpdateView(BaseProjectView):
@@ -124,20 +123,22 @@ class ProjectUpdateFormView(BaseProjectView):
 class ProjectUpdateAddView(ProjectUpdateFormView, FormView):
     """Add update on partner sites"""
 
+    def render_to_response(self, context):
+        # re-direct unauthenticated users to sign-in page
+        if not self.request.user.is_authenticated():
+            return redirect_to_login(self.request.path, login_url='/rsr/signin/')
+        return super(ProjectUpdateAddView, self).render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateAddView, self).get_context_data(**kwargs)
-        user_is_authorized = context['project'].connected_to_user(self.request.user)
-
-        if not self.request.user.is_authenticated():
-            self.request.error_message = u'You need to sign in to make updates.'
-            raise PermissionDenied
 
         if not self.project.is_published():
-            self.request.error_message = u'You can\'t add updates to unpublished projects.'
+            self.request.error_message = u"You can't add updates to unpublished projects."
             raise PermissionDenied
 
-        if not user_is_authorized:
-            self.request.error_message = u'You don\'t have permission to add updates to this project.'
+        user_is_authorized = context['project'].connected_to_user(self.request.user)
+        if self.request.user.is_authenticated() and not user_is_authorized:
+            self.request.error_message = u"You don't have permission to add updates to this project."
             raise PermissionDenied
 
         update = None
