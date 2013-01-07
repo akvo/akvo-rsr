@@ -6,6 +6,7 @@
 from copy import deepcopy
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.http import HttpResponse
 
 from tastypie import fields
 from tastypie import http
@@ -15,8 +16,11 @@ from tastypie.exceptions import ApiFieldError
 from tastypie.fields import ApiField, NOT_PROVIDED
 from tastypie.resources import ModelResource
 from tastypie.authentication import ApiKeyAuthentication
-from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
 
+from cacheback.decorators import cacheback
+from tastypie.utils.mime import build_content_type
+
+from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
 from akvo.rsr.models import (
     Benchmark, Benchmarkname, BudgetItem, BudgetItemLabel, Category, Country, FocusArea, Goal, Link,
     Organisation, OrganisationLocation, Partnership, Project, ProjectLocation, ProjectUpdate,
@@ -56,6 +60,21 @@ def get_extra_thumbnails(image_field):
     except:
         return None
 
+from cacheback.base import Job
+
+class CachedResource(Job):
+
+    def __init__(self, resource, request, data, format):
+        self.resource = resource
+        self.request = request
+        self.data = data
+        self.format = format
+        super(CachedResource, self).__init__()
+
+    def fetch(self, url):
+        return self.resource.serialize(self.request, self.data, self.format)
+
+
 class ConditionalFullResource(ModelResource):
 
     def apply_filters(self, request, applicable_filters):
@@ -73,6 +92,18 @@ class ConditionalFullResource(ModelResource):
             return self.get_object_list(request).filter(**applicable_filters).distinct()
         else:
             return self.get_object_list(request).filter(**applicable_filters)
+
+    def create_response(self, request, data, response_class=HttpResponse, **response_kwargs):
+        """
+        Extracts the common "which-format/serialize/return-response" cycle.
+
+        Mostly a useful shortcut/hook.
+        """
+        desired_format = self.determine_format(request)
+        cached_resource = CachedResource(self, request, data, desired_format)
+        url = "%s?%s" % (request.path, request.META['QUERY_STRING'])
+        serialized = cached_resource.get(url)
+        return response_class(content=serialized, content_type=build_content_type(desired_format), **response_kwargs)
 
     def get_list(self, request, **kwargs):
         """
