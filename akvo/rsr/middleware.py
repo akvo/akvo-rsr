@@ -9,7 +9,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver)
+from django.core.urlresolvers import (is_valid_path, get_resolver, LocaleRegexURLResolver, set_urlconf)
 from django.http import HttpResponseRedirect
 from django.middleware.locale import LocaleMiddleware
 from django.shortcuts import redirect
@@ -104,10 +104,14 @@ class PartnerSitesRouterMiddleware(object):
     def process_request(self, request, partner_site=None):
         domain = request.get_host().split(':')[0]
         if is_rsr_instance(domain):  # Vanilla Akvo RSR instance
-            request.urlconf = 'akvo.urls.rsr'
+            urlconf_name = 'akvo.urls.rsr'
+            request.urlconf = urlconf_name
+            set_urlconf(urlconf_name)
         elif is_partner_site_instance(domain):  # Partner site instance
             hostname = domain.split('.')[-3]
-            request.urlconf = 'akvo.urls.partner_sites'
+            urlconf_name = 'akvo.urls.partner_sites'
+            request.urlconf = urlconf_name
+            set_urlconf(urlconf_name)
             try:
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
@@ -116,7 +120,9 @@ class PartnerSitesRouterMiddleware(object):
                 return redirect(PARTNER_SITES_MARKETING_SITE)
         else:  # Partner site instance on partner-nominated domain
             try:
-                request.urlconf = 'akvo.urls.partner_sites'
+                urlconf_name = 'akvo.urls.partner_sites'
+                request.urlconf = urlconf_name
+                set_urlconf(urlconf_name)
                 partner_site = PartnerSite.objects.get(cname=domain)
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
