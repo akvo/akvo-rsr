@@ -46,3 +46,7 @@ South==0.7.6
 # App container
 gunicorn==0.15.0
 wsgiref==0.1.2
+
+# caching and queueing
+django-cacheback
+django-celery-with-redis
