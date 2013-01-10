@@ -55,7 +55,6 @@ Desktop.ini
 
 ## Python
 *.py[co]
-*.mo
 
 ## Vim
 .*.sw[a-z]
