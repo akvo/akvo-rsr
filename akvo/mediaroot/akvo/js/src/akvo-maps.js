@@ -34,8 +34,17 @@
     // Creates the map with options and makes the initial AJAX request
     addMap = function (map) {
         $(map.mapElement).gmap(mapOptions(map.mapOpts.type)).bind('init', function () {
-            $.getJSON(getResourceUrl(map), function (data) {
-                populateMap(map, data);
+            // use $.ajax to be able to setup jsonp with a named callback, "callback",
+            // and set cache: true to suppress the "_=<random number>" query string variable jQuery adds by default
+            $.ajax({
+                url: getResourceUrl(map),
+                dataType: "jsonp",
+                jsonp: 'callback',
+                jsonpCallback: 'callback',
+                cache: true,
+                success: function(data) {
+                    populateMap(map, data);
+                }
             });
         });
     };
@@ -47,20 +56,18 @@
         opts = map.mapOpts;
         // call /api/v1/map_for_project/ or /api/v1/map_for_organisation/ resources
         //TODO: derive the host from the current page URL instead maybe?
-        url = opts.host + 'api/v1/map_for_' + opts.resource + '/';
+        url = opts.host + 'api/v1/' + opts.resource + '/';
         //limit = 0 means all objects. If this becomes too heavy limit can be set to get the objects in multiple chunks
         limit = 0;
-        // if object_id holds a value then that's the ID of the object we want to fetch
         if (opts.object_id) {
-            url += opts.object_id + '/?format=jsonp&depth=1&callback=?';
-        // otherwise we want all objects of the resource's type
+            // if object_id holds a value then that's the ID of the object we want to fetch
+            url += opts.object_id + '/?format=jsonp&depth=1';
         } else {
-            url += '?format=jsonp&limit=' + limit + '&callback=?';
+            // otherwise we want all objects of the resource's type
+            url += '?format=jsonp&limit=' + limit;
         }
         return url;
     };
-
-
 
     // Populates the map with data
     populateMap = function (map, data) {
@@ -77,8 +84,7 @@
         }
 
         pinTmpl = Handlebars.compile(
-            '<div class="mapInfoWindow"' +
-                'style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">' +
+            '<div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">' +
                 '<a class="small" href="{{url}}">{{title}}</a>' +
                 '{{#if thumb}}' +
                     '<div style="text-align: center; margin-top: 5px;">' +
@@ -87,7 +93,8 @@
                         '</a>' +
                     '</div>' +
                 '{{/if}}' +
-                '</div>');
+            '</div>'
+        );
 
         // populate the location object with data from an Organisation model object
         addOrganisationData = function (object, location) {
@@ -110,8 +117,8 @@
         };
 
         $.each(objects, function (i, object) {
-            // for single objects show all locations
             if (opts.object_id) {
+                // for single objects show all locations
                 $.each(object.locations, function (k, location) {
                     //TODO: extend this for additional resource types
                     if (opts.resource === 'organisation') {
@@ -121,8 +128,8 @@
                     }
                     addPin(map, location, pinTmpl);
                 });
-            // if we're displaying multiple objects we only show the primary locations
             } else {
+                // if we're displaying multiple objects we only show the primary locations
                 var location;
                 location = object.primary_location;
                 if (location) {
@@ -192,16 +199,22 @@
     // but create a new resource url
     prepareNextRequest = function (map, resource) {
         var url = $.url(resource),
-            urlTmpl = Handlebars.compile('{{host}}{{path}}?format=jsonp&depth=1&limit=' +
-                '{{limit}}&offset={{offset}}&callback=?'),
+            urlTmpl = Handlebars.compile('{{host}}{{path}}?format=jsonp&depth=1&limit={{limit}}&offset={{offset}}'),
             newUrl = urlTmpl({
                 'host': url.attr('host'),
                 'path': url.attr('path'),
                 'limit': Number(url.param('limit')),
                 'offset': Number(url.param('offset'))
             });
-        $.getJSON(newUrl, function (data) {
-            populateMap(map, data);
+        $.ajax({
+            url: newUrl,
+            dataType: "jsonp",
+            jsonp: 'callback',
+            jsonpCallback: 'callback',
+            cache: true,
+            success: function(data) {
+                populateMap(map, data);
+            }
         });
     };
 
@@ -217,7 +230,8 @@
                 'scaleControl': false,
                 'scrollwheel': false,
                 'streetViewControl': false,
-                'zoom': 0
+                'zoom': 0,
+                'zoomControl': false //removes the (non-functional) zoom buttons
             };
         } else if (mapType === 'small') {
             options = {

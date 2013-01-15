@@ -93,18 +93,6 @@ class ConditionalFullResource(ModelResource):
         else:
             return self.get_object_list(request).filter(**applicable_filters)
 
-    def create_response(self, request, data, response_class=HttpResponse, **response_kwargs):
-        """
-        Extracts the common "which-format/serialize/return-response" cycle.
-
-        Mostly a useful shortcut/hook.
-        """
-        desired_format = self.determine_format(request)
-        cached_resource = CachedResource(self, request, data, desired_format)
-        url = "%s?%s" % (request.path, request.META['QUERY_STRING'])
-        serialized = cached_resource.get(url)
-        return response_class(content=serialized, content_type=build_content_type(desired_format), **response_kwargs)
-
     def get_list(self, request, **kwargs):
         """
         Returns a serialized list of resources.
