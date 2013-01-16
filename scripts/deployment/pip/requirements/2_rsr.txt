@@ -36,7 +36,6 @@ pytz==2012h
 # RSR requirements
 Markdown==2.2.1
 PIL==1.1.7
-python-memcached==1.48
 template-utils==0.4p2
 
 # Database requirements

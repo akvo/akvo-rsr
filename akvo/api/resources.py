@@ -10,15 +10,16 @@ from django.http import HttpResponse
 
 from tastypie import fields
 from tastypie import http
-from tastypie.bundle import Bundle
-from tastypie.constants import ALL, ALL_WITH_RELATIONS
-from tastypie.exceptions import ApiFieldError
-from tastypie.fields import ApiField, NOT_PROVIDED
-from tastypie.resources import ModelResource
-from tastypie.authentication import ApiKeyAuthentication
 
-from cacheback.decorators import cacheback
+from tastypie.authentication import ApiKeyAuthentication
+from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.resources import ModelResource
+
 from tastypie.utils.mime import build_content_type
+
+from cacheback.base import Job
+
+from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
 
 from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
 from akvo.rsr.models import (
@@ -60,19 +61,41 @@ def get_extra_thumbnails(image_field):
     except:
         return None
 
-from cacheback.base import Job
 
-class CachedResource(Job):
+class CachedResourceJob(Job):
 
-    def __init__(self, resource, request, data, format):
+    def __init__(self, resource, request, kwargs):
         self.resource = resource
         self.request = request
-        self.data = data
-        self.format = format
-        super(CachedResource, self).__init__()
+        self.kwargs = kwargs
+        super(CachedResourceJob, self).__init__()
 
     def fetch(self, url):
-        return self.resource.serialize(self.request, self.data, self.format)
+        """
+        emulates most of Resource.get_list() but stops before calling create_response()
+        """
+        resource = self.resource
+        request = self.request
+        kwargs = self.kwargs
+        # code of Resource.get_list()
+        objects = resource.obj_get_list(request=request, **resource.remove_api_resource_names(kwargs))
+        sorted_objects = resource.apply_sorting(objects, options=request.GET)
+
+        paginator = resource._meta.paginator_class(request.GET, sorted_objects, resource_uri=resource.get_resource_uri(), limit=resource._meta.limit)
+        to_be_serialized = paginator.page()
+
+        # Dehydrate the bundles in preparation for serialization.
+        bundles = [resource.build_bundle(obj=obj, request=request) for obj in to_be_serialized['objects']]
+        # add metadata to bundle to keep track of "depth", "ancestor" and "full" info
+        for bundle in bundles:
+            bundle.related_info = bundle_related_data_info_factory(request=request)
+            # end add
+        to_be_serialized['objects'] = [resource.full_dehydrate(bundle) for bundle in bundles]
+        to_be_serialized = resource.alter_list_data_to_serialize(request, to_be_serialized)
+        # code of Resource.create_response() but only as far as serializing
+        # meaning the serialized result is what gets cached
+        desired_format = resource.determine_format(request)
+        return resource.serialize(request, to_be_serialized, desired_format).encode("utf8").encode("zlib")
 
 
 class ConditionalFullResource(ModelResource):
@@ -101,24 +124,15 @@ class ConditionalFullResource(ModelResource):
         set and serializes it.
 
         Should return a HttpResponse (200 OK).
+        --------------------------------------
+        This is a "gutted" get_list where most of the code has been moved to CachedResourceJob.fetch so that cacheback can
+        do its thing and only run the original get_list if we don't have anything in the cache
         """
-        # TODO: Uncached for now. Invalidation that works for everyone may be
-        #       impossible.
-        objects = self.obj_get_list(request=request, **self.remove_api_resource_names(kwargs))
-        sorted_objects = self.apply_sorting(objects, options=request.GET)
-
-        paginator = self._meta.paginator_class(request.GET, sorted_objects, resource_uri=self.get_resource_uri(), limit=self._meta.limit)
-        to_be_serialized = paginator.page()
-
-        # Dehydrate the bundles in preparation for serialization.
-        bundles = [self.build_bundle(obj=obj, request=request) for obj in to_be_serialized['objects']]
-        # add metadata to bundle to keep track of "depth", "ancestor" and "full" info
-        for bundle in bundles:
-            bundle.related_info = bundle_related_data_info_factory(request=request)
-        # end add
-        to_be_serialized['objects'] = [self.full_dehydrate(bundle) for bundle in bundles]
-        to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
-        return self.create_response(request, to_be_serialized)
+        desired_format = self.determine_format(request)
+        cached_resource = CachedResourceJob(self, request, kwargs)
+        url = "%s?%s" % (request.path, request.META['QUERY_STRING'])
+        serialized = cached_resource.get(url).decode("zlib").decode("utf8")
+        return HttpResponse(content=serialized, content_type=build_content_type(desired_format))
 
     def get_detail(self, request, **kwargs):
         """
