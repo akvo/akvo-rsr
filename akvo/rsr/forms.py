@@ -276,11 +276,20 @@ class InvoiceForm(forms.ModelForm):
         fields = ('amount', 'name', 'email', 'email2',
                   'campaign_code', 'is_public')
 
+    def over_donated(self):
+        donation = self.cleaned_data.get('amount', 0)
+        if self.engine == 'paypal':
+            if self.project.amount_needed_to_fully_fund_via_paypal() < donation:
+                return True
+        else:
+            if self.project.amount_needed_to_fully_fund_via_ideal() < donation:
+                return True
+        return False
+
     def clean(self):
+        if self.over_donated():
+            raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
         cd = self.cleaned_data
-        if 'amount' in cd:
-            if cd['amount'] > self.project.funds_needed:
-                raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
         if 'email' in cd and 'email2' in cd:
             if cd['email'] != cd['email2']:
                 raise forms.ValidationError(_('You must type the same email address each time!'))
