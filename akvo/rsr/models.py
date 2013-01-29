@@ -9,6 +9,8 @@ from decimal import Decimal
 from textwrap import dedent
 
 import logging
+import math
+
 logger = logging.getLogger('akvo.rsr')
 
 import oembed
@@ -667,6 +669,19 @@ class Project(models.Model):
 
     def all_donations_amount_received(self):
         return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+
+    def amount_needed_to_fully_fund_via_paypal(self):
+        if self.currency == 'USD':
+            PAYPAL_FEE_PCT = getattr(settings, 'PAYPAL_FEE_PCT_USD', 3.9)
+            PAYPAL_FEE_BASE = getattr(settings, 'PAYPAL_FEE_BASE_USD', 0.30)
+        else:
+            PAYPAL_FEE_PCT = getattr(settings, 'PAYPAL_FEE_PCT_EUR', 3.4)
+            PAYPAL_FEE_BASE = getattr(settings, 'PAYPAL_FEE_BASE_EUR', 0.35)
+        return int(math.ceil(float(self.funds_needed) * (1 + PAYPAL_FEE_PCT/100) + PAYPAL_FEE_BASE))
+
+    def amount_needed_to_fully_fund_via_ideal(self):
+        IDEAL_FEE_BASE = getattr(settings, 'MOLLIE_FEE_BASE', 1.20)
+        return int(math.ceil(float(self.funds_needed) + MOLLIE_FEE_BASE))
 
     def anonymous_donations_amount_received(self):
         amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)

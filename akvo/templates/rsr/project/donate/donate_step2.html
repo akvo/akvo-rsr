@@ -1,5 +1,5 @@
 {% extends "rsr/project/donate/donate_base.html" %}
-{% load i18n rsr_tags thumbnail %}
+{% load i18n rsr_tags thumbnail humanize %}
 {% load url from future %}
 
 
@@ -161,6 +161,23 @@
 
     <div style="float:left; width:400px;">
       <h3>{% trans 'Donation details' %}</h3>
+      <div padding-right:10px; padding-top:10px;">
+        <p class="grey">
+          {% if donate_form.engine == 'paypal' %}
+            {% blocktrans with project.amount_needed_to_fully_fund_via_paypal|intcomma as full_donation and project.get_currency_display|safe as currency %}
+              To fully fund this project a donation of {{ currency }}{{ full_donation }} is needed.
+            {% endblocktrans %}
+            <br/>
+            {% trans "This amount includes the transaction fee applied by PayPal" %}
+          {% else %}
+            {% blocktrans with project.amount_needed_to_fully_fund_via_ideal|intcomma as full_donation and project.get_currency_display|safe as currency %}
+              To fully fund this project a donation of {{ currency }}{{ full_donation }} is needed.
+            {% endblocktrans %}
+            <br/>
+            {% trans "This amount includes the transaction fee applied by iDEAL" %}
+          {% endif %}
+        </p>
+      </div>
       <div style="float:left; width:170px; text-align:right; padding-right:10px; padding-top:10px;">
         <p class="grey">
           {% blocktrans with project.get_currency_display|safe as currency %}Amount in {{currency}}:{% endblocktrans %}
