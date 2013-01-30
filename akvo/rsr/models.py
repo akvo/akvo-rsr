@@ -680,7 +680,7 @@ class Project(models.Model):
         return int(math.ceil(float(self.funds_needed) * (1 + PAYPAL_FEE_PCT/100) + PAYPAL_FEE_BASE))
 
     def amount_needed_to_fully_fund_via_ideal(self):
-        IDEAL_FEE_BASE = getattr(settings, 'MOLLIE_FEE_BASE', 1.20)
+        MOLLIE_FEE_BASE = getattr(settings, 'MOLLIE_FEE_BASE', 1.20)
         return int(math.ceil(float(self.funds_needed) + MOLLIE_FEE_BASE))
 
     def anonymous_donations_amount_received(self):
