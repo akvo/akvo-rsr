@@ -31,6 +31,7 @@ python-dateutil==1.5
 # General requirements
 BeautifulSoup==3.2.1
 httplib2==0.7.6
+lxml==3.0.2
 pytz==2012h
 
 # RSR requirements
