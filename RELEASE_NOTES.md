@@ -7,7 +7,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.1.2.1 - Donations Hotfix release notes
 ---
-4 February 2013
+4 February 2013, adriancollier
 
 ###Funding Projects to 100% with the Donation Engine
 
