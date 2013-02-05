@@ -5,6 +5,20 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR ver 2.1.2.1 - Donations Hotfix release notes
+---
+4 February 2013, adriancollier
+
+###Funding Projects to 100% with the Donation Engine
+
+We have made a change to the way payment amounts are being calculated when including fees. There has been an existing legacy issue for some time that due to the fees deducted from PayPal or iDeal, a project could not be fully funded using the donation engine alone. A manual payment was neeeded to be made in the Admin to complete the project funding.
+
+Now we have re-engineerd the fees so that these are added to the amount required to complete a project. The donor can make the payment and the actual fees charged are deducted from the payment before the remaindfer is applied to the chosen project.
+
+It may occur infrequently that the project is over-funded by a small fraction as the fees incurred could differ from the fees calculated. Where this occurs the funds are provided to the project budget.
+
+
+Github issue: [120](https://github.com/akvo/akvo-rsr/issues/120)
 
 Akvo RSR ver 2.1.2 release notes
 ---
@@ -19,7 +33,7 @@ New features & changes
 
 ###End to End Transparency with Openaid.nl and Akvo RSR
 
-The term "World First" is not something that can be batted around lightly, but with this feature I feel we have come so close to this that I can't resist the urge! In this release we have made a firm link between the Financial Information published by the Dutch Government at Openaid.nl and Akvo RSR. Pending a change in the Openaid.nl source code which should be pushed later this week, you will now be able to navigate between Funding Activities in Openaid.nl and projects being implemented using those funds on Akvo RSR.
+In this release we have made a firm link between the Financial Information published by the Dutch Government at Openaid.nl and Akvo RSR. Pending a change in the Openaid.nl source code which should be pushed later this week, you will now be able to navigate between Funding Activities in Openaid.nl and projects being implemented using those funds on Akvo RSR.
 
 So, links on the Openaid.nl site will provide you with a list of RSR projects or a list of participating organisations. From the Funding Pages on Akvo RSR you'll be able to go directly to the original funding activity in OpenAid.nl.
 
@@ -103,7 +117,7 @@ Github issue: [116](https://github.com/akvo/akvo-rsr/issues/116)
 
 ###Automated Donation Testing Scripts
 
-This might sound tedious, but these amazingly powerful Lettuce scripts allow us to run through the Donation Process automatically in under 2 minutes! They check that everything's working as expected, that all the numbers and figures are adding up and the connections are still responsive. It's a great addition to our testing process and will save us hours of manual testing in the weeks, months and years to come.
+We have written some powerful Lettuce scripts allow us to run through the Donation Process automatically in under 2 minutes. They check that everything's working as expected, that all the numbers and figures are adding up and the connections are still responsive. It's a great addition to our testing process and will save hours of manual testing in the weeks, months and years to come.
 
 Github issue: [131](https://github.com/akvo/akvo-rsr/issues/113)
 
@@ -122,7 +136,7 @@ Github issue: [104](https://github.com/akvo/akvo-rsr/issues/104)
 
 ###Unpublished Projects Administration
 
-After making some major changes to the way unpublished projects are visible in RSR, we have made a further change to allow easier administration and maintenance by Akvo Staff of these projects. In short, it's now possible to do the things we need to do, without any jiggery-pokery - sweet.
+After making some major changes to the way unpublished projects are visible in RSR, we have made a further change to allow easier administration and maintenance by Akvo Staff of these projects. In short, it's now possible to do the things we need to do, without any jiggery-pokery.
 
 Github issue: [91](https://github.com/akvo/akvo-rsr/issues/91)
 
