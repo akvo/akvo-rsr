@@ -5,6 +5,20 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR ver 2.1.2.1 - Donations Hotfix release notes
+---
+4 February 2013
+
+###Funding Projects to 100% with the Donation Engine
+
+We have made a change to the way payment amounts are being calculated when including fees. There has been an existing legacy issue for some time that due to the fees deducted from PayPal or iDeal, a project could not be fully funded using the donation engine alone. A manual payment was neeeded to be made in the Admin to complete the project funding.
+
+Now we have re-engineerd the fees so that these are added to the amount required to complete a project. The donor can make the payment and the actual fees charged are deducted from the payment before the remaindfer is applied to the chosen project.
+
+It may occur infrequently that the project is over-funded by a small fraction as the fees incurred could differ from the fees calculated. Where this occurs the funds are provided to the project budget.
+
+
+Github issue: [120](https://github.com/akvo/akvo-rsr/issues/120)
 
 Akvo RSR ver 2.1.2 release notes
 ---
