@@ -2112,8 +2112,13 @@ class PartnerSite(models.Model):
     def favicon(self):
         return self.custom_favicon or None
 
+    @property
+    def full_domain(self):
+        return '%s.%s' % (self.hostname, settings.APP_DOMAIN_NAME)
+
     def get_absolute_url(self):
         url = ''
+        # TODO: consider the ramifications of get_absolute_url using CNAME if available
         if self.cname:
             return self.cname
 
@@ -2121,7 +2126,7 @@ class PartnerSite(models.Model):
         if getattr(settings, 'HTTPS_SUPPORT', True):
             protocol = '%ss' % protocol
 
-        url = '%s://%s.%s' % (protocol, self.hostname, settings.APP_DOMAIN_NAME)
+        url = '%s://%s/' % (protocol, self.full_domain)
         return url
 
     class Meta:

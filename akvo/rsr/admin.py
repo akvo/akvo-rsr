@@ -1045,6 +1045,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
     )
+    list_display = '__unicode__', 'full_domain'
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
