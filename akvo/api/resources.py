@@ -20,8 +20,6 @@ from tastypie.utils.mime import build_content_type
 from cacheback.base import Job
 
 from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
-
-from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
 from akvo.rsr.models import (
     Benchmark, Benchmarkname, BudgetItem, BudgetItemLabel, Category, Country, FocusArea, Goal, Link,
     Organisation, OrganisationLocation, Partnership, Project, ProjectLocation, ProjectUpdate,
