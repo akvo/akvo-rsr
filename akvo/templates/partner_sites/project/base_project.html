@@ -23,7 +23,7 @@
     {{block.super}}
     <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
   {% else %}
-    <li><a href="{% url 'home' %}"><span>{{organisation|truncatewords:3}}</span></a></li>
+    <li><a href="{% url 'home' %}"><span class="notranslate">{{organisation|truncatewords:3}}</span></a></li>
   {% endif %}
 {% endblock breadcrum_items %}
 
@@ -165,7 +165,7 @@
             </div>
             <div style="float:left; width:165px;">
               <p class="small grey" style="margin:0;">
-                <a href="{{organisation.get_absolute_url}}">{{organisation.name}}</a><br />
+                <a href="{{organisation.get_absolute_url}}" class="notranslate">{{organisation.name}}</a><br />
                 {% if organisation.primary_location.city %}
                   {{organisation.primary_location.city}},
                 {% endif %}

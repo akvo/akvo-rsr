@@ -44,7 +44,7 @@
           {{ filtered_projects.form.title }}
           {{ filtered_projects.form.continent }}
           {{ filtered_projects.form.locations__country }}
-          {{ filtered_projects.form.organisation }}
+          <span class="notranslate">{{ filtered_projects.form.organisation }}</span>
           <a id="filterButton" class="blue awesome" style="float:right; color:#fff"
             href="javascript:document.filter_form.submit();">
             <span>{% trans 'Filter' %}</span>
@@ -78,7 +78,7 @@
         {% endif %}
       {% endif %}
       {% if search_organisation %}
-        {% blocktrans %}in partnership with {{ search_organisation }}{% endblocktrans %}
+        {% blocktrans %}in partnership with <span class="notranslate">{{ search_organisation }}</span>{% endblocktrans %}
       {% endif %}
       {% if filtered_projects.form.data.title %}
         {% blocktrans with keywords=filtered_projects.form.data.title %}filtered by keywords: {{ keywords }}{% endblocktrans %}
@@ -136,7 +136,7 @@
           <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Partner column #}
             <p class="small">
               {% for partner in project.all_partners %}
-                <a href="{{partner.get_absolute_url}}">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
+                <a href="{{partner.get_absolute_url}}" class="notranslate">{{partner}}</a>{% if not forloop.last %}<br />{% endif %}
               {% endfor %}
             </p>
           </td>

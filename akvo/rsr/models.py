@@ -2081,10 +2081,13 @@ class PartnerSite(models.Model):
     )
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
-    default_language = models.CharField(_(u'language'),
+    default_language = models.CharField(_(u'Site UI default language'),
                                         max_length=5,
                                         choices=settings.LANGUAGES,
                                         default=settings.LANGUAGE_CODE)
+
+    ui_translation = models.BooleanField(_(u'Translate user interface'), default=False)
+    google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}

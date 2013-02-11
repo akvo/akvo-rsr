@@ -1043,6 +1043,13 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 class PartnerSiteAdmin(admin.ModelAdmin):
     form = PartnerSiteAdminForm
 
+    fieldsets = (
+        (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
+        (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
+        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
+    )
+
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
         actions = super(PartnerSiteAdmin, self).get_actions(request)
