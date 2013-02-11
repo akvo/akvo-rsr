@@ -56,12 +56,22 @@
         </div>
 
         <div class="clearfix">
-          {{form.text.label_tag}}
+            {{form.text.label_tag}}
           <div class="input">
-            {{form.text}}
-            {% if form.text.errors %}
-              <span class="red small">{{form.text.errors.0}}</span>
-            {% endif %}
+              {{form.text}}
+              {% if form.text.errors %}
+                <span class="red small">{{form.text.errors.0}}</span>
+              {% endif %}
+          </div>
+        </div>
+
+        <div class="clearfix">
+            {{form.language.label_tag}}
+          <div class="input">
+              {{form.language}}
+              {% if form.language.errors %}
+                <span class="red small">{{form.language.errors.0}}</span>
+              {% endif %}
           </div>
         </div>
 

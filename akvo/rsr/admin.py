@@ -107,13 +107,13 @@ class OrganisationLocationInline(admin.StackedInline):
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
-        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', 'iati_org_id', )}),
-        (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
-        (_(u'About the organisation'), {'fields': ('description', )}),
+        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
+        (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email',),}),
+        (_(u'About the organisation'), {'fields': ('description',)}),
     )
     inlines = (OrganisationLocationInline,)
-    list_display = ('name', 'long_name', 'website', )
-    search_fields = ('name', 'long_name', )
+    list_display = ('name', 'long_name', 'website', 'language',)
+    search_fields = ('name', 'long_name',)
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -466,18 +466,14 @@ class ProjectAdmin(admin.ModelAdmin):
                 u'Give your project a short title and subtitle in RSR. These fields are the '
                 u'newspaper headline for your project: use them to attract attention to what you are doing.'
             ),
-           'fields': (
-               'title', 'subtitle', 'status',
-           ),
+           'fields': ('title', 'subtitle', 'status', 'language',),
         }),
         (_(u'Categories'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Please select all categories applicable to your project. '
                 u'(The Focus area(s) of each category is shown in parenthesis after the category name)'
             ),
-            'fields': (
-                ('categories',)
-            ),
+            'fields': (('categories',)),
         }),
         (_(u'Project info'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -523,7 +519,7 @@ class ProjectAdmin(admin.ModelAdmin):
             ),
             'fields': ('goals_overview', )
         }),
-        )
+    )
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     search_fields = ('title', 'status', 'project_plan_summary', )
     list_filter = ('currency', 'status', )
@@ -965,7 +961,7 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 class ProjectUpdateAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'project', 'user', 'text', 'time', 'img',)
+    list_display = ('id', 'project', 'user', 'text', 'language', 'time', 'img',)
     list_filter = ('time', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
 

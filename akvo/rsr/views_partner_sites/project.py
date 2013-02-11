@@ -127,6 +127,7 @@ class ProjectUpdateAddView(ProjectUpdateFormView, FormView):
         # re-direct unauthenticated users to sign-in page
         if not self.request.user.is_authenticated():
             return redirect_to_login(self.request.path, login_url='/rsr/signin/')
+        context['form'].initial = dict(language=self.project.language)
         return super(ProjectUpdateAddView, self).render_to_response(context)
 
     def get_context_data(self, **kwargs):
@@ -142,6 +143,7 @@ class ProjectUpdateAddView(ProjectUpdateFormView, FormView):
             raise PermissionDenied
 
         update = None
+        # TODO: is this bit really needed here? how can there exist an update when we're creating it?
         try:
             update_id = self.kwargs['update_id']
         except KeyError:
@@ -163,6 +165,7 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateEditView, self).get_context_data(**kwargs)
         user_is_authorized = context['project'].connected_to_user(self.request.user)
+        # TODO: cleanup
         if not user_is_authorized:
             raise PermissionDenied
         update = None

@@ -262,6 +262,7 @@ class Organisation(models.Model):
 
     name = models.CharField(_(u'name'), max_length=25, db_index=True, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
     long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
+    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the organisation')
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
     iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True)
 
@@ -631,6 +632,8 @@ class Project(models.Model):
     sustainability = models.TextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
     background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
 
+    # project meta info
+    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
 
@@ -1703,6 +1706,7 @@ class ProjectUpdate(models.Model):
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     title = models.CharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = models.TextField(_(u'text'), blank=True)
+    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
     #status = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo = ImageWithThumbnailsField(
         _(u'photo'),
