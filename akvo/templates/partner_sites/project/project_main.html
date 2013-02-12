@@ -135,7 +135,11 @@
 {% block js %}
   {{ block.super }}
 
-  <script src="{{MEDIA_URL}}core/js/jquery-ui-1.10.0.custom.js"></script>
+  {% if debug %}
+    <script src="{{MEDIA_URL}}core/js/jquery-ui.1.8.9.js"></script>
+  {% else %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+  {% endif %}
 
   {# {% asset_bundle 'partner_sites_script' %} #}
   <script src="{{MEDIA_URL}}core/galleria/galleria-1.2.8.js"></script>

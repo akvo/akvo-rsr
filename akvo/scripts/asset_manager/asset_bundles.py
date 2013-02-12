@@ -20,6 +20,7 @@ ASSET_BUNDLES = {
             'donate.css',
             'org.css',
             'index.css',
+            'jquery-ui-1.8.5.custom.css',
             ],
     },
     'akvo_script': {
@@ -56,7 +57,7 @@ ASSET_BUNDLES = {
             'scaffold.css',
             'typography.css',
             'breadcrum.css',
-            'jquery-ui-1.10.0.custom.css',
+            'tabs.css',
             'utils.css',
             'buttons.css',
             'forms.css',
