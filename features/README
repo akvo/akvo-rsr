@@ -1,0 +1,23 @@
+Installaion
+===========
+Follow the instructions outlined here:
+https://github.com/akvo/akvo-rsr/wiki/Akvo-RSR-developer-guide (up to "Build your local development environment")
+
+Using Lettuce
+=============
+1) Navigate to the directory that contains the "features" subdirectory (e.g. currently the root directory in the RSR code base)
+
+2) Enter one of the two options on the command line:
+
+>> lettuce
+to run the full suite of available tests
+
+or
+
+>> lettuce features/<location of feature file you wish to run>
+
+e.g.
+
+>> lettuce smoke_tests/server_tests.feature
+
+which will run only the tests contained in the server_tests.feature file

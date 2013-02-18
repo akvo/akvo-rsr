@@ -5,10 +5,24 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR ver 2.1.2.1 - Donations Hotfix release notes
+---
+4 February 2013, adriancollier
+
+###Funding Projects to 100% with the Donation Engine
+
+We have made a change to the way payment amounts are being calculated when including fees. There has been an existing legacy issue for some time that due to the fees deducted from PayPal or iDeal, a project could not be fully funded using the donation engine alone. A manual payment was neeeded to be made in the Admin to complete the project funding.
+
+Now we have re-engineerd the fees so that these are added to the amount required to complete a project. The donor can make the payment and the actual fees charged are deducted from the payment before the remaindfer is applied to the chosen project.
+
+It may occur infrequently that the project is over-funded by a small fraction as the fees incurred could differ from the fees calculated. Where this occurs the funds are provided to the project budget.
+
+
+Github issue: [120](https://github.com/akvo/akvo-rsr/issues/120)
 
 Akvo RSR ver 2.1.2 release notes
 ---
-30 October 2012, (Code name: Kiwi) kardan, adriancollier
+10 December 2012, (Code name: Kiwi) kardan, adriancollier, zzgvh
 
 Overview
 ----
@@ -16,6 +30,17 @@ Overview
 
 New features & changes
 ----
+
+###End to End Transparency with Openaid.nl and Akvo RSR
+
+In this release we have made a firm link between the Financial Information published by the Dutch Government at Openaid.nl and Akvo RSR. Pending a change in the Openaid.nl source code which should be pushed later this week, you will now be able to navigate between Funding Activities in Openaid.nl and projects being implemented using those funds on Akvo RSR.
+
+So, links on the Openaid.nl site will provide you with a list of RSR projects or a list of participating organisations. From the Funding Pages on Akvo RSR you'll be able to go directly to the original funding activity in OpenAid.nl.
+
+You can read more about this on our [Blog Post](http://www.akvo.org/blog/?p=7962) on this feature!
+
+Github issue: [69](https://github.com/akvo/akvo-rsr/issues/69) & [87](https://github.com/akvo/akvo-rsr/issues/87)
+
 ###Donation Initial Page Restyle/Addition
 
 On the first page of the donation process (http://www.akvo.org/rsr/project/613/donate/) there is currently the option of donating by PayPal or iDeal. At the bottom of the page there is also the option to donate as an Organisation which follows a different process.
@@ -26,17 +51,47 @@ Github issue: [98](https://github.com/akvo/akvo-rsr/issues/98)
 
 ###API Changes
 
-We have added the Primary Location to the Inline Project Resource in the API. This allows for the location to be collected directly when obtaining the details for the project. As the location is one of the most useful pieces of information present in a project but not being located within the project table in the database - it makes a lot of sense that this should be accessible easily - so we did it.
+We have added the "primary_location" field as inline data to the "project" and "organisation" resources in the API. This allows for the primary location to be collected directly when obtaining the project and organisation resources. Being one of the more useful pieces of information that is not part of the project or organisation database tables it makes a lot of sense to make this information accessible as a part of these resources directly.
+
+In JSON the "primary_location" looks like this:
+
+```js
+    "primary_location": {
+          "address_1": "",
+          "address_2": "",
+          "city": "Freetown",
+          "country": "/api/v1/country/42/",
+          "id": 779,
+          "latitude": 8.371664,
+          "longitude": -13.189087,
+          "postcode": "",
+          "primary": true,
+          "project": "/api/v1/project/672/",
+          "resource_uri": "/api/v1/project_location/779/",
+          "state": ""
+        },
+```
 
 Github issue: [124](https://github.com/akvo/akvo-rsr/issues/124)
 
-We have also added the project image thumbnails to the resources available to the API. This allows the images to be collected and used for lists and maps where the full-sized image is not needed, or where many images are needed to be downloaded and so downloading and resizing all of the originals would take too much time and server capacity. So, if you want a thumbnail - you can get it directly from the API.
+We have also expanded the "current_image" field of the "project" resource and the "logo" field of the "organisation" to include a sub-object with two fields, "original" which is the URI for the original image, and "thumbnails" which is an object with named thumbnails of the image. Currently there is only one thumbnail, "map_thumb" that is used by RSR itself for some of the maps. With this change it will be easy to add other thumbnail formats in the future.
+
+In JSON the new format for "current_image" (and "logo" in the organisation) is:
+
+```js
+    "current_image": {
+        "original": "http://uat.akvo.org/rsr/media/db/project/672/Project_672_current_image_2012-11-06_15.22.42.jpg",
+        "thumbnails": {
+            "map_thumb": "http://uat.akvo.org/rsr/media/db/project/672/Project_672_current_image_2012-11-06_15.22.42_jpg_160x120_autocrop_detail_q85.jpg"
+        }
+    },
+```
 
 Github issue: [123](https://github.com/akvo/akvo-rsr/issues/123)
 
-###Sorting on Locations
+###Sorting on country
 
-The ability to sort projects in a list based on Location was disabled some time back when we made changes to the location model. It has now been reinstated, so it'll be easier once more to find those projects near each other.
+The ability to sort projects in a list based on which country they are located in was disabled some time back when we made changes to the location model. It has now been reinstated, so it'll be easier once more to find projects in the same country. We have also fixed the sorting direction to use logical defaults for all columns of the project listing pages.
 
 Github issue: [99](https://github.com/akvo/akvo-rsr/issues/99)
 
@@ -60,6 +115,12 @@ Working closely with one of our Partners Mars Chocolates, we have made significa
 
 Github issue: [116](https://github.com/akvo/akvo-rsr/issues/116)
 
+###Automated Donation Testing Scripts
+
+We have written some powerful Lettuce scripts allow us to run through the Donation Process automatically in under 2 minutes. They check that everything's working as expected, that all the numbers and figures are adding up and the connections are still responsive. It's a great addition to our testing process and will save hours of manual testing in the weeks, months and years to come.
+
+Github issue: [131](https://github.com/akvo/akvo-rsr/issues/113)
+
 Bug fixes
 ----
 ###Image slider thumbs not faded on initialisation
@@ -75,7 +136,7 @@ Github issue: [104](https://github.com/akvo/akvo-rsr/issues/104)
 
 ###Unpublished Projects Administration
 
-After making some major changes to the way unpublished projects are visible in RSR, we have made a further change to allow easier administration and maintenance by Akvo Staff of these projects. In short, it's now possible to do the things we need to do, without any jiggery-pokery - sweet.
+After making some major changes to the way unpublished projects are visible in RSR, we have made a further change to allow easier administration and maintenance by Akvo Staff of these projects. In short, it's now possible to do the things we need to do, without any jiggery-pokery.
 
 Github issue: [91](https://github.com/akvo/akvo-rsr/issues/91)
 
@@ -86,6 +147,12 @@ A while back we made a large effort to translate our user interface into multipl
 We have now updated this so that the project listing pages such as http://akvo.akvoapp.org have all the column titles translated - not just the select ones from before.
 
 Github issue: [48](https://github.com/akvo/akvo-rsr/issues/48)
+
+###Duplication of Partners on Project Page
+
+The list of partners presented on the Project page was for a while showing the same organisations multiple times when this partner was connected to a project with multiple roles - such as Support Partner and also as Funding Partner. We've fixed the filter again now so no matter how many times a parter is linked they will be shown just the once. If however you go through to the Partners page for that project, you'll be able to see each partner and the roles they perform. So we've not lost anything, just tidied it all up a little.
+
+Github issue: [127](https://github.com/akvo/akvo-rsr/issues/127)
 
 ---------------------------------------------
 

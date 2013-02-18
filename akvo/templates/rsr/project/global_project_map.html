@@ -4,25 +4,27 @@
 
 
 {% block title %}
-	{% trans 'Map of all projects' %}
+  {% trans 'Map of all projects' %}
 {% endblock title %}
 
 {% block breadcrum_items %}
-	{{block.super}}
-	<li id="last_breadcrum_item">{% trans 'Map of all projects' %}</li>
+  {{block.super}}
+  <li id="last_breadcrum_item">{% trans 'Map of all projects' %}</li>
 {% endblock breadcrum_items %}
 
 
 {% block maincontent %}
   <div class="right">
     <p class="small" style="margin:0; padding:0; padding-top:0px;">
-      <a href="{% url 'rsr_org_list' %}">{% trans 'List of all organisations' %} &#x25BA;</a> <br />
-            <a href="{% url 'project_list' 'all' %}">{% trans 'List of all projects' %} &#x25BA;</a> <br />
-            <a href="{% url 'global_organisation_map' %}">{% trans 'Map of all organisations' %} &#x25BA;</a>
-    </p>    
+      <a href="{% url 'rsr_org_list' %}">{% trans 'List of all organisations' %} &#x25BA;</a>
+      <br />
+      <a href="{% url 'project_list' 'all' %}">{% trans 'List of all projects' %} &#x25BA;</a>
+      <br />
+      <a href="{% url 'global_organisation_map' %}">{% trans 'Map of all organisations' %} &#x25BA;</a>
+    </p>
   </div>
-    <h1>
-        {% trans 'Map of all projects' %}
-    </h1>
-    {% map 'projects' 975 600 'dynamic' %}
+  <h1>
+    {% trans 'Map of all projects' %}
+  </h1>
+  {% map 'project' 975 600 'dynamic' %}
 {% endblock %}

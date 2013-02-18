@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load i18n rsr_filters rsr_tags thumbnail humanize google_maps %}
+{% load i18n rsr_filters rsr_tags thumbnail humanize map %}
 {% load url from future %}
 
 
@@ -71,7 +71,7 @@
             {% if organisation.primary_location.country %}{{organisation.primary_location.country}}{% endif %}
           </p>
           {% if organisation.primary_location %}
-            {% google_map organisation 180 135 6 %}
+            {% map organisation 180 135 "small" %}
           {% else %}
             <p class="small" style="color: red;">{% trans 'No map available' %}</p>
           {% endif %}

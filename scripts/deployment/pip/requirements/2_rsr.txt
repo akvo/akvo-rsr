@@ -31,6 +31,7 @@ python-dateutil==1.5
 # General requirements
 BeautifulSoup==3.2.1
 httplib2==0.7.6
+lxml==2.3.6
 pytz==2012h
 
 # RSR requirements
@@ -46,3 +47,7 @@ South==0.7.6
 # App container
 gunicorn==0.15.0
 wsgiref==0.1.2
+
+# caching and queueing
+django-cacheback
+django-celery-with-redis

@@ -9,6 +9,8 @@ from decimal import Decimal
 from textwrap import dedent
 
 import logging
+import math
+
 logger = logging.getLogger('akvo.rsr')
 
 import oembed
@@ -217,7 +219,7 @@ class Partnership(models.Model):
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
-    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
+    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.'))
 
     class Meta:
         verbose_name = _(u'project partner')
@@ -260,6 +262,7 @@ class Organisation(models.Model):
 
     name = models.CharField(_(u'name'), max_length=25, db_index=True, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
     long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
+    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the organisation')
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
     iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True)
 
@@ -629,6 +632,8 @@ class Project(models.Model):
     sustainability = models.TextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
     background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
 
+    # project meta info
+    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
 
@@ -667,6 +672,19 @@ class Project(models.Model):
 
     def all_donations_amount_received(self):
         return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+
+    def amount_needed_to_fully_fund_via_paypal(self):
+        if self.currency == 'USD':
+            PAYPAL_FEE_PCT = getattr(settings, 'PAYPAL_FEE_PCT_USD', 3.9)
+            PAYPAL_FEE_BASE = getattr(settings, 'PAYPAL_FEE_BASE_USD', 0.30)
+        else:
+            PAYPAL_FEE_PCT = getattr(settings, 'PAYPAL_FEE_PCT_EUR', 3.4)
+            PAYPAL_FEE_BASE = getattr(settings, 'PAYPAL_FEE_BASE_EUR', 0.35)
+        return int(math.ceil(float(self.funds_needed) * (1 + PAYPAL_FEE_PCT/100) + PAYPAL_FEE_BASE))
+
+    def amount_needed_to_fully_fund_via_ideal(self):
+        MOLLIE_FEE_BASE = getattr(settings, 'MOLLIE_FEE_BASE', 1.20)
+        return int(math.ceil(float(self.funds_needed) + MOLLIE_FEE_BASE))
 
     def anonymous_donations_amount_received(self):
         amount = Invoice.objects.filter(project__exact=self.id).exclude(is_anonymous=False)
@@ -1688,6 +1706,7 @@ class ProjectUpdate(models.Model):
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     title = models.CharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = models.TextField(_(u'text'), blank=True)
+    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
     #status = models.CharField(max_length=1, choices=STATUSES, default='N')
     photo = ImageWithThumbnailsField(
         _(u'photo'),
@@ -2066,10 +2085,13 @@ class PartnerSite(models.Model):
     )
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
-    default_language = models.CharField(_(u'language'),
+    default_language = models.CharField(_(u'Site UI default language'),
                                         max_length=5,
                                         choices=settings.LANGUAGES,
                                         default=settings.LANGUAGE_CODE)
+
+    ui_translation = models.BooleanField(_(u'Translate user interface'), default=False)
+    google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
@@ -2090,8 +2112,13 @@ class PartnerSite(models.Model):
     def favicon(self):
         return self.custom_favicon or None
 
+    @property
+    def full_domain(self):
+        return '%s.%s' % (self.hostname, settings.APP_DOMAIN_NAME)
+
     def get_absolute_url(self):
         url = ''
+        # TODO: consider the ramifications of get_absolute_url using CNAME if available
         if self.cname:
             return self.cname
 
@@ -2099,7 +2126,7 @@ class PartnerSite(models.Model):
         if getattr(settings, 'HTTPS_SUPPORT', True):
             protocol = '%ss' % protocol
 
-        url = '%s://%s.%s' % (protocol, self.hostname, settings.APP_DOMAIN_NAME)
+        url = '%s://%s/' % (protocol, self.full_domain)
         return url
 
     class Meta:

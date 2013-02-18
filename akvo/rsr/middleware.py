@@ -10,8 +10,8 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import (LocaleRegexURLResolver,
-                                      is_valid_path, get_resolver)
+from django.core.urlresolvers import (LocaleRegexURLResolver, is_valid_path,
+                                      get_resolver, set_urlconf)
 from django.http import HttpResponseRedirect
 from django.middleware.locale import LocaleMiddleware
 from django.shortcuts import redirect
@@ -23,6 +23,10 @@ from akvo.rsr.models import PartnerSite
 
 __all__ = ["PartnerSitesLocaleMiddleware",
            "PartnerSitesRouterMiddleware",
+           "get_domain",
+           "get_or_create_site",
+           "is_partner_site_instance",
+           "is_rsr_instance",
            "make_tls_property"]
 
 
@@ -57,13 +61,12 @@ settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(
-    settings,
+PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings,
     "PARTNER_SITES_DEVELOPMENT_DOMAIN",
     "akvoapp.dev"
 )
-PARTNER_SITES_DOMAINS = getattr(
-    settings,
+
+PARTNER_SITES_DOMAINS = getattr(settings,
     "PARTNER_SITES_DOMAINS",
     ("akvoapp.org",
      "akvotest.org",
@@ -71,71 +74,77 @@ PARTNER_SITES_DOMAINS = getattr(
      "akvotest3.org",
      PARTNER_SITES_DEVELOPMENT_DOMAIN)
 )
-PARTNER_SITES_MARKETING_SITE = getattr(
-    settings,
+
+PARTNER_SITES_MARKETING_SITE = getattr(settings,
     "PARTNER_SITES_MARKETING_SITE",
     "http://www.akvoapp.org/"
 )
 
 
+def get_domain(request):
+    original_domain = request.get_host().split(":")[0]
+    domain_parts = original_domain.split(".")[-3:]
+    domain = ".".join(domain_parts)
+    return domain
+
+
+def is_rsr_instance(domain):
+    dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
+    return (domain == "akvo.org" or
+            domain.endswith(".akvo.org") or
+            domain in dev_domains)
+
+
+def is_partner_site_instance(domain):
+    base_domain = ".".join(tuple(domain.split(".")[-2:]))
+    if base_domain in PARTNER_SITES_DOMAINS:
+        return True
+    return False
+
+
+def get_or_create_site(domain):
+    if domain == "www.akvo.org":
+        domain = "akvo.org"
+    sites = Site.objects.filter(domain=domain)
+    if sites.count() >= 1:
+        site, duplicates = sites[0], sites[1:]
+        if duplicates:
+            for duplicate in duplicates:
+                duplicate.delete()
+    else:
+        site = Site(domain=domain, name=domain)
+        site.save()
+    return site
+
+
 class PartnerSitesRouterMiddleware(object):
 
-    def get_domain(self, request):
-        domain = request.get_host().split(":")[0]
-        domain_parts = domain.split(".")
-        if len(domain_parts) > 3:
-            domain = "%s.%s.%s" % tuple(domain_parts[-3:])
-        return domain
-
-    def is_rsr_instance(self, domain):
-        dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
-        return (domain == "akvo.org" or
-                domain.endswith(".akvo.org") or
-                domain in dev_domains)
-
-    def is_partner_site_instance(self, domain):
-        base_domain = "%s.%s" % tuple(domain.split(".")[-2:])
-        if base_domain in PARTNER_SITES_DOMAINS:
-            return True
-        return False
-
-    def get_or_create_site(self, domain):
-        if domain == "www.akvo.org":
-            domain = "akvo.org"
-        sites = Site.objects.filter(domain=domain)
-        if sites.count() >= 1:
-            site, duplicates = sites[0], sites[1:]
-            if duplicates:
-                for duplicate in duplicates:
-                    duplicate.delete()
-        else:
-            site = Site(domain=domain, name=domain)
-            site.save()
-        return site
-
     def process_request(self, request, partner_site=None):
-        domain = self.get_domain(request)
-        if self.is_rsr_instance(domain):
-            request.urlconf = "akvo.urls.rsr"
-        elif self.is_partner_site_instance(domain):
-            hostname = domain.split(".")[-3]
+        domain = get_domain(request)
+        if is_rsr_instance(domain):
+            urlconf = "akvo.urls.rsr"
+        elif is_partner_site_instance(domain):
+            urlconf = "akvo.urks.partner_sites"
             try:
+                hostname = domain.split(".")[-3]
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
             if partner_site is None or not partner_site.enabled:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
         else:  # Probably a partner site instance on partner-nominated domain
+            urlconf = "akvo.urls.partner_sites"
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
+        request.urlconf = urlconf
+        set_urlconf(urlconf)
         if partner_site is not None and partner_site.enabled:
-            request.urlconf = "akvo.urls.partner_sites"
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
-        site = self.get_or_create_site(domain)
+        site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return
 

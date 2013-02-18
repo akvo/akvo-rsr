@@ -55,7 +55,6 @@ Desktop.ini
 
 ## Python
 *.py[co]
-*.mo
 
 ## Vim
 .*.sw[a-z]
@@ -90,3 +89,7 @@ tmtags
 auto-save-list
 tramp
 .\#*
+
+# Vagrant
+Vagrantfile
+.vagrant

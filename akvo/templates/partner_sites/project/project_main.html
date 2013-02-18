@@ -47,7 +47,7 @@
           {{ project.primary_location.latitude }},
           {{ project.primary_location.longitude }}
         </p>
-        {% google_map project 260 180 3 %}
+        {% google_map project 260 180 8 %}
       {% else %}
         <p style="color: red;">{% trans 'No map available' %}</p>
       {% endif %}
