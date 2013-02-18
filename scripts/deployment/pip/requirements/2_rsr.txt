@@ -48,6 +48,15 @@ South==0.7.6
 gunicorn==0.15.0
 wsgiref==0.1.2
 
+# Requirements for building Celery
+amqp==1.0.8
+anyjson==0.3.3
+kombu==2.5.6
+billiard==2.7.3.21
+
 # caching and queueing
-django-cacheback
-django-celery-with-redis
+celery==3.0.15
+redis==2.7.2
+django-celery==3.0.11
+django-celery-with-redis==3.0
+django-cacheback==0.4
