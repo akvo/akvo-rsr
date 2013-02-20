@@ -7,11 +7,8 @@
 """
 from __future__ import absolute_import
 
-<<<<<<< HEAD
-=======
 #from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
->>>>>>> 5558ab590fd46eee53d725530fc3f770721612d9
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404

@@ -124,7 +124,7 @@ class PartnerSitesRouterMiddleware(object):
         if is_rsr_instance(domain):
             urlconf = "akvo.urls.rsr"
         elif is_partner_site_instance(domain):
-            urlconf = "akvo.urks.partner_sites"
+            urlconf = "akvo.urls.partner_sites"
             try:
                 hostname = domain.split(".")[-3]
                 partner_site = PartnerSite.objects.get(hostname=hostname)
