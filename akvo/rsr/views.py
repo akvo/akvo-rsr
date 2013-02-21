@@ -1304,7 +1304,7 @@ def donate(request, p, engine):
                     return_url=urljoin(url_base, reverse("donate_thanks")),
                     cancel_url=url_base)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
-                if getattr(settings, "PAYPAL_TEST", False):
+                if getattr(settings, "DONATION_TEST", False):
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
