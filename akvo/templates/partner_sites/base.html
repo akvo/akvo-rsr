@@ -8,18 +8,33 @@
 <!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
-  <title>{% block title %}{% endblock title %}{{organisation}}</title>
+  <meta charset="utf-8"></meta>
+  <meta name="google-translate-customization" content="ff4c8027f6d7342d-15c28fc8266bbfde-g0ad3b6e7a7f4b265-b"></meta>
+
+  <title>{% block title %}{% endblock title %}<span class="notranslate">{{organisation}}</span></title>
 
   {% asset_bundle 'partner_sites_style' %}
   {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
   {% if favicon %}<link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">{% endif %}
   {% block head %}{% endblock head %}
 
+  <!--[if lte IE 7]>
+    <style type="text/css">
+        #languageChooserConatiner, #google_translate_element {
+            float: right;
+            padding-top: 5px;
+        }
+        #crumb_container {
+            margin-bottom: 3px;
+        }
+    </style>
+  <![endif]-->
+
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
   <script type="text/javascript">
     !window.Modernizr && document.write('<script src="{{MEDIA_URL}}core/js/modernizr-2.0.6.min.js"><\/script>');
   </script>
+
 </head>
 <body>
 {% block draft %}{% endblock draft %}
@@ -36,45 +51,54 @@
     {% if return_url %}
       </a>
       <span class="small marg_left20">
-        <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} {{organisation}}</a>
+        <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} <span class="notranslate">{{organisation}}</span></a>
       </span>
     {% endif %}
   </div>
 </div>
 
 <div class="container">
-  <article class="breadcrum_back marg_bottom20 clearfix">
-    <ul class="breadcrum">
-      {% block breadcrum_items %}
-        {% if return_url %}
-          <li><a href="{{ return_url }}"><span>{{organisation|truncatewords:3}}</span></a></li>
-        {% else %}
-          <li class="last_breadcrum_item">{{organisation|truncatewords:3}}</li>
-        {% endif %}
-      {% endblock breadcrum_items %}
-    </ul>
-  </article>
-
-  <aside>
-    <select name="language" id="languageChooser" style="margin-top:3px; width:290px">
-      {% for lang_code, lang_name in LANGUAGES %}
-        <option value="/{{ lang_code }}/{{ current_path_without_lang }}" {% ifequal lang_code request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
-          {% if lang_code == "es" %}
-            Español (beta)
-          {% elif lang_code == "nl" %}
-            Nederlands (beta)
-          {% elif lang_code == "fr" %}
-            Français (bêta)
-          {% elif lang_code == "de" %}
-            Deutsch (beta)
+  <div id="crumb_container" class="marg_bottom20" style="width: 100%; display: table">
+    <div class="breadcrum_back  clearfix" style="display: table-cell; width: 100%;">
+      <ul class="breadcrum">
+        {% block breadcrum_items %}
+          {% if return_url %}
+            <li><a href="{{ return_url }}"><span class="notranslate">{{organisation|truncatewords:3}}</span></a></li>
           {% else %}
-            English
+            <li class="last_breadcrum_item notranslate">{{organisation|truncatewords:3}}</li>
           {% endif %}
-          {# {{ lang_name }} {% if lang_code != "en" %} ({% trans "Beta" %}) {% endif %} #}
-        </option>
-      {% endfor %}
-    </select>
-  </aside>
+        {% endblock breadcrum_items %}
+      </ul>
+    </div>
+
+    {% if request.partner_site.ui_translation %}
+      <div id="languageChooserConatiner" style="display: table-cell">
+      <select name="language" id="languageChooser" style="margin:3px 0 0 20px;{% if not request.partner_site.google_translation %} width:290px;{% endif %}">
+        {% for lang_code, lang_name in LANGUAGES %}
+          <option value="/{{ lang_code }}/{{ current_path_without_lang }}" {% ifequal lang_code request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+            {% if lang_code == "es" %} Español (beta)
+            {% elif lang_code == "nl" %} Nederlands (beta)
+            {% elif lang_code == "fr" %} Français (bêta)
+            {% elif lang_code == "de" %} Deutsch (beta)
+            {% elif lang_code == "ru" %} Россия (beta)
+            {% else %} English
+            {% endif %}
+          </option>
+        {% endfor %}
+      </select></div>
+    {% endif %}
+
+    {% if request.partner_site.google_translation %}
+      <div id="google_translate_element" style="display: table-cell; padding-left: 20px; padding-bottom: 2px"></div>
+      <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: '{{lang_code}}', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true}, 'google_translate_element');
+        }
+      </script>
+      <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    {% endif %}
+
+  </div>
   <div class="clear"></div>
   {% block content %}{% endblock content %}
 </div>

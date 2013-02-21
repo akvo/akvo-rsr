@@ -36,8 +36,8 @@ def map(resource, width, height, type="dynamic", marker_icon=""):
         marker_icon: the name of an icon to use rather than the default. the icon must be in mediaroot/core/img/
     """
 
-    # We want a unique id for each map element id
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+
     template_context = {
         'map_id': map_id,
         'type': type,
@@ -50,8 +50,11 @@ def map(resource, width, height, type="dynamic", marker_icon=""):
     supported_models = (Project, Organisation)
 
     # determine if we have the name of the resource or an object of that kind
-    if isinstance(resource, basestring) and resource in [model_name.__name__.lower() for model_name in supported_models]:
-        template_context['resource'] = resource
+    # Hack! TODO: refactor to use the proper API resources
+    # if it's a string we return the corresponding NNNMapResource resource name
+    if isinstance(resource, basestring):
+        template_context['resource'] = "map_for_%s" % resource
+    # otherwise return the NNNResource resource name
     elif isinstance(resource, supported_models):
         template_context['resource'] = resource.__class__.__name__.lower()
         template_context['object_id'] = resource.id

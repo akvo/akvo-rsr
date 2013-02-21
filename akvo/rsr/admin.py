@@ -107,13 +107,13 @@ class OrganisationLocationInline(admin.StackedInline):
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
-        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', 'iati_org_id', )}),
-        (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
-        (_(u'About the organisation'), {'fields': ('description', )}),
+        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
+        (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email',),}),
+        (_(u'About the organisation'), {'fields': ('description',)}),
     )
     inlines = (OrganisationLocationInline,)
-    list_display = ('name', 'long_name', 'website', )
-    search_fields = ('name', 'long_name', )
+    list_display = ('name', 'long_name', 'website', 'language',)
+    search_fields = ('name', 'long_name',)
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -456,74 +456,127 @@ class ProjectLocationInline(admin.StackedInline):
 class ProjectAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        GoalInline, BudgetItemAdminInLine, LinkInline, PartnershipInline,
-        ProjectLocationInline, BenchmarkInline
+        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline,
     )
     save_as = True
+    # fieldsets = (
+    #     (_(u'Project description'), {
+    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+    #             u'Give your project a short title and subtitle in RSR. These fields are the '
+    #             u'newspaper headline for your project: use them to attract attention to what you are doing.'
+    #         ),
+    #        'fields': ('title', 'subtitle', 'status', 'language',),
+    #     }),
+    #     (_(u'Categories'), {
+    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+    #             u'Please select all categories applicable to your project. '
+    #             u'(The Focus area(s) of each category is shown in parenthesis after the category name)'
+    #         ),
+    #         'fields': (('categories',)),
+    #     }),
+    #     (_(u'Project info'), {
+    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+    #             u'The summary should <em>briefly</em> explain why the project is being carried out, '
+    #             u'where it is taking place, who will benefit and/or participate, what it specifically '
+    #             u'hopes to accomplish and how those specific goals will be accomplished.'
+    #         ),
+    #         'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
+    #     }),
+    #     (_(u'Project details'), {
+    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+    #             u'In-depth information about your project should be put in this section. '
+    #             u'Use the Background, Project plan, Current status and Sustainability fields '
+    #             u'to tell people more about the project.'
+    #         ),
+    #         'fields': ('background', 'project_plan', 'current_status', 'sustainability', ),
+    #     }),
+    #     (_(u'Project meta info'), {
+    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+    #             u'The project meta information fields are not public. '
+    #             u'They allow you to make notes to other members of your organisation or '
+    #             u'partners with access to your projects on the RSR Admin pages.'
+    #         ),
+    #         'fields': ('project_rating', 'notes', ),
+    #     }),
+    #     (_(u'Project budget'), {
+    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+    #             u'The request posted date is filled in for you automatically when you create a project. '
+    #             u'When the project implementation phase is complete, enter the <em>Date complete</em> here.'
+    #         ),
+    #         'fields': ('currency', 'date_request_posted', 'date_complete', ),
+    #     }),
+    #     (_(u'Aggregates'), {
+    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _('Aggregate financial data'),
+    #         'fields': (('funds',  'funds_needed',), ),
+    #     }),
+    #     (_(u'Goals'), {
+    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+    #             u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
+    #             u'Specific, Measurable, Agreed upon, Realistic and Time-specific. '
+    #             u'The numbered fields can be used to list specific goals whose accomplishment '
+    #             u'will be used to measure overall project success.'
+    #         ),
+    #         'fields': ('goals_overview', )
+    #     }),
+    # )
     fieldsets = (
-        (_(u'Project description'), {
+        (_(u'General Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Give your project a short title and subtitle in RSR. These fields are the '
-                u'newspaper headline for your project: use them to attract attention to what you are doing.'
+                u'Liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer.'
             ),
-           'fields': (
-               'title', 'subtitle', 'status',
-           ),
-        }),
-        (_(u'Categories'), {
+            'fields': ('title', 'subtitle', 'status', 'language', 'date_request_posted', 'date_complete',),
+            }),
+        (_(u'Description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Please select all categories applicable to your project. '
-                u'(The Focus area(s) of each category is shown in parenthesis after the category name)'
+                u'Enim ad minim veniam quis nostrud exerci tation ullamcorper suscipit lobortis nisl?'
             ),
-            'fields': (
-                ('categories',)
-            ),
-        }),
-        (_(u'Project info'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'The summary should <em>briefly</em> explain why the project is being carried out, '
-                u'where it is taking place, who will benefit and/or participate, what it specifically '
-                u'hopes to accomplish and how those specific goals will be accomplished.'
-            ),
-            'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
-        }),
-        (_(u'Project details'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'In-depth information about your project should be put in this section. '
-                u'Use the Background, Project plan, Current status and Sustainability fields '
-                u'to tell people more about the project.'
-            ),
-            'fields': ('background', 'project_plan', 'current_status', 'sustainability', ),
-        }),
-        (_(u'Project meta info'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'The project meta information fields are not public. '
-                u'They allow you to make notes to other members of your organisation or '
-                u'partners with access to your projects on the RSR Admin pages.'
-            ),
-            'fields': ('project_rating', 'notes', ),
-        }),
-        (_(u'Project budget'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'The request posted date is filled in for you automatically when you create a project. '
-                u'When the project implementation phase is complete, enter the <em>Date complete</em> here.'
-            ),
-            'fields': ('currency', 'date_request_posted', 'date_complete', ),
-        }),
-        (_(u'Aggregates'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _('Aggregate financial data'),
-            'fields': (('funds',  'funds_needed',), ),
-        }),
+            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'sustainability',),
+            }),
         (_(u'Goals'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
-                u'Specific, Measurable, Agreed upon, Realistic and Time-specific. '
-                u'The numbered fields can be used to list specific goals whose accomplishment '
-                u'will be used to measure overall project success.'
+                u'Claritatem insitam est, usus legentis in iis qui facit eorum claritatem Investigationes.'
             ),
-            'fields': ('goals_overview', )
-        }),
-        )
+            'fields': ('goals_overview',),
+            }),
+        (_(u'Photo'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Veniam quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea.'
+            ),
+            'fields': ('current_image', 'current_image_caption', ),
+            }),
+        (_(u'Locations'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Me lius quod ii legunt saepius claritas est, etiam processus dynamicus qui.'
+            ),
+            'fields': (),
+            }),
+        (_(u'Budget'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Ut aliquip ex ea commodo consequat duis autem vel eum iriure dolor.'
+            ),
+            'fields': ('currency', ),
+            }),
+        (_(u'Project Focus'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Eodem modo typi qui nunc nobis videntur parum clari fiant sollemnes in.'
+            ),
+            'fields': ('categories',),
+            }),
+        (_(u'Partners'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'At vero eros, et accumsan et iusto odio dignissim qui blandit praesent luptatum.'
+            ),
+            'fields': (),
+            }),
+        (_(u'Additional Information'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.'
+            ),
+            'fields': ('notes',),
+            }),
+
+    )
+
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     search_fields = ('title', 'status', 'project_plan_summary', )
     list_filter = ('currency', 'status', )
@@ -965,7 +1018,7 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 class ProjectUpdateAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'project', 'user', 'text', 'time', 'img',)
+    list_display = ('id', 'project', 'user', 'text', 'language', 'time', 'img',)
     list_filter = ('time', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
 
@@ -1042,6 +1095,14 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 
 class PartnerSiteAdmin(admin.ModelAdmin):
     form = PartnerSiteAdminForm
+
+    fieldsets = (
+        (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
+        (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
+        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
+    )
+    list_display = '__unicode__', 'full_domain'
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""

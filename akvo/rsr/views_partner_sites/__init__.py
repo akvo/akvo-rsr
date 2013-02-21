@@ -15,7 +15,7 @@ from akvo.rsr.views_partner_sites.error import ForbiddenView, NotFoundView
 from akvo.rsr.views_partner_sites.partner import PartnerListView, PartnerView
 from akvo.rsr.views_partner_sites.project import (ProjectFundingView,
     ProjectMainView, ProjectUpdateAddView, ProjectUpdateEditView,
-    ProjectUpdateListView, ProjectUpdateView)
+    ProjectUpdateListView, ProjectUpdateView, ProjectDonationThanksView)
 from akvo.rsr.views_partner_sites.widgets import (GetWidgetView,
     ProjectMapView, ProjectCordinates)
 
@@ -30,6 +30,7 @@ __all__ = [
     'PartnerListView',
     'PartnerView',
     'ProjectCordinates',
+    'ProjectDonationThanksView',
     'ProjectFundingView',
     'ProjectMainView',
     'ProjectMapView',
