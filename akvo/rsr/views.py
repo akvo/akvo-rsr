@@ -1247,7 +1247,9 @@ def donate(request, p, engine):
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
     if request.method == "POST":
-        donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
+        donate_form = InvoiceForm(data=request.POST,
+                                  project=p,
+                                  engine=engine)
         if donate_form.is_valid():
             description = u"Akvo-%d-%s" % (p.id, p.title)
             cd = donate_form.cleaned_data
@@ -1276,7 +1278,7 @@ def donate(request, p, engine):
                     partnerid=invoice.gateway,
                     description=description,
                     reporturl=urljoin(netloc_akvo, reverse("mollie_report")),
-                    returnurl=urljoin(netloc_partner_site, reverse("donate_thanks")))
+                    returnurl=urljoin(netloc_partner_site, reverse("mollie_ideal_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]
@@ -1301,7 +1303,7 @@ def donate(request, p, engine):
                     invoice=int(invoice.id),
                     lc=invoice.locale,
                     notify_url=urljoin(netloc_akvo, reverse("paypal_ipn")),
-                    return_url=urljoin(netloc_partner_site, reverse("donate_thanks")),
+                    return_url=urljoin(netloc_partner_site, reverse("paypal_thanks")),
                     cancel_url=netloc_akvo)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if getattr(settings, "PAYPAL_TEST", False):
@@ -1360,16 +1362,25 @@ def mollie_report(request, mollie_response=None):
 
 
 @require_GET
-def donate_thanks(request,
+def paypal_thanks(request,
                   invoice=None,
                   template="rsr/project/donate/donate_thanks.html"):
     invoice_id = request.GET.get("invoice_id", None)
-    transaction_id = request.GET.get("transaction_id", None)
     if invoice_id is not None:
-        invoice = Invoice.objects.get(pk=invoice_id)
-    elif transaction_id is not None:
-        invoice = Invoice.objects.get(transaction_id=transaction_id)
+        invoice = Invoice.objects.get(pk=int(invoice_id))
     return render_to_response(template,
+                              dict(invoice=invoice),
+                              context_instance=RequestContext(request))
+
+
+@require_GET
+def mollie_ideal_thanks(request,
+                        invoice=None,
+                        template="rsr/project/donate/donate_thanks.html"):
+    transaction_id = request.GET.get("transaction_id", None)
+    if transaction_id is not None:
+        invoice = Invoice.objects.get(transaction_id=int(transaction_id))
+    return render_to_response(template, 
                               dict(invoice=invoice),
                               context_instance=RequestContext(request))
 
