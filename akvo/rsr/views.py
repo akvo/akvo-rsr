@@ -1266,8 +1266,8 @@ def donate(request, p, engine):
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
             if getattr(settings, "DONATION_TEST", False):
                 invoice.test = True
-            root_akvo_url = "http://%s/" % settings.DOMAIN_NAME
-            root_partner_site_url = "http://%s/" % request.get_host()
+            netloc_akvo = "http://%s/" % settings.DOMAIN_NAME
+            netloc_partner_site = "http://%s/" % request.get_host()
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -1275,8 +1275,8 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=urljoin(root_akvo_url, reverse("mollie_report")),
-                    returnurl=urljoin(root_partner_site_url, reverse("donate_thanks")))
+                    reporturl=urljoin(netloc_akvo, reverse("mollie_report")),
+                    returnurl=urljoin(netloc_partner_site, reverse("donate_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]
@@ -1300,9 +1300,9 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=urljoin(root_akvo_url, reverse("paypal_ipn")),
-                    return_url=urljoin(root_partner_site_url, reverse("donate_thanks")),
-                    cancel_url=root_akvo_url)
+                    notify_url=urljoin(netloc_akvo, reverse("paypal_ipn")),
+                    return_url=urljoin(netloc_partner_site, reverse("donate_thanks")),
+                    cancel_url=netloc_akvo)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if getattr(settings, "PAYPAL_TEST", False):
                     pp_button = pp_form.sandbox()
