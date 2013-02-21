@@ -3,3 +3,21 @@
 .inline-group tr.dynamic-benchmarks td.original p {
     font-size: 12px;
 }
+
+.rsr-project h2 {
+    font-size: 125%;
+}
+
+.rsr-project .module {
+    margin-bottom: 10px;;
+}
+
+.rsr-project .inline-group h2 {
+    font-size: 100%;
+    color: black;
+    background: none;
+}
+
+.rsr-project .inline-group {
+    margin-top: -10px;
+}
