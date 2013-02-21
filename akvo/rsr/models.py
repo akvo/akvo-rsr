@@ -1959,7 +1959,7 @@ class Invoice(models.Model):
     @property
     def gateway(self):
         if self.engine == 'paypal':
-            if settings.PAYPAL_TEST:
+            if settings.DONATION_TEST:
                 return settings.PAYPAL_SANDBOX_GATEWAY
             else:
                 return self.project.paymentgatewayselector.paypal_gateway.account_email

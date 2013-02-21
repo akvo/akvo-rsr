@@ -1243,6 +1243,7 @@ def setup_donation(request, p):
 
 @fetch_project
 def donate(request, p, engine):
+    is_test_donation = getattr(settings, "DONATION_TEST", False)
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
     if request.method == "POST":
@@ -1265,7 +1266,7 @@ def donate(request, p, engine):
                 del request.session["original_http_referer"]
             else:
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
-            if getattr(settings, "DONATION_TEST", False):
+            if is_test_donation:
                 invoice.test = True
             url_base = "http://%s/" % settings.DOMAIN_NAME
             if engine == "ideal":
@@ -1304,7 +1305,7 @@ def donate(request, p, engine):
                     return_url=urljoin(url_base, reverse("donate_thanks")),
                     cancel_url=url_base)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
-                if getattr(settings, "DONATION_TEST", False):
+                if is_test_donation:
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
