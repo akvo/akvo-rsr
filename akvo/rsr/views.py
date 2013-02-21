@@ -38,7 +38,6 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
-from django.views.decorators.http import require_GET
 
 from datetime import datetime
 from registration.models import RegistrationProfile
@@ -1268,8 +1267,7 @@ def donate(request, p, engine):
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
             if getattr(settings, "DONATION_TEST", False):
                 invoice.test = True
-            netloc_akvo = "http://%s/" % settings.DOMAIN_NAME
-            netloc_partner_site = "http://%s/" % request.get_host()
+            url_base = "http://%s/" % settings.DOMAIN_NAME
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -1277,8 +1275,8 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=urljoin(netloc_akvo, reverse("mollie_report")),
-                    returnurl=urljoin(netloc_partner_site, reverse("mollie_ideal_thanks")))
+                    reporturl=urljoin(url_base, reverse("mollie_report")),
+                    returnurl=urljoin(url_base, reverse("donate_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]
@@ -1302,9 +1300,9 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=urljoin(netloc_akvo, reverse("paypal_ipn")),
-                    return_url=urljoin(netloc_partner_site, reverse("paypal_thanks")),
-                    cancel_url=netloc_akvo)
+                    notify_url=urljoin(url_base, reverse("paypal_ipn")),
+                    return_url=urljoin(url_base, reverse("donate_thanks")),
+                    cancel_url=url_base)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if getattr(settings, "PAYPAL_TEST", False):
                     pp_button = pp_form.sandbox()
@@ -1361,28 +1359,20 @@ def mollie_report(request, mollie_response=None):
     return HttpResponse("OK")
 
 
-@require_GET
-def paypal_thanks(request,
+def donate_thanks(request,
                   invoice=None,
                   template="rsr/project/donate/donate_thanks.html"):
-    invoice_id = request.GET.get("invoice_id", None)
+    invoice_id = request.GET.get("invoice", None)
+    transaction_id = request.GET.get("transaction_id", None)
     if invoice_id is not None:
         invoice = Invoice.objects.get(pk=int(invoice_id))
-    return render_to_response(template,
-                              dict(invoice=invoice),
-                              context_instance=RequestContext(request))
-
-
-@require_GET
-def mollie_ideal_thanks(request,
-                        invoice=None,
-                        template="rsr/project/donate/donate_thanks.html"):
-    transaction_id = request.GET.get("transaction_id", None)
-    if transaction_id is not None:
+    elif transaction_id is not None:
         invoice = Invoice.objects.get(transaction_id=int(transaction_id))
-    return render_to_response(template, 
-                              dict(invoice=invoice),
-                              context_instance=RequestContext(request))
+    if invoice is not None:
+        return render_to_response(template,
+                                  dict(invoice=invoice),
+                                  context_instance=RequestContext(request))
+    return redirect("index")
 
 
 @render_to("rsr/global_map.html")
