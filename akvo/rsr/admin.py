@@ -107,9 +107,9 @@ class OrganisationLocationInline(admin.StackedInline):
 
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
-        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
-        (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email',),}),
-        (_(u'About the organisation'), {'fields': ('description',)}),
+        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
+        (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
+        (_(u'About the organisation'), {'fields': ('description', )}),
     )
     inlines = (OrganisationLocationInline,)
     list_display = ('name', 'long_name', 'website', 'language',)
