@@ -1244,16 +1244,9 @@ def setup_donation(request, p):
 
 @fetch_project
 def donate(request, p, engine):
-    is_test_donation = getattr(settings, "DONATION_TEST", False)
-    domain_url = request.domain_url
-    app_url = request.session["app_url"]
-    if app_url:
-        host_url = app_url
-        del request.session["app_url"]
-    else:
-        host_url = domain_url
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
+    is_test_donation = getattr(settings, "DONATION_TEST", False)
     if request.method == "POST":
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
@@ -1274,6 +1267,13 @@ def donate(request, p, engine):
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
             if is_test_donation:
                 invoice.test = True
+            domain_url = request.domain_url
+            app_url = request.session["app_url"]
+            if app_url:
+                host_url = app_url
+                del request.session["app_url"]
+            else:
+                host_url = domain_url
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -1368,12 +1368,12 @@ def mollie_report(request, mollie_response=None):
 def donate_thanks(request,
                   invoice=None,
                   template="rsr/project/donate/donate_thanks.html"):
-    invoice_id = request.GET.get("invoice", None)
-    transaction_id = request.GET.get("transaction_id", None)
-    if invoice_id is not None:
-        invoice = Invoice.objects.get(pk=int(invoice_id))
-    elif transaction_id is not None:
-        invoice = Invoice.objects.get(transaction_id=int(transaction_id))
+    paypal_invoice_id = request.GET.get("invoice", None)
+    mollie_transaction_id = request.GET.get("transaction_id", None)
+    if paypal_invoice_id is not None:
+        invoice = Invoice.objects.get(pk=int(paypal_invoice_id))
+    elif mollie_transaction_id is not None:
+        invoice = Invoice.objects.get(transaction_id=int(mollie_transaction_id))
     if invoice is not None:
         return render_to_response(template,
                                   dict(invoice=invoice),
