@@ -639,7 +639,7 @@ class Project(models.Model):
 
     # budget
     currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
-    date_request_posted = models.DateField(_(u'date request posted'), default=date.today)
+    date_request_posted = models.DateField(_(u'start date'), default=date.today)
     date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
     # old_locations = generic.GenericRelation(Location)
