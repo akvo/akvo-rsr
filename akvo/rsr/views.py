@@ -1238,18 +1238,17 @@ def setup_donation(request, p):
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
     request.session["original_http_referer"] = request.META.get("HTTP_REFERER", None)
+    request.session["app_url"] = request.GET.get("app_url", "")
     return dict(project=p)
 
 
 @fetch_project
 def donate(request, p, engine):
-    is_test_donation = getattr(settings, "DONATION_TEST", False)
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
+    is_test_donation = getattr(settings, "DONATION_TEST", False)
     if request.method == "POST":
-        donate_form = InvoiceForm(data=request.POST,
-                                  project=p,
-                                  engine=engine)
+        donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
             description = u"Akvo-%d-%s" % (p.id, p.title)
             cd = donate_form.cleaned_data
@@ -1268,7 +1267,13 @@ def donate(request, p, engine):
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
             if is_test_donation:
                 invoice.test = True
-            url_base = "http://%s/" % settings.DOMAIN_NAME
+            domain_url = request.domain_url
+            app_url = request.session["app_url"]
+            if app_url:
+                host_url = app_url
+                del request.session["app_url"]
+            else:
+                host_url = domain_url
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -1276,8 +1281,8 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=urljoin(url_base, reverse("mollie_report")),
-                    returnurl=urljoin(url_base, reverse("donate_thanks")))
+                    reporturl=urljoin(domain_url, reverse("mollie_report")),
+                    returnurl=urljoin(host_url, reverse("donate_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]
@@ -1301,9 +1306,9 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=urljoin(url_base, reverse("paypal_ipn")),
-                    return_url=urljoin(url_base, reverse("donate_thanks")),
-                    cancel_url=url_base)
+                    notify_url=urljoin(domain_url, reverse("paypal_ipn")),
+                    return_url=urljoin(host_url, reverse("donate_thanks")),
+                    cancel_url=domain_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if is_test_donation:
                     pp_button = pp_form.sandbox()
@@ -1363,12 +1368,12 @@ def mollie_report(request, mollie_response=None):
 def donate_thanks(request,
                   invoice=None,
                   template="rsr/project/donate/donate_thanks.html"):
-    invoice_id = request.GET.get("invoice", None)
-    transaction_id = request.GET.get("transaction_id", None)
-    if invoice_id is not None:
-        invoice = Invoice.objects.get(pk=int(invoice_id))
-    elif transaction_id is not None:
-        invoice = Invoice.objects.get(transaction_id=int(transaction_id))
+    paypal_invoice_id = request.GET.get("invoice", None)
+    mollie_transaction_id = request.GET.get("transaction_id", None)
+    if paypal_invoice_id is not None:
+        invoice = Invoice.objects.get(pk=int(paypal_invoice_id))
+    elif mollie_transaction_id is not None:
+        invoice = Invoice.objects.get(transaction_id=int(mollie_transaction_id))
     if invoice is not None:
         return render_to_response(template,
                                   dict(invoice=invoice),
