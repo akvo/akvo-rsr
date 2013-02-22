@@ -119,10 +119,10 @@ def get_or_create_site(domain):
     return site
 
 
-def build_url(host, port, protocol="http"):
+def build_url(domain, port, protocol="http"):
     if getattr(settings, "HTTPS_SUPPORT", False):
         protocol = "https"
-    url = "%s://%s" % (protocol, host)
+    url = "%s://%s" % (protocol, domain)
     if not (port == 80 or port == 443):
         url = "%s:%d" % (url, port)
     return url

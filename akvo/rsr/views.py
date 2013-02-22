@@ -1238,6 +1238,7 @@ def setup_donation(request, p):
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
     request.session["original_http_referer"] = request.META.get("HTTP_REFERER", None)
+    request.session["app_url"] = request.GET.get("app_url", "")
     return dict(project=p)
 
 
@@ -1245,9 +1246,10 @@ def setup_donation(request, p):
 def donate(request, p, engine):
     is_test_donation = getattr(settings, "DONATION_TEST", False)
     domain_url = request.domain_url
-    app_url = request.GET.get("app_url", "")
+    app_url = request.session["app_url"]
     if app_url:
         host_url = app_url
+        del request.session["app_url"]
     else:
         host_url = domain_url
     if not can_donate_to_project(p):
