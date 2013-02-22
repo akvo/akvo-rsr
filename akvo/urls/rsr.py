@@ -98,7 +98,8 @@ urlpatterns = patterns('',
         'akvo.rsr.views.setup_donation', name='project_donate'),
 
     url(r'^rsr/donate/thanks/$',
-        'akvo.rsr.views.donate_thanks', name='donate_thanks'),
+        'akvo.rsr.views.donate_thanks',
+        name='donate_thanks'),
 
     url(r'^rsr/donate/500/$',
         direct_to_template, {'template': 'rsr/donate_500.html'},

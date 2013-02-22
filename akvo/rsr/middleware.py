@@ -23,7 +23,8 @@ from akvo.rsr.models import PartnerSite
 
 __all__ = ["PartnerSitesLocaleMiddleware",
            "PartnerSitesRouterMiddleware",
-           "get_domain",
+           "build_url",
+           "get_domain_and_port",
            "get_or_create_site",
            "is_partner_site_instance",
            "is_rsr_instance",
@@ -81,11 +82,12 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings,
 )
 
 
-def get_domain(request):
+def get_domain_and_port(request):
+    port = int(request.META["SERVER_PORT"])
     original_domain = request.get_host().split(":")[0]
     domain_parts = original_domain.split(".")[-3:]
     domain = ".".join(domain_parts)
-    return domain
+    return (domain, port)
 
 
 def is_rsr_instance(domain):
@@ -117,10 +119,19 @@ def get_or_create_site(domain):
     return site
 
 
+def build_url(host, port, protocol="http"):
+    if getattr(settings, "HTTPS_SUPPORT", False):
+        protocol = "https"
+    url = "%s://%s" % (protocol, host)
+    if not (port == 80 or port == 443):
+        url = "%s:%d" % (url, port)
+    return url
+
+
 class PartnerSitesRouterMiddleware(object):
 
     def process_request(self, request, partner_site=None):
-        domain = get_domain(request)
+        domain, port = get_domain_and_port(request)
         if is_rsr_instance(domain):
             urlconf = "akvo.urls.rsr"
         elif is_partner_site_instance(domain):
@@ -142,8 +153,10 @@ class PartnerSitesRouterMiddleware(object):
         set_urlconf(urlconf)
         if partner_site is not None and partner_site.enabled:
             request.partner_site = settings.PARTNER_SITE = partner_site
+            request.app_url = build_url(".".join((partner_site.hostname, settings.APP_DOMAIN_NAME)), port)
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
+        request.domain_url = build_url(settings.DOMAIN_NAME, port)
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return

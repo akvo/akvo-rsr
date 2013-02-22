@@ -51,15 +51,8 @@ class PartnerSitesMixin(object):
         )
         context['return_url'] = self.request.partner_site.return_url
         context['stylesheet'] = self.request.partner_site.stylesheet
-
-        if getattr(settings, 'HTTPS_SUPPORT', True):
-            protocol = 'https://'
-        else:
-            protocol = 'http://'
-        context['app_url'] = '%s%s.%s' % (protocol,
-                                          self.request.partner_site.hostname,
-                                          settings.APP_DOMAIN_NAME)
-        context['domain_url'] = '%s%s' % (protocol, settings.DOMAIN_NAME)
+        context['app_url'] = self.request.app_url
+        context['domain_url'] = self.request.domain_url
         return context
 
 

@@ -1,11 +1,7 @@
 import django
-from django.conf import settings
 from django.contrib.sites.models import get_current_site
 
 def extra_context(request, protocol="http"):
-    if getattr(settings, "HTTPS_SUPPORT", False):
-        protocol = "https"
-    domain_url = "%s://%s" % (protocol, settings.DOMAIN_NAME)
     current_site = get_current_site(request)
     django_version = django.get_version()
     template_context = dict(

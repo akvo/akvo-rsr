@@ -1244,18 +1244,16 @@ def setup_donation(request, p):
 @fetch_project
 def donate(request, p, engine):
     is_test_donation = getattr(settings, "DONATION_TEST", False)
-    akvo_url = request.domain_url
-    partner_site_url = request.GET.get("partner_site_url", "")
-    if partner_site_url:
-        host_url = partner_site_url
+    domain_url = request.domain_url
+    app_url = request.GET.get("app_url", "")
+    if app_url:
+        host_url = app_url
     else:
-        host_url = akvo_url
+        host_url = domain_url
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
     if request.method == "POST":
-        donate_form = InvoiceForm(data=request.POST,
-                                  project=p,
-                                  engine=engine)
+        donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
             description = u"Akvo-%d-%s" % (p.id, p.title)
             cd = donate_form.cleaned_data
@@ -1281,7 +1279,7 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=urljoin(akvo_url, reverse("mollie_report")),
+                    reporturl=urljoin(domain_url, reverse("mollie_report")),
                     returnurl=urljoin(host_url, reverse("donate_thanks")))
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
@@ -1306,9 +1304,9 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=urljoin(akvo_url, reverse("paypal_ipn")),
+                    notify_url=urljoin(domain_url, reverse("paypal_ipn")),
                     return_url=urljoin(host_url, reverse("donate_thanks")),
-                    cancel_url=akvo_url)
+                    cancel_url=domain_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if is_test_donation:
                     pp_button = pp_form.sandbox()
