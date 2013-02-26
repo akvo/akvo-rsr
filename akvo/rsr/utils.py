@@ -418,8 +418,3 @@ def to_gmt(dt):
     gmt = pytz.timezone('GMT')
     return dt.replace(tzinfo=gmt).astimezone(gmt)
 
-def get_full_url(url, protocol="http"):
-    if getattr(settings, "HTTPS_SUPPORT", False):
-        protocol = "https"
-    return "%s://%s" % (protocol, url)
-
