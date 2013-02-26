@@ -145,10 +145,10 @@ class PartnerSitesRouterMiddleware(object):
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.app_domain = ".".join((partner_site.hostname,
                     partner_site_domain))
-            request.app_url = "http://%s" % request.app_domain
+            request.app_url_base = request.app_url = "http://%s" % request.app_domain
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
-        request.domain_url = "http://%s" % settings.DOMAIN_NAME
+        request.domain_url_base = request.domain_url = "http://%s" % settings.DOMAIN_NAME
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return
