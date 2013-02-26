@@ -124,10 +124,10 @@ div.counter_badge {
   color: #000;
   float: right;
   text-align: center;
-  width: 47px;
+  min-width: 42px;
   font-size: 0.8125em;
   line-height: 1.4em;
-  padding: 5px 3px 0px 3px;
+  padding: 5px 5px 0px 5px;
   font-weight: bold;
   -khtml-border-radius: 2px;
   -moz-border-radius: 2px;
