@@ -7,6 +7,7 @@
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from textwrap import dedent
+from urlparse import urljoin
 
 import logging
 import math

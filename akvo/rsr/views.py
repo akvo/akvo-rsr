@@ -1238,7 +1238,7 @@ def setup_donation(request, p):
     if not can_donate_to_project(p):
         return redirect("project_main", project_id=p.id)
     request.session["original_http_referer"] = request.META.get("HTTP_REFERER", None)
-    request.session["app_url"] = request.GET.get("app_url", "")
+    request.session["donation_return_url"] = request.GET.get("return_url", "")
     return dict(project=p)
 
 
@@ -1267,13 +1267,11 @@ def donate(request, p, engine):
                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
             if is_test_donation:
                 invoice.test = True
-            domain_url = request.domain_url
-            app_url = request.session["app_url"]
-            if app_url:
-                host_url = app_url
-                del request.session["app_url"]
+            if request.session.get("donation_return_url", False):
+                return_url = request.session["donation_return_url"]
+                del request.session["donation_return_url"]
             else:
-                host_url = domain_url
+                return_url = urljoin(request.domain_url, reverse("donate_thanks"))
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -1281,8 +1279,8 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=urljoin(domain_url, reverse("mollie_report")),
-                    returnurl=urljoin(host_url, reverse("donate_thanks")))
+                    reporturl=urljoin(request.domain_url, reverse("mollie_report")),
+                    returnurl=return_url)
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
                     invoice.transaction_id = mollie_response["transaction_id"]
@@ -1306,9 +1304,9 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=urljoin(domain_url, reverse("paypal_ipn")),
-                    return_url=urljoin(host_url, reverse("donate_thanks")),
-                    cancel_url=domain_url)
+                    notify_url=urljoin(request.domain_url, reverse("paypal_ipn")),
+                    return_url=return_url,
+                    cancel_url=request.domain_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if is_test_donation:
                     pp_button = pp_form.sandbox()
