@@ -7,12 +7,14 @@
 """
 from __future__ import absolute_import
 
+from urlparse import urljoin
+
 from django.conf import settings
 from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, set_urlconf
 from django.utils import translation
 
 from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet

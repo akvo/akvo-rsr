@@ -23,8 +23,7 @@ from akvo.rsr.models import PartnerSite
 
 __all__ = ["PartnerSitesLocaleMiddleware",
            "PartnerSitesRouterMiddleware",
-           "build_url",
-           "get_domain_and_port",
+           "get_domain",
            "get_or_create_site",
            "is_partner_site_instance",
            "is_rsr_instance",
@@ -82,12 +81,11 @@ PARTNER_SITES_MARKETING_SITE = getattr(settings,
 )
 
 
-def get_domain_and_port(request):
-    port = int(request.META["SERVER_PORT"])
+def get_domain(request):
     original_domain = request.get_host().split(":")[0]
     domain_parts = original_domain.split(".")[-3:]
     domain = ".".join(domain_parts)
-    return (domain, port)
+    return domain
 
 
 def is_rsr_instance(domain):
@@ -119,25 +117,17 @@ def get_or_create_site(domain):
     return site
 
 
-def build_url(domain, port, protocol="http"):
-    if getattr(settings, "HTTPS_SUPPORT", False):
-        protocol = "https"
-    url = "%s://%s" % (protocol, domain)
-    if not (port == 80 or port == 443):
-        url = "%s:%d" % (url, port)
-    return url
-
-
 class PartnerSitesRouterMiddleware(object):
 
     def process_request(self, request, partner_site=None):
-        domain, port = get_domain_and_port(request)
+        domain = get_domain(request)
         if is_rsr_instance(domain):
             urlconf = "akvo.urls.rsr"
         elif is_partner_site_instance(domain):
             urlconf = "akvo.urls.partner_sites"
             try:
                 hostname = domain.split(".")[-3]
+                partner_site_domain = ".".join(tuple(domain.split(".")[-2:]))
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
@@ -153,10 +143,12 @@ class PartnerSitesRouterMiddleware(object):
         set_urlconf(urlconf)
         if partner_site is not None and partner_site.enabled:
             request.partner_site = settings.PARTNER_SITE = partner_site
-            request.app_url = build_url(".".join((partner_site.hostname, settings.APP_DOMAIN_NAME)), port)
+            request.app_domain = ".".join((partner_site.hostname,
+                    partner_site_domain))
+            request.app_url_base = request.app_url = "http://%s" % request.app_domain
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
-        request.domain_url = build_url(settings.DOMAIN_NAME, port)
+        request.domain_url_base = request.domain_url = "http://%s" % settings.DOMAIN_NAME
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return

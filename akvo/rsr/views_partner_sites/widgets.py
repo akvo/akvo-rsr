@@ -49,14 +49,6 @@ class ProjectMapView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectMapView, self).get_context_data(**kwargs)
-        if getattr(settings, 'HTTPS_SUPPORT', True):
-            protocol = 'https://'
-        else:
-            protocol = 'http://'
-
-        context['app_url'] = '%s%s.%s' % (protocol, self.request.partner_site.hostname,
-                                          settings.APP_DOMAIN_NAME)
-        context['domain_url'] = '%s%s' % (protocol, settings.DOMAIN_NAME)
         context['height'] = self.request.GET.get('height', '300')
         context['width'] = self.request.GET.get('width', '600')
         context['bgcolor'] = self.request.GET.get('bgcolor', 'B50000')
