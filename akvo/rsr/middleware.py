@@ -61,21 +61,24 @@ settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(settings,
+PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(
+    settings,
     "PARTNER_SITES_DEVELOPMENT_DOMAIN",
     "akvoapp.dev"
 )
 
-PARTNER_SITES_DOMAINS = getattr(settings,
+PARTNER_SITES_DOMAINS = getattr(
+    settings,
     "PARTNER_SITES_DOMAINS",
     ("akvoapp.org",
      "akvotest.org",
      "akvotest2.org",
      "akvotest3.org",
-     PARTNER_SITES_DEVELOPMENT_DOMAIN)
+    PARTNER_SITES_DEVELOPMENT_DOMAIN)
 )
 
-PARTNER_SITES_MARKETING_SITE = getattr(settings,
+PARTNER_SITES_MARKETING_SITE = getattr(
+    settings,
     "PARTNER_SITES_MARKETING_SITE",
     "http://www.akvoapp.org/"
 )
@@ -144,11 +147,11 @@ class PartnerSitesRouterMiddleware(object):
         if partner_site is not None and partner_site.enabled:
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.app_domain = ".".join((partner_site.hostname,
-                    partner_site_domain))
-            request.app_url_base = request.app_url = "http://%s" % request.app_domain
+                                           partner_site_domain))
+            request.app_url = "http://%s" % request.app_domain
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
-        request.domain_url_base = request.domain_url = "http://%s" % settings.DOMAIN_NAME
+        request.domain_url = "http://%s" % settings.DOMAIN_NAME
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return
@@ -198,11 +201,8 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
         return response
 
     def is_language_prefix_patterns_used(self, request):
-        """
-        Returns `True` if the `LocaleRegexURLResolver` is used
-        at root level of the urlpatterns, else it returns `False`.
-        
-        """
+        """Returns `True` if the `LocaleRegexURLResolver` is used
+        at root level of the urlpatterns, else it returns `False`."""
         for url_pattern in get_resolver(request.urlconf).url_patterns:
             if isinstance(url_pattern, LocaleRegexURLResolver):
                 return True
