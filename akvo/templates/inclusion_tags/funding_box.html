@@ -9,10 +9,9 @@
 		<div class="fundingbox-funded">
 			<div class="fullyfunded-text">
 				<p>
-					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}
+					{% with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}
 						{{currency}}: {{funds}}
-					{% endblocktrans %}
+					{% endwith %}
 				</p>
 			</div>
 			<p class="grey fullyfunded-text">{% trans 'This project is' %}<br />
@@ -24,19 +23,17 @@
 			<tr class="green">
 				<th style="text-align:left;">{% trans 'Raised' %}:</th>
 				<td>
-					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}
+					{% with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}
 						{{currency}}: {{funds}}
-					{% endblocktrans %}
+					{% endwith %}
 				</td>
 			</tr>
 			<tr class="red">
 			     	<th style="text-align:left;">{% trans 'Still needed' %}:</th>
 			     	<td>
-			     		{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-			     		{% blocktrans with currency=project.get_currency_display|safe funds=project.funds_needed|round|intcomma %}
+			     		{% with currency=project.get_currency_display|safe funds=project.funds_needed|round|intcomma %}
 			     			{{currency}}: {{funds}}
-			     		{% endblocktrans %}
+			     		{% endwith %}
 			     	</td>
 			</tr>	
 		</table>
@@ -49,10 +46,9 @@
 			<tr>
 			     	<th style="text-align:left;">{% trans 'Total budget' %}:</th>
 			     	<td>
-			     		{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-			     		{% blocktrans with currency=project.get_currency_display|safe funds=project.budget|round|intcomma %}
+			     		{% with currency=project.get_currency_display|safe funds=project.budget|round|intcomma %}
 			     			{{currency}}: {{funds}}
-			     		{% endblocktrans %}
+			     		{% endwith %}
 			     	</td>
 			</tr>					
 		</table>
