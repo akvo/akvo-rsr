@@ -5,6 +5,53 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+
+Akvo RSR ver 2.1.3 - leek
+---
+4 February 2013, adriancollier
+
+
+###Project Admin Rework
+
+We have made some changes to the ordering and display of the Project Form in the Admin. This is to make the order more logical so that entering a project is easier.
+
+We are working on an update to the manual project form which is currently in PDF format, which will also utilise the same ordering of fields to make the process even more seamless.
+
+Github issue: [145](https://github.com/akvo/akvo-rsr/issues/145)
+
+###Russian Interface Translations
+
+With the help of our partner UNDP, we have been able to translate the user interface for Akvo RSR into Russian. This is still a work in progress as some of the finer points of the development will be tuned, but the basic structure is there for us to work on the improvements.
+
+Github issue: [138](https://github.com/akvo/akvo-rsr/issues/138)
+
+###API Caching
+
+We have implemented a Caching solution to our API to store results of requests to pull information for the Global Maps in RSR. This works by storing a copy of the data for the maps on the server and only renewing this information if the existing data is expired. This not only speeds up the request but also dramatically reduces the load on the server.
+
+For this we have used the Django library Cacheback.
+
+Github issue: [136](https://github.com/akvo/akvo-rsr/issues/136)
+
+###Multilingual Content Translations
+
+We have successfully implemented the Google Translate Widget into Akvo RSR for Partnersites. This functionality is by default turned off, but can easily be switched on within the RSR Admin.
+
+Once activated, the Widget appears in the top right hand corner of the page and allows users to select any of the 64 supported languages to translate the entire page and contents into.
+
+This is a machine translation, and is not fully verified, but it should provide enough information for viewers of the project to understand the intention of the project and it's overall aims and goals.
+
+It is also possible to submit better translations to Google via the translated page, increasing the accuracy of the translated content for future viewers.
+
+Github issue: [101](https://github.com/akvo/akvo-rsr/issues/101)
+
+###Closing the Donation Loop on Partnersites
+
+An improvement in both Partnersites and the Donation process that captures the Partnersite users were on when they began the process, and returns them there once they finished.
+
+Github issue: [93](https://github.com/akvo/akvo-rsr/issues/93)
+
+
 Akvo RSR ver 2.1.2.1 - Donations Hotfix release notes
 ---
 4 February 2013, adriancollier
