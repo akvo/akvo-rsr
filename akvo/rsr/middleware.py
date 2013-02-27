@@ -99,7 +99,7 @@ def is_rsr_instance(domain):
 
 
 def is_partner_site_instance(domain):
-    base_domain = ".".join(tuple(domain.split(".")[-2:]))
+    base_domain = ".".join(domain.split(".")[-2:])
     if base_domain in PARTNER_SITES_DOMAINS:
         return True
     return False
@@ -130,7 +130,7 @@ class PartnerSitesRouterMiddleware(object):
             urlconf = "akvo.urls.partner_sites"
             try:
                 hostname = domain.split(".")[-3]
-                partner_site_domain = ".".join(tuple(domain.split(".")[-2:]))
+                partner_site_domain = ".".join(domain.split(".")[-2:])
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
