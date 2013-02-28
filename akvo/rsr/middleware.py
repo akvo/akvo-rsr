@@ -111,7 +111,7 @@ def get_or_create_site(domain):
     sites = Site.objects.filter(domain=domain)
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
-        if duplicates:
+        if duplicates.count():
             for duplicate in duplicates:
                 duplicate.delete()
     else:
