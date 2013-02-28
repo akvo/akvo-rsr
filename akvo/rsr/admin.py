@@ -522,55 +522,55 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = (
         (_(u'General Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer.'
+                u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
             'fields': ('title', 'subtitle', 'status', 'language', 'date_request_posted', 'date_complete',),
             }),
         (_(u'Description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Enim ad minim veniam quis nostrud exerci tation ullamcorper suscipit lobortis nisl?'
+                u'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future. Both The Project Plan and Sustainability fields are unlimited, so you can add additional details to your project there.'
             ),
             'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'sustainability',),
             }),
         (_(u'Goals'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Claritatem insitam est, usus legentis in iis qui facit eorum claritatem Investigationes.'
+                u'Here you should be entering information about what your project intends to achieve through its implementation.'
             ),
             'fields': ('goals_overview',),
             }),
         (_(u'Photo'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Veniam quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea.'
+                u'Please upload a photo that displays an interesting part of your project, plan or implementation.'
             ),
             'fields': ('current_image', 'current_image_caption', ),
             }),
         (_(u'Locations'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Me lius quod ii legunt saepius claritas est, etiam processus dynamicus qui.'
+                u'Here you can add the physical locations where the project is being carried out. These will appear on the map on your project page. Use the link to iTouchMap.com to obtain the Coordinates for your locations, as these are the items that ensure the pin is in the correct place.'
             ),
             'fields': (),
             }),
         (_(u'Budget'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Ut aliquip ex ea commodo consequat duis autem vel eum iriure dolor.'
+                u'Please enter the details of what your project will be spending its available funds on.'
             ),
             'fields': ('currency', ),
             }),
         (_(u'Project Focus'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Eodem modo typi qui nunc nobis videntur parum clari fiant sollemnes in.'
+                u'Here you can choose the Categories, & Focus Areas that your project is operating in. Once you have selected those, Save your project and you will then be presented with a list of Benchmarks applicable to your fields which you can define for measuring the success of your project.'
             ),
             'fields': ('categories',),
             }),
         (_(u'Partners'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'At vero eros, et accumsan et iusto odio dignissim qui blandit praesent luptatum.'
+                u'Add each of the partners you are working with on your project. These organisations must be existing already in Akvo RSR. If you are working with a Partner that does not exist in the system, please send the details of the organisation including Name, Address, Logo, Contact Person and Website to support@akvo.org.'
             ),
             'fields': (),
             }),
         (_(u'Additional Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.'
+                u'You can add links to your project such as Organisation Websites or Akvopedia articles containing relevant information to improve the information available to viewers of your project. You can also make notes on the project. These notes are only visible within this Admin so can be used to identify missing information, specific contact details or status changes that you do not want to be visible on your project page.'
             ),
             'fields': ('notes',),
             }),
