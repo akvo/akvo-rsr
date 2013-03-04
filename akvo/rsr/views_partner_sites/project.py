@@ -204,5 +204,4 @@ class ProjectDonationThanksView(BaseView):
         elif mollie_transaction_id is not None:
             invoice = Invoice.objects.get(transaction_id=int(mollie_transaction_id))
         context["invoice"] = invoice
-        context["project"] = invoice.project
         return context
