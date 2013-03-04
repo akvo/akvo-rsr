@@ -202,6 +202,6 @@ class ProjectDonationThanksView(BaseView):
         if paypal_invoice_id is not None:
             invoice = Invoice.objects.get(pk=int(paypal_invoice_id))
         elif mollie_transaction_id is not None:
-            invoice = Invoice.objects.get(transaction_id=int(mollie_transaction_id))
+            invoice = Invoice.objects.get(transaction_id=mollie_transaction_id)
         context["invoice"] = invoice
         return context
