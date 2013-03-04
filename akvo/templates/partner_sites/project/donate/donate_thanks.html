@@ -2,37 +2,33 @@
 {% load i18n rsr_tags thumbnail %}
 {% load url from future %}
 
-
-{% block breadcrum_items %}
-<li id="last_breadcrum_item">{% trans 'Confirm Donation' %}</li>
-{% endblock breadcrum_items %}
-
-
 {% block content %}
+
+<style type="text/css">
+  .donate_details_left {
+    float:left;
+    width:100px;
+    text-align:right;
+  }
+  .donate_details_left p {
+    color:#ccc;
+    font-size:0.8125em;
+    line-height:1.4em;
+    margin:0;
+  }
+  .donate_details_right {
+    float:left;
+    margin-left:10px;
+  }
+  .donate_details_right p {
+    font-size:0.8125em;
+    line-height:1.4em;
+    margin:0;
+  }
+</style>
+
 <h1>{% trans 'Thanks for your donation' %}</h1>
 <div class="white_box">
-	<div>
-		<div id="donate_step_box">
-			<div id="donate_step_box_inner">
-				<div class="donate_steps">
-					<p>{% trans 'Select payment system' %}</p>
-				</div>
-				<div class="donate_steps">
-					<p>{% trans 'Enter amount' %}</p>
-				</div>
-				<div class="donate_steps">
-					<p>{% trans 'Confirm amount' %}</p>
-				</div>
-				<div class="donate_steps">
-					<p>{% trans 'Use payment system' %}</p>
-				</div>
-				<div id="donate_step_5" class="donate_steps active_donate_step">
-					<p>{% trans 'Thank you!' %}</p>
-				</div>	
-			</div>
-			<div class="clear">	</div>
-		</div>
-	</div>
 	<div class="space20">
 		<p>
 			{% blocktrans with invoice.get_engine_display as payment_engine %}You will receive email confirmation from both Akvo.org and {{ payment_engine }}.{% endblocktrans %}<br />
@@ -40,12 +36,12 @@
 		</p>
 		
 		<h3>{% trans 'Transaction information' %}</h3>
-		<div class="donate_details_left" style="width:200px;">
+    <div class="donate_details_left">
 			<p style="padding-top:12px;">
 				{% trans 'Akvo transaction number' %}:
 			</p>
 		</div>
-		<div class="donate_details_right">
+    <div class="donate_details_right">
 			<p style="font-weight:bold; color:#00960F; font-size:1.6em; margin-top:0px;">
 		 		{{ invoice.id }}
 			</p>
