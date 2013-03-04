@@ -11,7 +11,6 @@
     text-align:right;
   }
   .donate_details_left p {
-    color:#ccc;
     font-size:0.8125em;
     line-height:1.4em;
     margin:0;
@@ -99,10 +98,10 @@
 		</div>
 		<div style="float:right; width:47%">
 			<div style="border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; padding:10px; margin-top:20px;">
-				<p class="grey small">
+				<p class="small">
 					{% trans 'At this time, only residents of the following countries will be able to treat this donation as a tax-deductible charitable contribution. We are working hard to expand this list all the time!' %}
 				</p>
-				<ul class="grey small" style="margin-top:15px; list-style-type: disc; margin-bottom:0;">
+				<ul class="small" style="margin-top:15px; list-style-type: disc; margin-bottom:0;">
 					<li style="margin-left:30px;">
 					    {% if invoice.project.currency = 'EUR' %}
 					        {% trans 'The Netherlands (Nederland)' %}
