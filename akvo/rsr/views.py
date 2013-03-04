@@ -1374,7 +1374,8 @@ def donate_thanks(request,
         invoice = Invoice.objects.get(transaction_id=int(mollie_transaction_id))
     if invoice is not None:
         return render_to_response(template,
-                                  dict(invoice=invoice),
+                                  dict(invoice=invoice,
+                                       project=invoice.project),
                                   context_instance=RequestContext(request))
     return redirect("index")
 
