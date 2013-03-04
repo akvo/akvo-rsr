@@ -19,12 +19,6 @@ We are working on an update to the manual project form which is currently in PDF
 
 Github issue: [145](https://github.com/akvo/akvo-rsr/issues/145)
 
-###Russian Interface Translations
-
-With the help of our partner UNDP, we have been able to translate the user interface for Akvo RSR into Russian. This is still a work in progress as some of the finer points of the development will be tuned, but the basic structure is there for us to work on the improvements.
-
-Github issue: [138](https://github.com/akvo/akvo-rsr/issues/138)
-
 ###API Caching
 
 We have implemented a Caching solution to our API to store results of requests to pull information for the Global Maps in RSR. This works by storing a copy of the data for the maps on the server and only renewing this information if the existing data is expired. This not only speeds up the request but also dramatically reduces the load on the server.
