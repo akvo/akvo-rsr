@@ -202,26 +202,27 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 
 
 def send_donation_confirmation_emails(invoice_id):
-    invoice = get_model("rsr", "invoice").objects.get(pk=invoice_id)
-    site_url = 'http://%s' % getattr(settings, "DOMAIN_NAME", "www.akvo.org")
-    base_project_url = reverse("project_main", kwargs=dict(project_id=invoice.project.id))
-    project_url = urljoin(site_url, base_project_url)
-    base_project_updates_url = reverse("project_updates", kwargs=dict(project_id=invoice.project.id))
-    project_updates_url = urljoin(site_url, base_project_updates_url)
-    template = loader.get_template("rsr/project/donate/donation_confirmation_email.html")
-    context = Context(dict(invoice=invoice,
-                           site_url=site_url,
-                           project_url=project_url,
-                           project_updates_url=project_updates_url))
-    message_body = template.render(context)
-    subject_field = _("Thank you from Akvo.org!")
-    from_field = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org")
-    bcc_field = [invoice.notification_email]
-    to_field = [invoice.get_email]
-    msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
-    msg.content_subtype = "html"
-    msg.send(fail_silently=True)
-    invoice.save()
+    if getattr(settings, "DONATION_NOTIFICATION_EMAILS", True):
+        invoice = get_model("rsr", "invoice").objects.get(pk=invoice_id)
+        site_url = 'http://%s' % getattr(settings, "DOMAIN_NAME", "www.akvo.org")
+        base_project_url = reverse("project_main", kwargs=dict(project_id=invoice.project.id))
+        project_url = urljoin(site_url, base_project_url)
+        base_project_updates_url = reverse("project_updates", kwargs=dict(project_id=invoice.project.id))
+        project_updates_url = urljoin(site_url, base_project_updates_url)
+        template = loader.get_template("rsr/project/donate/donation_confirmation_email.html")
+        context = Context(dict(invoice=invoice,
+                               site_url=site_url,
+                               project_url=project_url,
+                               project_updates_url=project_updates_url))
+        message_body = template.render(context)
+        subject_field = _("Thank you from Akvo.org!")
+        from_field = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org")
+        bcc_field = [invoice.notification_email]
+        to_field = [invoice.get_email]
+        msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
+        msg.content_subtype = "html"
+        msg.send(fail_silently=True)
+        invoice.save()
     
 
 def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
