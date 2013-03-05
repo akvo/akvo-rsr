@@ -41,7 +41,7 @@ Github issue: [101](https://github.com/akvo/akvo-rsr/issues/101)
 
 ###Closing the Donation Loop on Partnersites
 
-An improvement in both Partnersites and the Donation process that captures the Partnersite users were on when they began the process, and returns them there once they finished.
+An improvement in both Partnersites and the Donation process that captures the Partnersite users were on when they began the process, and returns them there once they finished. Previously, a user of the site would always be returned to Akvo RSR regardless of which site they started their donation on.
 
 Github issue: [93](https://github.com/akvo/akvo-rsr/issues/93)
 
