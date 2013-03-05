@@ -6,6 +6,7 @@
 import inspect
 import random
 import logging
+from urlparse import urljoin
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -204,9 +205,9 @@ def send_donation_confirmation_emails(invoice_id):
     invoice = get_model("rsr", "invoice").objects.get(pk=invoice_id)
     site_url = 'http://%s' % getattr(settings, "DOMAIN_NAME", "www.akvo.org")
     base_project_url = reverse("project_main", kwargs=dict(project_id=invoice.project.id))
-    project_url = site_url + base_project_url
+    project_url = urljoin(site_url, base_project_url)
     base_project_updates_url = reverse("project_updates", kwargs=dict(project_id=invoice.project.id))
-    project_updates_url = site_url + base_project_updates_url
+    project_updates_url = urljoin(site_url, base_project_updates_url)
     template = loader.get_template("rsr/project/donate/donation_confirmation_email.html")
     context = Context(dict(invoice=invoice,
                            site_url=site_url,
