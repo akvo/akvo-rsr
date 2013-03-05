@@ -1283,7 +1283,7 @@ msgid "Venezuela, Bolivarian Republic of"
 msgstr "Венесуэла"
 
 #: rsr/iso3166.py:252
-msgid "Viet Nam"
+msgid "Vietnam"
 msgstr "Вьетнам"
 
 #: rsr/iso3166.py:253
