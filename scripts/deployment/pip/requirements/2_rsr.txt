@@ -13,7 +13,7 @@ django-templatetag-handlebars==1.2.0
 sorl-thumbnail==3.2.5
 
 # API framework
-mimeparse==0.1.4
+mimeparse==0.1.3
 python-dateutil==1.5
 django-tastypie==0.9.12
 
