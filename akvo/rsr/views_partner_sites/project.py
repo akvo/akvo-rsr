@@ -7,8 +7,10 @@
 """
 from __future__ import absolute_import
 
-from django.contrib.auth.decorators import login_required
+#from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -17,8 +19,8 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.edit import FormView, UpdateView
 
 from akvo.rsr.forms import ProjectUpdateForm
-from akvo.rsr.models import Project, ProjectUpdate
-from akvo.rsr.views_partner_sites.base import BaseProjectView, BaseListView
+from akvo.rsr.models import Invoice, Project, ProjectUpdate
+from akvo.rsr.views_partner_sites.base import BaseProjectView, BaseListView, BaseView
 
 
 __all__ = [
@@ -28,7 +30,8 @@ __all__ = [
     'ProjectUpdateEditView',
     'ProjectUpdateListView',
     'ProjectUpdateView',
-    ]
+    'ProjectDonationThanksView'
+]
 
 
 class ProjectFundingView(BaseProjectView):
@@ -65,13 +68,11 @@ class ProjectUpdateListView(BaseListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateListView, self).get_context_data(**kwargs)
-        context['project'] = get_object_or_404(Project, \
-                                               pk=self.kwargs['project_id'])
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
         return context
 
     def get_queryset(self):
-        return get_object_or_404(Project, pk=self.kwargs['project_id']) \
-            .project_updates.all().order_by('-time')
+        return get_object_or_404(Project, pk=self.kwargs['project_id']).project_updates.all().order_by('-time')
 
 
 class ProjectUpdateView(BaseProjectView):
@@ -124,23 +125,27 @@ class ProjectUpdateFormView(BaseProjectView):
 class ProjectUpdateAddView(ProjectUpdateFormView, FormView):
     """Add update on partner sites"""
 
+    def render_to_response(self, context):
+        # re-direct unauthenticated users to sign-in page
+        if not self.request.user.is_authenticated():
+            return redirect_to_login(self.request.path, login_url=reverse('sign_in'))
+        context['form'].initial = dict(language=self.project.language)
+        return super(ProjectUpdateAddView, self).render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateAddView, self).get_context_data(**kwargs)
-        user_is_authorized = context['project'].connected_to_user(self.request.user)
-
-        if not self.request.user.is_authenticated():
-            self.request.error_message = u'You need to sign in to make updates.'
-            raise PermissionDenied
 
         if not self.project.is_published():
-            self.request.error_message = u'You can\'t add updates to unpublished projects.'
+            self.request.error_message = u"You can't add updates to unpublished projects."
             raise PermissionDenied
 
-        if not user_is_authorized:
-            self.request.error_message = u'You don\'t have permission to add updates to this project.'
+        user_is_authorized = context['project'].connected_to_user(self.request.user)
+        if self.request.user.is_authenticated() and not user_is_authorized:
+            self.request.error_message = u"You don't have permission to add updates to this project."
             raise PermissionDenied
 
         update = None
+        # TODO: is this bit really needed here? how can there exist an update when we're creating it?
         try:
             update_id = self.kwargs['update_id']
         except KeyError:
@@ -162,6 +167,7 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateEditView, self).get_context_data(**kwargs)
         user_is_authorized = context['project'].connected_to_user(self.request.user)
+        # TODO: cleanup
         if not user_is_authorized:
             raise PermissionDenied
         update = None
@@ -182,3 +188,20 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(ProjectUpdate, id=self.kwargs['update_id'])
+
+
+class ProjectDonationThanksView(BaseView):
+    "Render a thankyou page after a successful donation"
+
+    template_name = "partner_sites/project/donate/donate_thanks.html"
+    
+    def get_context_data(self, invoice=None, **kwargs):
+        context = super(ProjectDonationThanksView, self).get_context_data(**kwargs)
+        paypal_invoice_id = self.request.GET.get("invoice", None)
+        mollie_transaction_id = self.request.GET.get("transaction_id", None)
+        if paypal_invoice_id is not None:
+            invoice = Invoice.objects.get(pk=int(paypal_invoice_id))
+        elif mollie_transaction_id is not None:
+            invoice = Invoice.objects.get(transaction_id=str(mollie_transaction_id))
+        context["invoice"] = invoice
+        return context

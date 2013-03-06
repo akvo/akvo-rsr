@@ -28,6 +28,7 @@ from registration.forms import RegistrationFormUniqueEmail
 from registration.models import RegistrationProfile
 
 from mollie.ideal.utils import get_mollie_banklist
+from akvo import settings
 
 from akvo.rsr.models import UserProfile, Organisation, PHOTO_LOCATIONS
 
@@ -325,6 +326,7 @@ class ReadonlyFKAdminField(object):
 
 class ProjectUpdateForm(forms.ModelForm):
     """Form representing a ProjectUpdate."""
+
     MEDIA_LOCATIONS = (
         ('B', _('At the beginning of the update.')),
         ('E', _('At the end of the update.'))
@@ -339,6 +341,7 @@ class ProjectUpdateForm(forms.ModelForm):
         'class': 'textarea',
         'cols': '44',
         }))
+    language = forms.ChoiceField(choices=settings.LANGUAGES, widget=forms.Select(attrs={'style': 'height: 2em',}))
     photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={
         'class': 'input',
         'size': '15',

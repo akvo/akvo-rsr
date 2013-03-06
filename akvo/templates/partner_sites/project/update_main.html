@@ -23,7 +23,7 @@
       <p class="grey small">
         {{ update.time|date:"d-M-Y" }},
         {%  url 'organisation_main' update.user.userprofile.organisation.id as user_org_url %}
-        {% blocktrans with user_name=update.user.get_full_name user_org=update.user.userprofile.organisation.name update_meth=update.get_update_method_display %}by {{user_name}}, <a href='{{user_org_url}}'>{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+        {% blocktrans with user_name=update.user.get_full_name user_org=update.user.userprofile.organisation.name update_meth=update.get_update_method_display %}by {{user_name}}, <a href='{{user_org_url}}' class="notranslate">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
       </p>
     </div>
     {% counter_badge update %}

@@ -249,7 +249,7 @@ ISO_3166_COUNTRIES = (
     (u"uz", _(u"Uzbekistan")),
     (u"vu", _(u"Vanuatu")),
     (u"ve", _(u"Venezuela, Bolivarian Republic of")),
-    (u"vn", _(u"Viet Nam")),
+    (u"vn", _(u"Vietnam")),
     (u"vg", _(u"Virgin Islands, British")),
     (u"vi", _(u"Virgin Islands, U.S.")),
     (u"wf", _(u"Wallis and Futuna")),

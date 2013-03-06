@@ -4,10 +4,10 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from itertools import groupby
-from django.db.models.aggregates import Count
+from urlparse import urljoin
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
-from akvo.rsr.models import (MiniCMS, FocusArea, Category, Organisation,
+from akvo.rsr.models import (MiniCMS, FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
                              UserProfile, Invoice, SmsReporter, PartnerSite)
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
@@ -38,7 +38,6 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
-from django.views.decorators.http import require_GET
 
 from datetime import datetime
 from registration.models import RegistrationProfile
@@ -1222,108 +1221,113 @@ def project_map_widget(request, org_id):
         'textcolor': textcolor,
         'width': width,
         'zoom': zoom,
-        'state': state,
-        }
+        'state': state
+    }
+
+
+def can_donate_to_project(project):
+    "Predicate to determine if a project can be donated to."
+    active = project in Project.objects.active()
+    funds_needed = project.funds_needed > 0
+    return active and funds_needed
 
 
 @fetch_project
-@render_to('rsr/project/donate/donate_step1.html')
+@render_to("rsr/project/donate/donate_step1.html")
 def setup_donation(request, p):
-    # if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
-    if p.funds_needed <= 0 or p not in Project.objects.active():
-        return redirect('project_main', project_id=p.id)
-    request.session['original_http_referer'] = request.META.get('HTTP_REFERER', None)
-    return {'project': p}
+    if not can_donate_to_project(p):
+        return redirect("project_main", project_id=p.id)
+    request.session["original_http_referer"] = request.META.get("HTTP_REFERER", None)
+    request.session["donation_return_url"] = request.GET.get("return_url", "")
+    return dict(project=p)
 
 
 @fetch_project
 def donate(request, p, engine):
-    # if p not in Project.objects.published().status_not_cancelled().status_not_archived().need_funding():
-    if p.funds_needed <= 0 or p not in Project.objects.active():
-        return redirect('project_main', project_id=p.id)
-    if request.method == 'POST':
+    if not can_donate_to_project(p):
+        return redirect("project_main", project_id=p.id)
+    is_test_donation = getattr(settings, "DONATION_TEST", False)
+    if request.method == "POST":
         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
         if donate_form.is_valid():
-            description = u'Akvo-%d-%s' % (p.id, p.title)
+            description = u"Akvo-%d-%s" % (p.id, p.title)
             cd = donate_form.cleaned_data
             invoice = donate_form.save(commit=False)
             invoice.project = p
             invoice.engine = engine
-            invoice.name = cd['name']
-            invoice.email = cd['email']
-            invoice.campaign_code = cd['campaign_code']
-            invoice.is_anonymous = not cd['is_public']
-            original_http_referer = request.session.get('original_http_referer', None)
+            invoice.name = cd["name"]
+            invoice.email = cd["email"]
+            invoice.campaign_code = cd["campaign_code"]
+            invoice.is_anonymous = not cd["is_public"]
+            original_http_referer = request.session.get("original_http_referer", None)
             if original_http_referer:
                 invoice.http_referer = original_http_referer
-                del request.session['original_http_referer']
+                del request.session["original_http_referer"]
             else:
-                invoice.http_referer = request.META.get('HTTP_REFERER', None)
-            if getattr(settings, 'DONATION_TEST', False):
+                invoice.http_referer = request.META.get("HTTP_REFERER", None)
+            if is_test_donation:
                 invoice.test = True
-            if engine == 'ideal':
-                invoice.bank = cd['bank']
-                mollie_dict = {
-                    'amount': invoice.amount * 100,
-                    'bank_id': invoice.bank,
-                    'partnerid': invoice.gateway,
-                    'description': description,
-                    'reporturl': getattr(settings, 'MOLLIE_REPORT_URL', 'http://www.akvo.org/rsr/mollie/report/'),
-                    'returnurl': getattr(settings, 'MOLLIE_RETURN_URL', 'http://www.akvo.org/rsr/donate/ideal/thanks/'),
-                }
+            if request.session.get("donation_return_url", False):
+                return_url = request.session["donation_return_url"]
+                del request.session["donation_return_url"]
+            else:
+                return_url = urljoin(request.domain_url, reverse("donate_thanks"))
+            if engine == "ideal":
+                invoice.bank = cd["bank"]
+                mollie_dict = dict(
+                    amount=invoice.amount * 100,
+                    bank_id=invoice.bank,
+                    partnerid=invoice.gateway,
+                    description=description,
+                    reporturl=urljoin(request.domain_url, reverse("mollie_report")),
+                    returnurl=return_url)
                 try:
-                    mollie_response = query_mollie(mollie_dict, 'fetch')
-                    invoice.transaction_id = mollie_response['transaction_id']
-                    order_url = mollie_response['order_url']
+                    mollie_response = query_mollie(mollie_dict, "fetch")
+                    invoice.transaction_id = mollie_response["transaction_id"]
+                    order_url = mollie_response["order_url"]
                     invoice.save()
                 except:
-                    return redirect('donate_500')
-                return render_to_response('rsr/project/donate/donate_step3.html',
-                    {
-                        'invoice': invoice,
-                        'project': p,
-                        'payment_engine': engine,
-                        'mollie_order_url': order_url,
-                    },
-                    context_instance=RequestContext(request))
-            elif engine == 'paypal':
+                    return redirect("donate_500")
+                return render_to_response("rsr/project/donate/donate_step3.html",
+                                          dict(invoice=invoice,
+                                               project=p,
+                                               payment_engine=engine, 
+                                               mollie_order_url=order_url),
+                                          context_instance=RequestContext(request))
+            elif engine == "paypal":
                 invoice.save()
-                pp_dict = {
-                    'cmd': getattr(settings, 'PAYPAL_COMMAND', '_donations'),
-                    'currency_code': invoice.currency,
-                    'business': invoice.gateway,
-                    'amount': invoice.amount,
-                    'item_name': description,
-                    'invoice': int(invoice.id),
-                    'lc': invoice.locale,
-                    'notify_url': getattr(settings, 'PAYPAL_NOTIFY_URL', 'http://www.akvo.org/rsr/donate/paypal/ipn/'),
-                    'return_url': getattr(settings, 'PAYPAL_RETURN_URL', 'http://www.akvo.org/rsr/donate/paypal/thanks/'),
-                    'cancel_url': getattr(settings, 'PAYPAL_CANCEL_URL', 'http://www.akvo.org/'),
-                }
+                pp_dict = dict(
+                    cmd="_donations",
+                    currency_code=invoice.currency,
+                    business=invoice.gateway,
+                    amount=invoice.amount,
+                    item_name=description,
+                    invoice=int(invoice.id),
+                    lc=invoice.locale,
+                    notify_url=urljoin(request.domain_url, reverse("paypal_ipn")),
+                    return_url=return_url,
+                    cancel_url=request.domain_url)
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
-                if getattr(settings, 'PAYPAL_TEST', False):
+                if is_test_donation:
                     pp_button = pp_form.sandbox()
                 else:
                     pp_button = pp_form.render()
-                action = request.POST.get('action', None)
-                return render_to_response('rsr/project/donate/donate_step3.html',
-                                      {'invoice': invoice,
-                                       'payment_engine': engine,
-                                       'pp_form': pp_form,
-                                       'pp_button': pp_button,
-                                       'project': p,
-                                       },
-                                      context_instance=RequestContext(request))
+                return render_to_response("rsr/project/donate/donate_step3.html",
+                                          dict(invoice=invoice,
+                                               payment_engine=engine,
+                                               pp_form=pp_form,
+                                               pp_button=pp_button,
+                                               project=p),
+                                          context_instance=RequestContext(request))
     else:
         donate_form = InvoiceForm(project=p,
                                   engine=engine,
                                   initial=dict(is_public=True))
-    return render_to_response('rsr/project/donate/donate_step2.html',
-                              {'donate_form': donate_form,
-                               'payment_engine': engine,
-                               'project': p,
-                            },
-                            context_instance=RequestContext(request))
+    return render_to_response("rsr/project/donate/donate_step2.html",
+                              dict(donate_form=donate_form,
+                                   payment_engine=engine,
+                                   project=p),
+                              context_instance=RequestContext(request))
 
 
 def void_invoice(request, invoice_id, action=None):
@@ -1331,60 +1335,56 @@ def void_invoice(request, invoice_id, action=None):
     if invoice.status == 1:
         invoice.status = 2
         invoice.save()
-        if action == 'back':
-            return redirect('complete_donation', project_id=invoice.project.id,
-                engine=invoice.engine)
-        elif action == 'cancel':
-            return redirect('project_main', project_id=invoice.project.id)
-    return redirect('project_list', slug='all')
+        if action == "back":
+            return redirect("complete_donation",
+                            project_id=invoice.project.id,
+                            engine=invoice.engine)
+        elif action == "cancel":
+            return redirect("project_main", project_id=invoice.project.id)
+    return redirect("project_list", slug="all")
 
 
 def mollie_report(request, mollie_response=None):
-    transaction_id = request.GET.get('transaction_id', None)
+    transaction_id = request.GET.get("transaction_id", None)
     if transaction_id:
         invoice = Invoice.objects.get(transaction_id=transaction_id)
-        request_dict = {'partnerid': invoice.gateway,
-            'transaction_id': transaction_id}
+        request_dict = dict(partnerid=invoice.gateway, transaction_id=transaction_id)
         try:
-            mollie_response = query_mollie(request_dict, 'check')
+            mollie_response = query_mollie(request_dict, "check")
         except:
             pass
-        if mollie_response is not None and mollie_response['paid'] == 'true':
+        if mollie_response is not None and mollie_response["paid"] == "true":
             mollie_fee = get_mollie_fee()
             invoice.amount_received = invoice.amount - mollie_fee
             invoice.status = 3
         else:
             invoice.status = 2
         invoice.save()
-    return HttpResponse('OK')
+    return HttpResponse("OK")
 
 
-@require_GET
-def paypal_thanks(request):
-    invoice_id = request.GET.get("invoice", None)
-    if invoice_id:
-        invoice = Invoice.objects.get(pk=invoice_id)
-        return render_to_response("rsr/project/donate/donate_thanks.html",
-                                  dict(invoice=invoice, project=invoice.project, user=invoice.user),
+def donate_thanks(request,
+                  invoice=None,
+                  template="rsr/project/donate/donate_thanks.html"):
+    paypal_invoice_id = request.GET.get("invoice", None)
+    mollie_transaction_id = request.GET.get("transaction_id", None)
+    if paypal_invoice_id is not None:
+        invoice = Invoice.objects.get(pk=int(paypal_invoice_id))
+    elif mollie_transaction_id is not None:
+        invoice = Invoice.objects.get(transaction_id=str(mollie_transaction_id))
+    if invoice is not None:
+        return render_to_response(template,
+                                  dict(invoice=invoice,
+                                       project=invoice.project),
                                   context_instance=RequestContext(request))
-    return redirect('/')
+    return redirect("index")
 
 
-@require_GET
-@render_to('rsr/project/donate/donate_thanks.html')
-def mollie_thanks(request):
-    transaction_id = request.GET.get('transaction_id', None)
-    if transaction_id:
-        invoice = Invoice.objects.get(transaction_id=transaction_id)
-        return {'invoice': invoice, 'project': invoice.project, 'user': invoice.user}
-    return redirect('/')
-
-
-@render_to('rsr/global_map.html')
+@render_to("rsr/global_map.html")
 def global_map(request):
     projects = Project.objects.published()
-    marker_icon = getattr(settings, 'GOOGLE_MAPS_MARKER_ICON', '')
-    return {'projects': projects, 'marker_icon': marker_icon}
+    marker_icon = getattr(settings, "GOOGLE_MAPS_MARKER_ICON", "")
+    return dict(projects=projects, marker_icon=marker_icon)
 
 def get_update_month_and_year(update):
     return (update.time.date().month, update.time.date().year)
@@ -1414,7 +1414,7 @@ def data_overview(request):
     projects_by_country = [['Country', 'No. of Projects']]
     country_projects = groupby(projects.filter(primary_location__isnull=False), get_country)
     projects_by_country.extend([[country_project[0], len(list(country_project[1]))] for country_project in country_projects])
-    country_lookup = dict([ (country.name, country.pk) for country in Country.objects.all()])
+    country_lookup = dict([(country.name, country.pk) for country in Country.objects.all()])
 
     updates = ProjectUpdate.objects.all().order_by('time')
     groupdates = groupby(updates, get_update_month_and_year)
@@ -1448,7 +1448,7 @@ def global_organisation_map_json(request):
     data = []
     for organisation in Organisation.objects.has_location():
         try:
-            image_url = organisation.logo.extra_thumbnails['map_thumb'].absolute_url
+            image_url = organisation.logo.extra_thumbnails["map_thumb"].absolute_url
         except:
             image_url = ""
         for location in organisation.locations.all():
