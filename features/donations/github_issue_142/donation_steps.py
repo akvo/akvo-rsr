@@ -382,16 +382,16 @@ def then_i_see_group1_listed_against_group2_in_the_donors_list(step, donation, d
     elif donation == "the first donation amount":
         donation = world.first_donation
     while count < len(donation_rows):
-#        print "the row under scrutiny is"
-#        print donation_rows[count].text
+        print "the row under scrutiny is"
+        print donation_rows[count].text
         if donor_name in donation_rows[count].text and str(donation) in donation_rows[count].text:
             donation_found = 1 
         count = count + 1
-#    print "the amount I expect to see would be"
-#    print donation
-#    print "against"
-#    print donor_name
-#    print "This needs to be completed - does the donor only appear after the donation is confirmed?"
+    print "the amount I expect to see would be"
+    print donation
+    print "against"
+    print donor_name
+    print "This needs to be completed - does the donor only appear after the donation is confirmed?"
     if donation_found == 0:
         assert False, 'The donation does not appear in the list of donations'
 
