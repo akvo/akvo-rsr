@@ -683,7 +683,7 @@ class Project(models.Model):
         else:
             PAYPAL_FEE_PCT = getattr(settings, 'PAYPAL_FEE_PCT_EUR', 3.4)
             PAYPAL_FEE_BASE = getattr(settings, 'PAYPAL_FEE_BASE_EUR', 0.35)
-        return int(math.ceil(float(self.funds_needed) * (1 + PAYPAL_FEE_PCT/100) + PAYPAL_FEE_BASE))
+        return int(math.ceil(float(self.funds_needed) / (1 - PAYPAL_FEE_PCT/100) + PAYPAL_FEE_BASE))
 
     def amount_needed_to_fully_fund_via_ideal(self):
         MOLLIE_FEE_BASE = getattr(settings, 'MOLLIE_FEE_BASE', 1.20)
