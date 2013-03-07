@@ -122,7 +122,7 @@
                 // for single objects show all locations
                 $.each(object.locations, function (k, location) {
                     //TODO: extend this for additional resource types
-                    if (opts.resource === 'organisation') {
+                    if (opts.resource === 'map_for_organisation') {
                         location = addOrganisationData(object, location);
                     } else {
                         location = addProjectData(object, location);
@@ -134,7 +134,7 @@
                 var location;
                 location = object.primary_location;
                 if (location) {
-                    if (opts.resource === 'organisation') {
+                    if (opts.resource === 'map_for_organisation') {
                         location = addOrganisationData(object, location);
                     } else {
                         location = addProjectData(object, location);
@@ -160,7 +160,7 @@
         // get a custom marker if there is one, otherwise it's red for organisations and blue for projects
         if (opts.marker_icon) {
             marker = marker + opts.marker_icon;
-        } else if (opts.resource === 'organisation') {
+        } else if (opts.resource === 'map_for_organisation') {
             marker = marker + 'redMarker.png';
         } else {
             marker = marker + 'blueMarker.png';
