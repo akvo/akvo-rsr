@@ -92,7 +92,7 @@ def get_domain(request):
 
 
 def is_rsr_instance(domain):
-    dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "77.53.15.119")
+    dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "www.akvo.dev", "77.53.15.119")
     return (domain == "akvo.org" or
             domain.endswith(".akvo.org") or
             domain in dev_domains)
