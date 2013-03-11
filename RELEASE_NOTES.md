@@ -5,6 +5,22 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR ver 2.1.3.1 - hotfix for leek
+---
+11 March 2013, zzgvh
+
+
+###Fix project update form in RSR
+
+The project update form was missing the newly added language field, rendering the form un-postable. This is now fixed.
+
+Github issue [162](https://github.com/akvo/akvo-rsr/issues/162)
+
+###Fix the middleware for partner sites using CNAME domains
+
+The partner site routing middleware generated an exception when accessing a site using a CNAME domain. This is now fixed.
+
+Github issue [164](https://github.com/akvo/akvo-rsr/issues/164)
 
 Akvo RSR ver 2.1.3 - leek
 ---
