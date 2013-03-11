@@ -4,16 +4,20 @@ from lettuce import step, world, before
 from time import sleep, time
 
 
-#@before.each_feature
-#def log_in_to_paypal_test_environment(feature):
+@before.each_feature
+def log_in_to_paypal_test_environment(feature):
 ##    '''Figure out the URL to the project'''
 ##    world.browser.visit('http://%s' % world.SITE_UNDER_TEST)
 ##    element = world.browser.find_link_by_partial_href('donate').first
 ##    world.project_URL = '/'.join(element['href'].split('/')[:-2]) + '/'
-#    '''Log in to paypal to ensure the environment is active'''
-#    world.browser.visit('https://developer.paypal.com/')
-#    world.browser.fill('login_email', world.PAYPAL_MASTER_USER)
-#    world.browser.fill('login_password', world.PAYPAL_MASTER_PASSWORD)
+    '''Log in to paypal to ensure the environment is active'''
+    world.browser.visit('https://www.paypal.com/')
+    world.browser.fill('login_email', world.PAYPAL_MASTER_USER)
+    world.browser.fill('login_password', world.PAYPAL_MASTER_PASSWORD)
+    world.browser.find_by_name('submit.x').first.click()
+    sleep(10)
+    world.browser.visit('https://developer.paypal.com/')
+
 #    world.browser.check('cb_auto_login')
 #    world.browser.find_by_name('submit').first.click()
 
