@@ -3,6 +3,11 @@
 from lettuce import step, world, before
 from time import sleep, time
 
+from admin.auth import *
+from donations.auth import *
+from donations.config.mollie import *
+from donations.config.paypal import *
+
 
 @before.each_feature
 def log_in_to_paypal_test_environment(feature):
@@ -40,9 +45,9 @@ def when_i_create_and_publish_group1_uniquely_named_group2_projects(step, num_of
             world.browser.driver.find_element_by_xpath('//*[@id="id_currency"]/option[1]').click()
         world.browser.fill('goals_overview', 'This is a project created for donation tests')
         world.browser.driver.find_element_by_xpath('//*[@id="id_budget_items-0-label"]/option[3]').click()
-        world.browser.fill('budget_items-0-amount', project_budget) 
+        world.browser.fill('budget_items-0-amount', project_budget)
         world.browser.driver.find_element_by_xpath('//*[@id="id_partnerships-0-partner_type"]/option[2]').click()
-        world.browser.find_by_name('_save').first.click()  
+        world.browser.find_by_name('_save').first.click()
         world.browser.click_link_by_partial_href('admin/rsr/')
         world.browser.click_link_by_partial_href('/rsr/admin/rsr/publishingstatus/')
         world.browser.click_link_by_text(project_name)
@@ -75,8 +80,8 @@ def when_i_find_the_first_project_still_to_be_funded_in(step):
 
     last_word = len(row_text)-1
 
-    world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890'])) 
-    world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890'])) 
+    world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890']))
+    world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890']))
     world.browser.visit(world.project_needing_euro_URL)
 
 @step(u'When I find the first project still to be funded in "([^"]*)"')
@@ -103,8 +108,8 @@ def when_i_find_the_first_project_still_to_be_funded_in(step, currency):
 
     last_word = len(row_text)-1
 
-    world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890'])) 
-    world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890'])) 
+    world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890']))
+    world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890']))
     if currency == "dollars":
         world.browser.visit(world.project_needing_dollars_URL)
     elif currency == "euros":
@@ -127,7 +132,7 @@ def when_i_find_the_first_group1_project_requiring_the_maximum_allowed_paypal_do
             last_word = len(row_text)-1
             world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890']))
             if world.total_budget_all_page <= int(world.PAYPAL_MAX_DONATION_AMOUNT):
-                world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890'])) 
+                world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890']))
                 break
         count = count + 1
     world.browser.visit(world.project_needing_funding_URL)
@@ -333,8 +338,8 @@ def when_i_find_the_first_project_in_that_has_not_yet_received_any_donations(ste
             percentage_raised = int(''.join([c for c in row_text[last_word-1] if c in '1234567890']))
             if percentage_raised == 0:
 
-                world.percentage_raised_all_page = percentage_raised 
-                world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890'])) 
+                world.percentage_raised_all_page = percentage_raised
+                world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890']))
                 world.project_needing_euro_URL = '/'.join(element['href'].split('/')[:-2]) + '/'
                 print "project with 0 donations" + world.project_needing_euro_URL
             break
@@ -385,7 +390,7 @@ def then_i_see_group1_listed_against_group2_in_the_donors_list(step, donation, d
 #        print "the row under scrutiny is"
 #        print donation_rows[count].text
         if donor_name in donation_rows[count].text and str(donation) in donation_rows[count].text:
-            donation_found = 1 
+            donation_found = 1
         count = count + 1
 #    print "the amount I expect to see would be"
 #    print donation
@@ -416,5 +421,5 @@ def when_i_take_not_of_the_amount_that_is_suggested_is_needed_to_fully_fund_the_
     world.fully_fund_with_fees_estimate = int(''.join([c for c in grey_elements.first.text if c in '1234567890']))
 
 
-    
+
 
