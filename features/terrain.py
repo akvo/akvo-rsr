@@ -7,7 +7,6 @@ world.SITE_UNDER_TEST = 'test.akvo.org'
 world.PAYPAL_MASTER_USER ='test@akvo.org'
 world.PAYPAL_MASTER_PASSWORD = 'akvotest'
 world.PAYPAL_TEST_USER = 'test_1352204974_per@akvo.org'
-#world.PAYPAL_TEST_USER_PASSWORD = '361456090' 
 world.PAYPAL_TEST_USER_PASSWORD = 'akvotest' 
 world.AKVO_ADMIN_USER = 'admintest'
 world.AKVO_ADMIN_PASSWORD = 'testing123'
@@ -30,7 +29,7 @@ world.MOLLIE_PARTNER_ID = '281135'
 def setUp():
     world.browser = Browser('firefox')
 
-#@after.all
-#def tearDown(test_results):
-#    world.browser.quit()
+@after.all
+def tearDown(test_results):
+    world.browser.quit()
 
