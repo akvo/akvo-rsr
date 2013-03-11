@@ -12,11 +12,11 @@ Feature: Project listing pages smoke testing
     Then I can log out of RSR admin
 
   Scenario: (1) I can fully fund a € project with a single donation using PayPal, see the updated project total and see the amount donated displayed against the donor's name (complete)
-    When I go to project listing page
-    When I find the first "euro" project requiring the maximum allowed PayPal donation or less, which has not received any donations
-    When I note how many "euros" have been raised and how much is still needed
-    When I click on the "Donate" link
-    When I click on the link with "paypal" in the URL for the project
+     When I go to project listing page
+     When I find the first "euro" project requiring the maximum allowed PayPal donation or less, which has not received any donations
+     When I note how many "euros" have been raised and how much is still needed
+     When I click on the "Donate" link
+     When I click on the link with "paypal" in the URL for the project
      When I take note of the amount that is suggested is needed to fully fund the project including PayPal fees
      When I enter "8000" in the "amount" field
      When I enter "the estimated amount including fees to fully fund the project" in the "amount" field
