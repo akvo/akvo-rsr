@@ -21,6 +21,10 @@ def log_in_to_paypal_test_environment(feature):
 def navigate_to_homepage(scenario):
     world.browser.visit('http://%s/rsr/projects/' % world.SITE_UNDER_TEST)
 
+@step(u'When I go to the projects homepage')
+def when_i_go_to_the_project_homepage(step):
+    world.browser.visit('http://%s/rsr/projects/' % world.SITE_UNDER_TEST)   
+
 @step(u'When I create and publish "([^"]*)" uniquely named "([^"]*)" projects with a budget of "([^"]*)"')
 def when_i_create_and_publish_group1_uniquely_named_group2_projects(step, num_of_projects, currency, project_budget):
     count = 0
@@ -51,6 +55,14 @@ def when_i_create_and_publish_group1_uniquely_named_group2_projects(step, num_of
         world.browser.click_link_by_partial_href('admin/rsr/')
         count = count+1
 
+@step(u'When I configure Mollie in RSR admin to ensure it is in test mode')
+def when_i_configure_mollie_in_rsr_admin_to_ensure_it_is_in_test_mode(step):
+    world.browser.click_link_by_text('Mollie/iDEAL gateways')
+    world.browser.click_link_by_text('Default')
+    world.browser.fill('notification_email', world.MOLLIE_NOTIFICATION_EMAIL)
+    world.browser.fill('partner_id', world.MOLLIE_PARTNER_ID)
+    world.browser.find_by_name('_save').first.click()
+
 @step(u'Then I can log out of RSR admin')
 def then_i_can_log_out_of_rsr_admin(step):
     world.browser.click_link_by_partial_href('admin/logout/')
@@ -58,6 +70,10 @@ def then_i_can_log_out_of_rsr_admin(step):
 @step(u'When I go to project listing page')
 def when_i_go_to_project_listing_page(step):
     world.browser.find_link_by_href('href="/rsr/projects/all/"')
+
+@step(u'When I select "([^"]*)" from the select your bank drop down')
+def when_i_select_group1_from_the_select_your_bank_drop_down(step, group1):
+    world.browser.find_by_xpath('//*[@id="id_bank"]/option[11]').first.click()
 
 @step(u'When I find the first project still to be funded in €')
 def when_i_find_the_first_project_still_to_be_funded_in(step):
@@ -251,6 +267,10 @@ def when_i_wait_group1_minutes(step, minutes):
     wait_seconds = float(minutes) * 60
     sleep(wait_seconds)
 
+@step(u'When I wait "([^"]*)" seconds')
+def when_i_wait_group1_minutes(step, seconds):
+    sleep(float(seconds))
+
 @step(u'When I take note of the invoice number')
 def when_i_take_note_of_the_invoice_number(step):
     world.paypal_invoice_number = world.browser.find_by_css('.donate_details_right').first.text
@@ -382,16 +402,16 @@ def then_i_see_group1_listed_against_group2_in_the_donors_list(step, donation, d
     elif donation == "the first donation amount":
         donation = world.first_donation
     while count < len(donation_rows):
-        print "the row under scrutiny is"
-        print donation_rows[count].text
+#        print "the row under scrutiny is"
+#        print donation_rows[count].text
         if donor_name in donation_rows[count].text and str(donation) in donation_rows[count].text:
             donation_found = 1 
         count = count + 1
-    print "the amount I expect to see would be"
-    print donation
-    print "against"
-    print donor_name
-    print "This needs to be completed - does the donor only appear after the donation is confirmed?"
+#    print "the amount I expect to see would be"
+#    print donation
+#    print "against"
+#    print donor_name
+#    print "This needs to be completed - does the donor only appear after the donation is confirmed?"
     if donation_found == 0:
         assert False, 'The donation does not appear in the list of donations'
 
