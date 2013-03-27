@@ -37,7 +37,7 @@ scripts/deployment/update_ci_server_config.py
 
 ## Features
 features/auth.py
-features/site.py
+features/site_under_test.py
 features/admin/auth.py
 features/donations/auth.py
 
