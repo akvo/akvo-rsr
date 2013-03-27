@@ -27,7 +27,7 @@ def log_in_to_paypal_test_environment(feature):
 
 #@before.each_scenario
 #def navigate_to_homepage(scenario):
-    world.browser.visit('http://%s/rsr/projects/' % world.SITE_UNDER_TEST)
+#    world.browser.visit('http://%s/rsr/projects/' % world.SITE_UNDER_TEST)
 
 @step(u'When I go to the projects homepage')
 def when_i_go_to_the_project_homepage(step):

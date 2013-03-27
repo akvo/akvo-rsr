@@ -10,6 +10,7 @@ Feature: Project listing pages smoke testing
 #    Then I can log out of RSR admin
 
   Scenario: I can fully fund a € project with a single donation using PayPal, see the updated project total and see the amount donated displayed against the donor's name
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "euro" projects with a budget of "7000"
     When I log out of RSR admin 
@@ -38,6 +39,7 @@ Feature: Project listing pages smoke testing
     Then I see "the estimated project funds required including PayPal fees" listed against "FullFunds Test" in the donors list
 
    Scenario: I can fully fund a $ project with a single donation using PayPal, see the updated project total and see the amount donated displayed against the donor's name
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "dollar" projects with a budget of "7000"
     When I log out of RSR admin
@@ -65,6 +67,7 @@ Feature: Project listing pages smoke testing
     Then I see "the estimated project funds required including PayPal fees" listed against "FullFunds Test" in the donors list
 
    Scenario: I can fully fund a € project with a single donation using iDeal, see the updated project total and see the amount donated displayed against the donor's name
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "euro" projects with a budget of "10000"
     When I log out of RSR admin
@@ -94,6 +97,7 @@ Feature: Project listing pages smoke testing
     Then I see "the estimated project funds required including PayPal fees" listed against "FullFunds MollieTest" in the donors list
 
    Scenario: I can fully fund a € project in two donations using PayPal, see the updated project total and see the amount donated displayed against the donors' names
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "euro" projects with a budget of "14000"
     When I log out of RSR admin
@@ -137,6 +141,7 @@ Feature: Project listing pages smoke testing
     Then I see "the estimated project funds required including PayPal fees" listed against "Akvo Test2" in the donors list
 
    Scenario: I can fully fund a $ project in two donations using PayPal, see the updated project total and see the amount donated displayed against he donors' names (complete)
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "dollar" projects with a budget of "14000"
     When I log out of RSR admin
@@ -180,6 +185,7 @@ Feature: Project listing pages smoke testing
     Then I see "the estimated project funds required including PayPal fees" listed against "Akvo Test2" in the donors list
 
   Scenario: I can fully fund a € project in two donations using iDeal, see the updated project total and see the amount donated displayed against the donors' names
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "euro" projects with a budget of "14000"
     When I log out of RSR admin
@@ -223,6 +229,7 @@ Feature: Project listing pages smoke testing
     Then I see "the estimated project funds required including PayPal fees" listed against "SecondDonation MollieTest" in the donors list
 
    Scenario: I can see an appropriate error message when I attempt to overfund a € project including estimated fees using PayPal
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "euro" projects with a budget of "7000"
     When I log out of RSR admin
@@ -241,6 +248,7 @@ Feature: Project listing pages smoke testing
     Then I see this error message "You cannot donate more than the project actually needs!"   
 
    Scenario: I can see an appropriate error message when I attempt to overfund a $ project including estimated fees using PayPal
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "dollar" projects with a budget of "7000"
     When I log out of RSR admin
@@ -259,6 +267,7 @@ Feature: Project listing pages smoke testing
     Then I see this error message "You cannot donate more than the project actually needs!" 
 
    Scenario: I can see an appropriate error message when I attempt to overfund a € project including estimated fees using iDeal
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "euro" projects with a budget of "7000"
     When I log out of RSR admin
@@ -281,6 +290,7 @@ Feature: Project listing pages smoke testing
     Then I see this error message "You cannot donate more than the project actually needs!" 
 
    Scenario: I can fully fund a €1M project with a single donation using iDeal, see the updated project total and see the amount donated displayed against the donor's name
+    When I go to the projects homepage
     When I log in to RSR admin 
     When I create and publish "1" uniquely named "euro" projects with a budget of "1000000"
     When I log out of RSR admin
