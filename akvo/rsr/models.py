@@ -1975,10 +1975,13 @@ class Invoice(models.Model):
 
     @property
     def notification_email(self):
-        if self.engine == 'paypal':
-            return self.project.paymentgatewayselector.paypal_gateway.notification_email
-        elif self.engine == 'ideal':
-            return self.project.paymentgatewayselector.mollie_gateway.notification_email
+        if getattr(settings, "DONATION_TEST", False):
+            return "test@akvo.org"
+        else:
+            if self.engine == "paypal":
+                return self.project.paymentgatewayselector.paypal_gateway.notification_email
+            elif self.engine == "ideal":
+                return self.project.paymentgatewayselector.mollie_gateway.notification_email
 
     @property
     def donation_fee(self):
