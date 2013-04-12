@@ -129,33 +129,12 @@
         </p>
       </td>
       <td class="tableRow partnerCell">
-        {% with project.fieldpartner_set.all as fieldpartners %}
-          {% if fieldpartners %}
-            <p class="grey" style="margin-top:2px;">{% trans 'Field Partner' %}{{fieldpartners.count|pluralize}}<br />
-              {% for fieldpartner in fieldpartners %}
-                <a href="{{fieldpartner.field_organisation.get_absolute_url}}">{{fieldpartner.field_organisation.name}}</a>{% if not forloop.last %},{% endif %}
-              {% endfor %}
-            </p>
-          {% endif %}
-        {% endwith %}
-        {% with project.fundingpartner_set.all as fundingpartners %}
-          {% if fundingpartners %}
-            <p class="grey">{% trans 'Funding Partner' %}{{fundingpartners.count|pluralize}}<br />
-              {% for fundingpartner in fundingpartners %}
-                <a href="{{fundingpartner.funding_organisation.get_absolute_url}}">{{fundingpartner.funding_organisation.name}}</a>{% if not forloop.last %},{% endif %}
-              {% endfor %}
-            </p>
-          {% endif %}
-        {% endwith %}
-        {% with project.supportpartner_set.all as supportpartners %}
-          {% if supportpartners %}
-            <p class="grey">{% trans 'Support Partner' %}{{supportpartners.count|pluralize}}<br />
-              {% for supportpartner in supportpartners %}
-                <a href="{{supportpartner.support_organisation.get_absolute_url}}">{{supportpartner.support_organisation.name}}</a>{% if not forloop.last %},{% endif %}
-              {% endfor %}
-            </p>
-          {% endif %}
-        {% endwith %}
+        <p class="grey" style="margin-top:2px;">
+          {% for partner in project.partners.all.distinct %}
+            <a href="{{partner.get_absolute_url}}">
+              {{partner.name}}</a>{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        </p>
       </td>
       <td class="tableRow fundingCell">
         <div style="margin: 0 auto 0 auto; text-align:center;">
@@ -166,5 +145,3 @@
   </table>
 </div>
 {% endblock content %}
-
-
