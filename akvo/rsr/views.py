@@ -1163,28 +1163,33 @@ def project_list_widget(request, template='project-list', org_id=0):
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
+
     if int(org_id):
         o = get_object_or_404(Organisation, pk=org_id)
         p = o.published_projects()
         p = p.status_not_archived().status_not_cancelled()
     else:
-        p = Project.objects.published().status_not_archived().status_not_cancelled()
+        p = Project.objects.published().status_not_archived() \
+            .status_not_cancelled()
+
     order_by = request.GET.get('order_by', 'title')
-    #p = p.annotate(last_update=Max('project_updates__time'))
-    p = p.extra(select={'last_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+    sql = (
+        'SELECT MAX(time) '
+        'FROM rsr_projectupdate '
+        'WHERE project_id = rsr_project.id'
+    )
+    p = p.extra(select={'last_update': sql})
+
     if order_by == 'country__continent':
         p = p.order_by(order_by, 'primary_location__country__name', 'title')
-    #elif order_by == 'country__name':
-    #    p = p.order_by(order_by,'name')
-    #elif order_by == 'status':
-    #    p = p.order_by(order_by,'name')
     elif order_by == 'last_update':
         p = p.order_by('-last_update', 'title')
     elif order_by in ['budget', 'funds_needed']:
         p = p.extra(order_by=['-%s' % order_by, 'title'])
     else:
         p = p.order_by(order_by, 'title')
-    return render_to_response('widgets/%s.html' % template.replace('-', '_'),
+    return render_to_response(
+        'widgets/%s.html' % template.replace('-', '_'),
         {
             'bgcolor': bgcolor,
             'textcolor': textcolor,
