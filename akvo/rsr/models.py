@@ -256,33 +256,50 @@ class Organisation(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
-    #type = models.CharField(max_length=1, choices=PARNER_TYPES)
-#    field_partner = models.BooleanField(_(u'field partner'))
-#    support_partner = models.BooleanField(_(u'support partner'))
-#    funding_partner = models.BooleanField(_(u'funding partner'))
-#    sponsor_partner = models.BooleanField(_(u'sponsor partner'))
-
-    name = models.CharField(_(u'name'), max_length=25, db_index=True, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
-    long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
-    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the organisation')
+    name = models.CharField(
+        _(u'name'), max_length=25, db_index=True,
+        help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'),
+    )
+    long_name = models.CharField(
+        _(u'long name'), blank=True, max_length=75,
+        help_text=_(u'Full name of organisation (75 characters).'),
+    )
+    language = models.CharField(
+        max_length=2, choices=settings.LANGUAGES, default='en',
+        help_text=u'The main language of the organisation',
+    )
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
-    new_organisation_type = models.IntegerField(_(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22, help_text=u'Check that this field is set to an organisation type that matches your organisation.')
+    new_organisation_type = models.IntegerField(
+        _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
+        help_text=u'Check that this field is set to an organisation type that matches your organisation.',
+    )
     iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True)
-
+    internal_org_ids = models.ManyToManyField(
+        'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
+    )
     logo = ImageWithThumbnailsField(
         _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
         extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop',)}},
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
 
-    url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
+    url = models.URLField(
+        blank=True, verify_exists=False,
+        help_text=_(u'Enter the full address of your web site, beginning with http://.'),
+    )
 
     phone = models.CharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     mobile = models.CharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     fax = models.CharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    contact_person = models.CharField(_(u'contact person'), blank=True, max_length=30, help_text=_(u'Name of external contact person for your organisation (30 characters).'))
-    contact_email = models.CharField(_(u'contact email'), blank=True, max_length=50, help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'))
-    description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'))
+    contact_person = models.CharField(
+        _(u'contact person'), blank=True, max_length=30,
+        help_text=_(u'Name of external contact person for your organisation (30 characters).'),
+    )
+    contact_email = models.CharField(
+        _(u'contact email'), blank=True, max_length=50,
+        help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'),
+    )
+    description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'),)
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
@@ -431,6 +448,25 @@ class Organisation(models.Model):
         permissions = (
             ("%s_organisation" % RSR_LIMITED_CHANGE, u'RSR limited change organisation'),
         )
+
+
+class InternalOrganisationID(models.Model):
+    " Model allowing organisations to record their internal references to other organisations"
+    recording_org = models.ForeignKey(Organisation,
+                                      verbose_name=u'recording organisation', related_name='internal_ids')
+    referenced_org = models.ForeignKey(Organisation,
+                                       verbose_name=u'referenced organisation', related_name='reference_ids',)
+    identifier = models.CharField(max_length=200, verbose_name=u'internal ID of referenced organisation',)
+
+    def __unicode__(self):
+        return u"{rec_org_name}'s internal ID for {ref_org_name}: {identifier}".format(
+            rec_org_name=self.recording_org.name,
+            ref_org_name=self.referenced_org.name,
+            identifier=self.identifier,
+        )
+
+    class Meta:
+        unique_together = ('recording_org', 'referenced_org',)
 
 
 class OrganisationAccount(models.Model):
