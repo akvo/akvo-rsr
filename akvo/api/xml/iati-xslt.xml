@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- Edited by XMLSpy® -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:akvo="http://www.akvo.org/api/v1/iati_activity">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:akvo="http://www.akvo.org">
 
   <xsl:template match="iati-activities">
     <xsl:apply-templates select="iati-activity" />
@@ -15,11 +15,17 @@
       <xsl:apply-templates select="activity-date[@type='start-actual']" />
       <xsl:apply-templates select="activity-date[@type='end-actual']" />
       
-      <xsl:apply-templates select="description[@type='General']" />
-      <xsl:apply-templates select="description[@type='Objectives']" />
-      <xsl:apply-templates select="description[@akvo:type='Current status']" />
-      <xsl:apply-templates select="description[@akvo:type='Sustainability']" />
-      <goals type="list">
+      <xsl:apply-templates select="description[@type='1']" /><!-- General -->
+      <xsl:apply-templates select="description[@type='2']"/><!-- Objectives -->
+      <xsl:apply-templates select="description[@type='1' and @akvo:type='4']"/><!-- Subtitle -->
+      <xsl:apply-templates select="description[@type='1' and @akvo:type='5']"/><!-- Summary -->
+      <xsl:apply-templates select="description[@type='1' and @akvo:type='6']"/><!-- Background -->
+      <xsl:apply-templates select="description[@type='1' and @akvo:type='7']" /><!-- Project plan -->
+      <xsl:apply-templates select="description[@type='2' and @akvo:type='8']"/><!-- Goals overview -->
+      <xsl:apply-templates select="description[@type='1' and @akvo:type='9']"/><!-- Current status -->
+      <xsl:apply-templates select="description[@type='1' and @akvo:type='10']"/><!-- Sustainability -->
+
+        <goals type="list">
         <xsl:apply-templates select="description[@akvo:type='Objectives detail']" />
       </goals>
 
@@ -28,9 +34,19 @@
       <locations type="list">
         <xsl:apply-templates select="location" />
       </locations>
+
+      <budget_items type="list">
+        <xsl:apply-templates select="budget" />
+      </budget_items>
+      
+      <partnerships type="list">
+        <xsl:apply-templates select="participating-org" />
+      </partnerships>
+
     </object>
   </xsl:template>
 
+  <xsl:template match="description[@type='3' and @akvo:type='11']"/><!-- Target groups FIX FOR NEXT VERIOSN OF CORDAID XML -->
   
   <!-- title -->
   <xsl:template match="title">
@@ -40,7 +56,12 @@
   </xsl:template>
 
   <!-- subtitle -->
-
+  <xsl:template match="description[@type='1' and @akvo:type='4']">
+    <subtitle>
+      <xsl:value-of select="." />
+    </subtitle>
+  </xsl:template>
+  
   <!-- status -->
   <xsl:template match="activity-status[@code='1']">
     <status>H</status>
@@ -63,7 +84,7 @@
   <!-- partners ManyToManyField -->
 
   <!-- project_plan_summary -->
-  <xsl:template match="description[@type='General']">
+  <xsl:template match="description[@type='1' and @akvo:type='5']">
     <project_plan_summary>
       <xsl:value-of select="." />
     </project_plan_summary>
@@ -90,30 +111,40 @@
   <!-- current_image_caption -->
 
   <!-- goals_overview -->
-  <xsl:template match="description[@type='Objectives']">
+  <xsl:template match="description[@type='2' and @akvo:type='8']">
     <goals_overview>
       <xsl:value-of select="." />
     </goals_overview>
   </xsl:template>
   
   <!-- current_status -->
-  <xsl:template match="description[@akvo:type='Current status']">
+  <xsl:template match="description[@type='1' and @akvo:type='9']">
     <current_status>
       <xsl:value-of select="." />
     </current_status>
   </xsl:template>
   
   <!-- project_plan -->
-
+  <xsl:template match="description[@type='1' and @akvo:type='7']">
+    <project_plan>
+      <xsl:value-of select="." />
+    </project_plan>
+  </xsl:template>
+  
   <!-- sustainability -->
-  <xsl:template match="description[@akvo:type='Sustainability']">
+  <xsl:template match="description[@type='1' and @akvo:type='10']">
     <sustainability>
       <xsl:value-of select="." />
     </sustainability>
   </xsl:template>
   
   <!-- background -->
-
+  <xsl:template match="description[@type='1' and @akvo:type='6']">
+    <background>
+      <xsl:value-of select="." />
+    </background>
+  </xsl:template>
+  
   <!-- project_rating Currently not used-->
 
   <!-- notes Currently not used -->
@@ -127,16 +158,32 @@
 
   <!-- date_request_posted -->
   <xsl:template match="activity-date[@type='start-actual']">
-    <date_request_posted>
-      <xsl:value-of select="." />
-    </date_request_posted>
+    <!-- two ways of expressing the date, either as data in the node or as the iso-date attribute -->
+    <xsl:if test="not(.='')">
+      <date_request_posted>
+        <xsl:value-of select="." />
+      </date_request_posted>
+    </xsl:if>
+    <xsl:if test=".=''">
+      <date_request_posted>
+        <xsl:value-of select="@iso-date"/>
+      </date_request_posted>
+    </xsl:if>
   </xsl:template>
 
   <!-- date_complete -->
   <xsl:template match="activity-date[@type='end-actual']">
-    <date_complete>
-      <xsl:value-of select="." />
-    </date_complete>
+    <!-- two ways of expressing the date, either as data in the node or as the iso-date attribute -->
+    <xsl:if test="not(.='')">
+      <date_complete>
+        <xsl:value-of select="." />
+      </date_complete>
+    </xsl:if>
+    <xsl:if test=".=''">
+      <date_complete>
+        <xsl:value-of select="@iso-date"/>
+      </date_complete>
+    </xsl:if>
   </xsl:template>
 
   <!-- primary_location ForeignKey -->
@@ -193,6 +240,41 @@
       </text>
     </object>
   </xsl:template>
+
+  <!-- budget -->
+  <xsl:template match="budget">
+    <object>
+      <amount>
+        <xsl:value-of select="value" />
+      </amount>
+      <label>1</label>
+    </object>
+  </xsl:template>
+  
+  <!-- partnership -->
+  <xsl:template match="participating-org" >
+    <object>
+      <organisation>
+        <xsl:value-of select="@akvo:ref" />
+      </organisation>
+      <iati_org_id>
+        <xsl:value-of select="@ref" />
+      </iati_org_id>
+      <xsl:if test="@role='Accountable'">
+        <partner_type>support</partner_type>
+      </xsl:if>
+      <xsl:if test="@role='Extending'">
+        <partner_type>support</partner_type>
+      </xsl:if>
+      <xsl:if test="@role='Funding'">
+        <partner_type>funding</partner_type>
+      </xsl:if>
+      <xsl:if test="@role='Implementing'">
+        <partner_type>field</partner_type>
+      </xsl:if>
+    </object>
+  </xsl:template>
+
   
 </xsl:stylesheet>
 
