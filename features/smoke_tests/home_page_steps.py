@@ -6,7 +6,7 @@ from splinter.browser import Browser
 
 @step('Go to home page')
 def go_to_home_page(step):
-    world.browser.visit('http://%s' % world.SITE_UNDER_TEST)
+    world.browser.visit('http://%s/' % world.SITE_UNDER_TEST)
 
 @step('Then I should see the title "([^"]*)"')
 def then_i_should_see_the_title(step, expected_title):

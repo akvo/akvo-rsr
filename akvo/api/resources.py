@@ -11,9 +11,12 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.urlresolvers import reverse
 from django.forms.models import ModelForm
+from django.http import HttpResponse
 
 from tastypie import fields
 from tastypie import http
+
+from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
 from tastypie.serializers import Serializer
 from tastypie.bundle import Bundle
@@ -23,6 +26,11 @@ from tastypie.fields import ApiField, NOT_PROVIDED
 from tastypie.resources import ModelResource
 from tastypie.authentication import ApiKeyAuthentication
 from akvo.api.authentication import ConditionalApiKeyAuthentication
+
+from tastypie.utils.mime import build_content_type
+
+from cacheback.base import Job
+
 from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
 from akvo.api.serializers import IATISerializer
 from akvo.api.validation import ModelFormValidation
@@ -51,10 +59,12 @@ __all__ = [
     'LinkResource',
     'OrganisationResource',
     'OrganisationLocationResource',
+    'OrganisationMapResource',
     'PartnershipResource',
     'ProjectResource',
     'ProjectCommentResource',
     'ProjectLocationResource',
+    'ProjectMapResource',
     'ProjectUpdateResource',
     'UserResource',
     'UserProfileResource',
@@ -66,6 +76,43 @@ def get_extra_thumbnails(image_field):
         return {key: thumbs[key].absolute_url for key in thumbs.keys()}
     except:
         return None
+
+
+class CachedResourceJob(Job):
+
+    def __init__(self, resource, request, kwargs):
+        self.resource = resource
+        self.request = request
+        self.kwargs = kwargs
+        super(CachedResourceJob, self).__init__()
+
+    def fetch(self, url):
+        """
+        emulates most of Resource.get_list() but stops before calling create_response()
+        """
+        resource = self.resource
+        request = self.request
+        kwargs = self.kwargs
+        # code of Resource.get_list()
+        objects = resource.obj_get_list(request=request, **resource.remove_api_resource_names(kwargs))
+        sorted_objects = resource.apply_sorting(objects, options=request.GET)
+
+        paginator = resource._meta.paginator_class(request.GET, sorted_objects, resource_uri=resource.get_resource_uri(), limit=resource._meta.limit)
+        to_be_serialized = paginator.page()
+
+        # Dehydrate the bundles in preparation for serialization.
+        bundles = [resource.build_bundle(obj=obj, request=request) for obj in to_be_serialized['objects']]
+        # add metadata to bundle to keep track of "depth", "ancestor" and "full" info
+        for bundle in bundles:
+            bundle.related_info = bundle_related_data_info_factory(request=request)
+            # end add
+        to_be_serialized['objects'] = [resource.full_dehydrate(bundle) for bundle in bundles]
+        to_be_serialized = resource.alter_list_data_to_serialize(request, to_be_serialized)
+        # code of Resource.create_response() but only as far as serializing
+        # meaning the serialized result is what gets cached
+        desired_format = resource.determine_format(request)
+        return resource.serialize(request, to_be_serialized, desired_format).encode("utf8").encode("zlib")
+
 
 class ConditionalFullResource(ModelResource):
 
@@ -93,24 +140,15 @@ class ConditionalFullResource(ModelResource):
         set and serializes it.
 
         Should return a HttpResponse (200 OK).
+        --------------------------------------
+        This is a "gutted" get_list where most of the code has been moved to CachedResourceJob.fetch so that cacheback can
+        do its thing and only run the original get_list if we don't have anything in the cache
         """
-        # TODO: Uncached for now. Invalidation that works for everyone may be
-        #       impossible.
-        objects = self.obj_get_list(request=request, **self.remove_api_resource_names(kwargs))
-        sorted_objects = self.apply_sorting(objects, options=request.GET)
-
-        paginator = self._meta.paginator_class(request.GET, sorted_objects, resource_uri=self.get_resource_uri(), limit=self._meta.limit, max_limit=self._meta.max_limit, collection_name=self._meta.collection_name)
-        to_be_serialized = paginator.page()
-
-        # Dehydrate the bundles in preparation for serialization.
-        bundles = [self.build_bundle(obj=obj, request=request) for obj in to_be_serialized['objects']]
-        # add metadata to bundle to keep track of "depth", "ancestor" and "full" info
-        for bundle in bundles:
-            bundle.related_info = bundle_related_data_info_factory(request=request)
-        # end add
-        to_be_serialized['objects'] = [self.full_dehydrate(bundle) for bundle in bundles]
-        to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
-        return self.create_response(request, to_be_serialized)
+        desired_format = self.determine_format(request)
+        cached_resource = CachedResourceJob(self, request, kwargs)
+        url = "%s?%s" % (request.path, request.META['QUERY_STRING'])
+        serialized = cached_resource.get(url).decode("zlib").decode("utf8")
+        return HttpResponse(content=serialized, content_type=build_content_type(desired_format))
 
     def get_detail(self, request, **kwargs):
         """
@@ -455,7 +493,7 @@ class OrganisationResource(ConditionalFullResource):
         'akvo.api.resources.PartnershipResource', 'partnerships',
         help_text='Show the projects the organisation is related to and how.'
     )
-    locations = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations')
+    locations = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations', null=True)
     primary_location = fields.ToOneField(
         'akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True, blank=True, null=True,
     )
@@ -502,6 +540,41 @@ class OrganisationLocationResource(ConditionalFullResource):
         )
 
 
+class OrganisationMapResource(ConditionalFullResource):
+    """
+    a limited resource for delivering data to be used when creating maps
+    """
+    locations           = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations', null=True)
+    primary_location    = fields.ToOneField('akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True, null=True)
+
+    class Meta:
+        allowed_methods         = ['get']
+        queryset                = Organisation.objects.all()
+        resource_name           = 'map_for_organisation'
+        include_absolute_url    = True
+
+        filtering       = dict(
+            # other fields
+            iati_org_id         = ALL,
+            name                = ALL,
+            organisation_type   = ALL,
+            # foreign keys
+            locations           = ALL_WITH_RELATIONS,
+            partnerships        = ALL_WITH_RELATIONS,
+            )
+
+    def dehydrate(self, bundle):
+        """ add thumbnails inline info for Organisation.logo
+        """
+        bundle = super(OrganisationMapResource, self).dehydrate(bundle)
+        del bundle.data['description']
+        bundle.data['logo'] = {
+            'original': bundle.data['logo'],
+            'thumbnails': get_extra_thumbnails(bundle.obj.logo),
+            }
+        return bundle
+
+
 class PartnershipResource(ConditionalFullResource):
     organisation = ConditionalFullToOneField('akvo.api.resources.OrganisationResource', 'organisation')
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
@@ -539,7 +612,7 @@ class ProjectResource(ConditionalFullResource):
     links = ConditionalFullToManyField('akvo.api.resources.LinkResource', 'links')
     locations = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
     partnerships = ConditionalFullToManyField('akvo.api.resources.PartnershipResource', 'partnerships',)
-    primary_location = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True, blank=True)
+    primary_location = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True, null=True)
     project_comments = ConditionalFullToManyField('akvo.api.resources.ProjectCommentResource', 'comments')
     project_updates = ConditionalFullToManyField('akvo.api.resources.ProjectUpdateResource', 'project_updates')
 
@@ -616,9 +689,51 @@ class ProjectLocationResource(ConditionalFullResource):
         )
 
 
-class ProjectUpdateModelForm(ModelForm):
+class ProjectMapResource(ConditionalFullResource):
+    """
+    a limited resource for delivering data to be used when creating maps
+    """
+    locations           = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
+    primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True, null=True)
+
     class Meta:
-        model = ProjectUpdate
+        allowed_methods         = ['get']
+        queryset                = Project.objects.published()
+        resource_name           = 'map_for_project'
+        include_absolute_url    = True
+
+        filtering               = dict(
+            # other fields
+            status              = ALL,
+            title               = ALL,
+            budget              = ALL,
+            funds               = ALL,
+            funds_needed        = ALL,
+            # foreign keys
+            benchmarks          = ALL_WITH_RELATIONS,
+            budget_items        = ALL_WITH_RELATIONS,
+            categories          = ALL_WITH_RELATIONS,
+            goals               = ALL_WITH_RELATIONS,
+            invoices            = ALL_WITH_RELATIONS,
+            links               = ALL_WITH_RELATIONS,
+            locations           = ALL_WITH_RELATIONS,
+            partnerships        = ALL_WITH_RELATIONS,
+            project_comments    = ALL_WITH_RELATIONS,
+            project_updates     = ALL_WITH_RELATIONS,
+            )
+
+    def dehydrate(self, bundle):
+        """ add thumbnails inline info for Project.current_image
+        """
+        bundle = super(ProjectMapResource, self).dehydrate(bundle)
+        ignored_fields = ('goals_overview', 'current_status', 'project_plan', 'sustainability', 'background', 'project_rating', 'notes',)
+        for field in ignored_fields:
+            del bundle.data[field]
+        bundle.data['current_image'] = {
+            'original': bundle.data['current_image'],
+            'thumbnails': get_extra_thumbnails(bundle.obj.current_image),
+            }
+        return bundle
 
 
 class ProjectUpdateResource(ConditionalFullResource):

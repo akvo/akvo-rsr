@@ -23,7 +23,7 @@
     {{block.super}}
     <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
   {% else %}
-    <li><a href="{% url 'home' %}"><span>{{organisation|truncatewords:3}}</span></a></li>
+    <li><a href="{% url 'home' %}"><span class="notranslate">{{organisation|truncatewords:3}}</span></a></li>
   {% endif %}
 {% endblock breadcrum_items %}
 
@@ -132,19 +132,21 @@
       {% block project_tools %}
         <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
         <div class="whitebox">
-          
-          <div style="width:45%; float:left; padding-top:15px; padding-left:10px;">
-            <a class="aqua awesome" href="{% url 'update_add' project.id %}" style="color:#fff" target="_top">{% trans 'Add update' %}</a>
-          </div>
-          <div style="width:45%; float:right; padding-top:15px; padding-right:10px">
-            <p style="margin:0;" class="tiny grey">
-              {% if not user.username %}
-                {% trans 'Sign in to add an update to your project.' %}
-              {% endif %}
-            </p>
-          </div>
-          <div class="clear"></div>
-          <hr style="margin-bottom:0; margin-left:5px; margin-right:5px;" />
+          {# don't show the "Add update" button to users that are signed in and not connected to the project #}
+          {% if not user.username or can_add_update %}
+            <div style="width:45%; float:left; padding-top:15px; padding-left:10px;">
+              <a class="aqua awesome" href="{% url 'update_add' project.id %}" style="color:#fff" target="_top">{% trans 'Add update' %}</a>
+            </div>
+            <div style="width:45%; float:right; padding-top:15px; padding-right:10px">
+              <p style="margin:0;" class="tiny grey">
+                {% if not user.username %}
+                  {% trans 'Sign in to add an update to your project.' %}
+                {% endif %}
+              </p>
+            </div>
+            <div class="clear"></div>
+            <hr style="margin-bottom:0; margin-left:5px; margin-right:5px;" />
+          {% endif %}
           <p class="grey small pad10" style="margin:0;">
             <a href="{% url 'get_widget' project.id %}">{% trans 'Get a widget' %}</a> {% trans "for your website" %}<br />
             <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans "to this project" %}<br />
@@ -163,7 +165,7 @@
             </div>
             <div style="float:left; width:165px;">
               <p class="small grey" style="margin:0;">
-                <a href="{{organisation.get_absolute_url}}">{{organisation.name}}</a><br />
+                <a href="{{organisation.get_absolute_url}}" class="notranslate">{{organisation.name}}</a><br />
                 {% if organisation.primary_location.city %}
                   {{organisation.primary_location.city}},
                 {% endif %}

@@ -7,12 +7,14 @@
 """
 from __future__ import absolute_import
 
+from urlparse import urljoin
+
 from django.conf import settings
 from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, set_urlconf
 from django.utils import translation
 
 from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
@@ -51,15 +53,8 @@ class PartnerSitesMixin(object):
         )
         context['return_url'] = self.request.partner_site.return_url
         context['stylesheet'] = self.request.partner_site.stylesheet
-
-        if getattr(settings, 'HTTPS_SUPPORT', True):
-            protocol = 'https://'
-        else:
-            protocol = 'http://'
-        context['app_url'] = '%s%s.%s' % (protocol,
-                                          self.request.partner_site.hostname,
-                                          settings.APP_DOMAIN_NAME)
-        context['domain_url'] = '%s%s' % (protocol, settings.DOMAIN_NAME)
+        context['app_url'] = self.request.app_url
+        context['domain_url'] = self.request.domain_url
         return context
 
 

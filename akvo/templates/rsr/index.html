@@ -125,7 +125,7 @@
       {% csrf_token %}
       <select name="language" id="languageChooser" class="span-6 last" style="margin-top:3px">
         {% for lang in LANGUAGES %}
-          <option value="{{ lang.0 }}" {% ifequal lang.0 request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
+          <option value="{{ lang.0 }}"{% ifequal lang.0 request.LANGUAGE_CODE %} selected="yes"{% endifequal %}>
             {{ lang.1 }}
           </option>
         {% endfor %}
@@ -164,8 +164,7 @@
 		</div>
 			<div class="span-6 first last">
 				<a href="{% url 'global_project_map' %}">    
-					{# google_global_project_map 'static' 315 190 1 #}
-          {% map 'projects' 315 190 'static' %}     
+          {% map 'project' 315 190 'static' %}
 				</a>
 			</div>
 		<div style="padding: .5em .5em .7em .5em;">
