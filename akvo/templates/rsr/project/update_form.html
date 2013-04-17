@@ -59,9 +59,22 @@
       <h3>{% trans 'Text' %}</h3>
       {{form.text}}
     </div>
+    {% if form.language.errors %}
+      <div class="error">
+        <p>{{ form.language.errors.as_text }}</p>
+      </div>
+    {% endif %}
+    <div style="width:500px;">
+      <br/>
+      <h3>{% trans 'Language' %}</h3>
+      {{form.language}}
+      <p class="small grey" style="margin-top:5px;">
+          {% trans 'Please set the language of the update. If the language is not on the list, choose English.' %}
+      </p>
+    </div>
+
+
     <div class="clear"></div>
-    <br />
-    <br />
     <hr />
     <br />
     {% if form.photo.errors %}

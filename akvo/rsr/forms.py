@@ -341,7 +341,7 @@ class ProjectUpdateForm(forms.ModelForm):
         'class': 'textarea',
         'cols': '44',
         }))
-    language = forms.ChoiceField(choices=settings.LANGUAGES, widget=forms.Select(attrs={'style': 'height: 2em',}))
+    language = forms.ChoiceField(choices=settings.LANGUAGES, initial='en', widget=forms.Select(attrs={'style': 'height: 2em',}))
     photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={
         'class': 'input',
         'size': '15',
