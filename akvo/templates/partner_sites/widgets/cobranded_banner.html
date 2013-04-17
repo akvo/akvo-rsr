@@ -1,0 +1,94 @@
+{% load i18n humanize rsr_filters rsr_tags %}
+
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Akvo Cobranded banner widget</title>
+<link rel="stylesheet" href="{{MEDIA_URL}}ps_widgets/cobranded_banner/rsrWidgets.css" type="text/css" media="screen" title="main">
+<link href='http://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <section id="container" class="w468px darkBG rsrWidget floats-in">
+    <header class="floats-in">
+    <hgroup>
+      <h1>{% trans "Project" %}</h1>
+      <a href="{{domain_url}}">
+        <h2>akvo.org</h2>
+      </a>
+      <span>{% trans "powered by" %}</span> </hgroup>
+    </header>
+    <div id="content" class="floats-in">
+      <div class="projectDescr">
+        <ul class="basicInfo">
+          <li>
+            {% if project.status == 'H' %}
+              <span class="projectStatus notComplete">
+                {% trans "Needs funding" %}
+              </span>
+            {% elif project.status == 'A' %}
+              <span class="projectStatus notComplete">
+                {% trans "Active" %}
+              </span>
+            {% elif project.status == 'C' %}
+              <span class="projectStatus complete">
+                {% trans "Complete" %}
+              </span>
+            {% elif project.status == 'L' %}
+              <span class="projectStatus complete">
+                {% trans "Canelled" %}
+              </span>
+            {% elif project.status == 'R' %}
+              <span class="projectStatus complete">
+                {% trans "Archived" %}
+              </span>
+            {% else %} {# None (N) #}
+              <span class="projectStatus notComplete">
+                {% trans "None" %}
+              </span>
+            {% endif %}
+            </span>
+          </li>
+          {% if project.primary_location.country %}
+            <li>
+              <span class="projectLocation" id="project_location">
+                {% if project.primary_location.city %}
+                  {{project.primary_location.city}}, 
+                {% endif %}
+                {{project.primary_location.country}}
+              </span>
+            </li>  
+          {% endif %}          
+        </ul>
+        <h2 id="project_title"><a href="{{app_url}}{{project.get_absolute_url}}">{{project.title|smart_truncate:60}}</a></h2>
+        <a href="{{app_url}}{{project.get_absolute_url}}" class="photo_frame">
+          {% project_thumb project 120 90 %}
+        </a>
+        <p id="project_subtitle">{{project.subtitle}}</p>
+      </div>
+      <div class="projectBudget">
+      <div class="demo-wrapper html5-progress-bar">
+        <div class="progress-bar-wrapper">
+          <progress id="progressbar" value="{{project.funds}}" max="{{project.budget}}" class="pbar"></progress>
+          {#<progress id="progressbar" value="{{project.funds}}" max="{{project.budget}}" class="pbar hidden"></progress>#}
+        </div>
+        <ul class="fundingwrap">
+          <li class="totalBudget">
+            <h4>{% trans "Budget" %}:</h4>
+            <span>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</span></li>
+          <li class="raisedBudget">
+            <h4>{% trans "Raised" %}:</h4>
+            <span>{{project.get_currency_display|safe}} {{project.funds|round|intcomma}}</span></li>
+          <li class="neededBudget">
+            <h4>{% trans "Needed" %}:</h4>
+            <span>{{project.get_currency_display|safe}} {{project.funds_needed|round|intcomma}}</span></li>
+        </ul>
+        {% if project.funds_needed|round != 0 and project.status != 'L' and project.status != 'R' %}
+          <a href="{{domain_url}}/rsr/project/{{project.id}}/donate/" class="orangeAction">{% trans "Donate" %}</a> 
+        {% endif %}
+        </div>
+    </div>
+    </div>
+  </section>
+</body>
+</html>

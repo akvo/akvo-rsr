@@ -22,8 +22,20 @@ from akvo.rsr.models import Organisation, Project
 __all__ = [
     'GetWidgetView',
     'ProjectMapView',
+    'CobrandedBannerView',
     'ProjectCordinates',
-    ]
+]
+
+
+class BaseWidgetView(TemplateView):
+    """"""
+    def get_context_data(self, **kwargs):
+        context = super(BaseWidgetView, self).get_context_data(**kwargs)
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        context['project'] = project
+        context['app_url'] = self.request.app_url
+        context['domain_url'] = self.request.domain_url
+        return context
 
 
 class GetWidgetView(BaseView):
@@ -54,6 +66,15 @@ class ProjectMapView(TemplateView):
         context['bgcolor'] = self.request.GET.get('bgcolor', 'B50000')
         context['state'] = self.request.GET.get('state', 'dynamic')
         context['organisation'] = get_object_or_404(Organisation, pk=self.request.organisation_id)
+        return context
+
+
+class CobrandedBannerView(BaseWidgetView):
+    template_name = 'partner_sites/widgets/cobranded_banner.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CobrandedBannerView, self).get_context_data(**kwargs)
+        # default to dark background
         return context
 
 
