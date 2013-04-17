@@ -17,7 +17,7 @@ from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
 from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
-                            get_random_from_qs, state_equals)
+                            get_random_from_qs, state_equals, right_now_in_akvo)
 
 from django import forms
 from django import http
@@ -186,14 +186,6 @@ def index(request, cms_id=None):
 
     news_image = ''
     news_title = ''
-
-    projects = Project.objects.published()
-    orgs = Organisation.objects.all()
-
-    people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
-    #round to nearest whole 1000
-    people_served = int(people_served / 1000) * 1000
-
     #get three featured updates with video and/or photo
     updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
     if news_posts:
@@ -213,13 +205,8 @@ def index(request, cms_id=None):
         'news_posts': news_posts,
         'preview':  preview,
     }
-    context_dict.update({
-        'orgs': orgs,
-        'projects': projects,
-        'people_served': people_served,
-        'projects_budget': round(projects.budget_sum() / 100000) / 10.0,
-        'updates': updates,
-    })
+    context_dict.update(right_now_in_akvo())
+    context_dict.update({'updates': updates, })
     return context_dict
 
 
