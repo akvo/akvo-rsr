@@ -139,6 +139,8 @@ class PartnerSitesRouterMiddleware(object):
             urlconf = "akvo.urls.partner_sites"
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
+                # since we can't test partner sites on cname domains we always use akvoapp.org for re-directs
+                partner_site_domain = "akvoapp.org"
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
         request.urlconf = urlconf
