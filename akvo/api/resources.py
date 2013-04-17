@@ -3,19 +3,17 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-from copy import deepcopy
+
+from django.conf.urls import url
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.http import HttpResponse
 
 from tastypie import fields
 from tastypie import http
 
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
-from tastypie.resources import ModelResource
-
-from tastypie.utils.mime import build_content_type
+from tastypie.resources import ModelResource, Resource
 
 from cacheback.base import Job
 
@@ -26,7 +24,7 @@ from akvo.rsr.models import (
     ProjectComment, UserProfile, Invoice
 )
 
-from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE
+from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE, right_now_in_akvo
 
 __all__ = [
     'BenchmarkResource',
@@ -48,6 +46,7 @@ __all__ = [
     'ProjectLocationResource',
     'ProjectMapResource',
     'ProjectUpdateResource',
+    'RightNowInAkvoResource',
     'UserResource',
     'UserProfileResource',
 ]
@@ -122,15 +121,30 @@ class ConditionalFullResource(ModelResource):
         set and serializes it.
 
         Should return a HttpResponse (200 OK).
-        --------------------------------------
-        This is a "gutted" get_list where most of the code has been moved to CachedResourceJob.fetch so that cacheback can
-        do its thing and only run the original get_list if we don't have anything in the cache
         """
-        desired_format = self.determine_format(request)
-        cached_resource = CachedResourceJob(self, request, kwargs)
-        url = "%s?%s" % (request.path, request.META['QUERY_STRING'])
-        serialized = cached_resource.get(url).decode("zlib").decode("utf8")
-        return HttpResponse(content=serialized, content_type=build_content_type(desired_format))
+        # TODO: Uncached for now. Invalidation that works for everyone may be
+        #       impossible.
+        base_bundle = self.build_bundle(request=request)
+        objects = self.obj_get_list(bundle=base_bundle, **self.remove_api_resource_names(kwargs))
+        sorted_objects = self.apply_sorting(objects, options=request.GET)
+        paginator = self._meta.paginator_class(request.GET, sorted_objects, resource_uri=self.get_resource_uri(),
+                                               limit=self._meta.limit, max_limit=self._meta.max_limit,
+                                               collection_name=self._meta.collection_name)
+        to_be_serialized = paginator.page()
+
+        # Dehydrate the bundles in preparation for serialization.
+        bundles = []
+
+        for obj in to_be_serialized[self._meta.collection_name]:
+            bundle = self.build_bundle(obj=obj, request=request)
+            # add metadata to bundle to keep track of "depth", "ancestor" and "full" info
+            bundle.related_info = bundle_related_data_info_factory(request=request)
+            # end add
+            bundles.append(self.full_dehydrate(bundle))
+
+        to_be_serialized[self._meta.collection_name] = bundles
+        to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
+        return self.create_response(request, to_be_serialized)
 
     def get_detail(self, request, **kwargs):
         """
@@ -141,8 +155,10 @@ class ConditionalFullResource(ModelResource):
 
         Should return a HttpResponse (200 OK).
         """
+        basic_bundle = self.build_bundle(request=request)
+
         try:
-            obj = self.cached_obj_get(request=request, **self.remove_api_resource_names(kwargs))
+            obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
         except ObjectDoesNotExist:
             return http.HttpNotFound()
         except MultipleObjectsReturned:
@@ -565,6 +581,42 @@ class ProjectUpdateResource(ConditionalFullResource):
             project             = ALL_WITH_RELATIONS,
             user                = ALL_WITH_RELATIONS,
         )
+
+
+class RightNowInAkvoObject(object):
+    def populate(self):
+        data = right_now_in_akvo()
+        self.number_of_organisations = data['number_of_organisations']
+        self.number_of_projects = data['number_of_projects']
+        self.people_served = data['people_served']
+        self.projects_budget_millions = data['projects_budget_millions']
+
+
+class RightNowInAkvoResource(Resource):
+    number_of_organisations = fields.IntegerField(attribute='number_of_organisations')
+    number_of_projects = fields.IntegerField(attribute='number_of_projects')
+    people_served = fields.IntegerField(attribute='people_served')
+    projects_budget_millions = fields.FloatField(attribute='projects_budget_millions')
+
+    class Meta:
+        #Disallow list operations
+        list_allowed_methods = []
+        detail_allowed_methods = ['get',]
+        object_class = RightNowInAkvoObject
+        resource_name = 'right_now_in_akvo'
+        include_resource_uri = False
+
+    #Override urls such that GET:right_now_in_akvo/ is actually the detail endpoint
+    def override_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'),
+                name="api_dispatch_detail"),
+        ]
+
+    def obj_get(self, bundle, **kwargs):
+        rnia = RightNowInAkvoObject()
+        rnia.populate()
+        return rnia
 
 
 class UserProfileResource(ConditionalFullResource):
