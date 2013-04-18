@@ -38,8 +38,8 @@ from akvo.api.validation import ModelFormValidation
 from akvo.rsr.models import (
     Benchmark, Benchmarkname, BudgetItem, BudgetItemLabel, Category, Country, FocusArea, Goal, Link,
     Organisation, OrganisationLocation, Partnership, Project, ProjectLocation, ProjectUpdate,
-    ProjectComment, UserProfile, Invoice
-)
+    ProjectComment, UserProfile, Invoice,
+    InternalOrganisationID)
 from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE, custom_get_or_create_country
 
 __all__ = [
@@ -301,6 +301,14 @@ class IATIProjectResource(ModelResource):
             data['locations'][0]['primary'] = True
             for location in data['locations'][1:]:
                 location['primary'] = False
+        # hack to sum multiple budget tags into one
+        if data.get('budget_items'):
+            if len(data['budget_items']) > 1:
+                data['budget_items'] = [
+                    {'amount': '{amount}'.format(
+                        amount=sum([int(item['amount']) for item in data['budget_items']])
+                    ), 'label': '1'}
+                ]
         return data
 
     def hydrate_date_complete(self, bundle):
@@ -315,10 +323,10 @@ class IATIProjectResource(ModelResource):
             bundle.data['date_request_posted'] = date_request_posted[:-1]
         return bundle
 
-    def hydrate_partnerships(self, bundle):
-        import pdb
-        pdb.set_trace()
-        return bundle
+    # def hydrate_partnerships(self, bundle):
+    #     import pdb
+    #     pdb.set_trace()
+    #     return bundle
 
     # def hydrate_current_image(self, bundle):
     #     import requests
@@ -344,6 +352,37 @@ class IATIProjectResource(ModelResource):
     #         Project.current_image.save("image.jpg", File(img_temp), save=True)
 
 
+def get_organisation(bundle):
+    """ Try to find the organisation to link to in the Partnership
+    :param bundle: the tastypie bundle for the IATIPartnershipResource
+    :return: either the organisation to link to in the IATIPartnershipResource being created
+             or a string of the bundle field to use to create a new Organisation
+    """
+    ret_val = None
+    if bundle.data.get('organisation'):
+        try:
+            organisation = Organisation.objects.get(pk=bundle.data['organisation'])
+            return organisation
+        except:
+            return ret_val
+
+    if bundle.data.get('iati_org_id'):
+        try:
+            organisation = Organisation.objects.get(iati_org_id=bundle.data['iati_org_id'])
+            return organisation
+        except:
+            ret_val = 'iati_org_id'
+    if bundle.data.get('internal_org_id') and bundle.data.get('reporting_org'):
+        try:
+            organisation = InternalOrganisationID.objects.get(
+                recording_org__iati_org_id=bundle.data['reporting_org'],
+                identifier=bundle.data['internal_org_id']
+            ).referenced_org
+            return organisation
+        except:
+            return 'internal_org_id'
+    return ret_val
+
 class IATIPartnershipResource(ModelResource):
     # Accountable, Extending, Funding, Implementing
     project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project', full=True,)
@@ -357,24 +396,41 @@ class IATIPartnershipResource(ModelResource):
         queryset        = Partnership.objects.all()
 
     def hydrate_organisation(self, bundle):
-        import pdb
-        pdb.set_trace()
-        try:
-            if bundle.data.get('organisation'):
-                organisation = Organisation.objects.get(pk=bundle.data['organisation'])
+        organisation_or_bundle_field = get_organisation(bundle)
+        if organisation_or_bundle_field:
+            if isinstance(organisation_or_bundle_field, Organisation):
+                organisation = organisation_or_bundle_field
             else:
-                organisation = Organisation.objects.get(iati_org_id=bundle.data['iati_org_id'])
-        except:
-            print "No org with ID: {id} or IATI ID: {iati_org_id}".format(
-                id=bundle.data['organisation'], iati_org_id=bundle.data['iati_org_id']
+                kwargs = dict(
+                    name=bundle.data['name'],
+                    organisation_type=Organisation.ORG_TYPE_NGO, #TODO: Fix lookup from @type
+                    new_organisation_type = int(bundle.data['new_organisation_type']),
+                )
+                if organisation_or_bundle_field == 'iati_org_id':
+                    kwargs['iati_org_id'] = bundle.data['iati_org_id'],
+                    organisation = Organisation.objects.create(**kwargs)
+                elif organisation_or_bundle_field == 'internal_org_id':
+                    organisation = Organisation.objects.create(**kwargs)
+                    our_organisation = Organisation.objects.get(iati_org_id=bundle.data['reporting_org'])
+                    InternalOrganisationID.objects.create(
+                        recording_org=our_organisation,
+                        referenced_org=organisation,
+                        identifier=bundle.data['internal_org_id'],
+                    )
+            bundle.data['organisation'] = reverse(
+                'api_dispatch_detail', kwargs={
+                    'resource_name': 'organisation',
+                    'api_name': 'v1',
+                    'pk': organisation.pk
+                }
             )
-            bundle.data['organisation'] = None
+            bundle.data.pop('name', None)
+            bundle.data.pop('internal_org_id', None)
+            bundle.data.pop('reporting_org', None)
+            bundle.data.pop('new_organisation_type', None)
+            bundle.data.pop('iati_org_id', None)
             return bundle
-        bundle.data['organisation'] = reverse(
-            'api_dispatch_detail', kwargs={'resource_name':'organisation', 'api_name': 'v1', 'pk': organisation.pk}
-        )
         return bundle
-
 
 class IATIBudgetItemResource(ModelResource):
     project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project', full=True,)

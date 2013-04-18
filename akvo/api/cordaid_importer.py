@@ -14,7 +14,10 @@ api_ver = 'v1'
 
 def post_an_activity(activity_xml):
     response = requests.post(
-        "http://{domain}/api/{api_ver}/iati_activity/?format=xml&api_key=c719f880b815a1d4fcc267b6529e6643d33b54b2&username=gabriel".format(domain=domain, api_ver=api_ver),
+        "http://{domain}/api/{api_ver}/iati_activity/"
+        "?format=xml&api_key=c719f880b815a1d4fcc267b6529e6643d33b54b2&username=gabriel".format(
+            domain=domain, api_ver=api_ver
+        ),
         headers={'content-type': 'application/xml', 'encoding':'utf-8'},
         data=activity_xml,
     )
@@ -22,17 +25,10 @@ def post_an_activity(activity_xml):
     pdb.set_trace()
 
 def post_some_activities():
-    with open('./xml/cordaid/iati_export.xml', 'r') as f:
+    with open('./xml/cordaid/20130411_sample_file_cordaid.xml', 'r') as f:
         root = etree.fromstring(f.read())
         for i in range(len(root)):
             post_an_activity(etree.tostring(root[i]))
-            if i > 2:
-                break
 
 if __name__ == '__main__':
     post_some_activities()
-
-internal_ids = models.ForeignKey(
-    'self', through='InternalOrganisationIDs', symmetrical=False, related_name='recording_organisation'
-)
-
