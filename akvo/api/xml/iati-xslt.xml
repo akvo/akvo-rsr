@@ -250,16 +250,28 @@
       <label>1</label>
     </object>
   </xsl:template>
-  
+      
   <!-- partnership -->
   <xsl:template match="participating-org" >
     <object>
+      <name>
+        <xsl:value-of select="." />
+      </name>
+      <reporting_org>
+        <xsl:value-of select="//reporting-org/@ref" />
+      </reporting_org>
       <organisation>
         <xsl:value-of select="@akvo:ref" />
       </organisation>
       <iati_org_id>
         <xsl:value-of select="@ref" />
       </iati_org_id>
+      <internal_org_id>
+        <xsl:value-of select="@akvo:internal-ref" />
+      </internal_org_id>
+      <new_organisation_type>
+        <xsl:value-of select="@type" />
+      </new_organisation_type>
       <xsl:if test="@role='Accountable'">
         <partner_type>support</partner_type>
       </xsl:if>
