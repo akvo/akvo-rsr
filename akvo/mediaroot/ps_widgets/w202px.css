@@ -1,18 +1,18 @@
-.w170px {
-	width: 170px;
+.w202px {
+	width: 202px;
 	height: 840px;
 }
-.w170px ul.basicInfo { padding: 0.5em 1.5%; }
-.w170px ul.basicInfo li {
+.w202px ul.basicInfo { padding: 0.5em 1.5%; }
+.w202px ul.basicInfo li {
 	margin: 0 auto 0.25em auto;
 	display: table;
 }
-.w170px ul.basicInfo li .projectStatus {
+.w202px ul.basicInfo li .projectStatus {
 	font-size: 0.9em;
 	text-align: center;
 	margin: 0.25em auto 0.5em;
 }
-.w170px #project_title {
+.w202px #project_title {
 	width: 98%;
 	display: block;
 	font-size: 1em;
@@ -20,43 +20,42 @@
 	margin: 0.75em 0 0.25em 5px;
 	color: rgb(255,255,255);
 }
-.w170px .photo_frame {
+.w202px .photo_frame {
 	float: none;
 	margin: 0 2%;
 }
-.w170px .photo_frame img {
+.w202px .photo_frame img {
 	width: 96%;
 	height: auto;
 }
-.w170px #project_subtitle {
-	width: 165px;
+.w202px #project_subtitle {
+	width: 197px;
 	margin: 5px 5px 10px 5px;
 	float: none;
 }
-.w170px .projectBudget {
+.w202px .projectBudget {
 	display: inline-block;
 	position: relative;
 	float: none;
-	width: 160px;
+	width: 192px;
 	margin: 10px 5px 0 0;
 	max-height: none;
 	padding: 15px 4px;
 }
-.w170px ul.fundingwrap {
+.w202px ul.fundingwrap {
 	margin: 15px 0 0 0;
 	padding: 5px 0;
 }
-.w170px ul.fundingwrap li {
+.w202px ul.fundingwrap li {
 	padding: 10px 0;
 	margin: 5px 0;
 }
-.w170px ul.fundingwrap li:first-child {
+.w202px ul.fundingwrap li:first-child {
 	padding: 10px 0;
 	margin: 0px 0;
 }
-.w170px .orangeAction {
+.w202px .orangeAction {
 	font-size: 0.9em;
 	padding: 0.15em 2em;
 	margin: 20px auto 0;
 }
-

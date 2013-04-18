@@ -331,7 +331,6 @@ ul.basicInfo li .projectLocation {
 	font-family: 'Questrial', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	margin: 10px 5px;
 	color: rgb(235,235,235);
-	width: 160px;
 }
 #container.lightBG #project_plan_summary { color: rgb(32,32,36); }
 ul.fundingwrap { margin: 5px 0 0 0; }

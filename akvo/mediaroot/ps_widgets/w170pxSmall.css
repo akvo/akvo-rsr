@@ -1,0 +1,26 @@
+.w170pxSmall {
+	width: 170px;
+	height: 312px;
+}
+.w170pxSmall ul.basicInfo { padding: 0.5em 1.5%; }
+.w170pxSmall ul.basicInfo li {
+	margin: 0 auto 0.25em auto;
+	display: table;
+}
+.w170pxSmall #project_title {
+	width: 98%;
+	display: block;
+	font-size: 1em;
+	text-transform: uppercase;
+	margin: 0.75em 0 1em 5px;
+	color: rgb(255,255,255);
+}
+.w170pxSmall .photo_frame {
+	float: none;
+	margin: 0 2%;
+}
+.w170pxSmall .photo_frame img {
+	width: 96%;
+	height: auto;
+}
+

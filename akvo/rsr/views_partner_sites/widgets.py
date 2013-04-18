@@ -82,6 +82,10 @@ class ProjectNarrowView(BaseWidgetView):
     template_name = 'partner_sites/widgets/project_narrow.html'
 
 
+class ProjectSmallView(BaseWidgetView):
+    template_name = 'partner_sites/widgets/project_small.html'
+
+
 class ProjectCordinates(TemplateView):
 
     def get_queryset(self):

@@ -97,6 +97,10 @@ urlpatterns = i18n_patterns(
         views.ProjectNarrowView.as_view(),
         name="widget_project_narrow"),
 
+    url(r'^widgets/project-small/(?P<project_id>\d+)/$',
+        views.ProjectSmallView.as_view(),
+        name="widget_project_small"),
+
     # Auth
     url(r'^rsr/signin/$',
         views.SignInView.as_view(),

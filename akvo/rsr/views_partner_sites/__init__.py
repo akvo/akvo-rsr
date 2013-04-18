@@ -17,13 +17,16 @@ from akvo.rsr.views_partner_sites.project import (ProjectFundingView,
     ProjectMainView, ProjectUpdateAddView, ProjectUpdateEditView,
     ProjectUpdateListView, ProjectUpdateView, ProjectDonationThanksView)
 from akvo.rsr.views_partner_sites.widgets import (GetWidgetView,
-    ProjectMapView, CobrandedBannerView, ProjectNarrowView, ProjectCordinates)
+    ProjectMapView, CobrandedBannerView, ProjectNarrowView, ProjectSmallView,
+    ProjectCordinates)
 
 
 __all__ = [
     'ForbiddenView',
     'GetWidgetView',
-    'CobrandedBannerView'
+    'CobrandedBannerView',
+    'ProjectNarrowView',
+    'ProjectSmallView'
     'global_organisation_projects_map_json',
     'HomeView',
     'NotFoundView',
