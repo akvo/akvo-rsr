@@ -364,13 +364,15 @@ def get_organisation(bundle):
             organisation = Organisation.objects.get(pk=bundle.data['organisation'])
             return organisation
         except:
-            return ret_val
+            # If we don't find an organisation we have an RSR ID for something is seriously wrong
+            return None #TODO: better error handling
 
     if bundle.data.get('iati_org_id'):
         try:
             organisation = Organisation.objects.get(iati_org_id=bundle.data['iati_org_id'])
             return organisation
         except:
+            # return string indicating how we can create a new Organisation
             ret_val = 'iati_org_id'
     if bundle.data.get('internal_org_id') and bundle.data.get('reporting_org'):
         try:
@@ -380,8 +382,9 @@ def get_organisation(bundle):
             ).referenced_org
             return organisation
         except:
+            # return string indicating how we can create a new Organisation
             return 'internal_org_id'
-    return ret_val
+    return ret_val #TODO: better error handling, we may end up here with ret_val == None
 
 class IATIPartnershipResource(ModelResource):
     # Accountable, Extending, Funding, Implementing
@@ -396,19 +399,23 @@ class IATIPartnershipResource(ModelResource):
         queryset        = Partnership.objects.all()
 
     def hydrate_organisation(self, bundle):
+        # try to find an existing organisation
         organisation_or_bundle_field = get_organisation(bundle)
         if organisation_or_bundle_field:
             if isinstance(organisation_or_bundle_field, Organisation):
                 organisation = organisation_or_bundle_field
             else:
+                # there was no existing org, we need to create one if we have the data
                 kwargs = dict(
                     name=bundle.data['name'],
                     organisation_type=Organisation.ORG_TYPE_NGO, #TODO: Fix lookup from @type
                     new_organisation_type = int(bundle.data['new_organisation_type']),
                 )
+                # use the IATI ID if possible
                 if organisation_or_bundle_field == 'iati_org_id':
                     kwargs['iati_org_id'] = bundle.data['iati_org_id'],
                     organisation = Organisation.objects.create(**kwargs)
+                # otherwise fall back to using the reporting_org's internal ID
                 elif organisation_or_bundle_field == 'internal_org_id':
                     organisation = Organisation.objects.create(**kwargs)
                     our_organisation = Organisation.objects.get(iati_org_id=bundle.data['reporting_org'])
@@ -424,6 +431,7 @@ class IATIPartnershipResource(ModelResource):
                     'pk': organisation.pk
                 }
             )
+            # remove helper fields that aren't part of Partnership
             bundle.data.pop('name', None)
             bundle.data.pop('internal_org_id', None)
             bundle.data.pop('reporting_org', None)
@@ -984,4 +992,5 @@ class UserResource(ConditionalFullResource):
         else:
             del bundle.data['user_profile']
         return bundle
+
 
