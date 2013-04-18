@@ -9,7 +9,7 @@
 <link href='http://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'>
 </head>
 <body>
-  <section id="container" class="w468px darkBG rsrWidget floats-in">
+  <section id="container" class="w468px {{style}} rsrWidget floats-in">
     <header class="floats-in">
     <hgroup>
       <h1>{% trans "Project" %}</h1>
@@ -70,7 +70,6 @@
       <div class="demo-wrapper html5-progress-bar">
         <div class="progress-bar-wrapper">
           <progress id="progressbar" value="{{project.funds}}" max="{{project.budget}}" class="pbar"></progress>
-          {#<progress id="progressbar" value="{{project.funds}}" max="{{project.budget}}" class="pbar hidden"></progress>#}
         </div>
         <ul class="fundingwrap">
           <li class="totalBudget">
