@@ -93,6 +93,10 @@ urlpatterns = i18n_patterns(
         views.CobrandedBannerView.as_view(),
         name="widget_cobranded_banner"),
 
+    url(r'^widgets/project-narrow/(?P<project_id>\d+)/$',
+        views.ProjectNarrowView.as_view(),
+        name="widget_project_narrow"),
+
     # Auth
     url(r'^rsr/signin/$',
         views.SignInView.as_view(),

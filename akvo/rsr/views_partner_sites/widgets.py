@@ -23,6 +23,7 @@ __all__ = [
     'GetWidgetView',
     'ProjectMapView',
     'CobrandedBannerView',
+    'ProjectNarrowView',
     'ProjectCordinates',
 ]
 
@@ -35,6 +36,9 @@ class BaseWidgetView(TemplateView):
         context['project'] = project
         context['app_url'] = self.request.app_url
         context['domain_url'] = self.request.domain_url
+        context['style'] = 'darkBG'
+        if self.request.GET.get('style') == 'light':
+            context['style'] = 'lightBG'
         return context
 
 
@@ -73,12 +77,9 @@ class ProjectMapView(TemplateView):
 class CobrandedBannerView(BaseWidgetView):
     template_name = 'partner_sites/widgets/cobranded_banner.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(CobrandedBannerView, self).get_context_data(**kwargs)
-        context['style'] = 'darkBG'
-        if self.request.GET.get('style') == 'light':
-            context['style'] = 'lightBG'
-        return context
+
+class ProjectNarrowView(BaseWidgetView):
+    template_name = 'partner_sites/widgets/project_narrow.html'
 
 
 class ProjectCordinates(TemplateView):

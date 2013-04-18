@@ -17,7 +17,7 @@ from akvo.rsr.views_partner_sites.project import (ProjectFundingView,
     ProjectMainView, ProjectUpdateAddView, ProjectUpdateEditView,
     ProjectUpdateListView, ProjectUpdateView, ProjectDonationThanksView)
 from akvo.rsr.views_partner_sites.widgets import (GetWidgetView,
-    ProjectMapView, CobrandedBannerView, ProjectCordinates)
+    ProjectMapView, CobrandedBannerView, ProjectNarrowView, ProjectCordinates)
 
 
 __all__ = [
