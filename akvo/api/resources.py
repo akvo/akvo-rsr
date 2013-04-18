@@ -4,9 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from copy import deepcopy
-import datetime
-import os
+from django.conf.urls import url
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.urlresolvers import reverse
@@ -23,7 +21,7 @@ from tastypie.bundle import Bundle
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import ApiFieldError
 from tastypie.fields import ApiField, NOT_PROVIDED
-from tastypie.resources import ModelResource
+from tastypie.resources import ModelResource, Resource
 from tastypie.authentication import ApiKeyAuthentication
 from akvo.api.authentication import ConditionalApiKeyAuthentication
 
@@ -40,7 +38,7 @@ from akvo.rsr.models import (
     Organisation, OrganisationLocation, Partnership, Project, ProjectLocation, ProjectUpdate,
     ProjectComment, UserProfile, Invoice,
     InternalOrganisationID)
-from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE, custom_get_or_create_country
+from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE, custom_get_or_create_country, right_now_in_akvo
 
 __all__ = [
     'BenchmarkResource',
@@ -66,6 +64,7 @@ __all__ = [
     'ProjectLocationResource',
     'ProjectMapResource',
     'ProjectUpdateResource',
+    'RightNowInAkvoResource',
     'UserResource',
     'UserProfileResource',
 ]
@@ -919,6 +918,42 @@ class ProjectUpdateResource(ConditionalFullResource):
             project             = ALL_WITH_RELATIONS,
             user                = ALL_WITH_RELATIONS,
         )
+
+
+class RightNowInAkvoObject(object):
+    def populate(self):
+        data = right_now_in_akvo()
+        self.number_of_organisations = data['number_of_organisations']
+        self.number_of_projects = data['number_of_projects']
+        self.people_served = data['people_served']
+        self.projects_budget_millions = data['projects_budget_millions']
+
+
+class RightNowInAkvoResource(Resource):
+    number_of_organisations = fields.IntegerField(attribute='number_of_organisations')
+    number_of_projects = fields.IntegerField(attribute='number_of_projects')
+    people_served = fields.IntegerField(attribute='people_served')
+    projects_budget_millions = fields.FloatField(attribute='projects_budget_millions')
+
+    class Meta:
+        #Disallow list operations
+        list_allowed_methods = []
+        detail_allowed_methods = ['get',]
+        object_class = RightNowInAkvoObject
+        resource_name = 'right_now_in_akvo'
+        include_resource_uri = False
+
+    #Override urls such that GET:right_now_in_akvo/ is actually the detail endpoint
+    def override_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'),
+                name="api_dispatch_detail"),
+        ]
+
+    def obj_get(self, bundle, **kwargs):
+        rnia = RightNowInAkvoObject()
+        rnia.populate()
+        return rnia
 
 
 class UserProfileResource(ConditionalFullResource):

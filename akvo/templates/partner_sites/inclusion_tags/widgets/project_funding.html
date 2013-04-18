@@ -1,0 +1,16 @@
+{% load i18n rsr_filters humanize %}
+
+<ul class="fundingwrap">
+  <li class="totalBudget">
+    <h4>{% trans "Budget" %}:</h4>
+    <span>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</span>
+  </li>
+  <li class="raisedBudget">
+    <h4>{% trans "Raised" %}:</h4>
+    <span>{{project.get_currency_display|safe}} {{project.funds|round|intcomma}}</span>
+  </li>
+  <li class="neededBudget">
+    <h4>{% trans "Needed" %}:</h4>
+    <span>{{project.get_currency_display|safe}} {{project.funds_needed|round|intcomma}}</span>
+  </li>
+</ul>
