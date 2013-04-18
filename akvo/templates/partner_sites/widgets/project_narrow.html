@@ -20,7 +20,8 @@
         {% project_thumb project 150 113 %}
       </a>
       <p id="project_plan_summary">
-        {{project.project_plan_summary|safe|smart_truncate:100}}... <a href="{{app_url}}{{project.get_absolute_url}}">More &#8250;</a>
+        {{project.project_plan_summary|safe|smart_truncate:100}}...
+        <a href="{{app_url}}{{project.get_absolute_url}}">{% trans "More" %} &#8250;</a>
       </p>
     </div>
     {% rsr_widget_project_budget project %}
