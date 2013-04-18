@@ -273,7 +273,7 @@ class Organisation(models.Model):
         _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
         help_text=u'Check that this field is set to an organisation type that matches your organisation.',
     )
-    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True)
+    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True)
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
     )
@@ -1162,7 +1162,7 @@ class BudgetItem(models.Model):
         "Needed since we have to have a vanilla __unicode__() method for the admin"
         if self.label.label in self.OTHER_LABELS:
             # display "other" if other_extra is empty. Translating here without translating the other labels seems corny
-            return self.other_extra.strip() or u"other"
+            return u"other" if self.other_extra is None else self.other_extra.strip()
         else:
             return self.__unicode__()
 
