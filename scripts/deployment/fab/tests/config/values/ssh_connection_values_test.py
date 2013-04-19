@@ -37,7 +37,8 @@ class SSHConnectionValuesTest(unittest.TestCase):
     def test_has_connection_string_for_test2_host(self):
         """fab.tests.config.values.ssh_connection_values_test  Has SSH connection string for test2 host"""
 
-        self.assertEqual('test2.akvo.org:2273', SSHConnection.for_host(HostAlias.TEST2))
+        # test2 is now running on the same machine as test, therefore we use the same ssh connection
+        self.assertEqual('test.akvo.org:2270', SSHConnection.for_host(HostAlias.TEST2))
 
     def test_has_connection_string_for_uat_host(self):
         """fab.tests.config.values.ssh_connection_values_test  Has SSH connection string for uat host"""
