@@ -41,12 +41,12 @@ class HostPathValuesTest(unittest.TestCase):
     def test_has_test2_host_paths(self):
         """fab.tests.config.values.host_path_values_test  Has test2 host paths"""
 
-        expected_path_values    = { 'config_home':                  '/usr/local/etc/akvo/test2',
-                                    'repo_checkout_home':           '/var/dev/test2',
-                                    'virtualenvs_home':             '/var/dev/virtualenvs/test2',
-                                    'static_media_home':            '/var/www/test2',
-                                    'logging_home':                 '/var/log/akvo',
-                                    'deployment_processing_home':   '/var/tmp/rsr/test2'}
+        expected_path_values    = { 'config_home':                  '/var/test2_akvo/etc',
+                                    'repo_checkout_home':           '/var/test2_akvo/repo',
+                                    'virtualenvs_home':             '/var/test2_akvo/virtualenvs',
+                                    'static_media_home':            '/var/test2_akvo/www/test2',
+                                    'logging_home':                 '/var/test2_akvo/log',
+                                    'deployment_processing_home':   '/var/tmp/rsr'}
 
         self.assertEqual(expected_path_values, HostPathValues.TEST2)
 
