@@ -15,9 +15,12 @@
       <h2 id="project_title">
         <a href="{{app_url}}{{project.get_absolute_url}}">{{project.title|smart_truncate:60}}</a>
       </h2>
-      <a href="{{app_url}}{{project.get_absolute_url}}" class="photo_frame">
+      {% rsr_widget_project_photo project 150 113 %}
+      {% comment %}
+        <a href="{{app_url}}{{project.get_absolute_url}}" class="photo_frame">
         {% project_thumb project 150 113 %}
-      </a>
+      </a>  
+      {% endcomment %}
     </div>
   </div>
 </section>

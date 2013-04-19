@@ -72,3 +72,17 @@ def rsr_widget_project_progress_bar(context, project):
 def rsr_widget_project_budget(context, project):
     """..."""
     return {'project': context['project']}
+
+
+@register.inclusion_tag(
+    'partner_sites/inclusion_tags/widgets/project_photo.html',
+    takes_context=True)
+def rsr_widget_project_photo(context, project, width, height, style='',):
+    return {
+        'MEDIA_URL': context['MEDIA_URL'],
+        'project': project,
+        'width': width,
+        'height': height,
+        'wxh': '%sx%s' % (width, height,),
+        'style': style,
+    }
