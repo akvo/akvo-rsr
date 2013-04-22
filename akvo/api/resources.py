@@ -351,6 +351,13 @@ class IATIProjectResource(ModelResource):
     #         Project.current_image.save("image.jpg", File(img_temp), save=True)
 
 
+FIELD_IATI_ORG_ID = 'iati_org_id'
+FIELD_INTERNAL_ORG_ID = 'internal_org_id'
+FIELD_NAME = 'name'
+FIELD_NEW_ORGANISATION_TYPE = 'new_organisation_type'
+FIELD_ORGANISATION = 'organisation'
+FIELD_REPORTING_ORG = 'reporting_org'
+
 def get_organisation(bundle):
     """ Try to find the organisation to link to in the Partnership
     :param bundle: the tastypie bundle for the IATIPartnershipResource
@@ -358,31 +365,31 @@ def get_organisation(bundle):
              or a string of the bundle field to use to create a new Organisation
     """
     ret_val = None
-    if bundle.data.get('organisation'):
+    if bundle.data.get(FIELD_ORGANISATION):
         try:
-            organisation = Organisation.objects.get(pk=bundle.data['organisation'])
+            organisation = Organisation.objects.get(pk=bundle.data[FIELD_ORGANISATION])
             return organisation
         except:
             # If we don't find an organisation we have an RSR ID for something is seriously wrong
             return None #TODO: better error handling
 
-    if bundle.data.get('iati_org_id'):
+    if bundle.data.get(FIELD_IATI_ORG_ID):
         try:
-            organisation = Organisation.objects.get(iati_org_id=bundle.data['iati_org_id'])
+            organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_IATI_ORG_ID])
             return organisation
         except:
             # return string indicating how we can create a new Organisation
-            ret_val = 'iati_org_id'
-    if bundle.data.get('internal_org_id') and bundle.data.get('reporting_org'):
+            ret_val = FIELD_IATI_ORG_ID
+    if bundle.data.get(FIELD_INTERNAL_ORG_ID) and bundle.data.get(FIELD_REPORTING_ORG):
         try:
             organisation = InternalOrganisationID.objects.get(
-                recording_org__iati_org_id=bundle.data['reporting_org'],
-                identifier=bundle.data['internal_org_id']
+                recording_org__iati_org_id=bundle.data[FIELD_REPORTING_ORG],
+                identifier=bundle.data[FIELD_INTERNAL_ORG_ID]
             ).referenced_org
             return organisation
         except:
             # return string indicating how we can create a new Organisation
-            return 'internal_org_id'
+            return FIELD_INTERNAL_ORG_ID
     return ret_val #TODO: better error handling, we may end up here with ret_val == None
 
 class IATIPartnershipResource(ModelResource):
@@ -406,24 +413,24 @@ class IATIPartnershipResource(ModelResource):
             else:
                 # there was no existing org, we need to create one if we have the data
                 kwargs = dict(
-                    name=bundle.data['name'],
+                    name=bundle.data[FIELD_NAME],
                     organisation_type=Organisation.ORG_TYPE_NGO, #TODO: Fix lookup from @type
-                    new_organisation_type = int(bundle.data['new_organisation_type']),
+                    new_organisation_type = int(bundle.data[FIELD_NEW_ORGANISATION_TYPE]),
                 )
                 # use the IATI ID if possible
-                if organisation_or_bundle_field == 'iati_org_id':
-                    kwargs['iati_org_id'] = bundle.data['iati_org_id'],
+                if organisation_or_bundle_field == FIELD_IATI_ORG_ID:
+                    kwargs[FIELD_IATI_ORG_ID] = bundle.data[FIELD_IATI_ORG_ID],
                     organisation = Organisation.objects.create(**kwargs)
                 # otherwise fall back to using the reporting_org's internal ID
-                elif organisation_or_bundle_field == 'internal_org_id':
+                elif organisation_or_bundle_field == FIELD_INTERNAL_ORG_ID:
                     organisation = Organisation.objects.create(**kwargs)
-                    our_organisation = Organisation.objects.get(iati_org_id=bundle.data['reporting_org'])
+                    our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
                     InternalOrganisationID.objects.create(
                         recording_org=our_organisation,
                         referenced_org=organisation,
-                        identifier=bundle.data['internal_org_id'],
+                        identifier=bundle.data[FIELD_INTERNAL_ORG_ID],
                     )
-            bundle.data['organisation'] = reverse(
+            bundle.data[FIELD_ORGANISATION] = reverse(
                 'api_dispatch_detail', kwargs={
                     'resource_name': 'organisation',
                     'api_name': 'v1',
@@ -431,11 +438,11 @@ class IATIPartnershipResource(ModelResource):
                 }
             )
             # remove helper fields that aren't part of Partnership
-            bundle.data.pop('name', None)
-            bundle.data.pop('internal_org_id', None)
-            bundle.data.pop('reporting_org', None)
-            bundle.data.pop('new_organisation_type', None)
-            bundle.data.pop('iati_org_id', None)
+            bundle.data.pop(FIELD_NAME, None)
+            bundle.data.pop(FIELD_INTERNAL_ORG_ID, None)
+            bundle.data.pop(FIELD_REPORTING_ORG, None)
+            bundle.data.pop(FIELD_NEW_ORGANISATION_TYPE, None)
+            bundle.data.pop(FIELD_IATI_ORG_ID, None)
             return bundle
         return bundle
 
