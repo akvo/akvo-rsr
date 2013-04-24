@@ -3,13 +3,15 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:akvo="http://www.akvo.org">
 
   <xsl:template match="iati-activities">
-    <xsl:apply-templates select="iati-activity" />
+      <xsl:apply-templates select="iati-activity" />
   </xsl:template>
 
   <xsl:template match="iati-activity">
     <object>
       <xsl:apply-templates select="title" />
       <xsl:apply-templates select="@default-currency" />
+      <xsl:apply-templates select="@akvo:image-caption" />
+      
       <xsl:apply-templates select="activity-status" />
       
       <xsl:apply-templates select="activity-date[@type='start-actual']" />
@@ -25,7 +27,7 @@
       <xsl:apply-templates select="description[@type='1' and @akvo:type='9']"/><!-- Current status -->
       <xsl:apply-templates select="description[@type='1' and @akvo:type='10']"/><!-- Sustainability -->
 
-        <goals type="list">
+      <goals type="list">
         <xsl:apply-templates select="description[@akvo:type='Objectives detail']" />
       </goals>
 
@@ -51,14 +53,14 @@
   <!-- title -->
   <xsl:template match="title">
     <title>
-      <xsl:value-of select="." />
+      <xsl:value-of select="normalize-space(.)" />
     </title>
   </xsl:template>
 
   <!-- subtitle -->
   <xsl:template match="description[@type='1' and @akvo:type='4']">
     <subtitle>
-      <xsl:value-of select="." />
+      <xsl:value-of select="normalize-space(.)" />
     </subtitle>
   </xsl:template>
   
@@ -91,6 +93,7 @@
   </xsl:template>
   
   <!-- current_image -->
+  <!-- 
   <xsl:template match="document-link[@format='image/jpeg']">
     <current_image>
       <xsl:apply-templates select="@url"/>
@@ -99,14 +102,18 @@
       <xsl:apply-templates select="akvo:caption"/>      
     </current_image_caption>
   </xsl:template>
-
+   -->
+  
+  <xsl:template match="@akvo:image-caption">
+    <current_image_caption>
+      <xsl:value-of select="." />    
+    </current_image_caption>
+  </xsl:template>
+  
   <xsl:template match="@url">
     <xsl:value-of select="." />    
   </xsl:template>
   
-  <xsl:template match="akvo:caption">
-    <xsl:value-of select="." />    
-  </xsl:template>
   
   <!-- current_image_caption -->
 
@@ -254,24 +261,40 @@
   <!-- partnership -->
   <xsl:template match="participating-org" >
     <object>
-      <name>
-        <xsl:value-of select="." />
-      </name>
+      <!-- meta info needed to populate Partnership ad Organisation-->
       <reporting_org>
-        <xsl:value-of select="//reporting-org/@ref" />
+        <xsl:value-of select="//reporting-org/@ref"/>
       </reporting_org>
+      <business_unit>
+        <xsl:value-of select="normalize-space(//iati-activity/@akvo:business-unit-id)"/>
+      </business_unit>
+
+      <!-- Organisation fields-->
+      <name>
+        <xsl:value-of select="."/>
+      </name>
       <organisation>
-        <xsl:value-of select="@akvo:ref" />
+        <xsl:value-of select="@akvo:ref"/>
       </organisation>
       <iati_org_id>
-        <xsl:value-of select="@ref" />
+        <xsl:value-of select="@ref"/>
       </iati_org_id>
-      <internal_org_id>
-        <xsl:value-of select="@akvo:internal-ref" />
-      </internal_org_id>
       <new_organisation_type>
-        <xsl:value-of select="@type" />
+        <xsl:value-of select="@type"/>
       </new_organisation_type>
+
+      <!-- InternalOrganisationID fields-->
+      <internal_org_id>
+        <xsl:value-of select="@akvo:internal-org-ref"/>
+      </internal_org_id>
+
+      <!-- Partnership fields-->
+      <iati_activity_id>
+        <xsl:value-of select="//iati-identifier"/>
+      </iati_activity_id>
+      <internal_id>
+        <xsl:value-of select="//iati-activity/@akvo:internal-project-id"/>
+      </internal_id>
       <xsl:if test="@role='Accountable'">
         <partner_type>support</partner_type>
       </xsl:if>

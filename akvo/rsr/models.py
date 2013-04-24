@@ -252,6 +252,8 @@ class Organisation(models.Model):
         (ORG_TYPE_COM, _(u'Commercial')),
         (ORG_TYPE_KNO, _(u'Knowledge institution')),
     )
+    NEW_TO_OLD_TYPES = [ORG_TYPE_GOV, ORG_TYPE_GOV, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO,
+                        ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_COM, ORG_TYPE_KNO]
 
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')

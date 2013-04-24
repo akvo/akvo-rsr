@@ -21,11 +21,9 @@ def post_an_activity(activity_xml):
         headers={'content-type': 'application/xml', 'encoding':'utf-8'},
         data=activity_xml,
     )
-    import pdb
-    pdb.set_trace()
 
 def post_some_activities():
-    with open('./xml/cordaid/20130411_sample_file_cordaid.xml', 'r') as f:
+    with open('./xml/cordaid_iati_activities.xml', 'r') as f:
         root = etree.fromstring(f.read())
         for i in range(len(root)):
             post_an_activity(etree.tostring(root[i]))

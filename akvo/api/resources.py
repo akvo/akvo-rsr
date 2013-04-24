@@ -32,6 +32,7 @@ from cacheback.base import Job
 from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
 from akvo.api.serializers import IATISerializer
 from akvo.api.validation import ModelFormValidation
+from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 
 from akvo.rsr.models import (
     Benchmark, Benchmarkname, BudgetItem, BudgetItemLabel, Category, Country, FocusArea, Goal, Link,
@@ -308,6 +309,30 @@ class IATIProjectResource(ModelResource):
                         amount=sum([int(item['amount']) for item in data['budget_items']])
                     ), 'label': '1'}
                 ]
+        # hack to add Cordaid's business units as orgs if they're not there
+        if data.get('partnerships'):
+            cordaid_business_unit_orgs = {
+                'K6010':'Cordaid Healthcare',
+                'K6020':'Cordaid Children & Education',
+                'K6030':'Cordaid Disaster Response',
+                'K6040':"Cordaid Women's leadership",
+                'K6050':'Cordaid Extractives',
+                'K6060':'Cordaid Security & Justice',
+                'K6070':'Cordaid Entrepreneurship',
+                'K6080':'Cordaid Urban Matters',
+                'K6090':'Cordaid Domestic',
+                'K6100':'Cordaid Investments',
+            }
+            temp_org = data['partnerships'][0]
+            if temp_org['business_unit'] and temp_org['reporting_org']:
+                data['partnerships'] += [dict(
+                    internal_org_id=temp_org['business_unit'],
+                    reporting_org=temp_org['reporting_org'],
+                    name=cordaid_business_unit_orgs[temp_org['business_unit']],
+                    partner_type='sponsor',
+                    new_organisation_type='21',
+                    organisation=None,
+                )]
         return data
 
     def hydrate_date_complete(self, bundle):
@@ -351,12 +376,21 @@ class IATIProjectResource(ModelResource):
     #         Project.current_image.save("image.jpg", File(img_temp), save=True)
 
 
+# bundle field names, matching field names on Organisation, InternalOrganisationID and Partnership models
+# Organisation
 FIELD_IATI_ORG_ID = 'iati_org_id'
-FIELD_INTERNAL_ORG_ID = 'internal_org_id'
 FIELD_NAME = 'name'
 FIELD_NEW_ORGANISATION_TYPE = 'new_organisation_type'
+ORG_FIELDS = [FIELD_IATI_ORG_ID, FIELD_NAME, FIELD_NEW_ORGANISATION_TYPE]
+# InternalOrganisationID
+FIELD_INTERNAL_ORG_ID = 'internal_org_id'
+# Partnership
 FIELD_ORGANISATION = 'organisation'
+FIELD_IATI_ACTIVITY_ID = 'iati_activity_id'
+FIELD_INTERNAL_ID = 'internal_id'
+# Meta
 FIELD_REPORTING_ORG = 'reporting_org'
+FIELD_BUSINESS_UNIT= 'business_unit'
 
 def get_organisation(bundle):
     """ Try to find the organisation to link to in the Partnership
@@ -392,6 +426,70 @@ def get_organisation(bundle):
             return FIELD_INTERNAL_ORG_ID
     return ret_val #TODO: better error handling, we may end up here with ret_val == None
 
+def create_organisation(bundle, bundle_field_to_use):
+    """ Create an Organisation using bundle_field_to_use to uniquely identify the Organisation
+    :param bundle: a tastypie bundle
+    :param bundle_field_to_use: a string denoting the field to use to uniquely identify the new Organisation
+    :return: an Organisation object
+    """
+    organisation = None
+    new_organisation_type=int(bundle.data[FIELD_NEW_ORGANISATION_TYPE])
+    # derive the old organisation type from the new one
+    organisation_type = dict(
+        zip([type for type, name in IATI_LIST_ORGANISATION_TYPE], Organisation.NEW_TO_OLD_TYPES)
+    )[new_organisation_type]
+    kwargs = dict(
+        name=bundle.data[FIELD_NAME],
+        new_organisation_type=new_organisation_type,
+        organisation_type= organisation_type
+    )
+    # use the IATI ID if possible
+    if bundle_field_to_use == FIELD_IATI_ORG_ID:
+        kwargs[FIELD_IATI_ORG_ID] = bundle.data[FIELD_IATI_ORG_ID]
+        organisation = Organisation.objects.create(**kwargs)
+    # otherwise fall back to using the reporting_org's internal ID
+    elif bundle_field_to_use == FIELD_INTERNAL_ORG_ID:
+        organisation = Organisation.objects.create(**kwargs)
+        our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
+        InternalOrganisationID.objects.create(
+            recording_org=our_organisation,
+            referenced_org=organisation,
+            identifier=bundle.data[FIELD_INTERNAL_ORG_ID],
+        )
+    return organisation
+
+def update_organisation(bundle, organisation):
+    for field_name in ORG_FIELDS:
+        if bundle.data.get(field_name, False):
+            setattr(organisation, field_name, bundle.data[field_name])
+    if bundle.data.get(FIELD_INTERNAL_ORG_ID, False):
+        our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
+        InternalOrganisationID.objects.get_or_create(
+            recording_org=our_organisation,
+            referenced_org=organisation,
+            defaults=dict(identifier=bundle.data[FIELD_INTERNAL_ORG_ID]),
+        )
+    organisation.save()
+    return organisation
+
+def get_or_create_organisation(bundle):
+    # try to find existing org
+    org_or_bundle_field = get_organisation(bundle)
+    # if no org found:
+    if not org_or_bundle_field:
+        return None #Bail!
+    if not isinstance(org_or_bundle_field, Organisation):
+        # try create a new org
+        organisation = create_organisation(bundle, org_or_bundle_field)
+        # if we can't crete a new org:
+        if not organisation:
+            return None # Bail!
+    else:
+        # Just to make clear what is what
+        organisation = org_or_bundle_field
+    return update_organisation(bundle, organisation)
+
+
 class IATIPartnershipResource(ModelResource):
     # Accountable, Extending, Funding, Implementing
     project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project', full=True,)
@@ -404,47 +502,29 @@ class IATIPartnershipResource(ModelResource):
         authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
         queryset        = Partnership.objects.all()
 
+    def hydrate(self, bundle):
+        """ Only the reporting org is assigned the FIELD_IATI_ACTIVITY_ID and FIELD_INTERNAL_ID values
+        """
+        organisation = get_or_create_organisation(bundle)
+        if organisation:
+            bundle.data[FIELD_ORGANISATION] = organisation
+            if organisation.iati_org_id != bundle.data[FIELD_REPORTING_ORG]:
+                bundle.data[FIELD_IATI_ACTIVITY_ID] = None
+                bundle.data[FIELD_INTERNAL_ID] = None
+        return bundle
+
     def hydrate_organisation(self, bundle):
-        # try to find an existing organisation
-        organisation_or_bundle_field = get_organisation(bundle)
-        if organisation_or_bundle_field:
-            if isinstance(organisation_or_bundle_field, Organisation):
-                organisation = organisation_or_bundle_field
-            else:
-                # there was no existing org, we need to create one if we have the data
-                kwargs = dict(
-                    name=bundle.data[FIELD_NAME],
-                    organisation_type=Organisation.ORG_TYPE_NGO, #TODO: Fix lookup from @type
-                    new_organisation_type = int(bundle.data[FIELD_NEW_ORGANISATION_TYPE]),
-                )
-                # use the IATI ID if possible
-                if organisation_or_bundle_field == FIELD_IATI_ORG_ID:
-                    kwargs[FIELD_IATI_ORG_ID] = bundle.data[FIELD_IATI_ORG_ID],
-                    organisation = Organisation.objects.create(**kwargs)
-                # otherwise fall back to using the reporting_org's internal ID
-                elif organisation_or_bundle_field == FIELD_INTERNAL_ORG_ID:
-                    organisation = Organisation.objects.create(**kwargs)
-                    our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
-                    InternalOrganisationID.objects.create(
-                        recording_org=our_organisation,
-                        referenced_org=organisation,
-                        identifier=bundle.data[FIELD_INTERNAL_ORG_ID],
-                    )
+        # we should have an org already from hydrate()
+        if bundle.data[FIELD_ORGANISATION]:
             bundle.data[FIELD_ORGANISATION] = reverse(
                 'api_dispatch_detail', kwargs={
                     'resource_name': 'organisation',
                     'api_name': 'v1',
-                    'pk': organisation.pk
+                    'pk': bundle.data[FIELD_ORGANISATION].pk
                 }
             )
-            # remove helper fields that aren't part of Partnership
-            bundle.data.pop(FIELD_NAME, None)
-            bundle.data.pop(FIELD_INTERNAL_ORG_ID, None)
-            bundle.data.pop(FIELD_REPORTING_ORG, None)
-            bundle.data.pop(FIELD_NEW_ORGANISATION_TYPE, None)
-            bundle.data.pop(FIELD_IATI_ORG_ID, None)
-            return bundle
         return bundle
+
 
 class IATIBudgetItemResource(ModelResource):
     project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project', full=True,)
