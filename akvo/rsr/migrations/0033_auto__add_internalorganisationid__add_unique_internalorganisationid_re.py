@@ -17,8 +17,20 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('rsr', ['InternalOrganisationID'])
 
+        # Adding unique constraint on 'InternalOrganisationID', fields ['recording_org', 'referenced_org']
+        db.create_unique('rsr_internalorganisationid', ['recording_org_id', 'referenced_org_id'])
+
+        # Adding unique constraint on 'Organisation', fields ['iati_org_id']
+        db.create_unique('rsr_organisation', ['iati_org_id'])
+
 
     def backwards(self, orm):
+        # Removing unique constraint on 'Organisation', fields ['iati_org_id']
+        db.delete_unique('rsr_organisation', ['iati_org_id'])
+
+        # Removing unique constraint on 'InternalOrganisationID', fields ['recording_org', 'referenced_org']
+        db.delete_unique('rsr_internalorganisationid', ['recording_org_id', 'referenced_org_id'])
+
         # Deleting model 'InternalOrganisationID'
         db.delete_table('rsr_internalorganisationid')
 
@@ -136,7 +148,7 @@ class Migration(SchemaMigration):
             'text': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
         },
         'rsr.internalorganisationid': {
-            'Meta': {'object_name': 'InternalOrganisationID'},
+            'Meta': {'unique_together': "(('recording_org', 'referenced_org'),)", 'object_name': 'InternalOrganisationID'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'identifier': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'recording_org': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'internal_ids'", 'to': "orm['rsr.Organisation']"}),
@@ -195,7 +207,7 @@ class Migration(SchemaMigration):
             'contact_person': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'iati_org_id': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '75', 'null': 'True', 'blank': 'True'}),
+            'iati_org_id': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '75', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'internal_org_ids': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'recording_organisation'", 'symmetrical': 'False', 'through': "orm['rsr.InternalOrganisationID']", 'to': "orm['rsr.Organisation']"}),
             'language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '2'}),
