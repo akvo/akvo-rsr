@@ -29,6 +29,9 @@ from tastypie.utils.mime import build_content_type
 
 from cacheback.base import Job
 
+import logging
+logger = logging.getLogger('akvo.rsr')
+
 from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
 from akvo.api.serializers import IATISerializer
 from akvo.api.validation import ModelFormValidation
@@ -380,8 +383,9 @@ class IATIProjectResource(ModelResource):
 # Organisation
 FIELD_IATI_ORG_ID = 'iati_org_id'
 FIELD_NAME = 'name'
+FIELD_LONG_NAME = 'long_name'
 FIELD_NEW_ORGANISATION_TYPE = 'new_organisation_type'
-ORG_FIELDS = [FIELD_IATI_ORG_ID, FIELD_NAME, FIELD_NEW_ORGANISATION_TYPE]
+ORG_FIELDS = [FIELD_IATI_ORG_ID, FIELD_NAME, FIELD_LONG_NAME, FIELD_NEW_ORGANISATION_TYPE]
 # InternalOrganisationID
 FIELD_INTERNAL_ORG_ID = 'internal_org_id'
 # Partnership
@@ -440,23 +444,33 @@ def create_organisation(bundle, bundle_field_to_use):
     )[new_organisation_type]
     kwargs = dict(
         name=bundle.data[FIELD_NAME],
+        long_name=bundle.data.get(FIELD_LONG_NAME, ''),
         new_organisation_type=new_organisation_type,
         organisation_type= organisation_type
     )
     # use the IATI ID if possible
     if bundle_field_to_use == FIELD_IATI_ORG_ID:
         kwargs[FIELD_IATI_ORG_ID] = bundle.data[FIELD_IATI_ORG_ID]
-        organisation = Organisation.objects.create(**kwargs)
+        try:
+            logger.debug("Trying to create an org with kwargs: {kwargs}".format(kwargs=kwargs))
+            organisation = Organisation.objects.create(**kwargs)
+        except Exception, e:
+            logger.exception('{message} Locals:\n {locals}\n\n'.format(message=e.message, locals=locals(), ))
     # otherwise fall back to using the reporting_org's internal ID
     elif bundle_field_to_use == FIELD_INTERNAL_ORG_ID:
-        organisation = Organisation.objects.create(**kwargs)
-        our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
-        InternalOrganisationID.objects.create(
-            recording_org=our_organisation,
-            referenced_org=organisation,
-            identifier=bundle.data[FIELD_INTERNAL_ORG_ID],
-        )
+        try:
+            logger.debug("Trying to create an org with kwargs: {kwargs}".format(kwargs=kwargs))
+            organisation = Organisation.objects.create(**kwargs)
+            our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
+            InternalOrganisationID.objects.create(
+                recording_org=our_organisation,
+                referenced_org=organisation,
+                identifier=bundle.data[FIELD_INTERNAL_ORG_ID],
+            )
+        except Exception, e:
+            logger.exception('{message} Locals:\n {locals}\n\n'.format(message=e.message, locals=locals(), ))
     return organisation
+
 
 def update_organisation(bundle, organisation):
     for field_name in ORG_FIELDS:
