@@ -312,30 +312,13 @@ class IATIProjectResource(ModelResource):
                         amount=sum([int(item['amount']) for item in data['budget_items']])
                     ), 'label': '1'}
                 ]
-        # hack to add Cordaid's business units as orgs if they're not there
+        # hack to truncate org names.
+        # Tried to do this in the XSLT but substring(text, 1, 25) sometimes returns more than 25 characters :-p
+        # TODO: write a general truncator function for all char and text field of a model's deserialized data
         if data.get('partnerships'):
-            cordaid_business_unit_orgs = {
-                'K6010':'Cordaid Healthcare',
-                'K6020':'Cordaid Children & Education',
-                'K6030':'Cordaid Disaster Response',
-                'K6040':"Cordaid Women's leadership",
-                'K6050':'Cordaid Extractives',
-                'K6060':'Cordaid Security & Justice',
-                'K6070':'Cordaid Entrepreneurship',
-                'K6080':'Cordaid Urban Matters',
-                'K6090':'Cordaid Domestic',
-                'K6100':'Cordaid Investments',
-            }
-            temp_org = data['partnerships'][0]
-            if temp_org['business_unit'] and temp_org['reporting_org']:
-                data['partnerships'] += [dict(
-                    internal_org_id=temp_org['business_unit'],
-                    reporting_org=temp_org['reporting_org'],
-                    name=cordaid_business_unit_orgs[temp_org['business_unit']],
-                    partner_type='sponsor',
-                    new_organisation_type='21',
-                    organisation=None,
-                )]
+            for partnership in data['partnerships']:
+                partnership[FIELD_NAME] = partnership[FIELD_NAME][:25]
+                partnership[FIELD_LONG_NAME] = partnership[FIELD_LONG_NAME][:75]
         return data
 
     def hydrate_date_complete(self, bundle):

@@ -11,14 +11,14 @@ from lxml import etree
 localhost = dict(
     domain='localhost:8000',
     api_ver='v1',
-    api_key='c719f880b815a1d4fcc267b6529e6643d33b54b2',
+    api_key='ae9b09ba6f6c34079aad95701f188148fa149d87',
     username='gabriel',
 )
 
 test2 = dict(
     domain='test2.akvo.org',
     api_ver='v1',
-    api_key='f7e7f139280fb7149241957e84cc22bb552dd8f6',
+    api_key='e5dbdaf6122fd3ee4193e1121850cbec4290160c',
     username='gabriel',
 )
 
@@ -33,8 +33,6 @@ def post_an_activity(activity_element, host):
         print "**** Error creating iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
     else:
         print "Created project for iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
-    # import pdb
-    # pdb.set_trace()
 
 # root[i].findall('iati-identifier')[0].text
 

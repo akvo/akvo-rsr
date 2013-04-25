@@ -32,7 +32,7 @@ def create_publishing_status(sender, **kwargs):
     # kwargs['raw'] is True when we're running manage.py loaddata
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         new_project = kwargs['instance']
-        ps = get_model('rsr', 'publishingstatus')(status='unpublished')
+        ps = get_model('rsr', 'publishingstatus')(status='published')
         ps.project = new_project
         ps.save()
         
