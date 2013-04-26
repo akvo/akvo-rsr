@@ -7,9 +7,9 @@ from lxml import etree
 from os.path import splitext
 
 from django.core.management import setup_environ
-import akvo.settings
+import settings
 
-setup_environ(akvo.settings)
+setup_environ(settings)
 
 import os
 from django.core.files import File
@@ -17,6 +17,9 @@ from django.core.files.temp import NamedTemporaryFile
 
 from akvo.rsr.models import Project
 from akvo.rsr.utils import model_and_instance_based_filename
+
+FILE_CORDAID_XML = './api/xml/cordaid_iati_activities.xml'
+DIR_CORDAID_IMAGES = 'api/xml/cordaid/20130423_export_xml'
 
 def import_images(image_dir, img_to_proj_map):
     for image_name in os.listdir(image_dir):
@@ -40,7 +43,7 @@ def create_mapping_images_to_projects():
     """ Create a dict that maps the photo-ids in cordaid's xml to the internal-project-id of the same activity
     This allows us to find the project to add the current image to
     """
-    with open('./xml/cordaid_iati_activities.xml', 'r') as f:
+    with open(FILE_CORDAID_XML, 'r') as f:
         root = etree.fromstring(f.read())
         images_to_projects = {}
         for i in range(len(root)):
@@ -51,6 +54,5 @@ def create_mapping_images_to_projects():
         return images_to_projects
 
 if __name__ == '__main__':
-    image_dir = 'xml/cordaid/20130423_export_xml'
     img_to_proj_map = create_mapping_images_to_projects()
-    import_images(image_dir, img_to_proj_map)
+    import_images(DIR_CORDAID_IMAGES, img_to_proj_map)
