@@ -316,6 +316,19 @@ class IATIProjectResource(ModelResource):
         # Tried to do this in the XSLT but substring(text, 1, 25) sometimes returns more than 25 characters :-p
         # TODO: write a general truncator function for all char and text field of a model's deserialized data
         if data.get('partnerships'):
+            if data.get('partnerships'):
+                temp_org = data['partnerships'][0]
+                # are the requirements met for creating a business unit partnership?
+                if temp_org['business_unit'] and temp_org['reporting_org']:
+                    data['partnerships'] += [dict(
+                        internal_org_id=temp_org['business_unit'],
+                        reporting_org=temp_org['reporting_org'],
+                        name='Incorrect business unit', #this should never be used, if it is the lookup of existing BUs is borked
+                        long_name='Incorrect business unit',
+                        partner_type='sponsor',
+                        new_organisation_type='21',
+                        organisation=None,
+                    )]
             for partnership in data['partnerships']:
                 partnership[FIELD_NAME] = partnership[FIELD_NAME][:25]
                 partnership[FIELD_LONG_NAME] = partnership[FIELD_LONG_NAME][:75]
@@ -457,7 +470,9 @@ def create_organisation(bundle, bundle_field_to_use):
 
 def update_organisation(bundle, organisation):
     for field_name in ORG_FIELDS:
-        if bundle.data.get(field_name, False):
+        # Set the organisation field only if it's empty.
+        # This way we add data where there is none, but we don't change existing fields
+        if bundle.data.get(field_name, False) and not getattr(organisation, field_name, ''):
             setattr(organisation, field_name, bundle.data[field_name])
     if bundle.data.get(FIELD_INTERNAL_ORG_ID, False):
         our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
