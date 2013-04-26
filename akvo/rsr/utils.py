@@ -4,9 +4,11 @@
 # utility functions for RSR
 
 import inspect
+from os.path import splitext
 import random
 import logging
 from urlparse import urljoin
+from datetime import datetime
 
 logger = logging.getLogger('akvo.rsr')
 
