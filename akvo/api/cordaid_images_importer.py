@@ -19,13 +19,11 @@ from akvo.rsr.models import Project
 from akvo.rsr.utils import model_and_instance_based_filename
 
 def import_images(image_dir, img_to_proj_map):
-    import pdb
-    pdb.set_trace()
     for image_name in os.listdir(image_dir):
         photo_id, ext = splitext(image_name)
         if ext in ['.png', '.jpg', '.jpeg', '.gif']:
             try:
-                project = Project.objects.get(partnerships__internal_id=img_to_proj_map[photo_id])
+                project = Project.objects.get(partnerships__internal_id=img_to_proj_map.get(photo_id))
                 filename = model_and_instance_based_filename('Project', project.pk, 'current_image', ext)
                 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), image_dir, image_name), 'rb') as f:
                     image_data = f.read()
@@ -34,8 +32,9 @@ def import_images(image_dir, img_to_proj_map):
                     image_temp.flush()
                     project.current_image.save(filename, File(image_temp), save=True)
                 f.close()
+                print "Uploaded image to project {pk}".format(pk=project.pk)
             except:
-                pass
+                print "Upload failed. internal_id={internal_id}".format(internal_id=img_to_proj_map.get(photo_id))
 
 def create_mapping_images_to_projects():
     """ Create a dict that maps the photo-ids in cordaid's xml to the internal-project-id of the same activity
@@ -44,8 +43,6 @@ def create_mapping_images_to_projects():
     with open('./xml/cordaid_iati_activities.xml', 'r') as f:
         root = etree.fromstring(f.read())
         images_to_projects = {}
-        import pdb
-        pdb.set_trace()
         for i in range(len(root)):
             activity = root[i]
             images_to_projects[
