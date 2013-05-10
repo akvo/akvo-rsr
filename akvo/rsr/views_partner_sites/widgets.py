@@ -8,6 +8,7 @@
 from __future__ import absolute_import
 
 import json
+import random
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -29,11 +30,9 @@ __all__ = [
 
 
 class BaseWidgetView(TemplateView):
-    """"""
+    """Setup a common base widget"""
     def get_context_data(self, **kwargs):
         context = super(BaseWidgetView, self).get_context_data(**kwargs)
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        context['project'] = project
         context['app_url'] = self.request.app_url
         context['domain_url'] = self.request.domain_url
         context['style'] = 'darkBG'
@@ -42,8 +41,33 @@ class BaseWidgetView(TemplateView):
         return context
 
 
+class ProjectBaseWidgetView(BaseWidgetView):
+    """Extends the base widget with a project from url"""
+    def get_context_data(self, **kwargs):
+        context = super(ProjectBaseWidgetView, self).get_context_data(**kwargs)
+        context['project'] = get_object_or_404(
+            Project, pk=self.kwargs['project_id'])
+        return context
+
+
+class RandomBaseWidgetView(BaseWidgetView):
+    """Extends the base widget with random project"""
+    def get_context_data(self, **kwargs):
+        context = super(RandomBaseWidgetView, self).get_context_data(**kwargs)
+        partner = get_object_or_404(
+            Organisation, pk=self.request.organisation_id)
+        context['project'] = random.choice(partner.active_projects())
+        return context
+
+
 class GetWidgetView(BaseView):
     template_name = 'partner_sites/widgets/get_widget1.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(GetWidgetView, self).get_context_data(**kwargs)
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        context['project'] = project
+        return context
 
     def post(self, request, *args, **kwargs):
         self.template_name = 'partner_sites/widgets/get_widget2.html'
@@ -52,12 +76,38 @@ class GetWidgetView(BaseView):
         return self.render_to_response(context)
 
     def get_post_context(self):
-        widget_type = self.request.POST.get('widget-type', '')
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        kind = self.request.POST.get('kind')
+        source = self.request.POST.get('source', 'specific')
         return {
-            'widget_type': widget_type,
             'project': project,
+            'widget_kind': kind,
+            'widget_source': source
         }
+
+
+class CobrandedBannerView(ProjectBaseWidgetView):
+    template_name = 'partner_sites/widgets/cobranded_banner.html'
+
+
+class RandomCobrandedBannerView(RandomBaseWidgetView):
+    template_name = 'partner_sites/widgets/cobranded_banner.html'
+
+
+class ProjectNarrowView(ProjectBaseWidgetView):
+    template_name = 'partner_sites/widgets/project_narrow.html'
+
+
+class RandomProjectNarrowView(RandomBaseWidgetView):
+    template_name = 'partner_sites/widgets/project_narrow.html'
+
+
+class ProjectSmallView(ProjectBaseWidgetView):
+    template_name = 'partner_sites/widgets/project_small.html'
+
+
+class RandomProjectSmallView(RandomBaseWidgetView):
+    template_name = 'partner_sites/widgets/project_small.html'
 
 
 class ProjectMapView(TemplateView):
@@ -67,23 +117,19 @@ class ProjectMapView(TemplateView):
         context = super(ProjectMapView, self).get_context_data(**kwargs)
         context['height'] = self.request.GET.get('height', '300')
         context['width'] = self.request.GET.get('width', '600')
-        context['bgcolor'] = self.request.GET.get('bgcolor', 'B50000')
         context['state'] = self.request.GET.get('state', 'dynamic')
         context['organisation'] = (
             get_object_or_404(Organisation, pk=self.request.organisation_id))
+
+        # To handle old free form coloring via the bgcolor query parameter
+        # the new way should be to use the "style" parameter with
+        # dark(default) or light.
+        context['bgcolor'] = self.request.GET.get('bgcolor')
+        if not context['bgcolor']:
+            context['bgcolor'] = '303030'
+            if self.request.GET.get('style') == 'light':
+                context['bgcolor'] = 'fff'
         return context
-
-
-class CobrandedBannerView(BaseWidgetView):
-    template_name = 'partner_sites/widgets/cobranded_banner.html'
-
-
-class ProjectNarrowView(BaseWidgetView):
-    template_name = 'partner_sites/widgets/project_narrow.html'
-
-
-class ProjectSmallView(BaseWidgetView):
-    template_name = 'partner_sites/widgets/project_small.html'
 
 
 class ProjectCordinates(TemplateView):

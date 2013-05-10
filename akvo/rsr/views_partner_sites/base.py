@@ -27,7 +27,7 @@ __all__ = [
     'BaseProjectView',
     'BaseListView',
     'BaseView',
-    ]
+]
 
 
 class DebugViewMixin(object):
