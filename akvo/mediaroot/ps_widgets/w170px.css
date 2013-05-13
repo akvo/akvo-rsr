@@ -29,7 +29,6 @@
 	height: auto;
 }
 .w170px #project_subtitle {
-	width: 165px;
 	margin: 5px 5px 10px 5px;
 	float: none;
 }
@@ -37,7 +36,7 @@
 	display: inline-block;
 	position: relative;
 	float: none;
-	width: 160px;
+	width: 148px;
 	margin: 10px 5px 0 0;
 	max-height: none;
 	padding: 15px 4px;
@@ -60,3 +59,6 @@
 	margin: 20px auto 0;
 }
 
+.w170px header span {
+    display: none;
+}
