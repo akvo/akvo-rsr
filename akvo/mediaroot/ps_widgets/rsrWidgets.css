@@ -275,6 +275,9 @@ ul.basicInfo li .projectLocation {
 	color: rgb(255,255,255);
 	background: url(pinLocation.png) left center no-repeat;
 	margin: 0 0 0 5px;
+	white-space:nowrap;
+	text-overflow: ellipsis;
+	overflow:hidden;
 }
 #container.lightBG ul.basicInfo li .projectLocation {
 	color: rgb(32,32,36);
