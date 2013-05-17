@@ -41,6 +41,10 @@
         <xsl:apply-templates select="budget" />
       </budget_items>
       
+      <goals type="list">
+        <xsl:apply-templates select="result" />
+      </goals>
+      
       <partnerships type="list">
         <xsl:apply-templates select="participating-org" />
       </partnerships>
@@ -240,10 +244,10 @@
   </xsl:template>
 
   <!-- goal -->
-  <xsl:template match="description[@akvo:type='Objectives detail']">
+  <xsl:template match="result">
     <object>
       <text>
-        <xsl:value-of select="." />
+        <xsl:value-of select="normalize-space(title)" />
       </text>
     </object>
   </xsl:template>
@@ -257,7 +261,7 @@
       <label>1</label>
     </object>
   </xsl:template>
-      
+
   <!-- partnership -->
   <xsl:template match="participating-org" >
     <object>
