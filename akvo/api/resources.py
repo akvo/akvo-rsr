@@ -1006,6 +1006,7 @@ class ProjectUpdateResource(ConditionalFullResource):
         queryset                = ProjectUpdate.objects.all()
         resource_name           = 'project_update'
         include_absolute_url    = True
+        always_return_data      = True
 
         filtering               = dict(
             # other fields
