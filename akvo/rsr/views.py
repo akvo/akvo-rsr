@@ -6,6 +6,8 @@
 from itertools import groupby
 from urlparse import urljoin
 
+from lxml import etree
+
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (MiniCMS, FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
@@ -22,7 +24,7 @@ from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import login, logout, REDIRECT_FIELD_NAME
+from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -32,8 +34,10 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
 from django.forms import ModelForm
-from django.http import (HttpResponse, HttpResponseRedirect,
-    HttpResponsePermanentRedirect, Http404)
+from django.http import (
+        HttpResponse, HttpResponseRedirect, HttpResponseForbidden,
+        HttpResponseServerError, HttpResponsePermanentRedirect, Http404
+)
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
@@ -1473,3 +1477,27 @@ def global_organisation_projects_map_json(request, org_id):
     if callback:
         location_data = '%s(%s);' % (callback, location_data)
     return HttpResponse(location_data, content_type='application/json')
+
+
+def get_api_key(request):
+    if request.method == "POST":
+        username = request.POST.get("username", "")
+        password = request.POST.get("password", "")
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                user_profile = UserProfile.get(user=user)
+                user_profile.save()
+                api_key = user_profile.api_key
+                root = etree.Element("credentials")
+                username_element = etree.SubElement(root, "username")
+                username_element.text = username
+                api_key_element = etree.SubElement(root, "api_key")
+                api_key_element.text = api_key
+                tree = etree.ElementTree(root)
+                xml_data = etree.tostring(tree)
+                return HttpResponse(xml_data, content_type="text/xml")
+        else:
+            return HttpResponseForbidden()
+    return HttpResponseServerError()
