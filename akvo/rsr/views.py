@@ -1488,15 +1488,15 @@ def get_api_key(request):
             if user is not None:
                 login(request, user)
                 user_profile = UserProfile.get(user=user)
-                user_profile.save()
-                api_key = user_profile.api_key
-                root = etree.Element("credentials")
-                username_element = etree.SubElement(root, "username")
+                if not user_profile.api_key:
+                    user_profile.save()
+                xml_root = etree.Element("credentials")
+                username_element = etree.SubElement(xml_root, "username")
                 username_element.text = username
-                api_key_element = etree.SubElement(root, "api_key")
-                api_key_element.text = api_key
-                tree = etree.ElementTree(root)
-                xml_data = etree.tostring(tree)
+                api_key_element = etree.SubElement(xml_root, "api_key")
+                api_key_element.text = user_profile.api_key
+                xml_tree = etree.ElementTree(xml_root)
+                xml_data = etree.tostring(xml_tree)
                 return HttpResponse(xml_data, content_type="text/xml")
         else:
             return HttpResponseForbidden()
