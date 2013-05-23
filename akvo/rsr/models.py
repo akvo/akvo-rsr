@@ -1626,7 +1626,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     @property
     def api_key(self, api_key=""):
         try:
-            api_key = ApiKey.get(user=self.user)
+            api_key = ApiKey.objects.get(user=self.user)
         except:
             pass
         return api_key
