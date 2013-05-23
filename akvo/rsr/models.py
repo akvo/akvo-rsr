@@ -1624,12 +1624,13 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     #    logger.debug("Exiting: %s()" % who_am_i())
 
     @property
-    def api_key(self, api_key=""):
+    def api_key(self, key=""):
         try:
             api_key = ApiKey.objects.get(user=self.user)
+            key = api_key.key
         except:
             pass
-        return api_key
+        return key
 
 
 class SmsReporterManager(models.Manager):
