@@ -35,8 +35,8 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
 from django.forms import ModelForm
 from django.http import (
-        HttpResponse, HttpResponseRedirect, HttpResponseForbidden,
-        HttpResponseServerError, HttpResponsePermanentRedirect, Http404
+        HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed,
+        HttpResponsePermanentRedirect, Http404
 )
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
@@ -1500,4 +1500,4 @@ def get_api_key(request):
                 return HttpResponse(xml_data, content_type="text/xml")
         else:
             return HttpResponseForbidden()
-    return HttpResponseServerError()
+    return HttpResponseNotAllowed()

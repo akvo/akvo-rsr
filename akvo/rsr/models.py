@@ -69,6 +69,8 @@ from akvo.rsr.signals import (
 
 from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
 
+from tastypie.models import ApiKey
+
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -1620,6 +1622,14 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     #
     #
     #    logger.debug("Exiting: %s()" % who_am_i())
+
+    @property
+    def api_key(self, api_key=""):
+        try:
+            api_key = ApiKey.get(user=self.user)
+        except:
+            pass
+        return api_key
 
 
 class SmsReporterManager(models.Manager):
