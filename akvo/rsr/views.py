@@ -42,6 +42,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from datetime import datetime
@@ -1481,6 +1482,7 @@ def global_organisation_projects_map_json(request, org_id):
 
 
 @require_POST
+@csrf_exempt
 def get_api_key(request):
     username = request.POST.get("username", "")
     password = request.POST.get("password", "")
