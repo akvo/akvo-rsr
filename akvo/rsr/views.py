@@ -42,6 +42,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
+from django.views.decorators.http import require_POST
 
 from datetime import datetime
 from registration.models import RegistrationProfile
@@ -1479,25 +1480,24 @@ def global_organisation_projects_map_json(request, org_id):
     return HttpResponse(location_data, content_type='application/json')
 
 
+@require_POST
 def get_api_key(request):
-    if request.method == "POST":
-        username = request.POST.get("username", "")
-        password = request.POST.get("password", "")
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                user_profile = UserProfile.get(user=user)
-                if not user_profile.api_key:
-                    user_profile.save()
-                xml_root = etree.Element("credentials")
-                username_element = etree.SubElement(xml_root, "username")
-                username_element.text = username
-                api_key_element = etree.SubElement(xml_root, "api_key")
-                api_key_element.text = user_profile.api_key
-                xml_tree = etree.ElementTree(xml_root)
-                xml_data = etree.tostring(xml_tree)
-                return HttpResponse(xml_data, content_type="text/xml")
-        else:
-            return HttpResponseForbidden()
-    return HttpResponseNotAllowed()
+    username = request.POST.get("username", "")
+    password = request.POST.get("password", "")
+    if username and password:
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            user_profile = UserProfile.get(user=user)
+            if not user_profile.api_key:
+                user_profile.save()
+            xml_root = etree.Element("credentials")
+            username_element = etree.SubElement(xml_root, "username")
+            username_element.text = username
+            api_key_element = etree.SubElement(xml_root, "api_key")
+            api_key_element.text = user_profile.api_key
+            xml_tree = etree.ElementTree(xml_root)
+            xml_data = etree.tostring(xml_tree)
+            return HttpResponse(xml_data, content_type="text/xml")
+    else:
+        return HttpResponseForbidden()
