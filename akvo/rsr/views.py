@@ -1501,5 +1501,4 @@ def get_api_key(request):
             xml_tree = etree.ElementTree(xml_root)
             xml_data = etree.tostring(xml_tree)
             return HttpResponse(xml_data, content_type="text/xml")
-    else:
-        return HttpResponseForbidden()
+    return HttpResponseForbidden()
