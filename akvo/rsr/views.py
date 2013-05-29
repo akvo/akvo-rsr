@@ -1496,7 +1496,7 @@ def get_api_key(request):
                 user_profile.save()
             xml_root = etree.Element("credentials")
             user_id_element = etree.SubElement(xml_root, "user_id")
-            user_id_element.text = user_id
+            user_id_element.text = str(user_id)
             username_element = etree.SubElement(xml_root, "username")
             username_element.text = username
             api_key_element = etree.SubElement(xml_root, "api_key")
