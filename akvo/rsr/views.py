@@ -1492,6 +1492,7 @@ def get_api_key(request):
             login(request, user)
             user_id = user.id
             user_profile = UserProfile.objects.get(user=user)
+            org_id = user_profile.organisation.id
             if not user_profile.api_key:
                 user_profile.save()
             xml_root = etree.Element("credentials")
@@ -1499,6 +1500,8 @@ def get_api_key(request):
             user_id_element.text = str(user_id)
             username_element = etree.SubElement(xml_root, "username")
             username_element.text = username
+            org_id_element = etree.SubElement(xml_root, "org_id")
+            org_id_element.text = str(org_id)
             api_key_element = etree.SubElement(xml_root, "api_key")
             api_key_element.text = user_profile.api_key
             xml_tree = etree.ElementTree(xml_root)
