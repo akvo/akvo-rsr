@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 from django.core.files.uploadedfile import UploadedFile
+
 from lxml import etree
 from os.path import splitext
 
@@ -34,7 +35,7 @@ def import_images(image_dir, img_to_proj_map):
                     image_temp = NamedTemporaryFile(delete=True)
                     image_temp.write(image_data)
                     image_temp.flush()
-                    project.current_image.save(filename, UploadedFile(image_temp, content_type='image/jpeg'), save=True)
+                    project.current_image.save(filename, File(image_temp, content_type='image/jpeg'), save=True)
                 f.close()
                 print "Uploaded image to project {pk}".format(pk=project.pk)
             except Exception, e:
