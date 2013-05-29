@@ -22,7 +22,7 @@ class Migration(DataMigration):
         CORDAID_ID = 273
         DGIS_ID = 464
         business_units = [(949, 'K6010'),  (959, 'K6020'), (961, 'K6030'), (955, 'K6040'), (960, 'K6050'),
-                          (1333, 'K6060'), (950, 'K6070'), (946, 'K6080'), (962, 'K6090'), (953, 'K6100'),
+                          (950, 'K6070'), (946, 'K6080'), (962, 'K6090'), (953, 'K6100'),
                           (1099, 'K6110'),
         ]
         cordaid = orm['rsr.Organisation'].objects.get(pk=CORDAID_ID)
