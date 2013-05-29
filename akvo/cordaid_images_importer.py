@@ -3,6 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+from django.core.files.uploadedfile import UploadedFile
 from lxml import etree
 from os.path import splitext
 
@@ -24,20 +25,22 @@ DIR_CORDAID_IMAGES = 'api/xml/cordaid/20130423_export_xml'
 def import_images(image_dir, img_to_proj_map):
     for image_name in os.listdir(image_dir):
         photo_id, ext = splitext(image_name)
-        if ext in ['.png', '.jpg', '.jpeg', '.gif']:
+        if ext.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
             try:
                 project = Project.objects.get(partnerships__internal_id=img_to_proj_map.get(photo_id))
-                filename = model_and_instance_based_filename('Project', project.pk, 'current_image', ext)
+                filename = model_and_instance_based_filename('Project', project.pk, 'current_image', image_name)
                 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), image_dir, image_name), 'rb') as f:
                     image_data = f.read()
                     image_temp = NamedTemporaryFile(delete=True)
                     image_temp.write(image_data)
                     image_temp.flush()
-                    project.current_image.save(filename, File(image_temp), save=True)
+                    project.current_image.save(filename, UploadedFile(image_temp, content_type='image/jpeg'), save=True)
                 f.close()
                 print "Uploaded image to project {pk}".format(pk=project.pk)
-            except:
-                print "Upload failed. internal_id={internal_id}".format(internal_id=img_to_proj_map.get(photo_id))
+            except Exception, e:
+                print "Upload failed. internal_id: {internal_id} Error msg: {message}".format(
+                    internal_id=img_to_proj_map.get(photo_id), message=e.message
+                )
 
 def create_mapping_images_to_projects():
     """ Create a dict that maps the photo-ids in cordaid's xml to the internal-project-id of the same activity
