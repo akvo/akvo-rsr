@@ -3,7 +3,7 @@
 {% load url from future %}
 
 
-{% block title %}{% trans "Get a widget" %} - {% endblock title %}
+{% block title %}{% trans "Configure widget" %} - {% endblock title %}
 
 {% block head %}
   {{block.super}}
@@ -46,15 +46,15 @@
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
-  <li><a href="{% url 'get_widget' project.id %}"><span>{% trans "Get a widget 1/2" %}</span></a></li>
-  <li class="last_breadcrum_item">{% trans "Get a widget 2/2" %}</li>
+  <li><a href="{% url 'get_widget' project.id %}"><span>{% trans "Select widget" %}</span></a></li>
+  <li class="last_breadcrum_item">{% trans "Configure widget" %}</li>
 {% endblock breadcrum_items %}
 
 {% block breadcrum_right %}{% endblock breadcrum_right %} {# Override #}
 
 {% block content %}
   <div class="clearfix">
-    <h2>{% trans "Get a widget" %}</h2>
+    <h2>{% trans "Configure widget - step 2 of 2" %}</h2>
     <div style="margin-left:40px; margin-top: 30px;">
       <div class="pad20 whitebox marg_bottom40">
         {# div width get set in jquery ready function based on widget type #}
@@ -62,7 +62,7 @@
           <div id="akvo_widget_container"></div>
         </div>
         <div id="widget_conf">
-          <h3 style="margin-bottom:15px">{% trans "Step 2: Configure widget" %}</h3>
+          {# <h3 style="margin-bottom:15px">{% trans "Step 2: Configure widget" %}</h3> #}
           <div class="getWidget">
             <h4>{% trans "Style" %}</h4>
             <label class="radio">
@@ -150,6 +150,7 @@
                 case 'cobranded-banner':  return 234;
                 case 'project-narrow':    return 840;
                 case 'project-small':     return 312;
+                case 'project-list':      return 730;
               }  
             },
 
@@ -158,6 +159,7 @@
                 case 'cobranded-banner':  return 468;
                 case 'project-narrow':    return 170;
                 case 'project-small':     return 170;
+                case 'project-list':      return 745;
               }
             },
           {% endif %}
@@ -171,19 +173,15 @@
               template = '<%= host %>/widgets/projects/map/';
               template += '?style=<%= style %>&state=<%= state %>';
               template += '&width=<%= width %>&height=<%= height %>';
+            {% elif widget_kind == 'project-list' %}
+              template = '<%= host %>/widgets/projects/list/';
+              template += '?style=<%= style %>';
             {% else %}
               template = '<%= host %>/widgets/<%= kind %>/';
               template += this.source === 'random' ? 'random/' : '<%= project %>/';
               template += '?style=<%= style %>';
             {% endif %}
             
-            {% comment %}
-            if (typeof(this.project) != "undefined") {
-              
-            } else {
-              
-            }
-            {% endcomment %}
             template += this.site();
             return _.template(template)(this);
           },

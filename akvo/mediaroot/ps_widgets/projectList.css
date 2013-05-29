@@ -1,0 +1,76 @@
+.projectList {width:745px; height:730px;}
+.projectListTable {width:745px; height:700px; overflow-y:scroll;}
+ul.thead {height:30px;}
+ul.thead li {float:left; 	text-align: left;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	background: rgb(0,0,0);
+	height:25px;
+	color:rgb(204,204,204);
+	padding:5px 0 0 0;
+}
+.darkBG .projectListWidget { color: rgb(214,214,214); }
+.lightBG .projectListWidget { color: rgb(32,32,36); }
+.projectListWidget td {
+	vertical-align: top;
+	padding: 0.5em 0.25em;
+	border-bottom: 1px solid rgb(34,34,34);
+	border-top: 1px solid rgb(0,0,0);
+}
+.lightBG .projectListWidget td {
+	vertical-align: top;
+	padding: 0.5em 0.25em;
+	border-bottom: 1px solid rgb(134,134,134);
+	border-top: 1px solid rgb(230,230,230);
+}
+.projectDescrTd { width: 35%; }
+.projectLocTd { width: 15%; }
+.projectStatusTd { width: 15%; }
+.projectPartnerTd { width: 15%; }
+.projectFundingTd { width: 20%; }
+.projectListWidget .projectBudget {
+	position: relative;
+	overflow: auto;
+	float: none;
+	width: 98%;
+	border: 1px solid rgba(17,17,17,0.3);
+	background: rgb(59,59,59);
+	background: rgba(0,0,0,0.2);
+	margin: 0;
+}
+.projectStatusTd span { display: block; }
+.projectListWidget #project_title {
+	width: auto;
+	display: block;
+	font-size: 1em;
+	text-transform: uppercase;
+	margin: 0 0 0.5em 0;
+	color: rgb(255,255,255);
+}
+.projectLocTd .projectLocation {
+	display: inline-block;
+	padding: 0.15em 0.35em 0.15em 17px;
+	font-size: 0.7em;
+	text-transform: uppercase;
+	color: rgb(255,255,255);
+	background: url(pinLocation.png) left center no-repeat;
+	margin: 0 0 0 5px;
+	white-space: normal;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.lightBG .projectLocTd .projectLocation {
+	color: rgb(32,32,36);
+	background: url(pinLocationBk.png) left center no-repeat;
+}
+.projectStatus {
+	display: inline-block;
+	padding: 0.15em 0.5em;
+	font-size: 0.7em;
+	text-transform: uppercase;
+	border-radius: 0.15em;
+	color: rgb(255,255,255);
+}
+.projectStatus.notComplete { background: rgb(217,104,0); }
+.projectStatus.complete { background: rgb(140,198,63); }

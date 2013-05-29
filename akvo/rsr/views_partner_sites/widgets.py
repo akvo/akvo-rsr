@@ -60,32 +60,6 @@ class RandomBaseWidgetView(BaseWidgetView):
         return context
 
 
-class GetWidgetView(BaseView):
-    template_name = 'partner_sites/widgets/get_widget1.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(GetWidgetView, self).get_context_data(**kwargs)
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        context['project'] = project
-        return context
-
-    def post(self, request, *args, **kwargs):
-        self.template_name = 'partner_sites/widgets/get_widget2.html'
-        context = dict(self.get_context_data().items()
-                       + self.get_post_context().items())
-        return self.render_to_response(context)
-
-    def get_post_context(self):
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        kind = self.request.POST.get('kind')
-        source = self.request.POST.get('source', 'specific')
-        return {
-            'project': project,
-            'widget_kind': kind,
-            'widget_source': source
-        }
-
-
 class CobrandedBannerView(ProjectBaseWidgetView):
     template_name = 'partner_sites/widgets/cobranded_banner.html'
 
@@ -110,6 +84,39 @@ class RandomProjectSmallView(RandomBaseWidgetView):
     template_name = 'partner_sites/widgets/project_small.html'
 
 
+class ProjectListView(BaseWidgetView):
+    template_name = 'partner_sites/widgets/project_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectListView, self).get_context_data(**kwargs)
+
+        order_by = self.request.GET.get('order_by', 'title')
+        organisation = (
+            get_object_or_404(Organisation, pk=self.request.organisation_id))
+
+        projects = organisation.published_projects(). \
+            status_not_archived().status_not_cancelled()
+        sql = (
+            'SELECT MAX(time) '
+            'FROM rsr_projectupdate '
+            'WHERE project_id = rsr_project.id'
+        )
+        projects = projects.extra(select={'last_update': sql})
+
+        if order_by == 'status':
+            projects = projects.order_by('status', 'title')
+        elif order_by == 'last_update':
+            projects = projects.order_by('-last_update', 'title')
+        elif order_by in ['budget', 'funds_needed']:
+            projects = projects.extra(order_by=['-%s' % order_by, 'title'])
+        else:
+            projects = projects.order_by('title')  # default to project title
+
+        context['organisation'] = organisation
+        context['projects'] = projects
+        return context
+
+
 class ProjectMapView(TemplateView):
     template_name = 'partner_sites/widgets/projects_map.html'
 
@@ -130,6 +137,32 @@ class ProjectMapView(TemplateView):
             if self.request.GET.get('style') == 'light':
                 context['bgcolor'] = 'fff'
         return context
+
+
+class GetWidgetView(BaseView):
+    template_name = 'partner_sites/widgets/get_widget1.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(GetWidgetView, self).get_context_data(**kwargs)
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        context['project'] = project
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.template_name = 'partner_sites/widgets/get_widget2.html'
+        context = dict(self.get_context_data().items()
+                       + self.get_post_context().items())
+        return self.render_to_response(context)
+
+    def get_post_context(self):
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        kind = self.request.POST.get('kind')
+        source = self.request.POST.get('source', 'specific')
+        return {
+            'project': project,
+            'widget_kind': kind,
+            'widget_source': source
+        }
 
 
 class ProjectCordinates(TemplateView):

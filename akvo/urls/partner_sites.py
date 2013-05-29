@@ -90,6 +90,10 @@ urlpatterns = i18n_patterns(
         widget_views.ProjectMapView.as_view(),
         name="widget_org_map"),
 
+    url(r'^widgets/projects/list/$',
+        widget_views.ProjectListView.as_view(),
+        name="widget_project_list"),
+
     url(r'^widgets/cobranded-banner/(?P<project_id>\d+)/$',
         widget_views.CobrandedBannerView.as_view(),
         name="widget_cobranded_banner"),
