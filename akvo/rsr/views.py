@@ -1490,10 +1490,13 @@ def get_api_key(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
+            user_id = user.id
             user_profile = UserProfile.objects.get(user=user)
             if not user_profile.api_key:
                 user_profile.save()
             xml_root = etree.Element("credentials")
+            user_id_element = etree.SubElement(xml_root, "user_id")
+            user_id_element.text = str(user_id)
             username_element = etree.SubElement(xml_root, "username")
             username_element.text = username
             api_key_element = etree.SubElement(xml_root, "api_key")
