@@ -8,7 +8,7 @@ ul.thead li {float:left; 	text-align: left;
 	background: rgb(0,0,0);
 	height:25px;
 	color:rgb(204,204,204);
-	padding:5px 0 0 0;
+	padding:5px 0 0 1%;
 }
 .darkBG .projectListWidget { color: rgb(214,214,214); }
 .lightBG .projectListWidget { color: rgb(32,32,36); }
@@ -24,11 +24,16 @@ ul.thead li {float:left; 	text-align: left;
 	border-bottom: 1px solid rgb(134,134,134);
 	border-top: 1px solid rgb(230,230,230);
 }
-.projectDescrTd { width: 35%; }
-.projectLocTd { width: 15%; }
-.projectStatusTd { width: 15%; }
-.projectPartnerTd { width: 15%; }
-.projectFundingTd { width: 20%; }
+li.projectDescrTd { width: 34%; }
+li.projectLocTd { width: 14%; }
+li.projectStatusTd { width: 14%; }
+li.projectPartnerTd { width: 14%; }
+li.projectFundingTd { width: 19%; }
+td.projectDescrTd { width: 35%; }
+td.projectLocTd { width: 15%; }
+td.projectStatusTd { width: 15%; }
+td.projectPartnerTd { width: 15%; }
+td.projectFundingTd { width: 20%; }
 .projectListWidget .projectBudget {
 	position: relative;
 	overflow: auto;
