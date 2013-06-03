@@ -1000,7 +1000,7 @@ class ProjectUpdateModelForm(ModelForm):
 class ProjectUpdateResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
     user = ConditionalFullToOneField('akvo.api.resources.UserResource', 'user')
-    file_field = Base64FileField("file_field")
+    file_field = Base64FileField()
 
     class Meta:
         allowed_methods         = ['get', 'post']
