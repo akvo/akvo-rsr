@@ -998,7 +998,7 @@ class ProjectUpdateModelForm(ModelForm):
 
 
 class ProjectUpdateResource(ConditionalFullResource):
-    photo = Base64FileField(blank=True, return64=True)
+    file_field = Base64FileField(blank=True)
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
     user = ConditionalFullToOneField('akvo.api.resources.UserResource', 'user')
 
