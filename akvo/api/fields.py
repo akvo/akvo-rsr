@@ -204,10 +204,10 @@ class Base64FileField(fields.FileField):
                 if file_field:
                     content_type, encoding = mimetypes.guess_type(
                         file_field.file.name)
-                    b64 = open(
+                    base64_blob = open(
                         file_field.file.name, "rb").read().encode("base64")
                     return_dict = {"name": os.path.basename(file_field.file.name),
-                                   "file": b64,
+                                   "file": base64_blob,
                                    "content-type": (content_type or
                                                     "application/octet-stream")}
                     return return_dict
