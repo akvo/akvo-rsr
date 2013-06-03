@@ -169,8 +169,8 @@ class Base64FileField(fields.FileField):
         class Meta:
             queryset = ModelWithFileField.objects.all()
 
-    In the case of multipart for submission, it would also pass the filename.
-    By using a raw post data stream, we have to pass the filename within our
+    In the case of multipart form submission, it also passes the filename.
+    By using a raw POST data stream, we have to pass the filename within our
     file_field structure:
 
     file_field = {
