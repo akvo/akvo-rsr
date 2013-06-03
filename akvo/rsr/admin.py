@@ -105,12 +105,22 @@ class InternalOrganisationIDInline(admin.TabularInline):
     verbose_name = 'internal organisation ID'
     verbose_name_plural = 'internal organisation IDs'
 
+
+class OrganisationAdminForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'organisation')
+
+    def clean_iati_org_id(self):
+        return self.cleaned_data['iati_org_id'] or None
+
+
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
     )
+    form = OrganisationAdminForm
     inlines = (OrganisationLocationInline, InternalOrganisationIDInline,)
     exclude = ('internal_org_ids',)
     list_display = ('name', 'long_name', 'website', 'language',)
