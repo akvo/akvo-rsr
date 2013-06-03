@@ -32,7 +32,10 @@ from cacheback.base import Job
 import logging
 logger = logging.getLogger('akvo.rsr')
 
-from akvo.api.fields import ConditionalFullToManyField, ConditionalFullToOneField, bundle_related_data_info_factory
+from akvo.api.fields import (
+    Base64FileField, ConditionalFullToManyField,
+    ConditionalFullToOneField, bundle_related_data_info_factory
+)
 from akvo.api.serializers import IATISerializer
 from akvo.api.validation import ModelFormValidation
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
@@ -997,6 +1000,7 @@ class ProjectUpdateModelForm(ModelForm):
 class ProjectUpdateResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
     user = ConditionalFullToOneField('akvo.api.resources.UserResource', 'user')
+    file_field = Base64FileField("file_field")
 
     class Meta:
         allowed_methods         = ['get', 'post']
