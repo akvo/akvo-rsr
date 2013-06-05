@@ -1134,7 +1134,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         )
 
     def get_list_display(self, request):
-        # see the notes fields in the change list if you're a superuser
+        # see the notes fields in the change list if you have the right permissions
         if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
             return list(self.list_display) + ['notes']
         return super(PartnerSiteAdmin, self).get_list_display(request)
