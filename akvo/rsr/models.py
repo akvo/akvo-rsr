@@ -2062,6 +2062,7 @@ class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
+    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True)
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '

@@ -4,7 +4,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
-from django.contrib.admin.util import unquote
+from django.contrib.admin.util import unquote, flatten_fieldsets
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes import generic
@@ -1103,14 +1103,41 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 
 class PartnerSiteAdmin(admin.ModelAdmin):
     form = PartnerSiteAdminForm
-
     fieldsets = (
-        (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'General', dict(fields=('organisation', 'enabled', 'notes',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
     )
+    # the notes field is not shown to everyone
+    restricted_fieldsets = (
+        (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
+        (u'Style and content',
+         dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
+        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
+    )
     list_display = '__unicode__', 'full_domain'
+
+    def get_fieldsets(self, request, obj=None):
+        # don't show the notes field unless you have "add" permission on the PartnerSite model
+        # (currently means an Akvo staff user (or superuser))
+        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
+            return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
+        return self.restricted_fieldsets
+
+    def get_form(self, request, obj=None, **kwargs):
+        """ Workaround bug http://code.djangoproject.com/ticket/9360
+        """
+        return super(PartnerSiteAdmin, self).get_form(
+            request, obj, fields=flatten_fieldsets(self.get_fieldsets(request, obj))
+        )
+
+    def get_list_display(self, request):
+        # see the notes fields in the change list if you're a superuser
+        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
+            return list(self.list_display) + ['notes']
+        return super(PartnerSiteAdmin, self).get_list_display(request)
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
