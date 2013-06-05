@@ -1117,7 +1117,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
     )
-    list_display = '__unicode__', 'full_domain'
+    list_display = '__unicode__', 'full_domain', 'enabled',
 
     def get_fieldsets(self, request, obj=None):
         # don't show the notes field unless you have "add" permission on the PartnerSite model
