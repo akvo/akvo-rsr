@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.synced_folder "provisioning/environments/", "/vagrant/bootstrap/"
     config.vm.synced_folder "provisioning", "/puppet/checkout"
-    config.vm.synced_folder ".", "/apps/rsr/checkout/"
+    config.vm.synced_folder ".", "/vagrant/rsr/checkout/"
 
     config.vm.network :private_network, ip: "192.168.50.101"
 
