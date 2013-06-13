@@ -145,6 +145,15 @@ class OrganisationAdmin(admin.ModelAdmin):
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
 
+    def allowed_partner_types(self, obj):
+        return ', '.join([pt.label for pt in obj.partner_types.all()])
+
+    def get_list_display(self, request):
+        # see the notes fields in the change list if you have the right permissions
+        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
+            return list(self.list_display) + ['allowed_partner_types']
+        return super(OrganisationAdmin, self).get_list_display(request)
+
     def get_readonly_fields(self, request, obj):
         # parter_types is read only unless you have change permission for organisations
         if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
