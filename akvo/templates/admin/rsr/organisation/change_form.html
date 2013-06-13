@@ -43,12 +43,12 @@
         {% for fieldset in adminform %}
           {% include "admin/includes/fieldset.html" %}
           {# hack to put the inlines at certain points in the form #}
-          {% if forloop.counter == 2 %}
+          {% if forloop.counter == 2 and inline_admin_formsets.0 %}
             {% with inline_admin_formset=inline_admin_formsets.0 %}
               {% include inline_admin_formset.opts.template %}
             {% endwith %}
           {% endif %}
-          {% if forloop.counter == 3 %}
+          {% if forloop.counter == 3 and inline_admin_formsets.1 %}
             {% with inline_admin_formset=inline_admin_formsets.1 %}
               {% include inline_admin_formset.opts.template %}
             {% endwith %}
