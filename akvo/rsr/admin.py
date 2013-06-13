@@ -112,14 +112,19 @@ class InternalOrganisationIDInline(admin.TabularInline):
     verbose_name = 'internal organisation ID'
     verbose_name_plural = 'internal organisation IDs'
 
+
 class OrganisationAdmin(admin.ModelAdmin):
+    # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
+    # If the fieldsets are changed, the template may need fixing too
     fieldsets = (
-        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
+        (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
+                                                'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
     )
     inlines = (OrganisationLocationInline, InternalOrganisationIDInline,)
     exclude = ('internal_org_ids',)
+    readonly_fields = ('partner_types',)
     list_display = ('name', 'long_name', 'website', 'language',)
     search_fields = ('name', 'long_name',)
 
@@ -139,6 +144,28 @@ class OrganisationAdmin(admin.ModelAdmin):
         """
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
+
+    def get_readonly_fields(self, request, obj):
+        # parter_types is read only unless you have change permission for organisations
+        if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
+            self.readonly_fields = ('partner_types',)
+            # hack to set the help text
+            try:
+                field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
+                if len(field) > 0:
+                    field[0].help_text = 'The allowed partner types for this organisation'
+            except:
+                pass
+        else:
+            self.readonly_fields = ()
+            # hack to set the help text
+            try:
+                field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
+                if len(field) > 0:
+                    field[0].help_text = 'The allowed partner types for this organisation. Hold down "Control", or "Command" on a Mac, to select more than one.'
+            except:
+                pass
+        return super(OrganisationAdmin, self).get_readonly_fields(request, obj)
 
     def queryset(self, request):
         qs = super(OrganisationAdmin, self).queryset(request)
