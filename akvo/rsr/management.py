@@ -149,7 +149,18 @@ if "notification" in settings.INSTALLED_APPS:
                 else:
                     print 'RSR limited change %s Permission already exists in the database' % model_name
 
+        def create_partner_types(sender, **kwargs):
+            print "Adding PartnerType objects"
+            print
+            for id, label in rsr.Partnership.PARTNER_TYPES:
+                partner_type, created = rsr.PartnerType.objects.get_or_create(id=id, label=label)
+                if created:
+                    print 'Created PartnerType {partner_type}'.format(partner_type=partner_type)
+                else:
+                    print 'Found existing PartnerType {partner_type}'.format(partner_type=partner_type)
+
         post_syncdb.connect(create_limited_change_permissions, sender=rsr)
+        post_syncdb.connect(create_partner_types, sender=rsr)
 
 
 
