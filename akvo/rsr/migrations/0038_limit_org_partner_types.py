@@ -3,10 +3,18 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from akvo.rsr.models import PartnerType, Partnership
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        for id, label in Partnership.PARTNER_TYPES:
+            partner_type, created = PartnerType.objects.get_or_create(id=id, defaults=dict(label=label))
+            if created:
+                print 'Created PartnerType {partner_type}'.format(partner_type=partner_type)
+            else:
+                print 'Found existing PartnerType {partner_type}'.format(partner_type=partner_type)
+
         # create a dict with organisations as keys and a set of their partner types as values
         organisations = {}
         for partnership in orm['rsr.Partnership'].objects.all():
@@ -16,16 +24,9 @@ class Migration(DataMigration):
             partner_types_for_org.add(partner_type)
         partner_types = orm['rsr.PartnerType'].objects.all()
         partner_types_dict = {partner_type.id: partner_type for partner_type in partner_types}
-        print "Partner types lookup: {partner_types_dict}".format(partner_types_dict=partner_types_dict)
         for organisation, allowed_partner_types in organisations.items():
-            allowed_list = []
-            for id in list(allowed_partner_types):
-                print "ID:", id
-                print "Lookup: {partner_types_dict}".format(partner_types_dict=partner_types_dict[id].id)
-                allowed_list += [partner_types_dict[id]]
-            print "Allowed list: {allowed_list}".format(allowed_list=allowed_list)
             organisation.partner_types.add(
-                *allowed_list
+                *[partner_types_dict[id] for id in list(allowed_partner_types)]
             )
             print u"Organisation {org_name} partner types: {allowed_partner_types}".format(
                 org_name=organisation.name, allowed_partner_types=', '.join(list(allowed_partner_types))
