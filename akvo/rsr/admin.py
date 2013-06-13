@@ -425,10 +425,8 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
         def duplicates_in_list(seq):
             "return True if the list contains duplicate items"
             seq_set = list(set(seq))
-            # need to sort since set() doesn't preserver order
-            seq.sort()
-            seq_set.sort()
-            return seq != seq_set
+            # if the set isn't of the same length as the list there must be dupes in the list
+            return len(seq) != len(seq_set)
 
         user = self.request.user
         user_profile = user.get_profile()
@@ -466,13 +464,32 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
         for org, types in partner_types.items():
             # are there duplicates in the list of partner_types?
             if duplicates_in_list(types):
-                errors += [_(u'%s has duplicate partner types of the same kind.' % org)]
+                errors += [_(u'{org} has duplicate partner types of the same kind.'.format(org=org))]
+
         self._non_form_errors = ErrorList(errors)
+
+
+class RSR_PartnershipInlineForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'Partnership')
+
+    def clean_partner_type(self):
+        partner_types = get_model('rsr', 'PartnerType').objects.all()
+        partner_types_dict = {partner_type.id: partner_type.label for partner_type in partner_types}
+        allowed = [partner_type.pk for partner_type in self.cleaned_data['organisation'].partner_types.all()]
+        data = self.cleaned_data['partner_type']
+        if data not in allowed:
+            raise forms.ValidationError("{org} is not allowed to be a {partner_type_label}".format(
+                org=self.cleaned_data['organisation'],
+                partner_type_label=partner_types_dict[data]
+            ))
+        return data
 
 
 class PartnershipInline(admin.TabularInline):
     model = get_model('rsr', 'Partnership')
     extra = 1
+    form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
 
     def get_formset(self, request, *args, **kwargs):
