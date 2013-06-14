@@ -164,63 +164,56 @@ class Base64FileField(fields.FileField):
     Usage:
 
     class MyResource(ModelResource):
-        file_field = Base64FileField("file_field")
+        file_field = Base64FileField(attribute="file_field")
 
         class Meta:
             queryset = ModelWithFileField.objects.all()
 
-    In the case of multipart for submission, it would also pass the filename.
-    By using a raw post data stream, we have to pass the filename within our
+    In the case of multipart form submission, it also passes the filename.
+    By using a raw POST data stream, we have to pass the filename within our
     file_field structure:
 
     file_field = {
-        "name": "myfile.png",
-        "file": "longbas64encodedstring",
-        "content_type": "image/png" # on hydrate optional
+        "name"          : myfile.png,
+        "file"          : "long_base64_encoded_string_goes_here",
+        "content_type"  : image/png"
     }
 
-    Your file_field will by dehydrated in the above format if the return64
-    keyword argument is set to True on the field, otherwise it will simply
-    return the URL.
     
     """
 
-    def __init__(self, **kwargs):
-        self.return64 = kwargs.pop("return64", False)
-        super(Base64FileField, self).__init__(**kwargs)
-
-    def dehydrate(self, bundle, **kwargs):
-        if not self.return64:
+    def dehydrate(self, bundle, return_url=True, url=""):
+        if return_url:
             instance = getattr(bundle.obj, self.instance_name, None)
             try:
                 url = getattr(instance, "url", None)
-            except ValueError:
-                url = None
+            except:
+                pass
             return url
-        else:
+        else: 
             if (not self.instance_name in bundle.data
                 and hasattr(bundle.obj, self.instance_name)):
                 file_field = getattr(bundle.obj, self.instance_name)
                 if file_field:
-                    content_type, encoding = mimetypes.guess_type(
-                        file_field.file.name)
-                    b64 = open(
-                        file_field.file.name, "rb").read().encode("base64")
-                    return_dict = {"name": os.path.basename(file_field.file.name),
-                                   "file": b64,
-                                   "content-type": (content_type or
-                                                    "application/octet-stream")}
-                    return return_dict
-            return None
-
+                    try:
+                        content_type, encoding = mimetypes.guess_type(file_field.file.name)
+                        base64_blob = open(file_field.file.name, "rb").read().encode("base64")
+                        return_dict = {
+                            "name": os.path.basename(file_field.file.name),
+                            "file": base64_blob,
+                            "content-type": content_type or "application/octet-stream"
+                        }
+                        return return_dict
+                    except:
+                        pass
+        return
+   
     def hydrate(self, obj):
-        value = super(Base64FileField, self).hydrate(obj)
-        if value and isinstance(value, dict):
-            return SimpleUploadedFile(value["name"],
-                                      base64.b64decode(value["file"]),
-                                      value.get("content_type",
-                                                "application/octet-stream"))
-        elif isinstance(value, basestring):
-            return value
-        else:
-            return None
+        data = super(Base64FileField, self).hydrate(obj)
+        if data and isinstance(data, dict):
+            return SimpleUploadedFile(
+                    data["name"],
+                    base64.b64decode(data["file"]),
+                    data.get("content_type", "application/octet-stream")
+            )
+        return
