@@ -16,6 +16,7 @@ from tastypie import http
 
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
+from tastypie.cache import SimpleCache
 from tastypie.serializers import Serializer
 from tastypie.bundle import Bundle
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
@@ -804,10 +805,11 @@ class OrganisationMapResource(ConditionalFullResource):
     primary_location    = fields.ToOneField('akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True, null=True)
 
     class Meta:
-        allowed_methods         = ['get']
-        queryset                = Organisation.objects.all()
-        resource_name           = 'map_for_organisation'
-        include_absolute_url    = True
+        allowed_methods = ['get']
+        queryset = Organisation.objects.all()
+        resource_name = 'map_for_organisation'
+        include_absolute_url = True
+        cache = SimpleCache(timeout=900) # 15 minutes
 
         filtering       = dict(
             # other fields
@@ -953,10 +955,11 @@ class ProjectMapResource(ConditionalFullResource):
     primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True, null=True)
 
     class Meta:
-        allowed_methods         = ['get']
-        queryset                = Project.objects.published()
-        resource_name           = 'map_for_project'
-        include_absolute_url    = True
+        allowed_methods = ['get']
+        queryset = Project.objects.published()
+        resource_name = 'map_for_project'
+        include_absolute_url = True
+        cache = SimpleCache(timeout=900) # 15 minutes
 
         filtering               = dict(
             # other fields
