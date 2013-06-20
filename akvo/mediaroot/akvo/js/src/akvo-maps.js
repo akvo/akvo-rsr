@@ -144,6 +144,11 @@
             }
         });
 
+        if (opts.type === 'dynamic' || opts.type === 'static') {
+            var initialLocation = new google.maps.LatLng(0.0, 0.0);
+            $(map.mapElement).gmap('get', 'map').setCenter(initialLocation);
+        }
+
         // If we are rendering multiple objects and there are more objects to
         // grab from the API
         if (isNaN(opts.object) && data.meta.next !== null) {
@@ -246,13 +251,15 @@
             };
         } else {
             options = {
-                'draggable': true,
-                'mapTypeControl': true,
-                'navigationControl': true,
-                'scaleControl': true,
-                'scrollwheel': true,
-                'streetViewControl': false,
-                'zoom': 2
+                draggable: true,
+                mapTypeControl: true,
+                navigationControl: true,
+                scaleControl: true,
+                scrollwheel: true,
+                streetViewControl: false,
+                zoom: 2,
+                minZoom: 2
+
             };
         }
         return options;
