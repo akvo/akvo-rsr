@@ -257,7 +257,8 @@
                 scaleControl: true,
                 scrollwheel: true,
                 streetViewControl: false,
-                zoom: 2,
+                //if zoom is set to 2 (as it should) Safari/Chrome only displays part of the global map for some reason
+                zoom: 3, 
                 minZoom: 2
 
             };
