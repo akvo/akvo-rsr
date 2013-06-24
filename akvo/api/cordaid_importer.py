@@ -78,6 +78,31 @@ def post_an_activity(activity_element, user):
 
 # root[i].findall('iati-identifier')[0].text
 
+def put_an_activity(activity_element, pk, url_args):
+    "NOTE: does not work!!!"
+    url_args.update(pk=pk)
+    try:
+        project = Requester(
+            method='put',
+            url_template="http://{domain}/api/{api_version}/iati_activity/{pk}/?format=xml&api_key={api_key}&username={username}",
+            url_args=url_args,
+            headers={'content-type': 'application/xml', 'encoding': 'utf-8'},
+            data=etree.tostring(activity_element),
+            accept_codes=[HttpNoContent.status_code]
+        )
+    except Exception, e:
+        print "{message}".format(message=e.message)
+        return
+    if project.response.text:
+        print "**** Error creating iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
+    elif project.response.status_code is HttpCreated.status_code:
+        print "Updated project for iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
+    else:
+        print "**** Error creating iati-activity: {id}. HTTP status code: {status_code}".format(
+            id=activity_element.findall('iati-identifier')[0].text,
+            status_code=project.response.status_code,
+        )
+
 def usage(script_name):
     print(
         "\nUsage: %s <domain> <username> [options]\n\n"
@@ -97,9 +122,6 @@ def api_user(domain, username, password='', api_key=''):
         user['api_key'] = api_key
         return user
     elif password:
-        # url = "http://{domain}/rsr/auth/token/".format(domain=domain,)
-        # payload = dict(username=username, password=password)
-        # response = requests.post(url, data=payload,)
         auth = Requester(
             method='post',
             url_template="http://{domain}/rsr/auth/token/",
@@ -125,6 +147,7 @@ def credentials_from_args(argv):
         if opt in ("-h", "--help"):
             usage(argv[0])
             sys.exit()
+        # TODO: see if it's possible to suppress password echoing in terminal
         elif opt in ("-p", "--password"):
             kwargs['password'] = arg
         elif opt in ("-k", "--api_key"):
@@ -159,32 +182,7 @@ def get_project_count(internal_id, user):
         return False, None
     return True, project
 
-def put_an_activity(activity_element, pk, url_args):
-    url_args.update(pk=pk)
-    try:
-        project = Requester(
-            method='put',
-            url_template="http://{domain}/api/{api_version}/iati_activity/{pk}/?format=xml&api_key={api_key}&username={username}",
-            url_args=url_args,
-            headers={'content-type': 'application/xml', 'encoding': 'utf-8'},
-            data=etree.tostring(activity_element),
-            accept_codes=[HttpNoContent.status_code]
-        )
-    except Exception, e:
-        print "{message}".format(message=e.message)
-        return
-    if project.response.text:
-        print "**** Error creating iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
-    elif project.response.status_code is HttpCreated.status_code:
-        print "Updated project for iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
-    else:
-        print "**** Error creating iati-activity: {id}. HTTP status code: {status_code}".format(
-            id=activity_element.findall('iati-identifier')[0].text,
-            status_code=project.response.status_code,
-        )
-
-
-def post_some_activities(argv):
+def upload_activities(argv):
     user = credentials_from_args(argv)
     if user:
         with open(IATI_ACTIVITIES_XML, 'r') as f:
@@ -229,5 +227,5 @@ def test_put(argv):
                 return
 
 if __name__ == '__main__':
-    # post_some_activities(sys.argv)
-    test_put(sys.argv)
+    upload_activities(sys.argv)
+    # test_put(sys.argv)
