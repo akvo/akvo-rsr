@@ -21,7 +21,8 @@ class HttpNoContent(HttpResponse):
     status_code = 204
 
 
-IATI_ACTIVITIES_XML = './xml/109069.xml'
+# IATI_ACTIVITIES_XML = './xml/cordaid_iati_activities.xml'
+IATI_ACTIVITIES_XML = './xml/104299.xml'
 API_VERSION = 'v1'
 
 
@@ -46,8 +47,10 @@ class Requester():
         except Exception, e:
             raise Exception("Error in request. Error msg:\n {message}".format(message=e.message))
         if not (self.response.status_code == HttpOK.status_code or self.response.status_code in accept_codes):
-            error_msg = "Non-OK response. Status: {status}{message}".format(
+            error_msg = "Non-OK response. Status: {status}\nMethod: {method}\nURL:{url}{message}".format(
                 status=self.response.status_code,
+                method=self.method,
+                url=self.url,
                 message="\nResponse text: {text}".format(text=self.response.text) if self.response.text else ""
             )
             raise Exception(error_msg)
@@ -177,6 +180,8 @@ def get_project_count(internal_id, user):
             url_template="http://{domain}/api/{api_version}/project/?format=json&partnerships__internal_id={internal_id}",
             url_args=url_args
         )
+        import pdb
+        pdb.set_trace()
     except Exception, e:
         print "{message}".format(message=e.message)
         return False, None
