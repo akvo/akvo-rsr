@@ -20,7 +20,8 @@ from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates
 handler403 = views.ForbiddenView.as_view()
 handler404 = views.NotFoundView.as_view()
 
-urlpatterns = i18n_patterns('',
+urlpatterns = i18n_patterns(
+    '',
 
     url(r'^$',
         views.HomeView.as_view(),
@@ -88,6 +89,18 @@ urlpatterns = i18n_patterns('',
         views.ProjectMapView.as_view(),
         name="widget_org_map"),
 
+    url(r'^widgets/cobranded-banner/(?P<project_id>\d+)/$',
+        views.CobrandedBannerView.as_view(),
+        name="widget_cobranded_banner"),
+
+    url(r'^widgets/project-narrow/(?P<project_id>\d+)/$',
+        views.ProjectNarrowView.as_view(),
+        name="widget_project_narrow"),
+
+    url(r'^widgets/project-small/(?P<project_id>\d+)/$',
+        views.ProjectSmallView.as_view(),
+        name="widget_project_small"),
+
     # Auth
     url(r'^rsr/signin/$',
         views.SignInView.as_view(),
@@ -104,8 +117,9 @@ urlpatterns = i18n_patterns('',
 )
 
 # Non i18n
-urlpatterns += patterns('',
-   # Beta API
+urlpatterns += patterns(
+    '',
+    # Beta API
     url(r'^api/beta/projects_cordinates.json$',
         views.ProjectCordinates.as_view(),
         name="api_projects_cordinates"),
@@ -113,7 +127,9 @@ urlpatterns += patterns('',
 
 urlpatterns += counter_urls
 
-urlpatterns += patterns('',
+urlpatterns += patterns(
+    '',
+
     (r'^rsr/media/(?P<path>.*)$',
         'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),

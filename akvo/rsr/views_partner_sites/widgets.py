@@ -22,8 +22,24 @@ from akvo.rsr.models import Organisation, Project
 __all__ = [
     'GetWidgetView',
     'ProjectMapView',
+    'CobrandedBannerView',
+    'ProjectNarrowView',
     'ProjectCordinates',
-    ]
+]
+
+
+class BaseWidgetView(TemplateView):
+    """"""
+    def get_context_data(self, **kwargs):
+        context = super(BaseWidgetView, self).get_context_data(**kwargs)
+        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        context['project'] = project
+        context['app_url'] = self.request.app_url
+        context['domain_url'] = self.request.domain_url
+        context['style'] = 'darkBG'
+        if self.request.GET.get('style') == 'light':
+            context['style'] = 'lightBG'
+        return context
 
 
 class GetWidgetView(BaseView):
@@ -53,15 +69,31 @@ class ProjectMapView(TemplateView):
         context['width'] = self.request.GET.get('width', '600')
         context['bgcolor'] = self.request.GET.get('bgcolor', 'B50000')
         context['state'] = self.request.GET.get('state', 'dynamic')
-        context['organisation'] = get_object_or_404(Organisation, pk=self.request.organisation_id)
+        context['organisation'] = (
+            get_object_or_404(Organisation, pk=self.request.organisation_id))
         return context
+
+
+class CobrandedBannerView(BaseWidgetView):
+    template_name = 'partner_sites/widgets/cobranded_banner.html'
+
+
+class ProjectNarrowView(BaseWidgetView):
+    template_name = 'partner_sites/widgets/project_narrow.html'
+
+
+class ProjectSmallView(BaseWidgetView):
+    template_name = 'partner_sites/widgets/project_small.html'
 
 
 class ProjectCordinates(TemplateView):
 
     def get_queryset(self):
-        projects = get_object_or_404(Organisation, pk=self.request.organisation_id) \
+        projects = (
+            get_object_or_404(Organisation,
+                              pk=self.request.organisation_id)
             .published_projects().latest_update_fields().order_by('-id')
+        )
         return projects
 
     def render_to_response(self, context, **kwargs):
@@ -73,38 +105,13 @@ class ProjectCordinates(TemplateView):
         else:
             protocol = 'http://'
         app_url = '%s%s.%s' % (protocol, self.request.partner_site.hostname,
-                                settings.APP_DOMAIN_NAME)
+                               settings.APP_DOMAIN_NAME)
         projects = self.get_queryset()
         content = {'projects': []}
 
         for project in projects:
-            project_url = reverse('project_main', kwargs={'project_id': project.id})
-
-            # Trying to grab a thumbnail, first try
-            # thumbnail project.current_image 100x100 autocrop sharpen
-            #project_img = get_thumbnail(project.current_image, '100x100', crop='center',
-            #    quality=99)
-
-            # Trying to grab a thumbnail, second try
-            #img = project.current_image # a normal image url returned from an ImageField
-            #size = (100,100) # any tuple
-            #project_img = unicode(DjangoThumbnail(img, size))
-
-            #info_window = """
-            #                <div class="mapInfoWindow">
-            #                    <a href="%s">%s</a><br>
-            #                    <a href="%s"><img src="%s" alt="" /></a>
-            #                    <p class="small grey" style="margin:0;">
-            #                        %s: %s, %s
-            #                    </p>
-            #                </div>
-            #              """ % (project_url, project.name, project_url,
-            #                        project_img, _('Location'),
-            #                        project.primary_location.country.continent,
-            #                        project.primary_location.city)
-
-            # Giving up an just sending text :-(, need to revisit this
-            #info_window = '<a href="%s%s">%s</a>' % (app_url, project_url, project.subtitle)
+            project_url = reverse('project_main',
+                                  kwargs={'project_id': project.id})
 
             info_window = '''
                             <div class="mapInfoWindow">
@@ -114,14 +121,16 @@ class ProjectCordinates(TemplateView):
                                 </p>
                             </div>
                         ''' % (app_url, project_url, project.title, 'Location',
-                                project.primary_location.country.continent,
-                                project.primary_location.city)
+                               project.primary_location.country.continent,
+                               project.primary_location.city)
 
-            content['projects'].append(dict(title=project.title,
-                                            latitude=project.primary_location.latitude,
-                                            longitude=project.primary_location.longitude,
-                                            content=info_window,
-                                            ))
+            content['projects'] \
+                .append(dict(title=project.title,
+                             latitude=project.primary_location.latitude,
+                             longitude=project.primary_location.longitude,
+                             content=info_window,
+                             ))
+
         # Build jsonp with callback
         callback = self.request.GET.get('callback', '')
         return callback + '(' + json.dumps(content) + ');'

@@ -122,7 +122,7 @@
                 // for single objects show all locations
                 $.each(object.locations, function (k, location) {
                     //TODO: extend this for additional resource types
-                    if (opts.resource === 'organisation') {
+                    if (opts.resource === 'map_for_organisation') {
                         location = addOrganisationData(object, location);
                     } else {
                         location = addProjectData(object, location);
@@ -134,7 +134,7 @@
                 var location;
                 location = object.primary_location;
                 if (location) {
-                    if (opts.resource === 'organisation') {
+                    if (opts.resource === 'map_for_organisation') {
                         location = addOrganisationData(object, location);
                     } else {
                         location = addProjectData(object, location);
@@ -143,6 +143,11 @@
                 }
             }
         });
+
+        if (opts.type === 'dynamic' || opts.type === 'static') {
+            var initialLocation = new google.maps.LatLng(0.0, 0.0);
+            $(map.mapElement).gmap('get', 'map').setCenter(initialLocation);
+        }
 
         // If we are rendering multiple objects and there are more objects to
         // grab from the API
@@ -160,7 +165,7 @@
         // get a custom marker if there is one, otherwise it's red for organisations and blue for projects
         if (opts.marker_icon) {
             marker = marker + opts.marker_icon;
-        } else if (opts.resource === 'organisation') {
+        } else if (opts.resource === 'map_for_organisation') {
             marker = marker + 'redMarker.png';
         } else {
             marker = marker + 'blueMarker.png';
@@ -246,13 +251,16 @@
             };
         } else {
             options = {
-                'draggable': true,
-                'mapTypeControl': true,
-                'navigationControl': true,
-                'scaleControl': true,
-                'scrollwheel': true,
-                'streetViewControl': false,
-                'zoom': 2
+                draggable: true,
+                mapTypeControl: true,
+                navigationControl: true,
+                scaleControl: true,
+                scrollwheel: true,
+                streetViewControl: false,
+                //if zoom is set to 2 (as it should) Safari/Chrome only displays part of the global map for some reason
+                zoom: 3, 
+                minZoom: 2
+
             };
         }
         return options;

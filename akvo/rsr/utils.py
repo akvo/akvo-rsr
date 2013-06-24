@@ -4,9 +4,11 @@
 # utility functions for RSR
 
 import inspect
+from os.path import splitext
 import random
 import logging
 from urlparse import urljoin
+from datetime import datetime
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -36,6 +38,8 @@ from notification.models import (
     LanguageStoreNotAvailable, get_formatted_messages
 )
 
+from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
+#from akvo.rsr.models import Country
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
 GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
@@ -418,4 +422,44 @@ def state_equals(obj, state):
 def to_gmt(dt):
     gmt = pytz.timezone('GMT')
     return dt.replace(tzinfo=gmt).astimezone(gmt)
+
+
+def custom_get_or_create_country(iso_code, country=None):
+    """ add the missing fields to a skeleton country object from the admin
+        or create a new one with the given iso_code if it doesn't already exist
+    """
+    # for some reason, maybe some circular import issue importing Country at the module level doesn't work
+    from akvo.rsr.models import Country
+    iso_code = iso_code.lower()
+    if  not country:
+        try:
+            country = Country.objects.get(iso_code=iso_code)
+            return country
+        except:
+            country = Country()
+            country.iso_code = iso_code
+    continent_code = COUNTRY_CONTINENTS[iso_code]
+    country.name = dict(ISO_3166_COUNTRIES)[iso_code]
+    country.continent = dict(CONTINENTS)[continent_code]
+    country.continent_code = continent_code
+    country.save()
+    return country
+
+
+def right_now_in_akvo():
+    """ Calculate the numbers used in the Right now in akvo box on the home page
+    This is also used by the api in RightNowInAkvoResource
+    """
+    projects = get_model('rsr', 'Project').objects.published()
+    organisations = get_model('rsr', 'Organisation').objects.all()
+
+    people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
+    #round to nearest whole 1000
+    people_served = int(people_served / 1000) * 1000
+    return  {
+        'number_of_organisations': organisations.count(),
+        'number_of_projects': projects.count(),
+        'people_served': people_served,
+        'projects_budget_millions': round(projects.budget_sum() / 100000) / 10.0,
+    }
 

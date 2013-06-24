@@ -4,7 +4,12 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import base64
+import mimetypes
+import os
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from tastypie import fields
 from tastypie.bundle import Bundle
@@ -148,3 +153,67 @@ class ConditionalFullToManyField(ConditionalFullFieldMixin, fields.ToManyField):
 
         return m2m_dehydrated
 
+
+class Base64FileField(fields.FileField):
+    """
+    See https://gist.github.com/cellofellow/5493290
+
+    A field for handling file-uploads via raw POST data.
+    It uses base64 for encoding and decoding the contents of the file.
+    
+    Usage:
+
+    class MyResource(ModelResource):
+        file_field = Base64FileField(attribute="file_field")
+
+        class Meta:
+            queryset = ModelWithFileField.objects.all()
+
+    In the case of multipart form submission, it also passes the filename.
+    By using a raw POST data stream, we have to pass the filename within our
+    file_field structure:
+
+    file_field = {
+        "name"          : myfile.png,
+        "file"          : "long_base64_encoded_string_goes_here",
+        "content_type"  : image/png"
+    }
+
+    
+    """
+
+    def dehydrate(self, bundle, return_url=True, url=""):
+        if return_url:
+            instance = getattr(bundle.obj, self.instance_name, None)
+            try:
+                url = getattr(instance, "url", None)
+            except:
+                pass
+            return url
+        else: 
+            if (not self.instance_name in bundle.data
+                and hasattr(bundle.obj, self.instance_name)):
+                file_field = getattr(bundle.obj, self.instance_name)
+                if file_field:
+                    try:
+                        content_type, encoding = mimetypes.guess_type(file_field.file.name)
+                        base64_blob = open(file_field.file.name, "rb").read().encode("base64")
+                        return_dict = {
+                            "name": os.path.basename(file_field.file.name),
+                            "file": base64_blob,
+                            "content-type": content_type or "application/octet-stream"
+                        }
+                        return return_dict
+                    except:
+                        pass
+        return
+   
+    def hydrate(self, obj):
+        data = super(Base64FileField, self).hydrate(obj)
+        if data and isinstance(data, dict):
+            return SimpleUploadedFile(
+                    data["name"],
+                    base64.b64decode(data["file"]),
+                    data.get("content_type", "application/octet-stream")
+            )
+        return

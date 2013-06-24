@@ -130,7 +130,6 @@ class PartnerSitesRouterMiddleware(object):
             urlconf = "akvo.urls.partner_sites"
             try:
                 hostname = domain.split(".")[-3]
-                partner_site_domain = ".".join(domain.split(".")[-2:])
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
@@ -147,6 +146,7 @@ class PartnerSitesRouterMiddleware(object):
         request.urlconf = urlconf
         set_urlconf(urlconf)
         if partner_site is not None and partner_site.enabled:
+            partner_site_domain = ".".join(domain.split(".")[-2:])
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.app_domain = ".".join((partner_site.hostname,
                                            partner_site_domain))

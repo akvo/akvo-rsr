@@ -27,8 +27,7 @@ import os.path
 from permissions.models import Role
 
 from akvo.rsr.forms import PartnerSiteAdminForm
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
-from akvo.rsr.utils import get_rsr_limited_change_permission, permissions
+from akvo.rsr.utils import get_rsr_limited_change_permission, permissions, custom_get_or_create_country
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -65,13 +64,7 @@ class CountryAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if obj.iso_code:
-            iso_code = obj.iso_code
-            continent_code = COUNTRY_CONTINENTS[iso_code]
-
-            obj.name = dict(ISO_3166_COUNTRIES)[iso_code]
-            obj.continent = dict(CONTINENTS)[continent_code]
-            obj.continent_code = continent_code
-        obj.save()
+            custom_get_or_create_country(iso_code, obj)
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -105,13 +98,31 @@ class OrganisationLocationInline(admin.StackedInline):
     formset = RSR_LocationFormFormSet
 
 
+class InternalOrganisationIDInline(admin.TabularInline):
+    model = get_model('rsr', 'Organisation').internal_org_ids.through
+    extra = 1
+    fk_name = 'recording_org'
+    verbose_name = 'internal organisation ID'
+    verbose_name_plural = 'internal organisation IDs'
+
+
+class OrganisationAdminForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'organisation')
+
+    def clean_iati_org_id(self):
+        return self.cleaned_data['iati_org_id'] or None
+
+
 class OrganisationAdmin(admin.ModelAdmin):
     fieldsets = (
         (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
     )
-    inlines = (OrganisationLocationInline,)
+    form = OrganisationAdminForm
+    inlines = (OrganisationLocationInline, InternalOrganisationIDInline,)
+    exclude = ('internal_org_ids',)
     list_display = ('name', 'long_name', 'website', 'language',)
     search_fields = ('name', 'long_name',)
 

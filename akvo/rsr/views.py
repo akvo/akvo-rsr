@@ -6,6 +6,8 @@
 from itertools import groupby
 from urlparse import urljoin
 
+from lxml import etree
+
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (MiniCMS, FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
@@ -17,12 +19,12 @@ from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
 from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
-                            get_random_from_qs, state_equals)
+                            get_random_from_qs, state_equals, right_now_in_akvo)
 
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import login, logout, REDIRECT_FIELD_NAME
+from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -32,12 +34,16 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
 from django.forms import ModelForm
-from django.http import (HttpResponse, HttpResponseRedirect,
-    HttpResponsePermanentRedirect, Http404)
+from django.http import (
+        HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed,
+        HttpResponsePermanentRedirect, Http404
+)
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from datetime import datetime
 from registration.models import RegistrationProfile
@@ -186,14 +192,6 @@ def index(request, cms_id=None):
 
     news_image = ''
     news_title = ''
-
-    projects = Project.objects.published()
-    orgs = Organisation.objects.all()
-
-    people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
-    #round to nearest whole 1000
-    people_served = int(people_served / 1000) * 1000
-
     #get three featured updates with video and/or photo
     updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
     if news_posts:
@@ -213,13 +211,8 @@ def index(request, cms_id=None):
         'news_posts': news_posts,
         'preview':  preview,
     }
-    context_dict.update({
-        'orgs': orgs,
-        'projects': projects,
-        'people_served': people_served,
-        'projects_budget': round(projects.budget_sum() / 100000) / 10.0,
-        'updates': updates,
-    })
+    context_dict.update(right_now_in_akvo())
+    context_dict.update({'updates': updates, })
     return context_dict
 
 
@@ -1163,28 +1156,33 @@ def project_list_widget(request, template='project-list', org_id=0):
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
+
     if int(org_id):
         o = get_object_or_404(Organisation, pk=org_id)
         p = o.published_projects()
         p = p.status_not_archived().status_not_cancelled()
     else:
-        p = Project.objects.published().status_not_archived().status_not_cancelled()
+        p = Project.objects.published().status_not_archived() \
+            .status_not_cancelled()
+
     order_by = request.GET.get('order_by', 'title')
-    #p = p.annotate(last_update=Max('project_updates__time'))
-    p = p.extra(select={'last_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+    sql = (
+        'SELECT MAX(time) '
+        'FROM rsr_projectupdate '
+        'WHERE project_id = rsr_project.id'
+    )
+    p = p.extra(select={'last_update': sql})
+
     if order_by == 'country__continent':
         p = p.order_by(order_by, 'primary_location__country__name', 'title')
-    #elif order_by == 'country__name':
-    #    p = p.order_by(order_by,'name')
-    #elif order_by == 'status':
-    #    p = p.order_by(order_by,'name')
     elif order_by == 'last_update':
         p = p.order_by('-last_update', 'title')
     elif order_by in ['budget', 'funds_needed']:
         p = p.extra(order_by=['-%s' % order_by, 'title'])
     else:
         p = p.order_by(order_by, 'title')
-    return render_to_response('widgets/%s.html' % template.replace('-', '_'),
+    return render_to_response(
+        'widgets/%s.html' % template.replace('-', '_'),
         {
             'bgcolor': bgcolor,
             'textcolor': textcolor,
@@ -1481,3 +1479,32 @@ def global_organisation_projects_map_json(request, org_id):
     if callback:
         location_data = '%s(%s);' % (callback, location_data)
     return HttpResponse(location_data, content_type='application/json')
+
+
+@require_POST
+@csrf_exempt
+def get_api_key(request):
+    username = request.POST.get("username", "")
+    password = request.POST.get("password", "")
+    if username and password:
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            user_id = user.id
+            user_profile = UserProfile.objects.get(user=user)
+            org_id = user_profile.organisation.id
+            if not user_profile.api_key:
+                user_profile.save()
+            xml_root = etree.Element("credentials")
+            user_id_element = etree.SubElement(xml_root, "user_id")
+            user_id_element.text = str(user_id)
+            username_element = etree.SubElement(xml_root, "username")
+            username_element.text = username
+            org_id_element = etree.SubElement(xml_root, "org_id")
+            org_id_element.text = str(org_id)
+            api_key_element = etree.SubElement(xml_root, "api_key")
+            api_key_element.text = user_profile.api_key
+            xml_tree = etree.ElementTree(xml_root)
+            xml_data = etree.tostring(xml_tree)
+            return HttpResponse(xml_data, content_type="text/xml")
+    return HttpResponseForbidden()

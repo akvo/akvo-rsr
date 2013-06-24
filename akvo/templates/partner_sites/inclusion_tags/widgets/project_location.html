@@ -1,0 +1,6 @@
+<span class="projectLocation" id="project_location">
+  {% if project.primary_location.city %}
+    {{project.primary_location.city}}, 
+  {% endif %}
+  {{project.primary_location.country}}
+</span>
