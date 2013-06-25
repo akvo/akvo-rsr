@@ -16,15 +16,15 @@ New features & changes
 
 We have added functionality to our API to be able to import projects from an external source. This is hugely beneficial for our partnerships with larger partners such as Cordaid.org, who are currently working on implementing their entire project portfolio (500+ projects) into RSR.
 
-The process involves sending an IATI Formatted XML File to RSR, which is then translated and imported into the system to create the projects based ont he file's contents.
+The process involves sending an IATI Formatted XML File to RSR, which is then translated and imported into the system to create the projects based on the file's contents.
 
-We will continue to work on improving and strengthening this process, but the first projects are being added via the API for Cordaid's initial run. In thyis we're adding over 130 new projects to RSR.
+We will continue to work on improving and strengthening this process, but the first projects are being added via the API for Cordaid's initial run. In this we're adding over 130 new projects to RSR.
 
 Github issue: [121](https://github.com/akvo/akvo-rsr/issues/121)
 
 ###Internal Organisation ID
 
-We needed a way or Organisations to label other organisations and identify them on an ongoing basis. We have implemented this field which allows an partner to reference all of their working partners and provide a unique code for this. In the long term we believe we will be replacing this field for the IATI Organisation Identifier, but until this is more commonly in use, we will be using a custom identifier selected by the submitting organisation.
+We needed a way for Organisations to label other organisations and identify them on an ongoing basis. We have implemented this field which allows a partner to reference all of their working partners and provide a unique code for this. In the long term we believe we will be replacing this field for the IATI Organisation Identifier, but until this is more commonly in use, we will be using a custom identifier selected by the submitting organisation.
 
 Github issue: [178](https://github.com/akvo/akvo-rsr/issues/178)
 
@@ -43,7 +43,7 @@ Github issue: [149](https://github.com/akvo/akvo-rsr/issues/149)
 
 ###API Caching
 
-We have reduced the Cacheing solution we are using for the API to Memcached only, as our previous solution had stability issues. We now have a simple cache for Maps provided by Tasypie, and will work on what additional changes need to be implemented.
+We have reduced the Caching solution we are using for the API to Memcached only, as our previous solution had stability issues. We now have a simple cache for Maps provided by Tasypie, and will work on what additional changes need to be implemented.
 
 Github issue: [136](https://github.com/akvo/akvo-rsr/issues/136)
 
