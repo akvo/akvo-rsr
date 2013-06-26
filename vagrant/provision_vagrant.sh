@@ -8,7 +8,7 @@ fi
 
 su rsr
 
-if [ ! -L /var/akvo/rsr/git/checkout ]
+if [ ! -L /var/akvo/rsr/git/current ]
 then
     ln -s /vagrant/rsr/checkout /var/akvo/rsr/git/current
 fi
