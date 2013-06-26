@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ -e /etc/akvo_provisioned ]
+if [ -e /etc/localdev_rsr_provisioned ]
 then
     echo "Already bootstrapped, so nothing to do"
-    exit 0
+    #exit 0
 fi
 
 su rsr
@@ -18,5 +18,8 @@ ln -sf /var/akvo/rsr/local_settings.conf /var/akvo/rsr/git/current/akvo/settings
 /var/akvo/rsr/venv/bin/pip install -r /var/akvo/rsr/git/current/scripts/deployment/pip/requirements/2_rsr.txt
 
 manage='/var/akvo/rsr/venv/bin/python /var/akvo/rsr/git/current/akvo/manage.py'
-$manage syncdb --noinput
-$manage migrate
+
+$manage syncdb --noinput &&\
+$manage migrate &&\
+supervisorctl restart rsr &&\
+echo `date` > /etc/localdev_rsr_provisioned
