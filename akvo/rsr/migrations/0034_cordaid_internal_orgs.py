@@ -5,36 +5,15 @@ from south.v2 import DataMigration
 from django.db import models
 
 class Migration(DataMigration):
-    # 'K6010':'Cordaid Healthcare',#949
-    # 'K6020':'Cordaid Children & Education',#959
-    # 'K6030':'Cordaid Disaster Response',#961
-    # 'K6040':"Cordaid Women's leadership",#955
-    # 'K6050':'Cordaid Extractives',#960
-    # 'K6060':'Cordaid Security & Justice',1099
-    # 'K6070':'Cordaid Entrepreneurship',#950
-    # 'K6080':'Cordaid Urban Matters',#946
-    # 'K6090':'Cordaid Domestic',962
-    # 'K6100':'Cordaid Investments',#953
-
-
 
     def forwards(self, orm):
-        CORDAID_ID = 273
-        DGIS_ID = 464
-        business_units = [(949, 'K6010'),  (959, 'K6020'), (961, 'K6030'), (955, 'K6040'), (960, 'K6050'),
-                          (1099, 'K6060'), (950, 'K6070'), (946, 'K6080'), (962, 'K6090'), (953, 'K6100'),]
-        cordaid = orm['rsr.Organisation'].objects.get(pk=CORDAID_ID)
-        for pk, identifier in business_units:
-            orm['rsr.InternalOrganisationID'].objects.create(
-                recording_org=cordaid,
-                referenced_org= orm['rsr.Organisation'].objects.get(pk=pk),
-                identifier= identifier
-            )
-        cordaid.iati_org_id ='NL-KVK-41160054'
-        cordaid.save()
-        dgis = orm['rsr.Organisation'].objects.get(pk=DGIS_ID)
-        dgis.iati_org_id = 'NL-1'
-        dgis.save()
+        # note: 0034 was used as a datamigration to get the Cordaid data in line, however it was
+        # not necessary for all databases, but rather a fix for the live database. As such it's
+        # not applicable for other situations, so it has been removed
+
+        # An 'empty' migration is left in place to avoid South getting confused by a missing
+        # migration number
+        pass
 
     def backwards(self, orm):
         "Write your backwards methods here."
