@@ -16,7 +16,7 @@ from akvo.rsr.models import Organisation
 __all__ = [
     'PartnerListView',
     'PartnerView',
-    ]
+]
 
 
 class PartnerListView(BaseListView):

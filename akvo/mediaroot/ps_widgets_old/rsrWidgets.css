@@ -54,7 +54,7 @@ html {
 	-webkit-text-size-adjust: 100%;
 	-ms-text-size-adjust: 100%;
 	text-size-adjust: 100%;
-	overflow: hidden;
+	overflow-y: scroll
 }
 body {
 	font-size: 1em;
@@ -66,14 +66,6 @@ body {
 	background: rgb(255,255,255);
 	padding: 0.5em;
 }
-iframe {
-	overflow:hidden;
-	}
-iframe html, iframe body {
-	padding:0;
-	margin:0;
-	}
-
 /*--------------------------------------------------------------
 							Headings
 -------------------------------------------------------------- */
@@ -164,6 +156,7 @@ a img { border: none; }
 	padding: 0;
 	background: rgb(64,64,64); /* Old browsers */
 	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+
 	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQwNDA0MCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxMTExMTEiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
 	background: -moz-linear-gradient(top, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(64,64,64)), color-stop(100%, rgb(17,17,17))); /* Chrome,Safari4+ */
@@ -171,7 +164,7 @@ a img { border: none; }
 	background: -o-linear-gradient(top, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* IE10+ */
 	background: linear-gradient(to bottom, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* W3C */
- 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#404040', endColorstr='#111111', GradientType=0 ); /* IE6-8 */
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#404040', endColorstr='#111111', GradientType=0 ); /* IE6-8 */
 	overflow: hidden;
 }
 #container.lightBG {
@@ -190,11 +183,11 @@ a img { border: none; }
 	overflow: hidden;
 }
 
-/*************************** Widget Header **********************/
+/*************************** Widget Header ***********************/
 #container header {
-	width:100%;
-	display: inline-block;
-	overflow: hidden;
+	height: 30px;
+	display: block;
+	overflow: auto;
 }
 #container header h1 {
 	display: block;
@@ -206,15 +199,15 @@ a img { border: none; }
 	display: block;
 	font-size: 1.2em;
 	float: right;
-	margin: 6px 1% 0 1%;
+	margin: 6px 1% 0 2.5%;
 	text-indent: -9999px;
 	width: 60px;
 	height: 14px;
 }
 #container header span {
-	font-size: 0.4em;
+	font-size: 0.5em;
 	float: right;
-	margin-top: 3px;
+	margin-top: 2px;
 }
 #container.darkBG header { color: rgb(255,255,255); }
 #container.darkBG header:after {
@@ -222,7 +215,7 @@ a img { border: none; }
 	border-top: 1px solid rgb(0, 0, 0);
 	content: "";
 	display: block;
-	margin: 0 auto 0 auto;
+	margin: 25px auto 0 auto;
 	width: 98%;
 	visibility: visible;
 }
@@ -275,9 +268,6 @@ ul.basicInfo li .projectLocation {
 	color: rgb(255,255,255);
 	background: url(pinLocation.png) left center no-repeat;
 	margin: 0 0 0 5px;
-	white-space:nowrap;
-	text-overflow: ellipsis;
-	overflow:hidden;
 }
 #container.lightBG ul.basicInfo li .projectLocation {
 	color: rgb(32,32,36);
@@ -298,20 +288,24 @@ ul.basicInfo li .projectLocation {
 	display: inline;
 	border: 1px solid rgb(0,0,0);
 	padding: 0;
-	width: 37%;
-	margin: 0 2% 0 1px;
-	position:relative;
+	width: 120px;
+	height: 90px;
+	margin: 0 1px 0 1px;
 }
 .photo_frame img {
 	padding: 0;
 	margin: 0;
-	width: 100%;
+	width: 120px;
+	height: 90px;
 	vertical-align: sub;
 }
 #project_subtitle {
 	font-family: 'Questrial', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	color: rgb(152,152,152);
+	float: right;
 	padding: 0;
+	margin: 0 0 0 10px;
+	width: 190px;
 	max-height: 190px;
 	overflow: hidden;
 }
@@ -320,11 +314,12 @@ ul.basicInfo li .projectLocation {
 	position: relative;
 	overflow: auto;
 	float: right;
-	width: 26%;
+	width: 131px;
 	border: 1px solid rgba(17,17,17,0.3);
 	background: rgb(59,59,59);
 	background: rgba(0,0,0,0.2);
-	margin: 0 0.5% 0 0;
+	margin: 0 5px 0 0;
+	max-height: 204px;
 	overflow: hidden;
 }
 #container.lightBG div.projectBudget {
@@ -338,7 +333,7 @@ ul.basicInfo li .projectLocation {
 	color: rgb(235,235,235);
 }
 #container.lightBG #project_plan_summary { color: rgb(32,32,36); }
-ul.fundingwrap {}
+ul.fundingwrap { margin: 5px 0 0 0; }
 ul.fundingwrap li {
 	padding: 5px 0;
 	margin: 3px 0;

@@ -55,7 +55,11 @@ def rsr_widget_project_funding(context, project):
     takes_context=True)
 def rsr_widget_project_donate_button(context, project):
     """..."""
-    return {'project': context['project']}
+    return {
+        'app_url': context['app_url'],
+        'domain_url': context['domain_url'],
+        'project': context['project']
+    }
 
 
 @register.inclusion_tag(
@@ -71,7 +75,11 @@ def rsr_widget_project_progress_bar(context, project):
     takes_context=True)
 def rsr_widget_project_budget(context, project):
     """..."""
-    return {'project': context['project']}
+    return {
+        'app_url': context['app_url'],
+        'domain_url': context['domain_url'],
+        'project': context['project']
+    }
 
 
 @register.inclusion_tag(

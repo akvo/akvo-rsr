@@ -188,6 +188,17 @@ class ProjectLocation(BaseLocation):
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
 
 
+class PartnerType(models.Model):
+    id = models.CharField(max_length=8, primary_key=True, unique=True)
+    label = models.CharField(max_length=30, unique=True)
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        ordering = ('label',)
+
+
 class Partnership(models.Model):
     FIELD_PARTNER = u'field'
     FUNDING_PARTNER = u'funding'
@@ -268,12 +279,13 @@ class Organisation(models.Model):
         max_length=2, choices=settings.LANGUAGES, default='en',
         help_text=u'The main language of the organisation',
     )
+    partner_types = models.ManyToManyField(PartnerType)
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
         help_text=u'Check that this field is set to an organisation type that matches your organisation.',
     )
-    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True)
+    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True)
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
     )
@@ -520,7 +532,7 @@ class FocusArea(models.Model):
 
 
 class Benchmarkname(models.Model):
-    name = models.CharField(_(u'benchmark name'), max_length=50, help_text=_(u'Enter a name for the benchmark. (50 characters).'))
+    name = models.CharField(_(u'benchmark name'), max_length=80, help_text=_(u'Enter a name for the benchmark. (80 characters).'))
     order = models.IntegerField(_(u'order'), default=0, help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
 
     def __unicode__(self):
@@ -1162,7 +1174,7 @@ class BudgetItem(models.Model):
         "Needed since we have to have a vanilla __unicode__() method for the admin"
         if self.label.label in self.OTHER_LABELS:
             # display "other" if other_extra is empty. Translating here without translating the other labels seems corny
-            return self.other_extra.strip() or u"other"
+            return u"other" if self.other_extra is None else self.other_extra.strip()
         else:
             return self.__unicode__()
 
@@ -2062,6 +2074,7 @@ class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
+    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True)
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '

@@ -1,6 +1,6 @@
 .w170pxSmall {
-	width: 100%;
-	height: 100%;
+	width: 170px;
+	height: 312px;
 }
 .w170pxSmall ul.basicInfo { padding: 0.5em 1.5%; }
 .w170pxSmall ul.basicInfo li {
@@ -22,9 +22,5 @@
 .w170pxSmall .photo_frame img {
 	width: 96%;
 	height: auto;
-	margin-bottom: 5px;
 }
 
-.w170pxSmall header span {
-	display:none;
-}
