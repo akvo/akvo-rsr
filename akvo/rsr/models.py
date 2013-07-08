@@ -69,6 +69,8 @@ from akvo.rsr.signals import (
 
 from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
 
+from tastypie.models import ApiKey
+
 
 #Custom manager
 #based on http://www.djangosnippets.org/snippets/562/ and
@@ -160,8 +162,8 @@ class BaseLocation(models.Model):
     postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
     primary = models.BooleanField(_(u'primary location'), db_index=True, default=True)
 
-    def __unicode__(self):
-        return u'%s, %s (%s)' % (self.city, self.state, self.country)
+#    def __unicode__(self):
+#        return u'%s, %s (%s)' % (self.city, self.state, self.country)
 
     def save(self, *args, **kwargs):
         super(BaseLocation, self).save(*args, **kwargs)
@@ -263,6 +265,8 @@ class Organisation(models.Model):
         (ORG_TYPE_COM, _(u'Commercial')),
         (ORG_TYPE_KNO, _(u'Knowledge institution')),
     )
+    NEW_TO_OLD_TYPES = [ORG_TYPE_GOV, ORG_TYPE_GOV, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO,
+                        ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_COM, ORG_TYPE_KNO]
 
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
@@ -1630,6 +1634,15 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     #
     #
     #    logger.debug("Exiting: %s()" % who_am_i())
+
+    @property
+    def api_key(self, key=""):
+        try:
+            api_key = ApiKey.objects.get(user=self.user)
+            key = api_key.key
+        except:
+            pass
+        return key
 
 
 class SmsReporterManager(models.Manager):

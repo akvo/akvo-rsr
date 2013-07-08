@@ -281,6 +281,11 @@ urlpatterns += patterns(
     #(r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),
     #(r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
 
+    # Auth token for mobile apps
+    url(r'^rsr/auth/token/$',
+        'akvo.rsr.views.get_api_key',
+        name="auth_token"),
+
     # Includes
     (r'^rsr/admin/', include(admin.site.urls)),
     (r'^rsr/counter/', include('django_counter.urls')),
