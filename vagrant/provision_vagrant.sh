@@ -15,6 +15,11 @@ ln -sf /var/akvo/rsr/local_settings.conf /var/akvo/rsr/git/current/akvo/settings
 
 sudo -u rsr /var/akvo/rsr/venv/bin/pip install -r /var/akvo/rsr/git/current/scripts/deployment/pip/requirements/2_rsr.txt
 
+# due to a stupid dependency of django-counter, both PIL and Pillow will be installed, so we'll remove them
+# here and reinstall
+sudo -u rsr /var/akvo/rsr/venv/bin/pip uninstall --yes PIL Pillow
+sudo -u rsr /var/akvo/rsr/venv/bin/pip install Pillow==2.0.0
+
 manage='sudo -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/git/current/akvo/manage.py'
 
 $manage syncdb --noinput &&\
