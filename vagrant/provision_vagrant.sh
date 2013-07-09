@@ -18,9 +18,12 @@ sudo -u rsr /var/akvo/rsr/venv/bin/pip install -r /var/akvo/rsr/git/current/scri
 manage='sudo -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/git/current/akvo/manage.py'
 
 $manage syncdb --noinput &&\
-mysql -u root rsr < /bin/zcat /vagrant/files/barebones.sql.gz &&\
+zcat /vagrant/files/barebones.sql.gz > /tmp/barebones.sql &&\
+mysql -u root rsr < /tmp/barebones.sql &&\
+rm /tmp/barebones.sql &&\
 $manage migrate &&\
 cp -r /vagrant/files/db /var/akvo/rsr/mediaroot/ &&\
+
 chown -R rsr.rsr /var/akvo/rsr/mediaroot/db &&\
 supervisorctl restart rsr &&\
 echo `date` > /etc/localdev_rsr_provisioned
