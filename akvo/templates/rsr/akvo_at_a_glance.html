@@ -53,7 +53,7 @@
       google.visualization.events.addListener(geochart, 'select', function() {
         var selectionIdx = geochart.getSelection()[0].row;
         var countryName = data.getValue(selectionIdx, 0);
-        window.location = '/rsr/projects/all/?locations__country=' + country_lookup[countryName];
+        window.location = '/projects/all/?locations__country=' + country_lookup[countryName];
       });
       geochart.draw(data, options);
     };
@@ -88,7 +88,7 @@
           <table class="overall_statistics" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <th colspan="2">
-                {% if request.path = '/rsr/projects/' %}
+                {% if request.path = '/projects/' %}
                   <h2>{% trans 'Projects in Akvo' %}</h2>
                 {% else %}
                   <a href="{% url 'project_list' 'all' %}">

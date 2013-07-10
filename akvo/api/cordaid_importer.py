@@ -96,7 +96,7 @@ def api_user(domain, username, password='', api_key=''):
     elif password:
         auth = Requester(
             method='post',
-            url_template="http://{domain}/rsr/auth/token/",
+            url_template="http://{domain}/auth/token/",
             url_args=dict(domain=domain),
             data=dict(username=username, password=password),
         )
