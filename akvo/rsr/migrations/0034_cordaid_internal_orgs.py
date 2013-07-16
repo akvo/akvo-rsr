@@ -19,24 +19,26 @@ class Migration(DataMigration):
     # K6110;Food Security;K6000 - 1099
 
     def forwards(self, orm):
-        CORDAID_ID = 273
-        DGIS_ID = 464
-        business_units = [(949, 'K6010'),  (959, 'K6020'), (961, 'K6030'), (955, 'K6040'), (960, 'K6050'),
-                          (950, 'K6070'), (946, 'K6080'), (962, 'K6090'), (953, 'K6100'),
-                          (1099, 'K6110'), (1241, 'K6060'),
-        ]
-        cordaid = orm['rsr.Organisation'].objects.get(pk=CORDAID_ID)
-        for pk, identifier in business_units:
-            orm['rsr.InternalOrganisationID'].objects.create(
-                recording_org=cordaid,
-                referenced_org= orm['rsr.Organisation'].objects.get(pk=pk),
-                identifier= identifier
-            )
-        cordaid.iati_org_id ='NL-KVK-41160054'
-        cordaid.save()
-        dgis = orm['rsr.Organisation'].objects.get(pk=DGIS_ID)
-        dgis.iati_org_id = 'NL-1'
-        dgis.save()
+        # left for reference
+        # CORDAID_ID = 273
+        # DGIS_ID = 464
+        # business_units = [(949, 'K6010'),  (959, 'K6020'), (961, 'K6030'), (955, 'K6040'), (960, 'K6050'),
+        #                   (950, 'K6070'), (946, 'K6080'), (962, 'K6090'), (953, 'K6100'),
+        #                   (1099, 'K6110'), (1241, 'K6060'),
+        # ]
+        # cordaid = orm['rsr.Organisation'].objects.get(pk=CORDAID_ID)
+        # for pk, identifier in business_units:
+        #     orm['rsr.InternalOrganisationID'].objects.create(
+        #         recording_org=cordaid,
+        #         referenced_org= orm['rsr.Organisation'].objects.get(pk=pk),
+        #         identifier= identifier
+        #     )
+        # cordaid.iati_org_id ='NL-KVK-41160054'
+        # cordaid.save()
+        # dgis = orm['rsr.Organisation'].objects.get(pk=DGIS_ID)
+        # dgis.iati_org_id = 'NL-1'
+        # dgis.save()
+        pass
 
     def backwards(self, orm):
         "Write your backwards methods here."

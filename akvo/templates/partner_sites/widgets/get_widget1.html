@@ -9,7 +9,7 @@
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
-  <li class="last_breadcrum_item">{% trans "Get a widget" %}</li>
+  <li class="last_breadcrum_item">{% trans "Select widget" %}</li>
 {% endblock breadcrum_items %}
 
 
@@ -18,7 +18,7 @@
 
 {% block content %}
   <div>
-    <h2>{% trans "Get a widget" %}</h2>
+    <h2>{% trans "Select a widget - step 1 of 2" %}</h2>
     <p class="grey">
       {% trans "The following steps will produce a snippet of Akvo widget code you can copy and paste into your own web site&#x27;s code." %}<br />
     </p>
@@ -32,25 +32,137 @@
     <div style="margin-left:40px;">
       <h3>{% trans "Step 1: Select the type of widget you wish to use." %}</h3>
       <p class="small grey">{% trans "You can customise the top and bottom bar and title text colours on the next step." %}</p>
+      
+      {# Project widget with Donation link (170 pixels wide by 840 pixels high) #}
       <div class="pad20 whitebox marg_bottom40">
-        <form name="projectMapForm" action="." method="post">
+        <form name="projectNarrowForm" action="." method="post">
+          <h3>{% trans 'Project widget with Donation link (170 pixels wide by 840 pixels high)' %}</h3>
+          <div style="width: 250px; float:left; margin-top:20px;">
+            <script type="text/javascript">
+              document.write('<iframe src="{% url 'widget_project_narrow' project.id %}" width="170" height="840" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
+            </script>
+          </div>
+          <div style="width: 600px; float:right; margin-top:20px;">
+            <label class="radio">
+              <input type="radio" name="source" id="project-narrow-project" value="specific" checked>
+                {% blocktrans with project.title as project_title %}
+                  Use the {{project_title}} project.
+                {% endblocktrans %}
+            </label>
+            <label class="radio">
+              <input type="radio" name="source" id="project-narrow-random" value="random">
+                {% trans 'Display a random project from this organisation' %}:
+            </label>
+            <div style="text-align:center; width:600px; max-width:600px; padding-top:40px">
+              <a class="aqua awesome" onclick="this.blur();" href="javascript:document.projectNarrowForm.submit();" >
+                <span style="color:#fff">{% trans 'Select and Proceed...' %}</span>
+              </a>
+            </div>
+          </div>
+          <div class="clear"></div>
+          <input type="hidden" name="kind" value="project-narrow" />
           {% csrf_token %}
-          <input type="hidden" name="widget-type" value="project-map" />
+        </form>
+      </div>
+
+      {# Cobranded banner widget (468 pixels wide by 234 pixels high) #}
+      <div class="pad20 whitebox marg_bottom40">
+        <form name="cobrandedBannerForm" action="." method="post">
+          <h3>{% trans 'Cobranded banner widget (468 pixels wide by 234 pixels high)' %}</h3>
+          <script type="text/javascript">
+            document.write('<iframe src="{% url 'widget_cobranded_banner' project.id %}" width="468" height="234" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
+          </script>
+          <label class="radio">
+              <input type="radio" name="source" id="cobranded-banner-project" value="specific" checked>
+                {% blocktrans with project.title as project_title %}
+                  Use the {{project_title}} project.
+                {% endblocktrans %}
+            </label>
+            <label class="radio">
+              <input type="radio" name="source" id="cobranded-banner-random" value="random">
+                {% trans 'Display a random project from this organisation' %}:
+            </label>
+          <div style="text-align:center; width:600px; max-width:600px; padding-top:40px">
+            <a class="aqua awesome" onclick="this.blur();" href="javascript:document.cobrandedBannerForm.submit();" >
+              <span style="color:#fff">{% trans 'Select and Proceed...' %}</span>
+            </a>
+          </div>
+          <input type="hidden" name="kind" value="cobranded-banner" />
+          {% csrf_token %}
+        </form>
+      </div>
+
+      {# Small project (170 pixels wide by 312 pixels high) #}
+      <div class="pad20 whitebox marg_bottom40">
+        <form name="projectSmallForm" action="." method="post">
+          <h3>{% trans 'Small project (170 pixels wide by 312 pixels high)' %}</h3>
+          <div style="width: 250px; float:left; margin-top:20px;">
+            <script type="text/javascript">
+              document.write('<iframe src="{% url 'widget_project_small' project.id %}" width="170" height="312" frameborder="0" allowTransparency="true" style="overflow: hidden;"> </iframe>');
+            </script>
+          </div>
+          <div style="width: 600px; float:right; margin-top:20px;">
+            <label class="radio">
+              <input type="radio" name="source" id="project-small-project" value="specific" checked>
+                {% blocktrans with project.title as project_title %}
+                  Use the {{project_title}} project.
+                {% endblocktrans %}
+            </label>
+            <label class="radio">
+              <input type="radio" name="source" id="project-small-random" value="random">
+                {% trans 'Display a random project from this organisation' %}:
+            </label>
+            <div style="text-align:center; width:600px; max-width:600px; padding-top:40px">
+              <a class="aqua awesome" onclick="this.blur();" href="javascript:document.projectSmallForm.submit();" >
+                <span style="color:#fff">{% trans 'Select and Proceed...' %}</span>
+              </a>
+            </div>
+          </div>
+          <div class="clear"></div>
+          <input type="hidden" name="kind" value="project-small" />
+          {% csrf_token %}
+        </form>
+      </div>
+
+      {# Map widget #}
+      <div class="pad20 whitebox marg_bottom40">
+        <form name="projectMapForm" action="." method="post">{% csrf_token %}
           <h3>{% trans "Project map widget" %}</h3>
           <p class="small grey">
             {% blocktrans with partner_site_url=app_url %}Shows a map of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}
           </p>
           <script type="text/javascript">
-            document.write('<iframe src="{% url 'widget_org_map' %}" width="600" height="300" frameborder="0" allowTransparency="true"> </iframe>');
+            document.write('<iframe src="{% url 'widget_org_map' %}" width="600" height="300" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
           </script>
-
           <div style="text-align:center; width:600px; max-width:600px; padding-top:40px">
             <a class="aqua awesome" onclick="this.blur();" href="javascript:document.projectMapForm.submit();" >
               <span style="color:#fff">{% trans 'Select and Proceed...' %}</span>
             </a>
           </div>
+          <input type="hidden" name="kind" value="project-map" />
         </form>
       </div>
+
+
+      {# Project list widget #}
+      <div class="pad20 whitebox marg_bottom40">
+        <form name="projectListForm" action="." method="post">{% csrf_token %}
+          <h3>{% trans "Project list widget" %}</h3>
+          <p class="small grey">
+            {% blocktrans with partner_site_url=app_url %}Shows a list of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}
+          </p>
+          <script type="text/javascript">
+            document.write('<iframe src="{% url 'widget_project_list' %}" width="745" height="730" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
+          </script>
+          <div style="text-align:center; width:600px; max-width:600px; padding-top:40px">
+            <a class="aqua awesome" onclick="this.blur();" href="javascript:document.projectListForm.submit();" >
+              <span style="color:#fff">{% trans 'Select and Proceed...' %}</span>
+            </a>
+          </div>
+          <input type="hidden" name="kind" value="project-list" />
+        </form>
+      </div>
+
     </div>
   </div>
 {% endblock content %}

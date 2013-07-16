@@ -190,6 +190,17 @@ class ProjectLocation(BaseLocation):
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
 
 
+class PartnerType(models.Model):
+    id = models.CharField(max_length=8, primary_key=True, unique=True)
+    label = models.CharField(max_length=30, unique=True)
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        ordering = ('label',)
+
+
 class Partnership(models.Model):
     FIELD_PARTNER = u'field'
     FUNDING_PARTNER = u'funding'
@@ -204,8 +215,8 @@ class Partnership(models.Model):
     KNOWLEDGE_PARTNER = u'knowledge'
     NETWORK_PARTNER = u'network'
     PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
-    PARTNER_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
-    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_LIST, PARTNER_EXTRA_LABELS)
+    PARTNER_TYPE_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
+    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
@@ -272,6 +283,7 @@ class Organisation(models.Model):
         max_length=2, choices=settings.LANGUAGES, default='en',
         help_text=u'The main language of the organisation',
     )
+    partner_types = models.ManyToManyField(PartnerType)
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
@@ -2075,6 +2087,7 @@ class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
+    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True)
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '
