@@ -5,6 +5,64 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR ver 2.1.4 - mangosteen
+---
+25 June 2013, adriancollier, zzgvh
+
+New features & changes
+----
+
+###Akvo RSR Write API
+
+We have added functionality to our API to be able to import projects from an external source. This is hugely beneficial for our partnerships with larger partners such as Cordaid.org, who are currently working on implementing their entire project portfolio (500+ projects) into RSR.
+
+The process involves sending an IATI Formatted XML File to RSR, which is then translated and imported into the system to create the projects based on the file's contents.
+
+We will continue to work on improving and strengthening this process, but the first projects are being added via the API for Cordaid's initial run. In this we're adding over 130 new projects to RSR.
+
+Github issue: [121](https://github.com/akvo/akvo-rsr/issues/121)
+
+###Internal Organisation ID
+
+We needed a way for Organisations to label other organisations and identify them on an ongoing basis. We have implemented this field which allows a partner to reference all of their working partners and provide a unique code for this. In the long term we believe we will be replacing this field for the IATI Organisation Identifier, but until this is more commonly in use, we will be using a custom identifier selected by the submitting organisation.
+
+Github issue: [178](https://github.com/akvo/akvo-rsr/issues/178)
+
+###Migrate Organisation to use the IATI Code List
+
+We were previously using an Organisation type list of 4 types:
+
+- NGO
+- Governmental
+- Commercial
+- Knowledge Institution
+
+We have now implemented an additional type field to use the [existing IATI List](http://iatistandard.org/codelists/organisation_type/). We will shortly be working on migration to update all existing Organisations we have to use the new field.
+
+Github issue: [149](https://github.com/akvo/akvo-rsr/issues/149)
+
+###API Caching
+
+We have reduced the Caching solution we are using for the API to Memcached only, as our previous solution had stability issues. We now have a simple cache for Maps provided by Tasypie, and will work on what additional changes need to be implemented.
+
+Github issue: [136](https://github.com/akvo/akvo-rsr/issues/136)
+
+Bug fixes
+----
+
+###Cordaid Data Importing
+
+We experienced an issue with the data import which was caused by a missing Business Unit in the implementation details. This was added and the problem resolved.
+
+Github issue: [197](https://github.com/akvo/akvo-rsr/issues/197)
+
+###IATI Organisation Identifier NULL Duplicates
+
+When we added the IATI Identifier to the Organisation records, we wanted to prevent duplicates from being created so we implemented validation on the field. The issue was that the validation included a NULL value so 2 Organisations both without any ID were showing as duplicates. As it is possible to have an Organisation without an identifier we have removed this validation constraint to ignore NULL values.
+
+Github issue: [208](https://github.com/akvo/akvo-rsr/issues/208)
+
+
 Akvo RSR ver 2.1.3.1 - hotfix for leek
 ---
 11 March 2013, zzgvh

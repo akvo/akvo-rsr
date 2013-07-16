@@ -27,8 +27,7 @@ import os.path
 from permissions.models import Role
 
 from akvo.rsr.forms import PartnerSiteAdminForm
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
-from akvo.rsr.utils import get_rsr_limited_change_permission, permissions
+from akvo.rsr.utils import get_rsr_limited_change_permission, permissions, custom_get_or_create_country
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -65,13 +64,7 @@ class CountryAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if obj.iso_code:
-            iso_code = obj.iso_code
-            continent_code = COUNTRY_CONTINENTS[iso_code]
-
-            obj.name = dict(ISO_3166_COUNTRIES)[iso_code]
-            obj.continent = dict(CONTINENTS)[continent_code]
-            obj.continent_code = continent_code
-        obj.save()
+            custom_get_or_create_country(iso_code, obj)
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -113,6 +106,14 @@ class InternalOrganisationIDInline(admin.TabularInline):
     verbose_name_plural = 'internal organisation IDs'
 
 
+class OrganisationAdminForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'organisation')
+
+    def clean_iati_org_id(self):
+        return self.cleaned_data['iati_org_id'] or None
+
+
 class OrganisationAdmin(admin.ModelAdmin):
     # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
     # If the fieldsets are changed, the template may need fixing too
@@ -122,6 +123,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
     )
+    form = OrganisationAdminForm
     inlines = (OrganisationLocationInline, InternalOrganisationIDInline,)
     exclude = ('internal_org_ids',)
     readonly_fields = ('partner_types',)

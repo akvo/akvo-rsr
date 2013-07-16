@@ -6,6 +6,8 @@
 from itertools import groupby
 from urlparse import urljoin
 
+from lxml import etree
+
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (MiniCMS, FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
@@ -22,7 +24,7 @@ from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import login, logout, REDIRECT_FIELD_NAME
+from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -32,12 +34,16 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
 from django.forms import ModelForm
-from django.http import (HttpResponse, HttpResponseRedirect,
-    HttpResponsePermanentRedirect, Http404)
+from django.http import (
+        HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed,
+        HttpResponsePermanentRedirect, Http404
+)
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from datetime import datetime
 from registration.models import RegistrationProfile
@@ -1473,3 +1479,32 @@ def global_organisation_projects_map_json(request, org_id):
     if callback:
         location_data = '%s(%s);' % (callback, location_data)
     return HttpResponse(location_data, content_type='application/json')
+
+
+@require_POST
+@csrf_exempt
+def get_api_key(request):
+    username = request.POST.get("username", "")
+    password = request.POST.get("password", "")
+    if username and password:
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            user_id = user.id
+            user_profile = UserProfile.objects.get(user=user)
+            org_id = user_profile.organisation.id
+            if not user_profile.api_key:
+                user_profile.save()
+            xml_root = etree.Element("credentials")
+            user_id_element = etree.SubElement(xml_root, "user_id")
+            user_id_element.text = str(user_id)
+            username_element = etree.SubElement(xml_root, "username")
+            username_element.text = username
+            org_id_element = etree.SubElement(xml_root, "org_id")
+            org_id_element.text = str(org_id)
+            api_key_element = etree.SubElement(xml_root, "api_key")
+            api_key_element.text = user_profile.api_key
+            xml_tree = etree.ElementTree(xml_root)
+            xml_data = etree.tostring(xml_tree)
+            return HttpResponse(xml_data, content_type="text/xml")
+    return HttpResponseForbidden()

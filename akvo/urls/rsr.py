@@ -281,6 +281,11 @@ urlpatterns += patterns(
     #(r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),
     #(r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
 
+    # Auth token for mobile apps
+    url(r'^rsr/auth/token/$',
+        'akvo.rsr.views.get_api_key',
+        name="auth_token"),
+
     # Includes
     (r'^rsr/admin/', include(admin.site.urls)),
     (r'^rsr/counter/', include('django_counter.urls')),
@@ -294,7 +299,7 @@ urlpatterns += patterns(
     '',
 
     #django-piston
-    (r'^rsr/api/', include('akvo.api.piston_urls')),
+    # (r'^rsr/api/', include('akvo.api.piston_urls')),
 
     #tastypie
     # generate all resource urls for version one of the api,
