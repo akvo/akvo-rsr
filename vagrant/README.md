@@ -29,7 +29,7 @@ The first time you use the RSR environment:
 * The RSR application information is in `/var/akvo/rsr/`
 * The `akvo-rsr` repository from your local machine is synced to the virtual machine, and the RSR application will restart when you make code changes.
 
-## Usful scripts
+## Useful scripts
 
 There are a variety of useful scripts in `scripts/devehelpers`:
 
