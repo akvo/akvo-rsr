@@ -605,7 +605,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Please upload a photo that displays an interesting part of your project, plan or implementation.'
             ),
-            'fields': ('current_image', 'current_image_caption', ),
+            'fields': ('current_image', 'current_image_caption', 'current_image_credit'),
             }),
         (_(u'Locations'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
