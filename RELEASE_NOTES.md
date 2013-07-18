@@ -123,7 +123,7 @@ In the standard RSR Widget, the Project List Widget had a column called Partners
 
 Github Issue: [#15](http://github.com/akvo/akvo-rsr/issues/15)
 
-##Test Bug - Cannot create new org in Admin
+###Test Bug - Cannot create new org in Admin
 
 When testing this release, we discovered an issue preventing Organisations from being created within the Admin. This was resolved before we pushed the release to live, so no such bug will be affecting our users after this release.
 
