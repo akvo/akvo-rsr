@@ -13,7 +13,7 @@ from django.forms.models import ModelForm
 from tastypie import fields
 from tastypie import http
 
-from tastypie.authentication import ApiKeyAuthentication
+from tastypie.authentication import ApiKeyAuthentication, Authentication, MultiAuthentication
 from tastypie.authorization import Authorization
 from tastypie.cache import SimpleCache
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
@@ -35,9 +35,12 @@ from akvo.api.validation import ModelFormValidation
 from akvo.rsr.models import (
     Benchmark, Benchmarkname, BudgetItem, BudgetItemLabel, Category, Country, FocusArea, Goal, Link,
     Organisation, OrganisationLocation, Partnership, Project, ProjectLocation, ProjectUpdate,
-    ProjectComment, UserProfile, Invoice,
-    InternalOrganisationID)
-from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE, custom_get_or_create_country, right_now_in_akvo
+    ProjectComment, UserProfile, Invoice, InternalOrganisationID
+)
+from akvo.rsr.utils import (
+    PAYPAL_INVOICE_STATUS_COMPLETE, custom_get_or_create_country, right_now_in_akvo,
+    get_rsr_limited_change_permission
+)
 
 __all__ = [
     'BenchmarkResource',
@@ -802,7 +805,8 @@ class ProjectResource(ConditionalFullResource):
 
     class Meta:
         allowed_methods         = ['get']
-        queryset                = Project.objects.published()
+        authentication          = MultiAuthentication(ApiKeyAuthentication(), Authentication(),)
+        queryset                = Project.objects.all() #Note: this is modified in get_object_list()
         resource_name           = 'project'
         include_absolute_url    = True
 
@@ -826,6 +830,29 @@ class ProjectResource(ConditionalFullResource):
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,
         )
+
+    def get_object_list(self, request):
+        """ The Project queryset is filtered depending on the user accessing the API
+            All users get Project.objects.published()
+            If the user is authenticated via an API key additional projects are added similarly to the access in the
+            admin:
+                Superusers get access to ALL projects
+                Users with "change_project" perm (currently Akvo staff users) also get access to ALL projects
+                Users with "rsr_limited_change_project" perm get access to all projects linked to their organisation
+                regardless of publishing status
+        """
+        object_list = super(ProjectResource, self).get_object_list(request)
+        if self._meta.authentication.is_authenticated(request):
+            opts = Project._meta
+            if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+                return object_list
+            elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+                object_list = object_list.published() | object_list.of_partner(
+                    request.user.get_profile().organisation
+                )
+                return object_list.distinct()
+        return object_list.published()
+
 
     def dehydrate(self, bundle):
         """ add thumbnails inline info for Project.current_image
@@ -905,7 +932,7 @@ class ProjectMapResource(ConditionalFullResource):
             partnerships        = ALL_WITH_RELATIONS,
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,
-            )
+        )
 
     def dehydrate(self, bundle):
         """ add thumbnails inline info for Project.current_image
@@ -1029,9 +1056,9 @@ class UserResource(ConditionalFullResource):
         queryset = User.objects.filter(is_active=True)
         resource_name = 'user'
         fields = ['first_name', 'last_name', 'last_login', ]
-        filtering       = dict(
+        filtering = dict(
             # foreign keys
-            userprofile  = ALL_WITH_RELATIONS,
+            userprofile = ALL_WITH_RELATIONS,
         )
 
     def dehydrate(self, bundle):
