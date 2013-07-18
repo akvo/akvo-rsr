@@ -124,11 +124,11 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'About the organisation'), {'fields': ('description', )}),
     )
     form = OrganisationAdminForm
-    inlines = (OrganisationLocationInline, InternalOrganisationIDInline,)
+    inlines = (OrganisationLocationInline, InternalOrganisationIDInline)
     exclude = ('internal_org_ids',)
     readonly_fields = ('partner_types',)
-    list_display = ('name', 'long_name', 'website', 'language',)
-    search_fields = ('name', 'long_name',)
+    list_display = ('name', 'long_name', 'website', 'language')
+    search_fields = ('name', 'long_name')
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -156,7 +156,7 @@ class OrganisationAdmin(admin.ModelAdmin):
             return list(self.list_display) + ['allowed_partner_types']
         return super(OrganisationAdmin, self).get_list_display(request)
 
-    def get_readonly_fields(self, request, obj):
+    def get_readonly_fields(self, request, obj=None):
         # parter_types is read only unless you have change permission for organisations
         if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
             self.readonly_fields = ('partner_types',)
@@ -171,12 +171,13 @@ class OrganisationAdmin(admin.ModelAdmin):
             self.readonly_fields = ()
             # hack to set the help text
             try:
-                field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
-                if len(field) > 0:
-                    field[0].help_text = 'The allowed partner types for this organisation. Hold down "Control", or "Command" on a Mac, to select more than one.'
+                if not obj is None:
+                    field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
+                    if len(field) > 0:
+                        field[0].help_text = 'The allowed partner types for this organisation. Hold down "Control", or "Command" on a Mac, to select more than one.'
             except:
                 pass
-        return super(OrganisationAdmin, self).get_readonly_fields(request, obj)
+        return super(OrganisationAdmin, self).get_readonly_fields(request, obj=obj)
 
     def queryset(self, request):
         qs = super(OrganisationAdmin, self).queryset(request)
