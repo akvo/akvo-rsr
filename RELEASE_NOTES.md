@@ -1,6 +1,6 @@
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
-We provide Akvo RSR as a service on your own URL and with your own branding, as well as and on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
+We provide Akvo RSR as a service on your own URL and with your own branding, as well as on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
@@ -52,7 +52,7 @@ Github Issue: [#203](http://github.com/akvo/akvo-rsr/issues/203)
 
 Russian Translation
 
-Working with one of our Partners UNDP, we have developed a set of User Interface translations that allow RSR Partnersites to be viewed locally in Russian. This no makes 6 languages we support in the User Interface of RSR:
+Working with one of our Partners UNDP, we have developed a set of User Interface translations that allow RSR Partnersites to be viewed locally in Russian. This now makes 6 languages we support in the User Interface of RSR:
 
 - English
 - Dutch
