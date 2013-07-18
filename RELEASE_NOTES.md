@@ -74,7 +74,8 @@ Github Issue: [#139](http://github.com/akvo/akvo-rsr/issues/139)
 ###Homepage API Resource
 
 Also related to our move of hosting providers, this new addition to the API has been added to populate the "Right now in Akvo" box on the Homepage. This resource can be customised as time goes on to be able to generate more Analytics/KPI type information to be displayed within our Public Website pages.
-#180
+
+Github Issue: [#180](http://github.com/akvo/akvo-rsr/issues/180)
 
 ###Remove old API
 
