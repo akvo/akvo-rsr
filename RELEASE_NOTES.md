@@ -1,6 +1,6 @@
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
-We provide Akvo RSR as a service on your own URL and with your own branding, as well as and on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
+We provide Akvo RSR as a service on your own URL and with your own branding, as well as on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
@@ -52,7 +52,7 @@ Github Issue: [#203](http://github.com/akvo/akvo-rsr/issues/203)
 
 Russian Translation
 
-Working with one of our Partners UNDP, we have developed a set of User Interface translations that allow RSR Partnersites to be viewed locally in Russian. This no makes 6 languages we support in the User Interface of RSR:
+Working with one of our Partners UNDP, we have developed a set of User Interface translations that allow RSR Partnersites to be viewed locally in Russian. This now makes 6 languages we support in the User Interface of RSR:
 
 - English
 - Dutch
@@ -74,7 +74,8 @@ Github Issue: [#139](http://github.com/akvo/akvo-rsr/issues/139)
 ###Homepage API Resource
 
 Also related to our move of hosting providers, this new addition to the API has been added to populate the "Right now in Akvo" box on the Homepage. This resource can be customised as time goes on to be able to generate more Analytics/KPI type information to be displayed within our Public Website pages.
-#180
+
+Github Issue: [#180](http://github.com/akvo/akvo-rsr/issues/180)
 
 ###Remove old API
 
@@ -122,7 +123,7 @@ In the standard RSR Widget, the Project List Widget had a column called Partners
 
 Github Issue: [#15](http://github.com/akvo/akvo-rsr/issues/15)
 
-##Test Bug - Cannot create new org in Admin
+###Test Bug - Cannot create new org in Admin
 
 When testing this release, we discovered an issue preventing Organisations from being created within the Admin. This was resolved before we pushed the release to live, so no such bug will be affecting our users after this release.
 
