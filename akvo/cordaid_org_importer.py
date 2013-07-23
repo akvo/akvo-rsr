@@ -18,7 +18,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
-from akvo.rsr.models import InternalOrganisationID, Organisation
+from akvo.rsr.models import InternalOrganisationID, Organisation, PartnerType
 from akvo.rsr.utils import model_and_instance_based_filename
 
 
@@ -46,23 +46,18 @@ def normalize_url(url):
 
 
 def import_orgs(xml_file):
-    internal_org_ids = []
     with open(xml_file, "rb") as f:
         tree = etree.parse(f)
         for element in tree.getroot():
             recording_org = Organisation.objects.get(id=CORDAID_ORG_ID)
             identifier = element.findtext("org_id")
             try:  # Find the existing RSR InternalOrganisationID and Organisation
-                internal_org_ids = InternalOrganisationID.objects.filter(
+                internal_org_id = InternalOrganisationID.objects.get(
                         recording_org=recording_org,
                         identifier=identifier)
-            except:
-                pass
-            if len(internal_org_ids) >= 1:
-                internal_org_id = internal_org_ids[0]
                 referenced_org = internal_org_id.referenced_org
                 action = "updated"
-            else:
+            except:
                 referenced_org = Organisation()
                 referenced_org.save()
                 internal_org_id = InternalOrganisationID(
@@ -70,42 +65,41 @@ def import_orgs(xml_file):
                         referenced_org=referenced_org,
                         identifier=identifier)
                 internal_org_id.save()
+                for partner_type in PartnerType.objects.all():
+                    reference_org.partner_types.add(partner_type)
                 action = "created"
-            referenced_org.name = element.findtext("name")[:25] 
-            referenced_org.long_name = element.findtext("name")
+            name = element.findtext("name")
+            referenced_org.name, referenced_org.long_name = name[:25], name
             referenced_org.description = element.findtext("description") or "N/A"
             referenced_org.url = normalize_url(element.findtext("url"))
             referenced_org.new_organisation_type = int(element.findtext("iati_organisation_type"))
             referenced_org.organisation_type = get_organisation_type(referenced_org.new_organisation_type)
-            print "%s Organisation & InternalOrganisationID for %s" % (action, referenced_org.long_name)
+            print("{action} Organisation {org_id} & associated InternalOrganisationID.".format(
+                    action=action, org_id=referenced_org.id))
             referenced_org.save()
 
 
 def import_images(logo_dir):
-    internal_org_ids = []
     for logo_name in os.listdir(logo_dir):
         identifier, extension = splitext(logo_name)
         if extension.lower() in (".png", ".jpg", ".jpeg", ".gif"):
             try:
-                internal_org_ids = InternalOrganisationID.objects.filter(
+                internal_org_id = InternalOrganisationID.objects.get(
                         recording_org=Organisation.objects.get(id=CORDAID_ORG_ID),
                         identifier=identifier)
-            except:
-                pass
-            if len(internal_org_ids) >= 1:
-                internal_org_id = internal_org_ids[0]
                 org = internal_org_id.referenced_org
-                filename = model_and_instance_based_filename("Organisation",
-                        org.pk, "logo", logo_name)
+                filename = model_and_instance_based_filename(
+                        "Organisation", org.pk, "logo", logo_name)
                 with open(os.path.join(logo_dir, logo_name), "rb") as f:
                     logo_data = f.read()
                     logo_tmp = NamedTemporaryFile(delete=True)
                     logo_tmp.write(logo_data)
                     logo_tmp.flush()
                     org.logo.save(filename, File(logo_tmp), save=True)
-                    print "Uploaded logo to Organisation %s" % org.long_name
-            else:
-                print "Logo upload failed. No matching organisations found."
+                    print("Uploaded logo to Organisation {org_name}.".format(
+                            org_name=org.long_name))
+            except: 
+                print("Logo upload failed. No matching organisations found.")
 
 
 if __name__ == "__main__":
