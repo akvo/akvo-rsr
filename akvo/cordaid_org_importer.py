@@ -47,8 +47,8 @@ def normalize_url(url):
 
 def import_orgs(xml_file):
     with open(xml_file, "rb") as f:
-        tree = etree.parse(f)
-        for element in tree.getroot():
+        root = etree.fromstring(f.read())
+        for element in root:
             recording_org = Organisation.objects.get(id=CORDAID_ORG_ID)
             identifier = element.findtext("org_id")
             try:  # Find the existing RSR InternalOrganisationID and Organisation
@@ -66,7 +66,7 @@ def import_orgs(xml_file):
                         identifier=identifier)
                 internal_org_id.save()
                 for partner_type in PartnerType.objects.all():
-                    reference_org.partner_types.add(partner_type)
+                    referenced_org.partner_types.add(partner_type)
                 action = "created"
             name = element.findtext("name")
             referenced_org.name, referenced_org.long_name = name[:25], name
