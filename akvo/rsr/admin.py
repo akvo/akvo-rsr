@@ -161,22 +161,22 @@ class OrganisationAdmin(admin.ModelAdmin):
         if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
             self.readonly_fields = ('partner_types',)
             # hack to set the help text
-            try:
-                field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
-                if len(field) > 0:
-                    field[0].help_text = 'The allowed partner types for this organisation'
-            except:
-                pass
+            #try:
+            #    field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
+            #    if len(field) > 0:
+            #        field[0].help_text = 'The allowed partner types for this organisation'
+            #except:
+            #    pass
         else:
             self.readonly_fields = ()
             # hack to set the help text
-            try:
-                if not obj is None:
-                    field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
-                    if len(field) > 0:
-                        field[0].help_text = 'The allowed partner types for this organisation. Hold down "Control", or "Command" on a Mac, to select more than one.'
-            except:
-                pass
+            #try:
+            #    if not obj is None:
+            #        field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
+            #        if len(field) > 0:
+            #            field[0].help_text = 'The allowed partner types for this organisation. Hold down "Control", or "Command" on a Mac, to select more than one.'
+            #except:
+            #    pass
         return super(OrganisationAdmin, self).get_readonly_fields(request, obj=obj)
 
     def queryset(self, request):
