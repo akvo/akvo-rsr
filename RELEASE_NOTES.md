@@ -7,7 +7,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.1.5.1 - hotfix for Nectarine
 ---
-11 March 2013, zzgvh
+24 July 2013, adriancollier
 
 ###Add Organsiation Loading Info
 
