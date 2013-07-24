@@ -5,6 +5,16 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR ver 2.1.5.1 - hotfix for Nectarine
+---
+11 March 2013, zzgvh
+
+###Add Organsiation Loading Info
+
+We needed a little more code to process the Organisation Import File from Cordaid.
+
+Github issue [#250](https://github.com/akvo/akvo-rsr/issues/250)
+
 Akvo RSR ver 2.1.5 Nectarine
 ---
 8th July 2013 - adriancollier
