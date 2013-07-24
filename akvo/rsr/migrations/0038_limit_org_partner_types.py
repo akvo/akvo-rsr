@@ -3,42 +3,34 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from akvo.rsr.models import PartnerType, Partnership
 
 class Migration(DataMigration):
-    # orgunit_id;name;sector_id
-    # K6010;Healthcare;K6002 - 949
-    # K6020;Children & Education;K6002 - 959
-    # K6030;DRR & Disaster Response;K6001 - 961
-    # K6040;Women's leadership;K6000 - 955
-    # K6050;Extractives;K6000 - 960
-    # K6060;Security & Justice;K6000 - 1333
-    # K6070;Entrepreneurship;K6002 - 950
-    # K6080;Urban Matters;K6000 - 946
-    # K6090;Domestic;K6001 - 962
-    # K6100;Investments;K6003 - 953
-    # K6110;Food Security;K6000 - 1099
 
     def forwards(self, orm):
-        # left for reference
-        # CORDAID_ID = 273
-        # DGIS_ID = 464
-        # business_units = [(949, 'K6010'),  (959, 'K6020'), (961, 'K6030'), (955, 'K6040'), (960, 'K6050'),
-        #                   (950, 'K6070'), (946, 'K6080'), (962, 'K6090'), (953, 'K6100'),
-        #                   (1099, 'K6110'), (1241, 'K6060'),
-        # ]
-        # cordaid = orm['rsr.Organisation'].objects.get(pk=CORDAID_ID)
-        # for pk, identifier in business_units:
-        #     orm['rsr.InternalOrganisationID'].objects.create(
-        #         recording_org=cordaid,
-        #         referenced_org= orm['rsr.Organisation'].objects.get(pk=pk),
-        #         identifier= identifier
-        #     )
-        # cordaid.iati_org_id ='NL-KVK-41160054'
-        # cordaid.save()
-        # dgis = orm['rsr.Organisation'].objects.get(pk=DGIS_ID)
-        # dgis.iati_org_id = 'NL-1'
-        # dgis.save()
-        pass
+        for id, label in Partnership.PARTNER_TYPES:
+            partner_type, created = PartnerType.objects.get_or_create(id=id, defaults=dict(label=label))
+            if created:
+                print 'Created PartnerType {partner_type}'.format(partner_type=partner_type)
+            else:
+                print 'Found existing PartnerType {partner_type}'.format(partner_type=partner_type)
+
+        # create a dict with organisations as keys and a set of their partner types as values
+        organisations = {}
+        for partnership in orm['rsr.Partnership'].objects.all():
+            organisation = partnership.organisation
+            partner_type = partnership.partner_type
+            partner_types_for_org = organisations.setdefault(organisation, {partner_type})
+            partner_types_for_org.add(partner_type)
+        partner_types = orm['rsr.PartnerType'].objects.all()
+        partner_types_dict = {partner_type.id: partner_type for partner_type in partner_types}
+        for organisation, allowed_partner_types in organisations.items():
+            organisation.partner_types.add(
+                *[partner_types_dict[id] for id in list(allowed_partner_types)]
+            )
+            print u"Organisation {org_name} partner types: {allowed_partner_types}".format(
+                org_name=organisation.name, allowed_partner_types=', '.join(list(allowed_partner_types))
+            )
 
     def backwards(self, orm):
         "Write your backwards methods here."
@@ -109,7 +101,7 @@ class Migration(DataMigration):
         'rsr.benchmarkname': {
             'Meta': {'ordering': "['order', 'name']", 'object_name': 'Benchmarkname'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         'rsr.budgetitem': {
@@ -225,6 +217,7 @@ class Migration(DataMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '25', 'db_index': 'True'}),
             'new_organisation_type': ('django.db.models.fields.IntegerField', [], {'default': '22', 'db_index': 'True'}),
             'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '1', 'db_index': 'True'}),
+            'partner_types': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['rsr.PartnerType']", 'symmetrical': 'False'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
             'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.OrganisationLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
@@ -274,8 +267,14 @@ class Migration(DataMigration):
             'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'hostname': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
             'ui_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+        },
+        'rsr.partnertype': {
+            'Meta': {'ordering': "('label',)", 'object_name': 'PartnerType'},
+            'id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '8', 'primary_key': 'True'}),
+            'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         'rsr.paymentgatewayselector': {
             'Meta': {'object_name': 'PaymentGatewaySelector'},

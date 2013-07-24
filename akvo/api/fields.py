@@ -183,6 +183,18 @@ class Base64FileField(fields.FileField):
     """
 
     def dehydrate(self, bundle, return_url=True, url=""):
+        """
+        Return a URL or a base64-encoded string.
+
+        If `return_url` is set to `True`, which it is by default, a URL string
+        to the given upload is returned.
+
+        If `return_url` is set ti `False` a base64-encoded string representation
+        of the uploaded file is returned. Be careful, since this can be extremely
+        large!
+
+        """
+
         if return_url:
             instance = getattr(bundle.obj, self.instance_name, None)
             try:

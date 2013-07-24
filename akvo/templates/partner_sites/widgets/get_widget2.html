@@ -3,126 +3,121 @@
 {% load url from future %}
 
 
-{% block title %}{% trans "Get a widget" %} - {% endblock title %}
+{% block title %}{% trans "Configure widget" %} - {% endblock title %}
+
+{% block head %}
+  {{block.super}}
+  <style>
+    div.getWidget {
+      /*margin-left: 15px;*/
+      margin-bottom: 40px;
+      float: left;
+      margin-right: 15px;
+      min-width: 110px;
+    }
+    .getWidget label {
+      font-weight: normal;
+      font-size: 0.8125em;
+      margin-left: 10px;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+  
+    .getWidget input[type=text] {
+      display: inline;
+      margin-top: 0px;
+      margin-bottom: 1px;
+    }
+
+    #widget_preview {
+      width: 480px;
+      float:left;
+      margin-top:20px;
+    }
+    #widget_conf {
+      width: 400px;
+      float: left;
+    }
+
+  </style>
+{% endblock head %}
 
 
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
-  <li class="last_breadcrum_item">{% trans "Get a widget" %}</li>
+  <li><a href="{% url 'get_widget' project.id %}"><span>{% trans "Select widget" %}</span></a></li>
+  <li class="last_breadcrum_item">{% trans "Configure widget" %}</li>
 {% endblock breadcrum_items %}
-
 
 {% block breadcrum_right %}{% endblock breadcrum_right %} {# Override #}
 
-
 {% block content %}
   <div class="clearfix">
-    <h2>{% trans "Get a widget" %}</h2>
-    <p class="grey">
-      {% trans "This widget will show projects from the following organisation" %}<br />
-      <b class="black notranslate">{{organisation}}</b>
-    </p>
-    <hr />
-    <a id="preview_position"></a>
-    <div style="margin-left:40px;">
-      <h3>{% trans "Step 2: Select colours for your widget and preview" %}</h3>
+    <h2>{% trans "Configure widget - step 2 of 2" %}</h2>
+    <div style="margin-left:40px; margin-top: 30px;">
       <div class="pad20 whitebox marg_bottom40">
-        <h3>{% trans "A: Bottom coloured bar" %}</h3>
-        <div id="warning_color">
-						<p>{% trans 'A color you entered is not recognized. Please change and try again.' %}</p>
+        {# div width get set in jquery ready function based on widget type #}
+        <div id="widget_preview">
+          <div id="akvo_widget_container"></div>
         </div>
-        <div style="float:left; margin-left:50px; margin-top:6px; width:200px;">
-          <p>
-            <select name="backgroundcolor_pulldown" id="backgroundcolor_pulldown" size="1">
-              <option value="B50000">{% trans 'Akvo Red' %} (#B50000)</option>
-              <option value="FFD700">{% trans 'Gold' %} (#FFD700)</option>
-              <option value="B8860B">{% trans 'DarkGoldenrod' %} (#B8860B)</option>
-              <option value="FF0000">{% trans 'Red' %} (#FF0000)</option>
-              <option value="8B0000">{% trans 'Dark Red' %} (#8B0000)</option>
-              <option value="8B008B">{% trans 'DarkMagenta' %} (#8B008B)</option>
-              <option value="4B0082">{% trans 'Indigo' %} (#4B0082)</option>
-              <option value="191970">{% trans 'MidnightBlue' %} (#191970)</option>
-              <option value="0000CD">{% trans 'MediumBlue' %} (#0000CD)</option>
-              <option value="1E90FF">{% trans 'DodgerBlue' %} (#1E90FF)</option>
-              <option value="008080">{% trans 'Teal' %} (#008080)</option>
-              <option value="2E8B57">{% trans 'SeaGreen' %} (#2E8B57)</option>
-              <option value="556B2F">{% trans 'DarkOliveGreen' %} (#556B2F)</option>
-              <option value="696969">{% trans 'DimGray' %} (#696969)</option>
-              <option value="708090">{% trans 'SlateGray' %} (#708090)</option>
-              <option value="000000">{% trans 'Black' %} (#000000)</option>
-              <option value="x">{% trans 'Other...' %}</option>
-            </select><br />
-            <span class="grey small" style="display:block; margin-left:4px; padding-top:7px;">
-            {% trans 'Select colour' %}
-            </span>
-          </p>
-        </div>
-        <div style="float:left; width:600px;">
-          <div id="backgroundcolor_other_section" style="float:left; width:100%; display:none;">
-            <div style="float:left; width:200px; padding-top:13px">
-              <p style="margin:0; padding:0;">
-                <input type="text" name="bgcolor" value="B50000" id="backgroundcolor_text" size="10" /><br />
-                <span class="grey small">{% trans 'Enter a hex number' %}.</span>
-              </p>
-            </div>
-            <div style="float:left; width:400px; padding-top:10px;">
-              <p class="small grey">
-                {% trans 'View a list of' %} 
-                <a href="http://en.wikipedia.org/wiki/Web_colors#X11_color_names" target="_new">
-                  {% trans 'standard colours' %}
-                </a> 
-                ({% trans 'external link, new window' %}).
-              </p>
-            </div>
-            <div class="clear"></div>
+        <div id="widget_conf">
+          {# <h3 style="margin-bottom:15px">{% trans "Step 2: Configure widget" %}</h3> #}
+          <div class="getWidget">
+            <h4>{% trans "Style" %}</h4>
+            <label class="radio">
+              <input type="radio" name="style" id="style-dark" value="dark" checked>
+                {% trans 'dark' %}
+            </label>
+            <label class="radio">
+              <input type="radio" name="style" id="style-light" value="light">
+                {% trans 'light' %}:
+            </label>
           </div>
-        </div>				
+            {% if widget_kind == 'project-map' %}
+              <div class="getWidget">
+                <h4>{% trans "State" %}</h4>
+                <label class="radio">
+                  <input type="radio" name="state" id="state-dynamic" value="dynamic" checked>
+                    {% trans 'dynamic' %}
+                </label>
+                <label class="radio">
+                  <input type="radio" name="state" id="state-static" value="static">
+                  {% trans 'static' %}:
+                </label>
+              </div>
+              <div class="getWidget">
+                <h4>{% trans "Size" %}</h4>
+                <div style="float: left;">
+                  <label for="height">{% trans "Height" %}:</label>
+                  <label for="width">{% trans "Width" %}:</label>
+                </div>
+                <div style="float: left;">
+                  <input type="text" id="width" value="600" size=4 placeholder="{% trans "600" %}" /><br />
+                  <input type="text" id="height" value="300" size=4 placeholder="{% trans "300" %}" />
+                </div>
+                <div class="clear"></div>
+             </div>
+            {% endif %}
+          <div class="clear"></div>
+          <label for="site" style="margin-top:10px;">{% trans "Where you will embed this widget" %}:</label>
+          <input type="text" id="site" value="" size=51 placeholder="{% trans "Example:" %} www.akvo.org" />
+        
+          <h3 style="margin-bottom:15px">{% trans "Step 3: Copy the HTML code for use on your web site" %}</h3>
+          <div class="getWidget">
+            <textarea style="background-color:#FEFCF4;" name="code" rows="8" cols="52" id="code"> </textarea>
+          </div>
+          <hr />
+          <div class="getWidget">
+            <a class="yellow awesome" href="{% url 'get_widget' project.id %}" style="color:#fff;">
+              <span>{% trans 'Back to widget selection' %}</span>
+            </a>&nbsp;
+            <a class="aqua awesome" href="{% url 'project_main' project.id %}" style="color:#fff;">
+              <span>{% trans 'Back to project' %}</span>
+            </a>
+          </div>
+        </div>
         <div class="clear"></div>
-        
-        {% if widget_type == 'project-map' %}
-          <h3>{% trans "B: Set height of the widget" %}</h3>
-          <div style="margin-left:50px; margin-top:6px; margin-bottom:15px;">
-            <input type="text" name="widget_height" value="300" id="widget_height" size="10" /> pixels.<br />
-          </div>
-        
-          <h3>{% trans "C: Set width of the widget" %}</h3>
-          <div style="margin-left:50px; margin-top:6px; margin-bottom:15px;">
-            <input type="text" name="widget_width" value="600" id="widget_width" size="10" /> pixels.<br />
-          </div>
-        
-          <h3>{% trans "D: Set map state" %}</h3>
-          <div style="margin-left:50px; margin-top:6px;">
-            <input id="dynamic" name="map_state" type="radio" value="dynamic" checked="checked"> 
-            <label for="dynamic" style="display:inline;">Dynamic</label><br />
-            <input id="static" name="map_state" type="radio" value="static"> 
-            <label for="static" style="display:inline;">Static</label><br />
-          </div>
-        {% endif %}
-        
-        <div style="text-align:center;">
-          <span class="small" style="margin-right:50px;">
-            <a href="{% url 'project_main' project.id %}">{% trans 'Cancel' %}</a>
-          </span>
-          <a id="preview" class="aqua awesome" href="javascript:this.blur();" onclick="preview_widget();" style="color:#fff;">
-            <span>{% trans 'Preview' %}</span>
-          </a>
-        </div>
-
-        <hr />
-        
-        <h3>{% trans "E: Review your widget" %}</h3>
-        <div id="akvo_widget_container" style="margin:0; padding:0; margin-left:40px; margin-top:40px;"></div>
-      </div>
-
-      <h3>{% trans "Step 3: Copy the HTML code below for use on your web site" %}</h3>
-      <div class="pad20 whitebox">
-        <p class="grey small">
-          {% trans "You may repeat the steps above until you are satisﬁed with the appearance of your widget." %}
-        </p>
-        <div style="width:100%; text-align:center; margin-top:20px; margin-bottom:40px;">
-          <textarea style="background-color:#FEFCF4;" name="code" rows="8" cols="60" id="code"> </textarea>
-        </div>
       </div>
     </div>
   </div>
@@ -130,58 +125,194 @@
 
 {% block js %}
   {{block.super}}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 
-  {% asset_bundle 'akvo_ps_machinery_js' %}
-	
-  <script type="text/javascript">
-    {% if project %}
-    var akvo_project_id = {{project.id}};
-    {% endif %}
-    var akvo_widget_type = '{{widget_type}}';
-    var akvo_widget_choice = '{{widget_choice}}';
-    var akvo_widget_organisation = '{{organisation.id}}';
-    var akvo_widget_site = '{{widget_site}}';
-    var akvo_host = '{{app_url}}';
+  <script>
+    (function(win) {
+      win.akvoWidgetMachinery = {
 
-    var error0 = "{% trans 'Please review message below' %}";
-    var error1 = "{% trans 'A: Hex color values should be 3 or 6 characters' %}";
-    var error2 = "{% trans 'A: Not a valid hex number' %}";
-    var error3 = "{% trans 'B: Hex color values should be 3 or 6 characters' %}";
-    var error4 = "{% trans 'B: Not a valid hex number' %}";
+        /** Create an object to represent the widget we want to grab */
+        widget: {
+          {% if project and widget_source == 'specific' %}project: {{project.id}},{% endif %}
+          kind: '{{widget_kind}}',
+          source: '{{widget_source}}', {# specific or random project #}
+          organisation: '{{organisation.id}}',
+          host: '{{app_url}}',
+          style: 'dark',
+          _site: '',
+          {% if widget_kind == 'project-map' %}
+            height: 300,
+            width: 600,
+            state: 'dynamic',
+          {% else %}
+            height: function () {
+              switch (this.kind) {
+                case 'cobranded-banner':  return 234;
+                case 'project-narrow':    return 840;
+                case 'project-small':     return 312;
+                case 'project-list':      return 730;
+              }  
+            },
+
+            width: function () {
+              switch (this.kind) {
+                case 'cobranded-banner':  return 468;
+                case 'project-narrow':    return 170;
+                case 'project-small':     return 170;
+                case 'project-list':      return 745;
+              }
+            },
+          {% endif %}
+          
+          
+          src: function () {
+            var template;
+            
+            // Map widget
+            {% if widget_kind == 'project-map' %}
+              template = '<%= host %>/widgets/projects/map/';
+              template += '?style=<%= style %>&state=<%= state %>';
+              template += '&width=<%= width %>&height=<%= height %>';
+            {% elif widget_kind == 'project-list' %}
+              template = '<%= host %>/widgets/projects/list/';
+              template += '?style=<%= style %>';
+            {% else %}
+              template = '<%= host %>/widgets/<%= kind %>/';
+              template += this.source === 'random' ? 'random/' : '<%= project %>/';
+              template += '?style=<%= style %>';
+            {% endif %}
+            
+            template += this.site();
+            return _.template(template)(this);
+          },
+
+          site: function () {
+            return this._site === '' ? '' : '&site=' + this._site;
+          },
+
+          setSite: function (site) {
+            this._site = site;
+          },
+
+          codeSnippet: function () {
+            var template;
+
+            {% if widget_kind == 'project-map' %}
+              template = '" height="<%= height %>" width="<%= width %>" frameborder="0"';
+            {% else %}
+              template = '" height="<%= height() %>" width="<%= width() %>" frameborder="0"';
+            {% endif %}
+            template += ' allowTransparency="true" style="overflow: hidden"> </iframe>';
+            return '<iframe src="' + this.src() + _.template(template)(this);
+          }
+
+        },
+
+        previewWidget: function () {
+          var widget_iframe, first;
+
+          widget_iframe = document.getElementById('akvo_widget');
+          if (!widget_iframe) {
+            widget_iframe = document.createElement('iframe');
+            first = true;
+          }
+          widget_iframe.setAttribute('allowTransparency', 'true');
+          widget_iframe.setAttribute('frameBorder', 0);
+          widget_iframe.setAttribute('id','akvo_widget');
+          {% if widget_kind == 'project-map' %}
+            widget_iframe.setAttribute('height', this.widget.height);
+            widget_iframe.setAttribute('width', this.widget.width);
+          {% else %}
+            widget_iframe.setAttribute('height', this.widget.height());
+            widget_iframe.setAttribute('width', this.widget.width());
+          {% endif %}
+          widget_iframe.setAttribute('src', this.widget.src());
+          widget_iframe.setAttribute('style', 'overflow: hidden;');
+          
+          if (first) {
+            document.getElementById('akvo_widget_container').appendChild(widget_iframe);
+            first = false;
+          }
+        },
+
+        craftSnippet: function () {
+          $('#code').val(this.widget.codeSnippet());
+        },
+
+        update: function () {
+          this.previewWidget();
+          this.craftSnippet();
+        }
+
+      }
+    }(window));
+
   </script>
 
-{% endblock js%}
+{% endblock js %}
 
 {% block jq_ready %}
 {{block.super}}
+  {% if widget_kind == 'project-map' %}
+    $('#widget_preview').width(akvoWidgetMachinery.widget.width + 20);
+  {% else %}
+    $('#widget_preview').width(akvoWidgetMachinery.widget.width() + 20);
+  {% endif %}
 
-  {# Toggle other selections for backgroundcolor #}
-  jQ("#backgroundcolor_pulldown").change(function() { 
-    if (jQ('#backgroundcolor_pulldown').val() == 'x') {
-      jQ('#backgroundcolor_other_section').animate({ opacity: "show" }, "slow");			
-    } else {
-      jQ('#backgroundcolor_other_section').animate({ opacity: "hide" }, "slow");
-    }
+  akvoWidgetMachinery.update();
+
+  {# style form field changes #}
+  $('input:radio[name=style]').click(function() {
+    akvoWidgetMachinery.widget.style = $(this).val();
+    akvoWidgetMachinery.update();
   });
 
-  {# Toggle other selections for textcolor #}
-  jQ("#textcolor_pulldown").change(function() { 		
-    if (jQ('#textcolor_pulldown').val() == 'x') {
-      jQ('#textcolor_other_section').animate({ opacity: "show" }, "slow");			
-    } else {
-      jQ('#textcolor_other_section').animate({ opacity: "hide" }, "slow");
-    }	
+  {# Site form field changes #}
+  $('#site').keyup(function() {
+    akvoWidgetMachinery.widget.setSite($(this).val());
+    akvoWidgetMachinery.craftSnippet();
   });
 
-  {# Preview button #}
-  jQ(function() {
-    jQ('#preview').click(function() {
-      jQ('html, body').animate({ scrollTop: jQ('#preview_position').offset().top }, 1000);
-        return false;
+  $('#site').change(function() {
+    akvoWidgetMachinery.widget.setSite($(this).val());
+    akvoWidgetMachinery.craftSnippet();
+  });
+
+  {# Width & height form field changes #}
+  {% if widget_kind == 'project-map' %}
+    $('input:radio[name=state]').click(function() {
+      akvoWidgetMachinery.widget.state = $(this).val();
+      akvoWidgetMachinery.update();
     });
-  });
 
-  {# Display the default widget preview #}
-  preview_widget();
+    {# width #}
+    $('#width').change(function() {
+      akvoWidgetMachinery.widget.width = $(this).val();
+      akvoWidgetMachinery.craftSnippet();
+      akvoWidgetMachinery.update();
+    });
 
+    $('#width').keyup(function() {
+      akvoWidgetMachinery.widget.width = $(this).val();
+      akvoWidgetMachinery.craftSnippet();
+      akvoWidgetMachinery.update();
+    });
+
+    {# height #}
+    $('#height').change(function() {
+      akvoWidgetMachinery.widget.height = $(this).val();
+      akvoWidgetMachinery.craftSnippet();
+      akvoWidgetMachinery.update();
+    });
+
+    $('#height').keyup(function() {
+      akvoWidgetMachinery.widget.height = $(this).val();
+      akvoWidgetMachinery.craftSnippet();
+      akvoWidgetMachinery.update();
+    });
+
+  {% endif %}
+  
+  
+  
 {% endblock jq_ready %}

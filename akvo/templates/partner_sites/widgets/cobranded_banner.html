@@ -15,10 +15,8 @@
       <h2 id="project_title">
         <a href="{{app_url}}{{project.get_absolute_url}}">{{project.title|smart_truncate:60}}</a>
       </h2>
-      <p id="project_subtitle">{{project.subtitle}}</p>
-      <a href="{{app_url}}{{project.get_absolute_url}}" class="photo_frame">
-        {% project_thumb project 120 90 %}
-      </a>
+      {% rsr_widget_project_photo project 120 90 %}
+      <p id="project_subtitle">{{project.project_plan_summary|smart_truncate:120}}</p>
     </div>
     {% rsr_widget_project_budget project %}
   </div>

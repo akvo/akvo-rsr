@@ -190,6 +190,17 @@ class ProjectLocation(BaseLocation):
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
 
 
+class PartnerType(models.Model):
+    id = models.CharField(max_length=8, primary_key=True, unique=True)
+    label = models.CharField(max_length=30, unique=True)
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        ordering = ('label',)
+
+
 class Partnership(models.Model):
     FIELD_PARTNER = u'field'
     FUNDING_PARTNER = u'funding'
@@ -272,6 +283,7 @@ class Organisation(models.Model):
         max_length=2, choices=settings.LANGUAGES, default='en',
         help_text=u'The main language of the organisation',
     )
+    partner_types = models.ManyToManyField(PartnerType)
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
@@ -662,6 +674,7 @@ class Project(models.Model):
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
+    current_image_credit = models.CharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
 
     # goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
@@ -2075,6 +2088,7 @@ class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
+    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True)
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '

@@ -1,47 +1,23 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
 
-class Migration(DataMigration):
-    # orgunit_id;name;sector_id
-    # K6010;Healthcare;K6002 - 949
-    # K6020;Children & Education;K6002 - 959
-    # K6030;DRR & Disaster Response;K6001 - 961
-    # K6040;Women's leadership;K6000 - 955
-    # K6050;Extractives;K6000 - 960
-    # K6060;Security & Justice;K6000 - 1333
-    # K6070;Entrepreneurship;K6002 - 950
-    # K6080;Urban Matters;K6000 - 946
-    # K6090;Domestic;K6001 - 962
-    # K6100;Investments;K6003 - 953
-    # K6110;Food Security;K6000 - 1099
+
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # left for reference
-        # CORDAID_ID = 273
-        # DGIS_ID = 464
-        # business_units = [(949, 'K6010'),  (959, 'K6020'), (961, 'K6030'), (955, 'K6040'), (960, 'K6050'),
-        #                   (950, 'K6070'), (946, 'K6080'), (962, 'K6090'), (953, 'K6100'),
-        #                   (1099, 'K6110'), (1241, 'K6060'),
-        # ]
-        # cordaid = orm['rsr.Organisation'].objects.get(pk=CORDAID_ID)
-        # for pk, identifier in business_units:
-        #     orm['rsr.InternalOrganisationID'].objects.create(
-        #         recording_org=cordaid,
-        #         referenced_org= orm['rsr.Organisation'].objects.get(pk=pk),
-        #         identifier= identifier
-        #     )
-        # cordaid.iati_org_id ='NL-KVK-41160054'
-        # cordaid.save()
-        # dgis = orm['rsr.Organisation'].objects.get(pk=DGIS_ID)
-        # dgis.iati_org_id = 'NL-1'
-        # dgis.save()
-        pass
+        # Adding field 'Project.current_image_credit'
+        db.add_column('rsr_project', 'current_image_credit',
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=50, blank=True),
+                      keep_default=False)
+
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        # Deleting field 'Project.current_image_credit'
+        db.delete_column('rsr_project', 'current_image_credit')
+
 
     models = {
         'auth.group': {
@@ -109,7 +85,7 @@ class Migration(DataMigration):
         'rsr.benchmarkname': {
             'Meta': {'ordering': "['order', 'name']", 'object_name': 'Benchmarkname'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         'rsr.budgetitem': {
@@ -225,6 +201,7 @@ class Migration(DataMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '25', 'db_index': 'True'}),
             'new_organisation_type': ('django.db.models.fields.IntegerField', [], {'default': '22', 'db_index': 'True'}),
             'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '1', 'db_index': 'True'}),
+            'partner_types': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['rsr.PartnerType']", 'symmetrical': 'False'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
             'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.OrganisationLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
@@ -274,8 +251,14 @@ class Migration(DataMigration):
             'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'hostname': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
             'ui_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+        },
+        'rsr.partnertype': {
+            'Meta': {'ordering': "('label',)", 'object_name': 'PartnerType'},
+            'id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '8', 'primary_key': 'True'}),
+            'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         'rsr.paymentgatewayselector': {
             'Meta': {'object_name': 'PaymentGatewaySelector'},
@@ -302,6 +285,7 @@ class Migration(DataMigration):
             'currency': ('django.db.models.fields.CharField', [], {'default': "'EUR'", 'max_length': '3'}),
             'current_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'current_image_caption': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'current_image_credit': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'current_status': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'date_complete': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_request_posted': ('django.db.models.fields.DateField', [], {'default': 'datetime.date.today'}),
@@ -386,4 +370,3 @@ class Migration(DataMigration):
     }
 
     complete_apps = ['rsr']
-    symmetrical = True
