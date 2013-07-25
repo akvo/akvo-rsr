@@ -22,8 +22,8 @@ from akvo.rsr.models import InternalOrganisationID, Organisation, PartnerType
 from akvo.rsr.utils import model_and_instance_based_filename
 
 
-CORDAID_DIR = "/var/tmp/cordaid"
-CORDAID_XML_FILE = os.path.join(CORDAID_DIR, "org_import.xml")
+CORDAID_DIR = "/Users/gabriel/git/akvo-rsr/akvo/api/xml/cordaid"
+CORDAID_XML_FILE = os.path.join(CORDAID_DIR, "cordaid_orgs_from_live.xml")
 CORDAID_LOGOS_DIR = os.path.join(CORDAID_DIR, "org_logos")
 CORDAID_ORG_ID = 273
 
@@ -56,7 +56,7 @@ def import_orgs(xml_file):
                         recording_org=recording_org,
                         identifier=identifier)
                 referenced_org = internal_org_id.referenced_org
-                action = "updated"
+                action = "Updated"
             except:
                 referenced_org = Organisation()
                 referenced_org.save()
@@ -67,15 +67,15 @@ def import_orgs(xml_file):
                 internal_org_id.save()
                 for partner_type in PartnerType.objects.all():
                     referenced_org.partner_types.add(partner_type)
-                action = "created"
+                action = "*** Created"
             name = element.findtext("name")
             referenced_org.name, referenced_org.long_name = name[:25], name
             referenced_org.description = element.findtext("description") or "N/A"
             referenced_org.url = normalize_url(element.findtext("url"))
             referenced_org.new_organisation_type = int(element.findtext("iati_organisation_type"))
             referenced_org.organisation_type = get_organisation_type(referenced_org.new_organisation_type)
-            print("{action} Organisation {org_id} & associated InternalOrganisationID.".format(
-                    action=action, org_id=referenced_org.id))
+            print(u"{action} Organisation {org_id}. Name, {name}, InternalOrganisationID: {internal_org_id}, ".format(
+                    action=action, org_id=referenced_org.id, name=referenced_org.name, internal_org_id=internal_org_id.pk))
             referenced_org.save()
 
 
