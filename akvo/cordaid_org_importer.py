@@ -22,10 +22,9 @@ from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import InternalOrganisationID, Organisation, PartnerType
 from akvo.rsr.utils import model_and_instance_based_filename
 
+
 CORDAID_DIR = "/var/tmp/cordaid"
-#CORDAID_DIR = "/Users/gabriel/git/akvo-rsr/akvo/api/xml/cordaid"
 CORDAID_XML_FILE = os.path.join(CORDAID_DIR, "org_import.xml")
-#CORDAID_XML_FILE = os.path.join(CORDAID_DIR, "cordaid_orgs_from_live.xml")
 CORDAID_LOGOS_DIR = os.path.join(CORDAID_DIR, "org_logos")
 CORDAID_ORG_ID = 273
 
@@ -40,30 +39,19 @@ def log_to_file(text, log_file=LOG_FILE):
     sys.stdout.write(text)
 
 
-def run_organisation_import_report(data):
-    log_to_file("Totals")
-    log_to_file("======")
-    log_to_file("Organisations updated: {updated}".format(updated=data["updated"]))
-    log_to_file("Organisations created: {created}".format(created=data["created"]))
-    log_to_file("TOTAL imported: {total}".format(
-        total=(data["created"] + data["updated"])
+def run_import_report(import_type, data):
+    log_to_file("")
+    log_to_file("{import_type} import report".format(
+        import_type=import_type.capitalize()
     ))
-    log_to_file("Errors")
-    log_to_file("======")
-    log_to_file("{failed} organisations could not be imported".format(
-        failed=data["failed"]
-    ))
-
-
-def run_logo_import_report(data):
-    log_to_file("Totals")
-    log_to_file("======")
-    log_to_file("Logos successfully uploaded: {succeeded}".format(
-        succeeded=data["succeeded"]
-    ))
-    log_to_file("Logos which failed to upload: {failed}".format(
-        failed=data["failed"]
-    ))
+    log_to_file("*****")
+    for status, count in data.items():
+        log_to_file("Status {status}: {count}".format(
+            status=status.upper(), count=count
+        ))
+    total = sum(data.values())
+    log_to_file("TOTAL: {total}".format(total=total))
+    log_to_file("")
 
 
 def get_organisation_type(new_organisation_type):
@@ -132,7 +120,7 @@ def import_orgs(xml_file):
                 cordaid_org_id=internal_org_id.identifier,
                 org_id=referenced_org.id
             ))
-        run_organisation_import_report(report_data)
+        run_import_report("organisation", report_data)
 
 
 def import_images(logo_dir):
@@ -165,7 +153,7 @@ def import_images(logo_dir):
         log_to_file(u"Upload of image to organisation {org_id} {action} {error_message}".format(
             org_id=org.id, action=action, error_message=error_message
         ))
-    run_logo_import_report(report_data)
+    run_import_report("logo", report_data)
 
 
 if __name__ == "__main__":
