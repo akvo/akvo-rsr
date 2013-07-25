@@ -157,7 +157,7 @@ def import_images(logo_dir):
 
 
 if __name__ == "__main__":
-    log_and_alert("Importing organisations..."
+    log_and_alert("Importing organisations...")
     import_orgs(CORDAID_XML_FILE)
-    log_and_alert("Uploading images to imported organisations..."
+    log_and_alert("Uploading images to imported organisations...")
     import_images(CORDAID_LOGOS_DIR)
