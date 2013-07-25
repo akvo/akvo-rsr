@@ -3,7 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from django.core.urlresolvers import reverse
 
 from django.forms.models import ModelForm
 
@@ -18,7 +18,7 @@ from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToManyField
 from akvo.api.serializers import IATISerializer
 
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, Benchmarkname, Category
 from akvo.rsr.utils import get_rsr_limited_change_permission
 
 from .resources import ConditionalFullResource, get_extra_thumbnails
@@ -32,8 +32,14 @@ class IATIProjectModelForm(ModelForm):
 
 class IATIProjectResource(ModelResource):
 
+    benchmarks =  fields.ToManyField(
+        'akvo.api.resources.IATIBenchmarkResource', 'benchmarks', full=True, related_name='project'
+    )
     budget_items = fields.ToManyField(
         'akvo.api.resources.IATIBudgetItemResource', 'budget_items', full=True, related_name='project'
+    )
+    categories =  fields.ToManyField(
+        'akvo.api.resources.IATICategoryResource', 'categories', full=True, related_name='project'
     )
     goals = ConditionalFullToManyField(
         'akvo.api.resources.IATIGoalResource', 'goals', full=True, related_name='project'
@@ -55,6 +61,37 @@ class IATIProjectResource(ModelResource):
         queryset        = Project.objects.all()
 
     def alter_deserialized_detail_data(self, request, data):
+        # prepare the benchmarks, looking up the Benchmarkname and the Category objects.
+        # if we don't find a value drop that benchmark
+        benchmarks = []
+        for benchmark in data['benchmarks']:
+            if benchmark.get('value'):
+                new_benchmark = dict(value=benchmark['value'])
+                benchmarkname = Benchmarkname.objects.get(name=benchmark['name'])
+                new_benchmark['name'] = benchmarkname.pk
+                new_benchmark['category'] = benchmarkname.category_set.all()[0].pk # assumes there's only one category
+                benchmarks.append(new_benchmark)
+        data['benchmarks'] = benchmarks
+
+        # Figure out the category for the project from the business unit
+        business_unit_categories = {
+            "K6020": dict(cat_name="Children & Education", fa="Education"),
+            "K6090": dict(cat_name="Domestic", fa="Economic development"),
+            "K6030": dict(cat_name="Disaster Recovery", fa="Economic development"),
+            "K6070": dict(cat_name="Entrepreneurship", fa="Economic development"),
+            "K6110": dict(cat_name="Food Security", fa="Healthcare"),
+            "K6100": dict(cat_name="Investments", fa="Economic development"),
+            "K6010": dict(cat_name="Healthcare", fa="Healthcare"),
+            "K6060": dict(cat_name="Security & Justice", fa="Economic development"),
+            "K6080": dict(cat_name="Urban Matters", fa="Economic development"),
+            "K6040": dict(cat_name="Women's leadership", fa="Economic development"),
+            "K6050": dict(cat_name="Extractives", fa="Economic development"),
+        }
+
+        business_unit = business_unit_categories[data['partnerships'][0]['business_unit']]
+        project_category = Category.objects.get(name=business_unit['cat_name'], focus_area__name=business_unit['fa'])
+        data['categories'] = ['/api/v1/iati_category/{pk}/'.format(pk=project_category.pk),]
+
         # hack to set the first location as primary
         if data.get('locations'):
             data['locations'][0]['primary'] = True
@@ -72,19 +109,18 @@ class IATIProjectResource(ModelResource):
         # Tried to do this in the XSLT but substring(text, 1, 25) sometimes returns more than 25 characters :-p
         # TODO: write a general truncator function for all char and text field of a model's deserialized data
         if data.get('partnerships'):
-            if data.get('partnerships'):
-                temp_org = data['partnerships'][0]
-                # are the requirements met for creating a business unit partnership?
-                if temp_org['business_unit'] and temp_org['reporting_org']:
-                    data['partnerships'] += [dict(
-                        internal_org_id=temp_org['business_unit'],
-                        reporting_org=temp_org['reporting_org'],
-                        name='Incorrect business unit', #this should never be used, if it is the lookup of existing BUs is borked
-                        long_name='Incorrect business unit',
-                        partner_type='sponsor',
-                        new_organisation_type='21',
-                        organisation=None,
-                    )]
+            temp_org = data['partnerships'][0]
+            # are the requirements met for creating a business unit partnership?
+            if temp_org['business_unit'] and temp_org['reporting_org']:
+                data['partnerships'] += [dict(
+                    internal_org_id=temp_org['business_unit'],
+                    reporting_org=temp_org['reporting_org'],
+                    name='Incorrect business unit', #this should never be used, if it is the lookup of existing BUs is borked
+                    long_name='Incorrect business unit',
+                    partner_type='sponsor',
+                    new_organisation_type='21',
+                    organisation=None,
+                )]
             for partnership in data['partnerships']:
                 partnership[FIELD_NAME] = partnership[FIELD_NAME][:25]
                 partnership[FIELD_LONG_NAME] = partnership[FIELD_LONG_NAME][:75]
@@ -101,6 +137,18 @@ class IATIProjectResource(ModelResource):
         if date_request_posted and date_request_posted[-1] == 'Z':
             bundle.data['date_request_posted'] = date_request_posted[:-1]
         return bundle
+
+    # def hydrate_categories(self, bundle):
+    #     if bundle.data['categories']:
+    #         bundle.data['categories'] = [
+    #             reverse('api_dispatch_detail', kwargs={
+    #                 'resource_name': 'category',
+    #                 'api_name': 'v1',
+    #                 'pk': bundle.data['categories'][0]
+    #             })
+    #         ]
+    #     return bundle
+
 
     # def hydrate_partnerships(self, bundle):
     #     import pdb

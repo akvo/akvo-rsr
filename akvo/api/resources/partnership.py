@@ -48,7 +48,6 @@ def get_organisation(bundle):
     :return: either the organisation to link to in the IATIPartnershipResource being created
              or a string of the bundle field to use to create a new Organisation
     """
-    ret_val = None
     if bundle.data.get(FIELD_ORGANISATION):
         try:
             organisation = Organisation.objects.get(pk=bundle.data[FIELD_ORGANISATION])
@@ -63,7 +62,8 @@ def get_organisation(bundle):
             return organisation
         except:
             # return string indicating how we can create a new Organisation
-            ret_val = FIELD_IATI_ORG_ID
+            # ret_val = FIELD_IATI_ORG_ID
+            return None #changed since orgs are now created by other script
     if bundle.data.get(FIELD_INTERNAL_ORG_ID) and bundle.data.get(FIELD_REPORTING_ORG):
         try:
             organisation = InternalOrganisationID.objects.get(
@@ -73,8 +73,9 @@ def get_organisation(bundle):
             return organisation
         except:
             # return string indicating how we can create a new Organisation
-            return FIELD_INTERNAL_ORG_ID
-    return ret_val #TODO: better error handling, we may end up here with ret_val == None
+            # return FIELD_INTERNAL_ORG_ID
+            return None #changed since orgs are now created by other script
+    return None #TODO: better error handling, we may end up here with ret_val == None
 
 def create_organisation(bundle, bundle_field_to_use):
     """ Create an Organisation using bundle_field_to_use to uniquely identify the Organisation
@@ -167,12 +168,14 @@ class IATIPartnershipResource(ModelResource):
     def hydrate(self, bundle):
         """ Only the reporting org is assigned the FIELD_IATI_ACTIVITY_ID and FIELD_INTERNAL_ID values
         """
-        organisation = get_or_create_organisation(bundle)
+        organisation = get_organisation(bundle)
         if organisation:
             bundle.data[FIELD_ORGANISATION] = organisation
             if organisation.iati_org_id != bundle.data[FIELD_REPORTING_ORG]:
                 bundle.data[FIELD_IATI_ACTIVITY_ID] = None
                 bundle.data[FIELD_INTERNAL_ID] = None
+        else:
+            raise Exception("Can't find organisation. Bundle data:\n{bundle}".format(bundle=bundle))
         return bundle
 
     def hydrate_organisation(self, bundle):
