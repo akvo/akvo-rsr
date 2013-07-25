@@ -32,7 +32,7 @@ CORDAID_ORG_ID = 273
 LOG_FILE = os.path.join(CORDAID_DIR, "org_import_log.txt")
 
 
-def log_to_file(text, log_file=LOG_FILE):
+def log_and_alert(text, log_file=LOG_FILE):
     text = u"{text}\n".format(text=text)
     with open(log_file, "a") as log_file:
         log_file.write(text)
@@ -40,18 +40,18 @@ def log_to_file(text, log_file=LOG_FILE):
 
 
 def run_import_report(import_type, data):
-    log_to_file("")
-    log_to_file("{import_type} import report".format(
+    log_and_alert("")
+    log_and_alert("{import_type} import report".format(
         import_type=import_type.capitalize()
     ))
-    log_to_file("*****")
+    log_and_alert("*****")
     for status, count in data.items():
-        log_to_file("Status {status}: {count}".format(
+        log_and_alert("Status {status}: {count}".format(
             status=status.upper(), count=count
         ))
     total = sum(data.values())
-    log_to_file("TOTAL: {total}".format(total=total))
-    log_to_file("")
+    log_and_alert("TOTAL: {total}".format(total=total))
+    log_and_alert("")
 
 
 def get_organisation_type(new_organisation_type):
@@ -114,7 +114,7 @@ def import_orgs(xml_file):
             referenced_org.organisation_type = get_organisation_type(referenced_org.new_organisation_type)
             report_data[action] += 1
             referenced_org.save()
-            log_to_file(u"{action} organisation {org_id} "
+            log_and_alert(u"{action} organisation {org_id} "
                          "(Cordaid ID: {cordaid_org_id})".format(
                 action=action.upper(),
                 cordaid_org_id=internal_org_id.identifier,
@@ -150,12 +150,14 @@ def import_images(logo_dir):
                     error_message=e.message
                 )
         report_data[action] += 1
-        log_to_file(u"Upload of image to organisation {org_id} {action} {error_message}".format(
+        log_and_alert(u"Upload of image to organisation {org_id} {action} {error_message}".format(
             org_id=org.id, action=action, error_message=error_message
         ))
     run_import_report("logo", report_data)
 
 
 if __name__ == "__main__":
+    log_and_alert("Importing organisations..."
     import_orgs(CORDAID_XML_FILE)
+    log_and_alert("Uploading images to imported organisations..."
     import_images(CORDAID_LOGOS_DIR)
