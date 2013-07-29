@@ -11,18 +11,18 @@ Vagrant.configure("2") do |config|
     config.vm.hostname = $hostname
     config.ssh.forward_agent = true
 
-    config.vm.synced_folder "../provisioning/environments/", "/vagrant/bootstrap/"
+    config.vm.synced_folder "../provisioning/control/", "/vagrant/bootstrap/"
     config.vm.synced_folder "../provisioning/", "/puppet/checkout/"
     config.vm.synced_folder "../", "/vagrant/rsr/checkout/"
 
     config.vm.network :private_network, ip: "192.168.50.101"
 
     config.vm.provision :shell do |s|
-        s.path = "../provisioning/environments/bootstrap_vagrant.sh"
+        s.path = "../provisioning/control/bootstrap_vagrant.sh"
         s.args = "/vagrant/rsr/checkout/vagrant/files/localdev_rsr.json"
     end
 
-    config.vm.provision :shell, :path => "./provision_vagrant.sh"
+    #config.vm.provision :shell, :path => "./provision_vagrant.sh"
 
 end
 
