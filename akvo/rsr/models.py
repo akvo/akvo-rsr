@@ -215,8 +215,8 @@ class Partnership(models.Model):
     KNOWLEDGE_PARTNER = u'knowledge'
     NETWORK_PARTNER = u'network'
     PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
-    PARTNER_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
-    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_LIST, PARTNER_EXTRA_LABELS)
+    PARTNER_TYPE_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
+    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')

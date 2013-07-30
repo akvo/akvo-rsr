@@ -2,7 +2,7 @@
 Django==1.4.2
 
 # Django apps
-django-counter==0.1.6
+-e git://github.com/carlio/django-counter.git@31bbc8b994d208b84911c006d8a0f796fcd78940#egg=django-counter
 django-markup==0.4
 django-pagination==1.0.7
 django-paypal==0.1.2
@@ -19,7 +19,7 @@ requests==1.1.0
 # Django apps from VCS web services
 -e git://github.com/alex/django-filter.git@0e4b3d703b31574922ab86fc78a86164aad0c1d0#egg=django-filter
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
--e git://github.com/worldcompany/djangoembed.git@f3f2be283441d91d1f89db780444dc75f7b51902#egg=djangoembed
+-e git://github.com/carlio/djangoembed.git@c1f292a23c3f99b311699bd2a9ad1416d6d89573#egg=djangoembed
 -e git://github.com/toastdriven/django-tastypie.git@2b13147715347d8239bbe73943be0eae65c8a43b#egg=django_tastypie-dev
 
 # Akvonaut apps
@@ -36,7 +36,7 @@ pytz==2012h
 
 # RSR requirements
 Markdown==2.2.1
-PIL==1.1.7
+Pillow==2.0.0
 python-memcached==1.48
 template-utils==0.4p2
 
@@ -45,6 +45,6 @@ MySQL-python==1.2.4c1
 South==0.7.6
 
 # App container
-gunicorn==0.15.0
+gunicorn==0.17.4
 wsgiref==0.1.2
 
