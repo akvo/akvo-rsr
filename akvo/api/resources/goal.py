@@ -19,13 +19,13 @@ from .resources import ConditionalFullResource
 
 
 class IATIGoalResource(ModelResource):
-    project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project', full=True,)
+    project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project',)
 
     class Meta:
-        allowed_methods = ['post']
+        allowed_methods = ['post', 'put']
         resource_name   = 'iati_goal'
         authorization   = Authorization()
-        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
+        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST', 'PUT'])
         queryset        = Goal.objects.all()
 
 
