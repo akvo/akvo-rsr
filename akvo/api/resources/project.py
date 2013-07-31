@@ -3,7 +3,9 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-from django.core.urlresolvers import reverse
+
+
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.forms.models import ModelForm
 
@@ -12,13 +14,14 @@ from tastypie import fields
 from tastypie.authentication import ApiKeyAuthentication, Authentication, MultiAuthentication
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.exceptions import NotFound
 from tastypie.resources import ModelResource
 
 from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToManyField
 from akvo.api.serializers import IATISerializer
 
-from akvo.rsr.models import Project, Benchmarkname, Category
+from akvo.rsr.models import Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark
 from akvo.rsr.utils import get_rsr_limited_change_permission
 
 from .resources import ConditionalFullResource, get_extra_thumbnails
@@ -41,7 +44,7 @@ class IATIProjectResource(ModelResource):
     categories =  fields.ToManyField(
         'akvo.api.resources.IATICategoryResource', 'categories', full=True, related_name='project'
     )
-    goals = ConditionalFullToManyField(
+    goals = fields.ToManyField(
         'akvo.api.resources.IATIGoalResource', 'goals', full=True, related_name='project'
     )
     locations = fields.ToManyField(
@@ -52,13 +55,51 @@ class IATIProjectResource(ModelResource):
     )
 
     class Meta:
-        allowed_methods = ['post']
+        allowed_methods = ['post', 'put']
         resource_name   = 'iati_activity'
         authorization   = Authorization()
-        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
+        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST', 'PUT'])
         serializer      = IATISerializer()
         # validation      = ModelFormValidation(form_class=IATIProjectModelForm)
         queryset        = Project.objects.all()
+
+    def obj_update(self, bundle, skip_errors=False, **kwargs):
+        """
+        override obj_update to delete related objects
+        """
+        method = kwargs.pop('method')
+        if not bundle.obj or not self.get_bundle_detail_data(bundle):
+            try:
+                lookup_kwargs = self.lookup_kwargs_with_identifiers(bundle, kwargs)
+            except:
+                # if there is trouble hydrating the data, fall back to just
+                # using kwargs by itself (usually it only contains a "pk" key
+                # and this will work fine.
+                lookup_kwargs = kwargs
+
+            try:
+                bundle.obj = self.obj_get(bundle=bundle, **lookup_kwargs)
+            except ObjectDoesNotExist:
+                raise NotFound("A model instance matching the provided arguments could not be found.")
+
+        # If the method is PUT, delete all related objects so they can be re-created with potentially new data
+        # This
+        if method == 'PUT':
+            Goal.objects.filter(project=bundle.obj).delete()
+            BudgetItem.objects.filter(project=bundle.obj).delete()
+            ProjectLocation.objects.filter(location_target=bundle.obj).delete()
+            Partnership.objects.filter(project=bundle.obj).delete()
+            Benchmark.objects.filter(project=bundle.obj).delete()
+            bundle.obj.categories.clear()
+
+        self.authorized_update_detail(self.get_object_list(bundle.request), bundle)
+        bundle = self.full_hydrate(bundle)
+        return self.save(bundle, skip_errors=skip_errors)
+
+    def put_detail(self, request, **kwargs):
+        # inject request method to be used in obj_update()
+        kwargs['method'] = request.META['REQUEST_METHOD']
+        super(IATIProjectResource, self).put_detail(request, **kwargs)
 
     def alter_deserialized_detail_data(self, request, data):
         # prepare the benchmarks, looking up the Benchmarkname and the Category objects.
