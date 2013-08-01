@@ -8,9 +8,9 @@
 import csv
 
 from django.core.management import setup_environ
-import settings
+import akvo.settings
 
-setup_environ(settings)
+setup_environ(akvo.settings)
 
 from akvo.rsr.models import Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID
 

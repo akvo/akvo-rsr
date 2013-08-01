@@ -9,9 +9,9 @@ from lxml import etree
 from os.path import splitext
 
 from django.core.management import setup_environ
-import settings
+import akvo.settings
 
-setup_environ(settings)
+setup_environ(akvo.settings)
 
 import os
 from django.core.files import File
