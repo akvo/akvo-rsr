@@ -66,7 +66,8 @@ def put_an_activity(activity_element, pk, url_args):
     if project.response.text:
         return False, "**** Error creating iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
     elif project.response.status_code is HttpNoContent.status_code:
-        return True, "Updated project for iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
+        return True, "Updated project for iati-activity: {id} (Akvo pk: {pk})".format(
+            id=activity_element.findall('iati-identifier')[0].text, pk=pk)
     else:
         return False, "**** Error creating iati-activity: {id}. HTTP status code: {status_code}".format(
             id=activity_element.findall('iati-identifier')[0].text,
