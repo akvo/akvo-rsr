@@ -1,9 +1,144 @@
 Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects online and share status updates from your teams.
 
-We provide Akvo RSR as a service on your own URL and with your own branding, as well as and on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
+We provide Akvo RSR as a service on your own URL and with your own branding, as well as on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+
+Akvo RSR ver 2.1.5.1 - hotfix for Nectarine
+---
+24 July 2013, adriancollier
+
+###Add Organsiation Loading Info
+
+We needed a little more code to process the Organisation Import File from Cordaid.
+
+Github issue [#250](https://github.com/akvo/akvo-rsr/issues/250)
+
+Akvo RSR ver 2.1.5 Nectarine
+---
+8th July 2013 - adriancollier
+
+New Features
+---
+
+###Partnersite Widgets
+
+We build a set of Widgets some time ago to enable our Partners to visualise information from one or more of their projects on any website via the use of an iframe. These Widgets provide a link directly to the project page on Akvo.org.
+
+We have now built a new set of widgets that are redirecting users to the Project page on the Partnersite of the Organisation that collected the Widget.
+
+This allows Partners to direct users to the right places they want, and makes the user experience more streamline remaining in the Partners domain or website look and feel.
+
+Github Issue: [#154](http://github.com/akvo/akvo-rsr/issues/154)
+
+###Restyled Widgets
+
+As well as creating a set of Partnersite widgets, we also set our Designer to work on the visuals for these. The result is a new set of Widgets with a fresh and clean look. They're available in Light and Dark styles, so you should be able to locate the widget that looks exactly right on the site you want to place it on.
+
+Github Issue: [#181](http://github.com/akvo/akvo-rsr/issues/181)
+Github Issue: [#188](http://github.com/akvo/akvo-rsr/issues/188)
+Github Issue: [#182](http://github.com/akvo/akvo-rsr/issues/182)
+Github Issue: [#185](http://github.com/akvo/akvo-rsr/issues/185)
+Github Issue: [#186](http://github.com/akvo/akvo-rsr/issues/186)
+
+###New Get a Widget Page
+
+And in case you thought we hadn't done enough with Widgets in this release, we have created a new Get a Widget page for Partnersites that display the available widgets and allow you to customise and collect the code for your Widget of choice.
+
+Github Issue: [#193](http://github.com/akvo/akvo-rsr/issues/193)
+
+###Comments field in Partnersite Admin
+
+To allow us to maintain a better grasp on which Partnersites we have active, who is responsible for these and what Demo Partnersites we have implemented, we have added a notes field to this record so that we can provide some additional information which running our Admin.
+
+Github Issue: [#207](http://github.com/akvo/akvo-rsr/issues/207)
+
+###Partner Type Selection
+
+We found recently within RSR that some of our Partners were being assigned to roles that the Partner was not authorised to be able to undertake. To solve this problem we have implemented a choice selection within our backend Admin, that allow us to pre-select the different roles that a Partner is able to fulfill on Projects in RSR.
+
+Github Issue: [#203](http://github.com/akvo/akvo-rsr/issues/203)
+
+Russian Translation
+
+Working with one of our Partners UNDP, we have developed a set of User Interface translations that allow RSR Partnersites to be viewed locally in Russian. This now makes 6 languages we support in the User Interface of RSR:
+
+- English
+- Dutch
+- French
+- German
+- Spanish
+- Russian
+
+Github Issue: [#138](http://github.com/akvo/akvo-rsr/issues/138)
+
+###Subdomain RSR
+
+In preparation for our move to a new hosting provider, we are making some changes to the underlying structure of RSR. In this release we are moving the RSR core code from the location of http://akvo.org/rsr to http://rsr.akvo.org.
+
+This allows us to physically separate the various components of RSR and find stable and efficient hosting solutions for each part. All on the way to a smooth and flexible development process.
+
+Github Issue: [#139](http://github.com/akvo/akvo-rsr/issues/139)
+
+###Homepage API Resource
+
+Also related to our move of hosting providers, this new addition to the API has been added to populate the "Right now in Akvo" box on the Homepage. This resource can be customised as time goes on to be able to generate more Analytics/KPI type information to be displayed within our Public Website pages.
+
+Github Issue: [#180](http://github.com/akvo/akvo-rsr/issues/180)
+
+###Remove old API
+
+We have been working for some time on a working Read and Write API for RSR. We are pleased that we are now at the point when we have this in place. We are still making improvements and customisations but in the meantime we have decided it's time for us to remove the previous API we had in place to ensure that all Partners using this are using the correct feature and can access all of the right information.
+
+The correct API Documentation can be found on our [Github Wiki here](https://github.com/akvo/akvo-rsr/wiki/Akvo-RSR-API-developer-documentation).
+
+Github Issue: [#61](http://github.com/akvo/akvo-rsr/issues/61)
+
+###Update API to allow new version of Tastypie
+
+When trying to perform an upgrade of Tastypie which runs our new RSR API eature, we experienced an error as the models within RSR were not compatible with the latest Tastypie features.
+
+To resolve this we have fixed the dependencies so that we can upgrade Tastypie and make the most out of this technology.
+
+Github Issue: [#165](http://github.com/akvo/akvo-rsr/issues/165)
+
+###Registration Links on Partnersites
+
+If you go to add an update to a project on Akvo.org then you get a screen asking you to login and if you don't have an account there is an easy link to register for a new account right there on the page.
+
+However if you try to do the same thing from a Partnersite, there is no registration link available. In this release we have resolved this and now the Login page has the same Registration information displayed.
+
+Github Issue: [#205](http://github.com/akvo/akvo-rsr/issues/205)
+
+###Photo Credit on Project Image
+
+When adding a photo to a project via an Update, you can enter both a Caption and Credit for the photo, allowing you to describe the image and ensure that the photographer is credited for their work.
+
+Now you can do the same when adding a photo to a project. Both the Caption and Credit fields are available to complete to ensure your images have the most up to date and accurate information you know at the time.
+
+Github Issue: [#212](http://github.com/akvo/akvo-rsr/issues/212)
+
+Bug Fixes
+---
+
+###Fix to Global Maps
+
+There were 2 visual issues affecting the Global Maps page. As more pins are collected from the API, the position of the map on the screen and the zoom level was resetting. This has been fixed now to provide a steady map view.
+
+Github Issue: [#113](http://github.com/akvo/akvo-rsr/issues/113)
+
+###Fix Partners Column in Widget
+In the standard RSR Widget, the Project List Widget had a column called Partners that was not being populated. This has been resolved so that this again shows the list of current partners working on the project being displayed on the Widget.
+
+Github Issue: [#15](http://github.com/akvo/akvo-rsr/issues/15)
+
+###Test Bug - Cannot create new org in Admin
+
+When testing this release, we discovered an issue preventing Organisations from being created within the Admin. This was resolved before we pushed the release to live, so no such bug will be affecting our users after this release.
+
+Github Issue: [#244](http://github.com/akvo/akvo-rsr/issues/244)
+
 
 Akvo RSR ver 2.1.4 - mangosteen
 ---

@@ -1,0 +1,24 @@
+{
+    "name": "localdev_rsr",
+
+    "machine_type": "vagrant",
+    "base_domain": "localdev.akvo.org",
+
+    "bootstrap_username": "vagrant",
+    "bootstrap_password": "vagrant",
+
+    "puppet_branch": "develop",
+
+    "puppet_public_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_puppet.pub",
+    "rsr-deploy_public_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_rsr-deploy.pub",
+
+    "nodes": {
+        "192.168.50.101": {
+            "roles": ["puppetdb", "management", "rsr", "database"]
+        }
+    },
+
+    "facts": {
+        "rsr_database_password": "lake"
+    }
+}
