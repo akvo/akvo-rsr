@@ -7,7 +7,7 @@
 from django.http import HttpResponseServerError
 
 from lxml import etree
-from requester import Requester
+from cordaid_utils import Requester
 from StringIO import StringIO
 
 DOMAIN = 'test.akvo.org'
