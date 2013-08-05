@@ -17,20 +17,23 @@ import os
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, Partnership, Organisation
 from akvo.rsr.utils import model_and_instance_based_filename
 
-FILE_CORDAID_XML = './api/xml/cordaid_iati_activities.xml'
-DIR_CORDAID_IMAGES = 'api/xml/cordaid/20130423_export_xml'
+from akvo.scripts.cordaid import CORDAID_IATI_ACTIVITIES_XML, CORDAID_PROJECT_IMAGES_DIR, CORDAID_ORG_ID
 
 def import_images(image_dir, img_to_proj_map):
     for image_name in os.listdir(image_dir):
         photo_id, ext = splitext(image_name)
         if ext.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
             try:
-                project = Project.objects.get(partnerships__internal_id=img_to_proj_map.get(photo_id))
-                filename = model_and_instance_based_filename('Project', project.pk, 'current_image', image_name)
-                with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), image_dir, image_name), 'rb') as f:
+                project = Project.objects.get(
+                    partnerships__internal_id=img_to_proj_map.get(photo_id)
+                )
+                filename = model_and_instance_based_filename(
+                    'Project', project.pk, 'current_image', image_name
+                )
+                with open(os.path.join(image_dir, image_name), 'rb') as f:
                     image_data = f.read()
                     image_temp = NamedTemporaryFile(delete=True)
                     image_temp.write(image_data)
@@ -43,11 +46,35 @@ def import_images(image_dir, img_to_proj_map):
                     internal_id=img_to_proj_map.get(photo_id), message=e.message
                 )
 
+def fix_funding(img_to_proj_map):
+    import pdb
+    pdb.set_trace()
+    cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
+    for internal_id in img_to_proj_map.keys():
+        try:
+            project = None
+            project = Project.objects.get(
+                partnerships__internal_id=internal_id, partnerships__organisation=cordaid
+            )
+            if project.funds_needed > 0:
+                cord_fund = Partnership.objects.create(
+                    organisation=cordaid,
+                    project=project,
+                    partner_type=Partnership.FUNDING_PARTNER,
+                    funding_amount = project.funds_needed,
+                )
+            print(
+                "Added Cordaid as funding partner to project {pk}, funding amount: {funding_amount}"
+            ).format(pk=project.pk, funding_amount=project.funds_needed)
+        except Exception, e:
+            print("Error trying to set up Cordaid as funding partner to project {pk}\nError message: {message}"
+            ).format(pk=getattr(project, 'pk', None), message=e.message)
+
 def create_mapping_images_to_projects():
     """ Create a dict that maps the photo-ids in cordaid's xml to the internal-project-id of the same activity
     This allows us to find the project to add the current image to
     """
-    with open(FILE_CORDAID_XML, 'r') as f:
+    with open(CORDAID_IATI_ACTIVITIES_XML, 'r') as f:
         root = etree.fromstring(f.read())
         images_to_projects = {}
         for i in range(len(root)):
@@ -59,4 +86,5 @@ def create_mapping_images_to_projects():
 
 if __name__ == '__main__':
     img_to_proj_map = create_mapping_images_to_projects()
-    import_images(DIR_CORDAID_IMAGES, img_to_proj_map)
+    import_images(CORDAID_PROJECT_IMAGES_DIR, img_to_proj_map)
+    fix_funding(img_to_proj_map)
