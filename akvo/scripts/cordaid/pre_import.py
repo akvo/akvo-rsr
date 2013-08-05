@@ -5,21 +5,23 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+
 import csv
 
 from django.core.management import setup_environ
-import akvo.settings
+from akvo import settings
 
-setup_environ(akvo.settings)
+setup_environ(settings)
 
-from akvo.rsr.models import Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID
+from akvo.rsr.models import (
+    Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID
+)
+from akvo.scripts.cordaid import (
+    CORDAID_ORG_ID, CORDAID_IATI_ID, DGIS_ORG_ID, DGIS_IATI_ID, CORDAID_INDICATORS_CSV
+)
 
 
 def create_cordaid_business_units(business_units):
-    CORDAID_ID = 273
-    CORDAID_IATI_ID = 'NL-KVK-41160054'
-    DGIS_ID = 464
-    DGIS_IATI_ID = 'NL-1'
 
     business_units_info = [
         dict(pk=959,  internal_id="K6020", cat_name="Children & Education", fa="Education"),
@@ -34,7 +36,7 @@ def create_cordaid_business_units(business_units):
         dict(pk=955,  internal_id="K6040", cat_name="Women's leadership", fa="Economic development"),
         dict(pk=960,  internal_id="K6050", cat_name="Extractives", fa="Economic development"),
     ]
-    cordaid = Organisation.objects.get(pk=CORDAID_ID)
+    cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
     for data in business_units_info:
         pk, identifier, cat_name, fa_name = data['pk'], data['internal_id'], data['cat_name'], data['fa']
         try:
@@ -60,11 +62,11 @@ def create_cordaid_business_units(business_units):
     cordaid.iati_org_id = CORDAID_IATI_ID
     cordaid.save()
     try:
-        dgis = Organisation.objects.get(pk=DGIS_ID)
+        dgis = Organisation.objects.get(pk=DGIS_ORG_ID)
         dgis.iati_org_id = DGIS_IATI_ID
         dgis.save()
     except:
-        print "Can't find DGIS using ID {dgis_id}".format(dgis_id=DGIS_ID)
+        print "Can't find DGIS using ID {dgis_id}".format(dgis_id=DGIS_ORG_ID)
     return business_units
 
 
@@ -81,8 +83,6 @@ def create_cats_and_benches(business_units):
 
 def import_cordaid_benchmarks(csv_file):
     # the columns to use in the CSV
-    import pdb
-    pdb.set_trace()
     COL_BENCHMARKNAME, COL_BUSINESS_UNID_ID = 1, 2
     with open(csv_file, 'r') as f:
         indicators_reader = csv.reader(f, delimiter=',', quotechar='"')
@@ -93,12 +93,8 @@ def import_cordaid_benchmarks(csv_file):
             )
         return business_units
 
-
-CORDAID_CSV = '/Users/gabriel/git/akvo-rsr/akvo/api/xml/cordaid/20130711_indicators.csv'
-
-
 if __name__ == '__main__':
-    business_units = import_cordaid_benchmarks(CORDAID_CSV)
+    business_units = import_cordaid_benchmarks(CORDAID_INDICATORS_CSV)
     business_units = create_cordaid_business_units(business_units)
     create_cats_and_benches(business_units)
 
