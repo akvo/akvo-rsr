@@ -5,21 +5,36 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-
 import csv
+import datetime
+import glob
+from lxml import etree
+import os
+from os.path import splitext, basename
+import sys
 
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from django.core.management import setup_environ
+
 from akvo import settings
 
 setup_environ(settings)
 
+from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import (
-    Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID
+    Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID, OrganisationLocation
 )
+from akvo.rsr.utils import model_and_instance_based_filename, custom_get_or_create_country
 from akvo.scripts.cordaid import (
-    CORDAID_ORG_ID, CORDAID_IATI_ID, DGIS_ORG_ID, DGIS_IATI_ID, CORDAID_INDICATORS_CSV
+    CORDAID_ORG_ID, CORDAID_IATI_ID, DGIS_ORG_ID, DGIS_IATI_ID, CORDAID_INDICATORS_CSV,
+    CORDAID_LOGOS_DIR, CORDAID_ORGANISATIONS_XML,
+    print_log, log
 )
 
+
+def init_log():
+    log("\n***** pre_import.py log at {time} *****\n", dict(time=datetime.datetime.now()))
 
 def create_cordaid_business_units(business_units):
 
@@ -42,8 +57,10 @@ def create_cordaid_business_units(business_units):
         try:
             organisation = Organisation.objects.get(pk=pk)
         except:
-            print "No business unit with id {pk}, internal ID {identifier}".format(
-                pk=pk, identifier=identifier,
+            log(
+                u"No business unit with id {pk}, internal ID {identifier}",
+                dict(pk=pk, identifier=identifier),
+                'error',
             )
             continue
         internal_org, created = InternalOrganisationID.objects.get_or_create(
@@ -53,10 +70,10 @@ def create_cordaid_business_units(business_units):
         )
         new_cat, created = Category.objects.get_or_create(name=cat_name)
         if created:
-            print "Created cat: {cat_name}".format(cat_name=cat_name)
+            log(u"Created cat: {cat_name}",dict(cat_name=cat_name))
             new_cat.focus_area.add(FocusArea.objects.get(name=fa_name))
         else:
-            print "Found existing cat: {cat_name}".format(cat_name=cat_name)
+            log(u"Found existing cat: {cat_name}", dict(cat_name=cat_name))
         business_units.setdefault(identifier, {'category': None, 'benchmarknames': []})['category'] = new_cat
 
     cordaid.iati_org_id = CORDAID_IATI_ID
@@ -66,7 +83,7 @@ def create_cordaid_business_units(business_units):
         dgis.iati_org_id = DGIS_IATI_ID
         dgis.save()
     except:
-        print "Can't find DGIS using ID {dgis_id}".format(dgis_id=DGIS_ORG_ID)
+        log(u"Can't find DGIS using ID {dgis_id}", dict(dgis_id=DGIS_ORG_ID), 'error')
     return business_units
 
 
@@ -75,9 +92,9 @@ def create_cats_and_benches(business_units):
         for name in data['benchmarknames']:
             new_bench, created = Benchmarkname.objects.get_or_create(name=name)
             if created:
-                print "Created bench: {name}".format(name=name)
+                log(u"Created bench: {name}", dict(name=name))
             else:
-                print "Found existing bench: {name}".format(name=name)
+                log(u"Found existing bench: {name}", dict(name=name))
             data['category'].benchmarknames.add(new_bench)
 
 
@@ -93,10 +110,152 @@ def import_cordaid_benchmarks(csv_file):
             )
         return business_units
 
+def get_organisation_type(new_organisation_type):
+    types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
+                     Organisation.NEW_TO_OLD_TYPES
+    ))
+    return types[new_organisation_type]
+
+def normalize_url(url):
+    if url is None:
+        return ""
+    url = url.strip().lower()
+    if url and not url.startswith("http"):
+        if url.startswith("www"):
+            url = "http://%s" % url
+        else:
+            url = ""
+    return url
+
+def import_orgs(xml_file):
+    def text_from_xpath(tree, xpath):
+        element = tree.xpath(xpath)
+        if len(element) != 1:
+            raise
+        return element[0].text.strip()
+
+    def create_new_organisation(org_etree):
+        name = text_from_xpath(org_etree, 'name'),
+        new_organisation_type = int(text_from_xpath(org_etree, 'iati_organisation_type'))
+        referenced_org = Organisation.objects.create(
+            name = name[:25],
+            long_name = name,
+            description = text_from_xpath(org_etree, 'description') or "N/A",
+            url = normalize_url(text_from_xpath(org_etree, 'url')),
+            new_organisation_type = new_organisation_type,
+            organisation_type = get_organisation_type(new_organisation_type)
+        )
+        log(
+            u"Created new organisation: {name}, Akvo ID: {pk}",
+            format=dict(name=referenced_org.name, pk=referenced_org.pk)
+        )
+        return referenced_org
+
+    def set_location_for_org(org_etree, org):
+        if not org.primary_location:
+            iso_code = text_from_xpath(org_etree, 'location/object/iso_code').lower()
+            if not iso_code == "ww!":
+                country = custom_get_or_create_country(iso_code)
+                location = OrganisationLocation.objects.create(
+                    country = country,
+                    location_target = org
+                )
+                org.locations.add(location)
+                org.primary_location = location
+                org.save()
+                log(
+                    u"  Added location to org {pk}",
+                    dict(pk=org.pk, name=org.name)
+                )
+            else:
+                log(
+                    u"Couldn't create location for org {pk}, no proper country code",
+                    dict(pk=org.pk, name=org.name),
+                    'error',
+                )
+        else:
+            log(
+                u"  Org {pk} already has a location.",
+                dict(pk=org.pk, name=org.name)
+            )
+
+    def organisation_logo(org_etree, org):
+        logo_file = glob.glob(
+            os.path.join(
+                CORDAID_LOGOS_DIR,
+                "{logo_id}.*".format(logo_id=text_from_xpath(org_etree, 'logo_id'))
+            )
+        )
+        if len(logo_file) == 1:
+            logo_filename = basename(logo_file[0])
+            _, extension = splitext(logo_filename)
+            if extension.lower() in (".png", ".jpg", ".jpeg", ".gif"):
+                filename = model_and_instance_based_filename(
+                    "Organisation",
+                    org.pk,
+                    "logo",
+                    logo_filename
+                )
+                with open(os.path.join(CORDAID_LOGOS_DIR, logo_filename), "rb") as f:
+                    logo_data = f.read()
+                    logo_tmp = NamedTemporaryFile(delete=True)
+                    logo_tmp.write(logo_data)
+                    logo_tmp.flush()
+                    org.logo.save(
+                        filename, File(logo_tmp), save=True
+                    )
+                    log(
+                        u"  Added logo {filename} to org {pk}, ",
+                        dict(pk=org.pk, filename= filename)
+                    )
+
+
+    with open(xml_file, "rb") as f:
+        root = etree.fromstring(f.read())
+        cordaid = Organisation.objects.get(id=CORDAID_ORG_ID)
+        count = 0
+        for org_etree in root:
+            internal_id = text_from_xpath(org_etree, 'org_id')
+            try:
+                internal_org_id = InternalOrganisationID.objects.get(
+                    recording_org=cordaid,
+                    identifier=internal_id
+                )
+                log(
+                    u"Found existing org {org_name} (Akvo PK {pk}) with Cordaid internal ID '{internal_id}'",
+                    format=dict(
+                        org_name=internal_org_id.referenced_org.name,
+                        pk=internal_org_id.referenced_org.pk,
+                        internal_id=internal_id
+
+                    )
+                )
+                set_location_for_org(org_etree, internal_org_id.referenced_org)
+            except InternalOrganisationID.MultipleObjectsReturned:
+                log(
+                    u"Error from lookup of internal ID {internal_id}. Multiple objects found.",
+                    format=dict(internal_id=internal_id),
+                    type='error',
+                )
+                continue
+            except InternalOrganisationID.DoesNotExist:
+                referenced_org = create_new_organisation(org_etree)
+                set_location_for_org(org_etree, referenced_org)
+                internal_org_id = InternalOrganisationID.objects.create(
+                    recording_org = cordaid,
+                    referenced_org = referenced_org,
+                    identifier = internal_id
+                )
+            organisation_logo(org_etree, internal_org_id.referenced_org)
+
+
 if __name__ == '__main__':
+    init_log()
     business_units = import_cordaid_benchmarks(CORDAID_INDICATORS_CSV)
     business_units = create_cordaid_business_units(business_units)
     create_cats_and_benches(business_units)
+    import_orgs(CORDAID_ORGANISATIONS_XML)
+    print_log()
 
 
 

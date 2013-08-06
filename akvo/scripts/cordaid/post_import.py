@@ -3,8 +3,9 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-from django.core.files.uploadedfile import UploadedFile
 
+
+import datetime
 from lxml import etree
 from os.path import splitext
 
@@ -20,7 +21,14 @@ from django.core.files.temp import NamedTemporaryFile
 from akvo.rsr.models import Project, Partnership, Organisation
 from akvo.rsr.utils import model_and_instance_based_filename
 
-from akvo.scripts.cordaid import CORDAID_IATI_ACTIVITIES_XML, CORDAID_PROJECT_IMAGES_DIR, CORDAID_ORG_ID
+from akvo.scripts.cordaid import (
+    CORDAID_IATI_ACTIVITIES_XML, CORDAID_PROJECT_IMAGES_DIR, CORDAID_ORG_ID,
+    print_log, log
+)
+
+
+def init_log():
+    log("\n***** post_import.py log at {time} *****\n", dict(time=datetime.datetime.now()))
 
 def import_images(image_dir, img_to_proj_map):
     for image_name in os.listdir(image_dir):
@@ -40,35 +48,44 @@ def import_images(image_dir, img_to_proj_map):
                     image_temp.flush()
                     project.current_image.save(filename, File(image_temp), save=True)
                 f.close()
-                print "Uploaded image to project {pk}".format(pk=project.pk)
+                log(u"Uploaded image to project {pk}", dict(pk=project.pk))
             except Exception, e:
-                print "Upload failed. internal_id: {internal_id} Error msg: {message}".format(
-                    internal_id=img_to_proj_map.get(photo_id), message=e.message
+                log(
+                    u"Upload failed. internal_id: {internal_id} Error msg: {message}",
+                    dict(internal_id=img_to_proj_map.get(photo_id), message=e.message),
+                    'error',
                 )
 
 def fix_funding(img_to_proj_map):
-    import pdb
-    pdb.set_trace()
     cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
-    for internal_id in img_to_proj_map.keys():
+    for internal_id in img_to_proj_map.values():
         try:
             project = None
             project = Project.objects.get(
                 partnerships__internal_id=internal_id, partnerships__organisation=cordaid
             )
-            if project.funds_needed > 0:
+            funds_needed = project.funds_needed
+            if funds_needed > 0:
                 cord_fund = Partnership.objects.create(
                     organisation=cordaid,
                     project=project,
                     partner_type=Partnership.FUNDING_PARTNER,
-                    funding_amount = project.funds_needed,
+                    funding_amount = funds_needed,
                 )
-            print(
-                "Added Cordaid as funding partner to project {pk}, funding amount: {funding_amount}"
-            ).format(pk=project.pk, funding_amount=project.funds_needed)
+                log(
+                    u"Added Cordaid as funding partner to project {pk}, funding amount: {funding_amount}",
+                    dict(pk=project.pk, funding_amount=funds_needed)
+                )
+            else:
+                log(
+                    u"Project {pk} is fully funded",
+                    dict(pk=project.pk,)
+                )
         except Exception, e:
-            print("Error trying to set up Cordaid as funding partner to project {pk}\nError message: {message}"
-            ).format(pk=getattr(project, 'pk', None), message=e.message)
+            log(u"Error trying to set up Cordaid as funding partner to project {pk}\nError message: {message}",
+                dict(pk=getattr(project, 'pk', None), message=e.message),
+                'error'
+            )
 
 def create_mapping_images_to_projects():
     """ Create a dict that maps the photo-ids in cordaid's xml to the internal-project-id of the same activity
@@ -85,6 +102,8 @@ def create_mapping_images_to_projects():
         return images_to_projects
 
 if __name__ == '__main__':
+    init_log()
     img_to_proj_map = create_mapping_images_to_projects()
     import_images(CORDAID_PROJECT_IMAGES_DIR, img_to_proj_map)
     fix_funding(img_to_proj_map)
+    print_log()
