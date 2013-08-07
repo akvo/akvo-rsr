@@ -9,7 +9,6 @@ django-pagination==1.0.7
 django-paypal==0.1.2
 django-registration==0.8
 django-rosetta==0.6.8
-django-tastypie==0.9.16
 django-templatetag-handlebars==1.2.0
 sorl-thumbnail==3.2.5
 
@@ -21,6 +20,7 @@ requests==1.1.0
 # Django apps from VCS web services
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
 -e git://github.com/worldcompany/djangoembed.git@f3f2be283441d91d1f89db780444dc75f7b51902#egg=djangoembed
+-e git://github.com/toastdriven/django-tastypie.git@2b13147715347d8239bbe73943be0eae65c8a43b#egg=django_tastypie-dev
 
 # Akvonaut apps
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
