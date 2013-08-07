@@ -7,7 +7,7 @@ Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overvi
 
 Akvo RSR ver 2.1.5.2 - hotfix for Nectarine
 ---
-24 July 2013, adriancollier
+8th August 2013, adriancollier
 
 ###Adding a Country via the RSR Admin
 
