@@ -61,7 +61,6 @@
   </div>
   <div class="clearfix" style="float:left; width:465px; padding-top:20px">
     <h3>{% trans "I don't have an account" %}</h3>
-    {% url 'register1' as register1_url %}
     <p>
     {% blocktrans %}By <a href='{{register1_url}}'>registering</a> with Akvo, you will be able to:{% endblocktrans %}
     </p>
@@ -69,7 +68,7 @@
       <li>{% trans "Create updates on your organisation's projects" %}</li>
       <li>{% trans "Leave comments on projects" %}</li>
     </ul>
-    <p>{% trans 'And much more! <a href="/web/">Learn about</a> how Akvo works.' %}</p>
+    <p>{% trans 'And much more! <a href="http://www.akvo.org/web/akvo-rsr">Learn about</a> how Akvo works.' %}</p>
   </div>
   <span class="small">
     <a href="{{domain_url}}/rsr/accounts/password/reset/">{% trans "I forgot my username and/or password" %}</a>

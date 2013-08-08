@@ -10,6 +10,7 @@ from __future__ import absolute_import
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -46,6 +47,15 @@ class SignInView(PartnerSitesMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(SignInView, self).get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next', '/')
+        # create url to RSR register page
+        register1_path = reverse('register1', urlconf='akvo.urls.rsr')
+        register1_url = "http://{rsr_domain}{register1_path}".format(
+            rsr_domain = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org'),
+            register1_path=register1_path
+        )
+        if getattr(settings, 'HTTPS_SUPPORT', True):
+            return register1_url.replace('http://', 'https://')
+        context['register1_url'] = register1_url
         return context
 
     def render_to_response(self, context):
