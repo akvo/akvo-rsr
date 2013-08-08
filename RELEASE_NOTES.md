@@ -5,6 +5,32 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
 Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
 
+Akvo RSR ver 2.1.5.2 - hotfix for Nectarine
+---
+8th August 2013, adriancollier
+
+###Adding a Country via the RSR Admin
+
+We inherited a bug which prevented Countries from te ISO list being added to the available country list in the RSR Admin.
+
+Github issue [#256](https://github.com/akvo/akvo-rsr/issues/256)
+
+###Registration page in Partnersites
+
+We made some fixes to the Regsiitartion page included modifying the layout to match the style better, and fixing some issues with the links that were not working once ported from Core RSR.
+
+Github issue [#260](https://github.com/akvo/akvo-rsr/issues/260)
+
+Akvo RSR ver 2.1.5.1 - hotfix for Nectarine
+---
+24 July 2013, adriancollier
+
+###Add Organsiation Loading Info
+
+We needed a little more code to process the Organisation Import File from Cordaid.
+
+Github issue [#250](https://github.com/akvo/akvo-rsr/issues/250)
+
 Akvo RSR ver 2.1.5 Nectarine
 ---
 8th July 2013 - adriancollier

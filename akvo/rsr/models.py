@@ -472,6 +472,7 @@ class InternalOrganisationID(models.Model):
                                       verbose_name=u'recording organisation', related_name='internal_ids')
     referenced_org = models.ForeignKey(Organisation,
                                        verbose_name=u'referenced organisation', related_name='reference_ids',)
+    #TODO: add index
     identifier = models.CharField(max_length=200, verbose_name=u'internal ID of referenced organisation',)
 
     def __unicode__(self):
@@ -813,6 +814,10 @@ class Project(models.Model):
 #        return
 
     class QuerySet(QuerySet):
+
+        def of_partner(self, organisation):
+            "return projects that have organisation as partner"
+            return self.filter(partners__exact=organisation)
 
         def has_location(self):
             return self.filter(primary_location__isnull=False)

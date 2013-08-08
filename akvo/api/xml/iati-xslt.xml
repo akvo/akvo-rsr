@@ -27,16 +27,16 @@
       <xsl:apply-templates select="description[@type='1' and @akvo:type='9']"/><!-- Current status -->
       <xsl:apply-templates select="description[@type='1' and @akvo:type='10']"/><!-- Sustainability -->
 
-      <goals type="list">
-        <xsl:apply-templates select="description[@akvo:type='Objectives detail']" />
-      </goals>
-
       <xsl:apply-templates select="document-link[@format='image/jpeg']" />
       
       <locations type="list">
         <xsl:apply-templates select="location" />
       </locations>
 
+      <benchmarks type="list">
+        <xsl:apply-templates select="result/indicator" />
+      </benchmarks>
+      
       <budget_items type="list">
         <xsl:apply-templates select="budget" />
       </budget_items>
@@ -48,7 +48,13 @@
       <partnerships type="list">
         <xsl:apply-templates select="participating-org" />
       </partnerships>
-
+      
+      <!-- 
+      <business_unit>
+        <xsl:value-of select="normalize-space(//iati-activity/@akvo:business-unit-id)"/>
+      </business_unit>
+       -->
+      
     </object>
   </xsl:template>
 
@@ -251,7 +257,28 @@
       </text>
     </object>
   </xsl:template>
-
+  
+  
+  <!-- benchmark -->
+  <xsl:template match="result/indicator">
+    <object>
+      <xsl:apply-templates select="title"/>
+      <xsl:apply-templates select="period/target"/>
+    </object>
+  </xsl:template>
+  
+  <xsl:template match="indicator/title">
+    <name>
+      <xsl:value-of select="." />
+    </name>
+  </xsl:template>
+  
+  <xsl:template match="period/target">
+    <value>
+      <xsl:value-of select="@value" />
+    </value>
+  </xsl:template>
+  
   <!-- budget -->
   <xsl:template match="budget">
     <object>

@@ -1,7 +1,8 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n %}
-{% load url from future %}
 
+{% load i18n %}
+
+{% load url from future %}
 
 {% block title %}{% trans "Projects" %} - {% endblock title %}
 
@@ -16,7 +17,7 @@
 {% endblock breadcrum_items %}
 
 {% block content %}
-<section class="whitebox pad20 marg_bottom40">
+<section class="whitebox pad20 marg_bottom40" style="height:350px">
   <h1>{% trans "Sign in with your Akvo account" %}</h1>
   {% if form.errors %}
     <div class="error">
@@ -28,8 +29,8 @@
       {% endif %}  
     </div>
   {% endif %}
-  <div style="width:250px;">
-    <form action="{% url 'sign_in' %}" method='post' name="auth_form" class="auth">
+  <div style="float:left;width:250px;margin-right:30px">
+    <form action="{% url 'sign_in' %}" method="post" name="auth_form" class="auth">
       <fieldset>
         {% for field in form %}
           <div class="clearfix">
@@ -47,20 +48,9 @@
             <a class="aqua awesome" style="color:#fff" href="javascript:document.auth_form.submit()">{% trans 'Sign in' %}</a>
           </div>
         </div>
-        <div style="float:left; width:465px; padding-top:20px; margin-left:70px;">
-          <h3>{% trans "I don't have an account" %}</h3>
-          {% url 'register1' as register1_url %}
-          <p>
-            {% blocktrans %}By <a href='{{ register1_url }}'>registering</a> with Akvo, you will be able to:{% endblocktrans %}
-          </p>
-          <ul class="simplelist">
-            <li>{% trans "Create updates on your organisation's projects" %}</li>
-            <li>{% trans 'Leave comments on projects' %}</li>
-          </ul>
-          <p>{% trans "And much more! <a href='/web/'>Learn about</a> how Akvo works." %}</p>
-          
-        </div>
-        <p style="visibility:hidden;" class="marg0 pad0"><input type="submit" value="Sign in" class="marg0 pad0"></p>
+        <p style="visibility:hidden" class="marg0 pad0">
+          <input type="submit" value="Sign in" class="marg0 pad0">
+        </p>
         {% csrf_token %}
         {# To make sure the next parameter works on both first load and on form errors #}
         {% if request.POST.next %}
@@ -71,8 +61,19 @@
       </fieldset>
     </form>
   </div>
-  <span class="small">
-    <a href="{{domain_url}}/rsr/accounts/password/reset/">{% trans "I forgot my username and/or password" %}</a>
-  </span>
+  <div class="clearfix" style="float:left;width:465px;padding-top:20px">
+    <h3>{% trans "I don't have an account" %}</h3>
+    <p>
+    {% blocktrans %}By <a href='{{register1_url}}'>registering</a> with Akvo, you will be able to:{% endblocktrans %}
+    </p>
+    <ul class="simplelist">
+      <li>{% trans "Create updates on your organisation's projects" %}</li>
+      <li>{% trans "Leave comments on projects" %}</li>
+    </ul>
+    <p>{% trans 'And much more! <a href="http://www.akvo.org/web/akvo-rsr">Learn about</a> how Akvo works.' %}</p>
+    <span class="small">
+      <a href="{{domain_url}}/rsr/accounts/password/reset/">{% trans "I forgot my username and/or password" %}</a>
+    </span>
+  </div>
 </section>
 {% endblock content %}
