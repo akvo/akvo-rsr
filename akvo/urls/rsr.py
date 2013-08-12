@@ -37,10 +37,6 @@ urlpatterns = patterns(
         'akvo.rsr.views.index',
         name='index'),
 
-    url(r'^rsr/index-preview/(?P<cms_id>\d+)/$',
-        'akvo.rsr.views.index',
-        name='index_preview'),
-
     # IATI lists
     url(r'^rsr/iati/projects/(?P<iati_activity_id>[_\-a-zA-Z0-9]+)/$',
         'akvo.rsr.views.iati_project_list',
@@ -191,10 +187,6 @@ urlpatterns = patterns(
 # Non muli-lingual urls
 urlpatterns += patterns(
     '',
-
-    # Redirect to home page
-    (r'^rsr/$',
-        'akvo.rsr.views.oldindex', ),
 
     # Landing pages
     url(r'^rsr/liveearth/$',
