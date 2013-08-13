@@ -64,7 +64,7 @@ class CountryAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if obj.iso_code:
-            custom_get_or_create_country(iso_code, obj)
+            custom_get_or_create_country(obj.iso_code, obj)
 
     def get_readonly_fields(self, request, obj=None):
         if obj:

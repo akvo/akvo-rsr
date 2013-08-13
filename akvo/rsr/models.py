@@ -1243,17 +1243,6 @@ class Link(models.Model):
         verbose_name_plural = _(u'links')
 
 
-PHOTO_LOCATIONS = (
-    ('B', _(u'At the beginning of the update')),
-    ('E', _(u'At the end of the update')),
-)
-UPDATE_METHODS = (
-    ('W', _(u'web')),
-    ('E', _(u'e-mail')),
-    ('S', _(u'SMS')),
-)
-
-
 class UserProfileManager(models.Manager):
     def process_sms(self, mo_sms):
         try:
@@ -1768,6 +1757,17 @@ class SmsReporter(models.Model):
 
 
 class ProjectUpdate(models.Model):
+    UPDATE_METHODS = (
+        ('W', _(u'web')),
+        ('E', _(u'e-mail')),
+        ('S', _(u'SMS')),
+        ('M', _(u'mobile')),
+    )
+    PHOTO_LOCATIONS = (
+        ('B', _(u'At the beginning of the update')),
+        ('E', _(u'At the end of the update')),
+    )
+
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
