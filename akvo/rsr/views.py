@@ -163,7 +163,7 @@ def index(request):
     '''
     The RSR home page.
     '''
-    return HttpResponsePermanentRedirect('/home')
+    return HttpResponsePermanentRedirect('/')
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')
