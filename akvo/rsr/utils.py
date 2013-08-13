@@ -75,7 +75,7 @@ def permissions(self):
             'add': 'yes',
             'rsr_limited_change': 'no',
             'change': 'yes',
-            'admin_media': '/rsr/media/admin/'
+            'admin_media': '/media/admin/'
         }
         resulting the src paths pointing to icon-yes.gif and icon-no.gif images
         """
@@ -213,7 +213,7 @@ def send_donation_confirmation_emails(invoice_id):
         project_url = urljoin(site_url, base_project_url)
         base_project_updates_url = reverse("project_updates", kwargs=dict(project_id=invoice.project.id))
         project_updates_url = urljoin(site_url, base_project_updates_url)
-        template = loader.get_template("rsr/project/donate/donation_confirmation_email.html")
+        template = loader.get_template("    rsr/project/donate/donation_confirmation_email.html")
         context = Context(dict(invoice=invoice,
                                site_url=site_url,
                                project_url=project_url,

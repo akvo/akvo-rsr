@@ -412,7 +412,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
     # Check for exeptions to the return to start of sign in process
-    if redirect_to == "/rsr/accounts/register/complete/":
+    if redirect_to == "/accounts/register/complete/":
         redirect_to = "/"
 
     if request.method == "POST":
@@ -423,7 +423,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         if form.is_valid():
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
-                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/rsr/')
+                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/')
             from django.contrib.auth import login
             login(request, form.get_user())
             if request.session.test_cookie_worked():
@@ -447,7 +447,7 @@ login = never_cache(login)
 def signout(request):
     '''
     Sign out URL
-    Redirects to /rsr/
+    Redirects to /
     '''
     logout(request)
     return HttpResponseRedirect('/')
@@ -460,7 +460,7 @@ def register1(request):
     if request.method == 'POST':
         form = RegistrationForm1(data=request.POST)
         if form.is_valid():
-            return HttpResponseRedirect('/rsr/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
+            return HttpResponseRedirect('/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
     else:
         form = RegistrationForm1()
     context = RequestContext(request)
@@ -473,13 +473,13 @@ def register2(request,
     ):
     org_id = request.GET.get('org_id', None)
     if not org_id:
-        return HttpResponseRedirect('/rsr/accounts/register1/')
+        return HttpResponseRedirect('/accounts/register1/')
     organisation = Organisation.objects.get(pk=org_id)
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
             new_user = form.save(request)
-            return HttpResponseRedirect('/rsr/accounts/register/complete/')
+            return HttpResponseRedirect('/accounts/register/complete/')
     else:
         form = form_class(initial={'org_id': org_id})
     context = RequestContext(request)
@@ -583,7 +583,7 @@ password_change = login_required(password_change)
 @login_required
 def update_user_profile(
     request,
-    success_url='/rsr/accounts/update/complete/',
+    success_url='/accounts/update/complete/',
     form_class=RSR_ProfileUpdateForm,
     template_name='registration/update_form.html',
     extra_context=None
@@ -937,7 +937,7 @@ def projectmain(request, project, draft=False, can_add_update=False):
 
 def projectdetails(request, project_id):
     "Fix for old url with project details"
-    return http.HttpResponsePermanentRedirect('/rsr/project/%s/' % project_id)
+    return http.HttpResponsePermanentRedirect('/project/%s/' % project_id)
 
 
 @project_viewing_permissions
@@ -1044,7 +1044,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
 
 
 def templatedev(request, template_name):
-    "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
+    "Render a template in the dev folder. The template rendered is template_name.html when the path is /dev/template_name/"
     dev = {'path': 'dev/'}
     SAMPLE_PROJECT_ID = 2
     SAMPLE_ORG_ID = 42
