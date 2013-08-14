@@ -12,6 +12,7 @@
     "puppet_public_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_puppet.pub",
     "puppet_private_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_puppet",
 
+    "rsr-deploy_private_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_rsr-deploy",
     "rsr-deploy_public_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_rsr-deploy.pub",
 
     "nodes": {
