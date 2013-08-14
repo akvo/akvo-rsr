@@ -290,9 +290,6 @@ urlpatterns += patterns(
 urlpatterns += patterns(
     '',
 
-    #django-piston
-    # (r'^rsr/api/', include('akvo.api.piston_urls')),
-
     #tastypie
     # generate all resource urls for version one of the api,
     # e.g. /api/v1/project/
