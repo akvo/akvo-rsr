@@ -31,6 +31,7 @@ FIELD_IATI_ORG_ID = 'iati_org_id'
 FIELD_NAME = 'name'
 FIELD_LONG_NAME = 'long_name'
 FIELD_NEW_ORGANISATION_TYPE = 'new_organisation_type'
+FIELD_PARTNER_TYPE = 'partner_type'
 ORG_FIELDS = [FIELD_IATI_ORG_ID, FIELD_NAME, FIELD_LONG_NAME, FIELD_NEW_ORGANISATION_TYPE]
 # InternalOrganisationID
 FIELD_INTERNAL_ORG_ID = 'internal_org_id'
@@ -171,7 +172,10 @@ class IATIPartnershipResource(ModelResource):
         organisation = get_organisation(bundle)
         if organisation:
             bundle.data[FIELD_ORGANISATION] = organisation
-            if organisation.iati_org_id != bundle.data[FIELD_REPORTING_ORG]:
+            if (
+                organisation.iati_org_id != bundle.data[FIELD_REPORTING_ORG] or
+                bundle.data[FIELD_PARTNER_TYPE] != Partnership.SUPPORT_PARTNER
+            ):
                 bundle.data[FIELD_IATI_ACTIVITY_ID] = None
                 bundle.data[FIELD_INTERNAL_ID] = None
         else:
