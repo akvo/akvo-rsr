@@ -163,7 +163,7 @@ def index(request):
     '''
     The RSR home page.
     '''
-    return HttpResponsePermanentRedirect('/')
+    return HttpResponsePermanentRedirect('/home')
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')
@@ -413,7 +413,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
     redirect_to = request.REQUEST.get(redirect_field_name, '')
     # Check for exeptions to the return to start of sign in process
     if redirect_to == "/accounts/register/complete/":
-        redirect_to = "/"
+        redirect_to = "/home"
 
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -423,7 +423,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         if form.is_valid():
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
-                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/')
+                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/home')
             from django.contrib.auth import login
             login(request, form.get_user())
             if request.session.test_cookie_worked():
@@ -447,10 +447,9 @@ login = never_cache(login)
 def signout(request):
     '''
     Sign out URL
-    Redirects to /
     '''
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/home')
 
 
 def register1(request):
