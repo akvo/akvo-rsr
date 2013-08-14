@@ -18,7 +18,7 @@ from django.core.management import setup_environ
 from akvo import settings
 setup_environ(settings)
 
-from akvo.scripts.cordaid import API_VERSION, CORDAID_IATI_ACTIVITIES_XML
+from akvo.scripts.cordaid import log, API_VERSION, CORDAID_IATI_ACTIVITIES_XML, CORDAID_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION, ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT, CORDAID_ACTIVITIES_CSV_FILE, print_log, init_log
 from requester import Requester
 
 
@@ -27,6 +27,7 @@ class HttpNoContent(HttpResponse):
 
 def post_an_activity(activity_element, user):
     try:
+        iati_id = activity_element.findall('iati-identifier')[0].text
         project = Requester(
             method='post',
             url_template="http://{domain}/api/{api_version}/iati_activity/"
@@ -37,21 +38,28 @@ def post_an_activity(activity_element, user):
             accept_codes=[HttpCreated.status_code]
         )
     except Exception, e:
-        return False, "{message}".format(message=e.message)
+        return False, "{extra}", dict(
+            iati_id = iati_id,
+            event = ERROR_EXCEPTION,
+            extra = e.message,
+        )
     if project.response.text:
-        return False,  "**** Error creating iati-activity: {id}".format(
-            id=activity_element.findall('iati-identifier')[0].text
+        return False,  "**** Error creating iati-activity: {iati_id}", dict(
+            iati_id = iati_id,
+            event = ERROR_CREATE_ACTIVITY,
+            extra = project.response.text
         )
     elif project.response.status_code is HttpCreated.status_code:
-        return True, "Created project for iati-activity: {id}".format(
-            id=activity_element.findall('iati-identifier')[0].text
+        return True, "Created project for iati-activity: {iati_id}", dict(
+            iati_id = iati_id, event = ACTION_CREATE_PROJECT
         )
     else:
         return (
             False,
-            "**** Error creating iati-activity: {id}. HTTP status code: {status_code}".format(
-                id=activity_element.findall('iati-identifier')[0].text,
-                status_code=project.response.status_code,
+            "**** Error creating iati-activity: {iati_id}. HTTP status code: {extra}", dict(
+                iati_id = iati_id,
+                event = ERROR_UPLOAD_ACTIVITY,
+                extra = project.response.status_code,
             )
         )
 
@@ -61,6 +69,7 @@ def put_an_activity(activity_element, pk, url_args):
     "NOTE: does not work!!!"
     url_args.update(pk=pk)
     try:
+        iati_id = activity_element.findall('iati-identifier')[0].text
         project = Requester(
             method='put',
             url_template="http://{domain}/api/{api_version}/iati_activity/{pk}/?"
@@ -71,20 +80,30 @@ def put_an_activity(activity_element, pk, url_args):
             accept_codes=[HttpNoContent.status_code]
         )
     except Exception, e:
-        return False, "{message}".format(message=e.message)
+        return False, "{extra}", dict(
+            iati_id = iati_id,
+            event = ERROR_EXCEPTION,
+            extra = e.message
+        )
     if project.response.text:
-        return False, "**** Error creating iati-activity: {id}".format(
-            id=activity_element.findall('iati-identifier')[0].text
+        return False, "**** Error creating iati-activity: {iati_id}", dict(
+            iati_id = iati_id,
+            event = ERROR_UPDATE_ACTIVITY,
+            extra = project.response.text
         )
     elif project.response.status_code is HttpNoContent.status_code:
-        return True, "Updated project for iati-activity: {id} (Akvo pk: {pk})".format(
-            id=activity_element.findall('iati-identifier')[0].text, pk=pk)
+        return True, "Updated project for iati-activity: {iati_id} (Akvo pk: {pk})", dict(
+            iati_id = iati_id,
+            event = ACTION_UPDATE_PROJECT,
+            pk = pk
+        )
     else:
         return (
             False,
-            "**** Error creating iati-activity: {id}. HTTP status code: {status_code}".format(
-                id=activity_element.findall('iati-identifier')[0].text,
-                status_code=project.response.status_code,
+            "**** Error updating iati-activity: {iati_id}. HTTP status code: {extra}", dict(
+                iati_id = iati_id,
+                event = ERROR_UPLOAD_ACTIVITY,
+                extra = project.response.status_code,
             )
         )
 
@@ -175,44 +194,34 @@ def upload_activities(argv):
         with open(CORDAID_IATI_ACTIVITIES_XML, 'r') as f:
             root = etree.fromstring(f.read())
             AKVO_NS = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
-            good, borked = 0, 0
             for i in range(len(root)):
-                print "Good: {good}, borked: {borked}".format(good=good, borked=borked)
                 internal_id = root[i].get(AKVO_NS + 'internal-project-id')
                 iati_id=root[i].findall('iati-identifier')[0].text
                 print "Processing activity {iati_id}".format(iati_id=iati_id),
                 ok, project = get_project_count(internal_id, user)
                 if not ok:
-                    borked += 1
                     continue #error msg already output
                 project_count = project.response.json()['meta']['total_count']
                 if project_count == 0:
-                    ok, message = post_an_activity(root[i], user)
-                    if ok:
-                        good += 1
-                    else:
-                        borked += 1
-                    print message
+                    ok, message, data = post_an_activity(root[i], user)
+                    log(message, data)
+                    print message.format(**data)
                 elif project_count == 1:
                     pk = project.response.json()['objects'][0]['id']
-                    ok, message = put_an_activity(root[i], pk, user)
-                    if ok:
-                        good += 1
-                    else:
-                        borked += 1
-                    print message
+                    ok, message, data = put_an_activity(root[i], pk, user)
+                    log(message, data)
+                    print message.format(**data)
                 elif project_count > 1:
-                    borked += 1
+                    data = dict(iati_id=iati_id, extra=internal_id)
+                    log(None, data)
                     print(
                         "**** Error updating iati-activity: {iati_id}. "
-                            "More than one project with internal ID {internal_id} exists.".format(
-                            iati_id=iati_id, internal_id=internal_id
-                        )
+                            "More than one project with internal ID {extra} exists.".format(**data)
                     )
-            print "Projects found or created: {good}. Errors: {borked}".format(
-                good=good, borked=borked
-            )
 
 
 if __name__ == '__main__':
     upload_activities(sys.argv)
+    log_file = init_log(CORDAID_UPLOAD_CSV_FILE)
+    names = (u'iati_id', u'pk', u'event', u'extra')
+    print_log(log_file, names)
