@@ -1,4 +1,4 @@
-{% load i18n rsr_tags webdesign %}
+{% load i18n rsr_tags webdesign piwik_tags %}
 {% load url from future %}
 
 
@@ -20,6 +20,10 @@
 	</style>
   
 	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
+
+  {#  Piwik #}
+  {% tracking_code %}
+
 	{% block head %}
     {# this link is overridden in organisation.html and project_base.html#}
     <link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
