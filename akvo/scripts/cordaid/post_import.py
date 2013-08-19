@@ -23,20 +23,19 @@ from akvo.rsr.utils import model_and_instance_based_filename
 
 from akvo.scripts.cordaid import (
     CORDAID_IATI_ACTIVITIES_XML, CORDAID_PROJECT_IMAGES_DIR, CORDAID_ORG_ID,
-    print_log, log
-)
+    print_log, log, ACTION_FUNDING_SET, ACTION_FUNDING_FOUND, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE,
+    CORDAID_ACTIVITIES_CSV_FILE,
+    init_log)
 
-
-def init_log():
-    log("\n***** post_import.py log at {time} *****\n", dict(time=datetime.datetime.now()))
 
 def import_images(image_dir, img_to_proj_map):
     for image_name in os.listdir(image_dir):
         photo_id, ext = splitext(image_name)
         if ext.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
             try:
+                internal_id=img_to_proj_map.get(photo_id)
                 project = Project.objects.get(
-                    partnerships__internal_id=img_to_proj_map.get(photo_id)
+                    partnerships__internal_id=internal_id
                 )
                 filename = model_and_instance_based_filename(
                     'Project', project.pk, 'current_image', image_name
@@ -48,12 +47,13 @@ def import_images(image_dir, img_to_proj_map):
                     image_temp.flush()
                     project.current_image.save(filename, File(image_temp), save=True)
                 f.close()
-                log(u"Uploaded image to project {pk}", dict(pk=project.pk))
+                log(
+                    u"Uploaded image to project {pk}",
+                    dict(internal_id=internal_id, pk=project.pk, event=ACTION_SET_IMAGE))
             except Exception, e:
                 log(
-                    u"Upload failed. internal_id: {internal_id} Error msg: {message}",
-                    dict(internal_id=img_to_proj_map.get(photo_id), message=e.message),
-                    'error',
+                    u"Upload failed. internal_id: {internal_id} Exception class: {extra}",
+                    dict(internal_id=internal_id, event=ERROR_IMAGE_UPLOAD, extra=e.__class__),
                 )
 
 def fix_funding(img_to_proj_map):
@@ -73,18 +73,17 @@ def fix_funding(img_to_proj_map):
                     funding_amount = funds_needed,
                 )
                 log(
-                    u"Added Cordaid as funding partner to project {pk}, funding amount: {funding_amount}",
-                    dict(pk=project.pk, funding_amount=funds_needed)
+                    u"Added Cordaid as funding partner to project {pk}, funding amount: {extra}",
+                    dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_SET, extra=funds_needed)
                 )
             else:
                 log(
                     u"Project {pk} is fully funded",
-                    dict(pk=project.pk,)
+                    dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_FOUND,)
                 )
         except Exception, e:
-            log(u"Error trying to set up Cordaid as funding partner to project {pk}\nError message: {message}",
-                dict(pk=getattr(project, 'pk', None), message=e.message),
-                'error'
+            log(u"Error trying to set up Cordaid as funding partner to project {pk}\nException class: {extra}",
+                dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=e.message),
             )
 
 def create_mapping_images_to_projects():
@@ -106,4 +105,6 @@ if __name__ == '__main__':
     img_to_proj_map = create_mapping_images_to_projects()
     import_images(CORDAID_PROJECT_IMAGES_DIR, img_to_proj_map)
     fix_funding(img_to_proj_map)
-    print_log()
+    log_file = init_log(CORDAID_ACTIVITIES_CSV_FILE)
+    names = (u'internal_id', u'pk', u'label', u'event', u'extra')
+    print_log(log_file, names)
