@@ -1,4 +1,4 @@
-{% load i18n rsr_tags humanize %}
+{% load i18n rsr_tags humanize piwik_tags %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -19,6 +19,9 @@
       h2 a {color:#{{bgcolor}} !important;}
     {% endblock inline_styles %}
   </style>
+
+  {#  Piwik #}
+  {% tracking_code %}
 
 </head>
 <body style="margin-left:0px; margin-top:0px; background-color:transparent;">
