@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from textwrap import dedent
@@ -215,8 +216,8 @@ class Partnership(models.Model):
     KNOWLEDGE_PARTNER = u'knowledge'
     NETWORK_PARTNER = u'network'
     PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
-    PARTNER_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
-    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_LIST, PARTNER_EXTRA_LABELS)
+    PARTNER_TYPE_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
+    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
@@ -1242,17 +1243,6 @@ class Link(models.Model):
         verbose_name_plural = _(u'links')
 
 
-PHOTO_LOCATIONS = (
-    ('B', _(u'At the beginning of the update')),
-    ('E', _(u'At the end of the update')),
-)
-UPDATE_METHODS = (
-    ('W', _(u'web')),
-    ('E', _(u'e-mail')),
-    ('S', _(u'SMS')),
-)
-
-
 class UserProfileManager(models.Manager):
     def process_sms(self, mo_sms):
         try:
@@ -1767,6 +1757,17 @@ class SmsReporter(models.Model):
 
 
 class ProjectUpdate(models.Model):
+    UPDATE_METHODS = (
+        ('W', _(u'web')),
+        ('E', _(u'e-mail')),
+        ('S', _(u'SMS')),
+        ('M', _(u'mobile')),
+    )
+    PHOTO_LOCATIONS = (
+        ('B', _(u'At the beginning of the update')),
+        ('E', _(u'At the end of the update')),
+    )
+
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk

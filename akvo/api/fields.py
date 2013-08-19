@@ -189,7 +189,7 @@ class Base64FileField(fields.FileField):
         If `return_url` is set to `True`, which it is by default, a URL string
         to the given upload is returned.
 
-        If `return_url` is set ti `False` a base64-encoded string representation
+        If `return_url` is set to `False` a base64-encoded string representation
         of the uploaded file is returned. Be careful, since this can be extremely
         large!
 

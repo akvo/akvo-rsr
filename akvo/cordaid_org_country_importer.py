@@ -14,10 +14,7 @@ from os.path import splitext
 
 from lxml import etree
 
-from akvo.rsr.models import (
-        InternalOrganisationID, Organisation, OrganisationLocation
-)
-from akvo.rsr.utils import custom_get_or_create_country
+from akvo.rsr.models import Country, InternalOrganisationID, Organisation
 
 
 CORDAID_DIR = "/var/tmp/cordaid"
@@ -32,19 +29,18 @@ def import_countries(xml_file):
         for element in root:
             identifier = element.findtext("org_id")
             internal_org_id = InternalOrganisationID.objects.get(
-                    recording_org=cordaid, identifier=identifier
-            )
+                    recording_org=cordaid,
+                    identifier=identifier)
             org = internal_org_id.referenced_org
             for location in element.find("location"):
-                iso_code = location.findtext("iso_code").strip().upper()
-                if not iso_code == "WW!":
-                    country = custom_get_or_create_country(iso_code)
-                    primary_location = OrganisationLocation(country=country)
-                    org.primary_location = primary_location
+                iso_code = location.findtext("iso_code").capitalize()
+                try:
+                    org.country = Country.objects.get(iso_code=iso_code)
                     org.save()
-                    print(u"Added country {country_name} to Organisation {org_id}.".format(
-                            country_name=country.name.lower().capitalize(), org_id=org.id
-                    ))
+                    print("Updated Organisation {org_id} with country data.".format(org_id=org.id))
+                except:
+                    print("Failed to update Organisation {org_id}. Non-existant country code: {iso_code}.".format(
+                            org_id=org.id, iso_code=iso_code))
 
 
 if __name__ == "__main__":

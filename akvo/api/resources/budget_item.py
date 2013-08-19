@@ -22,14 +22,14 @@ from .resources import ConditionalFullResource
 
 
 class IATIBudgetItemResource(ModelResource):
-    project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project', full=True,)
+    project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project',)
     label = fields.ToOneField('akvo.api.resources.BudgetItemLabelResource', 'label',)
 
     class Meta:
-        allowed_methods = ['post']
+        allowed_methods = ['post', 'put']
         resource_name   = 'iati_budget_item'
         authorization   = Authorization()
-        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
+        authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST', 'PUT'])
         queryset        = BudgetItem.objects.all()
 
     def hydrate_label(self, bundle):

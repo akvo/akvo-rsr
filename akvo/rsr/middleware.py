@@ -83,6 +83,12 @@ PARTNER_SITES_MARKETING_SITE = getattr(
     "http://www.akvoapp.org/"
 )
 
+RSR_DOMAINS = getattr(
+    settings,
+    "RSR_DOMAINS",
+    ("localhost", "127.0.0.1", "akvo.dev", "www.akvo.dev", "77.53.15.119")
+)
+
 
 def get_domain(request):
     original_domain = request.get_host().split(":")[0]
@@ -92,10 +98,9 @@ def get_domain(request):
 
 
 def is_rsr_instance(domain):
-    dev_domains = ("localhost", "127.0.0.1", "akvo.dev", "www.akvo.dev", "77.53.15.119")
     return (domain == "akvo.org" or
             domain.endswith(".akvo.org") or
-            domain in dev_domains)
+            domain in RSR_DOMAINS)
 
 
 def is_partner_site_instance(domain):

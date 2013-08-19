@@ -3,46 +3,64 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-import getopt
 
-import requests
+
+import getopt
+import sys
 
 from lxml import etree
-import sys
-from tastypie.http import HttpCreated
+
+from tastypie.http import HttpCreated, HttpNoContent
+
 from django.http import HttpResponse
 
+from django.core.management import setup_environ
+from akvo import settings
+setup_environ(settings)
+
+from akvo.scripts.cordaid import log, API_VERSION, CORDAID_IATI_ACTIVITIES_XML, CORDAID_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION, ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT, CORDAID_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS
 from requester import Requester
+
 
 class HttpNoContent(HttpResponse):
     status_code = 204
 
-
-# IATI_ACTIVITIES_XML = './xml/cordaid_iati_activities.xml'
-IATI_ACTIVITIES_XML = './xml/cordaid/iati_export_20130723.xml'
-API_VERSION = 'v1'
-
-
 def post_an_activity(activity_element, user):
     try:
+        iati_id = activity_element.findall('iati-identifier')[0].text
         project = Requester(
             method='post',
-            url_template="http://{domain}/api/{api_version}/iati_activity/?format=xml&api_key={api_key}&username={username}",
+            url_template="http://{domain}/api/{api_version}/iati_activity/"
+                "?format=xml&api_key={api_key}&username={username}",
             url_args=user,
             headers={'content-type': 'application/xml', 'encoding': 'utf-8'},
             data=etree.tostring(activity_element),
             accept_codes=[HttpCreated.status_code]
         )
     except Exception, e:
-        return False, "{message}".format(message=e.message)
+        return False, "{extra}", dict(
+            iati_id = iati_id,
+            event = ERROR_EXCEPTION,
+            extra = e.message,
+        )
     if project.response.text:
-        return False,  "**** Error creating iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
+        return False,  "**** Error creating iati-activity: {iati_id}", dict(
+            iati_id = iati_id,
+            event = ERROR_CREATE_ACTIVITY,
+            extra = project.response.text
+        )
     elif project.response.status_code is HttpCreated.status_code:
-        return True, "Created project for iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
+        return True, "Created project for iati-activity: {iati_id}", dict(
+            iati_id = iati_id, event = ACTION_CREATE_PROJECT
+        )
     else:
-        return False, "**** Error creating iati-activity: {id}. HTTP status code: {status_code}".format(
-            id=activity_element.findall('iati-identifier')[0].text,
-            status_code=project.response.status_code,
+        return (
+            False,
+            "**** Error creating iati-activity: {iati_id}. HTTP status code: {extra}", dict(
+                iati_id = iati_id,
+                event = ERROR_UPLOAD_ACTIVITY,
+                extra = project.response.status_code,
+            )
         )
 
 # root[i].findall('iati-identifier')[0].text
@@ -51,25 +69,42 @@ def put_an_activity(activity_element, pk, url_args):
     "NOTE: does not work!!!"
     url_args.update(pk=pk)
     try:
+        iati_id = activity_element.findall('iati-identifier')[0].text
         project = Requester(
             method='put',
-            url_template="http://{domain}/api/{api_version}/iati_activity/{pk}/?format=xml&api_key={api_key}&username={username}",
+            url_template="http://{domain}/api/{api_version}/iati_activity/{pk}/?"
+                "format=xml&api_key={api_key}&username={username}",
             url_args=url_args,
             headers={'content-type': 'application/xml', 'encoding': 'utf-8'},
             data=etree.tostring(activity_element),
             accept_codes=[HttpNoContent.status_code]
         )
     except Exception, e:
-        print "{message}".format(message=e.message)
-        return
+        return False, "{extra}", dict(
+            iati_id = iati_id,
+            event = ERROR_EXCEPTION,
+            extra = e.message
+        )
     if project.response.text:
-        print "**** Error creating iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
-    elif project.response.status_code is HttpCreated.status_code:
-        print "Updated project for iati-activity: {id}".format(id=activity_element.findall('iati-identifier')[0].text)
+        return False, "**** Error creating iati-activity: {iati_id}", dict(
+            iati_id = iati_id,
+            event = ERROR_UPDATE_ACTIVITY,
+            extra = project.response.text
+        )
+    elif project.response.status_code is HttpNoContent.status_code:
+        return True, "Updated project for iati-activity: {iati_id} (Akvo pk: {pk})", dict(
+            iati_id = iati_id,
+            event = ACTION_UPDATE_PROJECT,
+            pk = pk
+        )
     else:
-        print "**** Error creating iati-activity: {id}. HTTP status code: {status_code}".format(
-            id=activity_element.findall('iati-identifier')[0].text,
-            status_code=project.response.status_code,
+        return (
+            False,
+            "**** Error updating iati-activity: {iati_id}. HTTP status code: {extra}", dict(
+                iati_id = iati_id,
+                event = ERROR_UPLOAD_ACTIVITY,
+                extra = project.response.status_code,
+            )
         )
 
 def usage(script_name):
@@ -143,7 +178,9 @@ def get_project_count(internal_id, user):
     url_args.update(internal_id=internal_id)
     try:
         project = Requester(
-            url_template="http://{domain}/api/{api_version}/project/?format=json&partnerships__internal_id={internal_id}&api_key={api_key}&username={username}",
+            url_template="http://{domain}/api/{api_version}/project/?"
+                "format=json&partnerships__internal_id={internal_id}"
+                "&api_key={api_key}&username={username}",
             url_args=url_args
         )
     except Exception, e:
@@ -154,62 +191,37 @@ def get_project_count(internal_id, user):
 def upload_activities(argv):
     user = credentials_from_args(argv)
     if user:
-        with open(IATI_ACTIVITIES_XML, 'r') as f:
+        with open(CORDAID_IATI_ACTIVITIES_XML, 'r') as f:
             root = etree.fromstring(f.read())
             AKVO_NS = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
-            good, borked = 0, 0
             for i in range(len(root)):
-                print "Good: {good}, borked: {borked}".format(good=good, borked=borked)
                 internal_id = root[i].get(AKVO_NS + 'internal-project-id')
                 iati_id=root[i].findall('iati-identifier')[0].text
                 print "Processing activity {iati_id}".format(iati_id=iati_id),
                 ok, project = get_project_count(internal_id, user)
                 if not ok:
-                    borked += 1
                     continue #error msg already output
                 project_count = project.response.json()['meta']['total_count']
                 if project_count == 0:
-                    ok, message = post_an_activity(root[i], user)
-                    if ok:
-                        good += 1
-                    else:
-                        borked += 1
-                    print message
+                    ok, message, data = post_an_activity(root[i], user)
+                    log(message, data)
+                    print message.format(**data)
                 elif project_count == 1:
-                    good += 1
                     pk = project.response.json()['objects'][0]['id']
-                    #put don't work yet
-                    print "Found iati-activity: {iati_id} (Akvo ID: {pk}). Not updating it right now.".format(
-                        iati_id=iati_id, pk=pk,
-                    )
-                    continue
-                    # put_an_activity(root[i], pk, user)
+                    ok, message, data = put_an_activity(root[i], pk, user)
+                    log(message, data)
+                    print message.format(**data)
                 elif project_count > 1:
-                    borked += 1
-                    print "**** Error updating iati-activity: {iati_id}. More than one project with internal ID {internal_id} exists.".format(
-                        iati_id=iati_id, internal_id=internal_id)
-            print "Projects found or created: {good}. Errors: {borked}".format(good=good, borked=borked)
+                    data = dict(iati_id=iati_id, event=ERROR_MULTIPLE_OBJECTS, extra=internal_id)
+                    log(None, data)
+                    print(
+                        "**** Error updating iati-activity: {iati_id}. "
+                            "More than one project with internal ID {extra} exists.".format(**data)
+                    )
 
-TEST_PUT_XML = './xml/1108.xml'
-def test_put(argv):
-    url_args = credentials_from_args(argv)
-    if url_args:
-        with open(TEST_PUT_XML, 'r') as f:
-            url_args.update(pk=1108)
-            data=str(f.read())
-            try:
-                project = Requester(
-                    method='put',
-                    url_template="http://{domain}/api/{api_version}/project/{pk}/?format=xml",
-                    url_args=url_args,
-                    headers={'content-type': 'application/xml', 'encoding': 'utf-8'},
-                    data=data,
-                )
-
-            except Exception, e:
-                print "{message}".format(message=e.message)
-                return
 
 if __name__ == '__main__':
     upload_activities(sys.argv)
-    # test_put(sys.argv)
+    log_file = init_log(CORDAID_UPLOAD_CSV_FILE)
+    names = (u'iati_id', u'pk', u'event', u'extra')
+    print_log(log_file, names)

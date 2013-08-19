@@ -1,4 +1,4 @@
-{% load i18n rsr_tags webdesign %}
+{% load i18n rsr_tags webdesign piwik_tags %}
 {% load url from future %}
 
 
@@ -20,6 +20,10 @@
 	</style>
   
 	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
+
+  {#  Piwik #}
+  {% tracking_code %}
+
 	{% block head %}
     {# this link is overridden in organisation.html and project_base.html#}
     <link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
@@ -106,9 +110,7 @@
 		{% block draft %}
   		{% if draft %}
     		<div style="background-color:#E04F46; color:#fff; padding:10px; text-align:center; margin-bottom:20px;">
-          {% trans "This is a draft view of the project. It can only be seen by projects members and Akvo administrators." %}
-          <br/>
-          {% trans "Pleas note that the map will not display any locations until the project is published." %}
+          {% trans "This is a draft view of the project. It can only be seen by Projects Members and Akvo Administrators." %}
         </div>
   		{% endif %}
 		{% endblock draft %}
