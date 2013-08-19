@@ -102,18 +102,6 @@ class IATIProjectResource(ModelResource):
         super(IATIProjectResource, self).put_detail(request, **kwargs)
 
     def alter_deserialized_detail_data(self, request, data):
-        # prepare the benchmarks, looking up the Benchmarkname and the Category objects.
-        # if we don't find a value drop that benchmark
-        benchmarks = []
-        for benchmark in data['benchmarks']:
-            if benchmark.get('value'):
-                new_benchmark = dict(value=benchmark['value'])
-                benchmarkname = Benchmarkname.objects.get(name=benchmark['name'])
-                new_benchmark['name'] = benchmarkname.pk
-                new_benchmark['category'] = benchmarkname.category_set.all()[0].pk # assumes there's only one category
-                benchmarks.append(new_benchmark)
-        data['benchmarks'] = benchmarks
-
         # Figure out the category for the project from the business unit
         business_unit_categories = {
             "K6020": dict(cat_name="Children & Education", fa="Education"),
@@ -132,6 +120,18 @@ class IATIProjectResource(ModelResource):
         business_unit = business_unit_categories[data['partnerships'][0]['business_unit']]
         project_category = Category.objects.get(name=business_unit['cat_name'], focus_area__name=business_unit['fa'])
         data['categories'] = ['/api/v1/iati_category/{pk}/'.format(pk=project_category.pk),]
+
+        # prepare the benchmarks, looking up the Benchmarkname and set the Category to project_category
+        benchmarks = []
+        for benchmark in data['benchmarks']:
+            # if we don't find a value drop that benchmark
+            if benchmark.get('value'):
+                new_benchmark = dict(value=benchmark['value'])
+                benchmarkname = Benchmarkname.objects.get(name=benchmark['name'])
+                new_benchmark['name'] = benchmarkname.pk
+                new_benchmark['category'] = project_category.pk
+                benchmarks.append(new_benchmark)
+        data['benchmarks'] = benchmarks
 
         # hack to set the first location as primary
         if data.get('locations'):

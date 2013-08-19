@@ -3169,11 +3169,11 @@ msgstr "in Dollar"
 
 #: templates/partner_sites/project/base_project.html:11
 #: templates/rsr/base.html:109
-msgid "This is a draft view of the project. It can only be seen by projects members and Akvo administrators."
+msgid "This is a draft view of the project. It can only be seen by Project Members and Akvo Administrators."
 msgstr ""
 
 #: templates/partner_sites/project/base_project.html:13
-msgid "Pleas note that the map will not display any locations until the project is published."
+msgid ""
 msgstr ""
 
 #: templates/partner_sites/project/base_project.html:20
