@@ -159,67 +159,11 @@ def get_query(query_string, search_fields):
     return query
 
 
-@cache_page(getattr(settings, 'CACHE_SECONDS', 300))
-@render_to('rsr/index.html')
-def index(request, cms_id=None):
+def index(request):
     '''
     The RSR home page.
     '''
-    preview = False
-    focus_areas = FocusArea.objects.exclude(slug='all')
-
-    if cms_id:
-        cms = MiniCMS.objects.get(pk=cms_id)
-        preview = True
-    else:
-        try:
-            cms = MiniCMS.objects.filter(active=True)[0]
-        except:
-            cms = MiniCMS.objects.get(pk=1)
-
-    # posts that we get the titles from and display in the top news box
-    news_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 13), getattr(settings, 'NEWS_ARTICLE_COUNT', 2)
-    )
-    # posts that we show in the more headlines box
-    blog_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', None), getattr(settings, 'FEATURE_ARTICLE_COUNT', 2)
-    )
-    # from this category we draw the image to show in the news box
-    image_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'IMAGE_CATEGORY_ID', 11), getattr(settings, 'IMAGE_CATEGORY_ID', 1)
-    )
-
-    news_image = ''
-    news_title = ''
-    #get three featured updates with video and/or photo
-    updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
-    if news_posts:
-        for post in image_posts:
-            if post.get('image', None):
-                news_image = post['image']
-                news_title = post['title']
-                break
-
-    context_dict = {
-        #'updates': updates,
-        'focus_areas': focus_areas,
-        'cms': cms,
-        'version': getattr(settings, 'URL_VALIDATOR_USER_AGENT', 'Django'),
-        'site_section': 'index',
-        'blog_posts': blog_posts,
-        'news_posts': news_posts,
-        'preview':  preview,
-    }
-    context_dict.update(right_now_in_akvo())
-    context_dict.update({'updates': updates, })
-    return context_dict
-
-
-def oldindex(request):
-    "Fix for old url of old rsr front that has become the akvo home page"
-    return HttpResponsePermanentRedirect('/')
-
+    return HttpResponsePermanentRedirect('/home')
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')
@@ -468,8 +412,8 @@ def login(request, template_name='registration/login.html', redirect_field_name=
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
     # Check for exeptions to the return to start of sign in process
-    if redirect_to == "/rsr/accounts/register/complete/":
-        redirect_to = "/"
+    if redirect_to == "/accounts/register/complete/":
+        redirect_to = "/home"
 
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -479,7 +423,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         if form.is_valid():
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
-                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/rsr/')
+                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/home')
             from django.contrib.auth import login
             login(request, form.get_user())
             if request.session.test_cookie_worked():
@@ -503,10 +447,9 @@ login = never_cache(login)
 def signout(request):
     '''
     Sign out URL
-    Redirects to /rsr/
     '''
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/home')
 
 
 def register1(request):
@@ -516,7 +459,7 @@ def register1(request):
     if request.method == 'POST':
         form = RegistrationForm1(data=request.POST)
         if form.is_valid():
-            return HttpResponseRedirect('/rsr/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
+            return HttpResponseRedirect('/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
     else:
         form = RegistrationForm1()
     context = RequestContext(request)
@@ -529,13 +472,13 @@ def register2(request,
     ):
     org_id = request.GET.get('org_id', None)
     if not org_id:
-        return HttpResponseRedirect('/rsr/accounts/register1/')
+        return HttpResponseRedirect('/accounts/register1/')
     organisation = Organisation.objects.get(pk=org_id)
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
             new_user = form.save(request)
-            return HttpResponseRedirect('/rsr/accounts/register/complete/')
+            return HttpResponseRedirect('/accounts/register/complete/')
     else:
         form = form_class(initial={'org_id': org_id})
     context = RequestContext(request)
@@ -639,7 +582,7 @@ password_change = login_required(password_change)
 @login_required
 def update_user_profile(
     request,
-    success_url='/rsr/accounts/update/complete/',
+    success_url='/accounts/update/complete/',
     form_class=RSR_ProfileUpdateForm,
     template_name='registration/update_form.html',
     extra_context=None
@@ -993,7 +936,7 @@ def projectmain(request, project, draft=False, can_add_update=False):
 
 def projectdetails(request, project_id):
     "Fix for old url with project details"
-    return http.HttpResponsePermanentRedirect('/rsr/project/%s/' % project_id)
+    return http.HttpResponsePermanentRedirect('/project/%s/' % project_id)
 
 
 @project_viewing_permissions
@@ -1100,7 +1043,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
 
 
 def templatedev(request, template_name):
-    "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
+    "Render a template in the dev folder. The template rendered is template_name.html when the path is /dev/template_name/"
     dev = {'path': 'dev/'}
     SAMPLE_PROJECT_ID = 2
     SAMPLE_ORG_ID = 42
