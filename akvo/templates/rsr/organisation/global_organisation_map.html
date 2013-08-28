@@ -25,5 +25,8 @@
   <h1>
     {% trans 'Map of all organisations' %}
   </h1>
+  {% comment %}
   {% map 'organisation' 975 600 'dynamic' %}
+  {% endcomment %}
+  <img src="{{MEDIA_URL}}akvo/img/maps/global_organisation_map.png" alt="Global organisation map">
 {% endblock %}
