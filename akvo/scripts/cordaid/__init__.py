@@ -4,10 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
+import datetime
 import os
 import sys
+import tablib
 
 from django.core.management import setup_environ
+from django.utils.encoding import smart_str, smart_unicode
 
 from akvo import settings
 
@@ -27,6 +31,9 @@ cordaid_settings = dict(
     CORDAID_ORGANISATIONS_FILENAME = 'cordaid_organisations.xml',
     CORDAID_INDICATORS_CSV_FILE_NAME = '20130711_indicators.csv',
     CORDAID_LOG_FILENAME = 'cordaid_import.log',
+    CORDAID_ORG_CSV_FILENAME = 'cordaid_organisations_import_{datetime}.csv',
+    CORDAID_ACTIVITIES_CSV_FILENAME = 'cordaid_activities_import_{datetime}.csv',
+    CORDAID_UPLOAD_CSV_FILENAME = 'cordaid_activities_upload_{datetime}.csv',
 
     CORDAID_ORG_ID = 273,
     CORDAID_IATI_ID = 'NL-KVK-41160054',
@@ -44,24 +51,77 @@ CORDAID_INDICATORS_CSV = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_INDICATORS
 CORDAID_IATI_ACTIVITIES_XML = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_IATI_ACTIVITES_FILENAME)
 CORDAID_ORGANISATIONS_XML = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_ORGANISATIONS_FILENAME)
 CORDAID_LOG_FILE = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_LOG_FILENAME)
+CORDAID_ORG_CSV_FILE = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_ORG_CSV_FILENAME)
+CORDAID_ACTIVITIES_CSV_FILE = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_ACTIVITIES_CSV_FILENAME)
+CORDAID_UPLOAD_CSV_FILE = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_UPLOAD_CSV_FILENAME)
 
 CORDAID_PROJECT_IMAGES_DIR =  os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_PROJECT_IMAGES_SUBDIR)
 CORDAID_LOGOS_DIR =  os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_LOGOS_SUBDIR)
 
 
-log_items = dict(msg=[], error=[])
+base_log = dict(msg=[], error=[])
+log_bits = []
 
-def log(text, format=None, type='msg'):
-    log_items[type].append(dict(text=text, format=format or {}))
+def log(text, data):
+    log_bits.append(dict(text=text, data=data or {}))
 
-def log_to_file(text, log_file=CORDAID_LOG_FILE):
-    text = u"{text}\n".format(text=text)
-    with open(log_file, "a") as log_file:
-        log_file.write(text.encode('utf-8'))
-    sys.stdout.write(text)
+def init_log(log_file=CORDAID_LOG_FILE):
+    current_log_file = log_file.format(datetime=datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+    with open(current_log_file, "w") as f:
+        pass
+    return current_log_file
 
-def print_log():
-    for item in log_items['msg']:
-        log_to_file(item['text'].format(**item['format']))
-    for item in log_items['error']:
-        log_to_file(item['text'].format(**item['format']))
+def log_to_file(text, log_file):
+    out = u"{text}\n".format(text=smart_unicode(text))
+    with open(log_file, "a") as f:
+        f.write(smart_str(out))
+    sys.stdout.write(smart_str(out))
+
+def print_log(log_file, column_names):
+    dataset = tablib.Dataset()
+    dataset.headers = column_names
+    for bit in log_bits:
+        data = bit['data']
+        row = []
+        do_append = False
+        for name in column_names:
+            data[name] = data.setdefault(name, '')
+            row.append(data[name])
+            if data[name]: do_append = True
+        if do_append:
+            dataset.append(row)
+
+    log_to_file(dataset.csv, log_file)
+
+
+# Activities
+# ==========
+# Cordaid ID      Akvo ID     Title       Event     Error
+# ==========      =======     =====       =====     =====
+#
+#
+# Organiations
+# ============
+# Cordaid org ID      Akvo ID     Name    Event     Error
+# ==============      =======     ====    =====     =====
+
+LOG_ACTIVITIES = 'activities'
+LOG_ORGANISATIONS = 'organisations'
+
+ACTION_FOUND = 'found'
+ACTION_SET_IMAGE = 'set image'
+ACTION_LOCATION_SET = 'set location'
+ACTION_LOCATION_FOUND = 'found location'
+ACTION_CREATE_ORG = 'organisation created'
+ACTION_FUNDING_SET = 'set funding'
+ACTION_FUNDING_FOUND = 'found funding'
+ACTION_CREATE_PROJECT = 'project created'
+ACTION_UPDATE_PROJECT = 'project updated'
+
+ERROR_COUNTRY_CODE = 'invalid country code'
+ERROR_MULTIPLE_OBJECTS = 'multiple objects'
+ERROR_IMAGE_UPLOAD = 'image upload exception'
+ERROR_EXCEPTION = 'general exception'
+ERROR_CREATE_ACTIVITY = 'activity create error'
+ERROR_UPDATE_ACTIVITY = 'activity update error'
+ERROR_UPLOAD_ACTIVITY = "activity upload error"

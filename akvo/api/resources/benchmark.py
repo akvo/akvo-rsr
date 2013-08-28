@@ -48,6 +48,15 @@ class IATIBenchmarkResource(ModelResource):
         )
         return bundle
 
+    def hydrate_value(self, bundle):
+        "Values have to be integers"
+        try:
+            bundle.data['value'] = int(round(float(bundle.data['value'])))
+        except:
+            # TODO: logging!
+            bundle.data['value'] = 0
+        return bundle
+
 
 class BenchmarkResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
