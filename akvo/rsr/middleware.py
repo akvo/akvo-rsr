@@ -86,8 +86,11 @@ PARTNER_SITES_MARKETING_SITE = getattr(
 
 def get_domain(request):
     original_domain = request.get_host().split(":")[0]
-    domain_parts = original_domain.split(".")[-3:]
-    domain = ".".join(domain_parts)
+    if original_domain == "rsr.akvo.org":
+        domain = original_domain
+    else:
+        domain_parts = original_domain.split(".")[-4:]
+        domain = ".".join(domain_parts)
     return domain
 
 
@@ -148,8 +151,9 @@ class PartnerSitesRouterMiddleware(object):
         if partner_site is not None and partner_site.enabled:
             partner_site_domain = ".".join(domain.split(".")[-2:])
             request.partner_site = settings.PARTNER_SITE = partner_site
-            request.app_domain = ".".join((partner_site.hostname,
-                                           partner_site_domain))
+            request.app_domain = ".".join(
+                (partner_site.hostname, partner_site_domain)
+            )
             request.app_url = "http://%s" % request.app_domain
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
