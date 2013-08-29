@@ -1,4 +1,4 @@
-{% load i18n rsr_tags rsr_filters thumbnail humanize%}
+{% load i18n rsr_tags rsr_filters thumbnail humanize piwik_tags %}
 {% load url from future %}
 
 <!DOCTYPE html>
@@ -43,6 +43,10 @@
 
 
   <base target="_top" />
+
+  {#  Piwik #}
+  {% tracking_code %}
+
 </head>
 <body style="background-color:transparent;">
 <div id="container" style="background-color:#fff;">

@@ -23,7 +23,7 @@ class SSHConnection(object):
                         HostAlias.LIVE:     'www.akvo.org:22',
                         HostAlias.MEDIA:    '89.233.254.43:2268',
                         HostAlias.TEST:     'test.akvo.org:2270',
-                        HostAlias.TEST2:    'test2.akvo.org:2273',
+                        HostAlias.TEST2:    'test.akvo.org:2270',
                         HostAlias.UAT:      'uat.akvo.org:2279' }
 
     @staticmethod
@@ -50,12 +50,12 @@ class HostPathValues(object):
                 'logging_home':                 DEFAULT['logging_home'],
                 'deployment_processing_home':   DEFAULT['deployment_processing_home'] }
 
-    TEST2   = { 'config_home':                  '/usr/local/etc/akvo/test2',
-                'repo_checkout_home':           '/var/dev/test2',
-                'virtualenvs_home':             '/var/dev/virtualenvs/test2',
-                'static_media_home':            '/var/www/test2',
-                'logging_home':                 '/var/log/akvo',
-                'deployment_processing_home':   '/var/tmp/rsr/test2' }
+    TEST2   = { 'config_home':                  '/var/test2_akvo/etc',
+                'repo_checkout_home':           '/var/test2_akvo/repo',
+                'virtualenvs_home':             '/var/test2_akvo/virtualenvs',
+                'static_media_home':            '/var/test2_akvo/www/test2',
+                'logging_home':                 '/var/test2_akvo/log',
+                'deployment_processing_home':   '/var/tmp/rsr' }
 
 
 class DataHostPaths(object):

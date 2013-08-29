@@ -4,7 +4,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
-from django.contrib.admin.util import unquote
+from django.contrib.admin.util import unquote, flatten_fieldsets
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes import generic
@@ -27,8 +27,7 @@ import os.path
 from permissions.models import Role
 
 from akvo.rsr.forms import PartnerSiteAdminForm
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES, COUNTRY_CONTINENTS, CONTINENTS
-from akvo.rsr.utils import get_rsr_limited_change_permission, permissions
+from akvo.rsr.utils import get_rsr_limited_change_permission, permissions, custom_get_or_create_country
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -65,13 +64,7 @@ class CountryAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if obj.iso_code:
-            iso_code = obj.iso_code
-            continent_code = COUNTRY_CONTINENTS[iso_code]
-
-            obj.name = dict(ISO_3166_COUNTRIES)[iso_code]
-            obj.continent = dict(CONTINENTS)[continent_code]
-            obj.continent_code = continent_code
-        obj.save()
+            custom_get_or_create_country(obj.iso_code, obj)
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -105,15 +98,37 @@ class OrganisationLocationInline(admin.StackedInline):
     formset = RSR_LocationFormFormSet
 
 
+class InternalOrganisationIDInline(admin.TabularInline):
+    model = get_model('rsr', 'Organisation').internal_org_ids.through
+    extra = 1
+    fk_name = 'recording_org'
+    verbose_name = 'internal organisation ID'
+    verbose_name_plural = 'internal organisation IDs'
+
+
+class OrganisationAdminForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'organisation')
+
+    def clean_iati_org_id(self):
+        return self.cleaned_data['iati_org_id'] or None
+
+
 class OrganisationAdmin(admin.ModelAdmin):
+    # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
+    # If the fieldsets are changed, the template may need fixing too
     fieldsets = (
-        (_(u'General information'), {'fields': ('name', 'long_name', 'organisation_type', 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
+        (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
+                                                'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', )}),
     )
-    inlines = (OrganisationLocationInline,)
-    list_display = ('name', 'long_name', 'website', 'language',)
-    search_fields = ('name', 'long_name',)
+    form = OrganisationAdminForm
+    inlines = (OrganisationLocationInline, InternalOrganisationIDInline)
+    exclude = ('internal_org_ids',)
+    readonly_fields = ('partner_types',)
+    list_display = ('name', 'long_name', 'website', 'language')
+    search_fields = ('name', 'long_name')
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -131,6 +146,38 @@ class OrganisationAdmin(admin.ModelAdmin):
         """
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
+
+    def allowed_partner_types(self, obj):
+        return ', '.join([pt.label for pt in obj.partner_types.all()])
+
+    def get_list_display(self, request):
+        # see the notes fields in the change list if you have the right permissions
+        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
+            return list(self.list_display) + ['allowed_partner_types']
+        return super(OrganisationAdmin, self).get_list_display(request)
+
+    def get_readonly_fields(self, request, obj=None):
+        # parter_types is read only unless you have change permission for organisations
+        if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
+            self.readonly_fields = ('partner_types',)
+            # hack to set the help text
+            #try:
+            #    field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
+            #    if len(field) > 0:
+            #        field[0].help_text = 'The allowed partner types for this organisation'
+            #except:
+            #    pass
+        else:
+            self.readonly_fields = ()
+            # hack to set the help text
+            #try:
+            #    if not obj is None:
+            #        field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
+            #        if len(field) > 0:
+            #            field[0].help_text = 'The allowed partner types for this organisation. Hold down "Control", or "Command" on a Mac, to select more than one.'
+            #except:
+            #    pass
+        return super(OrganisationAdmin, self).get_readonly_fields(request, obj=obj)
 
     def queryset(self, request):
         qs = super(OrganisationAdmin, self).queryset(request)
@@ -390,10 +437,8 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
         def duplicates_in_list(seq):
             "return True if the list contains duplicate items"
             seq_set = list(set(seq))
-            # need to sort since set() doesn't preserver order
-            seq.sort()
-            seq_set.sort()
-            return seq != seq_set
+            # if the set isn't of the same length as the list there must be dupes in the list
+            return len(seq) != len(seq_set)
 
         user = self.request.user
         user_profile = user.get_profile()
@@ -431,13 +476,32 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
         for org, types in partner_types.items():
             # are there duplicates in the list of partner_types?
             if duplicates_in_list(types):
-                errors += [_(u'%s has duplicate partner types of the same kind.' % org)]
+                errors += [_(u'{org} has duplicate partner types of the same kind.'.format(org=org))]
+
         self._non_form_errors = ErrorList(errors)
+
+
+class RSR_PartnershipInlineForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'Partnership')
+
+    def clean_partner_type(self):
+        partner_types = get_model('rsr', 'PartnerType').objects.all()
+        partner_types_dict = {partner_type.id: partner_type.label for partner_type in partner_types}
+        allowed = [partner_type.pk for partner_type in self.cleaned_data['organisation'].partner_types.all()]
+        data = self.cleaned_data['partner_type']
+        if data not in allowed:
+            raise forms.ValidationError("{org} is not allowed to be a {partner_type_label}".format(
+                org=self.cleaned_data['organisation'],
+                partner_type_label=partner_types_dict[data]
+            ))
+        return data
 
 
 class PartnershipInline(admin.TabularInline):
     model = get_model('rsr', 'Partnership')
     extra = 1
+    form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
 
     def get_formset(self, request, *args, **kwargs):
@@ -542,7 +606,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Please upload a photo that displays an interesting part of your project, plan or implementation.'
             ),
-            'fields': ('current_image', 'current_image_caption', ),
+            'fields': ('current_image', 'current_image_caption', 'current_image_credit'),
             }),
         (_(u'Locations'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -1095,14 +1159,41 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 
 class PartnerSiteAdmin(admin.ModelAdmin):
     form = PartnerSiteAdminForm
-
     fieldsets = (
-        (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'General', dict(fields=('organisation', 'enabled', 'notes',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
     )
-    list_display = '__unicode__', 'full_domain'
+    # the notes field is not shown to everyone
+    restricted_fieldsets = (
+        (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
+        (u'Style and content',
+         dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
+        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
+    )
+    list_display = '__unicode__', 'full_domain', 'enabled',
+
+    def get_fieldsets(self, request, obj=None):
+        # don't show the notes field unless you have "add" permission on the PartnerSite model
+        # (currently means an Akvo staff user (or superuser))
+        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
+            return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
+        return self.restricted_fieldsets
+
+    def get_form(self, request, obj=None, **kwargs):
+        """ Workaround bug http://code.djangoproject.com/ticket/9360
+        """
+        return super(PartnerSiteAdmin, self).get_form(
+            request, obj, fields=flatten_fieldsets(self.get_fieldsets(request, obj))
+        )
+
+    def get_list_display(self, request):
+        # see the notes fields in the change list if you have the right permissions
+        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
+            return list(self.list_display) + ['notes']
+        return super(PartnerSiteAdmin, self).get_list_display(request)
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""

@@ -6,6 +6,8 @@
 from itertools import groupby
 from urlparse import urljoin
 
+from lxml import etree
+
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (MiniCMS, FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
@@ -17,12 +19,12 @@ from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
 from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
-                            get_random_from_qs, state_equals)
+                            get_random_from_qs, state_equals, right_now_in_akvo)
 
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import login, logout, REDIRECT_FIELD_NAME
+from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -32,12 +34,16 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
 from django.forms import ModelForm
-from django.http import (HttpResponse, HttpResponseRedirect,
-    HttpResponsePermanentRedirect, Http404)
+from django.http import (
+        HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed,
+        HttpResponsePermanentRedirect, Http404
+)
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.views.decorators.cache import never_cache, cache_page
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from datetime import datetime
 from registration.models import RegistrationProfile
@@ -153,80 +159,11 @@ def get_query(query_string, search_fields):
     return query
 
 
-@cache_page(getattr(settings, 'CACHE_SECONDS', 300))
-@render_to('rsr/index.html')
-def index(request, cms_id=None):
+def index(request):
     '''
     The RSR home page.
     '''
-    preview = False
-    focus_areas = FocusArea.objects.exclude(slug='all')
-
-    if cms_id:
-        cms = MiniCMS.objects.get(pk=cms_id)
-        preview = True
-    else:
-        try:
-            cms = MiniCMS.objects.filter(active=True)[0]
-        except:
-            cms = MiniCMS.objects.get(pk=1)
-
-    # posts that we get the titles from and display in the top news box
-    news_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 13), getattr(settings, 'NEWS_ARTICLE_COUNT', 2)
-    )
-    # posts that we show in the more headlines box
-    blog_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', None), getattr(settings, 'FEATURE_ARTICLE_COUNT', 2)
-    )
-    # from this category we draw the image to show in the news box
-    image_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'IMAGE_CATEGORY_ID', 11), getattr(settings, 'IMAGE_CATEGORY_ID', 1)
-    )
-
-    news_image = ''
-    news_title = ''
-
-    projects = Project.objects.published()
-    orgs = Organisation.objects.all()
-
-    people_served = projects.get_largest_value_sum(getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'))
-    #round to nearest whole 1000
-    people_served = int(people_served / 1000) * 1000
-
-    #get three featured updates with video and/or photo
-    updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
-    if news_posts:
-        for post in image_posts:
-            if post.get('image', None):
-                news_image = post['image']
-                news_title = post['title']
-                break
-
-    context_dict = {
-        #'updates': updates,
-        'focus_areas': focus_areas,
-        'cms': cms,
-        'version': getattr(settings, 'URL_VALIDATOR_USER_AGENT', 'Django'),
-        'site_section': 'index',
-        'blog_posts': blog_posts,
-        'news_posts': news_posts,
-        'preview':  preview,
-    }
-    context_dict.update({
-        'orgs': orgs,
-        'projects': projects,
-        'people_served': people_served,
-        'projects_budget': round(projects.budget_sum() / 100000) / 10.0,
-        'updates': updates,
-    })
-    return context_dict
-
-
-def oldindex(request):
-    "Fix for old url of old rsr front that has become the akvo home page"
-    return HttpResponsePermanentRedirect('/')
-
+    return HttpResponsePermanentRedirect('/home')
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')
@@ -475,8 +412,8 @@ def login(request, template_name='registration/login.html', redirect_field_name=
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
     # Check for exeptions to the return to start of sign in process
-    if redirect_to == "/rsr/accounts/register/complete/":
-        redirect_to = "/"
+    if redirect_to == "/accounts/register/complete/":
+        redirect_to = "/home"
 
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -486,7 +423,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         if form.is_valid():
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
-                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/rsr/')
+                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/home')
             from django.contrib.auth import login
             login(request, form.get_user())
             if request.session.test_cookie_worked():
@@ -510,10 +447,9 @@ login = never_cache(login)
 def signout(request):
     '''
     Sign out URL
-    Redirects to /rsr/
     '''
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/home')
 
 
 def register1(request):
@@ -523,7 +459,7 @@ def register1(request):
     if request.method == 'POST':
         form = RegistrationForm1(data=request.POST)
         if form.is_valid():
-            return HttpResponseRedirect('/rsr/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
+            return HttpResponseRedirect('/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
     else:
         form = RegistrationForm1()
     context = RequestContext(request)
@@ -536,13 +472,13 @@ def register2(request,
     ):
     org_id = request.GET.get('org_id', None)
     if not org_id:
-        return HttpResponseRedirect('/rsr/accounts/register1/')
+        return HttpResponseRedirect('/accounts/register1/')
     organisation = Organisation.objects.get(pk=org_id)
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
             new_user = form.save(request)
-            return HttpResponseRedirect('/rsr/accounts/register/complete/')
+            return HttpResponseRedirect('/accounts/register/complete/')
     else:
         form = form_class(initial={'org_id': org_id})
     context = RequestContext(request)
@@ -646,7 +582,7 @@ password_change = login_required(password_change)
 @login_required
 def update_user_profile(
     request,
-    success_url='/rsr/accounts/update/complete/',
+    success_url='/accounts/update/complete/',
     form_class=RSR_ProfileUpdateForm,
     template_name='registration/update_form.html',
     extra_context=None
@@ -1000,7 +936,7 @@ def projectmain(request, project, draft=False, can_add_update=False):
 
 def projectdetails(request, project_id):
     "Fix for old url with project details"
-    return http.HttpResponsePermanentRedirect('/rsr/project/%s/' % project_id)
+    return http.HttpResponsePermanentRedirect('/project/%s/' % project_id)
 
 
 @project_viewing_permissions
@@ -1107,7 +1043,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
 
 
 def templatedev(request, template_name):
-    "Render a template in the dev folder. The template rendered is template_name.html when the path is /rsr/dev/template_name/"
+    "Render a template in the dev folder. The template rendered is template_name.html when the path is /dev/template_name/"
     dev = {'path': 'dev/'}
     SAMPLE_PROJECT_ID = 2
     SAMPLE_ORG_ID = 42
@@ -1163,28 +1099,33 @@ def project_list_widget(request, template='project-list', org_id=0):
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'www.akvo.org')
+
     if int(org_id):
         o = get_object_or_404(Organisation, pk=org_id)
         p = o.published_projects()
         p = p.status_not_archived().status_not_cancelled()
     else:
-        p = Project.objects.published().status_not_archived().status_not_cancelled()
+        p = Project.objects.published().status_not_archived() \
+            .status_not_cancelled()
+
     order_by = request.GET.get('order_by', 'title')
-    #p = p.annotate(last_update=Max('project_updates__time'))
-    p = p.extra(select={'last_update': 'SELECT MAX(time) FROM rsr_projectupdate WHERE project_id = rsr_project.id'})
+    sql = (
+        'SELECT MAX(time) '
+        'FROM rsr_projectupdate '
+        'WHERE project_id = rsr_project.id'
+    )
+    p = p.extra(select={'last_update': sql})
+
     if order_by == 'country__continent':
         p = p.order_by(order_by, 'primary_location__country__name', 'title')
-    #elif order_by == 'country__name':
-    #    p = p.order_by(order_by,'name')
-    #elif order_by == 'status':
-    #    p = p.order_by(order_by,'name')
     elif order_by == 'last_update':
         p = p.order_by('-last_update', 'title')
     elif order_by in ['budget', 'funds_needed']:
         p = p.extra(order_by=['-%s' % order_by, 'title'])
     else:
         p = p.order_by(order_by, 'title')
-    return render_to_response('widgets/%s.html' % template.replace('-', '_'),
+    return render_to_response(
+        'widgets/%s.html' % template.replace('-', '_'),
         {
             'bgcolor': bgcolor,
             'textcolor': textcolor,
@@ -1481,3 +1422,32 @@ def global_organisation_projects_map_json(request, org_id):
     if callback:
         location_data = '%s(%s);' % (callback, location_data)
     return HttpResponse(location_data, content_type='application/json')
+
+
+@require_POST
+@csrf_exempt
+def get_api_key(request):
+    username = request.POST.get("username", "")
+    password = request.POST.get("password", "")
+    if username and password:
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            user_id = user.id
+            user_profile = UserProfile.objects.get(user=user)
+            org_id = user_profile.organisation.id
+            if not user_profile.api_key:
+                user_profile.save()
+            xml_root = etree.Element("credentials")
+            user_id_element = etree.SubElement(xml_root, "user_id")
+            user_id_element.text = str(user_id)
+            username_element = etree.SubElement(xml_root, "username")
+            username_element.text = username
+            org_id_element = etree.SubElement(xml_root, "org_id")
+            org_id_element.text = str(org_id)
+            api_key_element = etree.SubElement(xml_root, "api_key")
+            api_key_element.text = user_profile.api_key
+            xml_tree = etree.ElementTree(xml_root)
+            xml_data = etree.tostring(xml_tree)
+            return HttpResponse(xml_data, content_type="text/xml")
+    return HttpResponseForbidden()

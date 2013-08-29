@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from textwrap import dedent
@@ -68,6 +69,8 @@ from akvo.rsr.signals import (
 )
 
 from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
+
+from tastypie.models import ApiKey
 
 
 #Custom manager
@@ -160,8 +163,8 @@ class BaseLocation(models.Model):
     postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
     primary = models.BooleanField(_(u'primary location'), db_index=True, default=True)
 
-    def __unicode__(self):
-        return u'%s, %s (%s)' % (self.city, self.state, self.country)
+#    def __unicode__(self):
+#        return u'%s, %s (%s)' % (self.city, self.state, self.country)
 
     def save(self, *args, **kwargs):
         super(BaseLocation, self).save(*args, **kwargs)
@@ -188,6 +191,17 @@ class ProjectLocation(BaseLocation):
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
 
 
+class PartnerType(models.Model):
+    id = models.CharField(max_length=8, primary_key=True, unique=True)
+    label = models.CharField(max_length=30, unique=True)
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        ordering = ('label',)
+
+
 class Partnership(models.Model):
     FIELD_PARTNER = u'field'
     FUNDING_PARTNER = u'funding'
@@ -202,8 +216,8 @@ class Partnership(models.Model):
     KNOWLEDGE_PARTNER = u'knowledge'
     NETWORK_PARTNER = u'network'
     PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
-    PARTNER_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
-    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_LIST, PARTNER_EXTRA_LABELS)
+    PARTNER_TYPE_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
+    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
@@ -252,37 +266,57 @@ class Organisation(models.Model):
         (ORG_TYPE_COM, _(u'Commercial')),
         (ORG_TYPE_KNO, _(u'Knowledge institution')),
     )
+    NEW_TO_OLD_TYPES = [ORG_TYPE_GOV, ORG_TYPE_GOV, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO,
+                        ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_COM, ORG_TYPE_KNO]
 
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
-    #type = models.CharField(max_length=1, choices=PARNER_TYPES)
-#    field_partner = models.BooleanField(_(u'field partner'))
-#    support_partner = models.BooleanField(_(u'support partner'))
-#    funding_partner = models.BooleanField(_(u'funding partner'))
-#    sponsor_partner = models.BooleanField(_(u'sponsor partner'))
-
-    name = models.CharField(_(u'name'), max_length=25, db_index=True, help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'))
-    long_name = models.CharField(_(u'long name'), blank=True, max_length=75, help_text=_(u'Full name of organisation (75 characters).'))
-    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the organisation')
+    name = models.CharField(
+        _(u'name'), max_length=25, db_index=True,
+        help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'),
+    )
+    long_name = models.CharField(
+        _(u'long name'), blank=True, max_length=75,
+        help_text=_(u'Full name of organisation (75 characters).'),
+    )
+    language = models.CharField(
+        max_length=2, choices=settings.LANGUAGES, default='en',
+        help_text=u'The main language of the organisation',
+    )
+    partner_types = models.ManyToManyField(PartnerType)
     organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
-    new_organisation_type = models.IntegerField(_(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22, help_text=u'Check that this field is set to an organisation type that matches your organisation.')
-    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True)
-
+    new_organisation_type = models.IntegerField(
+        _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
+        help_text=u'Check that this field is set to an organisation type that matches your organisation.',
+    )
+    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True)
+    internal_org_ids = models.ManyToManyField(
+        'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
+    )
     logo = ImageWithThumbnailsField(
         _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
         extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop',)}},
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
 
-    url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Enter the full address of your web site, beginning with http://.'))
+    url = models.URLField(
+        blank=True, verify_exists=False,
+        help_text=_(u'Enter the full address of your web site, beginning with http://.'),
+    )
 
     phone = models.CharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     mobile = models.CharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     fax = models.CharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    contact_person = models.CharField(_(u'contact person'), blank=True, max_length=30, help_text=_(u'Name of external contact person for your organisation (30 characters).'))
-    contact_email = models.CharField(_(u'contact email'), blank=True, max_length=50, help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'))
-    description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'))
+    contact_person = models.CharField(
+        _(u'contact person'), blank=True, max_length=30,
+        help_text=_(u'Name of external contact person for your organisation (30 characters).'),
+    )
+    contact_email = models.CharField(
+        _(u'contact email'), blank=True, max_length=50,
+        help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'),
+    )
+    description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'),)
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
@@ -433,6 +467,26 @@ class Organisation(models.Model):
         )
 
 
+class InternalOrganisationID(models.Model):
+    " Model allowing organisations to record their internal references to other organisations"
+    recording_org = models.ForeignKey(Organisation,
+                                      verbose_name=u'recording organisation', related_name='internal_ids')
+    referenced_org = models.ForeignKey(Organisation,
+                                       verbose_name=u'referenced organisation', related_name='reference_ids',)
+    #TODO: add index
+    identifier = models.CharField(max_length=200, verbose_name=u'internal ID of referenced organisation',)
+
+    def __unicode__(self):
+        return u"{rec_org_name}'s internal ID for {ref_org_name}: {identifier}".format(
+            rec_org_name=self.recording_org.name,
+            ref_org_name=self.referenced_org.name,
+            identifier=self.identifier,
+        )
+
+    class Meta:
+        unique_together = ('recording_org', 'referenced_org',)
+
+
 class OrganisationAccount(models.Model):
     """
     This model keps track of organisation account levels and other relevant data.
@@ -484,7 +538,7 @@ class FocusArea(models.Model):
 
 
 class Benchmarkname(models.Model):
-    name = models.CharField(_(u'benchmark name'), max_length=50, help_text=_(u'Enter a name for the benchmark. (50 characters).'))
+    name = models.CharField(_(u'benchmark name'), max_length=80, help_text=_(u'Enter a name for the benchmark. (80 characters).'))
     order = models.IntegerField(_(u'order'), default=0, help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
 
     def __unicode__(self):
@@ -622,6 +676,7 @@ class Project(models.Model):
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
+    current_image_credit = models.CharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
 
     # goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
@@ -683,7 +738,7 @@ class Project(models.Model):
         else:
             PAYPAL_FEE_PCT = getattr(settings, 'PAYPAL_FEE_PCT_EUR', 3.4)
             PAYPAL_FEE_BASE = getattr(settings, 'PAYPAL_FEE_BASE_EUR', 0.35)
-        return int(math.ceil(float(self.funds_needed) * (1 + PAYPAL_FEE_PCT/100) + PAYPAL_FEE_BASE))
+        return int(math.ceil(float(self.funds_needed) / (1 - PAYPAL_FEE_PCT/100) + PAYPAL_FEE_BASE))
 
     def amount_needed_to_fully_fund_via_ideal(self):
         MOLLIE_FEE_BASE = getattr(settings, 'MOLLIE_FEE_BASE', 1.20)
@@ -760,6 +815,10 @@ class Project(models.Model):
 #        return
 
     class QuerySet(QuerySet):
+
+        def of_partner(self, organisation):
+            "return projects that have organisation as partner"
+            return self.filter(partners__exact=organisation)
 
         def has_location(self):
             return self.filter(primary_location__isnull=False)
@@ -1126,7 +1185,7 @@ class BudgetItem(models.Model):
         "Needed since we have to have a vanilla __unicode__() method for the admin"
         if self.label.label in self.OTHER_LABELS:
             # display "other" if other_extra is empty. Translating here without translating the other labels seems corny
-            return self.other_extra.strip() or u"other"
+            return u"other" if self.other_extra is None else self.other_extra.strip()
         else:
             return self.__unicode__()
 
@@ -1182,17 +1241,6 @@ class Link(models.Model):
     class Meta:
         verbose_name = _(u'link')
         verbose_name_plural = _(u'links')
-
-
-PHOTO_LOCATIONS = (
-    ('B', _(u'At the beginning of the update')),
-    ('E', _(u'At the end of the update')),
-)
-UPDATE_METHODS = (
-    ('W', _(u'web')),
-    ('E', _(u'e-mail')),
-    ('S', _(u'SMS')),
-)
 
 
 class UserProfileManager(models.Manager):
@@ -1583,6 +1631,15 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     #
     #    logger.debug("Exiting: %s()" % who_am_i())
 
+    @property
+    def api_key(self, key=""):
+        try:
+            api_key = ApiKey.objects.get(user=self.user)
+            key = api_key.key
+        except:
+            pass
+        return key
+
 
 class SmsReporterManager(models.Manager):
     def select(self, profile=None, gw_number=None, project=None):
@@ -1700,6 +1757,17 @@ class SmsReporter(models.Model):
 
 
 class ProjectUpdate(models.Model):
+    UPDATE_METHODS = (
+        ('W', _(u'web')),
+        ('E', _(u'e-mail')),
+        ('S', _(u'SMS')),
+        ('M', _(u'mobile')),
+    )
+    PHOTO_LOCATIONS = (
+        ('B', _(u'At the beginning of the update')),
+        ('E', _(u'At the end of the update')),
+    )
+
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
@@ -1975,10 +2043,13 @@ class Invoice(models.Model):
 
     @property
     def notification_email(self):
-        if self.engine == 'paypal':
-            return self.project.paymentgatewayselector.paypal_gateway.notification_email
-        elif self.engine == 'ideal':
-            return self.project.paymentgatewayselector.mollie_gateway.notification_email
+        if getattr(settings, "DONATION_TEST", False):
+            return "test@akvo.org"
+        else:
+            if self.engine == "paypal":
+                return self.project.paymentgatewayselector.paypal_gateway.notification_email
+            elif self.engine == "ideal":
+                return self.project.paymentgatewayselector.mollie_gateway.notification_email
 
     @property
     def donation_fee(self):
@@ -2023,6 +2094,7 @@ class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
+    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True)
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '

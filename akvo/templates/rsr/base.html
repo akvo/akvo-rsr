@@ -1,4 +1,4 @@
-{% load i18n rsr_tags webdesign %}
+{% load i18n rsr_tags webdesign piwik_tags %}
 {% load url from future %}
 
 
@@ -20,6 +20,10 @@
 	</style>
   
 	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
+
+  {#  Piwik #}
+  {% tracking_code %}
+
 	{% block head %}
     {# this link is overridden in organisation.html and project_base.html#}
     <link rel="alternate" type="application/rss+xml" title="Blog entries" href="/blog/?feed=rss2" />
@@ -32,7 +36,7 @@
 		<div id="header_container" class="container">
 			<ul id="main_nav">
 				<li>
-					<a id="main_nav_left" href="/" class="{% if site_section = 'index' %}active{% endif %} {% if not site_section %}active{% endif %} ">
+					<a id="main_nav_left" href="/home" class="{% if site_section = 'index' %}active{% endif %} {% if not site_section %}active{% endif %} ">
 						<span>
 							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
 						</span>
@@ -54,7 +58,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="/wiki/">
+					<a href="http://akvopedia.org">
 						<span>Akvopedia</span>
 					</a>
 				</li>
@@ -106,9 +110,7 @@
 		{% block draft %}
   		{% if draft %}
     		<div style="background-color:#E04F46; color:#fff; padding:10px; text-align:center; margin-bottom:20px;">
-          {% trans "This is a draft view of the project. It can only be seen by projects members and Akvo administrators." %}
-          <br/>
-          {% trans "Pleas note that the map will not display any locations until the project is published." %}
+          {% trans "This is a draft view of the project. It can only be seen by Projects Members and Akvo Administrators." %}
         </div>
   		{% endif %}
 		{% endblock draft %}
@@ -215,14 +217,13 @@
 				<div class="span-3">
 					<h3>{% trans 'Developers' %}</h3>
 					<p class="small">
-						<a href="/labs/">{% trans 'AkvoLabs' %}</a><br />
 						<a href="http://github.com/akvo/">{% trans 'Source code' %}</a><br />
 					</p>
 				</div>
 				<div class="span-3">
 					<h3>{% trans 'Admin' %}</h3>
 					<p class="small">
-						<a href="/rsr/admin">{% trans 'Akvo RSR login' %}</a><br />
+						<a href="/admin">{% trans 'Akvo RSR login' %}</a><br />
 						<a href="/blog/wp-login.php">{% trans 'Blog' %}</a><br />
 						<a href="/web/?q=node/24">{% trans 'CMS' %}</a><br />
 					</p>

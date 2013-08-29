@@ -1,4 +1,4 @@
-{% load i18n rsr_tags webdesign rsr_tags thumbnail %}
+{% load i18n rsr_tags webdesign rsr_tags thumbnail piwik_tags %}
 {% load url from future %}
 
 
@@ -16,6 +16,10 @@
   {% asset_bundle 'partner_sites_style' %}
   {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
   {% if favicon %}<link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">{% endif %}
+
+  {#  Piwik #}
+  {% tracking_code %}
+
   {% block head %}{% endblock head %}
 
   <!--[if lte IE 7]>
@@ -80,7 +84,7 @@
             {% elif lang_code == "nl" %} Nederlands (beta)
             {% elif lang_code == "fr" %} Français (bêta)
             {% elif lang_code == "de" %} Deutsch (beta)
-            {% elif lang_code == "ru" %} Россия (beta)
+            {% elif lang_code == "ru" %} Русский (beta)
             {% else %} English
             {% endif %}
           </option>

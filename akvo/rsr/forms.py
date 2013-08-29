@@ -30,7 +30,7 @@ from registration.models import RegistrationProfile
 from mollie.ideal.utils import get_mollie_banklist
 from akvo import settings
 
-from akvo.rsr.models import UserProfile, Organisation, PHOTO_LOCATIONS
+from akvo.rsr.models import UserProfile, Organisation, ProjectUpdate
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -341,14 +341,14 @@ class ProjectUpdateForm(forms.ModelForm):
         'class': 'textarea',
         'cols': '44',
         }))
-    language = forms.ChoiceField(choices=settings.LANGUAGES, widget=forms.Select(attrs={'style': 'height: 2em',}))
+    language = forms.ChoiceField(choices=settings.LANGUAGES, initial='en', widget=forms.Select(attrs={'style': 'height: 2em',}))
     photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={
         'class': 'input',
         'size': '15',
         'style': 'height: 2em',
         }))
     photo_location = forms.CharField(required=False, widget=forms.RadioSelect(
-        choices=PHOTO_LOCATIONS, attrs={'class': 'radio'}))
+        choices=ProjectUpdate.PHOTO_LOCATIONS, attrs={'class': 'radio'}))
     photo_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
