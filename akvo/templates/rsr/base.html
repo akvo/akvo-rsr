@@ -10,6 +10,7 @@
 	<meta name="keywords" content="akvo, Akvo, akvo.org, Akvo.org, water, sanitation" />
 	<title>Akvo.org - {% block title %}{% trans 'See it happen' %}{% endblock %}</title>
 
+  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,900,700,600,300,200,500|Questrial|Inconsolata|Muli:400,300italic,400italic,300|Raleway:400,900,800,700,600,500,100,200,300|Lobster|Lobster+Two:400,400italic,700,700italic|Lato:400,100,300,700,900,100italic,300italic,400italic,900italic,700italic' rel='stylesheet' type='text/css'>
 	{% asset_bundle 'akvo_style' %}
 	<!--[if IE 6]>
 		{% asset_bundle 'akvo_ie6_style' %}
@@ -32,80 +33,34 @@
 
 </head>
 <body>
-	<div id="header">
-		<div id="header_container" class="container">
-			<ul id="main_nav">
-				<li>
-					<a id="main_nav_left" href="/home" class="{% if site_section = 'index' %}active{% endif %} {% if not site_section %}active{% endif %} ">
-						<span>
-							<img src="{{MEDIA_URL}}akvo/img/main_nav_akvo_logo.png" width="82" height="20" alt="Akvo.org" />
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href="{% url 'project_list' 'all' %}" class="{% if site_section = 'projects' %}active{% endif %}">
-						<span>{% trans 'Projects' %}</span>
-					</a>
-				</li>
-				<li>
-					<a href="/web/focus-areas/">
-						<span>{% trans 'Focus Areas' %}</span>
-					</a>
-				</li>
-				<li>
-					<a href="/web/partners" class="{% if site_section = 'partners' %}active{% endif %}">
-						<span>{% trans 'Partners' %}</span>
-					</a>
-				</li>
-				<li>
-					<a href="http://akvopedia.org">
-						<span>Akvopedia</span>
-					</a>
-				</li>
-				<li>
-					<a href="/web/about">
-						<span>{% trans 'About' %}</span>
-					</a>
-				</li>
-				<li>
-					<a href="/blog/">
-						<span>{% trans 'Blog' %}</span>
-					</a>
-				</li>
-				<li>
-					<span id="main_nav_language">
-						<span class="small" style="margin-left:20px; margin-top:9px; display:block; ">
-							&nbsp;
-							{# Site language: English #}
-						</span>
-					</span>
-				</li>
-				<li>
-					{% if not user.username %}
-						<a href="{% url 'register1' %}">
-							<span>{% trans 'Register' %}</span>
-						</a>
-					{% else %}
-						<a href="{% url 'myakvo' %}">
-							<span>{% trans 'My Akvo' %}</span>
-						</a>
-					{% endif %}
-				</li>
-				<li>
-					{% if not user.username %}
-						<a id="main_nav_account" href="{% url 'signin' %}?next={{request.path}}">
-							<span>{% trans 'Sign in' %}</span>
-						</a>
-					{% else %}
-						<a id="main_nav_account" href="{% url 'signout' %}" title="{{user.username}}">
-							<span>{% trans 'Sign out' %}</span>
-							{# <span>{% trans 'Account' %}</span> #}
-						</a>
-					{% endif %}
-				</li>
-			</ul>
-		</div>
-	</div>
+
+  <header id="top" class="newHeadFoot" role="banner">
+    <div class="wrapperHead floats-in">
+      <h1><a href="http://akvo.org"> Akvo.org </a></h1>
+      <div id="navbar"><a href="#">Nav Menu</a></div>
+      <nav id="n">
+        <ul id="menu-main" class="menu">
+          <li id="menu-item-304" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-304"><a href="http://akvo.org/products/">Products</a> </li>
+          <li id="menu-item-308" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-308"><a href="http://akvo.org/seeithappen/">See it happen</a> </li>
+          <li id="menu-item-309" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-309"><a href="http://akvo.org/about-us/">About us</a> </li>
+          <li id="menu-item-316" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-316"><a href="http://akvo.org/blog/">Blog</a></li>
+          <li id="menu-item-11685" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-9482 current_page_item current-menu-ancestor current-menu-parent current_page_parent current_page_ancestor menu-item-11685"><a href="http://akvo.org/help/help-support/">Help</a> </li>
+        </ul>
+      </nav>
+      <div id="logIn" class="logInHeader">
+        <nav>
+          <ul>
+            <li> <a href="/rsr/accounts/register1/">Register</a> </li>
+            <li> <a id="main_nav_account" href="/rsr/signin/?next=/rsr/projects/all/">Sign in</a> </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <div id="openSource"> <a href="http://akvo.org/open-data-content-and-software-at-akvo/" target="_blank">
+      <h2>We love Open Source!</h2>
+      </a> </div>
+  </header>
+
 	<div id="main_container" class="container">
 		{% block draft %}
   		{% if draft %}
@@ -123,125 +78,112 @@
           <div id="breadcrum_back">
             <ul id="breadcrum">
               {% block breadcrum_items %}
-              <li><a href="/"><span>{% trans "Home" %}</span></a></li>
+              <li><a href="http://akvo.org"><span>{% trans "Home" %}</span></a></li>
               {% endblock breadcrum_items %}
             </ul>
             <div class="clear"></div>
           </div>
         </div>
 
-				{% comment %}
-        <div class="span-18" style="margin-bottom:20px;">
-          <div class="span-14">
-            <div id="breadcrum_back">
-            <ul id="breadcrum">
-              {% block breadcrum_items %}
-              <li><a href="/"><span>{% trans "Home" %}</span></a></li>
-              {% endblock breadcrum_items %}
-            </ul>
-            <div class="clear"></div>
-          </div>
-        </div>
-        
-        <div class="span-4 last" style="margin-bottom:20px; text-align:right">
-          <select name="language" id="languageChooser" style="margin-top:3px;" class="span-4 last">
-            {% for lang_code, lang_name in LANGUAGES %}
-              <option value="/{{ lang_code }}/{{ current_path_without_lang }}" {% ifequal lang_code request.LANGUAGE_CODE %}selected="yes" {% endifequal %}>
-                {{ lang_name }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-			{% endcomment %}
     {% endblock breadcrum %}
 	
 		{% block maincontent %}
 			<h1>Akvo RSR</h1>
 		{% endblock maincontent %}
 	</div>
-	<div id="footer">
-		<div id="footer_container" class="container">
-			<div class="span-18">
-				<h2>
-					{% comment %}Translators: This is the main header in the footer{% endcomment %}
-					{% trans 'About Akvo.org' %}
-				</h2>
-				<p>
-          {% blocktrans %}We are a non-profit foundation headquartered in the Netherlands. We help connect doers and donors to transform communities in some of the poorest parts of the world. The Akvo platform is open source and we encourage others to build on and improve these tools, or adapt the platform for other purposes.{% endblocktrans %}
-				</p>
-			</div>
-			<div class="span-18">
-				<div class="span-3 first">
-					<h3>{% trans 'Policies' %}</h3>
-					<p class="small">
-						<a href="/web/terms_of_use">{% trans 'General terms of use' %}</a><br />
-						<a href="/web/privacy_policy">{% trans 'Privacy' %}</a><br />
-						<a href="/web/donation_policy">{% trans 'Donations' %}</a><br />
-						<a href="/web/partners_and_projects_policy">{% trans 'Partners' %}</a><br />
-						<a href="/web/akvo-rsr-api-code-of-conduct">
-							{% trans 'Akvo API code of conduct' %}
-						</a><br />
-						<a href="/web/user_contribution_policy">{% trans 'User submitted content' %}</a><br />	
-						<a href="/web/open_license">{% trans 'Licensing and copyrights' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3">
-					<h3>
-						{% comment %}Translators: This is the header for the About column in the footer {% endcomment %}
-						{% trans 'About' %}
-					</h3>
-					<p class="small">
-						<a href="/web/about">
-							{% comment %}Translators: This is the About us link in the about column in footer{% endcomment %}
-							{% trans 'About us' %}
-						</a><br />
-						<a href="/web/how-it-works">{% trans 'How it works' %}</a><br />
-						<a href="/web/team">{% trans 'Team' %}</a><br />
-						<a href="/web/jobs">{% trans 'Working at Akvo' %}</a><br />
-						<a href="/web/faq">{% trans 'Akvo FAQ' %}</a><br />
-						<br />
-						<a href="/web/press">{% trans 'Press' %}</a><br />
-						<a href="/web/annual_reports">{% trans 'Annual reports' %}</a><br />
-						<a href="/web/articles_of_incorporation">{% trans 'Articles of incorporation' %}</a><br />											
-					</p>
-				</div>
-				<div class="span-3">
-					<h3>{% trans 'Partners' %}</h3>
-					<p class="small">
-						<a href="/web/partners">{% trans 'Strategic' %}</a><br />
-						<a href="{% url 'rsr_org_list' %}">{% trans 'Project' %}</a><br />
-						<a href="/web/commercial_partners">{% trans 'Commercial' %}</a><br />
-						<a href="/web/knowledge_institute_partners">{% trans 'Knowledge institutes' %}</a><br />
-						<a href="/web/akvo_investors">{% trans 'Akvo investors' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3">
-					<h3>{% trans 'Developers' %}</h3>
-					<p class="small">
-						<a href="http://github.com/akvo/">{% trans 'Source code' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3">
-					<h3>{% trans 'Admin' %}</h3>
-					<p class="small">
-						<a href="/admin">{% trans 'Akvo RSR login' %}</a><br />
-						<a href="/blog/wp-login.php">{% trans 'Blog' %}</a><br />
-						<a href="/web/?q=node/24">{% trans 'CMS' %}</a><br />
-					</p>
-				</div>
-				<div class="span-3 last">
-					<h3>{% trans 'Contact us' %}</h3>
-					<p class="small">
-						<a href="http://help.akvo.org/">Help + support</a><br />
-						<a href="/web/contact_us">{% trans 'Contact info' %}</a><br />
-						<br />
-						<a class="red" href="http://help.akvo.org/discussion/new ">{% trans 'Report a problem' %}</a><br />
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
+
+  <footer id="newFooter" class="newHeadFoot floats-in bottomPage" role="contentinfo">
+    <div>
+      <section id="siteMap" class="floats-in">
+        <div class="wrapperHead">
+          <div class="siteMapListMenu">
+            <h3>About</h3>
+            <nav>
+              <ul>
+                <li><a href="http://akvo.org/about-us/">About us</a></li>
+                <li><a href="http://akvo.org/about-us/team/">Team</a></li>
+                <li><a href="http://akvo.org/about-us/working-at-akvo/">Working at Akvo</a></li>
+                <li><a href="http://akvo.org/about-us/akvo-faq/">Akvo FAQ</a></li>
+                <li class="mediaPress"><a href="http://akvo.org/about-us/media-and-press/">Media</a></li>
+                <li><a href="http://akvo.org/about-us/annual-reports/">Annual reports</a></li>
+                <li><a href="http://akvo.org/about-us/articles-of-incorporation/">Article of incorporation</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="siteMapListMenu">
+            <h3>Partners</h3>
+            <nav>
+              <ul>
+                <li><a href="http://akvo.org/about-us/partners/#govGroup">Governments</a></li>
+                <li><a href="http://akvo.org/about-us/partners/#compsGroup">Companies</a></li>
+                <li><a href="http://akvo.org/about-us/partners/#founGroup">Foundations</a></li>
+                <li><a href="http://akvo.org/about-us/partners/#intGovGroup">Inter-governmental</a></li>
+                <li><a href="http://akvo.org/about-us/partners/#ngoGroup">NGOs</a></li>
+                <li><a href="http://akvo.org/about-us/partners/#knowledgeGroup">Knowledge Institutes</a></li>
+                <li><a href="http://rsr.akvo.org">RSR users</a></li>
+              </ul>
+            </nav>
+            <h3>Developers</h3>
+            <nav>
+              <ul>
+                <li><a href="http://www.github.com/akvo">Source code</a></li>
+                <li><a href="http://akvo.org/help/akvo-policies-and-terms/api-code-of-conduct/">API code of conduct</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="siteMapListMenu">
+            <h3>Policies</h3>
+            <nav>
+              <ul>
+                <li><a href="http://akvo.org/help/akvo-policies-and-terms/">Full list</a></li>
+                <li><a href="http://akvo.org/help/akvo-policies-and-terms/akvo-terms-of-use/">Terms of use</a></li>
+                <li><a href="http://akvo.org/help/akvo-policies-and-terms/akvo-privacy-policy/">Privacy</a></li>
+                <li><a href="http://akvo.org/help/akvo-policies-and-terms/akvo-donation-policy/">Donations</a></li>
+                <li><a href="http://akvo.org/help/akvo-policies-and-terms/">Partners</a></li>
+                <li><a href="http://akvo.org/help/akvo-policies-and-terms/">User submitted content</a></li>
+                <li><a href="http://akvo.org/help/akvo-policies-and-terms/akvo-licensing-and-copyrights/">Licensing and copyright</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="siteMapListMenu">
+            <h3>Contact us</h3>
+            <nav>
+              <ul>
+                <li><a href="http://akvo.org/help/help-support/">Help + support</a></li>
+                <li><a href="http://akvo.org/contact-info/ ">Contact info</a></li>
+                <li><a href="http://akvo.org/wp-admin/">Administrator? Login</a></li>
+                <li class="problem"><a href="mailto:help@akvo.org">Report a problem</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="socialAkvo">
+            <h1 class="backLinedGrey">Let's be friends</h1>
+            <nav class="socialLinks">
+              <ul class="floats-in">
+                <li class="twitter"><a href="https://twitter.com/akvo/staff">akvo on twitter</a></li>
+                <li class="github"><a href="https://github.com/akvo">akvo on github</a></li>
+                <li class="youtube"><a href="http://www.youtube.com/user/Akvofoundation">akvo on youtube</a></li>
+                <li class="flickr"><a href="http://www.flickr.com/search/?q=akvo">akvo on flickr</a></li>
+                <li class="facebook"><a href="https://www.facebook.com/1Akvo">akvo on facebook</a></li>
+                <li class="rss"><a href="http://akvo.org/blog/rss" >get latest akvo feed</a></li>
+                <li class="email"><a href="mailto:partners@akvo.org" title="Email us at partners@akvo.org">email akvo</a></li>
+                <li class="contactInfo"><a href="http://akvo.org/contact-info/" title="Contact Akvo" >Contact Akvo</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </section>
+      <section id="aboutAkvo">
+        <div class="wrapper">
+          <h1 class="backLinedGrey">A little more about Akvo.org</h1>
+          <p>Akvo creates and runs open source internet and mobile services that make it easy to bring international development work online. We focus on project and programme dashboards, reporting, monitoring, evaluation and making data easier to share. Headquartered in Amsterdam, Akvo is a non-profit foundation that works with more than a thousand organisations around the world.</p>
+        </div>
+        <!--  <small>Copyright &copy; <?php echo date("Y"); echo " "; bloginfo('name'); ?></small>-->
+      </section>
+      <!-- <p id="back-top"> <a href="#header"><span></span>Back to Top</a> </p> -->
+    </div>
+    <?php wp_footer(); ?>
+  </footer>
 
   {% if debug %}
     <script src="{{MEDIA_URL}}core/js/jquery-1.7.1.js"></script>
