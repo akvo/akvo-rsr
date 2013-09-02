@@ -143,9 +143,9 @@ class PartnerSitesRouterMiddleware(object):
                 return redirect(PARTNER_SITES_MARKETING_SITE)
 
         else:  # Probably a partner site instance on partner-nominated domain
+            cname_domain = True
             urlconf = "akvo.urls.partner_sites"
             try:
-                cname_domain = True
                 partner_site = PartnerSite.objects.get(cname=domain)
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
