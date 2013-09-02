@@ -1,4 +1,4 @@
-{% load google_maps humanize i18n rsr_tags %}
+{% load google_maps humanize i18n rsr_tags piwik_tags %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -21,6 +21,10 @@
     #footer a img { border:none;}
   </style>
   <base target="_top" />
+
+  {#  Piwik #}
+  {% tracking_code %}
+
 </head>
 <body>
 {% google_organisation_projects_map org.id state width height zoom %}

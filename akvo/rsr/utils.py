@@ -75,7 +75,7 @@ def permissions(self):
             'add': 'yes',
             'rsr_limited_change': 'no',
             'change': 'yes',
-            'admin_media': '/rsr/media/admin/'
+            'admin_media': '/media/admin/'
         }
         resulting the src paths pointing to icon-yes.gif and icon-no.gif images
         """
