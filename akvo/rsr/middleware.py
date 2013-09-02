@@ -125,10 +125,13 @@ def get_or_create_site(domain):
 
 class PartnerSitesRouterMiddleware(object):
 
-    def process_request(self, request, partner_site=None):
+    def process_request(self, request, cname_domain=False, partner_site=None):
+
         domain = get_domain(request)
+
         if is_rsr_instance(domain):
             urlconf = "akvo.urls.rsr"
+
         elif is_partner_site_instance(domain):
             urlconf = "akvo.urls.partner_sites"
             try:
@@ -138,16 +141,23 @@ class PartnerSitesRouterMiddleware(object):
                 pass
             if partner_site is None or not partner_site.enabled:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
+
         else:  # Probably a partner site instance on partner-nominated domain
             urlconf = "akvo.urls.partner_sites"
             try:
+                cname_domain = True
                 partner_site = PartnerSite.objects.get(cname=domain)
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
+
         request.urlconf = urlconf
         set_urlconf(urlconf)
+
         if partner_site is not None and partner_site.enabled:
-            partner_site_domain = ".".join(domain.split(".")[-2:])
+            if cname_domain:
+                partner_site_domain = "akvoapp.org"
+            else:
+                partner_site_domain = ".".join(domain.split(".")[-2:])
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.app_domain = ".".join(
                 (partner_site.hostname, partner_site_domain)
@@ -155,6 +165,7 @@ class PartnerSitesRouterMiddleware(object):
             request.app_url = "http://%s" % request.app_domain
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
+
         request.domain_url = "http://%s" % settings.DOMAIN_NAME
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
