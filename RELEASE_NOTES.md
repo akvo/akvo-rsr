@@ -2,8 +2,50 @@ Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects onl
 
 We provide Akvo RSR as a service on your own URL and with your own branding, as well as on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
 
-Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
-Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
+Read more about [Akvo Products](http://akvo.org/products/).
+
+Akvo RSR ver 2.2.0.2 - Okra Part 2 - Hotfix
+---
+
+2nd September 2013, adriancollier
+
+New Features
+---
+
+###New Headers and Footers for RSR
+
+We have implemented new Headers and Footers throughout RSR to coincide with the new Akvo.org Website launch. These now contain the look and feel of the new website whilst providing all the functionality necessary to navigate throughout RSR and the Akvo network pages.
+
+Github issue [#288](https://github.com/akvo/akvo-rsr/issues/288)
+
+###Automated Development Environment Setup
+
+To improve the ease of setting up a local instance of RSR for development, we have worked on a set of scripts and resources using Puppet and Vagrant.
+
+###Cordaid API Update Functionality
+
+We have developed an improvement to the API that allows us to update existing projects using the API Write functionality we have previously implemented. It was only possible before to create new projects.
+
+Github issue [#224](https://github.com/akvo/akvo-rsr/issues/224)
+
+
+Bug Fixes
+---
+
+###Partnersite Routing
+
+We had an issue within our Middleware that resulted in an incorrect domain being set for Partnersites that were using CNAME entries to embed these into their Organisation's websites.
+This has now been resolved, fixing issues related to Widgets not containing pins, as well as incorrect links throughout Partnersites.
+
+Github issue [#291](https://github.com/akvo/akvo-rsr/issues/291)
+
+
+###Mistakes in Unpublished Project Notification
+
+We implemented a Banner to be displayed to users that are viewing an unpublished project. This banner contained some errors which have now been resolved.
+
+Github issue [#257](https://github.com/akvo/akvo-rsr/issues/257)
 
 Akvo RSR ver 2.2.0.1 - Okra
 ---
