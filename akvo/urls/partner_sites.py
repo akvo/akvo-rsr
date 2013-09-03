@@ -136,10 +136,10 @@ urlpatterns = i18n_patterns(
 # Non i18n
 urlpatterns += patterns(
     '',
-    # Beta API
-    url(r'^api/beta/projects_cordinates.json$',
+    # Custom JSON-emitting views
+    url(r'^json/projects_coordinates.json$',
         widget_views.ProjectCordinates.as_view(),
-        name="api_projects_cordinates"),
+        name="projects_coordinates_json"),
 )
 
 urlpatterns += counter_urls
