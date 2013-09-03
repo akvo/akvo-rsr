@@ -247,10 +247,10 @@
 						{% else %}
 							<a href="{% url 'rsr_org_list_filtered' org_type %}
 						{% endif %}
-	                	{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
-	                {% else %}
-	                	{% trans 'Previous' %} |
-	                {% endif %}
+						{% addparam "page" page.previous_page_number %}">{% trans 'Previous' %}</a> |
+					{% else %}
+						{% trans 'Previous' %} |
+					{% endif %}
 	                {% if page.has_next %}
 						{% if org_type == 'all' %}
 							<a href="{% url 'rsr_org_list' %}
@@ -259,10 +259,10 @@
 						{% endif %}
 						{% addparam 'page' page.next_page_number %}">{% trans 'Next' %}</a> |
 	                {% else %}
-	                	{% trans 'Next' %} |
+						{% trans 'Next' %} |
 	                {% endif %}
 	                {% if page.number == page.paginator.num_pages %}
-	                	{% trans 'Last' %}
+						{% trans 'Last' %}
 	                {% else %}
 						{% if org_type == 'all' %}
 							<a href="{% url 'rsr_org_list' %}
