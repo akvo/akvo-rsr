@@ -25,7 +25,7 @@ from .project import ProjectResource
 
 
 class IATIProjectLocationResource(ModelResource):
-    project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'location_target', full=True,)
+    project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'location_target')
     country = fields.ToOneField('akvo.api.resources.CountryResource', 'country')
 
     class Meta:
