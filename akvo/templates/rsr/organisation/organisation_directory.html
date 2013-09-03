@@ -38,6 +38,11 @@
 
 {% endblock breadcrum_items %}
 
+{% block head %}
+    <meta property="og:title" content="Akvo.org - Organisation List"/>
+{{block.super}}
+{% endblock head %}
+
 {% block maincontent %}
 <h1>
 {% if org_type == 'all' %}

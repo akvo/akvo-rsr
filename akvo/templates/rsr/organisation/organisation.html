@@ -6,6 +6,14 @@
 {% block title %}{{organisation.name}}{% endblock title %}
 
 {% block head %}
+    {% if organisation.long_name %}
+    <meta property="og:title" content="Akvo.org - {{organisation.long_name}}"/>
+    {% else %}
+    <meta property="og:title" content="Akvo.org - {{organisation.name}}"/>
+    {% endif %}
+    <meta property="og:description" content="{{organisation.description}}"/>
+    <meta property="og:url" content="{% url 'organisation_main' org_id=organisation.id %}"/>
+    <meta property="og:image" content="{{MEDIA_URL}}{{organisation.logo}}"/>
   <link
     rel="alternate" type="application/rss+xml"
     title="{% blocktrans with org_name=organisation.name%}Project updates for projects partnered by {{org_name}}{% endblocktrans %}"

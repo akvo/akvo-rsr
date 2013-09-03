@@ -48,6 +48,13 @@
   {% endif %}
 {% endblock breadcrum_items %}
 
+
+{% block head %}
+    <meta property="og:title" content="Akvo.org - Project List"/>
+{{block.super}}
+{% endblock head %}
+
+
 {% block maincontent %}
 
   {% autosort filter.qs as sorted_projects %}
