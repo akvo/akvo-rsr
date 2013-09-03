@@ -3,6 +3,11 @@
 {% load url from future %}
 
 {% block head %}
+    <meta property="og:title" content="Akvo.org - {{project.title}}"/>
+    <meta property="og:description" content="{{project.subtitle}} {{project.project_plan_summary}}"/>
+    <meta property="og:url" content="{% url 'project_main' project.id %}"/>
+    <meta property="og:image" content="{{MEDIA_URL}}{{project.current_image}}"/>
+
 {{block.super}}
 
 <style type="text/css">
@@ -16,6 +21,7 @@
 <![endif]-->
 
 {% endblock head %}
+
 
 {% block breadcrum_items %}
 {{block.super}}
