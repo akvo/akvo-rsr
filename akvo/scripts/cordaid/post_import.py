@@ -25,7 +25,8 @@ from akvo.scripts.cordaid import (
     CORDAID_IATI_ACTIVITIES_XML, CORDAID_PROJECT_IMAGES_DIR, CORDAID_ORG_ID,
     print_log, log, ACTION_FUNDING_SET, ACTION_FUNDING_FOUND, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE,
     CORDAID_ACTIVITIES_CSV_FILE,
-    init_log)
+    init_log
+)
 
 
 def import_images(image_dir, img_to_proj_map):
@@ -33,7 +34,9 @@ def import_images(image_dir, img_to_proj_map):
         photo_id, ext = splitext(image_name)
         if ext.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
             try:
-                internal_id=img_to_proj_map.get(photo_id)
+                internal_id=img_to_proj_map.get(
+                    photo_id, {'internal_project_id': None}
+                )['internal_project_id']
                 project = Project.objects.get(
                     partnerships__internal_id=internal_id
                 )
@@ -47,6 +50,10 @@ def import_images(image_dir, img_to_proj_map):
                     image_temp.flush()
                     project.current_image.save(filename, File(image_temp), save=True)
                 f.close()
+                project.current_image_caption = img_to_proj_map.get(
+                    photo_id, {'image_caption': ''}
+                )['image_caption']
+                project.save()
                 log(
                     u"Uploaded image to project {pk}",
                     dict(internal_id=internal_id, pk=project.pk, event=ACTION_SET_IMAGE))
@@ -97,7 +104,10 @@ def create_mapping_images_to_projects():
             activity = root[i]
             images_to_projects[
                 activity.get('{http://www.akvo.org}photo-id')
-            ] = activity.get('{http://www.akvo.org}internal-project-id')
+            ] = dict(
+                internal_project_id=activity.get('{http://www.akvo.org}internal-project-id'),
+                image_caption=activity.get('{http://www.akvo.org}image-caption', '').strip()
+            )
         return images_to_projects
 
 if __name__ == '__main__':
