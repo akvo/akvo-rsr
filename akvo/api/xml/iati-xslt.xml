@@ -223,6 +223,7 @@
     <object>
       <xsl:apply-templates select="coordinates" />
       <xsl:apply-templates select="administrative" />
+      <xsl:apply-templates select="location-type" />
     </object>
   </xsl:template>
 
@@ -253,6 +254,43 @@
     </country>
   </xsl:template>
 
+  <xsl:template match="location-type">
+    <xsl:apply-templates select="@code"/>
+  </xsl:template>
+  
+  <xsl:template match="@code">
+    <xsl:if test=".='PPLC'">
+      <city>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </city>
+    </xsl:if>
+    <xsl:if test=".='PPL'">
+      <city>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </city>
+    </xsl:if>
+    <xsl:if test=".='PPLA'">
+      <city>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </city>
+    </xsl:if>
+    <xsl:if test=".='PPLA2'">
+      <city>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </city>
+    </xsl:if>
+    <xsl:if test=".='ADM1'">
+      <state>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </state>
+    </xsl:if>
+    <xsl:if test=".='ADM2'">
+      <state>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </state>
+    </xsl:if>
+  </xsl:template>
+  
   <!-- goal -->
   <xsl:template match="result">
     <object>
