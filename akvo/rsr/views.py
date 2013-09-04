@@ -159,67 +159,11 @@ def get_query(query_string, search_fields):
     return query
 
 
-@cache_page(getattr(settings, 'CACHE_SECONDS', 300))
-@render_to('rsr/index.html')
-def index(request, cms_id=None):
+def index(request):
     '''
     The RSR home page.
     '''
-    preview = False
-    focus_areas = FocusArea.objects.exclude(slug='all')
-
-    if cms_id:
-        cms = MiniCMS.objects.get(pk=cms_id)
-        preview = True
-    else:
-        try:
-            cms = MiniCMS.objects.filter(active=True)[0]
-        except:
-            cms = MiniCMS.objects.get(pk=1)
-
-    # posts that we get the titles from and display in the top news box
-    news_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'NEWS_CATEGORY_ID', 13), getattr(settings, 'NEWS_ARTICLE_COUNT', 2)
-    )
-    # posts that we show in the more headlines box
-    blog_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'FEATURE_CATEGORY_ID', None), getattr(settings, 'FEATURE_ARTICLE_COUNT', 2)
-    )
-    # from this category we draw the image to show in the news box
-    image_posts = wordpress_get_lastest_posts(
-        'wordpress', getattr(settings, 'IMAGE_CATEGORY_ID', 11), getattr(settings, 'IMAGE_CATEGORY_ID', 1)
-    )
-
-    news_image = ''
-    news_title = ''
-    #get three featured updates with video and/or photo
-    updates = ProjectUpdate.objects.exclude(photo__exact='', video__exact='').filter(project__in=Project.objects.active()).order_by('-time')[:3]
-    if news_posts:
-        for post in image_posts:
-            if post.get('image', None):
-                news_image = post['image']
-                news_title = post['title']
-                break
-
-    context_dict = {
-        #'updates': updates,
-        'focus_areas': focus_areas,
-        'cms': cms,
-        'version': getattr(settings, 'URL_VALIDATOR_USER_AGENT', 'Django'),
-        'site_section': 'index',
-        'blog_posts': blog_posts,
-        'news_posts': news_posts,
-        'preview':  preview,
-    }
-    context_dict.update(right_now_in_akvo())
-    context_dict.update({'updates': updates, })
-    return context_dict
-
-
-def oldindex(request):
-    "Fix for old url of old rsr front that has become the akvo home page"
-    return HttpResponsePermanentRedirect('/')
-
+    return HttpResponsePermanentRedirect('/projects/all')
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')
@@ -469,7 +413,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
     redirect_to = request.REQUEST.get(redirect_field_name, '')
     # Check for exeptions to the return to start of sign in process
     if redirect_to == "/accounts/register/complete/":
-        redirect_to = "/"
+        redirect_to = "/home"
 
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -479,7 +423,7 @@ def login(request, template_name='registration/login.html', redirect_field_name=
         if form.is_valid():
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
-                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/')
+                redirect_to = getattr(settings, 'LOGIN_REDIRECT_URL', '/home')
             from django.contrib.auth import login
             login(request, form.get_user())
             if request.session.test_cookie_worked():
@@ -503,10 +447,9 @@ login = never_cache(login)
 def signout(request):
     '''
     Sign out URL
-    Redirects to /
     '''
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/home')
 
 
 def register1(request):

@@ -37,10 +37,6 @@ urlpatterns = patterns(
         'akvo.rsr.views.index',
         name='index'),
 
-    url(r'^index-preview/(?P<cms_id>\d+)/$',
-        'akvo.rsr.views.index',
-        name='index_preview'),
-
     # IATI lists
     url(r'^iati/projects/(?P<iati_activity_id>[_\-a-zA-Z0-9]+)/$',
         'akvo.rsr.views.iati_project_list',
@@ -192,10 +188,6 @@ urlpatterns = patterns(
 urlpatterns += patterns(
     '',
 
-    # Redirect to home page
-    # (r'^rsr/$',
-    #     'akvo.rsr.views.oldindex', ),
-
     # Landing pages
     url(r'^liveearth/$',
         'akvo.rsr.views.liveearth',
@@ -297,9 +289,6 @@ urlpatterns += patterns(
 # API
 urlpatterns += patterns(
     '',
-
-    #django-piston
-    # (r'^rsr/api/', include('akvo.api.piston_urls')),
 
     #tastypie
     # generate all resource urls for version one of the api,

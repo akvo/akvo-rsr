@@ -2,6 +2,18 @@
 {% load url from future %}
 {% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags markup %}
 
+{% block head %}
+    <meta property="og:title" content="Akvo.org - {{update.title}}"/>
+    <meta property="og:description" content="{{update.text}}"/>
+    <meta property="og:url" content="{% url 'update_main' project_id=project.id update_id=update.id %}"/>
+    {% if update.photo %}
+    <meta property="og:image" content="{{MEDIA_URL}}{{update.photo}}"/>
+    {% else %}
+    <meta property="og:image" content="{{MEDIA_URL}}{{project.current_image}}"/>
+    {% endif %}
+    
+{{ block.super }}
+{% endblock head %}
 
 {% block breadcrum_items %}
 {{ block.super }}

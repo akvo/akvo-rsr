@@ -7,7 +7,6 @@ django-markup==0.4
 django-pagination==1.0.7
 django-paypal==0.1.2
 django-registration==0.8
-django-rosetta==0.6.8
 django-templatetag-handlebars==1.2.0
 sorl-thumbnail==3.2.5
 
@@ -51,5 +50,5 @@ wsgiref==0.1.2
 # Scripts logging support
 tablib==0.9.11
 
-#Piwik
+# Piwik
 django-piwik==0.1
