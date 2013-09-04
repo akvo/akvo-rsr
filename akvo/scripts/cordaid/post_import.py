@@ -64,8 +64,12 @@ def import_images(image_dir, img_to_proj_map):
                 )
 
 def fix_funding(img_to_proj_map):
+    """
+    Add Cordaid as a funding partner to all its projects and "fill the project up"
+    """
     cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
-    for internal_id in img_to_proj_map.values():
+    for project_data in img_to_proj_map.values():
+        internal_id = project_data['internal_project_id']
         try:
             project = None
             project = Project.objects.get(
@@ -73,16 +77,25 @@ def fix_funding(img_to_proj_map):
             )
             funds_needed = project.funds_needed
             if funds_needed > 0:
-                cord_fund = Partnership.objects.create(
+                cordaid_funding_partnership, created = Partnership.objects.get_or_create(
                     organisation=cordaid,
                     project=project,
                     partner_type=Partnership.FUNDING_PARTNER,
-                    funding_amount = funds_needed,
+                    defaults={'funding_amount': funds_needed}
                 )
-                log(
-                    u"Added Cordaid as funding partner to project {pk}, funding amount: {extra}",
-                    dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_SET, extra=funds_needed)
-                )
+                if created:
+                    log(
+                        u"Added Cordaid as funding partner to project {pk}, funding amount: {extra}",
+                        dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_SET, extra=funds_needed)
+                    )
+                else:
+                    # since Cordaid already is funding, we need to add thatamount to funds_needed to get to fully funded
+                    cordaid_funding_partnership.funding_amount = funds_needed + cordaid_funding_partnership.funding_amount
+                    cordaid_funding_partnership.save()
+                    log(
+                        u"Found Cordaid as funding partner to project {pk}, setting funding amount: {extra}",
+                        dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_FOUND, extra=funds_needed)
+                    )
             else:
                 log(
                     u"Project {pk} is fully funded",
