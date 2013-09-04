@@ -1,4 +1,9 @@
 #!/bin/bash
+if [ `whoami` != "root" ]
+then
+    echo >&2 "This script must be run as root"
+    exit 1
+fi
 
 if [ -e /etc/localdev_rsr_provisioned ]
 then

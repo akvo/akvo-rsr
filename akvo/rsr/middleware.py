@@ -19,6 +19,7 @@ from django.utils import translation
 from django.utils.cache import patch_vary_headers
 
 from akvo.rsr.models import PartnerSite
+import re
 
 
 __all__ = ["PartnerSitesLocaleMiddleware",
@@ -61,21 +62,6 @@ settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(
-    settings,
-    "PARTNER_SITES_DEVELOPMENT_DOMAIN",
-    "akvoapp.dev"
-)
-
-PARTNER_SITES_DOMAINS = getattr(
-    settings,
-    "PARTNER_SITES_DOMAINS",
-    ("akvoapp.org",
-     "akvotest.org",
-     "akvotest2.org",
-     "akvotest3.org",
-    PARTNER_SITES_DEVELOPMENT_DOMAIN)
-)
 
 PARTNER_SITES_MARKETING_SITE = getattr(
     settings,
@@ -83,11 +69,8 @@ PARTNER_SITES_MARKETING_SITE = getattr(
     "http://www.akvoapp.org/"
 )
 
-RSR_DOMAINS = getattr(
-    settings,
-    "RSR_DOMAINS",
-    ("localhost", "127.0.0.1", "akvo.dev", "www.akvo.dev", "77.53.15.119")
-)
+RSR_SITE_REGEXPS = map(re.compile, settings.RSR_SITE_REGEXPS)
+PARTNER_SITE_REGEXPS = map(re.compile, settings.PARTNER_SITE_REGEXPS)
 
 
 def get_domain(request):
@@ -100,22 +83,18 @@ def get_domain(request):
     return domain
 
 
-def is_rsr_instance(domain):
-    return (domain == "akvo.org" or
-            domain.endswith(".akvo.org") or
-            domain in RSR_DOMAINS)
+def is_rsr_instance(hostname):
+    return any([site.search(hostname) for site in RSR_SITE_REGEXPS])
 
 
-def is_partner_site_instance(domain):
-    base_domain = ".".join(domain.split(".")[-2:])
-    if base_domain in PARTNER_SITES_DOMAINS:
-        return True
-    return False
+def is_partner_site_instance(hostname):
+    return any([site.search(hostname) for site in PARTNER_SITE_REGEXPS])
 
 
 def get_or_create_site(domain):
-    if domain == "www.akvo.org":
-        domain = "akvo.org"
+    if domain.startswith('www.'):
+        domain = domain[4:]
+
     sites = Site.objects.filter(domain=domain)
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
