@@ -75,20 +75,24 @@
   </xsl:template>
   
   <!-- status -->
-  <xsl:template match="activity-status[@code='1']">
-    <status>H</status>
+  <xsl:template match="activity-status[@code='1']"><!-- Pipeline/identification -->
+    <status>H</status><!-- Needs funding -->
   </xsl:template>
   
-  <xsl:template match="activity-status[@code='2']">
-    <status>A</status>
+  <xsl:template match="activity-status[@code='2']"><!-- Implementation -->
+    <status>A</status><!-- Active -->
   </xsl:template>
   
-  <xsl:template match="activity-status[@code='3']">
-    <status>C</status>
+  <xsl:template match="activity-status[@code='3']"><!-- Completion -->
+    <status>C</status><!-- Complete -->
   </xsl:template>
   
-  <xsl:template match="activity-status[@code='4']">
-    <status>A</status>
+  <xsl:template match="activity-status[@code='4']"><!-- Post-completion -->
+    <status>C</status><!-- Complete -->
+  </xsl:template>
+  
+  <xsl:template match="activity-status[@code='5']"><!-- Cancelled -->
+    <status>L</status><!-- Cancelled -->
   </xsl:template>
   
   <!-- categories ManyToManyField -->
