@@ -90,7 +90,9 @@ def fix_funding(img_to_proj_map):
                     )
                 else:
                     # since Cordaid already is funding, we need to add thatamount to funds_needed to get to fully funded
-                    cordaid_funding_partnership.funding_amount = funds_needed + cordaid_funding_partnership.funding_amount
+                    cordaid_funding_partnership.funding_amount = funds_needed + (
+                        cordaid_funding_partnership.funding_amount or 0
+                    )
                     cordaid_funding_partnership.save()
                     log(
                         u"Found Cordaid as funding partner to project {pk}, setting funding amount: {extra}",
