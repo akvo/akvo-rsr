@@ -25,7 +25,8 @@ from akvo.scripts.cordaid import (
     CORDAID_IATI_ACTIVITIES_XML, CORDAID_PROJECT_IMAGES_DIR, CORDAID_ORG_ID,
     print_log, log, ACTION_FUNDING_SET, ACTION_FUNDING_FOUND, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE,
     CORDAID_ACTIVITIES_CSV_FILE,
-    init_log)
+    init_log
+)
 
 
 def import_images(image_dir, img_to_proj_map):
@@ -33,7 +34,9 @@ def import_images(image_dir, img_to_proj_map):
         photo_id, ext = splitext(image_name)
         if ext.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
             try:
-                internal_id=img_to_proj_map.get(photo_id)
+                internal_id=img_to_proj_map.get(
+                    photo_id, {'internal_project_id': None}
+                )['internal_project_id']
                 project = Project.objects.get(
                     partnerships__internal_id=internal_id
                 )
@@ -47,6 +50,10 @@ def import_images(image_dir, img_to_proj_map):
                     image_temp.flush()
                     project.current_image.save(filename, File(image_temp), save=True)
                 f.close()
+                project.current_image_caption = img_to_proj_map.get(
+                    photo_id, {'image_caption': ''}
+                )['image_caption']
+                project.save()
                 log(
                     u"Uploaded image to project {pk}",
                     dict(internal_id=internal_id, pk=project.pk, event=ACTION_SET_IMAGE))
@@ -57,8 +64,12 @@ def import_images(image_dir, img_to_proj_map):
                 )
 
 def fix_funding(img_to_proj_map):
+    """
+    Add Cordaid as a funding partner to all its projects and "fill the project up"
+    """
     cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
-    for internal_id in img_to_proj_map.values():
+    for project_data in img_to_proj_map.values():
+        internal_id = project_data['internal_project_id']
         try:
             project = None
             project = Project.objects.get(
@@ -66,16 +77,27 @@ def fix_funding(img_to_proj_map):
             )
             funds_needed = project.funds_needed
             if funds_needed > 0:
-                cord_fund = Partnership.objects.create(
+                cordaid_funding_partnership, created = Partnership.objects.get_or_create(
                     organisation=cordaid,
                     project=project,
                     partner_type=Partnership.FUNDING_PARTNER,
-                    funding_amount = funds_needed,
+                    defaults={'funding_amount': funds_needed}
                 )
-                log(
-                    u"Added Cordaid as funding partner to project {pk}, funding amount: {extra}",
-                    dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_SET, extra=funds_needed)
-                )
+                if created:
+                    log(
+                        u"Added Cordaid as funding partner to project {pk}, funding amount: {extra}",
+                        dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_SET, extra=funds_needed)
+                    )
+                else:
+                    # since Cordaid already is funding, we need to add thatamount to funds_needed to get to fully funded
+                    cordaid_funding_partnership.funding_amount = funds_needed + (
+                        cordaid_funding_partnership.funding_amount or 0
+                    )
+                    cordaid_funding_partnership.save()
+                    log(
+                        u"Found Cordaid as funding partner to project {pk}, setting funding amount: {extra}",
+                        dict(internal_id=internal_id, pk=project.pk, event=ACTION_FUNDING_FOUND, extra=funds_needed)
+                    )
             else:
                 log(
                     u"Project {pk} is fully funded",
@@ -97,7 +119,10 @@ def create_mapping_images_to_projects():
             activity = root[i]
             images_to_projects[
                 activity.get('{http://www.akvo.org}photo-id')
-            ] = activity.get('{http://www.akvo.org}internal-project-id')
+            ] = dict(
+                internal_project_id=activity.get('{http://www.akvo.org}internal-project-id'),
+                image_caption=activity.get('{http://www.akvo.org}image-caption', '').strip()
+            )
         return images_to_projects
 
 if __name__ == '__main__':

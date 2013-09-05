@@ -75,20 +75,24 @@
   </xsl:template>
   
   <!-- status -->
-  <xsl:template match="activity-status[@code='1']">
-    <status>H</status>
+  <xsl:template match="activity-status[@code='1']"><!-- Pipeline/identification -->
+    <status>H</status><!-- Needs funding -->
   </xsl:template>
   
-  <xsl:template match="activity-status[@code='2']">
-    <status>A</status>
+  <xsl:template match="activity-status[@code='2']"><!-- Implementation -->
+    <status>A</status><!-- Active -->
   </xsl:template>
   
-  <xsl:template match="activity-status[@code='3']">
-    <status>C</status>
+  <xsl:template match="activity-status[@code='3']"><!-- Completion -->
+    <status>C</status><!-- Complete -->
   </xsl:template>
   
-  <xsl:template match="activity-status[@code='4']">
-    <status>A</status>
+  <xsl:template match="activity-status[@code='4']"><!-- Post-completion -->
+    <status>C</status><!-- Complete -->
+  </xsl:template>
+  
+  <xsl:template match="activity-status[@code='5']"><!-- Cancelled -->
+    <status>L</status><!-- Cancelled -->
   </xsl:template>
   
   <!-- categories ManyToManyField -->
@@ -169,7 +173,7 @@
   <!-- currency -->
   <xsl:template match="@default-currency">
     <currency>
-      <xsl:value-of select="." />
+      <xsl:value-of select="normalize-space(.)" />
     </currency>
   </xsl:template>
 
@@ -178,12 +182,12 @@
     <!-- two ways of expressing the date, either as data in the node or as the iso-date attribute -->
     <xsl:if test="not(.='')">
       <date_request_posted>
-        <xsl:value-of select="." />
+        <xsl:value-of select="normalize-space(.)" />
       </date_request_posted>
     </xsl:if>
     <xsl:if test=".=''">
       <date_request_posted>
-        <xsl:value-of select="@iso-date"/>
+        <xsl:value-of select="normalize-space(@iso-date)"/>
       </date_request_posted>
     </xsl:if>
   </xsl:template>
@@ -193,12 +197,12 @@
     <!-- two ways of expressing the date, either as data in the node or as the iso-date attribute -->
     <xsl:if test="not(.='')">
       <date_complete>
-        <xsl:value-of select="." />
+        <xsl:value-of select="normalize-space(.)" />
       </date_complete>
     </xsl:if>
     <xsl:if test=".=''">
       <date_complete>
-        <xsl:value-of select="@iso-date"/>
+        <xsl:value-of select="normalize-space(@iso-date)"/>
       </date_complete>
     </xsl:if>
   </xsl:template>
@@ -219,6 +223,7 @@
     <object>
       <xsl:apply-templates select="coordinates" />
       <xsl:apply-templates select="administrative" />
+      <xsl:apply-templates select="location-type" />
     </object>
   </xsl:template>
 
@@ -229,26 +234,63 @@
   
   <xsl:template match="@latitude">
     <latitude type="float">
-      <xsl:value-of select="." />
+      <xsl:value-of select="normalize-space(.)" />
     </latitude>
   </xsl:template>
   
   <xsl:template match="@longitude">
     <longitude type="float">
-      <xsl:value-of select="." />
+      <xsl:value-of select="normalize-space(.)" />
     </longitude>
   </xsl:template>
 
   <xsl:template match="administrative">
     <xsl:apply-templates select="@country"/>
   </xsl:template>
-
+  
   <xsl:template match="@country">
     <country>
-      <xsl:value-of select="." />
+      <xsl:value-of select="normalize-space(.)" />
     </country>
   </xsl:template>
 
+  <xsl:template match="location-type">
+    <xsl:apply-templates select="@code"/>
+  </xsl:template>
+  
+  <xsl:template match="@code">
+    <xsl:if test=".='PPLC'">
+      <city>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </city>
+    </xsl:if>
+    <xsl:if test=".='PPL'">
+      <city>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </city>
+    </xsl:if>
+    <xsl:if test=".='PPLA'">
+      <city>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </city>
+    </xsl:if>
+    <xsl:if test=".='PPLA2'">
+      <city>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </city>
+    </xsl:if>
+    <xsl:if test=".='ADM1'">
+      <state>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </state>
+    </xsl:if>
+    <xsl:if test=".='ADM2'">
+      <state>
+        <xsl:value-of select="normalize-space(../../name)" />
+      </state>
+    </xsl:if>
+  </xsl:template>
+  
   <!-- goal -->
   <xsl:template match="result">
     <object>
@@ -269,13 +311,13 @@
   
   <xsl:template match="indicator/title">
     <name>
-      <xsl:value-of select="." />
+      <xsl:value-of select="normalize-space(.)" />
     </name>
   </xsl:template>
   
   <xsl:template match="period/target">
     <value>
-      <xsl:value-of select="@value" />
+      <xsl:value-of select="normalize-space(@value)" />
     </value>
   </xsl:template>
   
@@ -283,7 +325,7 @@
   <xsl:template match="budget">
     <object>
       <amount>
-        <xsl:value-of select="value" />
+        <xsl:value-of select="normalize-space(value)" />
       </amount>
       <label>1</label>
     </object>
@@ -294,7 +336,7 @@
     <object>
       <!-- meta info needed to populate Partnership ad Organisation-->
       <reporting_org>
-        <xsl:value-of select="//reporting-org/@ref"/>
+        <xsl:value-of select="normalize-space(//reporting-org/@ref)"/>
       </reporting_org>
       <business_unit>
         <xsl:value-of select="normalize-space(//iati-activity/@akvo:business-unit-id)"/>
@@ -308,23 +350,23 @@
         <xsl:value-of select="normalize-space(.)"/>
       </long_name>
       <organisation>
-        <xsl:value-of select="@akvo:ref"/>
+        <xsl:value-of select="normalize-space(@akvo:ref)"/>
       </organisation>
       <iati_org_id>
-        <xsl:value-of select="@ref"/>
+        <xsl:value-of select="normalize-space(@ref)"/>
       </iati_org_id>
       <new_organisation_type>
-        <xsl:value-of select="@type"/>
+        <xsl:value-of select="normalize-space(@type)"/>
       </new_organisation_type>
 
       <!-- InternalOrganisationID fields-->
       <internal_org_id>
-        <xsl:value-of select="@akvo:internal-org-ref"/>
+        <xsl:value-of select="normalize-space(@akvo:internal-org-ref)"/>
       </internal_org_id>
 
       <!-- Partnership fields-->
       <iati_activity_id>
-        <xsl:value-of select="//iati-identifier"/>
+        <xsl:value-of select="normalize-space(//iati-identifier)"/>
       </iati_activity_id>
       <internal_id>
         <xsl:value-of select="//iati-activity/@akvo:internal-project-id"/>
