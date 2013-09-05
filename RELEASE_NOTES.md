@@ -5,6 +5,43 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.2.0.3 - Okra Part 3 - Hotfix
+---
+
+5th September 2013, adriancollier
+
+New Features
+---
+
+###Expansion of Write API Functionality
+
+We have been working on improving the process of importing IATI XML Files into the RSR Write API. These are a combination of general fixes and resolutions to Cordaid specific issues.
+
+Github issue [#266](https://github.com/akvo/akvo-rsr/issues/266)
+Github issue [#277](https://github.com/akvo/akvo-rsr/issues/277)
+Github issue [#237](https://github.com/akvo/akvo-rsr/issues/237)
+Github issue [#297](https://github.com/akvo/akvo-rsr/issues/297)
+
+Bug Fixes
+---
+
+###Header to show Signed In Status
+
+Following on from the release of our new Akvo.org website, we needed to modify the header being used so that users can be shown within the header if they are logged into RSR or not.
+
+Github issue [#300](https://github.com/akvo/akvo-rsr/issues/300)
+
+###Previous Navigation Button Broken
+
+The Previous Button in RSR Lists for Organisations or Projects was not working due to some spaces instead of Tabs in the template code. We've corrected this now so users can navigate freely forwards and backwards to their heart's content.
+
+###CSS Regression
+
+We had a bug that managed to creep back into the system affecting the layout on the User Registration page on Partnersites. This has been fixed - and hopefully for the final time.
+
+Github issue [#205](https://github.com/akvo/akvo-rsr/issues/205)
+
+
 Akvo RSR ver 2.2.0.2 - Okra Part 2 - Hotfix
 ---
 

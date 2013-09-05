@@ -6,6 +6,18 @@
 {% block title %}{{organisation.name}}{% endblock title %}
 
 {% block head %}
+    {% if organisation.long_name %}
+    <meta property="og:title" content="Akvo.org - {{organisation.long_name}}"/>
+    {% else %}
+    <meta property="og:title" content="Akvo.org - {{organisation.name}}"/>
+    {% endif %}
+    <meta property="og:description" content="{{organisation.description}}"/>
+    <meta property="og:url" content="{% url 'organisation_main' org_id=organisation.id %}"/>
+    {% if organisation.logo %}    
+    <meta property="og:image" content="{{MEDIA_URL}}{{organisation.logo}}"/>
+    {% else %}
+    <meta property="og:image" content="{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo.png"/>
+    {% endif %}
   <link
     rel="alternate" type="application/rss+xml"
     title="{% blocktrans with org_name=organisation.name%}Project updates for projects partnered by {{org_name}}{% endblocktrans %}"
@@ -71,7 +83,11 @@
             {% if organisation.primary_location.country %}{{organisation.primary_location.country}}{% endif %}
           </p>
           {% if organisation.primary_location %}
-            {% map organisation 180 135 "small" %}
+            {% if organisation.primary_location.latitude != 0.0 or organisation.primary_location.longitude != 0.0 %}
+              {% map organisation 180 135 "small" %}
+            {% else %}
+              <p class="small" style="color: red;">{% trans 'No map available' %}</p>
+            {% endif %}
           {% else %}
             <p class="small" style="color: red;">{% trans 'No map available' %}</p>
           {% endif %}
