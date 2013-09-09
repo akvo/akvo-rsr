@@ -19,6 +19,7 @@ from django.utils import translation
 from django.utils.cache import patch_vary_headers
 
 from akvo.rsr.models import PartnerSite
+import re
 
 
 __all__ = ["PartnerSitesLocaleMiddleware",
@@ -61,21 +62,6 @@ settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(
-    settings,
-    "PARTNER_SITES_DEVELOPMENT_DOMAIN",
-    "akvoapp.dev"
-)
-
-PARTNER_SITES_DOMAINS = getattr(
-    settings,
-    "PARTNER_SITES_DOMAINS",
-    ("akvoapp.org",
-     "akvotest.org",
-     "akvotest2.org",
-     "akvotest3.org",
-    PARTNER_SITES_DEVELOPMENT_DOMAIN)
-)
 
 PARTNER_SITES_MARKETING_SITE = getattr(
     settings,
@@ -83,36 +69,32 @@ PARTNER_SITES_MARKETING_SITE = getattr(
     "http://www.akvoapp.org/"
 )
 
-RSR_DOMAINS = getattr(
-    settings,
-    "RSR_DOMAINS",
-    ("localhost", "127.0.0.1", "akvo.dev", "www.akvo.dev", "77.53.15.119")
-)
+RSR_SITE_REGEXPS = map(re.compile, settings.RSR_SITE_REGEXPS)
+PARTNER_SITE_REGEXPS = map(re.compile, settings.PARTNER_SITE_REGEXPS)
 
 
 def get_domain(request):
     original_domain = request.get_host().split(":")[0]
-    domain_parts = original_domain.split(".")[-3:]
-    domain = ".".join(domain_parts)
+    if original_domain == "rsr.akvo.org":
+        domain = original_domain
+    else:
+        domain_parts = original_domain.split(".")[-4:]
+        domain = ".".join(domain_parts)
     return domain
 
 
-def is_rsr_instance(domain):
-    return (domain == "akvo.org" or
-            domain.endswith(".akvo.org") or
-            domain in RSR_DOMAINS)
+def is_rsr_instance(hostname):
+    return any([site.search(hostname) for site in RSR_SITE_REGEXPS])
 
 
-def is_partner_site_instance(domain):
-    base_domain = ".".join(domain.split(".")[-2:])
-    if base_domain in PARTNER_SITES_DOMAINS:
-        return True
-    return False
+def is_partner_site_instance(hostname):
+    return any([site.search(hostname) for site in PARTNER_SITE_REGEXPS])
 
 
 def get_or_create_site(domain):
-    if domain == "www.akvo.org":
-        domain = "akvo.org"
+    if domain.startswith('www.'):
+        domain = domain[4:]
+
     sites = Site.objects.filter(domain=domain)
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
@@ -127,10 +109,13 @@ def get_or_create_site(domain):
 
 class PartnerSitesRouterMiddleware(object):
 
-    def process_request(self, request, partner_site=None):
+    def process_request(self, request, cname_domain=False, partner_site=None):
+
         domain = get_domain(request)
+
         if is_rsr_instance(domain):
             urlconf = "akvo.urls.rsr"
+
         elif is_partner_site_instance(domain):
             urlconf = "akvo.urls.partner_sites"
             try:
@@ -140,24 +125,31 @@ class PartnerSitesRouterMiddleware(object):
                 pass
             if partner_site is None or not partner_site.enabled:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
+
         else:  # Probably a partner site instance on partner-nominated domain
+            cname_domain = True
             urlconf = "akvo.urls.partner_sites"
             try:
                 partner_site = PartnerSite.objects.get(cname=domain)
-                # since we can't test partner sites on cname domains we always use akvoapp.org for re-directs
-                partner_site_domain = "akvoapp.org"
             except:
                 return redirect(PARTNER_SITES_MARKETING_SITE)
+
         request.urlconf = urlconf
         set_urlconf(urlconf)
+
         if partner_site is not None and partner_site.enabled:
-            partner_site_domain = ".".join(domain.split(".")[-2:])
+            if cname_domain:
+                partner_site_domain = "akvoapp.org"
+            else:
+                partner_site_domain = ".".join(domain.split(".")[-2:])
             request.partner_site = settings.PARTNER_SITE = partner_site
-            request.app_domain = ".".join((partner_site.hostname,
-                                           partner_site_domain))
+            request.app_domain = ".".join(
+                (partner_site.hostname, partner_site_domain)
+            )
             request.app_url = "http://%s" % request.app_domain
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
+
         request.domain_url = "http://%s" % settings.DOMAIN_NAME
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id

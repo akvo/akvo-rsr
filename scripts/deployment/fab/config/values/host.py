@@ -19,8 +19,8 @@ class HostAlias(object):
 class SSHConnection(object):
 
     connection_map  = { HostAlias.CI:       'ci.akvo.org:2275',
-                        HostAlias.DATA:     'www.akvo.org:22',
-                        HostAlias.LIVE:     'www.akvo.org:22',
+                        HostAlias.DATA:     'proweb.akvo.org:22',
+                        HostAlias.LIVE:     'proweb.akvo.org:22',
                         HostAlias.MEDIA:    '89.233.254.43:2268',
                         HostAlias.TEST:     'test.akvo.org:2270',
                         HostAlias.TEST2:    'test.akvo.org:2270',

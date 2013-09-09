@@ -2,8 +2,146 @@ Akvo RSR (Really Simple Reporting) makes it easy to put any type of projects onl
 
 We provide Akvo RSR as a service on your own URL and with your own branding, as well as on Akvo.org, to combat poverty by making it easy to bring development aid projects online. There you can use our open web and mobile tools to connect and share progress with funders and followers.
 
-Check out [Introducing Akvo Really Simple Reporting](http://www.akvo.org/web/akvo-rsr).
-Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
+Read more about [Akvo Products](http://akvo.org/products/).
+
+Akvo RSR ver 2.2.0.3 - Okra Part 3 - Hotfix
+---
+
+5th September 2013, adriancollier
+
+New Features
+---
+
+###Expansion of Write API Functionality
+
+We have been working on improving the process of importing IATI XML Files into the RSR Write API. These are a combination of general fixes and resolutions to Cordaid specific issues.
+
+Github issue [#266](https://github.com/akvo/akvo-rsr/issues/266)
+Github issue [#277](https://github.com/akvo/akvo-rsr/issues/277)
+Github issue [#237](https://github.com/akvo/akvo-rsr/issues/237)
+Github issue [#297](https://github.com/akvo/akvo-rsr/issues/297)
+
+Bug Fixes
+---
+
+###Header to show Signed In Status
+
+Following on from the release of our new Akvo.org website, we needed to modify the header being used so that users can be shown within the header if they are logged into RSR or not.
+
+Github issue [#300](https://github.com/akvo/akvo-rsr/issues/300)
+
+###Previous Navigation Button Broken
+
+The Previous Button in RSR Lists for Organisations or Projects was not working due to some spaces instead of Tabs in the template code. We've corrected this now so users can navigate freely forwards and backwards to their heart's content.
+
+###CSS Regression
+
+We had a bug that managed to creep back into the system affecting the layout on the User Registration page on Partnersites. This has been fixed - and hopefully for the final time.
+
+Github issue [#205](https://github.com/akvo/akvo-rsr/issues/205)
+
+
+Akvo RSR ver 2.2.0.2 - Okra Part 2 - Hotfix
+---
+
+2nd September 2013, adriancollier
+
+New Features
+---
+
+###New Headers and Footers for RSR
+
+We have implemented new Headers and Footers throughout RSR to coincide with the new Akvo.org Website launch. These now contain the look and feel of the new website whilst providing all the functionality necessary to navigate throughout RSR and the Akvo network pages.
+
+Github issue [#288](https://github.com/akvo/akvo-rsr/issues/288)
+
+###Automated Development Environment Setup
+
+To improve the ease of setting up a local instance of RSR for development, we have worked on a set of scripts and resources using Puppet and Vagrant.
+
+###Cordaid API Update Functionality
+
+We have developed an improvement to the API that allows us to update existing projects using the API Write functionality we have previously implemented. It was only possible before to create new projects.
+
+Github issue [#224](https://github.com/akvo/akvo-rsr/issues/224)
+
+
+Bug Fixes
+---
+
+###Partnersite Routing
+
+We had an issue within our Middleware that resulted in an incorrect domain being set for Partnersites that were using CNAME entries to embed these into their Organisation's websites.
+This has now been resolved, fixing issues related to Widgets not containing pins, as well as incorrect links throughout Partnersites.
+
+Github issue [#291](https://github.com/akvo/akvo-rsr/issues/291)
+
+
+###Mistakes in Unpublished Project Notification
+
+We implemented a Banner to be displayed to users that are viewing an unpublished project. This banner contained some errors which have now been resolved.
+
+Github issue [#257](https://github.com/akvo/akvo-rsr/issues/257)
+
+Akvo RSR ver 2.2.0.1 - Okra
+---
+29th August 2013, adriancollier
+
+New Features
+---
+
+###RSR Moved to Subdomain
+
+In light of moving to a new website and structure, we have decided modify the underlying source of the RSR codebase. All RSR pages used to be displayed at http://akvo.org/rsr/ where we have now changed this to http://rsr.akvo.org. This allows us to separate out our products more easily and include more in-line information from Akvo's other products including FLOW and Akvopedia in a standard way going forwards. All the existing links and permalinks will continue to work, with the user being redirected to the new page automatically.
+
+Github issue [#139](https://github.com/akvo/akvo-rsr/issues/139)
+
+###Added Piwik Tracking Code
+
+We have implemented an Analytics Traffic counting system Piwik throughout Akvo. We added the tracking information to RSR to allow traffic to be counted from within this new system to replace our previous solution HitList.
+
+Github issue [#268](https://github.com/akvo/akvo-rsr/issues/268)
+
+###Temporary Replacement Homepage
+
+We are intending shortly to implement a new Akvo.org website. In addition we are also planning to move RSR to a new hosting provider and separate out the different parts of the current Live Server to create a more service based architechture. In order to do this, we needed to replace the current homepage which was being delivered by Django in a piece of functionality we called the MiniCMS.
+We have built a temporary Hoempage solution using Wordpress that gives us the flexibility to carry on with this work unhindered.
+
+Bug Fixes
+---
+
+###Remove Labs Footer Link
+
+There was a link to an Akvo Labs page within the footer where the page is no longer in use, so the Footer link has been removed.
+
+Github issue [#280](https://github.com/akvo/akvo-rsr/issues/280)
+
+
+###Interactive Global Maps Disabled
+
+We were experiencing problems with our API calls that resulted in excessive memory being used on our servers when these pages were displayed to users. While we work on the cause of the problem, we have disabled the maps and placed static maps in their stead to retain the visual elements, even though we are aware of the reduction in functionality.
+
+Github issue [#279](https://github.com/akvo/akvo-rsr/issues/279)
+
+###ISO Country Name
+
+Palestein was listed as an Occupied Territory in RSR based on an older version of the ISO3166 list. We have now corrected this to State of.
+
+Github issue [#215](https://github.com/akvo/akvo-rsr/issues/215)
+
+###Water and Sanitation Text in RSR Admin
+
+The headline text in the RSR Admin when creating a project mentioned Water and Sanitation projects. This is legacy from when RSR was only involved with these types of projects. We have now replaced this with a more general headline text.
+
+Github issue [#216](https://github.com/akvo/akvo-rsr/issues/216)
+
+###Add Update to Submit Update
+
+On the Project Update Form within RSR, the button below the Update Form had the same Text "Add Update" as the button on the right side of the page to enter the form, leading to confusion. We have now changed the lower button to read "Submit Update" to make the difference between these more clear.
+
+Github issue [#251](https://github.com/akvo/akvo-rsr/issues/251)
+
 
 Akvo RSR ver 2.1.5.2 - hotfix for Nectarine
 ---

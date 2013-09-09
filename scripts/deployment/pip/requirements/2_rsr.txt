@@ -50,5 +50,5 @@ wsgiref==0.1.2
 # Scripts logging support
 tablib==0.9.11
 
-#Piwik
+# Piwik
 django-piwik==0.1

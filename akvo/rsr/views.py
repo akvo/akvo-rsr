@@ -163,7 +163,7 @@ def index(request):
     '''
     The RSR home page.
     '''
-    return HttpResponsePermanentRedirect('/home')
+    return HttpResponsePermanentRedirect(reverse('project_list', args=['all']))
 
 def project_list_data(request, projects):
     order_by = request.GET.get('order_by', 'name')
@@ -449,7 +449,7 @@ def signout(request):
     Sign out URL
     '''
     logout(request)
-    return HttpResponseRedirect('/home')
+    return HttpResponseRedirect(reverse('project_list', args=['all']))
 
 
 def register1(request):

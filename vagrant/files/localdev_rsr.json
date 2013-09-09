@@ -10,6 +10,9 @@
     "puppet_branch": "develop",
 
     "puppet_public_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_puppet.pub",
+    "puppet_private_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_puppet",
+
+    "rsr-deploy_private_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_rsr-deploy",
     "rsr-deploy_public_key": "/vagrant/rsr/checkout/vagrant/files/localdev_rsr_rsr-deploy.pub",
 
     "nodes": {
@@ -19,6 +22,13 @@
     },
 
     "facts": {
-        "rsr_database_password": "lake"
+        "mysql_root_password": "lake",
+        "mysql_backup_password": "cake",
+
+        "rsr_database_password": "lake",
+        "rsr_development": true,
+        "rsr_additional_rsr_domains": ["localakvo.org"],
+        "rsr_partner_site_domain": "localakvoapp.org",
+        "rsr_secret_key": "Jk1TTdSAL4rjgSFGht7pmH1CqGBJERmGFTRRSNCn"
     }
 }

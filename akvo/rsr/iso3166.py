@@ -177,7 +177,7 @@ ISO_3166_COUNTRIES = (
     (u"om", _(u"Oman")),
     (u"pk", _(u"Pakistan")),
     (u"pw", _(u"Palau")),
-    (u"ps", _(u"Palestinian Territory, Occupied")),
+    (u"ps", _(u"Palestine, State of")),
     (u"pa", _(u"Panama")),
     (u"pg", _(u"Papua New Guinea")),
     (u"py", _(u"Paraguay")),
