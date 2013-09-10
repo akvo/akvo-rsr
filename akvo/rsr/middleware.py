@@ -119,7 +119,11 @@ class PartnerSitesRouterMiddleware(object):
         elif is_partner_site_instance(domain):
             urlconf = "akvo.urls.partner_sites"
             try:
-                hostname = domain.split(".")[-3]
+                domain_parts = domain.split(".")
+                hostname = domain_parts[0]
+                if hostname == 'www':
+                    hostname = domain_parts[1]
+
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
