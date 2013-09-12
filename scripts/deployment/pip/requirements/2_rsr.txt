@@ -52,3 +52,7 @@ tablib==0.9.11
 
 # Piwik
 django-piwik==0.1
+
+# statsd and graphite integration
+django-statsd-mozilla==0.3.9
+statsd==2.0.3
