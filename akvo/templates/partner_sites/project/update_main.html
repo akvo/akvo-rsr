@@ -5,6 +5,16 @@
 
 {% block title %}{{update.title}} - {% endblock title %}
 
+{% block head %}
+    <meta property="og:title" content="Akvo.org - {{update.title}}"/>
+    <meta property="og:description" content="{{update.text}}"/>
+    <meta property="og:url" content="{% url 'update_main' project_id=project.id update_id=update.id %}"/>
+    {% if update.photo %}
+    <meta property="og:image" content="{{MEDIA_URL}}{{update.photo}}"/>
+    {% else %}
+    <meta property="og:image" content="{{MEDIA_URL}}{{project.current_image}}"/>
+{% endblock head %}
+
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'project_main' project.id %}"><span>{{project|truncatewords:3}}</span></a></li>
