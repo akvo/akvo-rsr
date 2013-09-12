@@ -29,6 +29,35 @@
 {% endblock breadcrum_items %}
 
 
+{% block social_init %}
+    {% if request.partner_site.facebook_button %}
+	<!-- If we want a FB like button, the initial load goes here -->
+	<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+    {% endif %}
+{% endblock social_init %}
+
+{% block social %}
+    {% if request.partner_site.facebook_button or request.partner_site.twitter_button %}
+        <h2 class="marg_top40">{% trans "Social media" %}</h2>
+        <div class="whitebox">
+    {% if request.partner_site.facebook_button %}
+<div class="fb-like" data-href="{% url 'project_main' project.id %}" data-width="300" data-show-faces="true" data-send="false"></div>
+    {% endif %}
+    {% if request.partner_site.twitter_button %}
+    	<!-- Something twitter -->
+    {% endif %}
+        </div>
+    {% endif %}
+{% endblock social %}
+
+
 {% block project_content %}
   <section class="whitebox pad20 marg_bottom40">
     {% counter_badge project %}
