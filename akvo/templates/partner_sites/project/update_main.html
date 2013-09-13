@@ -13,6 +13,7 @@
     <meta property="og:image" content="{{MEDIA_URL}}{{update.photo}}"/>
     {% else %}
     <meta property="og:image" content="{{MEDIA_URL}}{{project.current_image}}"/>
+    {% endif %}
 {% endblock head %}
 
 {% block breadcrum_items %}
