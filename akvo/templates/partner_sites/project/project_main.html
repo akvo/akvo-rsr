@@ -48,7 +48,7 @@
         <h2 class="marg_top40">{% trans "Social media" %}</h2>
         <div class="whitebox">
     {% if request.partner_site.facebook_button %}
-<div class="fb-like" data-href="{% url 'project_main' project.id %}" data-width="300" data-show-faces="true" data-send="false"></div>
+<div class="fb-like" data-href="{{app_url}}{% url 'project_main' project.id %}" data-width="300" data-show-faces="true" data-send="false"></div>
     {% endif %}
     {% if request.partner_site.twitter_button %}
     	<!-- Something twitter -->
