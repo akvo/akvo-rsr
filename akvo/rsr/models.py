@@ -2167,6 +2167,8 @@ class PartnerSite(models.Model):
 
     ui_translation = models.BooleanField(_(u'Translate user interface'), default=False)
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
+    facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
+    twitter_button = models.BooleanField(_(u'Twitter button'), default=False)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}

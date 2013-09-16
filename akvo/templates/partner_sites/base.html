@@ -20,6 +20,8 @@
   {#  Piwik #}
   {% tracking_code %}
 
+  <meta property="og:type" content="website"/>
+
   {% block head %}{% endblock head %}
 
   <!--[if lte IE 7]>
@@ -41,6 +43,7 @@
 
 </head>
 <body>
+{% block social_init %}{% endblock social_init %}
 {% block draft %}{% endblock draft %}
 <div class="bottom_gradient_bar pad_bottom10">
   <div class="container pad_top10">
