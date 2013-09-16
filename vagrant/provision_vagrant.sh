@@ -8,6 +8,7 @@ fi
 if [ -e /etc/localdev_rsr_provisioned ]
 then
     echo "Already bootstrapped, so nothing to do"
+    supervisorctl restart rsr
     exit 0
 fi
 

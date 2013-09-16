@@ -1,14 +1,10 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$whoami = `whoami`.strip
-$hosthost = `hostname`.strip
-$hostname = $whoami + '.' + $hosthost + '.localdev.akvo.org'
-
 Vagrant.configure("2") do |config|
-    config.vm.box = "precise64"
-    config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-    config.vm.hostname = $hostname
+    config.vm.box = "rsr-dev-20130916"
+    config.vm.box_url = "http://files.admin.akvo-ops.org/rsr-dev-20130916.box"
+    config.vm.hostname = "rsr.localdev.akvo.org"
     config.ssh.forward_agent = true
 
     config.vm.synced_folder "../provisioning/control/", "/vagrant/bootstrap/"
