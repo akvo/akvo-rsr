@@ -38,7 +38,7 @@ The virtual machine is provisioned with the same [Puppet](http://puppetlabs.com/
 ##### Q: How do I see debug log output?
 **A**: By default, the RSR django application is run by [gunicorn](http://gunicorn.org/) to match the production servers. However for development, it's much easier to use the django debug server. To do this, first stop the gunicorn process, then start the debug server:
 
-        scripts/devhelpers/supervisorctl.sh stop rsr
+        scripts/devhelpers/supervisorctl.sh stop rsr rsr_reload
         scripts/devhelpers/manage.sh runserver
          
 ##### Q: How do I migrate or get a Django shell?
