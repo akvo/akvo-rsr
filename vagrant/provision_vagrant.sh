@@ -5,32 +5,36 @@ then
     exit 1
 fi
 
-if [ -e /etc/localdev_rsr_provisioned ]
-then
-    echo "Already bootstrapped, so nothing to do"
-    supervisorctl restart rsr
-    exit 0
-fi
+set -e
 
-if [ ! -L /var/akvo/rsr/code ]
-then
-    sudo -u rsr ln -s /vagrant/rsr/checkout /var/akvo/rsr/code
-fi
+sed -i '/nameserver/d' /etc/resolv.conf
+echo 'nameserver 192.168.50.101' >> /etc/resolv.conf
+
+rm -f /var/akvo/rsr/code
+sudo -u rsr ln -s /vagrant/rsr/checkout /var/akvo/rsr/code
 
 ln -sf /var/akvo/rsr/local_settings.conf /var/akvo/rsr/code/akvo/settings/65_puppet.conf
 
-sudo -u rsr virtualenv --quiet /var/akvo/rsr/venv
+if [ ! -e /var/akvo/rsr/venv ]
+then
+    sudo -u rsr virtualenv --quiet /var/akvo/rsr/venv
+fi
+
 sudo -u rsr /var/akvo/rsr/venv/bin/pip install -r /var/akvo/rsr/code/scripts/deployment/pip/requirements/2_rsr.txt
 
 manage='sudo -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/akvo/manage.py'
 
-$manage syncdb --noinput &&\
-zcat /vagrant/files/barebones.sql.gz > /tmp/barebones.sql &&\
-mysql -u root rsr < /tmp/barebones.sql &&\
-rm /tmp/barebones.sql &&\
-$manage migrate &&\
-cp -r /vagrant/files/db /var/akvo/rsr/mediaroot/ &&\
+$manage syncdb --noinput
 
-chown -R rsr.rsr /var/akvo/rsr/mediaroot/db &&\
-supervisorctl restart rsr &&\
-echo `date` > /etc/localdev_rsr_provisioned
+if [ ! -e /etc/localdev_puppet_provisioned ]
+then
+    zcat /vagrant/files/barebones.sql.gz > /tmp/barebones.sql
+    mysql -u root rsr < /tmp/barebones.sql
+    rm /tmp/barebones.sql
+    $manage migrate
+    cp -r /vagrant/files/db /var/akvo/rsr/mediaroot/
+    chown -R rsr.rsr /var/akvo/rsr/mediaroot/db
+    echo `date` > /etc/localdev_rsr_provisioned
+fi
+
+supervisorctl restart rsr

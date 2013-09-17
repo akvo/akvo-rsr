@@ -1,3 +1,0 @@
-[submodule "provisioning"]
-	path = provisioning
-	url = https://github.com/akvo/akvo-provisioning.git
