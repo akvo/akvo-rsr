@@ -642,7 +642,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
-    search_fields = ('title', 'status', 'project_plan_summary', 'partnership__internal_id')
+    search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
     list_filter = ('currency', 'status', )
     readonly_fields = ('budget', 'funds',  'funds_needed',)
     #form = ProjectAdminForm
