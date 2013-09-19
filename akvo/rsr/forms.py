@@ -334,7 +334,7 @@ class ProjectUpdateForm(forms.ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '42',
-        'maxlength': '255',
+        'maxlength': '50',
         'style': 'margin-left:0',
         }))
     text = forms.CharField(required=False, widget=forms.Textarea(attrs={
