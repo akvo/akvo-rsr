@@ -17,9 +17,11 @@ If you have never used Vagrant or the RSR Vagrant development environment, follo
 
 1. Clone a copy of the akvo/akvo-rsr repository to your local machine.
 
-2. In Terminal `cd` to the directory
+2. In Terminal `cd` to the directory.
 
-3. Run `vagrant up`
+3. Run `vagrant up`.
+
+4. When your box has finished building, run `vagrant ssh` to login to the box.
 
 
 ## First Start Up
