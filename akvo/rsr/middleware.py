@@ -145,7 +145,7 @@ class PartnerSitesRouterMiddleware(object):
             if cname_domain:
                 partner_site_domain = "akvoapp.org"
             else:
-                partner_site_domain = ".".join(domain.split(".")[-2:])
+                partner_site_domain = ".".join(domain.split(".")[1:])
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.app_domain = ".".join(
                 (partner_site.hostname, partner_site_domain)
@@ -189,7 +189,7 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
             urlconf = getattr(request, 'urlconf', None)
             language_path = '/%s%s' % (language, request.path_info)
             if settings.APPEND_SLASH and not language_path.endswith('/'):
-                language_path = language_path + '/'
+                language_path += '/'
 
             if is_valid_path(language_path, urlconf):
                 language_url = "%s://%s/%s%s" % (
