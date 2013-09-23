@@ -39,9 +39,20 @@
 
 {% block social %}
     {% if request.partner_site.facebook_button or request.partner_site.twitter_button %}
-        <h2 class="marg_top40">{% trans "Social media" %}</h2>
+        <h2 class="marg_top40">{% trans "Share" %}</h2>
         <div class="whitebox">
     {% if request.partner_site.facebook_button %}
+<div style="padding-top:15px; padding-left:10px;">
+<a href="#" 
+  onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href), 
+      'facebook-share-dialog', 
+      'width=626,height=436'); 
+    return false;">
+  Share on Facebook
+</a>
+</div>
 <div class="fb-like" data-href="{{app_url}}{% url 'update_main' project_id=project.id update_id=update.id %}" data-width="300" data-show-faces="true" data-send="false" style="padding-top:15px; padding-left:10px;"></div>
     {% endif %}
     {% if request.partner_site.twitter_button %}
