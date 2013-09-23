@@ -43,8 +43,15 @@
         <div class="whitebox">
     {% if request.partner_site.facebook_button %}
 <div style="padding-top:15px; padding-left:10px;">
-<a name="fb_share" type="button_count" href="http://www.facebook.com/sharer.php">Share</a>
-<script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
+<a href="#" 
+  onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href), 
+      'facebook-share-dialog', 
+      'width=626,height=436'); 
+    return false;">
+<img src="{{MEDIA_URL}}akvo/img/social/fb_share.jpg">
+</a>
 </div>
 <div class="fb-like" data-href="{{app_url}}{% url 'update_main' project_id=project.id update_id=update.id %}" data-width="300" data-show-faces="true" data-send="false" style="padding-top:15px; padding-left:10px;"></div>
     {% endif %}
