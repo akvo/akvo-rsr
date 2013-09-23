@@ -48,14 +48,21 @@ class SignInView(PartnerSitesMixin, FormView):
         context = super(SignInView, self).get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next', '/')
         # create url to RSR register page
+        rsr_domain = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
         register1_path = reverse('register1', urlconf='akvo.urls.rsr')
         register1_url = "http://{rsr_domain}{register1_path}".format(
-            rsr_domain = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org'),
-            register1_path=register1_path
+            rsr_domain= rsr_domain,
+            register1_path = register1_path,
+        )
+        rsr_password_reset_path = reverse('rsr_password_reset', urlconf='akvo.urls.rsr')
+        rsr_password_reset_url = "http://{rsr_domain}{rsr_password_reset_path}".format(
+            rsr_domain= rsr_domain,
+            rsr_password_reset_path = rsr_password_reset_path,
         )
         if getattr(settings, 'HTTPS_SUPPORT', True):
             return register1_url.replace('http://', 'https://')
         context['register1_url'] = register1_url
+        context['rsr_password_reset_url'] = rsr_password_reset_url
         return context
 
     def render_to_response(self, context):
