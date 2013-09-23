@@ -95,7 +95,14 @@ def get_or_create_site(domain):
     if domain.startswith('www.'):
         domain = domain[4:]
 
-    sites = Site.objects.filter(domain=domain)
+    # As a result of an issue(1) we need to ensure that we don't
+    # delete the fixture should we find duplicates
+    # There is no guaranteed ordering(2) we should explicitly order them in such
+    # a way that the fixture would appear first, i.e. by ensuring 'ORDER BY id ASC'
+    #
+    # (1) https://github.com/akvo/akvo-provisioning/issues/29
+    # (2) http://stackoverflow.com/questions/7163640/what-is-the-default-order-of-a-list-returned-from-a-django-filter-call
+    sites = Site.objects.filter(domain=domain).order_by('id')
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
         if duplicates.count():
