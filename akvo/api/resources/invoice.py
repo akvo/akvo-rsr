@@ -34,6 +34,6 @@ class InvoiceResource(ConditionalFullResource):
         """
         bundle = super(InvoiceResource, self).dehydrate(bundle)
         if not bundle.obj.is_anonymous:
-            bundle.data['email'] = bundle.obj.email
+            # bundle.data['email'] = bundle.obj.email
             bundle.data['name'] = bundle.obj.name
         return bundle
