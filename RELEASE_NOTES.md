@@ -5,7 +5,7 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
-Akvo RSR ver 2.3.0 Passoionfruit
+Akvo RSR ver 2.3.0 Passionfruit
 ---
 
 Wednesday 2nd October 2013, adriancollier
