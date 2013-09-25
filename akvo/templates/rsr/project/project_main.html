@@ -5,8 +5,8 @@
 {% block head %}
     <meta property="og:title" content="Akvo.org - {{project.title}}"/>
     <meta property="og:description" content="{{project.subtitle}} {{project.project_plan_summary}}"/>
-    <meta property="og:url" content="{% url 'project_main' project.id %}"/>
-    <meta property="og:image" content="{{MEDIA_URL}}{{project.current_image}}"/>
+    <meta property="og:url" content="{{request.META.HTTP_HOST}}{% url 'project_main' project.id %}"/>
+    <meta property="og:image" content="{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
 
 {{block.super}}
 
