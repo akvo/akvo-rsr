@@ -5,6 +5,86 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.0 Passoionfruit
+---
+
+Wednesday 2nd October 2013, adriancollier
+
+New Features
+---
+
+###Social Media
+
+We have had several requests over the past years to add some social functionality to RSR. Well in this release we have introduced a couple of features that should allow you to be that little bit more social with your RSR content.
+
+The first of these is the addition of Facebook and Twitter sharing buttons on Partnersites. It is now possible to add these buttons to the right hand side panel of your project pages by selecting these in the RSR Admin.
+After enabling this feature, you will be able to see the buttons and click to share or like the content directly. This should make it that much easier for those working on a project to share their progress with their networks.
+
+Github issue [#230](https://github.com/akvo/akvo-rsr/issues/230)
+
+The second feature is the refining of the Meta-Data that is used when sharing projects or content in this way. Historically when you shared an RSR Project on Facebook you would be given the default text that sometimes did not match the Project content or description. Additionally the photo given as an option may not have been the primary photo for the project.
+
+We have fixed this now so that the most relevant information is passed through to Facebook or any other Social Site when sharing. So, now you can share your projects quickly and easily without the need to rewrite the description or upload your own images.
+
+Github issue [#196](https://github.com/akvo/akvo-rsr/issues/196)
+
+All in the name of making your viewing and sharing experience that much easier.
+
+###Searching in the Admin on Internal ID
+
+We have begun to implement a foreign identification number on projects that allow an Organisation to identify their projects using the ID that exists in their own internal systems. This is an extremely useful feature as it ensures that Partners can communciate in their own terms.
+
+Until now however it was only possible to search in the Admin for RSR Ids. We have coded the change so that in the RSR Admin you can search on these Internal IDs and find the RSR Project that responds to that ID.
+
+Github issue [#254](https://github.com/akvo/akvo-rsr/issues/254)
+
+###Notes and Comments in the Admin
+
+We have added some additional notes fields to a lot of the different areas of the admin. These fields will not be visible anywhere on the site, and the content will only be available to those working on the project with access ot the Admin. So, these fields can be used to explain additional informaiton for users of the project, or to write notes about recent changes or anything in particular that someone maintaining the content of a project might need to know.
+
+Github issue [#151](https://github.com/akvo/akvo-rsr/issues/151)
+
+
+Infrastructure Changes:
+---
+
+###Upgrade to Ubuntu 12.04, Nginx and move to CloudVPS
+
+In this release our live server is being moved from its current home in London with the fantastic guys at ProWeb to a new Cloud based machine at CloudVPS. Within this movement we are also updating the underlying Operating System on RSR from 8.04 to 12.04. This has a whole series of additional benefits as well as challenges, but its certainly a move in the right direction. In addition we are also changing our Web-Server from Apache to Nginx at the same time. Nginx provides a more responsive web application with a simpler configuration and a smaller footprint.
+
+We are aligning the environments that all our machines sit within, to improve the fidelity between our systems, as well as reducing the overhead of maintaining and administering these machines.
+
+We expect these changes to enable some much bigger changes in the area of performance and stability to ensure our systems are working at the top of their game.
+
+More to come in this area for sure!
+
+###Moving Virtual Environments to CloudVPS
+
+When we decided to choose a new hosting provider, this didn't just affect the live server, as we also have a number of additional development environments that we also need to move to ensure these work in a similar structure as the live system. Otherwise our testing has a lot less value.
+
+We have moved these machines to our provider CloudVPS and have setup the additional surrounding structure so that they are already tightly integrated into our devleopment process.
+
+Github issue [#130](https://github.com/akvo/akvo-rsr/issues/130)
+
+
+Bug Fixes
+---
+
+###Register Link on Partnersites
+
+We uncovered a sneaky bug that caused the Register link on Partnersites to only direct people into a loop and not actually deliver users to the correct location. We've fixed this so now users can register as normal.
+
+Github issue [#307](https://github.com/akvo/akvo-rsr/issues/307)
+
+###Update Title Character Limit
+
+The Title field on Project Updates has a limit of 50 characters. However we were experiencing a problem with this that when you started typing into the field the display gave you a limit of 255. This was only a visual issue and luckily the form validation did not let the Update be submitted if over 50, but of course this is a very confusing situation.
+
+We have resolved this now, so the display correctly informs you how many characters you have left out of the actual 50 character limit.
+
+Github issue [#302](https://github.com/akvo/akvo-rsr/issues/302)
+
+
 Akvo RSR ver 2.2.0.3 - Okra Part 3 - Hotfix
 ---
 
