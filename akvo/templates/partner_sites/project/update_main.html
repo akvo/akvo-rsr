@@ -8,11 +8,11 @@
 {% block head %}
     <meta property="og:title" content="Akvo.org - {{update.title}}"/>
     <meta property="og:description" content="{{update.text}}"/>
-    <meta property="og:url" content="{{request.META.HTTP_HOST}}{% url 'update_main' project_id=project.id update_id=update.id %}"/>
+    <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'update_main' project_id=project.id update_id=update.id %}"/>
     {% if update.photo %}
-    <meta property="og:image" content="{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{update.photo}}"/>
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{update.photo}}"/>
     {% else %}
-    <meta property="og:image" content="{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
     {% endif %}
 {% endblock head %}
 
