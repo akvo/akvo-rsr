@@ -26,7 +26,7 @@ manage='sudo -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/akvo/manage
 
 $manage syncdb --noinput
 
-if [ ! -e /etc/localdev_puppet_provisioned ]
+if [ ! -e /etc/localdev_rsr_provisioned ]
 then
     zcat /vagrant/files/barebones.sql.gz > /tmp/barebones.sql
     mysql -u root rsr < /tmp/barebones.sql
@@ -36,5 +36,8 @@ then
     chown -R rsr.rsr /var/akvo/rsr/mediaroot/db
     echo `date` > /etc/localdev_rsr_provisioned
 fi
+
+# Temporary Hack (see https://github.com/akvo/akvo-provisioning/issues/29)
+sudo sed -i 's/SITE_ID=1$/SITE_ID=1004/' /var/akvo/rsr/local_settings.conf
 
 supervisorctl restart rsr
