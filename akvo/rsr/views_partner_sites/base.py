@@ -99,7 +99,8 @@ class BaseProjectView(BaseView):
             'updates': updates,
             'updates_with_images': updates_with_images,
             'can_add_update': privileged_user,
-            'draft': draft
+            'draft': draft,
+            'fb_app_id': getattr(settings, 'FB_APP_ID', ''),
         })
         return context
 
