@@ -5,15 +5,15 @@
 {% block title %}{{partner}} - {% endblock title %}
 
 {% block head %}
-    {% if organisation.long_name %}
-      <meta property="og:title" content="Akvo.org - {{organisation.long_name}}"/>
+    {% if partner.long_name %}
+      <meta property="og:title" content="Akvo.org - {{partner.long_name}}"/>
     {% else %}
-      <meta property="og:title" content="Akvo.org - {{organisation.name}}"/>
+      <meta property="og:title" content="Akvo.org - {{partner.name}}"/>
     {% endif %}
-    <meta property="og:description" content="{{organisation.description}}"/>
-    <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'organisation_main' org_id=organisation.id %}"/>
-    {% if organisation.logo %}    
-      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{organisation.logo}}"/>
+    <meta property="og:description" content="{{partner.description}}"/>
+    <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'organisation_main' org_id=partner.id %}"/>
+    {% if partner.logo %}    
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{partner.logo}}"/>
     {% else %}
       <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
     {% endif %}
