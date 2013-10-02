@@ -184,7 +184,7 @@ class ProjectCordinates(TemplateView):
         else:
             protocol = 'http://'
         app_url = '%s%s.%s' % (protocol, self.request.partner_site.hostname,
-                               settings.APP_DOMAIN_NAME)
+                               getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org'))
         projects = self.get_queryset()
         content = {'projects': []}
 

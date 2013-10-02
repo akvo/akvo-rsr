@@ -2199,7 +2199,7 @@ class PartnerSite(models.Model):
 
     @property
     def full_domain(self):
-        return '%s.%s' % (self.hostname, settings.APP_DOMAIN_NAME)
+        return '%s.%s' % (self.hostname, getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org'))
 
     def get_absolute_url(self):
         url = ''

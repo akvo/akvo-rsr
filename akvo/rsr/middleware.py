@@ -150,7 +150,7 @@ class PartnerSitesRouterMiddleware(object):
 
         if partner_site is not None and partner_site.enabled:
             if cname_domain:
-                partner_site_domain = "akvoapp.org"
+                partner_site_domain = getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org')
             else:
                 partner_site_domain = ".".join(domain.split(".")[1:])
             request.partner_site = settings.PARTNER_SITE = partner_site
