@@ -74,7 +74,7 @@ def partner_sites_funding_box(context, project):
         'MEDIA_URL': context['MEDIA_URL'],
         'project': project,
         'domain_url': context['domain_url'],
-        'app_url': context['app_url']
+        'akvoapp_root_url': context['akvoapp_root_url']
         }
 
 
