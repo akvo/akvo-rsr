@@ -161,7 +161,7 @@ class PartnerSitesRouterMiddleware(object):
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
 
-        request.domain_url = "http://%s" % settings.DOMAIN_NAME
+        request.domain_url = "http://%s" % settings.RSR_DOMAIN
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return
