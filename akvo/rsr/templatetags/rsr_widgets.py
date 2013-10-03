@@ -58,7 +58,8 @@ def rsr_widget_project_donate_button(context, project):
     return {
         'akvoapp_root_url': context['akvoapp_root_url'],
         'domain_url': context['domain_url'],
-        'project': context['project']
+        'request': context['request'],
+        'project': context['project'],
     }
 
 
@@ -78,7 +79,8 @@ def rsr_widget_project_budget(context, project):
     return {
         'akvoapp_root_url': context['akvoapp_root_url'],
         'domain_url': context['domain_url'],
-        'project': context['project']
+        'request': context['request'],
+        'project': context['project'],
     }
 
 
