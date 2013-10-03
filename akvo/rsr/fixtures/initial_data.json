@@ -201,15 +201,55 @@
     }
   },
   {
-     "pk": 63,
-     "model": "oembed.storedprovider",
-     "fields": {
-       "regex": "http://blip.tv/\\S*/\\S*",
-       "wildcard_regex": "http://blip.tv/*/*",
-       "provides": false,
-       "active": true,
-       "endpoint_url": "http://api.embed.ly/v1/api/oembed",
-       "resource_type": "video"
-     }
-   }
+    "pk": 63,
+    "model": "oembed.storedprovider",
+    "fields": {
+      "regex": "http://blip.tv/\\S*/\\S*",
+      "wildcard_regex": "http://blip.tv/*/*",
+      "provides": false,
+      "active": true,
+      "endpoint_url": "http://api.embed.ly/v1/api/oembed",
+      "resource_type": "video"
+    }
+  },
+  {
+    "pk": 1000,
+    "model": "sites.site",
+    "fields": {
+      "domain": "rsr.akvo.org",
+      "name": "rsr.akvo.org"
+    }
+  },
+  {
+    "pk": 1001,
+    "model": "sites.site",
+    "fields": {
+      "domain": "rsr.test.akvo.org",
+      "name": "rsr.test.akvo.org"
+    }
+  },
+  {
+    "pk": 1002,
+    "model": "sites.site",
+    "fields": {
+      "domain": "rsr.uat.akvo.org",
+      "name": "rsr.uat.akvo.org"
+    }
+  },
+  {
+    "pk": 1003,
+    "model": "sites.site",
+    "fields": {
+      "domain": "rsr.opstest.akvo-ops.org",
+      "name": "rsr.opstest.akvo-ops.org"
+    }
+  },
+  {
+    "pk": 1004,
+    "model": "sites.site",
+    "fields": {
+      "domain": "rsr.localdev.akvo.org",
+      "name": "rsr.localdev.akvo.org"
+    }
+  }
 ]

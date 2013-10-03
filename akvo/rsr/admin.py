@@ -121,7 +121,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
-        (_(u'About the organisation'), {'fields': ('description', )}),
+        (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
     form = OrganisationAdminForm
     inlines = (OrganisationLocationInline, InternalOrganisationIDInline)
@@ -642,7 +642,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
-    search_fields = ('title', 'status', 'project_plan_summary', )
+    search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
     list_filter = ('currency', 'status', )
     readonly_fields = ('budget', 'funds',  'funds_needed',)
     #form = ProjectAdminForm
@@ -1163,7 +1163,8 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'General', dict(fields=('organisation', 'enabled', 'notes',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
-        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
+        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
+        (u'Social', dict(fields=('facebook_button', 'twitter_button',))),
     )
     # the notes field is not shown to everyone
     restricted_fieldsets = (
@@ -1171,7 +1172,8 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content',
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
-        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',)))
+        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
+        (u'Social', dict(fields=('facebook_button', 'twitter_button',))),
     )
     list_display = '__unicode__', 'full_domain', 'enabled',
 

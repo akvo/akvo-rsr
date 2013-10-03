@@ -51,6 +51,7 @@
 
 {% block head %}
     <meta property="og:title" content="Akvo.org - Project List"/>
+    <meta property="og:image" content="{{MEDIA_URL}}{% thumbnail focus_area.image 120x90 sharpen %}"/>
 {{block.super}}
 {% endblock head %}
 

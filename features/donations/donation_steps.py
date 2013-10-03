@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from lettuce import step, world, before
-from time import sleep
+from time import sleep, time
+
+from admin.auth import *
+from donations.auth import *
+from donations.config.mollie import *
+from donations.config.paypal import *
 
 
 @before.each_feature
@@ -21,9 +26,42 @@ def log_in_to_paypal_test_environment(feature):
 def navigate_to_homepage(scenario):
     world.browser.visit('http://%s/rsr/projects/' % world.SITE_UNDER_TEST)
 
+@step(u'When I create and publish "([^"]*)" uniquely named "([^"]*)" projects with a budget of "([^"]*)"')
+def when_i_create_and_publish_group1_uniquely_named_group2_projects(step, num_of_projects, currency, project_budget):
+    count = 0
+    while count < int(num_of_projects):
+        world.browser.click_link_by_text('Projects')
+        world.browser.click_link_by_partial_href('project/add/')
+        project_name = 'DonationTestProject' + str(time())
+        world.browser.fill('title', project_name)
+        world.browser.fill('subtitle', 'This is a project created for donation tests')
+        world.browser.driver.find_element_by_xpath('//*[@id="id_status"]/option[2]').click()
+        world.browser.driver.find_element_by_xpath('//*[@id="id_categories"]/option[6]').click()
+        world.browser.fill('project_plan_summary', 'This is a project created for donation tests')
+        world.browser.fill('sustainability', 'This is a project created for donation tests')
+        if currency == 'euro':
+            world.browser.driver.find_element_by_xpath('//*[@id="id_currency"]/option[2]').click()
+        elif currency == 'dollar':
+            world.browser.driver.find_element_by_xpath('//*[@id="id_currency"]/option[1]').click()
+        world.browser.fill('goals_overview', 'This is a project created for donation tests')
+        world.browser.driver.find_element_by_xpath('//*[@id="id_budget_items-0-label"]/option[3]').click()
+        world.browser.fill('budget_items-0-amount', project_budget)
+        world.browser.driver.find_element_by_xpath('//*[@id="id_partnerships-0-partner_type"]/option[2]').click()
+        world.browser.find_by_name('_save').first.click()
+        world.browser.click_link_by_partial_href('admin/rsr/')
+        world.browser.click_link_by_partial_href('/rsr/admin/rsr/publishingstatus/')
+        world.browser.click_link_by_text(project_name)
+        world.browser.driver.find_element_by_xpath('//*[@id="id_status"]/option[2]').click()
+        world.browser.find_by_name('_save').first.click()
+        world.browser.click_link_by_partial_href('admin/rsr/')
+        count = count+1
+
+@step(u'Then I can log out of RSR admin')
+def then_i_can_log_out_of_rsr_admin(step):
+    world.browser.click_link_by_partial_href('admin/logout/')
+
 @step(u'When I go to project listing page')
 def when_i_go_to_project_listing_page(step):
-    "Each scenario starts by navigating to the project main page"
     world.browser.find_link_by_href('href="/rsr/projects/all/"')
 
 @step(u'When I find the first project still to be funded in €')
@@ -42,12 +80,69 @@ def when_i_find_the_first_project_still_to_be_funded_in(step):
 
     last_word = len(row_text)-1
 
-    world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890'])) 
-    world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890'])) 
+    world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890']))
+    world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890']))
     world.browser.visit(world.project_needing_euro_URL)
 
-@step(u'When I note how much has been raised and how much is still needed')
-def when_i_note_how_much_has_been_raised_and_how_much_is_still_needed(step):
+@step(u'When I find the first project still to be funded in "([^"]*)"')
+def when_i_find_the_first_project_still_to_be_funded_in(step, currency):
+    if currency == "dollars":
+        currency_symbol = u"$"
+    elif currency == "euros":
+        currency_symbol = u"€"
+
+    project_table = world.browser.find_by_tag('tbody').first
+    project_rows = project_table.find_by_tag('tr')
+    count = 0
+    while count < len(project_rows):
+        if 'Donate' in project_rows[count].text and currency_symbol in project_rows[count].text:
+            element = project_rows[count].find_by_css('a').last
+            if currency == "dollars":
+                world.project_needing_dollars_URL = '/'.join(element['href'].split('/')[:-2]) + '/'
+            elif currency == "euros":
+                world.project_needing_euro_URL = '/'.join(element['href'].split('/')[:-2]) + '/'
+            break
+        count = count + 1
+
+    row_text = project_rows[count].text.split('\n')
+
+    last_word = len(row_text)-1
+
+    world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890']))
+    world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890']))
+    if currency == "dollars":
+        world.browser.visit(world.project_needing_dollars_URL)
+    elif currency == "euros":
+        world.browser.visit(world.project_needing_euro_URL)
+
+@step(u'When I find the first "([^"]*)" project requiring the maximum allowed PayPal donation or less, which has not received any donations')
+def when_i_find_the_first_group1_project_requiring_the_maximum_allowed_paypal_donation_or_less_which_has_not_received_any_donations(step, currency):
+    if currency == "euro":
+        currency_symbol = u"€"
+    elif currency == "dollar":
+        currency_symbol = u"$"
+    project_table = world.browser.find_by_tag('tbody').first
+    project_rows = project_table.find_by_tag('tr')
+    count = 0
+    while count < len(project_rows):
+        if 'Donate' in project_rows[count].text and currency_symbol in project_rows[count].text and '0 %' in project_rows[count].text:
+            element = project_rows[count].find_by_css('a').last
+            world.project_needing_funding_URL = '/'.join(element['href'].split('/')[:-2]) + '/'
+            row_text = project_rows[count].text.split('\n')
+            last_word = len(row_text)-1
+            world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890']))
+            if world.total_budget_all_page <= int(world.PAYPAL_MAX_DONATION_AMOUNT):
+                world.percentage_raised_all_page = int(''.join([c for c in row_text[last_word-1] if c in '1234567890']))
+                break
+        count = count + 1
+    world.browser.visit(world.project_needing_funding_URL)
+
+@step(u'When I note how many "([^"]*)" have been raised and how much is still needed')
+def when_i_note_how_many_group1_have_been_raised_and_how_much_is_still_needed(step, currency):
+    if currency == "euros":
+        currency_symbol = u"€"
+    elif currency == "dollars":
+        currency_symbol = u"$"
     element = world.browser.find_by_css('.fundingbox-table').first
     raised_text, still_needed_text = element.text.split('\n')
     total_budget_text = world.browser.find_by_css('.fundingbox-table').last.text
@@ -56,9 +151,9 @@ def when_i_note_how_much_has_been_raised_and_how_much_is_still_needed(step):
     #raised_text, still_needed_text = element.text.split('\n')
     #print "Captured text: " + raised_text
 
-    world.money_raised = int(raised_text.split(u"€")[-1].strip().replace(",", ""))
-    world.money_still_needed = int(still_needed_text.split(u"€")[-1].strip().replace(",", ""))
-    world.total_budget = int(total_budget_text.split(u"€")[-1].strip().replace(",", ""))
+    world.money_raised = int(raised_text.split(currency_symbol)[-1].strip().replace(",", ""))
+    world.money_still_needed = int(still_needed_text.split(currency_symbol)[-1].strip().replace(",", ""))
+    world.total_budget = int(total_budget_text.split(currency_symbol)[-1].strip().replace(",", ""))
     #print world.total_budget
 
 @step(u'Then these amounts should agree with those on the project listing page')
@@ -78,7 +173,19 @@ def when_i_click_on_the_link_with_group1_in_the_url_for_the_project(step, link_n
 
 @step(u'When I enter "([^"]*)" in the "([^"]*)" field')
 def when_i_enter_group1_in_the_group2_field(step, input_value, field_name):
-    world.browser.fill(field_name, input_value)
+    value = input_value
+    if input_value == "the estimated amount including fees to fully fund the project":
+        value = world.fully_fund_with_fees_estimate
+    elif input_value == "half the estimated amount including fees left to donate":
+        value = world.fully_fund_with_fees_estimate / 2
+        world.first_donation = value
+    elif input_value == "the full estimated amound including fees plus an additional one percent":
+        value = int(float(world.fully_fund_with_fees_estimate)*1.01)
+    world.browser.fill(field_name, value)
+
+@step(u'When I enter the full budget required for the project in the "([^"]*)" field')
+def when_i_enter_the_full_budget_required_for_the_project_in_the_group1_field(step, field_name):
+    world.browser.fill(field_name, world.total_budget_all_page)
 
 @step(u'When I click on the donate button')
 def when_i_click_on_the_donate_button(step):
@@ -214,9 +321,105 @@ def then_i_see_that_the_invoice_is_present_and_is_in_the_group1_state(step, grou
     world.browser.click_link_by_text('Invoices')
     world.browser.find_link_by_text(world.paypal_invoice_number).first
 
-@step(u'Then I see the error message <error>')
-def then_i_see_the_error_message_error(step):
+
+@step(u'When I find the first project in € that has not yet received any donations')
+def when_i_find_the_first_project_in_that_has_not_yet_received_any_donations(step):
+    project_table = world.browser.find_by_tag('tbody').first
+    project_rows = project_table.find_by_tag('tr')
+    count = 0
+    while count < len(project_rows):
+        if 'Donate' in project_rows[count].text and u"€" in project_rows[count].text:
+            element = project_rows[count].find_by_css('a').last
+
+            row_text = project_rows[count].text.split('\n')
+
+            last_word = len(row_text)-1
+
+            percentage_raised = int(''.join([c for c in row_text[last_word-1] if c in '1234567890']))
+            if percentage_raised == 0:
+
+                world.percentage_raised_all_page = percentage_raised
+                world.total_budget_all_page = int(''.join([c for c in row_text[last_word-2] if c in '1234567890']))
+                world.project_needing_euro_URL = '/'.join(element['href'].split('/')[:-2]) + '/'
+                print "project with 0 donations" + world.project_needing_euro_URL
+            break
+        count = count + 1
+
+
+    world.browser.visit(world.project_needing_euro_URL)
+
+
+@step(u'Then I see that the project appears as fully funded')
+def then_i_see_that_the_project_appears_as_fully_funded(step):
+    element = world.browser.find_by_css('.green').first
+    assert element.text == 'Fully funded'
+
+@step(u'When I enter half the amount left to donate in the "([^"]*)" field')
+def when_i_enter_half_the_amount_left_to_donate_in_the_group1_field(step, field_name):
+    input_value = (world.money_still_needed / 2)
+    world.browser.fill(field_name, input_value)
+
+@step(u'Then I see the half of the project funds listed against "([^"]*)" in the donors list')
+def then_i_see_the_half_of_the_project_funds_listed_against_group1_in_the_donors_list(step, donor_name):
+    donation_amount = (world.money_still_needed / 2)
+
+    element = world.browser.find_by_css('.project_budget_table').first
+    print element.text
+
+    print "the amount I expect to see would be"
+    print donation_amount
+    print "This needs to be completed - does the donor only appear after the donation is confirmed?"
+
+@step(u'Then I see that the invoices are present and is in the "([^"]*)" state')
+def then_i_see_that_the_invoices_are_present_and_is_in_the_group1_state(step, group1):
     assert False, 'This step must be implemented'
 
-    
+@step(u'Then I see "([^"]*)" listed against "([^"]*)" in the donors list')
+def then_i_see_group1_listed_against_group2_in_the_donors_list(step, donation, donor_name):
+
+    donations_table = world.browser.find_by_css('.project_budget_table').last
+    donation_found = 0
+#    print donations_table.text
+    donation_rows = donations_table.find_by_tag('tr')
+    count = 0
+    if donation == "the estimated project funds required including PayPal fees":
+        donation = world.fully_fund_with_fees_estimate
+    elif donation == "the first donation amount":
+        donation = world.first_donation
+    while count < len(donation_rows):
+#        print "the row under scrutiny is"
+#        print donation_rows[count].text
+        if donor_name in donation_rows[count].text and str(donation) in donation_rows[count].text:
+            donation_found = 1
+        count = count + 1
+#    print "the amount I expect to see would be"
+#    print donation
+#    print "against"
+#    print donor_name
+#    print "This needs to be completed - does the donor only appear after the donation is confirmed?"
+    if donation_found == 0:
+        assert False, 'The donation does not appear in the list of donations'
+
+#@step(u'When I note how many dollars have been raised and how much is still needed')
+#def when_i_note_how_many_group1_have_been_raised_and_how_much_is_still_needed(step):
+#    element = world.browser.find_by_css('.fundingbox-table').first
+#    raised_text, still_needed_text = element.text.split('\n')
+#    total_budget_text = world.browser.find_by_css('.fundingbox-table').last.text
+
+#    print "Original text: \n" + total_budget_text
+#    raised_text, still_needed_text = element.text.split('\n')
+#    print "Captured text: " + raised_text
+
+#    world.money_raised = int(raised_text.split(u"$")[-1].strip().replace(",", ""))
+#    world.money_still_needed = int(still_needed_text.split(u"$")[-1].strip().replace(",", ""))
+#    world.total_budget = int(total_budget_text.split(u"$")[-1].strip().replace(",", ""))
+
+@step(u'When I take note of the amount that is suggested is needed to fully fund the project including PayPal fees')
+def when_i_take_not_of_the_amount_that_is_suggested_is_needed_to_fully_fund_the_project_including_paypal_fees(step):
+    grey_elements = world.browser.find_by_css('.grey')
+    last_letter = len(grey_elements.first.text)-1
+    world.fully_fund_with_fees_estimate = int(''.join([c for c in grey_elements.first.text if c in '1234567890']))
+
+
+
 

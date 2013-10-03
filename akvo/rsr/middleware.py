@@ -19,6 +19,7 @@ from django.utils import translation
 from django.utils.cache import patch_vary_headers
 
 from akvo.rsr.models import PartnerSite
+import re
 
 
 __all__ = ["PartnerSitesLocaleMiddleware",
@@ -61,21 +62,6 @@ settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_DEVELOPMENT_DOMAIN = getattr(
-    settings,
-    "PARTNER_SITES_DEVELOPMENT_DOMAIN",
-    "akvoapp.dev"
-)
-
-PARTNER_SITES_DOMAINS = getattr(
-    settings,
-    "PARTNER_SITES_DOMAINS",
-    ("akvoapp.org",
-     "akvotest.org",
-     "akvotest2.org",
-     "akvotest3.org",
-    PARTNER_SITES_DEVELOPMENT_DOMAIN)
-)
 
 PARTNER_SITES_MARKETING_SITE = getattr(
     settings,
@@ -83,11 +69,8 @@ PARTNER_SITES_MARKETING_SITE = getattr(
     "http://www.akvoapp.org/"
 )
 
-RSR_DOMAINS = getattr(
-    settings,
-    "RSR_DOMAINS",
-    ("localhost", "127.0.0.1", "akvo.dev", "www.akvo.dev", "77.53.15.119")
-)
+RSR_SITE_REGEXPS = map(re.compile, settings.RSR_SITE_REGEXPS)
+PARTNER_SITE_REGEXPS = map(re.compile, settings.PARTNER_SITE_REGEXPS)
 
 
 def get_domain(request):
@@ -100,23 +83,26 @@ def get_domain(request):
     return domain
 
 
-def is_rsr_instance(domain):
-    return (domain == "akvo.org" or
-            domain.endswith(".akvo.org") or
-            domain in RSR_DOMAINS)
+def is_rsr_instance(hostname):
+    return any([site.search(hostname) for site in RSR_SITE_REGEXPS])
 
 
-def is_partner_site_instance(domain):
-    base_domain = ".".join(domain.split(".")[-2:])
-    if base_domain in PARTNER_SITES_DOMAINS:
-        return True
-    return False
+def is_partner_site_instance(hostname):
+    return any([site.search(hostname) for site in PARTNER_SITE_REGEXPS])
 
 
 def get_or_create_site(domain):
-    if domain == "www.akvo.org":
-        domain = "akvo.org"
-    sites = Site.objects.filter(domain=domain)
+    if domain.startswith('www.'):
+        domain = domain[4:]
+
+    # As a result of an issue(1) we need to ensure that we don't
+    # delete the fixture should we find duplicates
+    # There is no guaranteed ordering(2) we should explicitly order them in such
+    # a way that the fixture would appear first, i.e. by ensuring 'ORDER BY id ASC'
+    #
+    # (1) https://github.com/akvo/akvo-provisioning/issues/29
+    # (2) http://stackoverflow.com/questions/7163640/what-is-the-default-order-of-a-list-returned-from-a-django-filter-call
+    sites = Site.objects.filter(domain=domain).order_by('id')
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
         if duplicates.count():
@@ -140,7 +126,11 @@ class PartnerSitesRouterMiddleware(object):
         elif is_partner_site_instance(domain):
             urlconf = "akvo.urls.partner_sites"
             try:
-                hostname = domain.split(".")[-3]
+                domain_parts = domain.split(".")
+                hostname = domain_parts[0]
+                if hostname == 'www':
+                    hostname = domain_parts[1]
+
                 partner_site = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
@@ -162,7 +152,7 @@ class PartnerSitesRouterMiddleware(object):
             if cname_domain:
                 partner_site_domain = "akvoapp.org"
             else:
-                partner_site_domain = ".".join(domain.split(".")[-2:])
+                partner_site_domain = ".".join(domain.split(".")[1:])
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.app_domain = ".".join(
                 (partner_site.hostname, partner_site_domain)
@@ -206,7 +196,7 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
             urlconf = getattr(request, 'urlconf', None)
             language_path = '/%s%s' % (language, request.path_info)
             if settings.APPEND_SLASH and not language_path.endswith('/'):
-                language_path = language_path + '/'
+                language_path += '/'
 
             if is_valid_path(language_path, urlconf):
                 language_url = "%s://%s/%s%s" % (

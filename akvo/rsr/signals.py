@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
+from django.conf import settings
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
@@ -182,6 +183,9 @@ def act_on_log_entry(sender, **kwargs):
                 criterion['call'](object)
 
 def user_activated_callback(sender, **kwargs):
+    if not getattr(settings, 'REGISTRATION_NOTIFICATION_EMAILS', True):
+        return
+
     user = kwargs.get("user", False)
     if user:
         org = user.get_profile().organisation

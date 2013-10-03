@@ -4,6 +4,23 @@
 
 {% block title %}{{partner}} - {% endblock title %}
 
+{% block head %}
+    {% if partner.long_name %}
+      <meta property="og:title" content="Akvo.org - {{partner.long_name}}"/>
+    {% else %}
+      <meta property="og:title" content="Akvo.org - {{partner.name}}"/>
+    {% endif %}
+    <meta property="og:description" content="{{partner.description}}"/>
+    <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'organisation_main' org_id=partner.id %}"/>
+    {% if partner.logo %}    
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{partner.logo}}"/>
+    {% else %}
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
+    {% endif %}
+
+{% endblock head %}
+
+
 {% block breadcrum_right %}{% endblock breadcrum_right %}
 
 {% block breadcrum_items %}

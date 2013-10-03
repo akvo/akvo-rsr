@@ -317,6 +317,8 @@ class Organisation(models.Model):
         help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'),
     )
     description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'),)
+    
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
@@ -1282,6 +1284,8 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     phone_number = models.CharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
     validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+
     objects = UserProfileManager()
 
     # "constants" for use with SMS updating workflow
@@ -1796,6 +1800,8 @@ class ProjectUpdate(models.Model):
     time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
     time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
     # featured = models.BooleanField(_(u'featured'))
+    
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
 
     class Meta:
         get_latest_by = "time"
@@ -2005,6 +2011,8 @@ class Invoice(models.Model):
     bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+
     admin_objects = models.Manager()
     objects = InvoiceManager()
 
@@ -2167,6 +2175,8 @@ class PartnerSite(models.Model):
 
     ui_translation = models.BooleanField(_(u'Translate user interface'), default=False)
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
+    facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
+    twitter_button = models.BooleanField(_(u'Twitter button'), default=False)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
