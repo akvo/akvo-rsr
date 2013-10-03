@@ -174,7 +174,9 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     subject = ''.join(subject.splitlines())
     msg_context.update({'site': current_site})
     message = loader.render_to_string(message, msg_context)
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, to_list)
+    send_mail(
+        subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list
+    )
 
 
 def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
@@ -391,8 +393,12 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
             logger.info("Sending email notification of type %s to %s" % (notice_type, recipients, ))
             # don't send anything in debug/develop mode
             if not getattr(settings, 'SMS_DEBUG', False):
-                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipients)
-
+                send_mail(
+                    subject,
+                    body,
+                    getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
+                    recipients
+                )
             if should_send(user, notice_type, "sms") and user.get_profile().phone_number: # SMS
                 # strip newlines
                 sms = ''.join(render_to_string('notification/email_subject.txt', {
