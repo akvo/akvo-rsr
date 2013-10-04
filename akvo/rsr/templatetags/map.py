@@ -21,7 +21,7 @@ register = template.Library()
 
 
 # TODO: this should be fixed so partner sites use their own domain
-HOST = 'http://%s/' % getattr(settings, 'DOMAIN_NAME', 'akvo.org')
+HOST = 'http://%s' % getattr(settings, 'DOMAIN_NAME', 'akvo.org')
 
 @register.inclusion_tag('inclusion_tags/map.html')
 def map(resource, width, height, type="dynamic", marker_icon=""):
@@ -44,6 +44,7 @@ def map(resource, width, height, type="dynamic", marker_icon=""):
         'width': width,
         'height': height,
         'host': HOST,
+        'MEDIA_URL': getattr(settings, 'MEDIA_URL', '/media/'),
         'marker_icon': marker_icon,
     }
     #extend this to support more models that have a location
