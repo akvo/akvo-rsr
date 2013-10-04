@@ -56,7 +56,7 @@
         opts = map.mapOpts;
         // call /api/v1/map_for_project/ or /api/v1/map_for_organisation/ resources
         //TODO: derive the host from the current page URL instead maybe?
-        url = opts.host + 'api/v1/' + opts.resource + '/';
+        url = opts.host + '/api/v1/' + opts.resource + '/';
         //limit = 0 means all objects. If this becomes too heavy limit can be set to get the objects in multiple chunks
         limit = 100;
         // if object_id holds a value then that's the ID of the object we want to fetch
@@ -160,7 +160,7 @@
     addPin = function (map, location, template) {
         var marker, opts;
         opts = map.mapOpts;
-        marker = opts.host + 'rsr/media/core/img/';
+        marker = opts.host + opts.media_url + 'core/img/';
 
         // get a custom marker if there is one, otherwise it's red for organisations and blue for projects
         if (opts.marker_icon) {
