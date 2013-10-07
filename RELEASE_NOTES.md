@@ -8,7 +8,7 @@ Read more about [Akvo Products](http://akvo.org/products/).
 Akvo RSR ver 2.3.0 Passionfruit
 ---
 
-Wednesday 2nd October 2013, adriancollier
+Monday 7th October 2013, adriancollier
 
 New Features
 ---
