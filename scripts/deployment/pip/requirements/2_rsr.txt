@@ -18,7 +18,7 @@ requests==1.1.0
 # Django apps from VCS web services
 -e git://github.com/carlio/django-counter.git@31bbc8b994d208b84911c006d8a0f796fcd78940#egg=django-counter
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
--e git://github.com/carlio/djangoembed.git@c1f292a23c3f99b311699bd2a9ad1416d6d89573#egg=djangoembed
+-e git://github.com/carlio/djangoembed.git@cc655adb61d3deafe8bedf14ad34a7b7712acdef#egg=djangoembed
 -e git://github.com/toastdriven/django-tastypie.git@2b13147715347d8239bbe73943be0eae65c8a43b#egg=django_tastypie-dev
 
 # Akvonaut apps

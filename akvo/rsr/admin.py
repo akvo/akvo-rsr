@@ -902,7 +902,7 @@ class SmsReporterInline(admin.TabularInline):
     model = get_model('rsr', 'smsreporter')
     extra = 1
 
-    def get_readonly_fields(self, request, obj):
+    def get_readonly_fields(self, request, obj=None):
         """ Only allow viewing of gateway number and project for non-superusers
         """
         #opts = self.opts
