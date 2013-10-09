@@ -8,27 +8,10 @@ Read more about [Akvo Products](http://akvo.org/products/).
 Akvo RSR ver 2.3.0 Passionfruit
 ---
 
-Wednesday 2nd October 2013, adriancollier
+8th October 2013, adriancollier
 
 New Features
 ---
-
-###Social Media
-
-We have had several requests over the past years to add some social functionality to RSR. Well in this release we have introduced a couple of features that should allow you to be that little bit more social with your RSR content.
-
-The first of these is the addition of Facebook and Twitter sharing buttons on Partnersites. It is now possible to add these buttons to the right hand side panel of your project pages by selecting these in the RSR Admin.
-After enabling this feature, you will be able to see the buttons and click to share or like the content directly. This should make it that much easier for those working on a project to share their progress with their networks.
-
-Github issue [#230](https://github.com/akvo/akvo-rsr/issues/230)
-
-The second feature is the refining of the Meta-Data that is used when sharing projects or content in this way. Historically when you shared an RSR Project on Facebook you would be given the default text that sometimes did not match the Project content or description. Additionally the photo given as an option may not have been the primary photo for the project.
-
-We have fixed this now so that the most relevant information is passed through to Facebook or any other Social Site when sharing. So, now you can share your projects quickly and easily without the need to rewrite the description or upload your own images.
-
-Github issue [#196](https://github.com/akvo/akvo-rsr/issues/196)
-
-All in the name of making your viewing and sharing experience that much easier.
 
 ###Searching in the Admin on Internal ID
 
