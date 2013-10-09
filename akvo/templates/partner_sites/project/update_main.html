@@ -14,7 +14,7 @@
     {% else %}
     <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
     {% endif %}
-    <meta property="og:app_id" content="{{fb_app_id}}"/>
+    <meta property="fb:app_id" content="{{fb_app_id}}"/>
 
 {% endblock head %}
 
