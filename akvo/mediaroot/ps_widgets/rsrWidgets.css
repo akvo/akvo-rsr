@@ -270,14 +270,14 @@ ul.basicInfo li .projectStatus {
 ul.basicInfo li .projectLocation {
 	display: inline-block;
 	padding: 0.15em 0.35em 0.15em 17px;
-	font-size: 0.7em;
+	font-size: 0.6em;
 	text-transform: uppercase;
 	color: rgb(255,255,255);
 	background: url(pinLocation.png) left center no-repeat;
 	margin: 0 0 0 5px;
-	white-space:nowrap;
 	text-overflow: ellipsis;
-	overflow:hidden;
+	overflow: hidden;
+	line-height: 1;
 }
 #container.lightBG ul.basicInfo li .projectLocation {
 	color: rgb(32,32,36);
