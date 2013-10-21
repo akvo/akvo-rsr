@@ -29,15 +29,15 @@ class RightNowInAkvoResource(Resource):
     projects_budget_millions = fields.FloatField(attribute='projects_budget_millions')
 
     class Meta:
-        #Disallow list operations
+        # Disallow list operations
         list_allowed_methods = []
         detail_allowed_methods = ['get',]
         object_class = RightNowInAkvoObject
         resource_name = 'right_now_in_akvo'
         include_resource_uri = False
 
-    #Override urls such that GET:right_now_in_akvo/ is actually the detail endpoint
-    def override_urls(self):
+    # Override urls such that GET:right_now_in_akvo/ is actually the detail endpoint
+    def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'),
                 name="api_dispatch_detail"),

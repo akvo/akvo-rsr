@@ -132,7 +132,7 @@ def import_orgs(xml_file):
     def text_from_xpath(tree, xpath):
         element = tree.xpath(xpath)
         if len(element) != 1:
-            raise
+            return ''
         return element[0].text.strip()
 
     def create_new_organisation(org_etree, internal_id):

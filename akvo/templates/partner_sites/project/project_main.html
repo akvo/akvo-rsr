@@ -7,7 +7,12 @@
     <meta property="og:title" content="Akvo.org - {{project.title}}"/>
     <meta property="og:description" content="{{project.subtitle}} {{project.project_plan_summary}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'project_main' project.id %}"/>
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
+    {% if project.current_image and project.current_image.width >= 200 and project.current_image.height >= 200 %}    
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
+    {% else %}
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
+    {% endif %}
+    <meta property="fb:app_id" content="{{fb_app_id}}"/>
 
   {% comment %}
   <style type="text/css">

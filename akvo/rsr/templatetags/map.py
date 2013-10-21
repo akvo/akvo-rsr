@@ -44,6 +44,7 @@ def map(resource, width, height, type="dynamic", marker_icon=""):
         'width': width,
         'height': height,
         'host': HOST,
+        'MEDIA_URL': getattr(settings, 'MEDIA_URL', '/media/'),
         'marker_icon': marker_icon,
     }
     #extend this to support more models that have a location
