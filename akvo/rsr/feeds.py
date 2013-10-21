@@ -244,7 +244,10 @@ class AllProjectUpdates(UpdateFeed):
     description = _(u'Project updates for all Akvo RSR projects')
 
     def items(self):
-        return ProjectUpdate.objects.filter(project__publishingstatus__status='published').order_by('-time')
+        # Limited to 100 items to prevent gateway timeouts & since only the last 100 items
+        # are required for current usage anyway.
+        # TODO: rename or create a new appropriately named feed.
+        return ProjectUpdate.objects.filter(project__publishingstatus__status='published').order_by('-time')[:100]
 
     def item_title(self, item):
         return _(
