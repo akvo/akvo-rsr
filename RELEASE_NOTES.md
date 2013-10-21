@@ -5,6 +5,17 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.0.1 - Passionfruit Part 2 - Hotfix
+---
+21st October 2013, carlio
+
+Bug Fixes
+---
+
+The "All Projects" RSS feed now returns only the most recent 100 project updates to speed up the feed generation and prevent out-of-memory problems. 
+
+GitHub Issue [#318](https://github.com/akvo/akvo-rsr/issues/318) and [#329](https://github.com/akvo/akvo-rsr/issues/329)
+
 Akvo RSR ver 2.3.0 Passionfruit
 ---
 
