@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- Edited by XMLSpy® -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:akvo="http://www.akvo.org">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:akvo="http://akvo.org/api/v1/iati-activities">
 
   <xsl:template match="iati-activities">
       <xsl:apply-templates select="iati-activity" />
@@ -220,11 +220,15 @@
   
   <!-- location -->
   <xsl:template match="location">
-    <object>
-      <xsl:apply-templates select="coordinates" />
-      <xsl:apply-templates select="administrative" />
-      <xsl:apply-templates select="location-type" />
-    </object>
+    <xsl:choose>
+      <xsl:when test="administrative[@country]">
+        <object>
+          <xsl:apply-templates select="coordinates" />
+          <xsl:apply-templates select="administrative" />
+          <xsl:apply-templates select="location-type" />
+        </object>
+      </xsl:when>
+    </xsl:choose>      
   </xsl:template>
 
   <xsl:template match="coordinates">
@@ -305,7 +309,7 @@
   <xsl:template match="result/indicator">
     <object>
       <xsl:apply-templates select="title"/>
-      <xsl:apply-templates select="period/target"/>
+      <xsl:apply-templates select="period"/>
     </object>
   </xsl:template>
   
@@ -315,6 +319,23 @@
     </name>
   </xsl:template>
   
+  <xsl:template match="indicator/period">
+    <xsl:choose>
+      <xsl:when test="actual">
+        <xsl:apply-templates select="actual"/>
+      </xsl:when>
+      <xsl:when test="target">
+        <xsl:apply-templates select="target"/>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="actual">
+    <value>
+      <xsl:value-of select="normalize-space(@value)" />
+    </value>
+  </xsl:template>
+
   <xsl:template match="period/target">
     <value>
       <xsl:value-of select="normalize-space(@value)" />
@@ -322,12 +343,47 @@
   </xsl:template>
   
   <!-- budget -->
-  <xsl:template match="budget">
+  <!-- budget@type="2" is the actual budget and is what we use if it's available,
+       otherwise we user budget@type="1". Since both types may exist we need the
+       following construct.       
+  -->
+  <xsl:template match="iati-activity/budget[@type='1']">
+    <xsl:choose>
+      <!-- ignore Cordaid's budgets, they are handled by post-processing -->
+      <xsl:when test="../budget[@akvo:budget-from]">
+      </xsl:when>
+      <!-- if there's a type="2" budget we use that instead, see below -->
+      <xsl:when test="../budget[@type='2']">
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="value"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <!-- if there's a type="2" we use that -->
+  <xsl:template match="iati-activity/budget[@type='2']">
+    <xsl:choose>
+      <!-- ignore Cordaid's budgets, they are handled by post-processing -->
+      <xsl:when test="../budget[@akvo:budget-from]">
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="value"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="value">
     <object>
       <amount>
-        <xsl:value-of select="normalize-space(value)" />
+        <xsl:value-of select="normalize-space(.)" />
       </amount>
-      <label>1</label>
+      <label>
+        <xsl:value-of select="normalize-space(@akvo:type)" />
+      </label>
+      <other_extra>
+        <xsl:value-of select="normalize-space(@akvo:label)" />
+      </other_extra>
     </object>
   </xsl:template>
 
