@@ -11,10 +11,10 @@ from tastypie.serializers import Serializer
 class IATISerializer(Serializer):
 
     def from_etree(self, data):
-        """ transform the iati-activity XML into "tastypie compliant" XML using the 'iati-xslt.xml' stylesheet
+        """ transform the iati-activity XML into "tastypie compliant" XML using the 'iati-xslt.xsl' stylesheet
         """
         if data.tag == 'iati-activity':
-            with open(os.path.join(os.path.dirname(__file__),'xml', 'iati-xslt.xml'), 'r') as f:
+            with open(os.path.join(os.path.dirname(__file__),'xml', 'iati-xslt.xsl'), 'r') as f:
                 iati_xslt = f.read()
             etree_xml = etree.XML(iati_xslt)
             etree_xslt = etree.XSLT(etree_xml)
