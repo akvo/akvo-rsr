@@ -6,7 +6,6 @@
 
 
 import csv
-import datetime
 import glob
 from lxml import etree
 import os
@@ -25,18 +24,19 @@ from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import (
     Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID, OrganisationLocation
 )
-from akvo.rsr.utils import model_and_instance_based_filename, custom_get_or_create_country
+from akvo.rsr.utils import model_and_instance_based_filename, custom_get_or_create_country, who_am_i
 from akvo.scripts.cordaid import (
     CORDAID_ORG_ID, CORDAID_IATI_ID, DGIS_ORG_ID, DGIS_IATI_ID, CORDAID_INDICATORS_CSV,
     CORDAID_LOGOS_DIR, CORDAID_ORGANISATIONS_XML,
     print_log, log, LOG_ORGANISATIONS, ACTION_FOUND, ERROR_MULTIPLE_OBJECTS, ACTION_LOCATION_SET,
     ERROR_COUNTRY_CODE, ACTION_CREATE_ORG, ERROR_EXCEPTION, ACTION_LOCATION_FOUND, ACTION_SET_IMAGE,
     CORDAID_ORG_CSV_FILE,
-    init_log)
+    init_log,
+    outsys)
 
 
 def create_cordaid_business_units(business_units):
-
+    outsys("\nRunning {}() ".format(who_am_i()))
     business_units_info = [
         dict(pk=CORDAID_ORG_ID,  internal_id="27239"),
         dict(pk=959,  internal_id="K6020", cat_name="Children & Education", fa="Education"),
@@ -53,6 +53,7 @@ def create_cordaid_business_units(business_units):
     ]
     cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
     for data in business_units_info:
+        outsys('.')
         pk, identifier = data['pk'], data['internal_id']
         cat_name, fa_name = data.get('cat_name'), data.get('fa')
         try:
@@ -71,10 +72,10 @@ def create_cordaid_business_units(business_units):
         if cat_name:
             new_cat, created = Category.objects.get_or_create(name=cat_name)
             if created:
-                log(u"Created cat: {cat_name}",dict(cat_name=cat_name))
+                log(u"Created cat: {id}, {cat_name}",dict(id=new_cat.id, cat_name=cat_name))
                 new_cat.focus_area.add(FocusArea.objects.get(name=fa_name))
             else:
-                log(u"Found existing cat: {cat_name}", dict(cat_name=cat_name))
+                log(u"Found existing cat: {id}, {cat_name}", dict(id=new_cat.id, cat_name=cat_name))
             business_units.setdefault(identifier, {'category': None, 'benchmarknames': []})['category'] = new_cat
 
     cordaid.iati_org_id = CORDAID_IATI_ID
@@ -89,20 +90,24 @@ def create_cordaid_business_units(business_units):
 
 
 def create_cats_and_benches(business_units):
+    outsys("\nRunning {}() ".format(who_am_i()))
     for internal_id, data in business_units.items():
         for name in data['benchmarknames']:
+            outsys('.')
             new_bench, created = Benchmarkname.objects.get_or_create(name=name)
             if created:
-                log(u"Created bench: {name}", dict(name=name))
+                log(u"Created bench: {id}, {name}", dict(id=new_bench.id, name=name))
             else:
-                log(u"Found existing bench: {name}", dict(name=name))
+                log(u"Found existing bench: {id}, {name}", dict(id=new_bench.id, name=name))
             data['category'].benchmarknames.add(new_bench)
 
 
 def import_cordaid_benchmarks(csv_file):
+    outsys("\nRunning {}() ".format(who_am_i()))
     # the columns to use in the CSV
     COL_BENCHMARKNAME, COL_BUSINESS_UNID_ID = 1, 2
     with open(csv_file, 'r') as f:
+        outsys('.')
         indicators_reader = csv.reader(f, delimiter=',', quotechar='"')
         business_units = {}
         for line in indicators_reader:
@@ -129,7 +134,12 @@ def normalize_url(url):
     return url
 
 def import_orgs(xml_file):
+    outsys("\nRunning {}() ".format(who_am_i()))
+
     def text_from_xpath(tree, xpath):
+        """ utility to get the text of an element using xpath, stripped
+            returns '' if the xpath returns 0 or more than one element
+        """
         element = tree.xpath(xpath)
         if len(element) != 1:
             return ''
@@ -254,8 +264,8 @@ def import_orgs(xml_file):
     with open(xml_file, "rb") as f:
         root = etree.fromstring(f.read())
         cordaid = Organisation.objects.get(id=CORDAID_ORG_ID)
-        count = 0
         for org_etree in root:
+            outsys('.')
             internal_id = text_from_xpath(org_etree, 'org_id')
             try:
                 internal_org_id = InternalOrganisationID.objects.get(
@@ -297,7 +307,7 @@ def import_orgs(xml_file):
                 else:
                     continue
             organisation_logo(org_etree, internal_id, internal_org_id.referenced_org)
-
+    outsys('\n')
 
 if __name__ == '__main__':
     business_units = import_cordaid_benchmarks(CORDAID_INDICATORS_CSV)
@@ -306,7 +316,7 @@ if __name__ == '__main__':
     import_orgs(CORDAID_ORGANISATIONS_XML)
     log_file = init_log(CORDAID_ORG_CSV_FILE)
     names = (u'internal_id', u'pk', u'label', u'event', u'extra')
-    print_log(log_file, names)
+    print_log(log_file, names, True)
 
 
 

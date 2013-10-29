@@ -38,7 +38,8 @@ cordaid_settings = dict(
     CORDAID_ORG_ID = 273,
     CORDAID_IATI_ID = 'NL-KVK-41160054',
     DGIS_ORG_ID = 464,
-    DGIS_IATI_ID = 'NL-1'
+    DGIS_IATI_ID = 'NL-1',
+    OTHERS_ORG_ID = 1653,
 )
 
 # construct local variables for Cordaid supporting data
@@ -46,7 +47,7 @@ for key, val in cordaid_settings.items():
     # try to grab the identifier from settings, if not found use the default from cordaid_settings
     setattr(me, key, getattr(settings, key, val))
 
-# me. isn't strictly necessary here, but included for the code checker's sake
+# "me." isn't strictly necessary here, but included for the code checker's sake
 CORDAID_INDICATORS_CSV = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_INDICATORS_CSV_FILE_NAME)
 CORDAID_IATI_ACTIVITIES_XML = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_IATI_ACTIVITES_FILENAME)
 CORDAID_ORGANISATIONS_XML = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_ORGANISATIONS_FILENAME)
@@ -58,8 +59,11 @@ CORDAID_UPLOAD_CSV_FILE = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_UPLOAD_CS
 CORDAID_PROJECT_IMAGES_DIR =  os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_PROJECT_IMAGES_SUBDIR)
 CORDAID_LOGOS_DIR =  os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_LOGOS_SUBDIR)
 
+def outsys(txt):
+    sys.stdout.write(txt)
+    sys.stdout.flush()
 
-base_log = dict(msg=[], error=[])
+#base_log = dict(msg=[], error=[])
 log_bits = []
 
 def log(text, data):
@@ -77,7 +81,7 @@ def log_to_file(text, log_file):
         f.write(smart_str(out))
     sys.stdout.write(smart_str(out))
 
-def print_log(log_file, column_names):
+def print_log(log_file, column_names, to_console=False):
     dataset = tablib.Dataset()
     dataset.headers = column_names
     for bit in log_bits:
@@ -90,6 +94,8 @@ def print_log(log_file, column_names):
             if data[name]: do_append = True
         if do_append:
             dataset.append(row)
+        elif to_console:
+            print  bit['text'].format(**bit['data'])
 
     log_to_file(dataset.csv, log_file)
 
@@ -115,6 +121,7 @@ ACTION_LOCATION_FOUND = 'found location'
 ACTION_CREATE_ORG = 'organisation created'
 ACTION_FUNDING_SET = 'set funding'
 ACTION_FUNDING_FOUND = 'found funding'
+ACTION_BUDGET_SET = 'set total budget'
 ACTION_CREATE_PROJECT = 'project created'
 ACTION_UPDATE_PROJECT = 'project updated'
 
@@ -125,3 +132,4 @@ ERROR_EXCEPTION = 'general exception'
 ERROR_CREATE_ACTIVITY = 'activity create error'
 ERROR_UPDATE_ACTIVITY = 'activity update error'
 ERROR_UPLOAD_ACTIVITY = "activity upload error"
+ERROR_NO_ORGS = "participating orgs missing error"

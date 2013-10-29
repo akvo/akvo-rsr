@@ -18,7 +18,7 @@ from django.core.management import setup_environ
 from akvo import settings
 setup_environ(settings)
 
-from akvo.scripts.cordaid import log, API_VERSION, CORDAID_IATI_ACTIVITIES_XML, CORDAID_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION, ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT, CORDAID_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS
+from akvo.scripts.cordaid import log, API_VERSION, CORDAID_IATI_ACTIVITIES_XML, CORDAID_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION, ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT, CORDAID_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS
 from requester import Requester
 
 
@@ -170,17 +170,20 @@ def credentials_from_args(argv):
         usage(argv[0])
         return None
 
-def get_project_count(internal_id, user):
+def get_project_count(user, **q_args):
     """
     query the API for projects associated with a given internal_id
     """
     url_args = user
-    url_args.update(internal_id=internal_id)
+    url_args.update(
+        extra_args = "&".join(
+            ["{}={}".format(item[0], item[1]) for item in q_args.items()]
+        )
+    )
     try:
         project = Requester(
             url_template="http://{domain}/api/{api_version}/project/?"
-                "format=json&partnerships__internal_id={internal_id}"
-                "&api_key={api_key}&username={username}",
+                "format=json&api_key={api_key}&username={username}&{extra_args}",
             url_args=url_args
         )
     except Exception, e:
@@ -194,31 +197,42 @@ def upload_activities(argv):
         with open(CORDAID_IATI_ACTIVITIES_XML, 'r') as f:
             root = etree.fromstring(f.read())
             AKVO_NS = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
-            for i in range(len(root)):
-                internal_id = root[i].get(AKVO_NS + 'internal-project-id')
-                iati_id=root[i].findall('iati-identifier')[0].text
+            activities = root.findall('iati-activity')
+            for i in range(len(activities)):
+                internal_id = activities[i].get(AKVO_NS + 'internal-project-id')
+                iati_id=activities[i].findall('iati-identifier')[0].text
                 print "Processing activity {iati_id}".format(iati_id=iati_id),
-                ok, project = get_project_count(internal_id, user)
-                if not ok:
-                    continue #error msg already output
-                project_count = project.response.json()['meta']['total_count']
-                if project_count == 0:
-                    ok, message, data = post_an_activity(root[i], user)
+                if len(activities[i].findall('participating-org')) > 0:
+                    if internal_id:
+                        ok, project = get_project_count(user, **dict(partnerships__internal_id=internal_id))
+                    elif iati_id:
+                        ok, project = get_project_count(user, **dict(partnerships__iati_activity_id=iati_id))
+                    if not ok:
+                        continue #error msg already output
+                    project_count = project.response.json()['meta']['total_count']
+                    if project_count == 0:
+                        ok, message, data = post_an_activity(activities[i], user)
+                        log(message, data)
+                        print message.format(**data)
+                    elif project_count == 1:
+                        pk = project.response.json()['objects'][0]['id']
+                        ok, message, data = put_an_activity(activities[i], pk, user)
+                        log(message, data)
+                        print message.format(**data)
+                    elif project_count > 1:
+                        data = dict(iati_id=iati_id, event=ERROR_MULTIPLE_OBJECTS, extra=internal_id)
+                        log(None, data)
+                        print(
+                            "**** Error updating iati-activity: {iati_id}. "
+                                "More than one project with internal ID {extra} exists.".format(**data)
+                        )
+                else:
+                    import pdb
+                    pdb.set_trace()
+                    message = "Iati-activity {iati_id} has no participating-orgs, aborting"
+                    data = dict(iati_id = iati_id, event = ERROR_NO_ORGS,)
                     log(message, data)
-                    print message.format(**data)
-                elif project_count == 1:
-                    pk = project.response.json()['objects'][0]['id']
-                    ok, message, data = put_an_activity(root[i], pk, user)
-                    log(message, data)
-                    print message.format(**data)
-                elif project_count > 1:
-                    data = dict(iati_id=iati_id, event=ERROR_MULTIPLE_OBJECTS, extra=internal_id)
-                    log(None, data)
-                    print(
-                        "**** Error updating iati-activity: {iati_id}. "
-                            "More than one project with internal ID {extra} exists.".format(**data)
-                    )
-
+                    print(message.format(**data))
 
 if __name__ == '__main__':
     upload_activities(sys.argv)

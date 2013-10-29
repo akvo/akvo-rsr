@@ -10,13 +10,22 @@ ul.thead li {float:left; 	text-align: left;
 	color:rgb(204,204,204);
 	padding:5px 0 0 1%;
 }
-.darkBG .projectListWidget { color: rgb(214,214,214); }
-.lightBG .projectListWidget { color: rgb(32,32,36); }
+.projectListWidget {
+	height: 100%;
+	margin: 0 0 1px;
+}
+.darkBG .projectListWidget {
+	color: rgb(214,214,214);
+}
+.lightBG .projectListWidget {
+	color: rgb(32,32,36);
+}
 .projectListWidget td {
 	vertical-align: top;
 	padding: 0.5em 0.25em;
 	border-bottom: 1px solid rgb(34,34,34);
 	border-top: 1px solid rgb(0,0,0);
+	margin: 0;
 }
 .lightBG .projectListWidget td {
 	vertical-align: top;

@@ -3,7 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from decimal import Decimal
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -17,11 +17,15 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import NotFound
 from tastypie.resources import ModelResource
 
+from akvo import settings
+
 from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToManyField
 from akvo.api.serializers import IATISerializer
 
-from akvo.rsr.models import Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark
+from akvo.rsr.models import (
+    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark
+)
 from akvo.rsr.utils import get_rsr_limited_change_permission
 
 from .resources import ConditionalFullResource, get_extra_thumbnails
@@ -36,22 +40,28 @@ class IATIProjectModelForm(ModelForm):
 class IATIProjectResource(ModelResource):
 
     benchmarks =  fields.ToManyField(
-        'akvo.api.resources.IATIBenchmarkResource', 'benchmarks', full=True, related_name='project'
+        'akvo.api.resources.IATIBenchmarkResource',
+        'benchmarks', full=True, related_name='project'
     )
     budget_items = fields.ToManyField(
-        'akvo.api.resources.IATIBudgetItemResource', 'budget_items', full=True, related_name='project'
+        'akvo.api.resources.IATIBudgetItemResource',
+        'budget_items', full=True, related_name='project'
     )
     categories =  fields.ToManyField(
-        'akvo.api.resources.IATICategoryResource', 'categories', full=True, related_name='project'
+        'akvo.api.resources.IATICategoryResource',
+        'categories', full=True, null=True, related_name='project'
     )
     goals = fields.ToManyField(
-        'akvo.api.resources.IATIGoalResource', 'goals', full=True, related_name='project'
+        'akvo.api.resources.IATIGoalResource',
+        'goals', full=True, related_name='project'
     )
     locations = fields.ToManyField(
-        'akvo.api.resources.IATIProjectLocationResource', 'locations', full=True, related_name='location_target'
+        'akvo.api.resources.IATIProjectLocationResource',
+        'locations', full=True, related_name='location_target'
     )
     partnerships = fields.ToManyField(
-        'akvo.api.resources.IATIPartnershipResource', 'partnerships', full=True, related_name='project'
+        'akvo.api.resources.IATIPartnershipResource',
+        'partnerships', full=True, related_name='project'
     )
 
     class Meta:
@@ -80,10 +90,12 @@ class IATIProjectResource(ModelResource):
             try:
                 bundle.obj = self.obj_get(bundle=bundle, **lookup_kwargs)
             except ObjectDoesNotExist:
-                raise NotFound("A model instance matching the provided arguments could not be found.")
+                raise NotFound(
+                    "A model instance matching the provided arguments could not be found."
+                )
 
-        # If the method is PUT, delete all related objects so they can be re-created with potentially new data
-        # This
+        # If the method is PUT, delete all related objects
+        # so they can be re-created with potentially new data
         if method == 'PUT':
             Goal.objects.filter(project=bundle.obj).delete()
             BudgetItem.objects.filter(project=bundle.obj).delete()
@@ -102,50 +114,49 @@ class IATIProjectResource(ModelResource):
         super(IATIProjectResource, self).put_detail(request, **kwargs)
 
     def alter_deserialized_detail_data(self, request, data):
-        # Figure out the category for the project from the business unit
-        business_unit_categories = {
-            "K6020": dict(cat_name="Children & Education", fa="Education"),
-            "K6090": dict(cat_name="Domestic", fa="Economic development"),
-            "K6030": dict(cat_name="Disaster Recovery", fa="Economic development"),
-            "K6070": dict(cat_name="Entrepreneurship", fa="Economic development"),
-            "K6110": dict(cat_name="Food Security", fa="Healthcare"),
-            "K6100": dict(cat_name="Investments", fa="Economic development"),
-            "K6010": dict(cat_name="Healthcare", fa="Healthcare"),
-            "K6060": dict(cat_name="Security & Justice", fa="Economic development"),
-            "K6080": dict(cat_name="Urban Matters", fa="Economic development"),
-            "K6040": dict(cat_name="Women's leadership", fa="Economic development"),
-            "K6050": dict(cat_name="Extractives", fa="Economic development"),
-        }
+        reporting_iati_org_id = data['partnerships'][0]['reporting_org']
+        # Cordaid custom code
+        if reporting_iati_org_id == getattr(settings, 'CORDAID_IATI_ID', 'NL-KVK-41160054'):
+            # Figure out the category for the project from the business unit
+            business_unit_categories = {
+                "K6020": dict(cat_name="Children & Education", fa="Education"),
+                "K6090": dict(cat_name="Domestic", fa="Economic development"),
+                "K6030": dict(cat_name="Disaster Recovery", fa="Economic development"),
+                "K6070": dict(cat_name="Entrepreneurship", fa="Economic development"),
+                "K6110": dict(cat_name="Food Security", fa="Healthcare"),
+                "K6100": dict(cat_name="Investments", fa="Economic development"),
+                "K6010": dict(cat_name="Healthcare", fa="Healthcare"),
+                "K6060": dict(cat_name="Security & Justice", fa="Economic development"),
+                "K6080": dict(cat_name="Urban Matters", fa="Economic development"),
+                "K6040": dict(cat_name="Women's leadership", fa="Economic development"),
+                "K6050": dict(cat_name="Extractives", fa="Economic development"),
+            }
+            business_unit = business_unit_categories.get(data['partnerships'][0]['business_unit'], None)
+            project_category = Category.objects.get(name=business_unit['cat_name'], focus_area__name=business_unit['fa'])
+            data['categories'] = ['/api/v1/iati_category/{pk}/'.format(pk=project_category.pk),]
 
-        business_unit = business_unit_categories[data['partnerships'][0]['business_unit']]
-        project_category = Category.objects.get(name=business_unit['cat_name'], focus_area__name=business_unit['fa'])
-        data['categories'] = ['/api/v1/iati_category/{pk}/'.format(pk=project_category.pk),]
-
-        # prepare the benchmarks, looking up the Benchmarkname and set the Category to project_category
-        benchmarks = []
-        for benchmark in data['benchmarks']:
-            # if we don't find a value drop that benchmark
-            if benchmark.get('value'):
-                new_benchmark = dict(value=benchmark['value'])
-                benchmarkname = Benchmarkname.objects.get(name=benchmark['name'])
-                new_benchmark['name'] = benchmarkname.pk
-                new_benchmark['category'] = project_category.pk
-                benchmarks.append(new_benchmark)
-        data['benchmarks'] = benchmarks
+            # prepare the benchmarks, looking up the Benchmarkname and set the Category to project_category
+            benchmarks = []
+            for benchmark in data['benchmarks']:
+                # if we don't find a value drop that benchmark
+                if benchmark.get('value'):
+                    new_benchmark = dict(value=benchmark['value'])
+                    benchmarkname = Benchmarkname.objects.get(name=benchmark['name'])
+                    new_benchmark['name'] = benchmarkname.pk
+                    new_benchmark['category'] = project_category.pk
+                    benchmarks.append(new_benchmark)
+            data['benchmarks'] = benchmarks
 
         # hack to set the first location as primary
         if data.get('locations'):
             data['locations'][0]['primary'] = True
             for location in data['locations'][1:]:
                 location['primary'] = False
-        # hack to sum multiple budget tags into one
+
+        # remove budget items with value 0
         if data.get('budget_items'):
-            if len(data['budget_items']) > 1:
-                data['budget_items'] = [
-                    {'amount': '{amount}'.format(
-                        amount=sum([int(item['amount']) for item in data['budget_items']])
-                    ), 'label': '1'}
-                ]
+            data['budget_items'] = [item for item in data['budget_items'] if Decimal(item['amount']) > 0]
+
         # hack to truncate org names.
         # Tried to do this in the XSLT but substring(text, 1, 25) sometimes returns more than 25 characters :-p
         # TODO: write a general truncator function for all char and text field of a model's deserialized data

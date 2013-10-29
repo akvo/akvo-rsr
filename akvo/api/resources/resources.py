@@ -33,7 +33,7 @@ class ConditionalFullResource(ModelResource):
         Here we override to check for a 'distinct' query string variable,
         if it's equal to True we apply distinct() to the queryset after filtering.
         """
-        distinct = request.GET.get('distinct', False) == 'True'
+        distinct = request.GET.get('distinct', 'True') == 'True'
         if distinct:
             return self.get_object_list(request).filter(**applicable_filters).distinct()
         else:
