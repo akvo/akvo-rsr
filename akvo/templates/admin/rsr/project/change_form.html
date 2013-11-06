@@ -98,7 +98,7 @@
               (function($) {
                   var buttons = $(".submit-row").find("input:submit");
                   buttons.click(function(){
-                    buttons.attr("disabled", true);   
+                    buttons.fadeTo("fast", 0.3);
                   });
               })(django.jQuery);
           </script>
