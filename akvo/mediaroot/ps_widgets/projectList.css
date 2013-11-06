@@ -1,5 +1,10 @@
 .projectList {width:745px; height:730px;}
-.projectListTable {width:745px; height:700px; overflow-y:scroll;}
+.projectListTable {
+  width:745px;
+  height:100%;
+  margin-bottom:1px;
+  /* overflow-y:scroll; */
+}
 ul.thead {height:30px;}
 ul.thead li {float:left; 	text-align: left;
 	white-space: nowrap;
@@ -12,7 +17,7 @@ ul.thead li {float:left; 	text-align: left;
 }
 .projectListWidget {
 	height: 100%;
-	margin: 0 0 1px;
+	margin-bottom: 1px;
 }
 .darkBG .projectListWidget {
 	color: rgb(214,214,214);
