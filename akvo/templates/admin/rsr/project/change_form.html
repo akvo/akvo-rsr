@@ -93,12 +93,10 @@
           {# JavaScript for prepopulated fields #}
           {% prepopulated_fields_js %}
 
-          {# Disable the save button after it has been clicked #}
+          {# Disable save buttons after they have been clicked #}
           <script type="text/javascript">
               (function($) {
-                  var buttons = $("input:submit[name='_save']", 
-                                  "input:submit[name='_saveasnew']",
-                                  "input:submit[name='_continue']");
+                  var buttons = $(".submit-row :button");
                   buttons.click(function(){
                     buttons.attr("disabled", true);   
                   });
