@@ -96,7 +96,7 @@
           {# Disable save buttons after they have been clicked #}
           <script type="text/javascript">
               (function($) {
-                  var buttons = $(".submit-row :button");
+                  var buttons = $(".submit-row").find("input:submit");
                   buttons.click(function(){
                     buttons.attr("disabled", true);   
                   });
