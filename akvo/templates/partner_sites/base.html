@@ -116,10 +116,10 @@
       <p class="small">
         {% trans "Contact at " %}
         <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
-        {% if app_url %}
+        {% if akvoapp_root_url %}
           |
           {% if not user.username %}
-            <a id="main_nav_account" href="{{app_url}}{% url 'sign_in' %}?next={{request.path}}" target="_top">
+            <a id="main_nav_account" href="{{akvoapp_root_url}}{% url 'sign_in' %}?next={{request.path}}" target="_top">
               <span>{% trans 'Sign in' %}</span>
             </a>
           {% else %}

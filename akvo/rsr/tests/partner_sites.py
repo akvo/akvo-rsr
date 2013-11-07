@@ -30,13 +30,13 @@ class PartnerSitesRouterMiddlewareTestCase(unittest.TestCase):
 
         # Configure default Site object
         site_1 = Site.objects.get(pk=1) 
-        site_1.domain = 'www.akvo.org'
-        site_1.name = 'www.akvo.org'
+        site_1.domain = 'rsr.akvo.org'
+        site_1.name = 'rsr.akvo.org'
         site_1.development_domain = 'akvo.dev'
         site_1.save()
 
         self.akvo_request = HttpRequest()
-        self.akvo_request.META['SERVER_NAME'] = 'www.akvo.org'
+        self.akvo_request.META['SERVER_NAME'] = 'rsr.akvo.org'
         self.akvo_request.META['SERVER_PORT'] = '8000'
 
         self.nonvalid_request = HttpRequest()
@@ -63,7 +63,7 @@ class PartnerSitesRouterMiddlewareTestCase(unittest.TestCase):
 
 
     def test_akvo_host(self):
-        """Tests bare www.akvo.org."""
+        """Tests bare rsr.akvo.org."""
         self.assertEqual(self.mw.process_request(self.akvo_request), None)
 
     def test_nonvalid_host(self):
