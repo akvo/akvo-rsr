@@ -75,16 +75,6 @@
           <img width="120" height="90" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 120x90 sharpen %}" alt="{{focus_area}}"/>
           {{focus_area.description|apply_markup:"markdown"}}
         </div>
-        {% if focus_area.slug != 'all' %}
-          <div class='column span-3 last'>
-            <div class="white_box blue_tint">
-              <div class="space20">
-                <h2>Related focus area</h2>
-                <a href="/web/{{focus_area.slug}}" class="small">{% trans 'Learn more about'%} <br/>{{focus_area}}&nbsp;<span class="link_triangle">&#x25BA;</span></a>
-              </div>
-            </div>
-          </div>
-        {% endif %}
       {% endif %}
       <div class="clear"></div>
       <h1 class="h0">
