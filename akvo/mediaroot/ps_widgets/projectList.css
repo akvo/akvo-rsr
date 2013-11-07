@@ -1,5 +1,5 @@
 .projectList {width:745px; height:730px;}
-.projectList tbody {display:block, height:690px; overflow-y:scroll;}
+.projectList tbody {display:block !important; height:690px !important; overflow: auto !important;}
 .projectListTable {
   width:745px;
   height:100%;
