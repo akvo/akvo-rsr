@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 # custom processors for thumbnail generation
+from PIL import Image
 
 def scale_and_pad(im, requested_size, opts):
     x, y = [float(v) for v in im.size]
