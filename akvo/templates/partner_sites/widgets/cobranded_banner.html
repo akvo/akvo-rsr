@@ -13,7 +13,7 @@
     <div class="projectDescr">
       {% rsr_widget_project_status_location project %}
       <h2 id="project_title">
-        <a href="{{app_url}}{{project.get_absolute_url}}">{{project.title|smart_truncate:60}}</a>
+        <a href="{{project.get_absolute_url}}">{{project.title|smart_truncate:60}}</a>
       </h2>
       {% rsr_widget_project_photo project 120 90 %}
       <p id="project_subtitle">{{project.project_plan_summary|smart_truncate:120}}</p>

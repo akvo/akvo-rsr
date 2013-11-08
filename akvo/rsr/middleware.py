@@ -150,18 +150,18 @@ class PartnerSitesRouterMiddleware(object):
 
         if partner_site is not None and partner_site.enabled:
             if cname_domain:
-                partner_site_domain = "akvoapp.org"
+                partner_site_domain = getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org')
             else:
                 partner_site_domain = ".".join(domain.split(".")[1:])
             request.partner_site = settings.PARTNER_SITE = partner_site
             request.app_domain = ".".join(
                 (partner_site.hostname, partner_site_domain)
             )
-            request.app_url = "http://%s" % request.app_domain
+            request.akvoapp_root_url = "http://%s" % request.app_domain
             request.organisation_id = partner_site.organisation.id
             request.default_language = partner_site.default_language
 
-        request.domain_url = "http://%s" % settings.DOMAIN_NAME
+        request.domain_url = "http://%s" % settings.RSR_DOMAIN
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
         return

@@ -2011,7 +2011,7 @@ class Invoice(models.Model):
     bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    #notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -2126,7 +2126,7 @@ class PartnerSite(models.Model):
     custom_logo = models.FileField(_(u'organisation banner logo'), blank=True, upload_to=custom_logo_path,
         help_text=_(
             u'<p>Upload a logo file for the banner at the top of the partner site page. '
-            u'By default the logo currently used by www.akvo.org will be displayed.</p>'
+            u'By default the logo currently used by akvo.org will be displayed.</p>'
         )
     )
     custom_favicon = models.FileField(_(u'favicon'), blank=True, upload_to=custom_favicon_path,
@@ -2199,7 +2199,7 @@ class PartnerSite(models.Model):
 
     @property
     def full_domain(self):
-        return '%s.%s' % (self.hostname, settings.APP_DOMAIN_NAME)
+        return '%s.%s' % (self.hostname, getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org'))
 
     def get_absolute_url(self):
         url = ''

@@ -93,11 +93,12 @@
           {# JavaScript for prepopulated fields #}
           {% prepopulated_fields_js %}
 
-          {# Disable form submit buttons after they have been clicked #}
+          {# Disable save buttons after they have been clicked #}
           <script type="text/javascript">
               (function($) {
-                  $("input:submit").click(function(){
-                      $("input:submit").attr("disabled", true);   
+                  var buttons = $(".submit-row :button");
+                  buttons.click(function(){
+                    buttons.attr("disabled", true);   
                   });
               })(django.jQuery);
           </script>

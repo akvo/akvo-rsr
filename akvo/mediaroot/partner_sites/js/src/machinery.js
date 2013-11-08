@@ -153,7 +153,7 @@ function preview_widget()
 	    akvo_url = 'http://' + location.host + '/rsr/widget/' + akvo_widget_type + '/project/' + akvo_project_id + '/';
 	    widget_url = akvo_url + '?bgcolor=' + bgcolor + '&textcolor=' + txtcolor;
 	}
-	if (!(akvo_widget_site == '' || akvo_widget_site == 'Example: www.akvo.org')) {
+	if (!(akvo_widget_site == '' || akvo_widget_site == 'Example: rsr.akvo.org')) {
 	    widget_url += '&site=' + akvo_widget_site;
 	}
     */

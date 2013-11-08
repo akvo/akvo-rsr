@@ -48,7 +48,7 @@ class SignInView(PartnerSitesMixin, FormView):
         context = super(SignInView, self).get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next', '/')
         # create url to RSR register page
-        rsr_domain = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
+        rsr_domain = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
         register1_path = reverse('register1', urlconf='akvo.urls.rsr')
         register1_url = "http://{rsr_domain}{register1_path}".format(
             rsr_domain= rsr_domain,
@@ -77,7 +77,7 @@ class SignInView(PartnerSitesMixin, FormView):
         domain. Next querystring variables are passed on and https support
         is honored."""
         hostname = self.request.partner_site.hostname
-        app_domain = settings.APP_DOMAIN_NAME
+        app_domain = getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org')
         request_path = self.request.get_full_path()
         url = 'http://%s.%s%s' % (hostname, app_domain, request_path)
 
