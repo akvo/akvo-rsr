@@ -143,7 +143,7 @@ def import_orgs(xml_file):
         element = tree.xpath(xpath)
         if len(element) != 1:
             return ''
-        return element[0].text.strip()
+        return element[0].text.strip() if element[0].text else ""
 
     def create_new_organisation(org_etree, internal_id):
         try:
@@ -284,8 +284,6 @@ def import_orgs(xml_file):
                 )
                 set_location_for_org(org_etree, internal_id, internal_org_id.referenced_org)
             except InternalOrganisationID.MultipleObjectsReturned:
-                import pdb
-                pdb.set_trace()
                 log(
                     u"Error from lookup of internal ID {internal_id}. Multiple objects found.",
                     dict(
@@ -317,6 +315,3 @@ if __name__ == '__main__':
     log_file = init_log(CORDAID_ORG_CSV_FILE)
     names = (u'internal_id', u'pk', u'label', u'event', u'extra')
     print_log(log_file, names, True)
-
-
-
