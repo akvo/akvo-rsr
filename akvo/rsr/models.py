@@ -296,7 +296,10 @@ class Organisation(models.Model):
     )
     logo = ImageWithThumbnailsField(
         _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
-        extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop',)}},
+        extra_thumbnails={
+            'map_thumb': {'size': (160, 120), 'options': ('autocrop',)},
+            'fb_thumb': {'size': (100, 100), 'options': ('pad', )}
+        },
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
 
