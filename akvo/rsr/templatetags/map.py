@@ -21,7 +21,7 @@ register = template.Library()
 
 
 # TODO: this should be fixed so partner sites use their own domain
-HOST = 'http://%s' % getattr(settings, 'DOMAIN_NAME', 'akvo.org')
+HOST = 'http://%s/' % getattr(settings, 'RSR_DOMAIN', 'akvo.org')
 
 @register.inclusion_tag('inclusion_tags/map.html')
 def map(resource, width, height, type="dynamic", marker_icon=""):

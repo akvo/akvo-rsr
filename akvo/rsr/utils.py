@@ -165,16 +165,18 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
         to_list is a list of email addresses
         subject and message are templates for use as email subject and message body
         subject_context and msg_context are dicts used when renedering the respective templates
-    settings.DOMAIN_NAME is added to both contexts as current_site, defaulting to 'akvo.org' if undefined
+    settings.RSR_DOMAIN is added to both contexts as current_site, defaulting to 'akvo.org' if undefined
     """
-    current_site = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
+    current_site = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
     subject_context.update({'site': current_site})
     subject = loader.render_to_string(subject, subject_context)
     # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
     msg_context.update({'site': current_site})
     message = loader.render_to_string(message, msg_context)
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, to_list)
+    send_mail(
+        subject, message, getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"), to_list
+    )
 
 
 def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
@@ -208,7 +210,7 @@ def model_and_instance_based_filename(object_name, pk, field_name, img_name):
 def send_donation_confirmation_emails(invoice_id):
     if getattr(settings, "DONATION_NOTIFICATION_EMAILS", True):
         invoice = get_model("rsr", "invoice").objects.get(pk=invoice_id)
-        site_url = 'http://%s' % getattr(settings, "DOMAIN_NAME", "www.akvo.org")
+        site_url = 'http://%s' % getattr(settings, "RSR_DOMAIN", "rsr.akvo.org")
         base_project_url = reverse("project_main", kwargs=dict(project_id=invoice.project.id))
         project_url = urljoin(site_url, base_project_url)
         base_project_updates_url = reverse("project_updates", kwargs=dict(project_id=invoice.project.id))
@@ -330,7 +332,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
     notice_type = NoticeType.objects.get(label=label)
 
     protocol = getattr(settings, "DEFAULT_HTTP_PROTOCOL", "http")
-    current_site = getattr(settings, 'DOMAIN_NAME', 'www.akvo.org')
+    current_site = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
 
     notices_url = u"%s://%s%s" % (
         protocol,
@@ -391,8 +393,12 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
             logger.info("Sending email notification of type %s to %s" % (notice_type, recipients, ))
             # don't send anything in debug/develop mode
             if not getattr(settings, 'SMS_DEBUG', False):
-                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipients)
-
+                send_mail(
+                    subject,
+                    body,
+                    getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
+                    recipients
+                )
             if should_send(user, notice_type, "sms") and user.get_profile().phone_number: # SMS
                 # strip newlines
                 sms = ''.join(render_to_string('notification/email_subject.txt', {

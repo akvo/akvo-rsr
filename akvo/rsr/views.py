@@ -1081,7 +1081,7 @@ def project_widget(request, template='feature-side', project_id=None):
         p = random.choice(Project.objects.published().status_not_archived().status_not_cancelled())
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
-    site = request.GET.get('site', 'www.akvo.org')
+    site = request.GET.get('site', 'rsr.akvo.org')
 
     return render_to_response('widgets/%s.html' % template.replace('-', '_'),
         {
@@ -1098,7 +1098,7 @@ def project_widget(request, template='feature-side', project_id=None):
 def project_list_widget(request, template='project-list', org_id=0):
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
-    site = request.GET.get('site', 'www.akvo.org')
+    site = request.GET.get('site', 'rsr.akvo.org')
 
     if int(org_id):
         o = get_object_or_404(Organisation, pk=org_id)

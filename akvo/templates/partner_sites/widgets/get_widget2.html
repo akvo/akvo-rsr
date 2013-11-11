@@ -101,7 +101,7 @@
             {% endif %}
           <div class="clear"></div>
           <label for="site" style="margin-top:10px;">{% trans "Where you will embed this widget" %}:</label>
-          <input type="text" id="site" value="" size=51 placeholder="{% trans "Example:" %} www.akvo.org" />
+          <input type="text" id="site" value="" size=51 placeholder="{% trans "Example:" %} akvo.org" />
         
           <h3 style="margin-bottom:15px">{% trans "Step 3: Copy the HTML code for use on your web site" %}</h3>
           <div class="getWidget">
@@ -137,7 +137,7 @@
           kind: '{{widget_kind}}',
           source: '{{widget_source}}', {# specific or random project #}
           organisation: '{{organisation.id}}',
-          host: '{{app_url}}',
+          host: 'http://{{request.META.HTTP_HOST}}',
           style: 'dark',
           _site: '',
           {% if widget_kind == 'project-map' %}

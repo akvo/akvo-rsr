@@ -12,7 +12,7 @@
   <div id="content" class="floats-in">
     <div class="projectDescr">
       {% rsr_widget_project_status_location project %}
-      <h2 id="project_title"><a href="{{app_url}}{{project.get_absolute_url}}">
+      <h2 id="project_title"><a href="{{project.get_absolute_url}}">
         {{project.title|smart_truncate:60}}
       </a></h2>
       {% rsr_widget_project_photo project 145 109 %}

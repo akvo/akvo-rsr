@@ -33,7 +33,7 @@ class BaseWidgetView(TemplateView):
     """Setup a common base widget"""
     def get_context_data(self, **kwargs):
         context = super(BaseWidgetView, self).get_context_data(**kwargs)
-        context['app_url'] = self.request.app_url
+        context['akvoapp_root_url'] = self.request.akvoapp_root_url
         context['domain_url'] = self.request.domain_url
         context['style'] = 'darkBG'
         if self.request.GET.get('style') == 'light':
@@ -183,8 +183,8 @@ class ProjectCordinates(TemplateView):
             protocol = 'https://'
         else:
             protocol = 'http://'
-        app_url = '%s%s.%s' % (protocol, self.request.partner_site.hostname,
-                               settings.APP_DOMAIN_NAME)
+        akvoapp_root_url = '%s%s.%s' % (protocol, self.request.partner_site.hostname,
+                               getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org'))
         projects = self.get_queryset()
         content = {'projects': []}
 
@@ -199,7 +199,7 @@ class ProjectCordinates(TemplateView):
                                     %s: %s, %s
                                 </p>
                             </div>
-                        ''' % (app_url, project_url, project.title, 'Location',
+                        ''' % (akvoapp_root_url, project_url, project.title, 'Location',
                                project.primary_location.country.continent,
                                project.primary_location.city)
 

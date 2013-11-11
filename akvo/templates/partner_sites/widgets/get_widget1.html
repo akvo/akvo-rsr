@@ -129,7 +129,7 @@
         <form name="projectMapForm" action="." method="post">{% csrf_token %}
           <h3>{% trans "Project map widget" %}</h3>
           <p class="small grey">
-            {% blocktrans with partner_site_url=app_url %}Shows a map of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}
+            {% blocktrans with partner_site_url=request.META.HTTP_HOST %}Shows a map of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}
           </p>
           <script type="text/javascript">
             document.write('<iframe src="{% url 'widget_org_map' %}" width="600" height="300" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
@@ -149,7 +149,7 @@
         <form name="projectListForm" action="." method="post">{% csrf_token %}
           <h3>{% trans "Project list widget" %}</h3>
           <p class="small grey">
-            {% blocktrans with partner_site_url=app_url %}Shows a list of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}
+            {% blocktrans with partner_site_url=request.META.HTTP_HOST %}Shows a list of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}
           </p>
           <script type="text/javascript">
             document.write('<iframe src="{% url 'widget_project_list' %}" width="745" height="730" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
