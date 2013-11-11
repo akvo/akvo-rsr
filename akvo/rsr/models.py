@@ -298,7 +298,7 @@ class Organisation(models.Model):
         _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
         extra_thumbnails={
             'map_thumb': {'size': (160, 120), 'options': ('autocrop',)},
-            'fb_thumb': {'size': (100, 100), 'options': ('pad', )}
+            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
         },
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
@@ -677,7 +677,10 @@ class Project(models.Model):
                         blank=True,
                         upload_to=image_path,
                         thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-                        extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )}},  # detail is a mild sharpen
+                        extra_thumbnails={
+                            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+                            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
+                        },
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))

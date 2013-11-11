@@ -10,8 +10,6 @@ from PIL import Image
 
 def scale_and_pad(im, requested_size, opts):
     if opts.get('pad') or 'pad' in opts:
-        import pdb
-        pdb.set_trace()
         x, y = [float(v) for v in im.size]
         xr, yr = [float(v) for v in requested_size]
 
