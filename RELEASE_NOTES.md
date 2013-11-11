@@ -5,6 +5,104 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.1 Quince
+---
+
+31st October 2013, adriancollier
+
+New Features
+---
+
+###Social Media Sharing Optimisation
+
+When you share something using modern Social Media sites, the site oyu are sharing to (for example Facebook) automatically collects information from the source system to display an image, description and other Meta Information.
+
+We have improved the Meta Data in RSR to ensure that when you share a page from RSR, the appropriate information is supplied to the Social Media site and the share looks great.
+
+Github issue [#196](https://github.com/akvo/akvo-rsr/issues/196)
+
+###Partnersite Widget CNAME
+
+We have recently released a new set of Partnersite Widgets, however these have now been additionally configured to use the CNAME belonging to the PArtnersite itself. This means that if the Widget is collected from a CNAME domain, then they will diirect Widget visitors to the same CNAME domain when clicked.
+
+Github issue: [#315](https://github.com/akvo/akvo-rsr/issues/315)
+
+Bug Fixes
+---
+
+###Partnersite Widget Visual Fixes
+
+There were a few inconsistencies with the Visual elements of the new Partnersite Widgets. These inccluded text running off the end of the widget, and the scrollbar on the Project Listing Widget. These have been resolved so now we should have pretty, error-free widgets.
+
+Github issue: [#316](https://github.com/akvo/akvo-rsr/issues/316)
+
+###Duplicates in API
+
+The API was occasionally returning duplicate values in the results due to circular references between tables in the originating request. To ensure this doesn't continue to happen, we have adde da Distinct Clause to the API that will clean any duplicates before returing the results to the user.
+
+Github issue: [#206](https://github.com/akvo/akvo-rsr/issues/206)
+
+###Problems Saving Project in Admin
+
+There was an issue where the project saving in the RSR Admin was taking some time. There was no indication as to whether this was working or not, and so if the save button was used several tiomes, then it could result in duplciate infomration being stored on a individual project.
+
+To keep the project information unique where it needs to be, we have set it now that while the project is saving the Save Button is greyed out so it cannot be pressed multiple times.
+
+Github issue: [#313](https://github.com/akvo/akvo-rsr/issues/313)
+
+###RSR and Partnersite Sing In Page Link
+
+We found a broken link on the sign in page that was directing users to the former Drupal content. We have corrected this to point the user to the correct page on the new Akvo.org website.
+
+Github issue: [#342](https://github.com/akvo/akvo-rsr/issues/342)
+
+###Footer Link Error
+
+There was a link on the Footer of RSR that directed users to a non-existant page. This has been corrected so users are pointed to the correct page on the new Akvo.org website.
+
+Github issue: [#350](https://github.com/akvo/akvo-rsr/issues/350)
+
+###Field Limit Config Setting
+
+Last year we implemented a change to impose the correct character limits on RSR Project fields. We made a decision not to force these limits historically, and so we added a config setting to allow projects with an ID below 478 to be exempt from these new limits.
+
+This config setting was lost during the migration and infrastructure work we have been doing, so in this issue we have replaced this so that older projects can continue to be edited and used as normal.
+
+Github issue: [#360](https://github.com/akvo/akvo-rsr/issues/360)
+
+Infrastructure Changes
+---
+
+####Reduce Downtime during Deployments
+
+By changing the way and order that we process all the necessary tasks during system deployment, we have been able to dramatically reduce the downtime of Akvo RSR. With releases going forwards we should always be looking at a downtime of less than 10 minutes.
+
+Github issue [#132](https://github.com/akvo/akvo-rsr/issues/132)
+
+###Migrations for Apps During Deployment
+
+We have made some changes to our deployment scripts so that any migrations on apps used are included in the steps, making this process a lot more complete.
+
+Github issue [#89](https://github.com/akvo/akvo-rsr/issues/89)
+
+###Upgrade TastyPie
+
+A newer version of TastyPie has been released. We use TastyPie for the RSR API. To ensure we can utilise the latest features of this, we have upgraded our version to the latest in this release.
+
+Github issue: [#157](https://github.com/akvo/akvo-rsr/issues/157)
+
+
+Akvo RSR ver 2.3.0.1 - Passionfruit Part 2 - Hotfix
+---
+21st October 2013, carlio
+
+Bug Fixes
+---
+
+The "All Projects" RSS feed now returns only the most recent 100 project updates to speed up the feed generation and prevent out-of-memory problems. 
+
+GitHub Issue [#318](https://github.com/akvo/akvo-rsr/issues/318) and [#329](https://github.com/akvo/akvo-rsr/issues/329)
+
 Akvo RSR ver 2.3.0 Passionfruit
 ---
 
