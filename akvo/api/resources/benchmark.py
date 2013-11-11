@@ -27,7 +27,7 @@ class IATIBenchmarkResource(ModelResource):
 
     class Meta:
         allowed_methods = ['post']
-        resource_name   = 'iati_budget_item'
+        resource_name   = 'iati_benchmark'
         authorization   = Authorization()
         authentication  = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
         queryset        = Benchmark.objects.all()
