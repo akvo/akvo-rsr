@@ -33,7 +33,7 @@ class Migration(DataMigration):
         sql = {
             'mysql': "ALTER TABLE django_site AUTO_INCREMENT = %d",
             'sqlite': "UPDATE SQLITE_SEQUENCE SET seq=%s WHERE name='django_site'",
-            'psql': "ALTER SEQUENCE django_site_id_seq RESTART WITH %s"
+            'postgresql_psycopg2': "ALTER SEQUENCE django_site_id_seq RESTART WITH %s"
         }
         dbdriver = settings.DATABASES['default']['ENGINE']
         sql = sql[engine_modules[dbdriver]] % max_id
