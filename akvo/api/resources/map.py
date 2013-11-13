@@ -8,6 +8,7 @@
 from tastypie import fields
 from tastypie.cache import SimpleCache
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.resources import ModelResource
 
 from akvo.api.fields import ConditionalFullToManyField
 
@@ -52,16 +53,16 @@ class OrganisationMapResource(ConditionalFullResource):
         return bundle
 
 
-class ProjectMapResource(ConditionalFullResource):
+class ProjectMapResource(ModelResource):
     """
     a limited resource for delivering data to be used when creating maps
     """
-    locations           = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
+    #locations           = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
     primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True, null=True)
 
     class Meta:
         allowed_methods = ['get']
-        queryset = Project.objects.published()
+        queryset = Project.objects.select_related('primary_location', 'primary_location__country').published()
         resource_name = 'map_for_project'
         include_absolute_url = True
         cache = SimpleCache(timeout=900) # 15 minutes
