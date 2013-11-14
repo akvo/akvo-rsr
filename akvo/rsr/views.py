@@ -1449,7 +1449,7 @@ def get_api_key(request):
             api_key_element = etree.SubElement(xml_root, "api_key")
             api_key_element.text = user_profile.api_key
             pub_projs_element = etree.SubElement(xml_root, "published_projects")
-            for proj in projects.items():
+            for proj in projects:
                 proj_id_element = etree.SubElement(pub_projs_element, "id")
                 proj_id_element.text = proj.id
             xml_tree = etree.ElementTree(xml_root)
