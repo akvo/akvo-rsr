@@ -1451,7 +1451,7 @@ def get_api_key(request):
             pub_projs_element = etree.SubElement(xml_root, "published_projects")
             for proj in projects:
                 proj_id_element = etree.SubElement(pub_projs_element, "id")
-                proj_id_element.text = proj.id
+                proj_id_element.text = str(proj.id)
             xml_tree = etree.ElementTree(xml_root)
             xml_data = etree.tostring(xml_tree)
             return HttpResponse(xml_data, content_type="text/xml")
