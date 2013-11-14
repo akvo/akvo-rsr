@@ -15,7 +15,7 @@ New Features
 
 ###Social Media Sharing Optimisation
 
-When you share something using modern Social Media sites, the site oyu are sharing to (for example Facebook) automatically collects information from the source system to display an image, description and other Meta Information.
+When you share something using modern Social Media sites, the site you are sharing to (for example Facebook) automatically collects information from the source system to display an image, description and other Meta Information.
 
 We have improved the Meta Data in RSR to ensure that when you share a page from RSR, the appropriate information is supplied to the Social Media site and the share looks great.
 
@@ -23,7 +23,7 @@ Github issue [#196](https://github.com/akvo/akvo-rsr/issues/196)
 
 ###Partnersite Widget CNAME
 
-We have recently released a new set of Partnersite Widgets, however these have now been additionally configured to use the CNAME belonging to the PArtnersite itself. This means that if the Widget is collected from a CNAME domain, then they will diirect Widget visitors to the same CNAME domain when clicked.
+We have recently released a new set of Partnersite Widgets, however these have now been additionally configured to use the CNAME belonging to the Partnersite itself. This means that if the Widget is collected from a CNAME domain, then they will direct Widget visitors to the same CNAME domain when clicked.
 
 Github issue: [#315](https://github.com/akvo/akvo-rsr/issues/315)
 
@@ -32,19 +32,19 @@ Bug Fixes
 
 ###Partnersite Widget Visual Fixes
 
-There were a few inconsistencies with the Visual elements of the new Partnersite Widgets. These inccluded text running off the end of the widget, and the scrollbar on the Project Listing Widget. These have been resolved so now we should have pretty, error-free widgets.
+There were a few inconsistencies with the visual elements of the new Partnersite Widgets. These included text running off the end of the widget, and the scrollbar on the Project Listing Widget. These have been resolved so now we should have pretty, error-free widgets.
 
 Github issue: [#316](https://github.com/akvo/akvo-rsr/issues/316)
 
 ###Duplicates in API
 
-The API was occasionally returning duplicate values in the results due to circular references between tables in the originating request. To ensure this doesn't continue to happen, we have adde da Distinct Clause to the API that will clean any duplicates before returing the results to the user.
+The API was occasionally returning duplicate values in the results due to circular references between tables in the originating request. To ensure this doesn't continue to happen, we have adde da Distinct Clause to the API that will clean any duplicates before returning the results to the user.
 
 Github issue: [#206](https://github.com/akvo/akvo-rsr/issues/206)
 
 ###Problems Saving Project in Admin
 
-There was an issue where the project saving in the RSR Admin was taking some time. There was no indication as to whether this was working or not, and so if the save button was used several tiomes, then it could result in duplciate infomration being stored on a individual project.
+There was an issue where the project saving in the RSR Admin was taking some time. There was no indication as to whether this was working or not, and so if the save button was used several times, then it could result in dupliciate infomration being stored on a individual project.
 
 To keep the project information unique where it needs to be, we have set it now that while the project is saving the Save Button is greyed out so it cannot be pressed multiple times.
 
