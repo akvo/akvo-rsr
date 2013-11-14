@@ -58,7 +58,7 @@ class ProjectMapResource(ModelResource):
     a limited resource for delivering data to be used when creating maps
     """
     #locations           = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
-    primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True, null=True)
+    primary_location    = fields.ToOneField('akvo.api.resources.ProjectMapLocationResource', 'primary_location', full=True, null=True)
 
     class Meta:
         allowed_methods = ['get']
@@ -81,7 +81,6 @@ class ProjectMapResource(ModelResource):
             goals               = ALL_WITH_RELATIONS,
             invoices            = ALL_WITH_RELATIONS,
             links               = ALL_WITH_RELATIONS,
-            locations           = ALL_WITH_RELATIONS,
             partnerships        = ALL_WITH_RELATIONS,
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,

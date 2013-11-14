@@ -10,6 +10,7 @@ from tastypie import fields
 
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.fields import ToOneField
 from tastypie.resources import ModelResource
 
 from akvo.api.authentication import ConditionalApiKeyAuthentication
@@ -74,4 +75,21 @@ class ProjectLocationResource(ConditionalFullResource):
             # foreign keys
             country     = ALL_WITH_RELATIONS,
             project     = ALL_WITH_RELATIONS,
+        )
+
+
+class ProjectMapLocationResource(ModelResource):
+    country = ToOneField(CountryResource, 'country', full=True)
+
+    class Meta:
+        allowed_methods = ['get']
+        queryset        = ProjectLocation.objects.all()
+        resource_name   = 'project_map_location'
+        filtering       = dict(
+            # other fields
+            latitude    = ALL,
+            longitude   = ALL,
+            primary     = ALL,
+            # foreign keys
+            country     = ALL_WITH_RELATIONS,
         )
