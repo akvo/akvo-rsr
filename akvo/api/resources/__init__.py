@@ -13,7 +13,10 @@ from .focus_area import FocusAreaResource
 from .goal import GoalResource, IATIGoalResource
 from .invoice import InvoiceResource
 from .link import LinkResource
-from .location import IATIProjectLocationResource, OrganisationLocationResource, ProjectLocationResource, ProjectMapLocationResource
+from .location import (
+    IATIProjectLocationResource, OrganisationLocationResource, OrganisationMapLocationResource,
+    ProjectLocationResource, ProjectMapLocationResource
+)
 from .map import OrganisationMapResource, ProjectMapResource
 from .organisation import OrganisationResource
 from .partnership import PartnershipResource, IATIPartnershipResource
