@@ -58,7 +58,7 @@
         //TODO: derive the host from the current page URL instead maybe?
         url = opts.host + '/api/v1/' + opts.resource + '/';
         //limit = 0 means all objects. If this becomes too heavy limit can be set to get the objects in multiple chunks
-        limit = 100;
+        limit = 500;
         // if object_id holds a value then that's the ID of the object we want to fetch
         if (opts.object_id) {
             // if object_id holds a value then that's the ID of the object we want to fetch

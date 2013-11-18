@@ -10,7 +10,6 @@ from tastypie import fields
 
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
-from tastypie.fields import ToOneField
 from tastypie.resources import ModelResource
 
 from akvo.api.authentication import ConditionalApiKeyAuthentication
@@ -53,6 +52,10 @@ class OrganisationLocationResource(ConditionalFullResource):
         queryset        = OrganisationLocation.objects.all()
         resource_name   = 'organisation_location'
         filtering       = dict(
+            # other fields
+            latitude    = ALL,
+            longitude   = ALL,
+            primary     = ALL,
             # foreign keys
             organisation= ALL_WITH_RELATIONS,
             country     = ALL_WITH_RELATIONS,
@@ -78,13 +81,15 @@ class ProjectLocationResource(ConditionalFullResource):
         )
 
 
-class ProjectMapLocationResource(ModelResource):
-    country = ToOneField(CountryResource, 'country', full=True)
+class MapLocationResource(ModelResource):
+    """
+    Base class for locations used by the API driven many-pin maps,
+    OrganisationMapResource and ProjectMapResource
+    """
+    country = ConditionalFullToOneField(CountryResource, 'country')
 
     class Meta:
         allowed_methods = ['get']
-        queryset        = ProjectLocation.objects.all()
-        resource_name   = 'project_map_location'
         filtering       = dict(
             # other fields
             latitude    = ALL,
@@ -93,3 +98,21 @@ class ProjectMapLocationResource(ModelResource):
             # foreign keys
             country     = ALL_WITH_RELATIONS,
         )
+
+
+class OrganisationMapLocationResource(MapLocationResource):
+    """
+    A Location resource optimized for use by many-pin maps
+    """
+    class Meta(MapLocationResource.Meta):
+        queryset        = OrganisationLocation.objects.all()
+        resource_name   = 'organisation_map_location'
+
+
+class ProjectMapLocationResource(MapLocationResource):
+    """
+    A Location resource optimized for use by many-pin maps
+    """
+    class Meta(MapLocationResource.Meta):
+        queryset        = ProjectLocation.objects.all()
+        resource_name   = 'project_map_location'
