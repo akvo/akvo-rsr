@@ -44,6 +44,7 @@ __all__ = [
     'LinkResource',
     'OrganisationResource',
     'OrganisationLocationResource',
+    'OrganisationMapLocationResource',
     'OrganisationMapResource',
     'PartnershipResource',
     'ProjectResource',
