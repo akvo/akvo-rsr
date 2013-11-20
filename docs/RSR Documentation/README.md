@@ -1,14 +1,5 @@
-We have many goals within Akvo and within RSR. The environment we find ourselves in is full of opportunites and challenges that we are well positioned to consider within the work that we do.
+This is where you can find information about RSR as a whole.
 
-In order for us to achieve realsitic goals, we need to set some of the horizon goals we would like to achieve as a team and as an organisation.
-
-To effectively communicate the direction we want to take and the way we will achieve this, we have put together several documents that encapsulate the goals and aspirations of RSR:
-
-- [[RSR Press Release]]
-- [[Frequently Asked Questions]]
-- [[Customer Experience Journey]]
-- [[User Manual]]
-
-Our plan for realising these goals is outlined within our [[Roadmaps]].
-
-_Back to [[RSR Development Process]]_
+1. [RSR Press Release](https://github.com/akvo/akvo-rsr/blob/wiki-docs/docs/RSR%20Documentation/RSR-Press-Release.md)
+2. [Customer Experience Journey](https://github.com/akvo/akvo-rsr/blob/wiki-docs-adrian-2/docs/RSR%20Documentation/Customer-Experience-Journey.md)
+3. [Frequently Asked Questions](https://github.com/akvo/akvo-rsr/blob/wiki-docs-adrian-2/docs/RSR%20Documentation/Frequently-Asked-Questions.md)
