@@ -8,10 +8,10 @@ The [Homepage](https://github.com/akvo/akvo-rsr/wiki) of the Akvo RSR Github Wik
 
 The Wiki-Docs branch in the Repositorty will always contain the latest approved versions of documentation.
 
-If you would like to contribute to the Akvo RSR Documentation effort this is the process you need to follow:
+If you would like to contribute to the Akvo RSR Documentation effort, this is the process you need to follow:
 
 1. Clone a copy of the Akvo-RSR Repositoy to your local machine by using ``git clone git@github.com:akvo/akvo-rsr.git``
-2. Checkout the Wiki-Docs Branch to collect the most up-to-date Wiki Information ''git checkout wiki-docs``
+2. Checkout the Wiki-Docs Branch to collect the most up-to-date Wiki Information ``git checkout wiki-docs``
 3. Create a new branch to work on to make your local changes in ``git checkout -b wiki-docs-adrian-123``
 4. Make your changes locally
 5. Add and commit your files ``git commit -am "Additions to Wiki-Docs by Adrian to fix issue #1234"``
