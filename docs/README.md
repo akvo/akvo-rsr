@@ -1,4 +1,6 @@
-We are currently working on building out the documentation we have on RSR for Internal, Partner and Public use.
+We manage the majority of RSR Documentation from this location. If you cannot find the information you are looking for, you can check out our [Help Pages](http://rsrhelp.akvo.org/) or submit a [New Github Issue](https://github.com/akvo/akvo-rsr/issues/new).
+
+We are currently working on building out the documentation we have on RSR for Internal and Public use.
 
 You should be able to access all of the documentation on RSR you need from within this Github Repository.
 
