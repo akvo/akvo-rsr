@@ -98,12 +98,11 @@ class OrganisationLocationInline(admin.StackedInline):
     formset = RSR_LocationFormFormSet
 
 
-class InternalOrganisationIDInline(admin.TabularInline):
-    model = get_model('rsr', 'Organisation').internal_org_ids.through
-    extra = 1
-    fk_name = 'recording_org'
-    verbose_name = 'internal organisation ID'
-    verbose_name_plural = 'internal organisation IDs'
+class InternalOrganisationIDAdmin(admin.ModelAdmin):
+    list_display = (u'identifier', u'recording_org', u'referenced_org',)
+    search_fields = (u'identifier', u'recording_org__name', u'referenced_org__name',)
+
+admin.site.register(get_model('rsr', 'internalorganisationid'), InternalOrganisationIDAdmin)
 
 
 class OrganisationAdminForm(forms.ModelForm):
@@ -124,7 +123,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
     form = OrganisationAdminForm
-    inlines = (OrganisationLocationInline, InternalOrganisationIDInline)
+    inlines = (OrganisationLocationInline,)
     exclude = ('internal_org_ids',)
     readonly_fields = ('partner_types',)
     list_display = ('name', 'long_name', 'website', 'language')
