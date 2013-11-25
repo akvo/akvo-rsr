@@ -2017,7 +2017,7 @@ class Invoice(models.Model):
     bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
-    #notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -2183,6 +2183,13 @@ class PartnerSite(models.Model):
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
     facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
     twitter_button = models.BooleanField(_(u'Twitter button'), default=False)
+    facebook_app_id = models.CharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
+        help_text=_(
+            u'<p>Your FaceBook app id is used when sharing pages from your partner site. '
+            u'It can be obtained by creating a Facebook app.'
+            u'Follow the instructions <A href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</A>'
+        )
+    )
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
