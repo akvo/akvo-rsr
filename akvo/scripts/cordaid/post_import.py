@@ -63,6 +63,8 @@ def import_images(image_dir, photos):
                     u"Uploaded image to project {pk}",
                     dict(internal_id=internal_id, pk=project.pk, event=ACTION_SET_IMAGE))
             except Exception, e:
+                import pdb
+                pdb.set_trace()
                 log(
                     u"Upload failed. internal_id: {internal_id} Exception class: {extra}",
                     dict(internal_id=internal_id, event=ERROR_IMAGE_UPLOAD, extra=e.__class__),
@@ -153,7 +155,7 @@ def get_post_process_data():
             ] = dict(
                 internal_project_id=activity.get(AKVO_NS + 'internal-project-id'),
                 image_caption=activity.get(AKVO_NS + 'image-caption', '').strip(),
-                image_crdit=activity.get(AKVO_NS + 'image-by', '').strip(),
+                image_credit=activity.get(AKVO_NS + 'image-by', '').strip(),
             )
             cordaid_budget = activity.findall('budget[@' + AKVO_NS +'budget-from="Cordaid"]')
             others_budget = activity.findall('budget[@' + AKVO_NS +'budget-from="Others"]')
