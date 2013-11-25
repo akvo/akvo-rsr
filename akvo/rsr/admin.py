@@ -1164,7 +1164,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
-        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_app_id',))),
+        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
     # the notes field is not shown to everyone
     restricted_fieldsets = (
@@ -1173,7 +1173,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'Style and content',
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
-        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_app_id',))),
+        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
     list_display = '__unicode__', 'full_domain', 'enabled',
 
