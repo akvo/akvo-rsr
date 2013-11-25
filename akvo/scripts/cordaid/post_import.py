@@ -63,8 +63,6 @@ def import_images(image_dir, photos):
                     u"Uploaded image to project {pk}",
                     dict(internal_id=internal_id, pk=project.pk, event=ACTION_SET_IMAGE))
             except Exception, e:
-                import pdb
-                pdb.set_trace()
                 log(
                     u"Upload failed. internal_id: {internal_id} Exception class: {extra}",
                     dict(internal_id=internal_id, event=ERROR_IMAGE_UPLOAD, extra=e.__class__),
