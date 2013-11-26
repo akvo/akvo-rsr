@@ -2186,7 +2186,7 @@ class PartnerSite(models.Model):
     facebook_app_id = models.CharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
         help_text=_(
             u'<p>Your FaceBook app id is used when sharing pages from your partner site. '
-            u'It can be obtained by creating a Facebook app.'
+            u'It can be obtained by creating a Facebook app, which will let you monitor when it is referenced.'
             u'Follow the instructions <A href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</A>'
         )
     )

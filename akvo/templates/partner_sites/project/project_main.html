@@ -12,7 +12,9 @@
     {% else %}
       <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
     {% endif %}
-    <meta property="fb:app_id" content="{{request.partner_site.facebook_app_id}}"/>
+    {% if request.partner_site.facebook_app_id %}
+      <meta property="fb:app_id" content="{{request.partner_site.facebook_app_id}}"/>
+    {% endif %}
 
   {% comment %}
   <style type="text/css">

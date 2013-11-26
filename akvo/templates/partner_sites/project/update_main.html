@@ -10,11 +10,13 @@
     <meta property="og:description" content="{{update.text}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'update_main' project_id=project.id update_id=update.id %}"/>
     {% if update.photo %}
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{update.photo}}"/>
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{update.photo}}"/>
     {% else %}
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
     {% endif %}
-    <meta property="fb:app_id" content="{{fb_app_id}}"/>
+    {% if request.partner_site.facebook_app_id %}
+      <meta property="fb:app_id" content="{{request.partner_site.facebook_app_id}}"/>
+    {% endif %}
 
 {% endblock head %}
 
@@ -27,8 +29,8 @@
 
 {% block social_init %}
     {% if request.partner_site.facebook_button %}
-	<!-- If we want a FB like button, the initial load goes here -->
-	<div id="fb-root"></div>
+      <!-- If we want a FB like button, the initial load goes here -->
+      <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
