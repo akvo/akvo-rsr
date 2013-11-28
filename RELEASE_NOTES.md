@@ -17,13 +17,15 @@ New Features
 
 Following on from the Meta-Data changes that we provided in the last release of RSR, we have now worked on adding in Social Media Sharing buttons for your Project, Update and Organisation pages within your Partnersite.
 
-In order to make use of these functions, you will need to [Create a Facebook App](http://tri.be/how-to-create-a-facebook-app-id/) and enter the App ID into the [Partnersite Admin](http://rsr.akvo.org/admin/rsr/partnersite) form. The Domain of the Facebook App should match the primary domain being used for your Partnersite, e.g. http://projects.organisation.org OR http://organisation.akvoapp.org.
+We have created this functionality for Facebook and Twitter. Both of these can be turned on/off independently within the [Partnersite Admin](http://rsr.akvo.org/admin/rsr/partnersite) form.
+
+For Facebook there is an additional setup needed. You will need to [Create a Facebook App](http://tri.be/how-to-create-a-facebook-app-id/) and enter the App ID into the [Partnersite Admin](http://rsr.akvo.org/admin/rsr/partnersite) form. The Domain of the Facebook App should match the primary domain being used for your Partnersite, e.g. http://projects.organisation.org OR http://organisation.akvoapp.org.
 
 Github issue [#230](https://github.com/akvo/akvo-rsr/issues/230)
 
 ###Github Wiki and RSR Documentation
 
-We have been working on improving the documentation for both internal developers, users as well as external partners, integrating organisations and the Open Source development Community. As you can imagine this is a big undertaking to ensure that everone has all the necessary information available in the right format to be suitable for its' intended use.
+We have been working on improving the documentation for both internal developers, users as well as external partners, integrating organisations and the Open Source development Community. As you can imagine this is a big undertaking to ensure that everone has all the necessary information available in the right format to be suitable for its intended use.
 
 This is of course a work in progress and we will continue to improve this, but you can already see the summary page with an overview of what we have and where to find it [here](https://github.com/akvo/akvo-rsr/wiki)
 
