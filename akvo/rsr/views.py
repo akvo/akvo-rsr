@@ -1408,7 +1408,7 @@ def global_organisation_projects_map_json(request, org_id):
     organisation = Organisation.objects.get(id=org_id)
     for project in organisation.published_projects():
         try:
-            image_url = project.current_image.url
+            image_url = project.current_image.extra_thumbnails['map_thumb'].absolute_url
         except:
             image_url = ""
         for location in project.locations.all():
