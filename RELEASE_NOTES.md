@@ -51,9 +51,9 @@ Bug Fixes
 
 ###Thumbnails on Partnersite Maps
 
-We had a reoccurrence of a previous bug in this release - maps on Partnersites were displaying a very large thumbnail in the pop-up window after clicking on a single point on the map. This meant that only a small portion of the image was visible and the thumnbnail took a long time to load.
+We had a reoccurrence of a previous bug in this release - maps on Partnersites were displaying a very large thumbnail in the pop-up window after clicking on a single point on the map. This meant that only a small portion of the image was visible and the thumbnail took a long time to load.
 
-We have resolved this by using a smaller thumnail when pulling images into the maps.
+We have resolved this by using a smaller thumbnail when pulling images into the maps.
 
 Github issue [#159](https://github.com/akvo/akvo-rsr/issues/159)
 
