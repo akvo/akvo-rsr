@@ -5,6 +5,78 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.2 Rambutan
+---
+
+28th November 2013, adriancollier
+
+New Features
+---
+
+###Social Media Sharing Buttons
+
+Following on from the Meta-Data changes that we provided in the last release of RSR, we have now worked on adding in Social Media Sharing buttons for your Project, Update and Organisation pages within your Partnersite.
+
+We have created this functionality for Facebook and Twitter. Both of these can be turned on/off independently within the [Partnersite Admin](http://rsr.akvo.org/admin/rsr/partnersite) form.
+
+For Facebook there is an additional setup needed. You will need to [Create a Facebook App](http://tri.be/how-to-create-a-facebook-app-id/) and enter the App ID into the [Partnersite Admin](http://rsr.akvo.org/admin/rsr/partnersite) form. The Domain of the Facebook App should match the primary domain being used for your Partnersite, e.g. http://projects.organisation.org OR http://organisation.akvoapp.org.
+
+Github issue [#230](https://github.com/akvo/akvo-rsr/issues/230)
+
+###Github Wiki and RSR Documentation
+
+We have been working on improving the documentation for both internal developers, users as well as external partners, integrating organisations and the Open Source development Community. As you can imagine this is a big undertaking to ensure that everone has all the necessary information available in the right format to be suitable for its intended use.
+
+This is of course a work in progress and we will continue to improve this, but you can already see the summary page with an overview of what we have and where to find it [here](https://github.com/akvo/akvo-rsr/wiki)
+
+###Footer Changes
+
+We have made several changes to the Footer for RSR to match the changes that are being made within the main Akvo website.
+
+Github issue [#398](https://github.com/akvo/akvo-rsr/issues/398)
+Github issue [#342](https://github.com/akvo/akvo-rsr/issues/342)
+Github issue [#350](https://github.com/akvo/akvo-rsr/issues/350)
+
+###Reinstate Global  Maps in RSR
+
+Earlier this summer we removed the functionality surrounding global maps on the platform. This was due to some performance and stability issues we were having with this portion of the site. We have now resolved these issues by implementing a Caching layer using Memcache on the API calls, as well as tidying up the API code to streamline the data being transmitted for the query involved.
+
+These changes have provided a big enough improvement in the performance of the system that we have been able now to turn the maps back on in RSR so you can now see all your projects or organisations in one place - as you should be able to.
+
+Github issue [#331](https://github.com/akvo/akvo-rsr/issues/331)
+
+
+Bug Fixes
+---
+
+###Thumbnails on Partnersite Maps
+
+We had a reoccurrence of a previous bug in this release - maps on Partnersites were displaying a very large thumbnail in the pop-up window after clicking on a single point on the map. This meant that only a small portion of the image was visible and the thumbnail took a long time to load.
+
+We have resolved this by using a smaller thumbnail when pulling images into the maps.
+
+Github issue [#159](https://github.com/akvo/akvo-rsr/issues/159)
+
+###Release Notes Fixes
+
+The last release was pushed out with a couple of spelling mistakes in the Release Notes, these have now been corrected.
+
+Github issue [#372](https://github.com/akvo/akvo-rsr/issues/372)
+
+###Social Media Images
+
+When sharing Projects and other RSR Pages in Social Media sites images are passed through to be displayed. We had an issue that the images being used were not the correct format and so an inaccurate thumbnail was being displayed. This has been rectified to ensure that the right image sizes and shapes are provided to display as expected.
+
+Github issue [#367](https://github.com/akvo/akvo-rsr/issues/367)
+
+###Supervisor Log Warning
+
+One of the Resources in the Benchmark Models was causing some errors and so this has been fixed to prevent any further issues.
+
+Github issue [#364](https://github.com/akvo/akvo-rsr/issues/364)
+
+
+
 Akvo RSR ver 2.3.1 Quince
 ---
 
