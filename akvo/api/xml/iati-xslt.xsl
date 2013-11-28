@@ -352,8 +352,8 @@
       <!-- ignore Cordaid's budgets, they are handled by post-processing -->
       <xsl:when test="../budget[@akvo:budget-from]">
       </xsl:when>
-      <!-- if there's a type="2" budget we use that instead, see below -->
-      <xsl:when test="../budget[@type='2']">
+      <!-- if there's a type="2" budget and it has value tags we use that instead, see below -->
+      <xsl:when test="../budget[@type='2'] and ../budget[@type='2']/value">
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="value"/>
