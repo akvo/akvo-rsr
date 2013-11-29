@@ -55,6 +55,9 @@ def import_images(image_dir, photos):
                 project.current_image_caption = photos.get(
                     photo_id, {'image_caption': ''}
                 )['image_caption']
+                project.current_image_credit = photos.get(
+                    photo_id, {'image_credit': ''}
+                )['image_credit']
                 project.save()
                 log(
                     u"Uploaded image to project {pk}",
@@ -131,6 +134,7 @@ def get_post_process_data():
         <photo-id>: {
             'internal_project_id': <internal_project_id>,
             'image_caption': <image-caption>,
+            'image_credit': <image-credit>,
             'cordaid_funding': <cordaid-funding>,
             'others_funding': <others-funding>,
         }
@@ -148,7 +152,8 @@ def get_post_process_data():
                 activity.get(AKVO_NS + 'photo-id')
             ] = dict(
                 internal_project_id=activity.get(AKVO_NS + 'internal-project-id'),
-                image_caption=activity.get(AKVO_NS + 'image-caption', '').strip()
+                image_caption=activity.get(AKVO_NS + 'image-caption', '').strip(),
+                image_credit=activity.get(AKVO_NS + 'image-by', '').strip(),
             )
             cordaid_budget = activity.findall('budget[@' + AKVO_NS +'budget-from="Cordaid"]')
             others_budget = activity.findall('budget[@' + AKVO_NS +'budget-from="Others"]')
