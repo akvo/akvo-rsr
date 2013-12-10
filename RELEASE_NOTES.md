@@ -8,7 +8,7 @@ Read more about [Akvo Products](http://akvo.org/products/).
 Akvo RSR ver 2.3.2 Rambutan
 ---
 
-28th November 2013, adriancollier
+10th December 2013, adriancollier
 
 New Features
 ---
