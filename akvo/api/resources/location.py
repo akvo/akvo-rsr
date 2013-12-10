@@ -52,6 +52,10 @@ class OrganisationLocationResource(ConditionalFullResource):
         queryset        = OrganisationLocation.objects.all()
         resource_name   = 'organisation_location'
         filtering       = dict(
+            # other fields
+            latitude    = ALL,
+            longitude   = ALL,
+            primary     = ALL,
             # foreign keys
             organisation= ALL_WITH_RELATIONS,
             country     = ALL_WITH_RELATIONS,
@@ -75,3 +79,40 @@ class ProjectLocationResource(ConditionalFullResource):
             country     = ALL_WITH_RELATIONS,
             project     = ALL_WITH_RELATIONS,
         )
+
+
+class MapLocationResource(ModelResource):
+    """
+    Base class for locations used by the API driven many-pin maps,
+    OrganisationMapResource and ProjectMapResource
+    """
+    country = ConditionalFullToOneField(CountryResource, 'country')
+
+    class Meta:
+        allowed_methods = ['get']
+        filtering       = dict(
+            # other fields
+            latitude    = ALL,
+            longitude   = ALL,
+            primary     = ALL,
+            # foreign keys
+            country     = ALL_WITH_RELATIONS,
+        )
+
+
+class OrganisationMapLocationResource(MapLocationResource):
+    """
+    A Location resource optimized for use by many-pin maps
+    """
+    class Meta(MapLocationResource.Meta):
+        queryset        = OrganisationLocation.objects.all()
+        resource_name   = 'organisation_map_location'
+
+
+class ProjectMapLocationResource(MapLocationResource):
+    """
+    A Location resource optimized for use by many-pin maps
+    """
+    class Meta(MapLocationResource.Meta):
+        queryset        = ProjectLocation.objects.all()
+        resource_name   = 'project_map_location'

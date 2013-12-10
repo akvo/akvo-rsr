@@ -1408,7 +1408,7 @@ def global_organisation_projects_map_json(request, org_id):
     organisation = Organisation.objects.get(id=org_id)
     for project in organisation.published_projects():
         try:
-            image_url = project.current_image.url
+            image_url = project.current_image.extra_thumbnails['map_thumb'].absolute_url
         except:
             image_url = ""
         for location in project.locations.all():
@@ -1436,6 +1436,7 @@ def get_api_key(request):
             user_id = user.id
             user_profile = UserProfile.objects.get(user=user)
             org_id = user_profile.organisation.id
+            projects = user_profile.organisation.published_projects()
             if not user_profile.api_key:
                 user_profile.save()
             xml_root = etree.Element("credentials")
@@ -1447,6 +1448,10 @@ def get_api_key(request):
             org_id_element.text = str(org_id)
             api_key_element = etree.SubElement(xml_root, "api_key")
             api_key_element.text = user_profile.api_key
+            pub_projs_element = etree.SubElement(xml_root, "published_projects")
+            for proj in projects:
+                proj_id_element = etree.SubElement(pub_projs_element, "id")
+                proj_id_element.text = str(proj.id)
             xml_tree = etree.ElementTree(xml_root)
             xml_data = etree.tostring(xml_tree)
             return HttpResponse(xml_data, content_type="text/xml")

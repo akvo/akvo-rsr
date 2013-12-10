@@ -8,27 +8,77 @@
 from tastypie import fields
 from tastypie.cache import SimpleCache
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.resources import ModelResource
+from tastypie.utils.mime import build_content_type
 
-from akvo.api.fields import ConditionalFullToManyField
+from django.http import HttpResponse
+
+from akvo import settings
 
 from akvo.rsr.models import Organisation, Project
 
-from .resources import ConditionalFullResource, get_extra_thumbnails
+from .resources import get_extra_thumbnails
 
 
-class OrganisationMapResource(ConditionalFullResource):
+class CachedMapResource(ModelResource):
+    """
+    Base class for maps API calls that need caching for speed
+    """
+    class Meta:
+        allowed_methods = ['get']
+        include_absolute_url = True
+        cache = SimpleCache(timeout=getattr(settings, 'MAP_CACHE_TIMEOUT_SECONDS', 3600)) #an hour
+
+    def get_list(self, request, **kwargs):
+        """
+        Returns a serialized list of resources.
+
+        Calls ``obj_get_list`` to provide the data, then handles that result
+        set and serializes it.
+
+        Should return a HttpResponse (200 OK).
+
+        Addition by zzgvh:
+        Add caching of the serialized result for use in the large maps
+        """
+        desired_format = self.determine_format(request)
+        cache_key = self.generate_cache_key('list', **request.GET)
+        serialized = self._meta.cache.get(cache_key)
+
+        if serialized is None:
+            base_bundle = self.build_bundle(request=request)
+            objects = self.obj_get_list(bundle=base_bundle, **self.remove_api_resource_names(kwargs))
+            sorted_objects = self.apply_sorting(objects, options=request.GET)
+
+            paginator = self._meta.paginator_class(
+                request.GET, sorted_objects, resource_uri=self.get_resource_uri(),
+                limit=self._meta.limit, max_limit=self._meta.max_limit,
+                collection_name=self._meta.collection_name
+            )
+            to_be_serialized = paginator.page()
+
+            # Dehydrate the bundles in preparation for serialization.
+            bundles = []
+            for obj in to_be_serialized[self._meta.collection_name]:
+                bundle = self.build_bundle(obj=obj, request=request)
+                bundles.append(self.full_dehydrate(bundle))
+
+            to_be_serialized[self._meta.collection_name] = bundles
+            to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
+            serialized = self.serialize(request, to_be_serialized, desired_format)
+            self._meta.cache.set(cache_key, serialized)
+
+        return HttpResponse(content=serialized, content_type=build_content_type(desired_format))
+
+class OrganisationMapResource(CachedMapResource):
     """
     a limited resource for delivering data to be used when creating maps
     """
-    locations           = ConditionalFullToManyField('akvo.api.resources.OrganisationLocationResource', 'locations', null=True)
-    primary_location    = fields.ToOneField('akvo.api.resources.OrganisationLocationResource', 'primary_location', full=True, null=True)
+    primary_location    = fields.ToOneField('akvo.api.resources.OrganisationMapLocationResource', 'primary_location', full=True, null=True)
 
-    class Meta:
-        allowed_methods = ['get']
-        queryset = Organisation.objects.all()
+    class Meta(CachedMapResource.Meta):
+        queryset = Organisation.objects.select_related('primary_location', 'primary_location__country')
         resource_name = 'map_for_organisation'
-        include_absolute_url = True
-        cache = SimpleCache(timeout=900) # 15 minutes
 
         filtering       = dict(
             # other fields
@@ -52,19 +102,15 @@ class OrganisationMapResource(ConditionalFullResource):
         return bundle
 
 
-class ProjectMapResource(ConditionalFullResource):
+class ProjectMapResource(CachedMapResource):
     """
     a limited resource for delivering data to be used when creating maps
     """
-    locations           = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
-    primary_location    = fields.ToOneField('akvo.api.resources.ProjectLocationResource', 'primary_location', full=True, null=True)
+    primary_location    = fields.ToOneField('akvo.api.resources.ProjectMapLocationResource', 'primary_location', full=True, null=True)
 
-    class Meta:
-        allowed_methods = ['get']
-        queryset = Project.objects.published()
+    class Meta(CachedMapResource.Meta):
+        queryset = Project.objects.select_related('primary_location', 'primary_location__country').published()
         resource_name = 'map_for_project'
-        include_absolute_url = True
-        cache = SimpleCache(timeout=900) # 15 minutes
 
         filtering               = dict(
             # other fields
@@ -80,7 +126,6 @@ class ProjectMapResource(ConditionalFullResource):
             goals               = ALL_WITH_RELATIONS,
             invoices            = ALL_WITH_RELATIONS,
             links               = ALL_WITH_RELATIONS,
-            locations           = ALL_WITH_RELATIONS,
             partnerships        = ALL_WITH_RELATIONS,
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,
