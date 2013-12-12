@@ -321,7 +321,7 @@ class Organisation(models.Model):
     )
     description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'),)
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
@@ -701,7 +701,7 @@ class Project(models.Model):
     # project meta info
     language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
-    notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
+    notes = models.TextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
 
     # budget
     currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
@@ -1290,7 +1290,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     phone_number = models.CharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
     validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     objects = UserProfileManager()
 
@@ -1807,7 +1807,7 @@ class ProjectUpdate(models.Model):
     time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
     # featured = models.BooleanField(_(u'featured'))
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
         get_latest_by = "time"
@@ -2017,7 +2017,7 @@ class Invoice(models.Model):
     bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -2108,7 +2108,7 @@ class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
-    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True)
+    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '
