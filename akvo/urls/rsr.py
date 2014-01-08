@@ -283,6 +283,7 @@ urlpatterns += patterns(
     (r'^counter/', include('django_counter.urls')),
     (r'^notices/', include('notification.urls')),
     (r'^gateway/', include('akvo.gateway.urls')),
+    (r'^rest/', include('akvo.rest.urls')),
     #(r'^i18n/', include('django.conf.urls.i18n')),
 )
 
