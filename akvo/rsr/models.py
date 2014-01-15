@@ -697,6 +697,7 @@ class Project(models.Model):
     project_plan = models.TextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
     sustainability = models.TextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
     background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
+    target_group = ProjectLimitedTextField(_(u'target group'), blank=True, max_length=600, help_text=_(u'Information about the people, organisations or resources that are being impacted by this project (600 characters).'))
 
     # project meta info
     language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
