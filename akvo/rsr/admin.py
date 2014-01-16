@@ -98,12 +98,11 @@ class OrganisationLocationInline(admin.StackedInline):
     formset = RSR_LocationFormFormSet
 
 
-class InternalOrganisationIDInline(admin.TabularInline):
-    model = get_model('rsr', 'Organisation').internal_org_ids.through
-    extra = 1
-    fk_name = 'recording_org'
-    verbose_name = 'internal organisation ID'
-    verbose_name_plural = 'internal organisation IDs'
+class InternalOrganisationIDAdmin(admin.ModelAdmin):
+    list_display = (u'identifier', u'recording_org', u'referenced_org',)
+    search_fields = (u'identifier', u'recording_org__name', u'referenced_org__name',)
+
+admin.site.register(get_model('rsr', 'internalorganisationid'), InternalOrganisationIDAdmin)
 
 
 class OrganisationAdminForm(forms.ModelForm):
@@ -124,7 +123,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
     form = OrganisationAdminForm
-    inlines = (OrganisationLocationInline, InternalOrganisationIDInline)
+    inlines = (OrganisationLocationInline,)
     exclude = ('internal_org_ids',)
     readonly_fields = ('partner_types',)
     list_display = ('name', 'long_name', 'website', 'language')
@@ -594,7 +593,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future. Both The Project Plan and Sustainability fields are unlimited, so you can add additional details to your project there.'
             ),
-            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'sustainability',),
+            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'sustainability', 'target_group',),
             }),
         (_(u'Goals'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -1164,7 +1163,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
-        (u'Social', dict(fields=('facebook_button', 'twitter_button',))),
+        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
     # the notes field is not shown to everyone
     restricted_fieldsets = (
@@ -1173,7 +1172,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'Style and content',
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
-        (u'Social', dict(fields=('facebook_button', 'twitter_button',))),
+        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
     list_display = '__unicode__', 'full_domain', 'enabled',
 

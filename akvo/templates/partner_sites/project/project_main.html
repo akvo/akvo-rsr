@@ -12,7 +12,9 @@
     {% else %}
       <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
     {% endif %}
-    <meta property="fb:app_id" content="{{fb_app_id}}"/>
+    {% if request.partner_site.facebook_app_id %}
+      <meta property="fb:app_id" content="{{request.partner_site.facebook_app_id}}"/>
+    {% endif %}
 
   {% comment %}
   <style type="text/css">
@@ -66,7 +68,9 @@
 <img src="{{MEDIA_URL}}akvo/img/social/fb_share.jpg">
 </a>
 </div>
+<!--
 <div class="fb-like" data-href="http://{{request.META.HTTP_HOST}}{% url 'project_main' project.id %}" data-width="200" data-show-faces="true" data-send="false" style="padding-left:10px;"></div>
+-->
     {% endif %}
     {% if request.partner_site.twitter_button %}
 	<div style="padding-bottom:15px; padding-left:10px;">
