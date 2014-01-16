@@ -19,9 +19,15 @@ The first time you use the RSR environment:
 
 1. Run `scripts/devhelpers/setup_etc_hosts.sh` - this will add the necessary entries to your `/etc/hosts` file to be able to access the RSR server
 
-2. Go into the vagrant directory and start the Vagrant box: `cd vagrant` then `vagrant up`. The first time will take a long time, as it will install first download the base RSR virtual machine. Once this is done, it will update and install the required python packages if any have changed.
+2. Go into the vagrant directory and start the Vagrant box: `cd vagrant` then `vagrant up`. The first time will take a long time, as it will first download the base RSR virtual machine. Once this is done, it will update and install the required python packages if any have changed.
 
 3. Try out [http://rsr.localdev.akvo.org/](http://rsr.localdev.akvo.org/)
+
+## Upgrading
+
+Periodically there will be a new base RSR machine available, which will have updated infrastructure and supporting services. When this is the case, simply `vagrant destroy` to delete your old VM, then `vagrant up` as before; a completely new machine will be created.
+
+You may also want to clean up the old base boxes. They can be found in `$HOME/.vagrant.d/boxes` on UNIXy OSs, and you can simply old ones that you do not use. 
 
 
 ## About the VM
