@@ -8,7 +8,7 @@
 from django.contrib.auth.models import User
 
 from tastypie.authentication import ApiKeyAuthentication
-from tastypie.constants import ALL_WITH_RELATIONS
+from tastypie.constants import ALL_WITH_RELATIONS, ALL
 
 from akvo.api.fields import ConditionalFullToOneField
 
@@ -25,8 +25,9 @@ class UserResource(ConditionalFullResource):
         allowed_methods = ['get']
         queryset = User.objects.filter(is_active=True)
         resource_name = 'user'
-        fields = ['first_name', 'last_name', 'last_login', ]
+        fields = ['username', 'first_name', 'last_name', 'last_login',]
         filtering = dict(
+            username = ALL,
             # foreign keys
             userprofile = ALL_WITH_RELATIONS,
         )
@@ -56,4 +57,5 @@ class UserResource(ConditionalFullResource):
             bundle.data['email'] = bundle.obj.email
         else:
             del bundle.data['user_profile']
+            del bundle.data['username']
         return bundle
