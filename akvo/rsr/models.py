@@ -68,7 +68,7 @@ from akvo.rsr.signals import (
     update_project_funding
 )
 
-from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
+from iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
 
 from tastypie.models import ApiKey
 
@@ -110,6 +110,15 @@ class Country(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @classmethod
+    def fields_from_iso_code(cls, iso_code):
+        continent_code = COUNTRY_CONTINENTS[iso_code]
+        name = dict(ISO_3166_COUNTRIES)[iso_code]
+        continent = dict(CONTINENTS)[continent_code]
+        return dict(
+            iso_code=iso_code, name=name, continent=continent, continent_code=continent_code,
+        )
 
     class Meta:
         verbose_name = _(u'country')
@@ -269,6 +278,15 @@ class Organisation(models.Model):
     NEW_TO_OLD_TYPES = [ORG_TYPE_GOV, ORG_TYPE_GOV, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO,
                         ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_COM, ORG_TYPE_KNO]
 
+    @classmethod
+    def org_type_from_iati_type(cls, iati_type):
+        """ utility that maps the IATI organisation types to the old Akvo organisation types
+        """
+        types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
+            cls.NEW_TO_OLD_TYPES
+        ))
+        return types[iati_type]
+
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
@@ -321,7 +339,7 @@ class Organisation(models.Model):
     )
     description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'),)
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
@@ -701,7 +719,7 @@ class Project(models.Model):
     # project meta info
     language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
-    notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
+    notes = models.TextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
 
     # budget
     currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
@@ -1290,7 +1308,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     phone_number = models.CharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
     validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     objects = UserProfileManager()
 
@@ -1807,7 +1825,7 @@ class ProjectUpdate(models.Model):
     time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
     # featured = models.BooleanField(_(u'featured'))
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
         get_latest_by = "time"
@@ -2017,7 +2035,7 @@ class Invoice(models.Model):
     bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -2108,7 +2126,7 @@ class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
-    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True)
+    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '
