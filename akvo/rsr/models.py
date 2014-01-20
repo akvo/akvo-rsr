@@ -278,6 +278,15 @@ class Organisation(models.Model):
     NEW_TO_OLD_TYPES = [ORG_TYPE_GOV, ORG_TYPE_GOV, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO,
                         ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_COM, ORG_TYPE_KNO]
 
+    @classmethod
+    def org_type_from_iati_type(cls, iati_type):
+        """ utility that maps the IATI organisation types to the old Akvo organisation types
+        """
+        types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
+            cls.NEW_TO_OLD_TYPES
+        ))
+        return types[iati_type]
+
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
