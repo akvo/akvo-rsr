@@ -12,6 +12,7 @@ import views
 router = routers.DefaultRouter()
 
 router.register(r'organisation', views.OrganisationViewSet)
+router.register(r'internal_organisation_id', views.InternalOrganisationIDViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browseable API.
