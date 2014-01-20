@@ -68,7 +68,7 @@ from akvo.rsr.signals import (
     update_project_funding
 )
 
-from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
+from iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
 
 from tastypie.models import ApiKey
 
@@ -110,6 +110,15 @@ class Country(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @classmethod
+    def fields_from_iso_code(cls, iso_code):
+        continent_code = COUNTRY_CONTINENTS[iso_code]
+        name = dict(ISO_3166_COUNTRIES)[iso_code]
+        continent = dict(CONTINENTS)[continent_code]
+        return dict(
+            iso_code=iso_code, name=name, continent=continent, continent_code=continent_code,
+        )
 
     class Meta:
         verbose_name = _(u'country')
@@ -268,6 +277,15 @@ class Organisation(models.Model):
     )
     NEW_TO_OLD_TYPES = [ORG_TYPE_GOV, ORG_TYPE_GOV, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO,
                         ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_COM, ORG_TYPE_KNO]
+
+    @classmethod
+    def org_type_from_iati_type(cls, iati_type):
+        """ utility that maps the IATI organisation types to the old Akvo organisation types
+        """
+        types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
+            cls.NEW_TO_OLD_TYPES
+        ))
+        return types[iati_type]
 
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
