@@ -68,7 +68,7 @@ from akvo.rsr.signals import (
     update_project_funding
 )
 
-from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
+from iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
 
 from tastypie.models import ApiKey
 
@@ -110,6 +110,15 @@ class Country(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @classmethod
+    def fields_from_iso_code(cls, iso_code):
+        continent_code = COUNTRY_CONTINENTS[iso_code]
+        name = dict(ISO_3166_COUNTRIES)[iso_code]
+        continent = dict(CONTINENTS)[continent_code]
+        return dict(
+            iso_code=iso_code, name=name, continent=continent, continent_code=continent_code,
+        )
 
     class Meta:
         verbose_name = _(u'country')
