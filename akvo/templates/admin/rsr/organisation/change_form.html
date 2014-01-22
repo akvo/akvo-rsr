@@ -25,11 +25,12 @@
         {% endif %}
       {% endif %}
     {% endblock object-tools %}
-    {% if content_owner %}
-	  <br><em>
-	  {% trans "This content is managed through the API. Any manual editing is likely to be overwritten!" %}
-	  </em><br>
-    {% endif %}
+    <!-- if adminform.form.???.content_owner -->
+    {{ content_owner }}
+          <br><em>
+          {% trans "This content is managed through the API. Any manual editing is likely to be overwritten!" %}
+          </em><br>
+    <!-- endif -->
 
     <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post"
           id="{{ opts.module_name }}_form">
