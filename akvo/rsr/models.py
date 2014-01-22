@@ -326,7 +326,7 @@ class Organisation(models.Model):
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
 
-    content_owner = models.ForeignKey('self', null=True, on_delete=models.SET_NULL,
+    content_owner = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.'),
     )
                                       
