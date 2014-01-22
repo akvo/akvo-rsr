@@ -593,7 +593,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future. Both The Project Plan and Sustainability fields are unlimited, so you can add additional details to your project there.'
             ),
-            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'sustainability',),
+            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'sustainability', 'target_group',),
             }),
         (_(u'Goals'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -1163,7 +1163,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
-        (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
+        (u'Social', dict(fields=('twitter_button', 'facebook_button',))),
     )
     # the notes field is not shown to everyone
     restricted_fieldsets = (

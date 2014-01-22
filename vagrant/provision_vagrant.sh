@@ -28,12 +28,8 @@ $manage syncdb --noinput
 
 if [ ! -e /etc/localdev_rsr_provisioned ]
 then
-    zcat /vagrant/files/barebones.sql.gz > /tmp/barebones.sql
-    mysql -u root rsr < /tmp/barebones.sql
-    rm /tmp/barebones.sql
+    /var/akvo/rsr/install_test_db.sh
     $manage migrate
-    cp -r /vagrant/files/db /var/akvo/rsr/mediaroot/
-    chown -R rsr.rsr /var/akvo/rsr/mediaroot/db
     echo `date` > /etc/localdev_rsr_provisioned
 fi
 

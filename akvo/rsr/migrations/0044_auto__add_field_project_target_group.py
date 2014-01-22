@@ -1,50 +1,23 @@
 # -*- coding: utf-8 -*-
 import datetime
-from south.db import db, engine_modules
-from south.v2 import DataMigration
+from south.db import db
+from south.v2 import SchemaMigration
 from django.db import models
-from django.conf import settings
 
-class Migration(DataMigration):
 
-    """
-    This migration is to move the "fixed" Site objects so that they have a PK between 1000 and 1999,
-    and everything else to have a PK over 2000
-
-    For more information see https://github.com/akvo/akvo-provisioning/issues/29
-    """
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        Site = orm['sites.Site']
-
-        # (note: the fixtures may not be in place at this point)
-        for site in Site.objects.all():
-            if site.pk < 1000:
-                # this check means that we can go forwards then backwards and forwards without
-                # creating duplicate Site objects, and ensures we won't move the fixtures
-                new_id = site.pk + 2000
-                site.delete()
-                site.pk = new_id
-                site.save()
-
-        max_id = 1 + Site.objects.all().order_by('-id')[0].id
-
-        # we also need to explicitly set the next ID to be given to new models
-        sql = {
-            'mysql': "ALTER TABLE django_site AUTO_INCREMENT = %d",
-            'sqlite': "UPDATE SQLITE_SEQUENCE SET seq=%s WHERE name='django_site'",
-            'postgresql_psycopg2': "ALTER SEQUENCE django_site_id_seq RESTART WITH %s"
-        }
-        dbdriver = settings.DATABASES['default']['ENGINE']
-        sql = sql[engine_modules[dbdriver]] % max_id
-
-        db.execute(sql)
+        # Adding field 'Project.target_group'
+        db.add_column('rsr_project', 'target_group',
+                      self.gf('akvo.rsr.fields.ProjectLimitedTextField')(default='', blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # we can't reconstruct what the former PKs were if running backwards, but it's not
-        # important anyway
-        pass
+        # Deleting field 'Project.target_group'
+        db.delete_column('rsr_project', 'target_group')
+
 
     models = {
         'auth.group': {
@@ -178,6 +151,7 @@ class Migration(DataMigration):
             'ipn': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
             'is_anonymous': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'invoices'", 'to': "orm['rsr.Project']"}),
             'status': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
             'test': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -227,6 +201,7 @@ class Migration(DataMigration):
             'mobile': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '25', 'db_index': 'True'}),
             'new_organisation_type': ('django.db.models.fields.IntegerField', [], {'default': '22', 'db_index': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '1', 'db_index': 'True'}),
             'partner_types': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['rsr.PartnerType']", 'symmetrical': 'False'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
@@ -275,11 +250,12 @@ class Migration(DataMigration):
             'custom_return_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'default_language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '5'}),
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'facebook_app_id': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True', 'blank': 'True'}),
             'facebook_button': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'hostname': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
             'twitter_button': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'ui_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
@@ -323,7 +299,7 @@ class Migration(DataMigration):
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '2'}),
-            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'partners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'through': "orm['rsr.Partnership']", 'to': "orm['rsr.Organisation']"}),
             'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.ProjectLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
             'project_plan': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
@@ -332,6 +308,7 @@ class Migration(DataMigration):
             'status': ('django.db.models.fields.CharField', [], {'default': "'N'", 'max_length': '1', 'db_index': 'True'}),
             'subtitle': ('django.db.models.fields.CharField', [], {'max_length': '75'}),
             'sustainability': ('django.db.models.fields.TextField', [], {}),
+            'target_group': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '45', 'db_index': 'True'})
         },
         'rsr.projectcomment': {
@@ -360,6 +337,7 @@ class Migration(DataMigration):
             'Meta': {'ordering': "['-id']", 'object_name': 'ProjectUpdate'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '2'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'photo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'photo_caption': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
             'photo_credit': ('django.db.models.fields.CharField', [], {'max_length': '25', 'blank': 'True'}),
@@ -391,18 +369,12 @@ class Migration(DataMigration):
         'rsr.userprofile': {
             'Meta': {'ordering': "['user__username']", 'object_name': 'UserProfile'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
             'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'}),
             'validation': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'})
-        },
-        'sites.site': {
-            'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         }
     }
 
-    complete_apps = ['sites', 'rsr']
-    symmetrical = True
+    complete_apps = ['rsr']

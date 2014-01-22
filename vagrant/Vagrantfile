@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-    config.vm.box = "rsr-dev-20130917"
-    config.vm.box_url = "http://files.admin.akvo-ops.org/rsr-dev-20130917.box"
+    config.vm.box = "rsr-dev-20140114"
+    config.vm.box_url = "http://files.admin.akvo-ops.org/rsr-dev-20140114.box"
 
     config.vm.synced_folder "../", "/vagrant/rsr/checkout/"
 
