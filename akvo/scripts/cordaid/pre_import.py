@@ -131,8 +131,6 @@ def find_benchmarknames_and_BUs():
                         business_units.setdefault(
                             business_unit, dict(benchmarknames=[])
                         )['benchmarknames'].append(title.text)
-        import pdb
-        pdb.set_trace()
         for business_unit in business_units.keys():
             business_units[business_unit]['benchmarknames'] = list(set(business_units[business_unit]['benchmarknames']))
     return business_units
