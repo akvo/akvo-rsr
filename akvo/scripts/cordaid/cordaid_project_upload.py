@@ -227,8 +227,6 @@ def upload_activities(argv):
                                 "More than one project with internal ID {extra} exists.".format(**data)
                         )
                 else:
-                    import pdb
-                    pdb.set_trace()
                     message = "Iati-activity {iati_id} has no participating-orgs, aborting"
                     data = dict(iati_id = iati_id, event = ERROR_NO_ORGS,)
                     log(message, data)

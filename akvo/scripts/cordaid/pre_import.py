@@ -32,7 +32,7 @@ from akvo.scripts.cordaid import (
     ERROR_COUNTRY_CODE, ACTION_CREATE_ORG, ERROR_EXCEPTION, ACTION_LOCATION_FOUND, ACTION_SET_IMAGE,
     CORDAID_ORG_CSV_FILE,
     init_log,
-    outsys)
+    outsys, CORDAID_IATI_ACTIVITIES_XML)
 
 
 def create_cordaid_business_units(business_units):
@@ -115,6 +115,28 @@ def import_cordaid_benchmarks(csv_file):
                 line[COL_BUSINESS_UNID_ID], dict(benchmarknames=[]))['benchmarknames'].append(line[COL_BENCHMARKNAME]
             )
         return business_units
+
+
+def find_benchmarknames_and_BUs():
+    business_units = {}
+    with open(CORDAID_IATI_ACTIVITIES_XML, 'r') as f:
+        root = etree.fromstring(f.read())
+        AKVO_NS = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
+        activities = root.findall('iati-activity')
+        for activity in activities:
+            business_unit = activity.get(AKVO_NS + 'business-unit-id')
+            if business_unit:
+                for result in activity.findall('result'):
+                    for title in result.findall('indicator/title'):
+                        business_units.setdefault(
+                            business_unit, dict(benchmarknames=[])
+                        )['benchmarknames'].append(title.text)
+        import pdb
+        pdb.set_trace()
+        for business_unit in business_units.keys():
+            business_units[business_unit]['benchmarknames'] = list(set(business_units[business_unit]['benchmarknames']))
+    return business_units
+
 
 def get_organisation_type(new_organisation_type):
     types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
@@ -308,7 +330,8 @@ def import_orgs(xml_file):
     outsys('\n')
 
 if __name__ == '__main__':
-    business_units = import_cordaid_benchmarks(CORDAID_INDICATORS_CSV)
+    #business_units = import_cordaid_benchmarks(CORDAID_INDICATORS_CSV)
+    business_units = find_benchmarknames_and_BUs()
     business_units = create_cordaid_business_units(business_units)
     create_cats_and_benches(business_units)
     import_orgs(CORDAID_ORGANISATIONS_XML)
