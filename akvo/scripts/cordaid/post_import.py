@@ -20,19 +20,18 @@ import os
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
-from akvo.rsr.models import Project, Partnership, Organisation, BudgetItem, BudgetItemLabel
+from akvo.rsr.models import Project, Partnership, Organisation, BudgetItem, BudgetItemLabel, PublishingStatus
 from akvo.rsr.utils import model_and_instance_based_filename, who_am_i
 
 from akvo.scripts.cordaid import (
     CORDAID_IATI_ACTIVITIES_XML, CORDAID_PROJECT_IMAGES_DIR, CORDAID_ORG_ID, OTHERS_ORG_ID,
     print_log, log, ACTION_FUNDING_SET, ACTION_FUNDING_FOUND, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE,
-    CORDAID_ACTIVITIES_CSV_FILE, init_log, ACTION_BUDGET_SET, outsys
-)
+    CORDAID_ACTIVITIES_CSV_FILE, init_log, ACTION_BUDGET_SET, outsys,
+    ACTION_PUBLISHING_SET)
 
 def import_images(image_dir, photos):
     outsys("\nRunning {}() ".format(who_am_i()))
     for image_name in os.listdir(image_dir):
-        outsys(".")
         photo_id, ext = splitext(image_name)
         if ext.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
             try:
@@ -62,11 +61,13 @@ def import_images(image_dir, photos):
                 log(
                     u"Uploaded image to project {pk}",
                     dict(internal_id=internal_id, pk=project.pk, event=ACTION_SET_IMAGE))
+                outsys(".")
             except Exception, e:
                 log(
                     u"Upload failed. internal_id: {internal_id} Exception class: {extra}",
                     dict(internal_id=internal_id, event=ERROR_IMAGE_UPLOAD, extra=e.__class__),
                 )
+                outsys("*")
 
 def fix_funding(budgets):
     """
@@ -97,7 +98,6 @@ def fix_funding(budgets):
     cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
     others = Organisation.objects.get(pk=OTHERS_ORG_ID)
     for budget in budgets:
-        outsys(".")
         internal_id = budget['internal_project_id']
         try:
             project = None
@@ -122,10 +122,35 @@ def fix_funding(budgets):
                 u"Total budget for project {pk}: {extra}",
                 dict(internal_id=internal_id, pk=project.pk, event=ACTION_BUDGET_SET, extra=total_budget)
             )
+            outsys(".")
         except Exception, e:
             log(u"Error setting up funding partners for project {pk}\nException class: {extra}",
                 dict(internal_id=internal_id, pk=getattr(project, 'pk', None), event=e.__class__, extra=e.message),
             )
+            outsys("*")
+    outsys('\n')
+
+def set_publishing_status(publishing_statuses):
+    outsys("\nRunning {}() ".format(who_am_i()))
+    cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
+    for internal_id, publish in publishing_statuses.items():
+        try:
+            status = PublishingStatus.objects.get(
+                project__partnerships__internal_id=internal_id,
+                project__partnerships__organisation=cordaid,
+            )
+            status.status = 'published' if publish else 'unpublished'
+            status.save()
+            log(
+                u"Set publishing status for project ID: {pk}: {extra}",
+                dict(internal_id=internal_id, pk=status.project.pk, event=ACTION_PUBLISHING_SET, extra=status.status)
+            )
+            outsys(".")
+        except Exception, e:
+            log(u"Error setting publishing status for project {internal_id}\nException class: {extra}",
+                dict(internal_id=internal_id, event=e.__class__, extra=e.message),
+            )
+            outsys("*")
     outsys('\n')
 
 def get_post_process_data():
@@ -146,6 +171,7 @@ def get_post_process_data():
         AKVO_NS = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
         photos = {}
         budgets = []
+        publishing_statuses = {}
         for activity in root:
             outsys(".")
             photos[
@@ -164,11 +190,15 @@ def get_post_process_data():
                     others_funding=Decimal(others_budget[0].find('value').text if others_budget else 0),
                 )
             )
-        return photos, budgets
+            publishing_statuses[
+                activity.get(AKVO_NS + 'internal-project-id')
+            ] = activity.get(AKVO_NS + 'publish') == 'true'
+        return photos, budgets, publishing_statuses
 
 
 if __name__ == '__main__':
-    photos, budgets = get_post_process_data()
+    photos, budgets, publishing_statuses = get_post_process_data()
+    set_publishing_status(publishing_statuses)
     import_images(CORDAID_PROJECT_IMAGES_DIR, photos)
     fix_funding(budgets)
     log_file = init_log(CORDAID_ACTIVITIES_CSV_FILE)
