@@ -5,10 +5,63 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+
+Akvo RSR ver 2.3.3 Satsuma
+---
+
+21st January 2014, adriancollier
+
+New Features
+---
+
+###Organisation API Import
+
+We have been working with our Partners Cordaid and RAIN Foundation to build and expand on our API Write Functionality. The process of importing organisations on a large scale was previously being done via the use of local scripts. With scale however we needed a more structural solution not only to enter this data, but also to update it and allow changes to be made.
+
+To complete this task we have also introduced a new API tool called the Django REST Framework. This is an alternative to our existing API tool TastyPie. We believe this new tool is a more stable and long term solution to the API functionality. With this addition, we will be able to track the performances of both tools before deciding on the final solution that RSR will be taking for its application interface technology.
+
+Github issue [#415](https://github.com/akvo/akvo-rsr/issues/415) & [#375](https://github.com/akvo/akvo-rsr/issues/375)
+
+###Budgets Importing
+
+In a similar strain to the Organisation API Import, we have also been extending the existing Project functionality, and have enabled the feature to be able to import budget information via the API.
+
+Github issue [#390](https://github.com/akvo/akvo-rsr/issues/390)
+
+###Target Group Field
+
+Through conversations internally, with partners and also within the IATI community, we have made a decision to more closely align the RSR data set to the IATI standard to make publishing and comparison of these sets easier and more open.
+
+The latest of these changes is the inclusion of the Target Group field in the RSR Project model. At the moment this is only a backend change, so while data can be entered through the RSR Admin portal or via the API, it will not yet be visualised on the Akvo Website, Akvo Pages or Akvo Sites. This visual addition will be coming soon.
+
+Github issue [#311](https://github.com/akvo/akvo-rsr/issues/311)
+
+Bug Fixes
+---
+
+###Email Tracking
+
+We have been hearing of several incidents where activation, password or confirmation emails are not being received by users in RSR. In order to fully investigate this issue, we have enabled some detailed logging and tracking in the system to be able to inform us about emails that are sent out so we can pinpoint where the problems lies.
+
+Github issue [#416](https://github.com/akvo/akvo-rsr/issues/416)
+
+###Remove Facebook App ID From Admin
+
+Since we have released the Facebook sharing buttons in RSR, we have done some further investigation and determined a better way of solving this problem that no longer requires users to create their own Facebook Apps. To ensure users do not get confused we have removed the App ID field from the Admin.
+
+Github issue [#423](https://github.com/akvo/akvo-rsr/issues/423)
+
+###RSR Footer Update
+
+We corrected a grammar mistake in the Product roadmaps link in the footer.
+
+Github issue [#411](https://github.com/akvo/akvo-rsr/issues/411)
+
+
 Akvo RSR ver 2.3.2 Rambutan
 ---
 
-28th November 2013, adriancollier
+10th December 2013, adriancollier
 
 New Features
 ---

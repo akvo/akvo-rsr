@@ -155,7 +155,7 @@ def import_orgs(xml_file):
                 description = text_from_xpath(org_etree, 'description') or u"N/A",
                 url = normalize_url(text_from_xpath(org_etree, 'url')),
                 new_organisation_type = new_organisation_type,
-                organisation_type = get_organisation_type(new_organisation_type)
+                organisation_type = Organisation.org_type_from_iati_type(new_organisation_type)
             )
             log(
                 u"Created new organisation: {label}, Akvo ID: {pk}",
