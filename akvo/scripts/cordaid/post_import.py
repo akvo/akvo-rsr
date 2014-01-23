@@ -179,7 +179,7 @@ def get_post_process_data():
             ] = dict(
                 internal_project_id=activity.get(AKVO_NS + 'internal-project-id'),
                 image_caption=activity.get(AKVO_NS + 'image-caption', '').strip(),
-                image_credit=activity.get(AKVO_NS + 'image-by', '').strip(),
+                image_credit=activity.get(AKVO_NS + 'photo-credit', '').strip(),
             )
             cordaid_budget = activity.findall('budget[@' + AKVO_NS +'budget-from="Cordaid"]')
             others_budget = activity.findall('budget[@' + AKVO_NS +'budget-from="Others"]')
