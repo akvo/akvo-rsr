@@ -18,8 +18,8 @@ from django.conf import settings
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
-from akvo.rsr.utils import send_donation_confirmation_emails, who_am_i, rsr_send_mail_to_users
-from akvo.rsr.utils import (
+from akvo.utils import send_donation_confirmation_emails, who_am_i, rsr_send_mail_to_users
+from akvo.utils import (
     GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS
 )
 
