@@ -198,10 +198,11 @@ def upload_activities(argv):
             root = etree.fromstring(f.read())
             AKVO_NS = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
             activities = root.findall('iati-activity')
-            for i in range(len(activities)):
+            activity_count = len(activities)
+            for i in range(activity_count):
                 internal_id = activities[i].get(AKVO_NS + 'internal-project-id')
                 iati_id=activities[i].findall('iati-identifier')[0].text
-                print "Processing activity {iati_id}".format(iati_id=iati_id),
+                print "({current} of {activity_count}) Processing activity {iati_id}".format(current=i+1, activity_count=activity_count, iati_id=iati_id),
                 if len(activities[i].findall('participating-org')) > 0:
                     if internal_id:
                         ok, project = get_project_count(user, **dict(partnerships__internal_id=internal_id))
@@ -227,8 +228,6 @@ def upload_activities(argv):
                                 "More than one project with internal ID {extra} exists.".format(**data)
                         )
                 else:
-                    import pdb
-                    pdb.set_trace()
                     message = "Iati-activity {iati_id} has no participating-orgs, aborting"
                     data = dict(iati_id = iati_id, event = ERROR_NO_ORGS,)
                     log(message, data)
