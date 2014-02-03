@@ -42,7 +42,7 @@ python-memcached==1.48
 template-utils==0.4p2
 
 # Database requirements
-MySQL-python==1.2.4c1
+MySQL-python==1.2.5
 South==0.7.6
 
 # App container
