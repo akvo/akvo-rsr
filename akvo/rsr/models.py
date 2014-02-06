@@ -48,6 +48,7 @@ from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.rsr.mixins import TimestampsMixin
 from akvo.rsr.utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
     GROUP_RSR_PARTNER_EDITORS
@@ -260,7 +261,7 @@ class ProjectsQuerySetManager(QuerySetManager):
         return self.model.ProjectsQuerySet(self.model)
 
 
-class Organisation(models.Model):
+class Organisation(TimestampsMixin, models.Model):
     """
     There are four types of organisations in RSR, called Field,
     Support, Funding and Sponsor partner respectively.
@@ -680,7 +681,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
         return self.model.OrganisationsQuerySet(self.model)
 
 
-class Project(models.Model):
+class Project(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
@@ -1785,7 +1786,7 @@ class SmsReporter(models.Model):
         send_now([profile.user], 'phone_confirmed', extra_context=extra_context, on_site=True)
 
 
-class ProjectUpdate(models.Model):
+class ProjectUpdate(TimestampsMixin, models.Model):
     UPDATE_METHODS = (
         ('W', _(u'web')),
         ('E', _(u'e-mail')),
@@ -1822,14 +1823,14 @@ class ProjectUpdate(models.Model):
     video_caption = models.CharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     video_credit = models.CharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
-    time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
-    time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
-    # featured = models.BooleanField(_(u'featured'))
+    # time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
+    # time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
+    # user_agent = models.CharField(_(u'user agent'), blank=True, max_length=200, default='')
     
     notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
-        get_latest_by = "time"
+        get_latest_by = "created_at"
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')
         ordering = ['-id', ]
