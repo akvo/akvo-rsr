@@ -82,7 +82,7 @@
 		<p class="smallFont grey topmargin">{% trans 'Last update' %}</p>
 		{% with project.project_updates.latest as latest_update %}
 			{% if latest_update %}
-				<p class="smallFont"><a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">{{latest_update.time|date:"j M y"}}</a></p>
+				<p class="smallFont"><a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">{{latest_update.created_at|date:"j M y"}}</a></p>
 			{% else %}
 				<p class="smallFont">{% trans 'Not yet' %}</p>
 			{% endif %}

@@ -73,7 +73,7 @@
       {% for update in updates %}
         <div style="background-color:#AFF167;padding:2px; padding-left:15px;">
           <p class="small" style="margin:0;padding:0; font-weight:bold;">
-            {{update.time|date:"d-M-Y"}}
+            {{update.created_at|date:"d-M-Y"}}
           </p>
         </div>
         <div class="green_fold"></div>

@@ -967,7 +967,7 @@ class Project(TimestampsMixin, models.Model):
         def latest_update_fields(self):
             #used in project_list view
             #cheating slightly, counting on that both id and time are the largest for the latest update
-            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__time'))
+            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at'))
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
@@ -996,7 +996,7 @@ class Project(TimestampsMixin, models.Model):
 
     def updates_desc(self):
         "return ProjectUpdates for self, newest first"
-        return self.project_updates.all().order_by('-time')
+        return self.project_updates.all().order_by('-created_at')
 
     def latest_update(self):
         """
@@ -1010,7 +1010,7 @@ class Project(TimestampsMixin, models.Model):
         if updates:
             update = updates[0]
             # date of update shown as link poiting to the update page
-            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.time,)
+            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.created_at,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
                 update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email, )
@@ -1351,12 +1351,12 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """
         return all updates created by the user
         """
-        return ProjectUpdate.objects.filter(user=self.user).order_by('-time')
+        return ProjectUpdate.objects.filter(user=self.user).order_by('-created_at')
 
     def latest_update_date(self):
         updates = self.updates()
         if updates:
-            return updates[0].time
+            return updates[0].created_at
         else:
             return None
 
@@ -1718,7 +1718,6 @@ class SmsReporter(models.Model):
             'title': 'SMS update',
             'update_method': 'S',
             'text': mo_sms.message,
-            'time': mo_sms.saved_at,
         }
         try:
             update = ProjectUpdate.objects.create(**update_data)
@@ -1873,11 +1872,11 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and
         defaults to 30 minutes.
         """
-        return (datetime.now() - self.time) > self.edit_timeout
+        return (datetime.now() - self.created_at) > self.edit_timeout
 
     @property
     def expires_at(self):
-        return to_gmt(self.time + self.edit_timeout)
+        return to_gmt(self.created_at + self.edit_timeout)
 
     @property
     def edit_timeout(self):
@@ -1886,15 +1885,15 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     @property
     def edit_time_remaining(self):
-        return self.edit_timeout - self.time
+        return self.edit_timeout - self.created_at
 
     @property
     def time_gmt(self):
-        return to_gmt(self.time)
+        return to_gmt(self.created_at)
 
     @property
     def time_last_updated_gmt(self):
-        return to_gmt(self.time_last_updated)
+        return to_gmt(self.last_modified_at)
 
     @property
     def view_count(self):
