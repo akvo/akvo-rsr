@@ -41,8 +41,8 @@ class ProjectUpdateResource(ConditionalFullResource):
 
         filtering               = dict(
             # other fields
-            time                = ALL,
-            time_last_updated   = ALL,
+            created_at          = ALL,
+            last_modified_at    = ALL,
             title               = ALL,
             update_method       = ALL,
             # foreign keys
