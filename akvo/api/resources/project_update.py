@@ -45,6 +45,7 @@ class ProjectUpdateResource(ConditionalFullResource):
             last_modified_at    = ALL,
             title               = ALL,
             update_method       = ALL,
+            uuid                = ALL,
             # foreign keys
             project             = ALL_WITH_RELATIONS,
             user                = ALL_WITH_RELATIONS,

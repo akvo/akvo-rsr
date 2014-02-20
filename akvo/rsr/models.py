@@ -1825,6 +1825,8 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     # time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
     # time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
     user_agent = models.CharField(_(u'user agent'), blank=True, max_length=200, default='')
+    uuid = models.CharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
+        help_text=_(u'Universally unique ID set by creating user agent'))
     
     notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
