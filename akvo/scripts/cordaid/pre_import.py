@@ -158,12 +158,34 @@ def import_orgs(xml_file):
 
     def text_from_xpath(tree, xpath):
         """ utility to get the text of an element using xpath, stripped
-            returns '' if the xpath returns 0 or more than one element
+            returns '' unless the xpath returns exactly one element
         """
         element = tree.xpath(xpath)
         if len(element) != 1:
             return ''
-        return element[0].text.strip() if element[0].text else ""
+        return element[0].text.strip() if element[0].text else ''
+
+    def data_from_xpaths(xpaths, etree):
+        """ use the xpaths dict to replace the values with the actual data in the etree
+        that is retrieved when using text_from_xpath() with the xpath
+        """
+        return {key: text_from_xpath(etree, xpath) for key, xpath in xpaths.items()}
+
+    def org_data_from_xml(org_etree):
+        # keys are Organisation field names, values are xpath expressions for getting those values from the org_etree
+        xpaths = dict(
+            name='name',
+            description='description',
+            url='url',
+            new_organisation_type='iati_organisation_type',
+        )
+        # get the raw data from the org_etree
+        org_data = data_from_xpaths(xpaths, org_etree)
+        # transform data
+        org_data['long_name'] = org_data['name']
+        org_data['name'] = org_data['name'][:25]
+        org_data['organisation_type'] = Organisation.org_type_from_iati_type(int(org_data['new_organisation_type']))
+        return org_data
 
     def create_new_organisation(org_etree, internal_id):
         try:
