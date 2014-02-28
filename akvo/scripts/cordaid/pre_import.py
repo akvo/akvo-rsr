@@ -248,8 +248,8 @@ def import_orgs(xml_file):
             if not iso_code == "ww!":
                 country = custom_get_or_create_country(iso_code)
                 location = OrganisationLocation.objects.create(
-                    country = country,
-                    location_target = org
+                    country=country,
+                    location_target=org
                 )
                 org.locations.add(location)
                 org.primary_location = location
@@ -257,33 +257,33 @@ def import_orgs(xml_file):
                 log(
                     u"  Added location to org {pk}",
                     dict(
-                        log_type = LOG_ORGANISATIONS,
-                        internal_id = internal_id,
-                        pk = org.pk,
-                        label = org.name,
-                        event = ACTION_LOCATION_SET,
+                        log_type=LOG_ORGANISATIONS,
+                        internal_id=internal_id,
+                        pk=org.pk,
+                        label=org.name,
+                        event=ACTION_LOCATION_SET,
                     )
                 )
             else:
                 log(
                     u"Couldn't create location for org {pk}, no proper country code",
                     dict(
-                        log_type = LOG_ORGANISATIONS,
-                        internal_id = internal_id,
-                        pk = org.pk,
-                        label = org.name,
-                        event = ERROR_COUNTRY_CODE,
+                        log_type=LOG_ORGANISATIONS,
+                        internal_id=internal_id,
+                        pk=org.pk,
+                        label=org.name,
+                        event=ERROR_COUNTRY_CODE,
                     )
                 )
         else:
             log(
                 u"  Org {pk} already has a location.",
                 dict(
-                    log_type = LOG_ORGANISATIONS,
-                    internal_id = internal_id,
-                    pk = org.pk,
-                    label = org.name,
-                    event = ACTION_LOCATION_FOUND,
+                    log_type=LOG_ORGANISATIONS,
+                    internal_id=internal_id,
+                    pk=org.pk,
+                    label=org.name,
+                    event=ACTION_LOCATION_FOUND,
                 )
             )
 
@@ -315,14 +315,14 @@ def import_orgs(xml_file):
                     log(
                         u"  Added logo {extra} to org {pk}, ",
                         dict(
-                            log_type = LOG_ORGANISATIONS,
-                            internal_id = internal_id,
-                            pk = org.pk,
-                            event = ACTION_SET_IMAGE,
-                            extra =  filename,
+                            log_type=LOG_ORGANISATIONS,
+                            internal_id=internal_id,
+                            pk=org.pk,
+                            label=org.name,
+                            event=ACTION_SET_IMAGE,
+                            extra= filename,
                         )
                     )
-
 
     with open(xml_file, "rb") as f:
         root = etree.fromstring(f.read())
@@ -338,11 +338,11 @@ def import_orgs(xml_file):
                 log(
                     u"Found existing org {label} (Akvo PK {pk}) with Cordaid internal ID '{internal_id}'",
                     dict(
-                        log_type = LOG_ORGANISATIONS,
-                        label = internal_org_id.referenced_org.name,
-                        pk = internal_org_id.referenced_org.pk,
-                        internal_id = internal_id,
-                        event = ACTION_FOUND
+                        log_type=LOG_ORGANISATIONS,
+                        label=internal_org_id.referenced_org.name,
+                        pk=internal_org_id.referenced_org.pk,
+                        internal_id=internal_id,
+                        event=ACTION_FOUND
                     )
                 )
                 referenced_org = update_organisation(org_etree, internal_org_id)
@@ -351,9 +351,9 @@ def import_orgs(xml_file):
                 log(
                     u"Error from lookup of internal ID {internal_id}. Multiple objects found.",
                     dict(
-                        log_type = LOG_ORGANISATIONS,
-                        internal_id = internal_id,
-                        event = ERROR_MULTIPLE_OBJECTS
+                        log_type=LOG_ORGANISATIONS,
+                        internal_id=internal_id,
+                        event=ERROR_MULTIPLE_OBJECTS
                     ),
                 )
                 continue
