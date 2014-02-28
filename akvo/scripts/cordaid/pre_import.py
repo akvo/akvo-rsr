@@ -32,7 +32,7 @@ from akvo.scripts.cordaid import (
     ERROR_COUNTRY_CODE, ACTION_CREATE_ORG, ERROR_EXCEPTION, ACTION_LOCATION_FOUND, ACTION_SET_IMAGE,
     CORDAID_ORG_CSV_FILE,
     init_log,
-    outsys, CORDAID_IATI_ACTIVITIES_XML)
+    outsys, CORDAID_IATI_ACTIVITIES_XML, ACTION_UPDATE_ORG, ACTION_CREATE_IOI)
 
 
 def create_cordaid_business_units(business_units):
@@ -189,16 +189,8 @@ def import_orgs(xml_file):
 
     def create_new_organisation(org_etree, internal_id):
         try:
-            name = text_from_xpath(org_etree, 'name')
-            new_organisation_type = int(text_from_xpath(org_etree, 'iati_organisation_type'))
-            referenced_org = Organisation.objects.create(
-                name = name[:25],
-                long_name = name,
-                description = text_from_xpath(org_etree, 'description') or u"N/A",
-                url = normalize_url(text_from_xpath(org_etree, 'url')),
-                new_organisation_type = new_organisation_type,
-                organisation_type = Organisation.org_type_from_iati_type(new_organisation_type)
-            )
+            org_dict = org_data_from_xml(org_etree)
+            referenced_org = Organisation.objects.create(**org_dict)
             log(
                 u"Created new organisation: {label}, Akvo ID: {pk}",
                 dict(
@@ -216,6 +208,35 @@ def import_orgs(xml_file):
                 dict(
                     log_type=LOG_ORGANISATIONS,
                     internal_id=internal_id,
+                    event=ERROR_EXCEPTION,
+                    extra=e.message
+                )
+            )
+
+    def update_organisation(org_etree, internal_org_id):
+        try:
+            org_dict = org_data_from_xml(org_etree)
+            referenced_org = internal_org_id.referenced_org
+            update_org = Organisation.objects.filter(pk=referenced_org.pk)
+            update_org.update(**org_dict)
+            log(
+                u"Updated organisation: {label}, Akvo ID: {pk}",
+                dict(
+                    log_type=LOG_ORGANISATIONS,
+                    internal_id=internal_org_id.identifier,
+                    label=referenced_org.name,
+                    pk=referenced_org.pk,
+                    event=ACTION_UPDATE_ORG
+                )
+            )
+            # return the updated organisation record to be used in the following steps
+            return update_org[0]
+        except Exception, e:
+            log(
+                u"Error trying to update organisation with Cordaid ID {internal_id} ",
+                dict(
+                    log_type=LOG_ORGANISATIONS,
+                    internal_id=internal_org_id.identifier,
                     event=ERROR_EXCEPTION,
                     extra=e.message
                 )
@@ -324,7 +345,8 @@ def import_orgs(xml_file):
                         event = ACTION_FOUND
                     )
                 )
-                set_location_for_org(org_etree, internal_id, internal_org_id.referenced_org)
+                referenced_org = update_organisation(org_etree, internal_org_id)
+                set_location_for_org(org_etree, internal_id, referenced_org)
             except InternalOrganisationID.MultipleObjectsReturned:
                 log(
                     u"Error from lookup of internal ID {internal_id}. Multiple objects found.",
@@ -338,15 +360,36 @@ def import_orgs(xml_file):
             except InternalOrganisationID.DoesNotExist:
                 referenced_org = create_new_organisation(org_etree, internal_id)
                 if referenced_org:
-                    set_location_for_org(org_etree, internal_id, referenced_org)
-                    internal_org_id = InternalOrganisationID.objects.create(
-                        recording_org = cordaid,
-                        referenced_org = referenced_org,
-                        identifier = internal_id
-                    )
+                    try:
+                        set_location_for_org(org_etree, internal_id, referenced_org)
+                        internal_org_id=InternalOrganisationID.objects.create(
+                            recording_org=cordaid,
+                            referenced_org=referenced_org,
+                            identifier=internal_id
+                        )
+                        log(
+                            u"Created InternalOrganisationID for org: {label} (Akvo PK {pk}) with Cordaid internal ID '{internal_id}'",
+                            dict(
+                                log_type=LOG_ORGANISATIONS,
+                                label=internal_org_id.referenced_org.name,
+                                pk=internal_org_id.referenced_org.pk,
+                                internal_id=internal_id,
+                                event=ACTION_CREATE_IOI
+                            )
+                        )
+                    except Exception, e:
+                        log(
+                            u"Error trying to organisation location for org with Cordaid ID {internal_id} ",
+                            dict(
+                                log_type=LOG_ORGANISATIONS,
+                                internal_id=internal_id,
+                                event=ERROR_EXCEPTION,
+                                extra=e.message
+                            )
+                        )
                 else:
                     continue
-            organisation_logo(org_etree, internal_id, internal_org_id.referenced_org)
+            organisation_logo(org_etree, internal_id, referenced_org)
     outsys('\n')
 
 if __name__ == '__main__':
