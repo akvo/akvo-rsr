@@ -11,7 +11,7 @@ setup_environ(settings)
 
 from os.path import basename, splitext
 from akvo.rsr.models import *
-from akvo.rsr.utils import model_and_instance_based_filename
+from akvo.utils import model_and_instance_based_filename
 
 
 def temp_image(obj, file_name):

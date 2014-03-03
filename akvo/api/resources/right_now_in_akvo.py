@@ -10,7 +10,7 @@ from django.conf.urls import url
 from tastypie import fields
 from tastypie.resources import Resource
 
-from akvo.rsr.utils import right_now_in_akvo
+from akvo.utils import right_now_in_akvo
 
 
 class RightNowInAkvoObject(object):

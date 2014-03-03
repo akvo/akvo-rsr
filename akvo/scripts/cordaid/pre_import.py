@@ -24,7 +24,7 @@ from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import (
     Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID, OrganisationLocation
 )
-from akvo.rsr.utils import model_and_instance_based_filename, custom_get_or_create_country, who_am_i
+from akvo.utils import model_and_instance_based_filename, custom_get_or_create_country, who_am_i
 from akvo.scripts.cordaid import (
     CORDAID_ORG_ID, CORDAID_IATI_ID, DGIS_ORG_ID, DGIS_IATI_ID, CORDAID_INDICATORS_CSV,
     CORDAID_LOGOS_DIR, CORDAID_ORGANISATIONS_XML,
