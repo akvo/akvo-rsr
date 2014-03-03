@@ -117,10 +117,13 @@ class OrganisationAdmin(admin.ModelAdmin):
     # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
     # If the fieldsets are changed, the template may need fixing too
     fieldsets = (
+        (_(u' '), {
+            'fields': (('created_at', 'last_modified_at'),),
+        }),
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
-        (_(u'About the organisation'), {'fields': ('description', 'notes', 'created_at', 'last_modified_at',)}),
+        (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
     form = OrganisationAdminForm
     inlines = (OrganisationLocationInline,)
@@ -584,6 +587,9 @@ class ProjectAdmin(admin.ModelAdmin):
     #     }),
     # )
     fieldsets = (
+        (_(u' '), {
+            'fields': (('created_at', 'last_modified_at'),),
+        }),
         (_(u'General Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
@@ -636,7 +642,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'You can add links to your project such as Organisation Websites or Akvopedia articles containing relevant information to improve the information available to viewers of your project. You can also make notes on the project. These notes are only visible within this Admin so can be used to identify missing information, specific contact details or status changes that you do not want to be visible on your project page.'
             ),
-            'fields': ('notes', 'created_at', 'last_modified_at',),
+            'fields': ('notes',),
             }),
 
     )
@@ -1160,6 +1166,7 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 class PartnerSiteAdmin(admin.ModelAdmin):
     form = PartnerSiteAdminForm
     fieldsets = (
+        (u' ', dict(fields=('created_at', 'last_modified_at',))),
         (u'General', dict(fields=('organisation', 'enabled', 'notes',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
@@ -1168,7 +1175,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
     )
     # the notes field is not shown to everyone
     restricted_fieldsets = (
-        (u'General', dict(fields=('organisation', 'enabled',))),
+        (u' ', dict(fields=('created_at', 'last_modified_at',))),                       (u'General', dict(fields=('organisation', 'enabled',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content',
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
