@@ -126,6 +126,7 @@ ACTION_UPDATE_PROJECT = 'project updated'
 ACTION_CREATE_IOI = 'internal org id created'
 ACTION_CREATE_ORG = 'organisation created'
 ACTION_UPDATE_ORG = 'organisation updated'
+ACTION_PUBLISHING_SET = 'set publishing status'
 
 ERROR_COUNTRY_CODE = 'invalid country code'
 ERROR_MULTIPLE_OBJECTS = 'multiple objects'

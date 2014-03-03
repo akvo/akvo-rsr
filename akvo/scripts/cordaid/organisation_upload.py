@@ -78,7 +78,8 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
                 'Authorization': 'Token {}'.format(user_cred['api_key'])
             },
         )
-        org_id = ioi.response.json()['results'][0]['referenced_org']
+        #TODO: check that we only get one object back
+        org_id = ioi.response.json()[0]['referenced_org']
     except Exception, e:
         print "{message}".format(message=e.message)
         return False, None
@@ -289,3 +290,6 @@ if __name__ == '__main__':
     log_file = init_log(ORGANISATIONS_UPLOAD_LOG_FILE)
     names = (u'pk', u'other_id', u'event', u'extra')
     print_log(log_file, names)
+
+STATIC_ROOT = "/var/akvo/rsr/static/"
+STATIC_URL = "/static/"

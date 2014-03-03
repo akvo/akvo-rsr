@@ -28,6 +28,7 @@
 			<div class="error">
 				<p class="c1">{% trans 'A problem occurred' %}</p>
 				<p>{{ form.username.errors|join:", " }}</p>
+				<p>{% trans 'Usernames should be 30 characters or fewer. Only letters, digits and underscores are allowed.' %}</p>
 			</div>
 		{% endif %}
 		<div style="width:500px;">

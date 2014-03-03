@@ -90,7 +90,7 @@
                   <p class="small marg_bottom0" style="margin-top: 15px;">
                     <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br/>
                     <div class="update_preview">
-                      {{update.text|smart_truncate:50|markdown:"safe"}}
+                      {{update.text|smart_truncate:50|markdown:"safe"|urlize}}
                     </div>
                   </p>
                 </div>
@@ -116,7 +116,7 @@
                 <p class="small marg_bottom0" style="margin-top: 15px;">
                   <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
                   <div class="update_preview">
-                    {{update.text|smart_truncate:120|markdown:"safe"}}
+                    {{update.text|smart_truncate:120|markdown:"safe"|urlize}}
                   </div>
                 </p>
               </div>
