@@ -377,7 +377,7 @@ class ProjectUpdateForm(forms.ModelForm):
 
     class Meta:
         model = get_model('rsr', 'projectupdate')
-        exclude = ('time', 'project', 'user', 'time_last_updated')
+        exclude = ('created_at', 'project', 'user', 'last_modified_at')
 
     def clean_video(self):
         data = self.cleaned_data['video']

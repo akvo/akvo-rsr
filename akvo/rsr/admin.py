@@ -120,12 +120,13 @@ class OrganisationAdmin(admin.ModelAdmin):
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
-        (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
+        (_(u'About the organisation'), {'fields': ('description', 'notes', 'created_at', 'last_modified_at',)}),
     )
     form = OrganisationAdminForm
     inlines = (OrganisationLocationInline,)
     exclude = ('internal_org_ids',)
-    readonly_fields = ('partner_types',)
+    # note that readonly_fields is changed by get_readonly_fields()
+    readonly_fields = ('partner_types', 'created_at', 'last_modified_at',)
     list_display = ('name', 'long_name', 'website', 'language')
     search_fields = ('name', 'long_name')
 
@@ -158,7 +159,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         # parter_types is read only unless you have change permission for organisations
         if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
-            self.readonly_fields = ('partner_types',)
+            self.readonly_fields = ('partner_types', 'created_at', 'last_modified_at',)
             # hack to set the help text
             #try:
             #    field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
@@ -167,7 +168,7 @@ class OrganisationAdmin(admin.ModelAdmin):
             #except:
             #    pass
         else:
-            self.readonly_fields = ()
+            self.readonly_fields = ('created_at', 'last_modified_at',)
             # hack to set the help text
             #try:
             #    if not obj is None:
@@ -635,7 +636,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'You can add links to your project such as Organisation Websites or Akvopedia articles containing relevant information to improve the information available to viewers of your project. You can also make notes on the project. These notes are only visible within this Admin so can be used to identify missing information, specific contact details or status changes that you do not want to be visible on your project page.'
             ),
-            'fields': ('notes',),
+            'fields': ('notes', 'created_at', 'last_modified_at',),
             }),
 
     )
@@ -643,7 +644,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
     list_filter = ('currency', 'status', )
-    readonly_fields = ('budget', 'funds',  'funds_needed',)
+    readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
     #form = ProjectAdminForm
 
     def get_actions(self, request):
@@ -1081,8 +1082,8 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 class ProjectUpdateAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'project', 'user', 'text', 'language', 'time', 'img',)
-    list_filter = ('time', 'project', )
+    list_display = ('id', 'project', 'user', 'text', 'language', 'created_at', 'img',)
+    list_filter = ('created_at', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)

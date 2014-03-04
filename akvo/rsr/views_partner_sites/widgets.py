@@ -97,7 +97,7 @@ class ProjectListView(BaseWidgetView):
         projects = organisation.published_projects(). \
             status_not_archived().status_not_cancelled()
         sql = (
-            'SELECT MAX(time) '
+            'SELECT MAX(created_at) '
             'FROM rsr_projectupdate '
             'WHERE project_id = rsr_project.id'
         )
