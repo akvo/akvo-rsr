@@ -129,6 +129,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     inlines = (OrganisationLocationInline,)
     exclude = ('internal_org_ids',)
     # note that readonly_fields is changed by get_readonly_fields()
+    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('partner_types', 'created_at', 'last_modified_at',)
     list_display = ('name', 'long_name', 'website', 'language')
     search_fields = ('name', 'long_name')
@@ -650,6 +651,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
     list_filter = ('currency', 'status', )
+    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
     #form = ProjectAdminForm
 
@@ -1091,6 +1093,8 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
     list_display = ('id', 'project', 'user', 'text', 'language', 'created_at', 'img',)
     list_filter = ('created_at', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
+    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
+    readonly_fields = ('created_at', 'last_modified_at')
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
@@ -1183,6 +1187,8 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
     list_display = '__unicode__', 'full_domain', 'enabled',
+    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
+    readonly_fields = ('created_at', 'last_modified_at',)
 
     def get_fieldsets(self, request, obj=None):
         # don't show the notes field unless you have "add" permission on the PartnerSite model
