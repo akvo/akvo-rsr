@@ -117,7 +117,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
     # If the fieldsets are changed, the template may need fixing too
     fieldsets = (
-        (_(u' '), {
+        (_(u'Timestamps'), {
             'fields': (('created_at', 'last_modified_at'),),
         }),
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
@@ -588,7 +588,7 @@ class ProjectAdmin(admin.ModelAdmin):
     #     }),
     # )
     fieldsets = (
-        (_(u' '), {
+        (_(u'Timestamps'), {
             'fields': (('created_at', 'last_modified_at'),),
         }),
         (_(u'General Information'), {
@@ -1096,6 +1096,20 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at')
 
+    fieldsets = (
+        (_(u'Timestamps'), {
+            'fields': (('created_at', 'last_modified_at'),),
+        }),
+        (_(u'General Information'), {
+            'fields': ('project','user','update_method', ),
+        }),
+        (_(u'Content'), {
+            'fields': ('title','text','language', ),
+        }),
+        (_(u'Image and video'), {
+            'fields': ('photo', 'photo_location', 'photo_caption', 'photo_credit', 'video', 'video_caption', 'video_credit',),
+        }),
+    )
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
         """
@@ -1170,7 +1184,7 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 class PartnerSiteAdmin(admin.ModelAdmin):
     form = PartnerSiteAdminForm
     fieldsets = (
-        (u' ', dict(fields=('created_at', 'last_modified_at',))),
+        (u'Timestamps', dict(fields=(('created_at', 'last_modified_at',),))),
         (u'General', dict(fields=('organisation', 'enabled', 'notes',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
@@ -1179,7 +1193,8 @@ class PartnerSiteAdmin(admin.ModelAdmin):
     )
     # the notes field is not shown to everyone
     restricted_fieldsets = (
-        (u' ', dict(fields=('created_at', 'last_modified_at',))),                       (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'Timestamps', dict(fields=(('created_at', 'last_modified_at',),))),
+        (u'General', dict(fields=('organisation', 'enabled',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content',
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
