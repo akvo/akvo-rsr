@@ -25,6 +25,23 @@
         {% endif %}
       {% endif %}
     {% endblock object-tools %}
+    {% if original.content_owner %}
+          <ul class="messagelist">
+              <li class="warning">
+                  {% blocktrans with org_name=original.content_owner.name org_url=original.content_owner.get_absolute_url %}
+                      The information about this organisation is being maintained by <a href="{{org_url}}">{{ org_name }}</a>.
+                  {% endblocktrans %}
+                  {% if original.content_owner.contact_email %}
+                      {% blocktrans with org_contact_email=original.content_owner.contact_email %}
+                          Please ensure you inform <a href="mailto:{{ org_contact_email }}">{{ org_contact_email }}</a> of any changes to the data as they may otherwise be overwritten.
+                      {% endblocktrans %}
+                  {% else %}
+                      {% trans 'Please ensure you inform <a href="mailto:support@akvo.org">support@akvo.org</a> of any changes to the data as they may otherwise be overwritten.' %}
+                  {% endif %}
+              </li>
+          </ul>
+    {% endif %}
+
     <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post"
           id="{{ opts.module_name }}_form">
       {% csrf_token %}
