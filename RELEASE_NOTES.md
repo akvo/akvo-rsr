@@ -5,6 +5,68 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.4 Tamarine
+---
+
+10th March 2014, adriancollier
+
+New Features
+---
+
+###Timestamp Audit Records
+
+The first of a series of changes we'll be making to improve the audit tracking of RSR data. This change provides a ``created_at`` and a ``last_modified_at`` field on Projects, Organisations and ProjectUpdates as well as on PartnerSites that are used to administer Akvo Pages. The fields are currently only visible within the Admin interface; but will be useful when viewing projects in the admin or when generating our reporting information and metrics.
+
+Github issue [#381](https://github.com/akvo/akvo-rsr/issues/381)
+
+###Data Management Flag
+
+Another change related to audit tracking and ownership, this new feature allows Organisation records to be tagged with an owner organisation.
+
+This flag will generate a warning if a user belonging to an organisation that is not the owner changes data through the admin interface. Such changes risk being overwritten, now that we are working with some partners who are sending us content updates via an import file. In the future, this flag will also let the import process reject any improper changes.
+
+Github issue [#374](https://github.com/akvo/akvo-rsr/issues/374)
+
+###Organisation API Import
+
+Further improvements to our API Import allowing more fields to be updated when we do the import from an external file. This will ensure all of the latest information is displayed exactly the way they should be.
+
+Github issue [#451](https://github.com/akvo/akvo-rsr/issues/451)
+
+###Android App Update Identifier
+
+We have implemented some changes to the identification of updates provided by the new Android app. This will ensure that the app cannot post the same update more than once. This change is in preparation of our Mobile App launch later in March.
+
+Github issue [#445](https://github.com/akvo/akvo-rsr/issues/445)
+
+###Registration Usernames
+
+Usernames in RSR have never been able to include spaces, but there are also some unwanted characters that were not allowed. To make the registration process easier we have added some code to the validation of the username that not only prevents users from entering restricted characters but also provides a clear error message in the event that an invalid character is included within the username entered.
+
+Github issue [#437](https://github.com/akvo/akvo-rsr/issues/437)
+
+###Email Delivery Improvement
+
+After some reports of RSR Emails not being received, we have made some changes to the system to improve the way we handle emails. We now route the emails being delivered from RSR through the Mail Server we have running mail.akvo.org. The logging of this is delivered to us regularly so we can always track what happened to emails that are not delivered to see where the problems may lie.
+
+This change will also work to improve the overall stability of the mails being sent from RSR.
+
+This also required a change in RSR to enable the sending of mails using a service with SSL.
+
+Github issue [#448](https://github.com/akvo/akvo-rsr/issues/448)
+
+
+Bug Fixes
+---
+
+###Clickable Links in updates
+
+We had an issue that was preventing some links that were included within RSR updates from being clickable within the browser. This was affecting some Akvo Pages updates as well as times when the links were not preceded by line breaks.
+
+The new change now scans an update after it has been submitted in order to make any links that may have not been picked up automatically clickable. This will help to ensure that users who are sharing information have great updates.
+
+Github issue [#438](https://github.com/akvo/akvo-rsr/issues/438) & [#419](https://github.com/akvo/akvo-rsr/issues/419)
+
 
 Akvo RSR ver 2.3.3 Satsuma
 ---
