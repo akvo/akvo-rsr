@@ -15,7 +15,7 @@ New Features
 
 ###Timestamp Audit Records
 
-The first of a series of changes we'll be making to improve the audit tracking of RSR data. This change provides a ``created_at`` and a ``last_modified_at`` field on Projects, Organisations, Updates and Akvo Pages. The fields are currently only visible within the Admin interface; but will be useful when viewing projects in the admin or when generating our reporting information and metrics.
+The first of a series of changes we'll be making to improve the audit tracking of RSR data. This change provides a ``created_at`` and a ``last_modified_at`` field on Projects, Organisations and ProjectUpdates as well as on PartnerSites that are used to administer Akvo Pages. The fields are currently only visible within the Admin interface; but will be useful when viewing projects in the admin or when generating our reporting information and metrics.
 
 Github issue [#381](https://github.com/akvo/akvo-rsr/issues/381)
 
