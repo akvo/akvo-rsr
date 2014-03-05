@@ -21,9 +21,9 @@ Github issue [#381](https://github.com/akvo/akvo-rsr/issues/381)
 
 ###Data Management Flag
 
-Another change related to audit tracking and ownership, this new feature allows Organisation and Project records to be tagged with an owner organisation.
+Another change related to audit tracking and ownership, this new feature allows Organisation records to be tagged with an owner organisation.
 
-This flag will generate a warning if a change is being requested by an organisation that is not the owner. This comes in espeically handy now that we are working with some partners who are sending us content updates via an import file. So now we can be sure that only the objects they have agreed to take ownership of the content for, are included within the changes being made.
+This flag will generate a warning if a user belonging to an organisation that is not the owner changes data through the admin interface. Such changes risk being overwritten, now that we are working with some partners who are sending us content updates via an import file. In the future, this flag will also let the import process reject any improper changes.
 
 Github issue [#374](https://github.com/akvo/akvo-rsr/issues/374)
 
