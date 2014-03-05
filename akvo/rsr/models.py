@@ -2112,7 +2112,7 @@ def process_paypal_ipn(sender, **kwargs):
 payment_was_flagged.connect(process_paypal_ipn)
 
 
-class PartnerSite(models.Model):
+class PartnerSite(TimestampsMixin, models.Model):
 
     def about_image_path(instance, file_name):
         return 'db/partner_sites/%s/image/%s' % (instance.hostname, file_name)
