@@ -16,7 +16,7 @@ from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToOneField
 
 from akvo.rsr.models import OrganisationLocation, ProjectLocation
-from akvo.rsr.utils import custom_get_or_create_country
+from akvo.utils import custom_get_or_create_country
 
 from .resources import ConditionalFullResource
 from .organisation import OrganisationResource

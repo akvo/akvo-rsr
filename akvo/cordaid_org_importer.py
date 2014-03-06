@@ -20,7 +20,7 @@ from django.core.files.temp import NamedTemporaryFile
 
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import InternalOrganisationID, Organisation, PartnerType
-from akvo.rsr.utils import model_and_instance_based_filename
+from akvo.utils import model_and_instance_based_filename
 
 
 CORDAID_DIR = "/var/tmp/cordaid"

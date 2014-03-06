@@ -23,7 +23,7 @@
       {% for update in update_list %}
         <div class="grey_hover" style="padding:10px; {% if not forloop.last %}border-bottom:1px solid #ccc;{% endif %}">
           <div style="float:left; width:100px;">
-            <span class="grey small" style="padding-right:5px;">{{update.time|date:"d-M-Y"}}</span>
+            <span class="grey small" style="padding-right:5px;">{{update.created_at|date:"d-M-Y"}}</span>
           </div>
           <div style="float:left; width:240px; margin: 0 10px;">
             {% if update.video %}

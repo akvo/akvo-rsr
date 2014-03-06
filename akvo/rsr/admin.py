@@ -27,7 +27,7 @@ import os.path
 from permissions.models import Role
 
 from akvo.rsr.forms import PartnerSiteAdminForm
-from akvo.rsr.utils import get_rsr_limited_change_permission, permissions, custom_get_or_create_country
+from akvo.utils import get_rsr_limited_change_permission, permissions, custom_get_or_create_country
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -117,15 +117,21 @@ class OrganisationAdmin(admin.ModelAdmin):
     # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
     # If the fieldsets are changed, the template may need fixing too
     fieldsets = (
+        (_(u'Timestamps'), {
+            'fields': (('created_at', 'last_modified_at'),),
+        }),
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
-                                                'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',)}),
+                                                'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',
+                                                'content_owner',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
     form = OrganisationAdminForm
     inlines = (OrganisationLocationInline,)
     exclude = ('internal_org_ids',)
-    readonly_fields = ('partner_types',)
+    # note that readonly_fields is changed by get_readonly_fields()
+    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
+    readonly_fields = ('partner_types', 'created_at', 'last_modified_at',)
     list_display = ('name', 'long_name', 'website', 'language')
     search_fields = ('name', 'long_name')
 
@@ -158,7 +164,7 @@ class OrganisationAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         # parter_types is read only unless you have change permission for organisations
         if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
-            self.readonly_fields = ('partner_types',)
+            self.readonly_fields = ('partner_types', 'created_at', 'last_modified_at',)
             # hack to set the help text
             #try:
             #    field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
@@ -167,7 +173,7 @@ class OrganisationAdmin(admin.ModelAdmin):
             #except:
             #    pass
         else:
-            self.readonly_fields = ()
+            self.readonly_fields = ('created_at', 'last_modified_at',)
             # hack to set the help text
             #try:
             #    if not obj is None:
@@ -583,6 +589,9 @@ class ProjectAdmin(admin.ModelAdmin):
     #     }),
     # )
     fieldsets = (
+        (_(u'Timestamps'), {
+            'fields': (('created_at', 'last_modified_at'),),
+        }),
         (_(u'General Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
@@ -643,7 +652,8 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
     list_filter = ('currency', 'status', )
-    readonly_fields = ('budget', 'funds',  'funds_needed',)
+    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
+    readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
     #form = ProjectAdminForm
 
     def get_actions(self, request):
@@ -1081,10 +1091,26 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 class ProjectUpdateAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'project', 'user', 'text', 'language', 'time', 'img',)
-    list_filter = ('time', 'project', )
+    list_display = ('id', 'project', 'user', 'text', 'language', 'created_at', 'img',)
+    list_filter = ('created_at', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
+    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
+    readonly_fields = ('created_at', 'last_modified_at')
 
+    fieldsets = (
+        (_(u'Timestamps'), {
+            'fields': (('created_at', 'last_modified_at'),),
+        }),
+        (_(u'General Information'), {
+            'fields': ('project','user','update_method', ),
+        }),
+        (_(u'Content'), {
+            'fields': ('title','text','language', ),
+        }),
+        (_(u'Image and video'), {
+            'fields': ('photo', 'photo_location', 'photo_caption', 'photo_credit', 'video', 'video_caption', 'video_credit',),
+        }),
+    )
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def __init__(self, model, admin_site):
         """
@@ -1159,6 +1185,7 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 class PartnerSiteAdmin(admin.ModelAdmin):
     form = PartnerSiteAdminForm
     fieldsets = (
+        (u'Timestamps', dict(fields=(('created_at', 'last_modified_at',),))),
         (u'General', dict(fields=('organisation', 'enabled', 'notes',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
@@ -1167,6 +1194,7 @@ class PartnerSiteAdmin(admin.ModelAdmin):
     )
     # the notes field is not shown to everyone
     restricted_fieldsets = (
+        (u'Timestamps', dict(fields=(('created_at', 'last_modified_at',),))),
         (u'General', dict(fields=('organisation', 'enabled',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content',
@@ -1175,6 +1203,8 @@ class PartnerSiteAdmin(admin.ModelAdmin):
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
     )
     list_display = '__unicode__', 'full_domain', 'enabled',
+    # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
+    readonly_fields = ('created_at', 'last_modified_at',)
 
     def get_fieldsets(self, request, obj=None):
         # don't show the notes field unless you have "add" permission on the PartnerSite model

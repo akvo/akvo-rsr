@@ -10,7 +10,7 @@ from tastypie.constants import ALL_WITH_RELATIONS
 from akvo.api.fields import ConditionalFullToOneField
 
 from akvo.rsr.models import Invoice
-from akvo.rsr.utils import PAYPAL_INVOICE_STATUS_COMPLETE
+from akvo.utils import PAYPAL_INVOICE_STATUS_COMPLETE
 
 from .resources import ConditionalFullResource
 
