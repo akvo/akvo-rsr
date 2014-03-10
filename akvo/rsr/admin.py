@@ -27,6 +27,7 @@ import os.path
 from permissions.models import Role
 
 from akvo.rsr.forms import PartnerSiteAdminForm
+from akvo.rsr.mixins import TimestampsAdminDisplayMixin
 from akvo.utils import get_rsr_limited_change_permission, permissions, custom_get_or_create_country
 
 NON_FIELD_ERRORS = '__all__'
@@ -113,13 +114,10 @@ class OrganisationAdminForm(forms.ModelForm):
         return self.cleaned_data['iati_org_id'] or None
 
 
-class OrganisationAdmin(admin.ModelAdmin):
+class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
     # If the fieldsets are changed, the template may need fixing too
     fieldsets = (
-        (_(u'Timestamps'), {
-            'fields': (('created_at', 'last_modified_at'),),
-        }),
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',
                                                 'content_owner',)}),
@@ -522,7 +520,7 @@ class ProjectLocationInline(admin.StackedInline):
     formset = RSR_LocationFormFormSet
 
 
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
         GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline,
@@ -589,9 +587,6 @@ class ProjectAdmin(admin.ModelAdmin):
     #     }),
     # )
     fieldsets = (
-        (_(u'Timestamps'), {
-            'fields': (('created_at', 'last_modified_at'),),
-        }),
         (_(u'General Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
@@ -1089,7 +1084,7 @@ class ProjectCommentAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 
-class ProjectUpdateAdmin(admin.ModelAdmin):
+class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     list_display = ('id', 'project', 'user', 'text', 'language', 'created_at', 'img',)
     list_filter = ('created_at', 'project', )
@@ -1098,9 +1093,6 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'last_modified_at')
 
     fieldsets = (
-        (_(u'Timestamps'), {
-            'fields': (('created_at', 'last_modified_at'),),
-        }),
         (_(u'General Information'), {
             'fields': ('project','user','update_method', ),
         }),
@@ -1182,19 +1174,10 @@ class PaymentGatewaySelectorAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 
 
-class PartnerSiteAdmin(admin.ModelAdmin):
+class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     form = PartnerSiteAdminForm
     fieldsets = (
-        (u'Timestamps', dict(fields=(('created_at', 'last_modified_at',),))),
-        (u'General', dict(fields=('organisation', 'enabled', 'notes',))),
-        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
-        (u'Style and content', dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
-        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
-        (u'Social', dict(fields=('twitter_button', 'facebook_button',))),
-    )
-    # the notes field is not shown to everyone
-    restricted_fieldsets = (
-        (u'Timestamps', dict(fields=(('created_at', 'last_modified_at',),))),
+        # the 'notes' field is added in get_fieldsets() for eligible users
         (u'General', dict(fields=('organisation', 'enabled',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
         (u'Style and content',
@@ -1209,9 +1192,19 @@ class PartnerSiteAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         # don't show the notes field unless you have "add" permission on the PartnerSite model
         # (currently means an Akvo staff user (or superuser))
+        # note that this is somewhat fragile as it relies on adding/removing from the _first_ fieldset
         if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
-            return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
-        return self.restricted_fieldsets
+            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
+        else:
+            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled',)
+        return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
+
+    # def get_fieldsets(self, request, obj=None):
+    #     # don't show the notes field unless you have "add" permission on the PartnerSite model
+    #     # (currently means an Akvo staff user (or superuser))
+    #     if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
+    #         return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
+    #     return self.restricted_fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
         """ Workaround bug http://code.djangoproject.com/ticket/9360
