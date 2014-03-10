@@ -123,7 +123,9 @@
     
     {% if update.text_location == 'B' %}
       <p class="small grey">
-        {{ update.text|markdown:"safe"|urlize }}
+        {% autoescape off %}
+          {{ update.text|force_escape|urlize|markdown }}
+        {% endautoescape %}
       </p>
     {% endif %}	
     {% if update.video %}
@@ -151,7 +153,9 @@
     {% endif %}
     {% if update.text_location == 'E' %}
       <p class="small grey">
-        {{ update.text|markdown:"safe"|urlize }}
+        {% autoescape off %}
+          {{ update.text|force_escape|urlize|markdown }}
+        {% endautoescape %}
       </p>
     {% endif %}
     <hr style="margin-bottom:5px;" />
