@@ -67,6 +67,12 @@ The new change now scans an update after it has been submitted in order to make 
 
 Github issue [#438](https://github.com/akvo/akvo-rsr/issues/438) & [#419](https://github.com/akvo/akvo-rsr/issues/419)
 
+###Add project view in Admin bug
+
+During the implementation of the new Timestamp feature, we had an issue with the template for adding a new project into RSR. This required some tidying up of the fields and moving the Timestamp fields into the General field list rather than in its own section.
+
+Github issue [#458](https://github.com/akvo/akvo-rsr/issues/458)
+
 
 Akvo RSR ver 2.3.3 Satsuma
 ---
