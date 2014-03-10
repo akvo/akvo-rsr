@@ -52,7 +52,11 @@
                     <a href="{{ update.get_absolute_url }}">{{update.title|capfirst}}</a><br />
                   {% endif %}
                   {% if update.text %}
-                    <span class="grey small">{{update.text|smart_truncate:150|markdown:"safe"}}</span>
+                    <span class="grey small">
+                      {% autoescape off %}
+                        {{ update.text|force_escape|smart_truncate:150|urlize|markdown }}
+                      {% endautoescape %}
+                    </span>
                   {% endif %}
                 </p>
               </div>

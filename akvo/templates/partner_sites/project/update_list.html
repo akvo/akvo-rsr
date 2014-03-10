@@ -44,13 +44,17 @@
             {% endif %}
           </div>
           {% if update.title or update.text %}
-            <div style="float:left; width:240px;">
+            <div style="float:left; width:240px; overflow:hidden;">
               <p style="margin:0;">
                 {% if update.title %}
                   <a href="{% url 'update_main' project.id update.id %}">{{update.title|capfirst}}</a><br />
                 {% endif %}
                 {% if update.text %}
-                  <span class="grey small">{{update.text|smart_truncate:150|markdown:"safe"}}</span>
+                  <span class="grey small">
+                  {% autoescape off %}
+                    {{ update.text|force_escape|smart_truncate:150|urlize|markdown }}
+                  {% endautoescape %}
+                  </span>
                 {% endif %}
               </p>
             </div>
