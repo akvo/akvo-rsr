@@ -91,10 +91,12 @@ header, footer {
 }
 
 .newHeadFoot .wrapperHead {
-	position: relative;
-	width: 975px;
-	margin: 0 auto;
+margin: 0 auto;
+max-width: 975px;
+min-width: 700px;
+position: relative;
 }
+
 .newHeadFoot .content {
 	display:block;
 	background:red;

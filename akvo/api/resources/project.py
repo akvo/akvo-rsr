@@ -26,7 +26,7 @@ from akvo.api.serializers import IATISerializer
 from akvo.rsr.models import (
     Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark
 )
-from akvo.rsr.utils import get_rsr_limited_change_permission
+from akvo.utils import get_rsr_limited_change_permission
 
 from .resources import ConditionalFullResource, get_extra_thumbnails
 from .partnership import FIELD_NAME, FIELD_LONG_NAME

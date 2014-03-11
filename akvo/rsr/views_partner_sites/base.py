@@ -91,7 +91,7 @@ class BaseProjectView(BaseView):
         if unpublished_project and privileged_user:
             draft = True
 
-        updates = project.project_updates.all().order_by('-time')
+        updates = project.project_updates.all().order_by('-created_at')
         updates_with_images = updates.exclude(photo__exact='')
 
         context.update({

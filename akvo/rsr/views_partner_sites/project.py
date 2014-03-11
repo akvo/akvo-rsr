@@ -80,7 +80,7 @@ class ProjectUpdateListView(BaseListView):
 
     def get_queryset(self):
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        return project.project_updates.all().order_by('-time')
+        return project.project_updates.all().order_by('-created_at')
 
 
 class ProjectUpdateView(BaseProjectView):

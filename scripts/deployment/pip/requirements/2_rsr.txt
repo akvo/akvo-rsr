@@ -21,6 +21,7 @@ djangorestframework==2.3.10
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
 -e git://github.com/carlio/djangoembed.git@cc655adb61d3deafe8bedf14ad34a7b7712acdef#egg=djangoembed
 -e git://github.com/toastdriven/django-tastypie.git@2b13147715347d8239bbe73943be0eae65c8a43b#egg=django_tastypie-dev
+ 
 
 # Akvonaut apps
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
@@ -34,6 +35,7 @@ httplib2==0.7.6
 lxml==2.3.6
 defusedxml==0.4.1
 pytz==2012h
+django-smtp-ssl==1.0
 
 # RSR requirements
 Markdown==2.2.1
@@ -42,7 +44,7 @@ python-memcached==1.48
 template-utils==0.4p2
 
 # Database requirements
-MySQL-python==1.2.4c1
+MySQL-python==1.2.5
 South==0.7.6
 
 # App container

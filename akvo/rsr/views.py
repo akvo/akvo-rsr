@@ -18,7 +18,7 @@ from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationForm
 from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
-from akvo.rsr.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
+from akvo.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
                             get_random_from_qs, state_equals, right_now_in_akvo)
 
 from django import forms
@@ -622,7 +622,7 @@ def projectupdates(request, project_id):
     updates: list of updates, ordered by time in reverse
     '''
     project = get_object_or_404(Project, pk=project_id)
-    updates = project.project_updates.all().order_by('-time')
+    updates = project.project_updates.all().order_by('-created_at')
     comments = project.comments.all().order_by('-time')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
@@ -669,7 +669,7 @@ def projectcomments(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     comments = Project.objects.get(id=project_id).comments.all().order_by('-time')
     form = CommentForm()
-    updates = project.project_updates.all().order_by('-time')[:3]
+    updates = project.project_updates.all().order_by('-created_at')[:3]
     return {
         'project': project,
         'comments': comments,
@@ -900,8 +900,8 @@ def projectmain(request, project, draft=False, can_add_update=False):
 #        categories__in=Category.objects.filter(projects=project)
 #    ).distinct().exclude(pk=project.pk).published()
 #    related = get_random_from_qs(related, 2)
-    all_updates = project.project_updates.all().order_by('-time')
-    updates_with_images = all_updates.exclude(photo__exact='').order_by('-time')
+    all_updates = project.project_updates.all().order_by('-created_at')
+    updates_with_images = all_updates.exclude(photo__exact='').order_by('-created_at')
     comments = project.comments.all().order_by('-time')[:3]
     # comprehensions are fun! here we use it to get the categories that
     # don't contain only 0 value benchmarks
@@ -942,7 +942,7 @@ def projectdetails(request, project_id):
 @project_viewing_permissions
 @render_to('rsr/project/project_partners.html')
 def projectpartners(request, project, draft=False, can_add_update=False):
-    updates = project.project_updates.all().order_by('-time')[:3]
+    updates = project.project_updates.all().order_by('-created_at')[:3]
     comments = project.comments.all().order_by('-time')[:3]
     return {
         'can_add_update': can_add_update,
@@ -959,7 +959,7 @@ def projectpartners(request, project, draft=False, can_add_update=False):
 @render_to('rsr/project/project_funding.html')
 def projectfunding(request, project, draft=False, can_add_update=False):
     public_donations = project.public_donations()
-    updates = project.project_updates.all().order_by('-time')[:3]
+    updates = project.project_updates.all().order_by('-created_at')[:3]
     comments = project.comments.all().order_by('-time')[:3]
     return {
         'can_add_update': can_add_update,
@@ -1048,7 +1048,7 @@ def templatedev(request, template_name):
     SAMPLE_PROJECT_ID = 2
     SAMPLE_ORG_ID = 42
     p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
-    updates = Project.objects.get(id=SAMPLE_PROJECT_ID).project_updates.all().order_by('-time')[:3]
+    updates = Project.objects.get(id=SAMPLE_PROJECT_ID).project_updates.all().order_by('-created_at')[:3]
     comments = Project.objects.get(id=SAMPLE_PROJECT_ID).comments.all().order_by('-time')[:3]
     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
@@ -1110,7 +1110,7 @@ def project_list_widget(request, template='project-list', org_id=0):
 
     order_by = request.GET.get('order_by', 'title')
     sql = (
-        'SELECT MAX(time) '
+        'SELECT MAX(created_at) '
         'FROM rsr_projectupdate '
         'WHERE project_id = rsr_project.id'
     )
@@ -1328,7 +1328,7 @@ def global_map(request):
     return dict(projects=projects, marker_icon=marker_icon)
 
 def get_update_month_and_year(update):
-    return (update.time.date().month, update.time.date().year)
+    return (update.created_at.date().month, update.created_at.date().year)
 
 def get_country(project):
     return project.primary_location.country.name
@@ -1357,7 +1357,7 @@ def data_overview(request):
     projects_by_country.extend([[country_project[0], len(list(country_project[1]))] for country_project in country_projects])
     country_lookup = dict([(country.name, country.pk) for country in Country.objects.all()])
 
-    updates = ProjectUpdate.objects.all().order_by('time')
+    updates = ProjectUpdate.objects.all().order_by('created_at')
     groupdates = groupby(updates, get_update_month_and_year)
     updates_by_month = [['Month', 'Updates']]
     updates_by_month.extend([['%s %s' % (MONTHS[groupdate[0][0]-1], str(groupdate[0][1])), len(list(groupdate[1]))] for groupdate in groupdates])

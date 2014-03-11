@@ -1,36 +1,22 @@
 # -*- coding: utf-8 -*-
-from south.v2 import DataMigration
+import datetime
+from south.db import db
+from south.v2 import SchemaMigration
+from django.db import models
 
-from django.db.models.aggregates import Sum
 
-from akvo.utils import PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_PENDING
-from akvo.rsr.models import Partnership
-
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        for project in orm.Project.objects.all():
-            project.budget = orm.BudgetItem.objects.filter(project__exact=project).aggregate(Sum('amount'))['amount__sum'] or 0
-
-            donations = orm.Invoice.objects.filter(project__exact=project).filter(
-                status__exact=PAYPAL_INVOICE_STATUS_COMPLETE
-            ).aggregate(Sum('amount_received'))['amount_received__sum'] or 0
-
-            pending_donations = orm.Invoice.objects.filter(project__exact=project).filter(
-                status__exact=PAYPAL_INVOICE_STATUS_PENDING
-            ).aggregate(Sum('amount'))['amount__sum'] or 0
-
-            pledged = orm.Partnership.objects.filter(project__exact=project).filter(
-                partner_type__exact=Partnership.FUNDING_PARTNER
-            ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
-
-            project.funds = donations + pending_donations + pledged
-            project.funds_needed = project.budget - project.funds
-            project.save()
+        # Adding field 'ProjectUpdate.uuid'
+        db.add_column('rsr_projectupdate', 'uuid',
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=40, db_index=True, blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        # Deleting field 'ProjectUpdate.uuid'
+        db.delete_column('rsr_projectupdate', 'uuid')
 
 
     models = {
@@ -99,7 +85,7 @@ class Migration(DataMigration):
         'rsr.benchmarkname': {
             'Meta': {'ordering': "['order', 'name']", 'object_name': 'Benchmarkname'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         'rsr.budgetitem': {
@@ -113,21 +99,21 @@ class Migration(DataMigration):
         'rsr.budgetitemlabel': {
             'Meta': {'ordering': "('label',)", 'object_name': 'BudgetItemLabel'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'})
+            'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20', 'db_index': 'True'})
         },
         'rsr.category': {
             'Meta': {'ordering': "['name']", 'object_name': 'Category'},
             'benchmarknames': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['rsr.Benchmarkname']", 'symmetrical': 'False', 'blank': 'True'}),
             'focus_area': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'categories'", 'symmetrical': 'False', 'to': "orm['rsr.FocusArea']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'})
         },
         'rsr.country': {
             'Meta': {'ordering': "['name']", 'object_name': 'Country'},
             'continent': ('django.db.models.fields.CharField', [], {'max_length': '20', 'db_index': 'True'}),
-            'continent_code': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
+            'continent_code': ('django.db.models.fields.CharField', [], {'max_length': '2', 'db_index': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'iso_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '2'}),
+            'iso_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '2', 'db_index': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'})
         },
         'rsr.focusarea': {
@@ -145,6 +131,13 @@ class Migration(DataMigration):
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'goals'", 'to': "orm['rsr.Project']"}),
             'text': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
         },
+        'rsr.internalorganisationid': {
+            'Meta': {'unique_together': "(('recording_org', 'referenced_org'),)", 'object_name': 'InternalOrganisationID'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'identifier': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'recording_org': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'internal_ids'", 'to': "orm['rsr.Organisation']"}),
+            'referenced_org': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reference_ids'", 'to': "orm['rsr.Organisation']"})
+        },
         'rsr.invoice': {
             'Meta': {'ordering': "['-id']", 'object_name': 'Invoice'},
             'amount': ('django.db.models.fields.PositiveIntegerField', [], {}),
@@ -158,7 +151,8 @@ class Migration(DataMigration):
             'ipn': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
             'is_anonymous': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'invoices'", 'to': "orm['rsr.Project']"}),
             'status': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
             'test': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -172,21 +166,6 @@ class Migration(DataMigration):
             'kind': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'links'", 'to': "orm['rsr.Project']"}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
-        },
-        'rsr.location': {
-            'Meta': {'ordering': "['-primary']", 'object_name': 'Location'},
-            'address_1': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'address_2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Country']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'latitude': ('akvo.rsr.fields.LatitudeField', [], {'default': '0'}),
-            'longitude': ('akvo.rsr.fields.LongitudeField', [], {'default': '0'}),
-            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'postcode': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
-            'primary': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'})
         },
         'rsr.minicms': {
             'Meta': {'ordering': "['-active', '-id']", 'object_name': 'MiniCMS'},
@@ -211,15 +190,25 @@ class Migration(DataMigration):
             'Meta': {'ordering': "['name']", 'object_name': 'Organisation'},
             'contact_email': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'contact_person': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'content_owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
+            'iati_org_id': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '75', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'internal_org_ids': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'recording_organisation'", 'symmetrical': 'False', 'through': "orm['rsr.InternalOrganisationID']", 'to': "orm['rsr.Organisation']"}),
+            'language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '2'}),
+            'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'logo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'long_name': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
             'mobile': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
-            'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '25', 'db_index': 'True'}),
+            'new_organisation_type': ('django.db.models.fields.IntegerField', [], {'default': '22', 'db_index': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '1', 'db_index': 'True'}),
+            'partner_types': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['rsr.PartnerType']", 'symmetrical': 'False'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
+            'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.OrganisationLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
         'rsr.organisationaccount': {
@@ -227,27 +216,59 @@ class Migration(DataMigration):
             'account_level': ('django.db.models.fields.CharField', [], {'default': "'free'", 'max_length': '12'}),
             'organisation': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['rsr.Organisation']", 'unique': 'True', 'primary_key': 'True'})
         },
+        'rsr.organisationlocation': {
+            'Meta': {'ordering': "['-primary']", 'object_name': 'OrganisationLocation'},
+            'address_1': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'address_2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Country']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'latitude': ('akvo.rsr.fields.LatitudeField', [], {'default': '0', 'db_index': 'True'}),
+            'location_target': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'locations'", 'null': 'True', 'to': "orm['rsr.Organisation']"}),
+            'longitude': ('akvo.rsr.fields.LongitudeField', [], {'default': '0', 'db_index': 'True'}),
+            'postcode': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
+            'primary': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'}),
+            'state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'})
+        },
         'rsr.partnership': {
             'Meta': {'ordering': "['partner_type']", 'object_name': 'Partnership'},
-            'funding_amount': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'funding_amount': ('django.db.models.fields.DecimalField', [], {'db_index': 'True', 'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'iati_activity_id': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '75', 'null': 'True', 'blank': 'True'}),
+            'iati_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
-            'partner_type': ('django.db.models.fields.CharField', [], {'max_length': '8'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"})
+            'internal_id': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '75', 'null': 'True', 'blank': 'True'}),
+            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'partnerships'", 'to': "orm['rsr.Organisation']"}),
+            'partner_type': ('django.db.models.fields.CharField', [], {'max_length': '8', 'db_index': 'True'}),
+            'partner_type_extra': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'partnerships'", 'to': "orm['rsr.Project']"})
         },
         'rsr.partnersite': {
             'Meta': {'ordering': "('organisation__name',)", 'object_name': 'PartnerSite'},
             'about_box': ('django.db.models.fields.TextField', [], {'max_length': '500', 'blank': 'True'}),
             'about_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'cname': ('akvo.rsr.fields.NullCharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'custom_css': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
             'custom_favicon': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
             'custom_logo': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
             'custom_return_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
+            'default_language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '5'}),
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'facebook_app_id': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True', 'blank': 'True'}),
+            'facebook_button': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'hostname': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"})
+            'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
+            'twitter_button': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'ui_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+        },
+        'rsr.partnertype': {
+            'Meta': {'ordering': "('label',)", 'object_name': 'PartnerType'},
+            'id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '8', 'primary_key': 'True'}),
+            'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         'rsr.paymentgatewayselector': {
             'Meta': {'object_name': 'PaymentGatewaySelector'},
@@ -269,51 +290,74 @@ class Migration(DataMigration):
         'rsr.project': {
             'Meta': {'ordering': "['-id']", 'object_name': 'Project'},
             'background': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
-            'budget': ('django.db.models.fields.DecimalField', [], {'default': '0', 'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'budget': ('django.db.models.fields.DecimalField', [], {'decimal_places': '2', 'default': '0', 'max_digits': '10', 'blank': 'True', 'null': 'True', 'db_index': 'True'}),
             'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'currency': ('django.db.models.fields.CharField', [], {'default': "'EUR'", 'max_length': '3'}),
             'current_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'current_image_caption': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'current_image_credit': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'current_status': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'date_complete': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_request_posted': ('django.db.models.fields.DateField', [], {'default': 'datetime.date.today'}),
-            'funds': ('django.db.models.fields.DecimalField', [], {'default': '0', 'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
-            'funds_needed': ('django.db.models.fields.DecimalField', [], {'default': '0', 'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'funds': ('django.db.models.fields.DecimalField', [], {'decimal_places': '2', 'default': '0', 'max_digits': '10', 'blank': 'True', 'null': 'True', 'db_index': 'True'}),
+            'funds_needed': ('django.db.models.fields.DecimalField', [], {'decimal_places': '2', 'default': '0', 'max_digits': '10', 'blank': 'True', 'null': 'True', 'db_index': 'True'}),
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '2'}),
+            'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'partners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'through': "orm['rsr.Partnership']", 'to': "orm['rsr.Organisation']"}),
+            'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.ProjectLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
             'project_plan': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'project_plan_summary': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             'project_rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'status': ('django.db.models.fields.CharField', [], {'default': "'N'", 'max_length': '1'}),
+            'status': ('django.db.models.fields.CharField', [], {'default': "'N'", 'max_length': '1', 'db_index': 'True'}),
             'subtitle': ('django.db.models.fields.CharField', [], {'max_length': '75'}),
             'sustainability': ('django.db.models.fields.TextField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '45'})
+            'target_group': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '45', 'db_index': 'True'})
         },
         'rsr.projectcomment': {
             'Meta': {'ordering': "('-id',)", 'object_name': 'ProjectComment'},
             'comment': ('django.db.models.fields.TextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
-            'time': ('django.db.models.fields.DateTimeField', [], {}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comments'", 'to': "orm['rsr.Project']"}),
+            'time': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+        },
+        'rsr.projectlocation': {
+            'Meta': {'ordering': "['-primary']", 'object_name': 'ProjectLocation'},
+            'address_1': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'address_2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Country']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'latitude': ('akvo.rsr.fields.LatitudeField', [], {'default': '0', 'db_index': 'True'}),
+            'location_target': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'locations'", 'null': 'True', 'to': "orm['rsr.Project']"}),
+            'longitude': ('akvo.rsr.fields.LongitudeField', [], {'default': '0', 'db_index': 'True'}),
+            'postcode': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
+            'primary': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'}),
+            'state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'})
         },
         'rsr.projectupdate': {
             'Meta': {'ordering': "['-id']", 'object_name': 'ProjectUpdate'},
-            'featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'language': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '2'}),
+            'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'photo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'photo_caption': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
             'photo_credit': ('django.db.models.fields.CharField', [], {'max_length': '25', 'blank': 'True'}),
             'photo_location': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'project_updates'", 'to': "orm['rsr.Project']"}),
             'text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'time_last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'update_method': ('django.db.models.fields.CharField', [], {'default': "'W'", 'max_length': '1', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'}),
+            'update_method': ('django.db.models.fields.CharField', [], {'default': "'W'", 'max_length': '1', 'db_index': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'user_agent': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '200', 'blank': 'True'}),
+            'uuid': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '40', 'db_index': 'True', 'blank': 'True'}),
             'video': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'video_caption': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
             'video_credit': ('django.db.models.fields.CharField', [], {'max_length': '25', 'blank': 'True'})
@@ -334,6 +378,7 @@ class Migration(DataMigration):
         'rsr.userprofile': {
             'Meta': {'ordering': "['user__username']", 'object_name': 'UserProfile'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notes': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
             'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'}),
@@ -342,4 +387,3 @@ class Migration(DataMigration):
     }
 
     complete_apps = ['rsr']
-    symmetrical = True

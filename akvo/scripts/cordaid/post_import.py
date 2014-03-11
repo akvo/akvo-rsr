@@ -21,7 +21,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
 from akvo.rsr.models import Project, Partnership, Organisation, BudgetItem, BudgetItemLabel, PublishingStatus
-from akvo.rsr.utils import model_and_instance_based_filename, who_am_i
+from akvo.utils import model_and_instance_based_filename, who_am_i
 
 from akvo.scripts.cordaid import (
     CORDAID_IATI_ACTIVITIES_XML, CORDAID_PROJECT_IMAGES_DIR, CORDAID_ORG_ID, OTHERS_ORG_ID,
