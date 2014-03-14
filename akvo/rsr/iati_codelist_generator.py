@@ -11,9 +11,10 @@ import csv
 import re
 
 # Modify this list to add new IATI code lists
-iati_lists = ("OrganisationType", )
+iati_lists = ("OrganisationType", "FinanceType", "ActivityStatus", "OrganisationRole")
 
-iati_list_api_url = "http://datadev.aidinfolabs.org/data/codelist/%s.csv"
+# OLD URI; iati_list_api_url = "http://datadev.aidinfolabs.org/data/codelist/%s.csv"
+iati_list_api_url = "http://data.aidinfolabs.org/data/codelist/%s/version/1.0/lang/en.csv"
 identifier_prefix = "IATI_LIST_"
 
 def pythonify_code_list_name(code_list_name):

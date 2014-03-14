@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# From http://datadev.aidinfolabs.org/data/codelist/OrganisationType.csv
+# From http://data.aidinfolabs.org/data/codelist/OrganisationType/version/1.0/lang/en.csv
 # Fields: code, name
 
 IATI_LIST_ORGANISATION_TYPE = (
@@ -16,7 +16,7 @@ IATI_LIST_ORGANISATION_TYPE = (
     (80, u'Academic, Training and Research')
 )
 
-# From http://datadev.aidinfolabs.org/data/codelist/FinanceType.csv
+# From http://data.aidinfolabs.org/data/codelist/FinanceType/version/1.0/lang/en.csv
 # Fields: code, name, category, category-name, category-description
 
 IATI_LIST_FINANCE_TYPE = (
@@ -64,5 +64,26 @@ IATI_LIST_FINANCE_TYPE = (
     (910, u'Other bank securities/claims', 900, u'OTHER SECURITIES/CLAIMS', u''),
     (911, u'Other non-bank securities/claims', 900, u'OTHER SECURITIES/CLAIMS', u''),
     (912, u'Securities and other instruments issued by multilateral agencies', 900, u'OTHER SECURITIES/CLAIMS', u'')
+)
+
+# From http://data.aidinfolabs.org/data/codelist/ActivityStatus/version/1.0/lang/en.csv
+# Fields: code, name, language
+
+IATI_LIST_ACTIVITY_STATUS = (
+    (1, u'Pipeline/identification', u'en'),
+    (2, u'Implementation', u'en'),
+    (3, u'Completion', u'en'),
+    (4, u'Post-completion', u'en'),
+    (5, u'Cancelled', u'en')
+)
+
+# From http://data.aidinfolabs.org/data/codelist/OrganisationRole/version/1.0/lang/en.csv
+# Fields: code, name, description
+
+IATI_LIST_ORGANISATION_ROLE = (
+    (u'Accountable', u'Accountable', u'The government agency, civil society or private sector institution which is accountable for the implementation of the activity.'),
+    (u'Extending', u'Extending', u'The government entity (central, state or local government agency or department), or agency within an institution, financing the activity from its own budget'),
+    (u'Funding', u'Funding', u'The country or institution which provides the funds.'),
+    (u'Implementing', u'Implementing', u'The intermediary between the extending agency and the ultimate beneficiary. Also known as executing agency or channel of delivery. They can be public sector, non-governmental agencies (NGOs), Public-Private partnerships, or multilateral institutions')
 )
 
