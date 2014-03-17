@@ -55,7 +55,7 @@ def set_partner_types():
         count += 1
 
     print ""
-    print "Done!"
+    print "Done:"
     print ""
     print "- " + str(field_count) + " organisations added as field partner."
     print "- " + str(funding_count) + " organisations added as funding partner."
