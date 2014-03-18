@@ -146,8 +146,7 @@ def iati_location(activity, location, country):
     location_node.add_coordinates(coordinates)
 
     if check_value(country.name) and check_value(country.iso_code):
-        country_name = schema.textType(valueOf_=country.name)
-        administrative = schema.administrativeType(country=country.iso_code.upper(), valueOf_=country_name)
+        administrative = schema.administrativeType(country=country.iso_code.upper(), valueOf_=country.name)
 
         location_node.add_administrative(administrative)
 
@@ -159,6 +158,8 @@ def iati_location(activity, location, country):
 
     if check_value(location.postcode):
         location_node.set_anyAttributes_({"akvo:post-code": location.postcode})
+
+    activity.add_location(location_node)
 
     return activity
 
