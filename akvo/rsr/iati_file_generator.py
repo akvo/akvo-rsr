@@ -15,7 +15,7 @@ from akvo.rsr.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANI
 from akvo.rsr.models import (Project, Organisation, Partnership, Goal, ProjectLocation, Country, BudgetItem,
                              BudgetItemLabel, InternalOrganisationID, Link)
 
-import sys, argparse
+import sys, argparse, os.path
 import akvo.rsr.iati_schema as schema
 
 
@@ -379,6 +379,27 @@ def project_selection(organisation_id, partner_types, ignore_list):
 
     return filtered_projects
 
+def export_file(path, file, organisation):
+    """Exports the XML to a file using the name of the organisation."""
+
+    name = organisation.name
+    file_name = path + name + ".xml"
+
+    # Check if file exists and make sure the file has a unique name
+    increment = True
+    count = 1
+
+    while increment:
+        if os.path.isfile(file_name):
+            file_name = path + name + " (" + str(count) + ").xml"
+            count += 1
+        else:
+            with open(file_name, 'w') as f:
+                file.export(f, 0)
+            increment = False
+
+    print "\nIATI XML available at: " + str(file_name) + "\n"
+
 
 if __name__ == '__main__':
     # Parse arguments
@@ -393,20 +414,24 @@ if __name__ == '__main__':
 
     # At least one of the partner types has to be selected, if not the program is terminated
     if not (args.field or args.funding or args.sponsor or args.support):
-        print ""
-        print "Error; choose at least one of the partner types:"
-        print ""
+        print "Error; choose at least one of the partner types:\n"
         print "- Field partner (-fi)"
         print "- Funding partner (-fu)"
         print "- Sponsor partner (-sp)"
-        print "- Support partner (-su)"
-        print ""
+        print "- Support partner (-su)\n"
+        sys.exit()
 
+    # Check if organisation exists, if not the program is terminated
+    try:
+        organisation = Organisation.objects.get(id=args.organisation)
+    except:
+        print "Error; organisation with id " + str(args.organisation) + " does not exist\n"
         sys.exit()
 
     # Variables
     PARTNER_TYPES = (args.field, args.funding, args.sponsor, args.support)
     IATI_VERSION = "1.03"
+    PATH = "/var/iati_files/"
 
     # Project selection based on organisation ID, partner types and the projects to be ignored
     projects = project_selection(args.organisation, PARTNER_TYPES, args.ignore)
@@ -415,5 +440,4 @@ if __name__ == '__main__':
     iati_file = generate_file(projects, args.organisation, IATI_VERSION)
 
     # Output file
-    print iati_file.export(sys.stdout, 0)
-
+    export_file(PATH, iati_file, organisation)
