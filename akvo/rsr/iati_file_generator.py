@@ -39,16 +39,25 @@ def check_mandatory_fields(project, fields):
         if fields[field_key] == "" or fields[field_key] is None:
             raise MandatoryError(project.title, project.pk, field_key)
 
+def check_value(value):
+    if value == "" or value is None:
+        return False
+    else:
+        return True
+
 
 def iati_links(activity, links):
     """Collects the website links of the RSR project and adds them to the activity."""
 
     for link in links:
-        website = schema.activity_website()
-        website.set_valueOf_(link.url)
-        website.set_anyAttributes_({"akvo:url-caption": link.caption})
+        if check_value(link.url):
+            website = schema.activity_website()
+            website.set_valueOf_(link.url)
 
-        activity.add_activity_website(website)
+            if check_value(link.caption):
+                website.set_anyAttributes_({"akvo:url-caption": link.caption})
+
+            activity.add_activity_website(website)
 
     return activity
 
@@ -80,9 +89,13 @@ def iati_participating_org(activity, project, participating_orgs):
 
             participating_org_node = schema.participating_org()
             participating_org_node.set_valueOf_(participating_org.long_name)
-            participating_org_node.set_ref(participating_org.iati_org_id)
             participating_org_node.set_role(organisation_role(partnership.partner_type))
-            participating_org_node.set_anyAttributes_({"akvo:iati": partnership.iati_url})
+
+            if check_value(participating_org.iati_org_id):
+                participating_org_node.set_ref(participating_org.iati_org_id)
+
+            if check_value(partnership.iati_url):
+                participating_org_node.set_anyAttributes_({"akvo:iati": partnership.iati_url})
 
             activity.add_participating_org(participating_org_node)
 
@@ -99,14 +112,19 @@ def iati_budget(activity, budgets):
     """Collects budget of the RSR project and adds it to the activity."""
 
     for budget in budgets:
+        budget_node = schema.budget()
+
         budget_label = BudgetItemLabel.objects.get(id=budget.label_id)
 
-        budget_value = schema.textType(valueOf_=budget.amount)
+        if check_value(budget.amount):
+            budget_value = schema.textType(valueOf_=budget.amount)
+            budget_node.add_value(budget_value)
 
-        budget_node = schema.budget()
-        budget_node.add_value(budget_value)
-        budget_node.set_anyAttributes_({"akvo:type": budget_label,
-                                        "akvo:description": budget.other_extra})
+        if check_value(budget_label):
+            budget_node.set_anyAttributes_({"akvo:type": budget_label})
+
+        if check_value(budget.other_extra):
+            budget_node.set_anyAttributes_({"akvo:description": budget.other_extra})
 
         activity.add_budget(budget_node)
 
@@ -118,19 +136,29 @@ def iati_location(activity, location, country):
 
     # TODO: Add location types (codes are unclear)
 
-    location_name = schema.textType(valueOf_=location.city)
-    coordinates = schema.coordinatesType(latitude=location.latitude, longitude=location.longitude)
-    country_name = schema.textType(valueOf_=country.name)
-    administrative = schema.administrativeType(country=country.iso_code.upper(), valueOf_=country_name)
-
     location_node = schema.location()
-    location_node.add_name(location_name)
-    location_node.add_coordinates(coordinates)
-    location_node.add_administrative(administrative)
 
-    location_node.set_anyAttributes_({"akvo:address-1": location.address_1,
-                                      "akvo:address-2": location.address_2,
-                                      "akvo:post-code": location.postcode})
+    if check_value(location.city):
+        location_name = schema.textType(valueOf_=location.city)
+        location_node.add_name(location_name)
+
+    coordinates = schema.coordinatesType(latitude=location.latitude, longitude=location.longitude)
+    location_node.add_coordinates(coordinates)
+
+    if check_value(country.name) and check_value(country.iso_code):
+        country_name = schema.textType(valueOf_=country.name)
+        administrative = schema.administrativeType(country=country.iso_code.upper(), valueOf_=country_name)
+
+        location_node.add_administrative(administrative)
+
+    if check_value(location.address_1):
+        location_node.set_anyAttributes_({"akvo:address-1": location.address_1})
+
+    if check_value(location.address_2):
+        location_node.set_anyAttributes_({"akvo:address-2": location.address_2})
+
+    if check_value(location.postcode):
+        location_node.set_anyAttributes_({"akvo:post-code": location.postcode})
 
     return activity
 
@@ -142,8 +170,12 @@ def iati_photo(activity, project):
     photo_url = "http://rsr.akvo.org/media/" + str(project.current_image)
 
     document_link = schema.document_link(url=photo_url)
-    document_link.set_anyAttributes_({"akvo:photo-caption": project.current_image_caption,
-                                      "akvo:photo-credit": project.current_image_credit})
+
+    if check_value(project.current_image_caption):
+        document_link.set_anyAttributes_({"akvo:photo-caption": project.current_image_caption})
+
+    if check_value(project.current_image_credit):
+        document_link.set_anyAttributes_({"akvo:photo-credit": project.current_image_credit})
 
     activity.add_document_link(document_link)
 
@@ -154,9 +186,11 @@ def iati_goals(activity, goals):
 
     for goal in goals:
         goal_text = schema.textType(valueOf_=goal.text)
-        result = schema.result(type_="1")
-        result.add_title(goal_text)
-        activity.add_result(result)
+
+        if check_value(goal_text):
+            result = schema.result(type_="1")
+            result.add_title(goal_text)
+            activity.add_result(result)
 
     return activity
 
@@ -196,19 +230,22 @@ def iati_activity(activity, project):
     activity.add_description(pps)
 
     # Background
-    background = schema.description(type_="1",valueOf_=project.background)
-    background.set_anyAttributes_({"akvo:type":"6"})
-    activity.add_description(background)
+    if check_value(project.background):
+        background = schema.description(type_="1",valueOf_=project.background)
+        background.set_anyAttributes_({"akvo:type":"6"})
+        activity.add_description(background)
 
     # Project plan
-    project_plan = schema.description(type_="1",valueOf_=project.project_plan)
-    project_plan.set_anyAttributes_({"akvo:type":"7"})
-    activity.add_description(project_plan)
+    if check_value(project.project_plan):
+        project_plan = schema.description(type_="1",valueOf_=project.project_plan)
+        project_plan.set_anyAttributes_({"akvo:type":"7"})
+        activity.add_description(project_plan)
 
     # Current status
-    current_status = schema.description(type_="1",valueOf_=project.current_status)
-    current_status.set_anyAttributes_({"akvo:type":"9"})
-    activity.add_description(current_status)
+    if check_value(project.current_status):
+        current_status = schema.description(type_="1",valueOf_=project.current_status)
+        current_status.set_anyAttributes_({"akvo:type":"9"})
+        activity.add_description(current_status)
 
     # Sustainability
     sustainability = schema.description(type_="1",valueOf_=project.sustainability)
@@ -227,17 +264,19 @@ def iati_activity(activity, project):
     activity.add_description(goals_overview)
 
     # Date request posted
-    start_actual = schema.activity_date(iso_date=project.date_request_posted, type_="start-actual",
-                                        valueOf_=project.date_request_posted)
-    activity.add_activity_date(start_actual)
+    if check_value(project.date_request_posted):
+        start_actual = schema.activity_date(iso_date=project.date_request_posted, type_="start-actual",
+                                            valueOf_=project.date_request_posted)
+        activity.add_activity_date(start_actual)
 
     # Date complete
-    end_planned = schema.activity_date(iso_date=project.date_complete, type_="end-planned",
-                                       valueOf_=project.date_complete)
-    activity.add_activity_date(end_planned)
+    if check_value(project.date_complete):
+        end_planned = schema.activity_date(iso_date=project.date_complete, type_="end-planned",
+                                           valueOf_=project.date_complete)
+        activity.add_activity_date(end_planned)
 
     # Notes
-    activity.set_anyAttributes_({"akvo:notes": project.notes})
+    if check_value(project.notes): activity.set_anyAttributes_({"akvo:notes": project.notes})
 
     return activity
 
@@ -248,16 +287,16 @@ def iati_identifier(activity, partnerships):
 
     # Return the first identifier that is found
     for partnership in partnerships:
-        if not (partnership.iati_activity_id == "" or partnership.iati_activity_id is None):
+        if check_value(partnership.iati_activity_id):
             identifier = partnership.iati_activity_id
             internal_id = partnership.internal_id
             break
 
-    if not (identifier == "" or identifier is None):
+    if check_value(identifier):
         identifier_node = schema.iati_identifier()
         activity.add_iati_identifier(identifier_node)
 
-        if not (internal_id == "" or internal_id is None):
+        if check_value(internal_id):
             activity.set_anyAttributes_({"akvo:internal-project-id":internal_id})
 
     return activity
@@ -274,7 +313,7 @@ def process_project(xml, project, org_id):
     participating_orgs = project.all_partners()
     links = Link.objects.filter(project_id=project.pk)
 
-    # TODO: Check mandatory fields
+    # Check mandatory fields
     check_mandatory_fields(project, {"title": project.title,
                                      "subtitle": project.subtitle,
                                      "status": project.status,
@@ -298,8 +337,8 @@ def process_project(xml, project, org_id):
     activity = schema.iati_activity()
 
     # Set arguments
-    activity.set_lang(project.language)
-    activity.set_default_currency(project.currency)
+    if check_value(project.language): activity.set_lang(project.language)
+    if check_value(project.currency): activity.set_default_currency(project.currency)
 
     # Add nodes
     activity = iati_identifier(activity, partnerships)
