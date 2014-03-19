@@ -99,3 +99,18 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
         bundle.data['user'].update(resource_uri=user_resource_uri)
         bundle.data['user']['organisation'] = org
         return bundle
+
+    def build_schema(self):
+        data = super(ProjectUpdateResourceExtra, self).build_schema()
+        data['fields']['user'] = {
+            'default': "No default provided.",
+            'type': "to_one",
+            'nullable': False,
+            'blank': False,
+            'readonly': True,
+            'help_text': "A custom related resource with parts of data from user and the organisation the user belongs to. "
+                "Includes the fields full_name, organisation and resource_uri of user and absolute_url, long_name, name and resource_uri "
+                "of organisation.",
+            'unique': False,
+        }
+        return data
