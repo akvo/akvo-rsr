@@ -15,7 +15,7 @@ from akvo.rsr.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANI
 from akvo.rsr.models import (Project, Organisation, Partnership, Goal, ProjectLocation, Country, BudgetItem,
                              BudgetItemLabel, InternalOrganisationID, Link)
 
-import sys, argparse, os.path
+import sys, argparse, os.path, cgi
 import akvo.rsr.iati_schema as schema
 
 
@@ -45,6 +45,9 @@ def check_value(value):
     else:
         return True
 
+def xml_enc(string):
+    return cgi.escape(string, True).encode('utf-8')
+
 
 def iati_links(activity, links):
     """Collects the website links of the RSR project and adds them to the activity."""
@@ -52,10 +55,10 @@ def iati_links(activity, links):
     for link in links:
         if check_value(link.url):
             website = schema.activity_website()
-            website.set_valueOf_(link.url)
+            website.set_valueOf_(xml_enc(link.url))
 
             if check_value(link.caption):
-                website.set_anyAttributes_({"akvo:url-caption": link.caption})
+                website.set_anyAttributes_({"akvo:url-caption": xml_enc(link.caption)})
 
             activity.add_activity_website(website)
 
@@ -88,14 +91,14 @@ def iati_participating_org(activity, project, participating_orgs):
         for partnership in partnerships:
 
             participating_org_node = schema.participating_org()
-            participating_org_node.set_valueOf_(participating_org.long_name)
-            participating_org_node.set_role(organisation_role(partnership.partner_type))
+            participating_org_node.set_valueOf_(xml_enc(participating_org.long_name))
+            participating_org_node.set_role(organisation_role(xml_enc(partnership.partner_type)))
 
             if check_value(participating_org.iati_org_id):
-                participating_org_node.set_ref(participating_org.iati_org_id)
+                participating_org_node.set_ref(xml_enc(participating_org.iati_org_id))
 
             if check_value(partnership.iati_url):
-                participating_org_node.set_anyAttributes_({"akvo:iati": partnership.iati_url})
+                participating_org_node.set_anyAttributes_({"akvo:iati": xml_enc(partnership.iati_url)})
 
             activity.add_participating_org(participating_org_node)
 
@@ -121,10 +124,10 @@ def iati_budget(activity, budgets):
             budget_node.add_value(budget_value)
 
         if check_value(budget_label):
-            budget_node.set_anyAttributes_({"akvo:type": budget_label})
+            budget_node.set_anyAttributes_({"akvo:type": xml_enc(budget_label)})
 
         if check_value(budget.other_extra):
-            budget_node.set_anyAttributes_({"akvo:description": budget.other_extra})
+            budget_node.set_anyAttributes_({"akvo:description": xml_enc(budget.other_extra)})
 
         activity.add_budget(budget_node)
 
@@ -139,25 +142,25 @@ def iati_location(activity, location, country):
     location_node = schema.location()
 
     if check_value(location.city):
-        location_name = schema.textType(valueOf_=location.city)
+        location_name = schema.textType(valueOf_=xml_enc(location.city))
         location_node.add_name(location_name)
 
     coordinates = schema.coordinatesType(latitude=location.latitude, longitude=location.longitude)
     location_node.add_coordinates(coordinates)
 
     if check_value(country.name) and check_value(country.iso_code):
-        administrative = schema.administrativeType(country=country.iso_code.upper(), valueOf_=country.name)
+        administrative = schema.administrativeType(country=country.iso_code.upper(), valueOf_=xml_enc(country.name))
 
         location_node.add_administrative(administrative)
 
     if check_value(location.address_1):
-        location_node.set_anyAttributes_({"akvo:address-1": location.address_1})
+        location_node.set_anyAttributes_({"akvo:address-1": xml_enc(location.address_1)})
 
     if check_value(location.address_2):
-        location_node.set_anyAttributes_({"akvo:address-2": location.address_2})
+        location_node.set_anyAttributes_({"akvo:address-2": xml_enc(location.address_2)})
 
     if check_value(location.postcode):
-        location_node.set_anyAttributes_({"akvo:post-code": location.postcode})
+        location_node.set_anyAttributes_({"akvo:post-code": xml_enc(location.postcode)})
 
     activity.add_location(location_node)
 
@@ -170,13 +173,13 @@ def iati_photo(activity, project):
 
     photo_url = "http://rsr.akvo.org/media/" + str(project.current_image)
 
-    document_link = schema.document_link(url=photo_url)
+    document_link = schema.document_link(url=xml_enc(photo_url))
 
     if check_value(project.current_image_caption):
-        document_link.set_anyAttributes_({"akvo:photo-caption": project.current_image_caption})
+        document_link.set_anyAttributes_({"akvo:photo-caption": xml_enc(project.current_image_caption)})
 
     if check_value(project.current_image_credit):
-        document_link.set_anyAttributes_({"akvo:photo-credit": project.current_image_credit})
+        document_link.set_anyAttributes_({"akvo:photo-credit": xml_enc(project.current_image_credit)})
 
     activity.add_document_link(document_link)
 
@@ -186,9 +189,8 @@ def iati_goals(activity, goals):
     """Collects all goals as specified in the RSR project and adds them to the activity."""
 
     for goal in goals:
-        goal_text = schema.textType(valueOf_=goal.text)
-
-        if check_value(goal_text):
+        if check_value(goal.text):
+            goal_text = schema.textType(valueOf_=xml_enc(goal.text))
             result = schema.result(type_="1")
             result.add_title(goal_text)
             activity.add_result(result)
@@ -218,49 +220,49 @@ def iati_activity(activity, project):
             raise MandatoryError(project.title, project.pk, "status")
 
     # Title
-    activity.add_title(schema.textType(valueOf_=project.title))
+    activity.add_title(schema.textType(valueOf_=xml_enc(project.title)))
 
     # Subtitle
-    subtitle = schema.description(type_="1",valueOf_=project.subtitle)
+    subtitle = schema.description(type_="1",valueOf_=xml_enc(project.subtitle))
     subtitle.set_anyAttributes_({"akvo:type":"4"})
     activity.add_description(subtitle)
 
     # Project plan summary
-    pps = schema.description(type_="1",valueOf_=project.project_plan_summary)
+    pps = schema.description(type_="1",valueOf_=xml_enc(project.project_plan_summary))
     pps.set_anyAttributes_({"akvo:type":"5"})
     activity.add_description(pps)
 
     # Background
     if check_value(project.background):
-        background = schema.description(type_="1",valueOf_=project.background)
+        background = schema.description(type_="1",valueOf_=xml_enc(project.background))
         background.set_anyAttributes_({"akvo:type":"6"})
         activity.add_description(background)
 
     # Project plan
     if check_value(project.project_plan):
-        project_plan = schema.description(type_="1",valueOf_=project.project_plan)
+        project_plan = schema.description(type_="1",valueOf_=xml_enc(project.project_plan))
         project_plan.set_anyAttributes_({"akvo:type":"7"})
         activity.add_description(project_plan)
 
     # Current status
     if check_value(project.current_status):
-        current_status = schema.description(type_="1",valueOf_=project.current_status)
+        current_status = schema.description(type_="1",valueOf_=xml_enc(project.current_status))
         current_status.set_anyAttributes_({"akvo:type":"9"})
         activity.add_description(current_status)
 
     # Sustainability
-    sustainability = schema.description(type_="1",valueOf_=project.sustainability)
+    sustainability = schema.description(type_="1",valueOf_=xml_enc(project.sustainability))
     sustainability.set_anyAttributes_({"akvo:type":"10"})
     activity.add_description(sustainability)
 
     # Project status
     status_code, status_description = project_status()
-    project_status = schema.textType(valueOf_=status_description)
+    project_status = schema.textType(valueOf_=xml_enc(status_description))
     project_status.set_anyAttributes_({"code": status_code})
     activity.add_activity_status(project_status)
 
     # Goals overview
-    goals_overview = schema.description(type_="2",valueOf_=project.goals_overview)
+    goals_overview = schema.description(type_="2",valueOf_=xml_enc(project.goals_overview))
     goals_overview.set_anyAttributes_({"akvo:type":"8"})
     activity.add_description(goals_overview)
 
@@ -277,7 +279,7 @@ def iati_activity(activity, project):
         activity.add_activity_date(end_planned)
 
     # Notes
-    if check_value(project.notes): activity.set_anyAttributes_({"akvo:notes": project.notes})
+    if check_value(project.notes): activity.set_anyAttributes_({"akvo:notes": xml_enc(project.notes)})
 
     return activity
 
@@ -291,24 +293,23 @@ def iati_identifier(activity, partnerships):
         if check_value(partnership.iati_activity_id):
             identifier = partnership.iati_activity_id
             internal_id = partnership.internal_id
-            break
 
     if check_value(identifier):
         identifier_node = schema.iati_identifier()
         activity.add_iati_identifier(identifier_node)
 
         if check_value(internal_id):
-            activity.set_anyAttributes_({"akvo:internal-project-id":internal_id})
+            activity.set_anyAttributes_({"akvo:internal-project-id":xml_enc(internal_id)})
 
     return activity
 
 def process_project(xml, project, org_id):
     """Convert a project to an IATI XML."""
 
-    # Get data
+    # Get all necessary data
     partnerships = Partnership.objects.filter(organisation_id=org_id, project_id=project.pk)
     goals = Goal.objects.filter(project_id=project.pk)
-    location = ProjectLocation.objects.get(id=project.pk)
+    location = project.primary_location
     country = Country.objects.get(id=location.country_id)
     budgets = BudgetItem.objects.filter(project_id=project.pk)
     participating_orgs = project.all_partners()
@@ -361,63 +362,45 @@ def generate_file(projects, org_id, iati_version):
     """Generates the IATI XML file based on the projects and the organisation ID."""
 
     dt = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-    xml = schema.iati_activities(dt, iati_version)
-    xml.set_anyAttributes_({"xmlns:akvo": "http://www.akvo.org"})
+    iati_file = schema.iati_activities(dt, iati_version)
+    iati_file.set_anyAttributes_({"xmlns:akvo": "http://www.akvo.org"})
 
     for project in projects:
         try:
-            xml = process_project(xml, project, org_id)
+            iati_file = process_project(iati_file, project, org_id)
         except MandatoryError as e:
             print e.msg
         else:
             print "Successfully processed project '%s' (id: %s)" % (project.title, project.pk)
 
-    return xml
+    return iati_file
 
-def project_selection(organisation_id, partner_types, ignore_list):
+def project_selection(organisation, partner_types, ignore_list):
     """Returns list of projects connected to an organisation. Add project id to ignore list
      to ignore a project."""
 
     # Retrieve all active projects of the organisation
-    organisation = Organisation.objects.get(id=organisation_id)
-    project_list = organisation.active_projects()
+    active_projects = organisation.active_projects()
 
-    field_projects = Project.objects.none()
-    funding_projects = Project.objects.none()
-    sponsor_projects = Project.objects.none()
-    support_projects = Project.objects.none()
-
-    # Filter on selected partner types
-    if partner_types[0]:
-        field_projects = project_list.filter(
-            partnerships__organisation_id=organisation_id,
-            partnerships__partner_type='field'
-        )
-    if partner_types[1]:
-        funding_projects = project_list.filter(
-            partnerships__organisation_id=organisation_id,
-            partnerships__partner_type='funding'
-        )
-    if partner_types[2]:
-        sponsor_projects = project_list.filter(
-            partnerships__organisation_id=organisation_id,
-            partnerships__partner_type='sponsor'
-        )
-    if partner_types[3]:
-        support_projects = project_list.filter(
-            partnerships__organisation_id=organisation_id,
-            partnerships__partner_type='support'
-        )
-
-    # Combine filtered partner types (there must be some way to do this faster)
-    filtered_projects = field_projects | funding_projects | sponsor_projects | support_projects
+    # Check every project whether organisation has one of the selected partner types
+    project_list = []
+    for project in active_projects:
+        for partner_type in partner_types:
+            if partner_type[0] and (organisation in getattr(project, partner_type[1])()):
+                project_list.append(project)
+                break
 
     # Filter out ignored projects
     if not ignore_list is None:
-        for ignore_project in ignore_list:
-            filtered_projects = filtered_projects.exclude(pk=int(ignore_project))
+        for id in ignore_list:
+            try:
+                project = Project.objects.get(id=id)
+                if project in project_list:
+                    project_list.remove(project)
+            except:
+                pass
 
-    return filtered_projects
+    return project_list
 
 def export_file(path, file, organisation):
     """Exports the XML to a file using the name of the organisation."""
@@ -435,6 +418,7 @@ def export_file(path, file, organisation):
             count += 1
         else:
             with open(file_name, 'w') as f:
+                f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
                 file.export(f, 0)
             increment = False
 
@@ -469,12 +453,15 @@ if __name__ == '__main__':
         sys.exit()
 
     # Variables
-    PARTNER_TYPES = (args.field, args.funding, args.sponsor, args.support)
+    PARTNER_TYPES = ((args.field, "field_partners"),
+                     (args.funding, "funding_partners"),
+                     (args.sponsor, "sponsor_partners"),
+                     (args.support, "support_partners"))
     IATI_VERSION = "1.03"
     PATH = "/var/iati_files/"
 
     # Project selection based on organisation ID, partner types and the projects to be ignored
-    projects = project_selection(args.organisation, PARTNER_TYPES, args.ignore)
+    projects = project_selection(organisation, PARTNER_TYPES, args.ignore)
 
     # Convert selected projects to XML
     iati_file = generate_file(projects, args.organisation, IATI_VERSION)
