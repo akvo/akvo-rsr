@@ -123,8 +123,8 @@ def iati_budget(activity, budgets):
             budget_value = schema.textType(valueOf_=budget.amount)
             budget_node.add_value(budget_value)
 
-        if check_value(budget_label):
-            budget_node.set_anyAttributes_({"akvo:type": xml_enc(budget_label)})
+        if check_value(budget_label.label):
+            budget_node.set_anyAttributes_({"akvo:type": xml_enc(budget_label.label)})
 
         if check_value(budget.other_extra):
             budget_node.set_anyAttributes_({"akvo:description": xml_enc(budget.other_extra)})
