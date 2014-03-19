@@ -48,6 +48,7 @@ from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
     GROUP_RSR_PARTNER_EDITORS
@@ -260,7 +261,7 @@ class ProjectsQuerySetManager(QuerySetManager):
         return self.model.ProjectsQuerySet(self.model)
 
 
-class Organisation(models.Model):
+class Organisation(TimestampsMixin, models.Model):
     """
     There are four types of organisations in RSR, called Field,
     Support, Funding and Sponsor partner respectively.
@@ -343,6 +344,11 @@ class Organisation(models.Model):
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
+
+    content_owner = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
+        help_text=_(u'Organisation that maintains content for this organisation through the API.'),
+    )
+                                      
 
     # Managers, one default, one custom
     # objects = models.Manager()
@@ -680,7 +686,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
         return self.model.OrganisationsQuerySet(self.model)
 
 
-class Project(models.Model):
+class Project(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
@@ -966,7 +972,7 @@ class Project(models.Model):
         def latest_update_fields(self):
             #used in project_list view
             #cheating slightly, counting on that both id and time are the largest for the latest update
-            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__time'))
+            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at'))
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
@@ -995,7 +1001,7 @@ class Project(models.Model):
 
     def updates_desc(self):
         "return ProjectUpdates for self, newest first"
-        return self.project_updates.all().order_by('-time')
+        return self.project_updates.all().order_by('-created_at')
 
     def latest_update(self):
         """
@@ -1009,7 +1015,7 @@ class Project(models.Model):
         if updates:
             update = updates[0]
             # date of update shown as link poiting to the update page
-            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.time,)
+            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.created_at,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
                 update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email, )
@@ -1350,12 +1356,12 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """
         return all updates created by the user
         """
-        return ProjectUpdate.objects.filter(user=self.user).order_by('-time')
+        return ProjectUpdate.objects.filter(user=self.user).order_by('-created_at')
 
     def latest_update_date(self):
         updates = self.updates()
         if updates:
-            return updates[0].time
+            return updates[0].created_at
         else:
             return None
 
@@ -1717,7 +1723,6 @@ class SmsReporter(models.Model):
             'title': 'SMS update',
             'update_method': 'S',
             'text': mo_sms.message,
-            'time': mo_sms.saved_at,
         }
         try:
             update = ProjectUpdate.objects.create(**update_data)
@@ -1785,7 +1790,7 @@ class SmsReporter(models.Model):
         send_now([profile.user], 'phone_confirmed', extra_context=extra_context, on_site=True)
 
 
-class ProjectUpdate(models.Model):
+class ProjectUpdate(TimestampsMixin, models.Model):
     UPDATE_METHODS = (
         ('W', _(u'web')),
         ('E', _(u'e-mail')),
@@ -1822,14 +1827,16 @@ class ProjectUpdate(models.Model):
     video_caption = models.CharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     video_credit = models.CharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
-    time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
-    time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
-    # featured = models.BooleanField(_(u'featured'))
+    # time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
+    # time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
+    user_agent = models.CharField(_(u'user agent'), blank=True, max_length=200, default='')
+    uuid = models.CharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
+        help_text=_(u'Universally unique ID set by creating user agent'))
     
     notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
-        get_latest_by = "time"
+        get_latest_by = "created_at"
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')
         ordering = ['-id', ]
@@ -1872,11 +1879,11 @@ class ProjectUpdate(models.Model):
         The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and
         defaults to 30 minutes.
         """
-        return (datetime.now() - self.time) > self.edit_timeout
+        return (datetime.now() - self.created_at) > self.edit_timeout
 
     @property
     def expires_at(self):
-        return to_gmt(self.time + self.edit_timeout)
+        return to_gmt(self.created_at + self.edit_timeout)
 
     @property
     def edit_timeout(self):
@@ -1885,15 +1892,15 @@ class ProjectUpdate(models.Model):
 
     @property
     def edit_time_remaining(self):
-        return self.edit_timeout - self.time
+        return self.edit_timeout - self.created_at
 
     @property
     def time_gmt(self):
-        return to_gmt(self.time)
+        return to_gmt(self.created_at)
 
     @property
     def time_last_updated_gmt(self):
-        return to_gmt(self.time_last_updated)
+        return to_gmt(self.last_modified_at)
 
     @property
     def view_count(self):
@@ -2110,7 +2117,7 @@ def process_paypal_ipn(sender, **kwargs):
 payment_was_flagged.connect(process_paypal_ipn)
 
 
-class PartnerSite(models.Model):
+class PartnerSite(TimestampsMixin, models.Model):
 
     def about_image_path(instance, file_name):
         return 'db/partner_sites/%s/image/%s' % (instance.hostname, file_name)

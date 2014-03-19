@@ -41,11 +41,24 @@ class ProjectUpdateResource(ConditionalFullResource):
 
         filtering               = dict(
             # other fields
-            time                = ALL,
-            time_last_updated   = ALL,
+            created_at          = ALL,
+            last_modified_at    = ALL,
             title               = ALL,
             update_method       = ALL,
+            uuid                = ALL,
             # foreign keys
             project             = ALL_WITH_RELATIONS,
             user                = ALL_WITH_RELATIONS,
         )
+
+    def dehydrate(self, bundle):
+            """ Revert the field names "created_at" and "last_modified_at" to the old "time" and "time_last_updated"
+                respectively to keep the API signature stable
+            """
+            # TODO: remove this for v2 of API
+            bundle = super(ProjectUpdateResource, self).dehydrate(bundle)
+            bundle.data['time'] = bundle.data['created_at']
+            bundle.data['time_last_updated'] = bundle.data['last_modified_at']
+            del bundle.data['created_at']
+            del bundle.data['last_modified_at']
+            return bundle

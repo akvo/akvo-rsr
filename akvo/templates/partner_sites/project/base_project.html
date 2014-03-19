@@ -84,13 +84,15 @@
 
           {% for update in updates|slice:":3" %}
             {% if update.video or update.photo %}
-              <div class="whitebox pad5" style="min-height: 91px;{% if not forloop.first %}margin-top: 10px;{% endif %}">
-                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
+              <div class="whitebox pad5" style="min-height: 91px;{% if not forloop.first %}margin-top: 10px;{% endif %} ">
+                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.created_at|date:"d-M-Y"}}</span>
                 <div style="float:left; width:170px;">
                   <p class="small marg_bottom0" style="margin-top: 15px;">
                     <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br/>
                     <div class="update_preview">
-                      {{update.text|smart_truncate:50|markdown:"safe"|urlize}}
+                      {% autoescape off %}
+                        {{ update.text|force_escape|smart_truncate:50|urlize|markdown }}
+                      {% endautoescape %}
                     </div>
                   </p>
                 </div>
@@ -112,11 +114,13 @@
               </div>
             {% else %}
               <div class="whitebox pad5" style="overflow:hidden; {% if not forloop.first %}margin-top: 10px;{% endif %}">
-                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.time|date:"d-M-Y"}}</span>
+                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.created_at|date:"d-M-Y"}}</span>
                 <p class="small marg_bottom0" style="margin-top: 15px;">
                   <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
                   <div class="update_preview">
-                    {{update.text|smart_truncate:120|markdown:"safe"|urlize}}
+                    {% autoescape off %}
+                        {{ update.text|force_escape|smart_truncate:120|urlize|markdown }}
+                      {% endautoescape %}
                   </div>
                 </p>
               </div>
