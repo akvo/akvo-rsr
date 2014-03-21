@@ -65,4 +65,3 @@ IATI_LIST_FINANCE_TYPE = (
     (911, u'Other non-bank securities/claims', 900, u'OTHER SECURITIES/CLAIMS', u''),
     (912, u'Securities and other instruments issued by multilateral agencies', 900, u'OTHER SECURITIES/CLAIMS', u'')
 )
-
