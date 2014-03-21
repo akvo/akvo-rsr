@@ -104,13 +104,6 @@ def iati_participating_org(activity, project, participating_orgs):
 
     return activity
 
-def iati_focusarea(activity, project):
-    """Collects focus area of the RSR project and adds it to the activity."""
-
-    # TODO: Clear up specs
-
-    return activity
-
 def iati_budget(activity, budgets):
     """Collects budget of the RSR project and adds it to the activity."""
 
@@ -368,7 +361,6 @@ def process_project(xml, project, org_id):
     activity = iati_photo(activity, project)
     activity = iati_location(activity, location, country)
     activity = iati_budget(activity, budgets)
-    activity = iati_focusarea(activity, project)
     activity = iati_participating_org(activity, project, participating_orgs)
     activity = iati_links(activity, links)
 
