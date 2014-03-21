@@ -283,6 +283,24 @@ def iati_activity(activity, project):
 
     return activity
 
+def iati_reporting_org(activity, organisation):
+    """Collects the reporting organisation from the RSR project and adds it to the activity."""
+
+    reporting_org = schema.reporting_org()
+
+    # Use long name if available and short name otherwise
+    if check_value(organisation.long_name):
+        reporting_org.set_valueOf_(xml_enc(organisation.long_name))
+    else:
+        reporting_org.set_valueOf_(xml_enc(organisation.name))
+
+    if check_value(organisation.iati_org_id):
+        reporting_org.set_ref(xml_enc(organisation.iati_org_id))
+
+    activity.add_reporting_org(reporting_org)
+
+    return activity
+
 def iati_identifier(activity, partnerships):
     """Collects the IATI identifier from the RSR project and adds it to the activity."""
 
@@ -344,6 +362,7 @@ def process_project(xml, project, org_id):
 
     # Add nodes
     activity = iati_identifier(activity, partnerships)
+    activity = iati_reporting_org(activity, organisation)
     activity = iati_activity(activity, project)
     activity = iati_goals(activity, goals)
     activity = iati_photo(activity, project)
