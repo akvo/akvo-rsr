@@ -107,6 +107,10 @@ def iati_participating_org(activity, project, participating_orgs):
 def iati_budget(activity, budgets):
     """Collects budget of the RSR project and adds it to the activity."""
 
+    # Ignore total budgets -- label 13 or 14 -- if not all budgets are a total budget
+    if not all(budget.get_label() == 13 or 14 for budget in budgets):
+        budgets = filter(lambda x: x.get_label() == 13 or 14, budgets)
+
     for budget in budgets:
         budget_node = schema.budget()
 
