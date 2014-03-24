@@ -134,12 +134,19 @@ def iati_budget(activity, budgets):
 def iati_location(activity, location, country):
     """Collects location of the RSR project and adds it to the activity."""
 
-    # TODO: Add location types (codes are unclear)
-
     location_node = schema.location()
 
-    if check_value(location.city):
+    location_node.set_location_type("PPL")
+
+    # Set value of location node. "<city>, <state>" if both are available.
+    if check_value(location.city) and check_value(location.state):
+        location_name = schema.textType(valueOf_=xml_enc(location.city + ", " + location.state))
+        location_node.add_name(location_name)
+    elif check_value(location.city):
         location_name = schema.textType(valueOf_=xml_enc(location.city))
+        location_node.add_name(location_name)
+    elif check_value(location.state):
+        location_name = schema.textType(valueOf_=xml_enc(location.state))
         location_node.add_name(location_name)
 
     coordinates = schema.coordinatesType(latitude=location.latitude, longitude=location.longitude)
