@@ -206,10 +206,12 @@ def iati_activity(activity, project):
             return IATI_LIST_ACTIVITY_STATUS[1][0], IATI_LIST_ACTIVITY_STATUS[1][1]
         elif project.status == 'C':
             return IATI_LIST_ACTIVITY_STATUS[2][0], IATI_LIST_ACTIVITY_STATUS[2][1]
+        elif project.status == 'R':
+            return IATI_LIST_ACTIVITY_STATUS[3][0], IATI_LIST_ACTIVITY_STATUS[3][1]
         elif project.status == 'L':
             return IATI_LIST_ACTIVITY_STATUS[4][0], IATI_LIST_ACTIVITY_STATUS[4][1]
         else:
-            # This should never fire, the status of the project has been checked beforehand.
+            # Impossible to have another status
             raise MandatoryError(project.title, project.pk, "status")
 
     # Title
@@ -391,7 +393,7 @@ def project_selection(organisation, partner_types, ignore_list):
      to ignore a project."""
 
     # Retrieve all active projects of the organisation
-    active_projects = organisation.active_projects()
+    active_projects = organisation.published_projects()
 
     # Check every project whether organisation has one of the selected partner types
     project_list = []
