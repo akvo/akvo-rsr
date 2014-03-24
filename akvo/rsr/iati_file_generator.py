@@ -136,18 +136,27 @@ def iati_location(activity, location, country):
 
     location_node = schema.location()
 
-    location_node.set_location_type("PPL")
-
     # Set value of location node. "<city>, <state>" if both are available.
-    if check_value(location.city) and check_value(location.state):
-        location_name = schema.textType(valueOf_=xml_enc(location.city + ", " + location.state))
-        location_node.add_name(location_name)
-    elif check_value(location.city):
-        location_name = schema.textType(valueOf_=xml_enc(location.city))
-        location_node.add_name(location_name)
+    if check_value(location.city):
+        if check_value(location.state):
+            location_name = schema.textType(valueOf_=xml_enc(location.city + ", " + location.state))
+            location_node.add_name(location_name)
+
+        else:
+            location_name = schema.textType(valueOf_=xml_enc(location.city))
+            location_node.add_name(location_name)
+
+        location_type = schema.textType(valueOf_="populated place")
+        location_type.set_anyAttributes_({"code": "PPL"})
+        location_node.add_location_type(location_type)
+
     elif check_value(location.state):
         location_name = schema.textType(valueOf_=xml_enc(location.state))
         location_node.add_name(location_name)
+
+        location_type = schema.textType(valueOf_="first-order administrative division")
+        location_type.set_anyAttributes_({"code": "ADM1"})
+        location_node.add_location_type(location_type)
 
     coordinates = schema.coordinatesType(latitude=location.latitude, longitude=location.longitude)
     location_node.add_coordinates(coordinates)
@@ -174,12 +183,14 @@ def iati_photo(activity, project):
     """Collects the actual photo of the RSR project and adds it to the activity."""
 
     photo_url = "http://rsr.akvo.org/media/" + str(project.current_image)
-    extension = project.current_image.rsplit('.',1)[0].lower()
+
+    allowed_extensions = ["jpg", "jpeg", "png", "gif", "tiff", "bmp"]
+    extension = str(project.current_image).rsplit('.',1)[1].lower()
 
     document_link = schema.document_link(url=xml_enc(photo_url))
 
-    if check_value(extension):
-        document_link.set_format(xml_enc(extension))
+    if check_value(extension) and extension in allowed_extensions:
+        document_link.set_format(xml_enc("image/" + extension))
     if check_value(project.current_image_caption):
         document_link.set_anyAttributes_({"akvo:photo-caption": xml_enc(project.current_image_caption)})
 
