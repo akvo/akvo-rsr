@@ -162,12 +162,13 @@ def iati_location(activity, location, country):
 def iati_photo(activity, project):
     """Collects the actual photo of the RSR project and adds it to the activity."""
 
-    # TODO: Add file format (no codelist suitable for images)
-
     photo_url = "http://rsr.akvo.org/media/" + str(project.current_image)
+    extension = project.current_image.rsplit('.',1)[0].lower()
 
     document_link = schema.document_link(url=xml_enc(photo_url))
 
+    if check_value(extension):
+        document_link.set_format(xml_enc(extension))
     if check_value(project.current_image_caption):
         document_link.set_anyAttributes_({"akvo:photo-caption": xml_enc(project.current_image_caption)})
 
