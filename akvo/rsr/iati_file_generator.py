@@ -49,7 +49,7 @@ def xml_enc(string):
     return cgi.escape(string, True).encode('utf-8')
 
 def sector_mapping(category_id):
-    """Returns a list of IATI sectors based on the RSR category."""
+    """Returns a IATI sector based on the RSR category."""
 
     MAPPING = {
         1: 140,
@@ -172,8 +172,12 @@ def iati_participating_org(activity, project, participating_orgs):
         for partnership in partnerships:
 
             participating_org_node = schema.participating_org()
-            participating_org_node.set_valueOf_(xml_enc(participating_org.long_name))
             participating_org_node.set_role(organisation_role(xml_enc(partnership.partner_type)))
+
+            if check_value(participating_org.long_name):
+                participating_org_node.set_valueOf_(xml_enc(participating_org.long_name))
+            elif check_value(participating_org.name):
+                participating_org_node.set_valueOf_(xml_enc(participating_org.name))
 
             if check_value(participating_org.iati_org_id):
                 participating_org_node.set_ref(xml_enc(participating_org.iati_org_id))
@@ -426,8 +430,11 @@ def process_project(xml, project, org_id):
     # Get all necessary data
     partnerships = Partnership.objects.filter(organisation_id=org_id, project_id=project.pk)
     goals = Goal.objects.filter(project_id=project.pk)
-    location = project.primary_location
-    country = Country.objects.get(id=location.country_id)
+    try:
+        location = project.primary_location
+        country = Country.objects.get(id=location.country_id)
+    except:
+        raise MandatoryError(project.title, project.pk, "location")
     budgets = BudgetItem.objects.filter(project_id=project.pk)
     participating_orgs = project.all_partners()
     links = Link.objects.filter(project_id=project.pk)
@@ -449,9 +456,6 @@ def process_project(xml, project, org_id):
                                      "country": location.country_id})
 
     for participating_org in participating_orgs:
-        # TODO: Not a mandatory field for the whole project
-        check_mandatory_fields(project, {"participating organisation name": participating_org.long_name})
-
         partnerships_orgs = Partnership.objects.filter(organisation_id=participating_org.pk, project_id=project.pk)
         for partnership in partnerships_orgs:
             check_mandatory_fields(project, {"partner type of a participating organisation": partnership.partner_type})
