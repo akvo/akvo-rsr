@@ -2907,9 +2907,9 @@ class sector(GeneratedsSuper):
         already_processed = set()
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='sector')
         if self.hasContent_():
-            outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='', name_='sector', pretty_print=pretty_print)
-            showIndent(outfile, level, pretty_print)
+            outfile.write('>')
+            self.exportLiteral(outfile, level)
+            #showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
@@ -2962,13 +2962,13 @@ class sector(GeneratedsSuper):
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
     def exportLiteral(self, outfile, level, name_='sector'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+        # level += 1
+        # already_processed = set()
+        # self.exportLiteralAttributes(outfile, level, already_processed, name_)
+        # if self.hasContent_():
+        #     self.exportLiteralChildren(outfile, level, name_)
+        # showIndent(outfile, level)
+        outfile.write('%s' % (self.valueOf_,))
     def exportLiteralAttributes(self, outfile, level, already_processed, name_):
         if self.lang is not None and 'lang' not in already_processed:
             already_processed.add('lang')
