@@ -13,7 +13,7 @@ setup_environ(settings)
 from datetime import datetime
 from akvo.rsr.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANISATION_ROLE
 from akvo.rsr.models import (Project, Organisation, Partnership, Goal, ProjectLocation, Country, BudgetItem,
-                             BudgetItemLabel, InternalOrganisationID, Link)
+                             BudgetItemLabel, InternalOrganisationID, Link, Benchmark, Benchmarkname, Category)
 
 import sys, argparse, os.path, cgi
 import akvo.rsr.iati_schema as schema
@@ -48,6 +48,26 @@ def check_value(value):
 def xml_enc(string):
     return cgi.escape(string, True).encode('utf-8')
 
+def iati_outcome(activity, benchmarks, benchmark_names, categories):
+    """Collects all RSR benchmark information and adds them to the activity as results."""
+
+    bm_categories = benchmarks.values_list('category_id', flat=True)
+    categories_distinct = list()
+    map(lambda x: not x in categories_distinct and categories_distinct.append(x), bm_categories)
+
+    for category in categories_distinct:
+        result_title = schema.textType(valueOf_=xml_enc(categories.get(id=category).name))
+        result = schema.result(type_="2")
+        result.add_title(result_title)
+
+        for benchmark in benchmarks.filter(category_id=category):
+            result_text = str(benchmark.value) + " " + benchmark_names.get(id=benchmark.name_id).name
+            result_description = schema.textType(valueOf_=xml_enc(result_text))
+            result.add_description(result_description)
+
+        activity.add_result(result)
+
+    return activity
 
 def iati_links(activity, links):
     """Collects the website links of the RSR project and adds them to the activity."""
@@ -350,6 +370,9 @@ def process_project(xml, project, org_id):
     budgets = BudgetItem.objects.filter(project_id=project.pk)
     participating_orgs = project.all_partners()
     links = Link.objects.filter(project_id=project.pk)
+    benchmarks = Benchmark.objects.filter(project_id=project.pk).filter(value__gt=0)
+    benchmark_names = Benchmarkname.objects.all()
+    categories = Category.objects.all()
 
     # Check mandatory fields
     check_mandatory_fields(project, {"title": project.title,
@@ -365,6 +388,7 @@ def process_project(xml, project, org_id):
                                      "country": location.country_id})
 
     for participating_org in participating_orgs:
+        # TODO: Not a mandatory field for the whole project
         check_mandatory_fields(project, {"participating organisation name": participating_org.long_name})
 
         partnerships_orgs = Partnership.objects.filter(organisation_id=participating_org.pk, project_id=project.pk)
@@ -388,6 +412,7 @@ def process_project(xml, project, org_id):
     activity = iati_budget(activity, budgets)
     activity = iati_participating_org(activity, project, participating_orgs)
     activity = iati_links(activity, links)
+    activity = iati_outcome(activity, benchmarks, benchmark_names, categories)
 
     # Add the activity to the xml
     xml.add_iati_activity(activity)
