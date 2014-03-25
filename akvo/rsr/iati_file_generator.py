@@ -11,7 +11,7 @@ from akvo import settings
 setup_environ(settings)
 
 from datetime import datetime
-from akvo.rsr.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANISATION_ROLE
+from akvo.rsr.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANISATION_ROLE, IATI_LIST_SECTOR
 from akvo.rsr.models import (Project, Organisation, Partnership, Goal, ProjectLocation, Country, BudgetItem,
                              BudgetItemLabel, InternalOrganisationID, Link, Benchmark, Benchmarkname, Category)
 
@@ -48,6 +48,61 @@ def check_value(value):
 def xml_enc(string):
     return cgi.escape(string, True).encode('utf-8')
 
+def sector_mapping(category_id):
+    """Returns a list of IATI sectors based on the RSR category."""
+
+    MAPPING = {
+        1: 140,
+        2: 140,
+        4: 14081,
+        5: 111,
+        10: 22040,
+        11: 22040,
+        12: 32130,
+        13: 32130,
+        14: 15110,
+        15: 12261,
+        16: 13040,
+        17: 12191,
+        18: 11120,
+        19: 12261,
+        20: 121,
+        21: 22040,
+        22: 311,
+        23: 12191,
+        24: 11230,
+        25: 122,
+        26: 12261,
+        27: 121,
+        28: 121,
+        32: 41040,
+        33: 111,
+        34: 12191,
+        35: 11330,
+        36: 22040,
+        37: 220,
+        38: 14010,
+        39: 140,
+        40: 240
+    }
+
+    try:
+        sector_id = MAPPING[category_id]
+    except:
+        return "", ""
+
+    if sector_id > 9999:
+        for count, sector in enumerate(IATI_LIST_SECTOR):
+            if sector[0] == sector_id:
+                return sector_id, IATI_LIST_SECTOR[count][1]
+
+    else:
+        for count, sector in enumerate(IATI_LIST_SECTOR):
+            if sector[3] == sector_id:
+                return sector_id, IATI_LIST_SECTOR[count][4]
+
+
+
 def iati_outcome(activity, benchmarks, benchmark_names, categories):
     """Collects all RSR benchmark information and adds them to the activity as results."""
 
@@ -56,6 +111,12 @@ def iati_outcome(activity, benchmarks, benchmark_names, categories):
     map(lambda x: not x in categories_distinct and categories_distinct.append(x), bm_categories)
 
     for category in categories_distinct:
+        sector_id, sector_name = sector_mapping(category)
+        if check_value(sector_id):
+            sector_node = schema.sector(valueOf_=sector_name)
+            sector_node.set_code(sector_id)
+            activity.add_sector(sector_node)
+
         result_title = schema.textType(valueOf_=xml_enc(categories.get(id=category).name))
         result = schema.result(type_="2")
         result.add_title(result_title)
