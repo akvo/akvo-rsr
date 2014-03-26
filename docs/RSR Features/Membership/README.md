@@ -12,6 +12,7 @@ Updates
 Comments
 AkvoPages
 Widgets
+API
 
 
 RSR Open
@@ -22,6 +23,7 @@ Searching & Filtering
 Maps
 Donations
 Widgets
+API
 
 
 AkvoPages
@@ -32,7 +34,6 @@ Translations
 Social Media
 CNAME Hosting
 Widgets
-
 
 
 Registration

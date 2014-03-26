@@ -12,7 +12,9 @@
 <contact_email>afrique.verte@gmail.com</contact_email><!-- max 25 -->
 <mobile>0022670423431</mobile><!-- max 25 -->
 <url>http://www.afriqueverte.org/</url><!-- max 200 -->
-<logo_id type="integer">105435</logo_id><!-- must be unique and identify the logo file -->
+<logo type="id">105435</logo><!-- must be unique and identify the logo file. Can also use the following for identifying a logo via a http references:
+<logo type="url">http://wwww/somereferenc.com/image.png</logo>
+-->
 <locations type="list">
 	<object>
 		<primary type="boolean">True</primary><!-- * 1 x TRUE per Organisation -->

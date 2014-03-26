@@ -1,5 +1,10 @@
 We use [GitHub](http://github.com) for Issue Tracking, Release Planning and as our Code Repository.
 
+We are moving towards using git-flow for collaboration on our repositories. More to follow on how this directly impacts the workflow - but feel free to start reading up on this:
+- How Github.com use Git and their version of git-flow techniques: http://scottchacon.com/2011/08/31/github-flow.html
+- Git-Flow cheatsheet: http://danielkummer.github.io/git-flow-cheatsheet/
+- Git-Flow Tutorials: https://www.atlassian.com/git/workflows#!workflow-gitflow
+
 The Process to follow when developing within the RSR Repository is:
 - Assigned an issue from within a Milstone
 - Create a feature branch for your work
@@ -7,8 +12,10 @@ The Process to follow when developing within the RSR Repository is:
 - Create a Pull Request to the Develop Branch
 - Have the Code Checked by a colleague
 - Colleague completes a code check and merges the branch
-- Delete the Feature Branch
-- Close the Issue
+- Colleague delete the Feature Branch
+- Colleague closes the Issue
+
+
 - Pull Request from Develop to Release/Candidate is carried out when all issues are closed
 - Testing is carried out on all Closed Issues in the Milestone
 - Testing results in Pull Request from Release/Candidate to Master
@@ -28,6 +35,7 @@ Some further contextual information on these components:
 #### Branches:
 - Create a new branch for every issue/feature you are working on.
 - Name the branch feature/1234-featurename where 1234 is the issue number of the Leading Issue to solve.
+- Hotfix branches should be named hotfix/1234-hotfixname
 - When you have code ready to be merged, create a Pull Request from the Branch to merge into Develop.
 - Reference a colleagues name in the Pull Request so that they can complete a Code Check on your work.
 
