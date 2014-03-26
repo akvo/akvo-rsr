@@ -223,7 +223,7 @@
           <a href="{% url project_main project.id %}" class="small">{% trans 'Cancel' %}</a>
         {% endif %}
       </div>
-      <a class="aqua awesome" href="javascript:document.add_update_form.submit();">
+      <a class="aqua awesome" href="" onclick="validateForm(); return false;">
         {% if edit_mode %}
           {% trans 'Save edits' %}
         {% else %}
@@ -234,3 +234,34 @@
   </div>
 </form>
 {% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+    function validateForm(){
+        var text_val=document.forms["add_update_form"]["text"].value,
+            photo_val=document.forms["add_update_form"]["photo"].value,
+            video_val=document.forms["add_update_form"]["video"].value,
+            update_error0 = "{% trans 'The update is empty.' %}",
+            update_error1 = "{% trans 'It is recommended to provide more information by writing a description or adding a photo before proceeding.' %}",
+            update_error2 = "{% trans 'Click OK to proceed anyway or Cancel to add additional information.' %}";
+
+
+        if (text_val == "" && photo_val == "" && video_val == "")
+        {
+            var confirmed = confirm(update_error0 + '\n\n' + update_error1 + '\n\n' + update_error2)
+            if (confirmed)
+              {
+              document.forms["add_update_form"].submit();
+              }
+            else
+              {
+              return false;
+              }
+        }
+        else
+        {
+            document.forms["add_update_form"].submit();
+        }
+    }
+</script>
+{% endblock js %}
