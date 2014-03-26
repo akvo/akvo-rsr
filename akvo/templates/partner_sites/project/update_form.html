@@ -85,6 +85,7 @@
           {% endif %}
           <div class="input">
             {{form.photo}}
+            <br/><span class="grey small">{% trans 'Please upload an image of 2 MB or less. Images are displayed in 4:3 aspect ratio, so files with an alternative shape may be distorted when published.' %}</span>
             {% if form.photo.errors %}
               <span class="red small">{{form.photo.errors.0}}</span>
             {% endif %}
