@@ -98,3 +98,5 @@ tramp
 
 # Vagrant
 .vagrant
+
+*.hp6rKR

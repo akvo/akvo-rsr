@@ -42,14 +42,15 @@
     <table class="projectListWidget" >
       <tbody>
         {% for project in projects  %}
-          <tr>
-            <td class="projectDescrTd">
-            <div class="projectDescr">
-                <h2 id="project_title">
+        <tr class="projectListTitle"> <td colspan="4"><h2 id="project_title">
                   <a href="{% url 'project_main' project.id %}">
                     {{project.title|smart_truncate:60}}
                   </a>
-                </h2>
+                </h2></td></tr>
+          <tr class="projectListDescr">
+            <td class="projectDescrTd">
+            <div class="projectDescr">
+               
                 {% rsr_widget_project_photo project 120 90 %}
                 <p id="project_subtitle">{{project.project_plan_summary|smart_truncate:50}}</p>
                 <a href="{% url 'project_main' project.id %}">{% trans "See full description" %}</a>
