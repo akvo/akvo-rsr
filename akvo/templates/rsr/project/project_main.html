@@ -1,5 +1,5 @@
 {% extends "rsr/project/project_base.html" %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags map %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags google_maps %}
 {% load url from future %}
 
 {% block head %}
@@ -59,7 +59,7 @@
         </p>
         {# Google Map #}
         {% if p.primary_location %}
-          {% map project 260 180 "small" %}
+          {% google_map project 260 180 8 %}
         {% else %}
           <p style="color: red;">{% trans 'No map available' %}</p>
         {% endif %}
