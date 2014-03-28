@@ -15,18 +15,6 @@
 				{% trans 'Fully funded' %}
 			</p>
 		</div>
-    {% elif not project.donate_button %}
-        <div style="padding:20px 0px; text-align:center;">
-			<div id="fundingbox_no_donations">
-				<p style="margin:0;">
-					{% comment %}Translators: This sum is for the project funds box{% endcomment %}
-					{% blocktrans with currency=project.get_currency_display|safe funds=project.funds|round|intcomma %}Raised:&nbsp;{{currency}}&nbsp;{{funds}}{% endblocktrans %}
-				</p>
-			</div>
-			<p class="red" style="margin:0; padding:0;">
-				{% trans 'Donations not possible' %}
-			</p>
-		</div>
 	{% else %}
 		<table class="fundingbox-table">
 			<tr class="green">
@@ -49,7 +37,7 @@
 				<td>{{project.get_currency_display|safe}} {{project.budget|round|intcomma}}</td>
 			</tr>					
 		</table>
-		{% if project.status != 'L' and project.status != 'R' %}
+		{% if project.status != 'L' and project.status != 'R' and project.donate_button %}
 		<br />
 		<div style="text-align:center; padding-bottom:10px;">
 			<a class="orange awesome" href="{% url 'project_donate' project.id %}">{% trans 'Donate' %}</a>
