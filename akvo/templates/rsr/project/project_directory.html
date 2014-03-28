@@ -225,6 +225,10 @@
                       <p class="green" style="font-weight:bold;">
                         {% trans 'Fully funded' %}
                       </p>
+                    {% elif not project.donate_button %}
+                      <p class="red" style="font-weight:bold;">
+                        {% trans 'Donations not possible' %}
+                      </p>
                     {% else %}
                       {% if not project.status == 'L' and not project.status == 'R' %}
                         <div style="text-align:center; padding-top:5px; padding-bottom:5px;">
