@@ -270,7 +270,10 @@ def iati_photo(activity, project):
     photo_url = "http://rsr.akvo.org/media/" + str(project.current_image)
 
     allowed_extensions = ["jpg", "jpeg", "png", "gif", "tiff", "bmp"]
-    extension = str(project.current_image).rsplit('.',1)[1].lower()
+    try:
+        extension = str(project.current_image).rsplit('.',1)[1].lower()
+    except:
+        extension = ""
 
     document_link = schema.document_link(url=xml_enc(photo_url))
 
@@ -381,9 +384,6 @@ def iati_activity(activity, project):
                                            valueOf_=project.date_complete)
         activity.add_activity_date(end_planned)
 
-    # Notes
-    if check_value(project.notes): activity.set_anyAttributes_({"akvo:notes": xml_enc(project.notes)})
-
     return activity
 
 def iati_reporting_org(activity, organisation):
@@ -414,9 +414,10 @@ def iati_identifier(activity, partnerships):
         if check_value(partnership.iati_activity_id):
             identifier = partnership.iati_activity_id
             internal_id = partnership.internal_id
+            break
 
     if check_value(identifier):
-        identifier_node = schema.iati_identifier()
+        identifier_node = schema.iati_identifier(valueOf_=identifier)
         activity.add_iati_identifier(identifier_node)
 
         if check_value(internal_id):
