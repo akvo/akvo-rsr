@@ -251,6 +251,10 @@ def iati_location(activity, location, country):
 
         location_node.add_administrative(administrative)
 
+        # Add recipient-country node
+        recipient_country_node = schema.recipient_country(code=country.iso_code.upper(), valueOf_=xml_enc(country.name))
+        activity.add_recipient_country(recipient_country_node)
+
     if check_value(location.address_1):
         location_node.set_anyAttributes_({"akvo:address-1": xml_enc(location.address_1)})
 
