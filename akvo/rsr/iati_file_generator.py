@@ -305,6 +305,39 @@ def iati_goals(activity, goals):
 
     return activity
 
+def iati_contact(activity, organisation):
+    """Collects contact information of the RSR organisation and adds it to the activity."""
+
+    contact_node = schema.contact_info()
+
+    if check_value(organisation.long_name):
+        long_name = schema.textType(valueOf_=xml_enc(organisation.long_name))
+        contact_node.add_organisation(long_name)
+    elif check_value(organisation.name):
+        org_name = schema.textType(valueOf_=xml_enc(organisation.name))
+        contact_node.add_organisation(org_name)
+
+    if check_value(organisation.url):
+        contact_node.add_website(xml_enc(organisation.url))
+
+    if check_value(organisation.phone):
+        phone = schema.textType(valueOf_=xml_enc(organisation.phone))
+        contact_node.add_telephone(phone)
+    elif check_value(organisation.mobile):
+        mobile = schema.textType(valueOf_=xml_enc(organisation.mobile))
+        contact_node.add_telephone(mobile)
+
+    if check_value(organisation.contact_person):
+        person = schema.textType(valueOf_=xml_enc(organisation.contact_person))
+        contact_node.add_person_name(person)
+
+    if check_value(organisation.contact_email):
+        email = schema.textType(valueOf_=xml_enc(organisation.contact_email))
+        contact_node.add_email(email)
+
+    activity.add_contact_info(contact_node)
+
+    return activity
 
 def iati_activity(activity, project):
     """Collects all underlying nodes of the <iati-activity> node and adds them to the activity."""
@@ -421,17 +454,17 @@ def iati_identifier(activity, partnerships, organisation):
             break
 
     if check_value(identifier):
-        identifier_node = schema.iati_identifier(valueOf_=identifier)
+        identifier_node = schema.iati_identifier(valueOf_=xml_enc(identifier))
         activity.add_iati_identifier(identifier_node)
 
         if check_value(internal_id):
-            other_identifier = schema.other_identifier(valueOf_=internal_id)
+            other_identifier = schema.other_identifier(valueOf_=xml_enc(internal_id))
             if check_value(organisation.iati_org_id):
-                other_identifier.set_owner_ref(organisation.iati_org_id)
+                other_identifier.set_owner_ref(xml_enc(organisation.iati_org_id))
             if check_value(organisation.long_name):
-                other_identifier.set_owner_name(organisation.long_name)
+                other_identifier.set_owner_name(xml_enc(organisation.long_name))
             elif check_value(organisation.name):
-                other_identifier.set_owner_name(organisation.name)
+                other_identifier.set_owner_name(xml_enc(organisation.name))
 
             activity.add_other_identifier(other_identifier)
 
@@ -484,6 +517,7 @@ def process_project(xml, project, org_id):
     activity = iati_identifier(activity, partnerships, organisation)
     activity = iati_reporting_org(activity, organisation)
     activity = iati_activity(activity, project)
+    activity = iati_contact(activity, organisation)
     activity = iati_goals(activity, goals)
     activity = iati_photo(activity, project)
     activity = iati_location(activity, location, country)
