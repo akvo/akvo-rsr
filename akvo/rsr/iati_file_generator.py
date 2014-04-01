@@ -408,7 +408,7 @@ def iati_reporting_org(activity, organisation):
 
     return activity
 
-def iati_identifier(activity, partnerships):
+def iati_identifier(activity, partnerships, organisation):
     """Collects the IATI identifier from the RSR project and adds it to the activity."""
 
     identifier = ""
@@ -425,7 +425,15 @@ def iati_identifier(activity, partnerships):
         activity.add_iati_identifier(identifier_node)
 
         if check_value(internal_id):
-            activity.set_anyAttributes_({"akvo:internal-project-id":xml_enc(internal_id)})
+            other_identifier = schema.other_identifier(valueOf_=internal_id)
+            if check_value(organisation.iati_org_id):
+                other_identifier.set_owner_ref(organisation.iati_org_id)
+            if check_value(organisation.long_name):
+                other_identifier.set_owner_name(organisation.long_name)
+            elif check_value(organisation.name):
+                other_identifier.set_owner_name(organisation.name)
+
+            activity.add_other_identifier(other_identifier)
 
     return activity
 
@@ -473,7 +481,7 @@ def process_project(xml, project, org_id):
     if check_value(project.currency): activity.set_default_currency(project.currency)
 
     # Add nodes
-    activity = iati_identifier(activity, partnerships)
+    activity = iati_identifier(activity, partnerships, organisation)
     activity = iati_reporting_org(activity, organisation)
     activity = iati_activity(activity, project)
     activity = iati_goals(activity, goals)

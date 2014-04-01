@@ -2732,7 +2732,7 @@ class other_identifier(GeneratedsSuper):
         already_processed = set()
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='other-identifier')
         outfile.write('>')
-        self.exportChildren(outfile, level + 1, namespace_, name_, pretty_print=pretty_print)
+        self.exportLiteral(outfile, level)
         outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='other-identifier'):
         unique_counter = 0
@@ -2775,13 +2775,13 @@ class other_identifier(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='other-identifier', fromsubclass_=False, pretty_print=True):
         pass
     def exportLiteral(self, outfile, level, name_='other-identifier'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+        #level += 1
+        #already_processed = set()
+        #self.exportLiteralAttributes(outfile, level, already_processed, name_)
+        #if self.hasContent_():
+        #    self.exportLiteralChildren(outfile, level, name_)
+        #showIndent(outfile, level)
+        outfile.write('%s' % (self.valueOf_,))
     def exportLiteralAttributes(self, outfile, level, already_processed, name_):
         if self.owner_ref is not None and 'owner_ref' not in already_processed:
             already_processed.add('owner_ref')
