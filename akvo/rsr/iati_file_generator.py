@@ -283,8 +283,10 @@ def iati_photo(activity, project):
 
     if check_value(extension) and extension in allowed_extensions:
         document_link.set_format(xml_enc("image/" + extension))
+
     if check_value(project.current_image_caption):
-        document_link.set_anyAttributes_({"akvo:photo-caption": xml_enc(project.current_image_caption)})
+        caption = schema.textType(valueOf_=xml_enc(project.current_image_caption))
+        document_link.add_title(caption)
 
     if check_value(project.current_image_credit):
         document_link.set_anyAttributes_({"akvo:photo-credit": xml_enc(project.current_image_credit)})
