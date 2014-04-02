@@ -169,9 +169,9 @@
         <div class="clearfix">
           <div class="input marg_top15">
             {% if update %}
-              <a id="action_button" class="aqua awesome" style="color:#fff" href="javascript:document.add_update_form.submit()">{% trans 'Save update' %}</a>
+              <a id="action_button" class="aqua awesome" style="color:#fff" href="" onclick="validateForm(); return false;">{% trans 'Save update' %}</a>
             {% else %}
-              <a id="action_button" class="aqua awesome" style="color:#fff" href="javascript:document.add_update_form.submit()">{% trans 'Submit update' %}</a>
+              <a id="action_button" class="aqua awesome" style="color:#fff" href="" onclick="validateForm(); return false;">{% trans 'Submit update' %}</a>
             {% endif %}
           </div>
         </div>
@@ -260,3 +260,34 @@
   {% endif %}
 
 {% endblock jq_ready %}
+
+{% block js %}
+<script type="text/javascript">
+    function validateForm(){
+        var text_val=document.forms["add_update_form"]["text"].value,
+            photo_val=document.forms["add_update_form"]["photo"].value,
+            video_val=document.forms["add_update_form"]["video"].value,
+            update_error0 = "{% trans 'The update is empty.' %}",
+            update_error1 = "{% trans 'It is recommended to provide more information by writing a description or adding a photo before proceeding.' %}",
+            update_error2 = "{% trans 'Click OK to proceed anyway or Cancel to add additional information.' %}";
+
+
+        if (text_val == "" && photo_val == "" && video_val == "")
+        {
+            var confirmed = confirm(update_error0 + '\n\n' + update_error1 + '\n\n' + update_error2)
+            if (confirmed)
+              {
+              document.forms["add_update_form"].submit();
+              }
+            else
+              {
+              return false;
+              }
+        }
+        else
+        {
+            document.forms["add_update_form"].submit();
+        }
+    }
+</script>
+{% endblock js %}

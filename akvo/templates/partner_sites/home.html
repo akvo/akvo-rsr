@@ -166,11 +166,13 @@
                 {% widthratio_trunc project.funds|add:1 project.budget 100 %} %
               </p>
             {% if project.funds_needed|round != 0 and not project.status == 'L' and not project.status == 'R' %}
-              <div class="txt_center">
-                  <a id="filterButton" class="yellow awesome small" style="color:#fff" href="{{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}{% url 'donate_thanks' %}">
-                  <span>{% trans 'Donate' %}</span>
-                </a>
-              </div>
+              {% if project.donate_button %}
+                  <div class="txt_center">
+                      <a id="filterButton" class="yellow awesome small" style="color:#fff" href="{{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}{% url 'donate_thanks' %}">
+                      <span>{% trans 'Donate' %}</span>
+                    </a>
+                  </div>
+              {% endif %}
             {% endif %}
           </td>
         </tr>

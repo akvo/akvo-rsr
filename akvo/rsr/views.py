@@ -1170,7 +1170,7 @@ def can_donate_to_project(project):
     "Predicate to determine if a project can be donated to."
     active = project in Project.objects.active()
     funds_needed = project.funds_needed > 0
-    return active and funds_needed
+    return active and funds_needed and project.donate_button
 
 
 @fetch_project
@@ -1232,7 +1232,7 @@ def donate(request, p, engine):
                 return render_to_response("rsr/project/donate/donate_step3.html",
                                           dict(invoice=invoice,
                                                project=p,
-                                               payment_engine=engine, 
+                                               payment_engine=engine,
                                                mollie_order_url=order_url),
                                           context_instance=RequestContext(request))
             elif engine == "paypal":

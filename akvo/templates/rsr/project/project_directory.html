@@ -226,7 +226,7 @@
                         {% trans 'Fully funded' %}
                       </p>
                     {% else %}
-                      {% if not project.status == 'L' and not project.status == 'R' %}
+                      {% if not project.status == 'L' and not project.status == 'R' and project.donate_button %}
                         <div style="text-align:center; padding-top:5px; padding-bottom:5px;">
                           <a class="orange awesome small" href="{% url 'project_donate' project.id %}">{% trans 'Donate' %}</a>
                         </div>
