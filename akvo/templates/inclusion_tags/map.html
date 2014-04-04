@@ -1,40 +1,11 @@
-<div class= "akvo_map" id="{{map_id}}" style="width:{{width}}px;height:{{height}}px;"></div>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<div class="akvo_map" id="{{map_id}}" style="width:{{width}}px;height:{{height}}px;"></div>
 <script type="text/javascript">
-    var googleMap = {
-        canvas: document.getElementById('{{map_id}}'),
-        options: {
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scrollwheel: false,
-            streetViewControl: false
-        },
-        locations: {{ locations|safe }},
-        load: function() {
-            var map = new google.maps.Map(this.canvas, this.options);
-            var bounds = new google.maps.LatLngBounds();
-
-            var i;
-
-            for (i = 0; i < this.locations.length; i++) {
-              marker = new google.maps.Marker({
-                icon: '/media/core/img/blueMarker.png',
-                position: new google.maps.LatLng(this.locations[i][0], this.locations[i][1]),
-                map: map,
-                clickable: false
-              });
-
-              bounds.extend(marker.position);
-
-            }
-
-            map.fitBounds(bounds);
-            map.panToBounds(bounds);
-
-            if (map.getZoom() > 8){
-                map.setZoom(8)
-            }
-
-        }
-    };
-	window.onload = function (){googleMap.load()};
+  {{map_id}} = {
+    "type": "{{type}}",
+    "object_id": "{{object_id}}",
+    "resource": "{{resource}}",
+    "marker_icon": "{{marker_icon}}",
+    "media_url": "{{MEDIA_URL}}",
+    "host": "{{host}}"
+  }
 </script>
