@@ -11,7 +11,7 @@ from django import template
 from django.conf import settings
 from django.http import Http404
 
-from akvo.rsr.models import Project, Organisation
+from akvo.rsr.models import Project, Organisation, ProjectLocation
 
 register = template.Library()
 
@@ -38,6 +38,11 @@ def map(resource, width, height, type="dynamic", marker_icon=""):
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
 
+    locations = []
+    locations_obj = ProjectLocation.objects.filter(location_target=resource.pk)
+    for location in locations_obj:
+        locations.append([location.latitude, location.longitude])
+
     template_context = {
         'map_id': map_id,
         'type': type,
@@ -46,6 +51,7 @@ def map(resource, width, height, type="dynamic", marker_icon=""):
         'host': HOST,
         'MEDIA_URL': getattr(settings, 'MEDIA_URL', '/media/'),
         'marker_icon': marker_icon,
+        'locations': locations
     }
     #extend this to support more models that have a location
     supported_models = (Project, Organisation)
