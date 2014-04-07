@@ -10,7 +10,7 @@ import os
 from django import template
 from django.conf import settings
 
-from akvo.rsr.models import ProjectLocation, OrganisationLocation
+from akvo.rsr.models import Project, Organisation, ProjectLocation, OrganisationLocation
 
 register = template.Library()
 
@@ -22,12 +22,13 @@ ORGANISATION_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_IC
 HOST = 'http://%s' % getattr(settings, 'RSR_DOMAIN', 'akvo.org')
 
 @register.inclusion_tag('inclusion_tags/project_map.html')
-def project_map(project, width, height):
+def project_map(resource, width, height):
     """
-    Project google map
+    Google map
     
     params:
-        project: a Project object or integer. 1 for the projects overview and 2 for the organisations overview.
+        resource: a Project object, Organisation object or integer.
+                    The integer is 1 for the global projects overview and 0 for the global organisations overview.
         width, height: the dimensions of the map
     """
 
@@ -35,17 +36,25 @@ def project_map(project, width, height):
     marker_icon = PROJECT_MARKER_ICON
     locations = []
 
-    if isinstance(project, int):
-        if project > 0:
+    if isinstance(resource, (int,long)):
+        if resource > 0:
             for location in ProjectLocation.objects.all():
                 locations.append([location.latitude, location.longitude])
         else:
             for location in OrganisationLocation.objects.all():
                 locations.append([location.latitude, location.longitude])
             marker_icon = ORGANISATION_MARKER_ICON
+            
     else:
-        for location in ProjectLocation.objects.filter(location_target=project.pk):
-            locations.append([location.latitude, location.longitude])
+        is_project = isinstance(resource, Project)
+        is_organisation = isinstance(resource, Organisation)
+        if is_project:
+            for location in ProjectLocation.objects.filter(location_target=resource.pk):
+                locations.append([location.latitude, location.longitude])
+        elif is_organisation:
+            for location in OrganisationLocation.objects.filter(location_target_id=resource.pk):
+                locations.append([location.latitude, location.longitude])
+            marker_icon = ORGANISATION_MARKER_ICON
 
     template_context = {
         'map_id': map_id,
