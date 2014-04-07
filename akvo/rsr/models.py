@@ -736,6 +736,9 @@ class Project(TimestampsMixin, models.Model):
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey(ProjectLocation, null=True, on_delete=models.SET_NULL)
 
+    # donate button
+    donate_button = models.BooleanField(_(u'donate button'), default=True, help_text=(u'Show donate button for this project.'))
+
     # denormalized data
     # =================
     budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)

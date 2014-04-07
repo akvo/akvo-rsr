@@ -1,5 +1,5 @@
 {% load i18n rsr_filters %}
 
-{% if project.funds_needed|round != 0 and project.status != 'L' and project.status != 'R' %}
+{% if project.funds_needed|round != 0 and project.status != 'L' and project.status != 'R' and project.donate_button %}
   <a href="{{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}/donate/thanks/" class="orangeAction">{% trans "Donate" %}</a>
 {% endif %}

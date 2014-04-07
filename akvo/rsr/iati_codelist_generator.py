@@ -11,10 +11,15 @@ import csv
 import re
 
 # Modify this list to add new IATI code lists
-iati_lists = ("OrganisationType", )
+iati_lists = ("OrganisationType", "FinanceType", "ActivityStatus", "OrganisationRole", "Sector")
 
-iati_list_api_url = "http://datadev.aidinfolabs.org/data/codelist/%s.csv"
+# OLD URI; iati_list_api_url = "http://datadev.aidinfolabs.org/data/codelist/%s.csv"
+iati_list_api_url = "http://data.aidinfolabs.org/data/codelist/%s/version/1.0/lang/en.csv"
 identifier_prefix = "IATI_LIST_"
+
+def utf_8_encoder(unicode_csv_data):
+    for line in unicode_csv_data:
+        yield line.encode('utf-8')
 
 def pythonify_code_list_name(code_list_name):
     "Turn OrganisationType into ORGANISATION_TYPE"
@@ -23,10 +28,10 @@ def pythonify_code_list_name(code_list_name):
 
 def stringify(bits):
     "add unicode string 'markup' to strings"
-    return [(lambda bit: bit if bit.isdigit() else "u'%s'" %  bit)(bit) for bit in bits ]
+    return [(lambda bit: bit if bit.isdigit() else "u'%s'" % bit.replace("'",""))(bit) for bit in bits ]
 
 def code_list_to_tuples(raw_csv, iati_list):
-    iati_reader = csv.reader(raw_csv.splitlines(), delimiter=',', quotechar='"')
+    iati_reader = csv.reader(utf_8_encoder(raw_csv.splitlines()), delimiter=',', quotechar='"')
     fields = ', '.join(iati_reader.next())
     identifier = pythonify_code_list_name(iati_list)
     tuples = '),\n    ('.join([', '.join(stringify(row)) for row in iati_reader])
