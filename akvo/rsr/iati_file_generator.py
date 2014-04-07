@@ -538,7 +538,7 @@ def generate_file(projects, org_id, iati_version):
 
     dt = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     iati_file = schema.iati_activities(dt, iati_version)
-    iati_file.set_anyAttributes_({"xmlns:akvo": "http://www.akvo.org"})
+    iati_file.set_anyAttributes_({"xmlns:akvo": "http://akvo.org/iati-activities"})
 
     for project in projects:
         try:
