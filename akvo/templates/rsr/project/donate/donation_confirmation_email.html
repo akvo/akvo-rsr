@@ -5,19 +5,24 @@
 <head>
 <meta charset="UTF-8">
 <title>Akvo.org - {% trans 'Thank you for your online contribution' %}</title>
+<style type="text/css">
+  table#donation_info .td {
+    padding-left: 15px;
+  }
+</style>
 </head>
 <body>
 <h2>{% trans 'Dear' %} {{ invoice.get_name }}</h2>
 <p> {% blocktrans %}Thank you for your contribution on <a href='{{ site_url }}'>Akvo.org</a>. By giving, you have personally helped to improve the living conditions of people around the world. You can follow the project&#x27;s progress via <a href='{{ project_updates_url }}'>updates</a> on <a href='{{ site_url }}'>Akvo.org</a>.{% endblocktrans %} </p>
-<table style="border: none !important;">
+<table id="donation_info" style="border: none !important;">
   <thead>
     <tr>
-      <th colspan="2"><h3>{% trans 'A summary of your contribution' %}</h3></th>
+      <th colspan="2"><h3 style="text-align: left;">{% trans 'A summary of your contribution' %}</h3></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>{% trans 'Name' %}:</td>
+      <td style="padding-right: 20px;">{% trans 'Name' %}:</td>
       <td>{{ invoice.get_name }}</td>
     </tr>
     <tr>
