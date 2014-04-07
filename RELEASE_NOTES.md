@@ -25,14 +25,14 @@ Github issue [#334](https://github.com/akvo/akvo-rsr/issues/334)
 
 We have had a couple of requests from partners to prevent the donate button from appearing on their projects. Primarily this is due to the organisation not wishing to accomodate donations on specific projects. We have now added the functionality for partners to be able to turn on/off the visibility of the Donate button from the Project Admin per project.
 
-This setting affects where the project is visisble on Akvo.org, Akvo Pages and within Widgets.
+This setting affects where the project is visible on Akvo.org, Akvo Pages and within Widgets.
 
 Github issue [#310](https://github.com/akvo/akvo-rsr/issues/310) & [#491](https://github.com/akvo/akvo-rsr/issues/491)
 
 
 ### Image Upload Recommendations
 
-We noticed that many users were unaware of the right size or dimentions of images to use when uploading to RSR projects or updates. To help guie users to have the best quality of images on their projects we have added some recommendations including the limits related to file sizes that the system imposes.
+We noticed that many users were unaware of the right size or dimentions of images to use when uploading to RSR projects or updates. To help guide users to have the best quality of images on their projects we have added some recommendations including the limits related to file sizes that the system imposes.
 
 Github issue [#219](https://github.com/akvo/akvo-rsr/issues/219)
 
@@ -50,7 +50,7 @@ Github issue [#309](https://github.com/akvo/akvo-rsr/issues/309)
 
 ### Organisation input guidelines
 
-We've made some small improvements in the documentation available for organisations wishing to import organisiations using the API.
+We've made some small improvements in the documentation available for organisations wishing to import organisations using the API.
 
 Github issue [#425](https://github.com/akvo/akvo-rsr/issues/425)
 
@@ -126,7 +126,7 @@ Github issue [#323](https://github.com/akvo/akvo-rsr/issues/323)
 
 ### Header Sign In & Register options in browser
 
-Wehn a browser was not maximised, the Sign In and Register options were no longer visible in the header, and the scrollbar didn't allow for them to be pulled into view. This has been resolved.
+When a browser was not maximised, the Sign In and Register options were no longer visible in the header, and the scrollbar didn't allow for them to be pulled into view. This has been resolved.
 
 Github issue [#408](https://github.com/akvo/akvo-rsr/issues/408)
 
