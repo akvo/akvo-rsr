@@ -12,44 +12,44 @@
 <table style="border: none !important;">
   <thead>
     <tr>
-      <th colspan="2"><h3>{% trans 'A summary of your contribution' %}</h3></th>
+      <th colspan="2"><h3 style="text-align:left;">{% trans 'A summary of your contribution' %}</h3></th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>{% trans 'Name' %}:</td>
-      <td>{{ invoice.get_name }}</td>
+      <td style="padding-left:5px;">{{ invoice.get_name }}</td>
     </tr>
     <tr>
       <td>{% trans 'Email' %}:</td>
-      <td>{{ invoice.get_email }}</td>
+      <td style="padding-left:5px;">{{ invoice.get_email }}</td>
     </tr>
     <tr>
       <td>{% trans 'Your gift will help' %}:</td>
-      <td><a href="{{ project_url }}">{{ invoice.project.title|safe }}</a></td>
+      <td style="padding-left:5px;"><a href="{{ project_url }}">{{ invoice.project.title|safe }}</a></td>
     </tr>
     <tr>
       <td>{% trans 'Contribution' %}:</td>
-      <td>{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}</td>
+      <td style="padding-left:5px;">{{ invoice.project.get_currency_display|safe }} {{ invoice.amount }}</td>
     </tr>
     <tr>
       <td>{% trans 'Akvo reference' %}: </td>
-      <td> {{ invoice.id }}</td>
+      <td style="padding-left:5px;"> {{ invoice.id }}</td>
     </tr>
     {% if invoice.engine = "paypal" %}
       <tr>
         <td>{% trans 'PayPal reference' %}: </td>
-        <td>{{ invoice.ipn }}</td>
+        <td style="padding-left:5px;">{{ invoice.ipn }}</td>
       </tr>
     {% endif %}
     {% if invoice.engine = "ideal" %}
       <tr>
           <td>{% trans 'Bank' %}: </td>
-          <td>{{ invoice.get_bank_display }}</td>
+          <td style="padding-left:5px;">{{ invoice.get_bank_display }}</td>
       </tr>
       <tr>
         <td>{% trans 'iDEAL reference' %}: </td>
-        <td>{{ invoice.transaction_id }}</td>
+        <td style="padding-left:5px;">{{ invoice.transaction_id }}</td>
       </tr>
     {% endif %}
     </tr>
