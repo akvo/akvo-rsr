@@ -22,39 +22,48 @@ ORGANISATION_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_IC
 HOST = 'http://%s' % getattr(settings, 'RSR_DOMAIN', 'akvo.org')
 
 @register.inclusion_tag('inclusion_tags/project_map.html')
-def project_map(resource, width, height):
+def project_map(type, resource, id, width, height, project_list = []):
     """
     Google map
     
     params:
-        resource: a Project object, Organisation object or integer.
-                    The integer is 1 for the global projects overview and 0 for the global organisations overview.
+        type: integer, 0 for global maps and 1 for specific project or organisation
+        resource: integer, 0 for projects and 1 for organisations
+        id: integer, id of project or organisation. 0 is used for global maps of all organisations or projects.
         width, height: the dimensions of the map
     """
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
-    marker_icon = PROJECT_MARKER_ICON
+
+    if resource == 0: marker_icon = PROJECT_MARKER_ICON
+    else: marker_icon = ORGANISATION_MARKER_ICON
+
     locations = []
 
-    if isinstance(resource, (int,long)):
-        if resource > 0:
-            for location in ProjectLocation.objects.all():
-                locations.append([location.latitude, location.longitude])
+    # Global maps
+    if type == 0:
+        if id == 0:
+            if resource == 0:
+                for location in ProjectLocation.objects.all():
+                    locations.append([location.latitude, location.longitude])
+            else:
+                for location in OrganisationLocation.objects.all():
+                    locations.append([location.latitude, location.longitude])
         else:
-            for location in OrganisationLocation.objects.all():
+            # Show all projects of an organisation
+            if resource == 0:
+                for project in project_list:
+                    for location in ProjectLocation.objects.filter(location_target=project.pk):
+                        locations.append([location.latitude, location.longitude])
+
+    # Specific project maps
+    elif type == 1:
+        if resource == 0:
+            for location in ProjectLocation.objects.filter(location_target=id):
                 locations.append([location.latitude, location.longitude])
-            marker_icon = ORGANISATION_MARKER_ICON
-            
-    else:
-        is_project = isinstance(resource, Project)
-        is_organisation = isinstance(resource, Organisation)
-        if is_project:
-            for location in ProjectLocation.objects.filter(location_target=resource.pk):
+        elif resource == 1:
+            for location in OrganisationLocation.objects.filter(location_target_id=id):
                 locations.append([location.latitude, location.longitude])
-        elif is_organisation:
-            for location in OrganisationLocation.objects.filter(location_target_id=resource.pk):
-                locations.append([location.latitude, location.longitude])
-            marker_icon = ORGANISATION_MARKER_ICON
 
     template_context = {
         'map_id': map_id,

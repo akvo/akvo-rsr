@@ -30,9 +30,10 @@
             map.fitBounds(bounds);
             map.panToBounds(bounds);
 
-            if (map.getZoom() > 8){
-                map.setZoom(8)
-            }
+            var listener = google.maps.event.addListener(map, "idle", function() {
+              if (map.getZoom() > 8) map.setZoom(8);
+              google.maps.event.removeListener(listener);
+            });
 
         }
     };

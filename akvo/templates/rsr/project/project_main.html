@@ -59,7 +59,7 @@
         </p>
         {# Google Map #}
         {% if p.primary_location %}
-          {% project_map project 260 180 %}
+          {% project_map 1 0 project.pk 260 180 %}
         {% else %}
           <p style="color: red;">{% trans 'No map available' %}</p>
         {% endif %}
