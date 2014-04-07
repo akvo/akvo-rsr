@@ -5,6 +5,133 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.5 Uglyfruit
+---
+
+Wednesday 9th April 2014, adriancollier
+
+New Features
+---
+
+### IATI Export
+
+On popular demand we have created the first installment of the IATI Export functionality. This feature will allow us to create an IATI XML file based on the projects that an organisation has within RSR to publish within the IATI Registry.
+
+There will be further improvements to this functionality including visibility of files within the website, automatic publishing and historical file access over the coming weeks.
+
+Github issue [#334](https://github.com/akvo/akvo-rsr/issues/334)
+
+### Donate Buttons on Projects and Widgets
+
+We have had a couple of requests from partners to prevent the donate button from appearing on their projects. Primarily this is due to the organisation not wishing to accomodate donations on specific projects. We have now added the functionality for partners to be able to turn on/off the visibility of the Donate button from the Project Admin per project.
+
+This setting affects where the project is visisble on Akvo.org, Akvo Pages and within Widgets.
+
+Github issue [#310](https://github.com/akvo/akvo-rsr/issues/310) & [#491](https://github.com/akvo/akvo-rsr/issues/491)
+
+
+### Image Upload Recommendations
+
+We noticed that many users were unaware of the right size or dimentions of images to use when uploading to RSR projects or updates. To help guie users to have the best quality of images on their projects we have added some recommendations including the limits related to file sizes that the system imposes.
+
+Github issue [#219](https://github.com/akvo/akvo-rsr/issues/219)
+
+### Update warning on empty content
+
+If a user wants to post an update without any content and only a title, then we think they should be allowed to do this. However we also think it's great if users do add content and not just the title. So we have added a reminder to the form to advise users to include content in case this is a mistake. Just like if you send an email without a subject.
+
+Github issue [#304](https://github.com/akvo/akvo-rsr/issues/304)
+
+### Registrations via Akvo Pages (aka Partnersites)
+
+When users want to register directly from Akvo Pages they used to have to select the organisation that they want to register under. To improve integration we have now pre-selected this, so that users now automatically are registering under the organisation that owns the Akvo Pages.
+
+Github issue [#309](https://github.com/akvo/akvo-rsr/issues/309)
+
+### Organisation input guidelines
+
+We've made some small improvements in the documentation available for organisations wishing to import organisiations using the API.
+
+Github issue [#425](https://github.com/akvo/akvo-rsr/issues/425)
+
+### Improved 404 page
+
+We'd prefer it if no-one sees a 404 error page, but when they do, we want it to be a nice 404 error page, so we've now added the same one we use on Akvo.org as we like it.
+
+Github issue [#450](https://github.com/akvo/akvo-rsr/issues/450)
+
+### Partner Types
+
+We made a change a while back to only allow partners to be added to projects where they are enabled for that particular role, e.g. Support Partner. This has created some processing issues affecting Admin users and causing a bit of a long process for maintaining projects. As a workaround for this, we have now enabled all organisations to be either Field or Funding partners on projects. As before if organisations need to be added as a Support or Sponsor partner then this will need to be approved by the Akvo Partner Team, but this small change should help a lot of project admins have a simpler time with their work.
+
+Github issue [#462](https://github.com/akvo/akvo-rsr/issues/462)
+
+### Improved API resource for Project Updates
+
+As we would like to display more information about project updates in different places, and as this information is stored in multiple different tables within the database, we have created a common single resource to be able to collect all this information with a single API call.
+
+Github issue [#463](https://github.com/akvo/akvo-rsr/issues/463)
+
+### Widget Improvements
+
+We have made several visual improvements on the Widget templates in this release based on some partner feedback from CommonSites to make them clearer and look that little bit more impressive.
+
+Github issue [#479](https://github.com/akvo/akvo-rsr/issues/479)
+
+### Better documentation on Github Process
+
+We've improved the developer documentation for our Github process internally to make things clearer for everyone in the team.
+
+Github issue [#422](https://github.com/akvo/akvo-rsr/issues/422) & [#481](https://github.com/akvo/akvo-rsr/issues/481)
+
+Bug Fixes
+---
+
+### Error in maps for Internet Explorer 8 (IE8)
+
+There was an issue with displaying maps in IE8 within RSR. While IE8 is being discontinued by Microsoft soon, we still notice some traffic to RSR via this browser so we have made an update to the maps code to render these maps correctly when viewed there.
+
+Github issue [#474](https://github.com/akvo/akvo-rsr/issues/474)
+
+### Links wrapping on Akvo Pages (aka Partnersites)
+
+Links that are added to projects to connect information from Akvopedia or other external sources were not wrapping within the field correctly. This has now been resolved.
+
+Github issue [#179](https://github.com/akvo/akvo-rsr/issues/179)
+
+### Akvo Pages (aka Partnersites) organisation Lists not paginated
+
+All organisations that were participating in projects in the Akvo Pages were being listed in a single page, we have now corrected this to ensure that the organisations are listed in pages containing 10 at a time.
+
+Github issue [#285](https://github.com/akvo/akvo-rsr/issues/285)
+
+### Sign In fields alignment
+
+Sign In fields were being displayed as too large for the box they were sitting in. We have fixed this visual bug.
+
+Github issue [#322](https://github.com/akvo/akvo-rsr/issues/322)
+
+### Donation email in Gmail
+
+There was a styling issue in Gmail when viewing the donation email we send to users who have completed a donation in RSR. This template now uses a table rather than floating div elements so the visuals always match what is expected of them.
+
+Github issue [#460](https://github.com/akvo/akvo-rsr/issues/460)
+
+
+### External links tab use
+
+When opening multiple external links from a project page, the same tab or window was being used again, so only the most recent link was being displayed to you. We've resolved this to create a new tab or window for each link selected.
+
+Github issue [#323](https://github.com/akvo/akvo-rsr/issues/323)
+
+### Header Sign In & Register options in browser
+
+Wehn a browser was not maximised, the Sign In and Register options were no longer visible in the header, and the scrollbar didn't allow for them to be pulled into view. This has been resolved.
+
+Github issue [#408](https://github.com/akvo/akvo-rsr/issues/408)
+
+
+
 Akvo RSR ver 2.3.4 Tamarine
 ---
 
