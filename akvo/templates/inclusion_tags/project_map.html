@@ -5,7 +5,6 @@
         canvas: document.getElementById('{{map_id}}'),
         options: {
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scrollwheel: false,
             streetViewControl: false
         },
         locations: {{ locations|safe }},
