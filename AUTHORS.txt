@@ -1,24 +1,35 @@
-AUTHORS.txt v1.3, 11 December 2009, pb 
+AUTHORS.txt v1.4, 9 April 2014, pb, adriancollier
 
 AUTHORS of Akvo RSR
 
 The PRIMARY AUTHORS are (and/or have been):
 
 - Malte Beckmann
+- Kaser Brandt
 - Paul Burt
 - Thomas Bjelkeman-Pettersson
 - Mark Charmer
+- Adrian Collier
+- Carl Crowder
 - Oliver Galloway-Lunn
 - Gabriel von Heijne
 - Daniel Karlsson
+- Stellan Lagerström
 - Gino Lee
 - Peter van der Linde
+- Robert Rochette
+- Loïc Sans
+- Anna-Marthe Sessink
 - Elizabeth Whiteside
 
 Translation support by:
 
 - Malte Beckmann
 - Anke van Lenteren
+- Isabelle Olivetti
+- Isabel Ordonez
+- Sergio Atristain
+- Jura Khrapunov
 
 Contributors, here is an inevitably incomplete list of MUCH APPRECIATED
 CONTRIBUTORS whom without, Akvo RSR would not have been the same:
@@ -29,7 +40,7 @@ CONTRIBUTORS whom without, Akvo RSR would not have been the same:
 - Jeroen van der Sommen
 - Mark Tiele Westra
 
-Further team members can be found at < http://www.akvo.org/web/team >
+Further team members can be found at < http://akvo.org/about-us/team/ >
 
 Funding partners, without them Akvo RSR could not have happened
 
@@ -43,5 +54,4 @@ Funding partners, without them Akvo RSR could not have happened
 - Simavi
 
 Many more partners, who all have greatly contributed to Akvo RSR in
-many ways can be found at: < http://www.akvo.org/web/ngo_partners >
-and < http://www.akvo.org/web/become_a_project_partner >
+many ways can be found at: < http://akvo.org/about-us/partners/ >
