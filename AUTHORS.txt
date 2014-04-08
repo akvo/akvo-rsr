@@ -5,7 +5,7 @@ AUTHORS of Akvo RSR
 The PRIMARY AUTHORS are (and/or have been):
 
 - Malte Beckmann
-- Kaser Brandt
+- Kasper Brandt
 - Paul Burt
 - Thomas Bjelkeman-Pettersson
 - Mark Charmer
