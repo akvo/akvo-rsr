@@ -1,6 +1,6 @@
-LICENSE.md, v1.1, 29 May 2012 [ogl]
+LICENSE.md, v1.2, 9 April 2014 [ogl, adriancollier]
 
-Copyright (C) 2007-2012 Stichting Akvo (Akvo Foundation)
+Copyright (C) 2007-2014 Stichting Akvo (Akvo Foundation)
 
 This file is part of Akvo RSR.
 
