@@ -3,7 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from django.core.urlresolvers import reverse
 
 from django.forms.models import ModelForm
 
@@ -62,3 +62,55 @@ class ProjectUpdateResource(ConditionalFullResource):
             del bundle.data['created_at']
             del bundle.data['last_modified_at']
             return bundle
+
+
+class ProjectUpdateResourceExtra(ProjectUpdateResource):
+    class Meta(ProjectUpdateResource.Meta):
+        allowed_methods = ['get',]
+        resource_name = 'project_update_extra'
+
+    def dehydrate(self, bundle):
+        def org_data_for_update(update):
+            """ return relevant data for the organisation that is linked to an update through the user that created the update
+            """
+            update_org = update.user.get_profile().organisation
+            return dict(
+                absolute_url=update_org.get_absolute_url(),
+                long_name=update_org.long_name,
+                name=update_org.name,
+                resource_uri=reverse(
+                    'api_dispatch_detail', kwargs={
+                        'resource_name':'organisation', 'api_name': 'v1', 'pk': update_org.pk
+                    }
+                ),
+            )
+
+        def user_data_for_update(user):
+            if user.first_name or user.last_name:
+                return dict(
+                    full_name=u"{} {}".format(user.first_name, user.last_name)
+                )
+            return {}
+
+        bundle = super(ProjectUpdateResourceExtra, self).dehydrate(bundle)
+        org = org_data_for_update(bundle.obj)
+        user_resource_uri = bundle.data['user']
+        bundle.data['user'] = user_data_for_update(bundle.obj.user)
+        bundle.data['user'].update(resource_uri=user_resource_uri)
+        bundle.data['user']['organisation'] = org
+        return bundle
+
+    def build_schema(self):
+        data = super(ProjectUpdateResourceExtra, self).build_schema()
+        data['fields']['user'] = {
+            'default': "No default provided.",
+            'type': "to_one",
+            'nullable': False,
+            'blank': False,
+            'readonly': True,
+            'help_text': "A custom related resource with parts of data from user and the organisation the user belongs to. "
+                "Includes the fields full_name, organisation and resource_uri of user and absolute_url, long_name, name and resource_uri "
+                "of organisation.",
+            'unique': False,
+        }
+        return data

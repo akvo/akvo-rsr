@@ -1,10 +1,14 @@
-README.md v1.2, 29 May 2012 [ogl]
+README.md v1.3, 9 April 2014 [ogl, adriancollier]
 
 # Akvo Really Simple Reporting (Akvo RSR)
 
-Akvo RSR is part of the Akvo Platform. The Akvo Platform is used on Akvo.org to combat poverty through small-scale water and sanitation projects. We believe that Akvo RSR can be used in many other development aid scenarios, in areas such as education, health care, agriculture, etc.
+Akvo Foundation is a non-profit foundation that builds open source internet and mobile phone software which is used to make international development cooperation and governance more effective and transparent.
 
-Read more about the [Akvo Platform](http://www.akvo.org/web/akvo_platform_overview).
+Akvo RSR is part of the Akvo platform. Akvo RSR is a web and Android-based system that makes it easy for international development teams to bring complex networks of projects online and instantly share progress with everyone involved and interested.
+
+We believe that Akvo RSR can be used in many other scenarios, including environmental programs and monitoring.
+
+Read more about [Akvo Products](http://akvo.org/products/).
 
 More information in these files:
 
