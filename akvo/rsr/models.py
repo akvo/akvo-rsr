@@ -788,7 +788,10 @@ class Project(TimestampsMixin, models.Model):
     # New API, de-normalized fields support
 
     def get_budget(self):
-        return BudgetItem.objects.filter(project__exact=self).aggregate(Sum('amount'))['amount__sum'] or 0
+        if 14 in BudgetItem.objects.filter(project__exact=self).values_list('label', flat=True):
+            return BudgetItem.objects.filter(project__exact=self).filter(label="14")[0].amount
+        else:
+            return BudgetItem.objects.filter(project__exact=self).aggregate(Sum('amount'))['amount__sum'] or 0
 
     def update_budget(self):
         "Update de-normalized field"
