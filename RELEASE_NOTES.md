@@ -5,6 +5,326 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.5 Uglyfruit
+---
+
+Wednesday 9th April 2014, adriancollier
+
+New Features
+---
+
+### IATI Export
+
+On popular demand we have created the first installment of the IATI Export functionality. This feature will allow us to create an IATI XML file based on the projects that an organisation has within RSR to publish within the IATI Registry.
+
+There will be further improvements to this functionality including visibility of files within the website, automatic publishing and historical file access over the coming weeks.
+
+Github issue [#334](https://github.com/akvo/akvo-rsr/issues/334)
+
+### Donate Buttons on Projects and Widgets
+
+We have had a couple of requests from partners to prevent the donate button from appearing on their projects. Primarily this is due to the organisation not wishing to accomodate donations on specific projects. We have now added the functionality for partners to be able to turn on/off the visibility of the Donate button from the Project Admin per project.
+
+This setting affects where the project is visible on Akvo.org, Akvo Pages and within Widgets.
+
+Github issue [#310](https://github.com/akvo/akvo-rsr/issues/310) & [#491](https://github.com/akvo/akvo-rsr/issues/491)
+
+
+### Image Upload Recommendations
+
+We noticed that many users were unaware of the right size or dimentions of images to use when uploading to RSR projects or updates. To help guide users to have the best quality of images on their projects we have added some recommendations including the limits related to file sizes that the system imposes.
+
+Github issue [#219](https://github.com/akvo/akvo-rsr/issues/219)
+
+### Update warning on empty content
+
+If a user wants to post an update without any content and only a title, then we think they should be allowed to do this. However we also think it's great if users do add content and not just the title. So we have added a reminder to the form to advise users to include content in case this is a mistake. Just like if you send an email without a subject.
+
+Github issue [#304](https://github.com/akvo/akvo-rsr/issues/304)
+
+### Registrations via Akvo Pages (aka Partnersites)
+
+When users want to register directly from Akvo Pages they used to have to select the organisation that they want to register under. To improve integration we have now pre-selected this, so that users now automatically are registering under the organisation that owns the Akvo Pages.
+
+Github issue [#309](https://github.com/akvo/akvo-rsr/issues/309)
+
+### Organisation input guidelines
+
+We've made some small improvements in the documentation available for organisations wishing to import organisations using the API.
+
+Github issue [#425](https://github.com/akvo/akvo-rsr/issues/425)
+
+### Improved 404 page
+
+We'd prefer it if no-one sees a 404 error page, but when they do, we want it to be a nice 404 error page, so we've now added the same one we use on Akvo.org as we like it.
+
+Github issue [#450](https://github.com/akvo/akvo-rsr/issues/450)
+
+### Partner Types
+
+We made a change a while back to only allow partners to be added to projects where they are enabled for that particular role, e.g. Support Partner. This has created some processing issues affecting Admin users and causing a bit of a long process for maintaining projects. As a workaround for this, we have now enabled all organisations to be either Field or Funding partners on projects. As before if organisations need to be added as a Support or Sponsor partner then this will need to be approved by the Akvo Partner Team, but this small change should help a lot of project admins have a simpler time with their work.
+
+Github issue [#462](https://github.com/akvo/akvo-rsr/issues/462)
+
+### Improved API resource for Project Updates
+
+As we would like to display more information about project updates in different places, and as this information is stored in multiple different tables within the database, we have created a common single resource to be able to collect all this information with a single API call.
+
+Github issue [#463](https://github.com/akvo/akvo-rsr/issues/463)
+
+### Widget Improvements
+
+We have made several visual improvements on the Widget templates in this release based on some partner feedback from CommonSites to make them clearer and look that little bit more impressive.
+
+Github issue [#479](https://github.com/akvo/akvo-rsr/issues/479)
+
+### Better documentation on Github Process
+
+We've improved the developer documentation for our Github process internally to make things clearer for everyone in the team.
+
+Github issue [#422](https://github.com/akvo/akvo-rsr/issues/422) & [#481](https://github.com/akvo/akvo-rsr/issues/481)
+
+Bug Fixes
+---
+
+### Error in maps for Internet Explorer 8 (IE8)
+
+There was an issue with displaying maps in IE8 within RSR. While IE8 is being discontinued by Microsoft soon, we still notice some traffic to RSR via this browser so we have made an update to the maps code to render these maps correctly when viewed there.
+
+Github issue [#474](https://github.com/akvo/akvo-rsr/issues/474)
+
+### Links wrapping on Akvo Pages (aka Partnersites)
+
+Links that are added to projects to connect information from Akvopedia or other external sources were not wrapping within the field correctly. This has now been resolved.
+
+Github issue [#179](https://github.com/akvo/akvo-rsr/issues/179)
+
+### Akvo Pages (aka Partnersites) organisation Lists not paginated
+
+All organisations that were participating in projects in the Akvo Pages were being listed in a single page, we have now corrected this to ensure that the organisations are listed in pages containing 10 at a time.
+
+Github issue [#285](https://github.com/akvo/akvo-rsr/issues/285)
+
+### Sign In fields alignment
+
+Sign In fields were being displayed as too large for the box they were sitting in. We have fixed this visual bug.
+
+Github issue [#322](https://github.com/akvo/akvo-rsr/issues/322)
+
+### Donation email in Gmail
+
+There was a styling issue in Gmail when viewing the donation email we send to users who have completed a donation in RSR. This template now uses a table rather than floating div elements so the visuals always match what is expected of them.
+
+Github issue [#460](https://github.com/akvo/akvo-rsr/issues/460)
+
+
+### External links tab use
+
+When opening multiple external links from a project page, the same tab or window was being used again, so only the most recent link was being displayed to you. We've resolved this to create a new tab or window for each link selected.
+
+Github issue [#323](https://github.com/akvo/akvo-rsr/issues/323)
+
+### Header Sign In & Register options in browser
+
+When a browser was not maximised, the Sign In and Register options were no longer visible in the header, and the scrollbar didn't allow for them to be pulled into view. This has been resolved.
+
+Github issue [#408](https://github.com/akvo/akvo-rsr/issues/408)
+
+
+
+Akvo RSR ver 2.3.4 Tamarine
+---
+
+10th March 2014, adriancollier
+
+New Features
+---
+
+###Timestamp Audit Records
+
+The first of a series of changes we'll be making to improve the audit tracking of RSR data. This change provides a ``created_at`` and a ``last_modified_at`` field on Projects, Organisations and ProjectUpdates as well as on PartnerSites that are used to administer Akvo Pages. The fields are currently only visible within the Admin interface; but will be useful when viewing projects in the admin or when generating our reporting information and metrics.
+
+Github issue [#381](https://github.com/akvo/akvo-rsr/issues/381)
+
+###Data Management Flag
+
+Another change related to audit tracking and ownership, this new feature allows Organisation records to be tagged with an owner organisation.
+
+This flag will generate a warning if a user belonging to an organisation that is not the owner changes data through the admin interface. Such changes risk being overwritten, now that we are working with some partners who are sending us content updates via an import file. In the future, this flag will also let the import process reject any improper changes.
+
+Github issue [#374](https://github.com/akvo/akvo-rsr/issues/374)
+
+###Organisation API Import
+
+Further improvements to our API Import allowing more fields to be updated when we do the import from an external file. This will ensure all of the latest information is displayed exactly the way they should be.
+
+Github issue [#451](https://github.com/akvo/akvo-rsr/issues/451)
+
+###Android App Update Identifier
+
+We have implemented some changes to the identification of updates provided by the new Android app. This will ensure that the app cannot post the same update more than once. This change is in preparation of our Mobile App launch later in March.
+
+Github issue [#445](https://github.com/akvo/akvo-rsr/issues/445)
+
+###Registration Usernames
+
+Usernames in RSR have never been able to include spaces, but there are also some unwanted characters that were not allowed. To make the registration process easier we have added some code to the validation of the username that not only prevents users from entering restricted characters but also provides a clear error message in the event that an invalid character is included within the username entered.
+
+Github issue [#437](https://github.com/akvo/akvo-rsr/issues/437)
+
+###Email Delivery Improvement
+
+After some reports of RSR Emails not being received, we have made some changes to the system to improve the way we handle emails. We now route the emails being delivered from RSR through the Mail Server we have running mail.akvo.org. The logging of this is delivered to us regularly so we can always track what happened to emails that are not delivered to see where the problems may lie.
+
+This change will also work to improve the overall stability of the mails being sent from RSR.
+
+This also required a change in RSR to enable the sending of mails using a service with SSL.
+
+Github issue [#448](https://github.com/akvo/akvo-rsr/issues/448)
+
+
+Bug Fixes
+---
+
+###Clickable Links in updates
+
+We had an issue that was preventing some links that were included within RSR updates from being clickable within the browser. This was affecting some Akvo Pages updates as well as times when the links were not preceded by line breaks.
+
+The new change now scans an update after it has been submitted in order to make any links that may have not been picked up automatically clickable. This will help to ensure that users who are sharing information have great updates.
+
+Github issue [#438](https://github.com/akvo/akvo-rsr/issues/438) & [#419](https://github.com/akvo/akvo-rsr/issues/419)
+
+###Add project view in Admin bug
+
+During the implementation of the new Timestamp feature, we had an issue with the template for adding a new project into RSR. This required some tidying up of the fields and moving the Timestamp fields into the General field list rather than in its own section.
+
+Github issue [#458](https://github.com/akvo/akvo-rsr/issues/458)
+
+
+Akvo RSR ver 2.3.3 Satsuma
+---
+
+21st January 2014, adriancollier
+
+New Features
+---
+
+###Organisation API Import
+
+We have been working with our Partners Cordaid and RAIN Foundation to build and expand on our API Write Functionality. The process of importing organisations on a large scale was previously being done via the use of local scripts. With scale however we needed a more structural solution not only to enter this data, but also to update it and allow changes to be made.
+
+To complete this task we have also introduced a new API tool called the Django REST Framework. This is an alternative to our existing API tool TastyPie. We believe this new tool is a more stable and long term solution to the API functionality. With this addition, we will be able to track the performances of both tools before deciding on the final solution that RSR will be taking for its application interface technology.
+
+Github issue [#415](https://github.com/akvo/akvo-rsr/issues/415) & [#375](https://github.com/akvo/akvo-rsr/issues/375)
+
+###Budgets Importing
+
+In a similar strain to the Organisation API Import, we have also been extending the existing Project functionality, and have enabled the feature to be able to import budget information via the API.
+
+Github issue [#390](https://github.com/akvo/akvo-rsr/issues/390)
+
+###Target Group Field
+
+Through conversations internally, with partners and also within the IATI community, we have made a decision to more closely align the RSR data set to the IATI standard to make publishing and comparison of these sets easier and more open.
+
+The latest of these changes is the inclusion of the Target Group field in the RSR Project model. At the moment this is only a backend change, so while data can be entered through the RSR Admin portal or via the API, it will not yet be visualised on the Akvo Website, Akvo Pages or Akvo Sites. This visual addition will be coming soon.
+
+Github issue [#311](https://github.com/akvo/akvo-rsr/issues/311)
+
+Bug Fixes
+---
+
+###Email Tracking
+
+We have been hearing of several incidents where activation, password or confirmation emails are not being received by users in RSR. In order to fully investigate this issue, we have enabled some detailed logging and tracking in the system to be able to inform us about emails that are sent out so we can pinpoint where the problems lies.
+
+Github issue [#416](https://github.com/akvo/akvo-rsr/issues/416)
+
+###Remove Facebook App ID From Admin
+
+Since we have released the Facebook sharing buttons in RSR, we have done some further investigation and determined a better way of solving this problem that no longer requires users to create their own Facebook Apps. To ensure users do not get confused we have removed the App ID field from the Admin.
+
+Github issue [#423](https://github.com/akvo/akvo-rsr/issues/423)
+
+###RSR Footer Update
+
+We corrected a grammar mistake in the Product roadmaps link in the footer.
+
+Github issue [#411](https://github.com/akvo/akvo-rsr/issues/411)
+
+
+Akvo RSR ver 2.3.2 Rambutan
+---
+
+10th December 2013, adriancollier
+
+New Features
+---
+
+###Social Media Sharing Buttons
+
+Following on from the Meta-Data changes that we provided in the last release of RSR, we have now worked on adding in Social Media Sharing buttons for your Project, Update and Organisation pages within your Partnersite.
+
+We have created this functionality for Facebook and Twitter. Both of these can be turned on/off independently within the [Partnersite Admin](http://rsr.akvo.org/admin/rsr/partnersite) form.
+
+For Facebook there is an additional setup needed. You will need to [Create a Facebook App](http://tri.be/how-to-create-a-facebook-app-id/) and enter the App ID into the [Partnersite Admin](http://rsr.akvo.org/admin/rsr/partnersite) form. The Domain of the Facebook App should match the primary domain being used for your Partnersite, e.g. http://projects.organisation.org OR http://organisation.akvoapp.org.
+
+Github issue [#230](https://github.com/akvo/akvo-rsr/issues/230)
+
+###Github Wiki and RSR Documentation
+
+We have been working on improving the documentation for both internal developers, users as well as external partners, integrating organisations and the Open Source development Community. As you can imagine this is a big undertaking to ensure that everone has all the necessary information available in the right format to be suitable for its intended use.
+
+This is of course a work in progress and we will continue to improve this, but you can already see the summary page with an overview of what we have and where to find it [here](https://github.com/akvo/akvo-rsr/wiki)
+
+###Footer Changes
+
+We have made several changes to the Footer for RSR to match the changes that are being made within the main Akvo website.
+
+Github issue [#398](https://github.com/akvo/akvo-rsr/issues/398)
+Github issue [#342](https://github.com/akvo/akvo-rsr/issues/342)
+Github issue [#350](https://github.com/akvo/akvo-rsr/issues/350)
+
+###Reinstate Global  Maps in RSR
+
+Earlier this summer we removed the functionality surrounding global maps on the platform. This was due to some performance and stability issues we were having with this portion of the site. We have now resolved these issues by implementing a Caching layer using Memcache on the API calls, as well as tidying up the API code to streamline the data being transmitted for the query involved.
+
+These changes have provided a big enough improvement in the performance of the system that we have been able now to turn the maps back on in RSR so you can now see all your projects or organisations in one place - as you should be able to.
+
+Github issue [#331](https://github.com/akvo/akvo-rsr/issues/331)
+
+
+Bug Fixes
+---
+
+###Thumbnails on Partnersite Maps
+
+We had a reoccurrence of a previous bug in this release - maps on Partnersites were displaying a very large thumbnail in the pop-up window after clicking on a single point on the map. This meant that only a small portion of the image was visible and the thumbnail took a long time to load.
+
+We have resolved this by using a smaller thumbnail when pulling images into the maps.
+
+Github issue [#159](https://github.com/akvo/akvo-rsr/issues/159)
+
+###Release Notes Fixes
+
+The last release was pushed out with a couple of spelling mistakes in the Release Notes, these have now been corrected.
+
+Github issue [#372](https://github.com/akvo/akvo-rsr/issues/372)
+
+###Social Media Images
+
+When sharing Projects and other RSR Pages in Social Media sites images are passed through to be displayed. We had an issue that the images being used were not the correct format and so an inaccurate thumbnail was being displayed. This has been rectified to ensure that the right image sizes and shapes are provided to display as expected.
+
+Github issue [#367](https://github.com/akvo/akvo-rsr/issues/367)
+
+###Supervisor Log Warning
+
+One of the Resources in the Benchmark Models was causing some errors and so this has been fixed to prevent any further issues.
+
+Github issue [#364](https://github.com/akvo/akvo-rsr/issues/364)
+
+
+
 Akvo RSR ver 2.3.1 Quince
 ---
 
@@ -15,7 +335,7 @@ New Features
 
 ###Social Media Sharing Optimisation
 
-When you share something using modern Social Media sites, the site oyu are sharing to (for example Facebook) automatically collects information from the source system to display an image, description and other Meta Information.
+When you share something using modern Social Media sites, the site you are sharing to (for example Facebook) automatically collects information from the source system to display an image, description and other Meta Information.
 
 We have improved the Meta Data in RSR to ensure that when you share a page from RSR, the appropriate information is supplied to the Social Media site and the share looks great.
 
@@ -23,7 +343,7 @@ Github issue [#196](https://github.com/akvo/akvo-rsr/issues/196)
 
 ###Partnersite Widget CNAME
 
-We have recently released a new set of Partnersite Widgets, however these have now been additionally configured to use the CNAME belonging to the PArtnersite itself. This means that if the Widget is collected from a CNAME domain, then they will diirect Widget visitors to the same CNAME domain when clicked.
+We have recently released a new set of Partnersite Widgets, however these have now been additionally configured to use the CNAME belonging to the Partnersite itself. This means that if the Widget is collected from a CNAME domain, then they will direct Widget visitors to the same CNAME domain when clicked.
 
 Github issue: [#315](https://github.com/akvo/akvo-rsr/issues/315)
 
@@ -32,19 +352,19 @@ Bug Fixes
 
 ###Partnersite Widget Visual Fixes
 
-There were a few inconsistencies with the Visual elements of the new Partnersite Widgets. These inccluded text running off the end of the widget, and the scrollbar on the Project Listing Widget. These have been resolved so now we should have pretty, error-free widgets.
+There were a few inconsistencies with the visual elements of the new Partnersite Widgets. These included text running off the end of the widget, and the scrollbar on the Project Listing Widget. These have been resolved so now we should have pretty, error-free widgets.
 
 Github issue: [#316](https://github.com/akvo/akvo-rsr/issues/316)
 
 ###Duplicates in API
 
-The API was occasionally returning duplicate values in the results due to circular references between tables in the originating request. To ensure this doesn't continue to happen, we have adde da Distinct Clause to the API that will clean any duplicates before returing the results to the user.
+The API was occasionally returning duplicate values in the results due to circular references between tables in the originating request. To ensure this doesn't continue to happen, we have adde da Distinct Clause to the API that will clean any duplicates before returning the results to the user.
 
 Github issue: [#206](https://github.com/akvo/akvo-rsr/issues/206)
 
 ###Problems Saving Project in Admin
 
-There was an issue where the project saving in the RSR Admin was taking some time. There was no indication as to whether this was working or not, and so if the save button was used several tiomes, then it could result in duplciate infomration being stored on a individual project.
+There was an issue where the project saving in the RSR Admin was taking some time. There was no indication as to whether this was working or not, and so if the save button was used several times, then it could result in dupliciate infomration being stored on a individual project.
 
 To keep the project information unique where it needs to be, we have set it now that while the project is saving the Save Button is greyed out so it cannot be pressed multiple times.
 

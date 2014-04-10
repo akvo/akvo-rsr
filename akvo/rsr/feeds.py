@@ -154,7 +154,7 @@ class UpdateFeed(Feed):
             return item.text
 
     def item_pubdate(self, item):
-        return item.time
+        return item.created_at
 
     def item_author_name(self, item):
         return item.user.get_full_name()
@@ -197,7 +197,7 @@ class ProjectUpdates(UpdateFeed):
         return _(u'Project updates for project %(project_title)s' % {'project_title': obj.title})
 
     def items(self, obj):
-        return ProjectUpdate.objects.filter(project__id__exact=obj.id).order_by('-time')
+        return ProjectUpdate.objects.filter(project__id__exact=obj.id).order_by('-created_at')
 
 
 class OrganisationUpdates(UpdateFeed):
@@ -221,7 +221,7 @@ class OrganisationUpdates(UpdateFeed):
 
     def items(self, obj):
         projects = Organisation.objects.get(pk=obj.id).projects.published()
-        return ProjectUpdate.objects.filter(project__id__in=projects).order_by('-time')
+        return ProjectUpdate.objects.filter(project__id__in=projects).order_by('-created_at')
 
     def item_title(self, item):
         return _(
@@ -247,7 +247,7 @@ class AllProjectUpdates(UpdateFeed):
         # Limited to 100 items to prevent gateway timeouts & since only the last 100 items
         # are required for current usage anyway.
         # TODO: rename or create a new appropriately named feed.
-        return ProjectUpdate.objects.filter(project__publishingstatus__status='published').order_by('-time')[:100]
+        return ProjectUpdate.objects.filter(project__publishingstatus__status='published').order_by('-created_at')[:100]
 
     def item_title(self, item):
         return _(

@@ -1,5 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail rsr_filters google_maps humanize %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters project_map humanize %}
 {% load url from future %}
 
 {% block title %}{{partner}} - {% endblock title %}
@@ -12,10 +12,13 @@
     {% endif %}
     <meta property="og:description" content="{{partner.description}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'organisation_main' org_id=partner.id %}"/>
-    {% if partner.logo and partner.logo.width >= 200 and partner.logo.height >= 200 %}    
-      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{partner.logo}}"/>
+    {% if partner.logo %}    
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{partner.logo.extra_thumbnails.fb_thumb}}"/>
     {% else %}
       <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
+    {% endif %}
+    {% if request.partner_site.facebook_app_id %}
+      <meta property="fb:app_id" content="{{request.partner_site.facebook_app_id}}"/>
     {% endif %}
 
 {% endblock head %}
@@ -70,7 +73,7 @@
           </p>
           {% if partner.primary_location %}
             {% if organisation.primary_location.latitude != 0.0 or organisation.primary_location.longitude != 0.0 %}
-              {% google_map partner 195 160 8 %}
+              {% project_map 1 1 organisation.pk 195 160 %}
             {% else %}
               <p class="small" style="color: red;">{% trans 'No map available' %}</p>
             {% endif %}

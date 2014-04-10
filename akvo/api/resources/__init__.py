@@ -13,13 +13,16 @@ from .focus_area import FocusAreaResource
 from .goal import GoalResource, IATIGoalResource
 from .invoice import InvoiceResource
 from .link import LinkResource
-from .location import IATIProjectLocationResource, OrganisationLocationResource, ProjectLocationResource
+from .location import (
+    IATIProjectLocationResource, OrganisationLocationResource, OrganisationMapLocationResource,
+    ProjectLocationResource, ProjectMapLocationResource
+)
 from .map import OrganisationMapResource, ProjectMapResource
 from .organisation import OrganisationResource
 from .partnership import PartnershipResource, IATIPartnershipResource
 from .project import ProjectResource, IATIProjectResource
 from .project_comment import ProjectCommentResource
-from .project_update import ProjectUpdateResource
+from .project_update import ProjectUpdateResource, ProjectUpdateResourceExtra
 from .right_now_in_akvo import RightNowInAkvoResource
 from .user import UserResource
 from .user_profile import UserProfileResource
@@ -44,13 +47,16 @@ __all__ = [
     'LinkResource',
     'OrganisationResource',
     'OrganisationLocationResource',
+    'OrganisationMapLocationResource',
     'OrganisationMapResource',
     'PartnershipResource',
     'ProjectResource',
     'ProjectCommentResource',
     'ProjectLocationResource',
+    'ProjectMapLocationResource',
     'ProjectMapResource',
     'ProjectUpdateResource',
+    'ProjectUpdateResourceExtra',
     'RightNowInAkvoResource',
     'UserResource',
     'UserProfileResource',

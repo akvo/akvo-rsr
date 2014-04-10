@@ -1,5 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail counter_tags humanize google_maps %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags humanize project_map %}
 {% load url from future %}
 
 
@@ -7,12 +7,14 @@
     <meta property="og:title" content="Akvo.org - {{project.title}}"/>
     <meta property="og:description" content="{{project.subtitle}} {{project.project_plan_summary}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'project_main' project.id %}"/>
-    {% if project.current_image and project.current_image.width >= 200 and project.current_image.height >= 200 %}    
-      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
+    {% if project.current_image %}
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{project.current_image.extra_thumbnails.fb_thumb}}"/>
     {% else %}
       <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
     {% endif %}
-    <meta property="fb:app_id" content="{{fb_app_id}}"/>
+    {% if request.partner_site.facebook_app_id %}
+      <meta property="fb:app_id" content="{{request.partner_site.facebook_app_id}}"/>
+    {% endif %}
 
   {% comment %}
   <style type="text/css">
@@ -66,7 +68,9 @@
 <img src="{{MEDIA_URL}}akvo/img/social/fb_share.jpg">
 </a>
 </div>
+<!--
 <div class="fb-like" data-href="http://{{request.META.HTTP_HOST}}{% url 'project_main' project.id %}" data-width="200" data-show-faces="true" data-send="false" style="padding-left:10px;"></div>
+-->
     {% endif %}
     {% if request.partner_site.twitter_button %}
 	<div style="padding-bottom:15px; padding-left:10px;">
@@ -101,7 +105,7 @@
           {{ project.primary_location.latitude }},
           {{ project.primary_location.longitude }}
         </p>
-        {% google_map project 260 180 8 %}
+        {% project_map 1 0 project.pk 260 180 %}
       {% else %}
         <p style="color: red;">{% trans 'No map available' %}</p>
       {% endif %}
@@ -148,7 +152,7 @@
         </div>
       </div>
     </div>
-    <div class="whitebox pad20" style="width:130px; float:right;">
+    <div class="whitebox pad20" style="word-wrap: break-word; width:130px; float:right;">
       <h2>{% trans 'Related to this project' %}</h2>
       <hr />
       {% if not project.links.all %}
@@ -173,7 +177,7 @@
             ({% trans 'Will open in new window' %})
           </p>
           {% for link in project.external_links %}
-            <p><a href="{{link.url}}" target="_black">{{link.caption}}</a></p>
+            <p><a href="{{link.url}}" target="_blank">{{link.caption}}</a></p>
           {% endfor %}
           <p class="small grey">
             {% trans 'Akvo.org is not responsible for content of external links' %}

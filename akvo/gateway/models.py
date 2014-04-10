@@ -14,7 +14,7 @@ from datetime import datetime
 import urllib
 import urllib2
 
-from utils import who_am_i
+from akvo.utils import who_am_i
 #from akvo.gateway import logger
 from akvo.rsr.signals import handle_incoming_sms
 

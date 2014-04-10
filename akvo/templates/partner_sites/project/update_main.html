@@ -10,11 +10,13 @@
     <meta property="og:description" content="{{update.text}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'update_main' project_id=project.id update_id=update.id %}"/>
     {% if update.photo %}
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{update.photo}}"/>
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{update.photo}}"/>
     {% else %}
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
     {% endif %}
-    <meta property="fb:app_id" content="{{fb_app_id}}"/>
+    {% if request.partner_site.facebook_app_id %}
+      <meta property="fb:app_id" content="{{request.partner_site.facebook_app_id}}"/>
+    {% endif %}
 
 {% endblock head %}
 
@@ -27,8 +29,8 @@
 
 {% block social_init %}
     {% if request.partner_site.facebook_button %}
-	<!-- If we want a FB like button, the initial load goes here -->
-	<div id="fb-root"></div>
+      <!-- If we want a FB like button, the initial load goes here -->
+      <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
@@ -55,7 +57,9 @@
 <img src="{{MEDIA_URL}}akvo/img/social/fb_share.jpg">
 </a>
 </div>
+<!--
 <div class="fb-like" data-href="http://{{request.META.HTTP_HOST}}{% url 'update_main' project_id=project.id update_id=update.id %}" data-width="200" data-show-faces="true" data-send="false" style="padding-left:10px;"></div>
+-->
     {% endif %}
     {% if request.partner_site.twitter_button %}
     	<div style="padding-bottom:15px; padding-left:10px;">    
@@ -74,7 +78,7 @@
       </span>
       <h2 style="padding-top:20px;">{{update.title}}</h2>
       <p class="grey small">
-        {{ update.time|date:"d-M-Y" }},
+        {{ update.created_at|date:"d-M-Y" }},
         {%  url 'organisation_main' update.user.userprofile.organisation.id as user_org_url %}
         {% blocktrans with user_name=update.user.get_full_name user_org=update.user.userprofile.organisation.name update_meth=update.get_update_method_display %}by {{user_name}}, <a href='{{user_org_url}}' class="notranslate">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
       </p>
@@ -119,7 +123,9 @@
     
     {% if update.text_location == 'B' %}
       <p class="small grey">
-        {{ update.text|markdown:"safe" }}
+        {% autoescape off %}
+          {{ update.text|force_escape|urlize|markdown }}
+        {% endautoescape %}
       </p>
     {% endif %}	
     {% if update.video %}
@@ -147,7 +153,9 @@
     {% endif %}
     {% if update.text_location == 'E' %}
       <p class="small grey">
-        {{ update.text|markdown:"safe"}}
+        {% autoescape off %}
+          {{ update.text|force_escape|urlize|markdown }}
+        {% endautoescape %}
       </p>
     {% endif %}
     <hr style="margin-bottom:5px;" />

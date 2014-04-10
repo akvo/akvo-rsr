@@ -7,7 +7,7 @@
 from django.http import HttpResponse#, HttpResponseRedirect, HttpResponsePermanentRedirect
 
 from models import Gateway, MoSms
-from utils import who_am_i
+from akvo.utils import who_am_i
 
 import logging
 logger = logging.getLogger('django.request')

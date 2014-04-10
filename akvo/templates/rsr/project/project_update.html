@@ -11,7 +11,7 @@
     {% else %}
       <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
     {% endif %}
-    
+
 {{ block.super }}
 {% endblock head %}
 
@@ -33,8 +33,8 @@
           width:470px;
           margin: 15px;
           margin-left: 20px;
-          background-color:#FFFFE0; 
-          border:3px outset #EEE8AA; 
+          background-color:#FFFFE0;
+          border:3px outset #EEE8AA;
           color:yellow;
           padding: 10px;
 
@@ -56,7 +56,7 @@
     {% endif %}
     <h2 style="padding-top:20px;">{{ update.title|capfirst }}</h2>
     <p class="grey small">
-      {{ update.time|date:"d-M-Y" }},
+      {{ update.created_at|date:"d-M-Y" }},
       {% blocktrans with update.user.get_full_name as user_name and update.user.userprofile.organisation.name as user_org and update.user.userprofile.organisation.get_absolute_url as org_url and update.get_update_method_display as update_meth %}by {{user_name}}, <a href='{{org_url}}'>{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
     </p>
   </div>
@@ -64,8 +64,10 @@
   <div class="clear"></div>
   <div class="space20">
     {% if update.text_location == 'B' %}
-      {{ update.text|markdown:"safe"|urlize }}
-    {% endif %}	
+      {% autoescape off %}
+        {{ update.text|force_escape|urlize|markdown }}
+      {% endautoescape %}
+    {% endif %}
     {% if update.video %}
       <div style="margin: 10px 10px 30px 20px;">
         {# {{ update.video|oembed:"580x435" }} #}
@@ -86,9 +88,11 @@
     {% endif %}
     {% if update.photo %}
       {% update_thumb update 580 435 %}
-    {% endif %}   	
+    {% endif %}
     {% if update.text_location == 'E' %}
-      {{ update.text|markdown:"safe" }}
+      {% autoescape off %}
+        {{ update.text|force_escape|urlize|markdown }}
+      {% endautoescape %}
     {% endif %}
     <hr style="margin-bottom:5px;" />
     <div class="text_right">

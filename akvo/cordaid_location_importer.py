@@ -17,7 +17,7 @@ from lxml import etree
 from akvo.rsr.models import (
         InternalOrganisationID, Organisation, OrganisationLocation
 )
-from akvo.rsr.utils import custom_get_or_create_country
+from akvo.utils import custom_get_or_create_country
 
 
 CORDAID_DIR = "/var/tmp/cordaid"

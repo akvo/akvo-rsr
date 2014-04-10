@@ -1,5 +1,5 @@
 <organisation>
-<org_id type="integer">105435</org_id><!-- must be unique for all projects -->
+<internal_org_id type="integer">105435</internal_org_id><!-- must be unique for all projects -->
 <iati_org_id>BR-AAA-111111</iati_org_id><!-- IATI Organisation Identifier -->
 <name>APROSSA</name><!--  * max 25 -->
 <long_name>Afrique Verte Burkina</long_name><!-- * max 75 -->
@@ -11,8 +11,10 @@
 <fax>0022650343624</fax><!-- max 25 -->
 <contact_email>afrique.verte@gmail.com</contact_email><!-- max 25 -->
 <mobile>0022670423431</mobile><!-- max 25 -->
-<url>http://www.afriqueverte.org/</url><!-- max 25 -->
-<logo_id type="integer">105435</logo_id><!-- must be unique and identify the logo file -->
+<url>http://www.afriqueverte.org/</url><!-- max 200 -->
+<logo type="id">105435</logo><!-- must be unique and identify the logo file. Can also use the following for identifying a logo via a http references:
+<logo type="url">http://wwww/somereferenc.com/image.png</logo>
+-->
 <locations type="list">
 	<object>
 		<primary type="boolean">True</primary><!-- * 1 x TRUE per Organisation -->

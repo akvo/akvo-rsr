@@ -54,15 +54,24 @@ class SignInView(PartnerSitesMixin, FormView):
             rsr_domain= rsr_domain,
             register1_path = register1_path,
         )
+        register2_path = reverse('register2', urlconf='akvo.urls.rsr')
+        org_query_string = "?org_id={}".format(self.request.organisation_id)
+        register2_url = "http://{rsr_domain}{register2_path}{org_query_string}".format(
+            rsr_domain= rsr_domain,
+            register2_path = register2_path,
+            org_query_string=org_query_string,
+        )
         rsr_password_reset_path = reverse('rsr_password_reset', urlconf='akvo.urls.rsr')
         rsr_password_reset_url = "http://{rsr_domain}{rsr_password_reset_path}".format(
             rsr_domain= rsr_domain,
             rsr_password_reset_path = rsr_password_reset_path,
         )
         if getattr(settings, 'HTTPS_SUPPORT', True):
-            return register1_url.replace('http://', 'https://')
+            return register2_url.replace('http://', 'https://')
         context['register1_url'] = register1_url
+        context['register2_url'] = register2_url
         context['rsr_password_reset_url'] = rsr_password_reset_url
+        context['organisation_absolute_url'] = self.request.partner_site.organisation.get_absolute_url()
         return context
 
     def render_to_response(self, context):

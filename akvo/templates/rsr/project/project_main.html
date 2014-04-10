@@ -1,12 +1,16 @@
 {% extends "rsr/project/project_base.html" %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags map %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags project_map %}
 {% load url from future %}
 
 {% block head %}
     <meta property="og:title" content="Akvo.org - {{project.title}}"/>
     <meta property="og:description" content="{{project.subtitle}} {{project.project_plan_summary}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'project_main' project.id %}"/>
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}{{project.current_image}}"/>
+    {% if project.current_image %}
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{project.current_image.extra_thumbnails.fb_thumb}}"/>
+    {% else %}
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
+    {% endif %}
 
 {{block.super}}
 
@@ -55,7 +59,7 @@
         </p>
         {# Google Map #}
         {% if p.primary_location %}
-          {% map project 260 180 "small" %}
+          {% project_map 1 0 project.pk 260 180 %}
         {% else %}
           <p style="color: red;">{% trans 'No map available' %}</p>
         {% endif %}
@@ -150,7 +154,7 @@
                 ({% trans 'Will open in new window' %})
               </p>
               {% for link in p.external_links %}
-                <p><a href="{{link.url}}" target="_black">{{link.caption}}</a></p>
+                <p><a href="{{link.url}}" target="_blank">{{link.caption}}</a></p>
               {% endfor %}
               <p class="small grey">
                 {% trans 'Akvo.org is not responsible for content of external links' %}

@@ -73,7 +73,7 @@
         <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
         <div id="focus_area_description" class="column span-{% if focus_area.slug != 'all' %}15{% else %}18{% endif %}">
           <img width="120" height="90" style="float: left; margin: 0 20px 20px 0;" src="{% thumbnail focus_area.image 120x90 sharpen %}" alt="{{focus_area}}"/>
-          {{focus_area.description|apply_markup:"markdown"}}
+          {{focus_area.description|apply_markup:"markdown"|urlize}}
         </div>
       {% endif %}
       <div class="clear"></div>
@@ -226,7 +226,7 @@
                         {% trans 'Fully funded' %}
                       </p>
                     {% else %}
-                      {% if not project.status == 'L' and not project.status == 'R' %}
+                      {% if not project.status == 'L' and not project.status == 'R' and project.donate_button %}
                         <div style="text-align:center; padding-top:5px; padding-bottom:5px;">
                           <a class="orange awesome small" href="{% url 'project_donate' project.id %}">{% trans 'Donate' %}</a>
                         </div>

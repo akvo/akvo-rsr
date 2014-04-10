@@ -48,15 +48,16 @@ from akvo.gateway.models import GatewayNumber, Gateway
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
-from akvo.rsr.utils import (
+from akvo.rsr.mixins import TimestampsMixin
+from akvo.utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,
     GROUP_RSR_PARTNER_EDITORS
 )
-from akvo.rsr.utils import (
+from akvo.utils import (
     PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_VOID,
     PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE
 )
-from akvo.rsr.utils import (
+from akvo.utils import (
     groups_from_user, rsr_image_path,
     who_am_i, send_now, state_equals, to_gmt
 )
@@ -68,7 +69,7 @@ from akvo.rsr.signals import (
     update_project_funding
 )
 
-from iso3166 import ISO_3166_COUNTRIES, CONTINENTS
+from iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
 
 from tastypie.models import ApiKey
 
@@ -110,6 +111,15 @@ class Country(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @classmethod
+    def fields_from_iso_code(cls, iso_code):
+        continent_code = COUNTRY_CONTINENTS[iso_code]
+        name = dict(ISO_3166_COUNTRIES)[iso_code]
+        continent = dict(CONTINENTS)[continent_code]
+        return dict(
+            iso_code=iso_code, name=name, continent=continent, continent_code=continent_code,
+        )
 
     class Meta:
         verbose_name = _(u'country')
@@ -251,7 +261,7 @@ class ProjectsQuerySetManager(QuerySetManager):
         return self.model.ProjectsQuerySet(self.model)
 
 
-class Organisation(models.Model):
+class Organisation(TimestampsMixin, models.Model):
     """
     There are four types of organisations in RSR, called Field,
     Support, Funding and Sponsor partner respectively.
@@ -268,6 +278,15 @@ class Organisation(models.Model):
     )
     NEW_TO_OLD_TYPES = [ORG_TYPE_GOV, ORG_TYPE_GOV, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO,
                         ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_COM, ORG_TYPE_KNO]
+
+    @classmethod
+    def org_type_from_iati_type(cls, iati_type):
+        """ utility that maps the IATI organisation types to the old Akvo organisation types
+        """
+        types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
+            cls.NEW_TO_OLD_TYPES
+        ))
+        return types[iati_type]
 
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
@@ -296,7 +315,10 @@ class Organisation(models.Model):
     )
     logo = ImageWithThumbnailsField(
         _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
-        extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop',)}},
+        extra_thumbnails={
+            'map_thumb': {'size': (160, 120), 'options': ('autocrop',)},
+            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
+        },
         help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
 
@@ -318,10 +340,15 @@ class Organisation(models.Model):
     )
     description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'),)
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
+
+    content_owner = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
+        help_text=_(u'Organisation that maintains content for this organisation through the API.'),
+    )
+                                      
 
     # Managers, one default, one custom
     # objects = models.Manager()
@@ -659,7 +686,7 @@ class OrganisationsQuerySetManager(QuerySetManager):
         return self.model.OrganisationsQuerySet(self.model)
 
 
-class Project(models.Model):
+class Project(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
@@ -674,7 +701,10 @@ class Project(models.Model):
                         blank=True,
                         upload_to=image_path,
                         thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-                        extra_thumbnails={'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )}},  # detail is a mild sharpen
+                        extra_thumbnails={
+                            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+                            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
+                        },
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
     current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
@@ -691,11 +721,12 @@ class Project(models.Model):
     project_plan = models.TextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
     sustainability = models.TextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
     background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
+    target_group = ProjectLimitedTextField(_(u'target group'), blank=True, max_length=600, help_text=_(u'Information about the people, organisations or resources that are being impacted by this project (600 characters).'))
 
     # project meta info
     language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
-    notes = models.TextField(_(u'notes'), blank=True, help_text=_(u'(Unlimited number of characters).'))
+    notes = models.TextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
 
     # budget
     currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
@@ -704,6 +735,9 @@ class Project(models.Model):
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey(ProjectLocation, null=True, on_delete=models.SET_NULL)
+
+    # donate button
+    donate_button = models.BooleanField(_(u'donate button'), default=True, help_text=(u'Show donate button for this project.'))
 
     # denormalized data
     # =================
@@ -941,7 +975,7 @@ class Project(models.Model):
         def latest_update_fields(self):
             #used in project_list view
             #cheating slightly, counting on that both id and time are the largest for the latest update
-            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__time'))
+            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at'))
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
@@ -970,7 +1004,7 @@ class Project(models.Model):
 
     def updates_desc(self):
         "return ProjectUpdates for self, newest first"
-        return self.project_updates.all().order_by('-time')
+        return self.project_updates.all().order_by('-created_at')
 
     def latest_update(self):
         """
@@ -984,7 +1018,7 @@ class Project(models.Model):
         if updates:
             update = updates[0]
             # date of update shown as link poiting to the update page
-            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.time,)
+            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.created_at,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
                 update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email, )
@@ -1284,7 +1318,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     phone_number = models.CharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
     validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     objects = UserProfileManager()
 
@@ -1325,12 +1359,12 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         """
         return all updates created by the user
         """
-        return ProjectUpdate.objects.filter(user=self.user).order_by('-time')
+        return ProjectUpdate.objects.filter(user=self.user).order_by('-created_at')
 
     def latest_update_date(self):
         updates = self.updates()
         if updates:
-            return updates[0].time
+            return updates[0].created_at
         else:
             return None
 
@@ -1692,7 +1726,6 @@ class SmsReporter(models.Model):
             'title': 'SMS update',
             'update_method': 'S',
             'text': mo_sms.message,
-            'time': mo_sms.saved_at,
         }
         try:
             update = ProjectUpdate.objects.create(**update_data)
@@ -1760,7 +1793,7 @@ class SmsReporter(models.Model):
         send_now([profile.user], 'phone_confirmed', extra_context=extra_context, on_site=True)
 
 
-class ProjectUpdate(models.Model):
+class ProjectUpdate(TimestampsMixin, models.Model):
     UPDATE_METHODS = (
         ('W', _(u'web')),
         ('E', _(u'e-mail')),
@@ -1797,14 +1830,16 @@ class ProjectUpdate(models.Model):
     video_caption = models.CharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     video_credit = models.CharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
-    time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
-    time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
-    # featured = models.BooleanField(_(u'featured'))
+    # time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
+    # time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
+    user_agent = models.CharField(_(u'user agent'), blank=True, max_length=200, default='')
+    uuid = models.CharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
+        help_text=_(u'Universally unique ID set by creating user agent'))
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
-        get_latest_by = "time"
+        get_latest_by = "created_at"
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')
         ordering = ['-id', ]
@@ -1847,11 +1882,11 @@ class ProjectUpdate(models.Model):
         The timeout is controlled by settings.PROJECT_UPDATE_TIMEOUT and
         defaults to 30 minutes.
         """
-        return (datetime.now() - self.time) > self.edit_timeout
+        return (datetime.now() - self.created_at) > self.edit_timeout
 
     @property
     def expires_at(self):
-        return to_gmt(self.time + self.edit_timeout)
+        return to_gmt(self.created_at + self.edit_timeout)
 
     @property
     def edit_timeout(self):
@@ -1860,15 +1895,15 @@ class ProjectUpdate(models.Model):
 
     @property
     def edit_time_remaining(self):
-        return self.edit_timeout - self.time
+        return self.edit_timeout - self.created_at
 
     @property
     def time_gmt(self):
-        return to_gmt(self.time)
+        return to_gmt(self.created_at)
 
     @property
     def time_last_updated_gmt(self):
-        return to_gmt(self.time_last_updated)
+        return to_gmt(self.last_modified_at)
 
     @property
     def view_count(self):
@@ -2011,7 +2046,7 @@ class Invoice(models.Model):
     bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
     transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
-    #notes = models.TextField(verbose_name=_("Notes and comments"), blank=True)
+    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -2085,7 +2120,7 @@ def process_paypal_ipn(sender, **kwargs):
 payment_was_flagged.connect(process_paypal_ipn)
 
 
-class PartnerSite(models.Model):
+class PartnerSite(TimestampsMixin, models.Model):
 
     def about_image_path(instance, file_name):
         return 'db/partner_sites/%s/image/%s' % (instance.hostname, file_name)
@@ -2102,7 +2137,7 @@ class PartnerSite(models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
-    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True)
+    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '
@@ -2177,6 +2212,13 @@ class PartnerSite(models.Model):
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
     facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
     twitter_button = models.BooleanField(_(u'Twitter button'), default=False)
+    facebook_app_id = models.CharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
+        help_text=_(
+            u'<p>Your FaceBook app id is used when sharing pages from your partner site. '
+            u'It can be obtained by creating a Facebook app, which will let you monitor when your pages are referenced. '
+            u'Follow the instructions <A href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</A>'
+        )
+    )
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
