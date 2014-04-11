@@ -82,7 +82,6 @@ class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
         if self.forms:
             # keep track of how many non-deleted forms we have and how many primary locations are ticked
             form_count = primary_count = 0
-            empty_primary = False
             for form in self.forms:
                 if form.is_valid() and not form.cleaned_data.get('DELETE', False):
                     form_count += 1
