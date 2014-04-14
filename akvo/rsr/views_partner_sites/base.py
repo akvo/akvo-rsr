@@ -153,5 +153,6 @@ class BaseProjectListView(BaseListView):
         return ProjectFilterSet(
             self.request.GET.copy() or None,
             queryset=projects,
-            organisation_id=self.request.organisation_id
+            organisation_id=self.request.organisation_id,
+            filtered_countries=True
         )
