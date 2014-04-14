@@ -75,7 +75,8 @@ def forbidden(request, template_name='403.html'):
     t = loader.get_template(template_name)
     return http.HttpResponseForbidden(t.render(Context({
         'error_message': message,
-        'MEDIA_URL': settings.MEDIA_URL
+        'MEDIA_URL': settings.MEDIA_URL,
+        'user': request.user
     })))
 
 
