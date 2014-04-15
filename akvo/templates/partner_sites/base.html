@@ -65,7 +65,7 @@
     {% if return_url %}
       </a>
       <span class="small marg_left20">
-        <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} <span class="notranslate">{{organisation}}</span></a>
+        <a href="{{ return_url }}">&#x25C4; {% trans "Back to" %} <span class="notranslate">{% if return_url_text %}{{return_url_text}}{% else %}{{organisation}}{% endif %}</span></a>
       </span>
     {% endif %}
   </div>
@@ -77,9 +77,9 @@
       <ul class="breadcrum">
         {% block breadcrum_items %}
           {% if return_url %}
-            <li><a href="{{ return_url }}"><span class="notranslate">{{organisation|truncatewords:3}}</span></a></li>
+            <li><a href="{{ return_url }}"><span class="notranslate">{% if return_url_text %}{{return_url_text}}{% else %}{{organisation|truncatewords:3}}{% endif %}</span></a></li>
           {% else %}
-            <li class="last_breadcrum_item notranslate">{{organisation|truncatewords:3}}</li>
+            <li class="last_breadcrum_item notranslate">{% if return_url_text %}{{return_url_text}}{% else %}{{organisation|truncatewords:3}}{% endif %}</li>
           {% endif %}
         {% endblock breadcrum_items %}
       </ul>

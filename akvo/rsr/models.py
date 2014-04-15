@@ -2134,9 +2134,13 @@ class PartnerSite(TimestampsMixin, models.Model):
     def custom_logo_path(instance, filename):
         return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
 
+    def organisation_name(instance):
+        return instance.organisation.name
+
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
+
     notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
@@ -2155,6 +2159,12 @@ class PartnerSite(TimestampsMixin, models.Model):
         help_text=_(
             u'<p>Enter the full URL (including http://) for the page to which users '
             u'should be returned when leaving the partner site.</p>'
+        )
+    )
+    custom_return_url_text = models.CharField(_(u'Return URL text'), max_length=50, default='',
+        help_text=_(
+            u'<p>The text shown for the return URL in the navigation and back button.'
+            u'Leave empty to display the organisation name.</p>'
         )
     )
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
