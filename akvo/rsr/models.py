@@ -2134,13 +2134,9 @@ class PartnerSite(TimestampsMixin, models.Model):
     def custom_logo_path(instance, filename):
         return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
 
-    def organisation_name(instance):
-        return instance.organisation.name
-
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
-
     notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
     hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
