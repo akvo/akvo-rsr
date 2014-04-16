@@ -1,103 +1,112 @@
-{% load i18n thumbnail rsr_filters l10n %}
-{% load url from future %}
+{% load i18n l10n templatetag_handlebars %}
 
+<div id="mapCanvas" style="width: {{width}}px; height: {{height}}px;">
+  <div id="ajaxLoader">
+    <img src="{{MEDIA_URL}}core/img/ajax-loader.gif" alt="">
+  </div>
+</div>
 
-<style type="text/css" media="screen">
-	.mapInfoWindow {
-		min-height:150px;
-	}
-	.mapInfoWindow h4 {
-		color:#BE0903;
-		padding:5px 5px;
-	}
+{% tplhandlebars "mapInfoWindowTemplate" %}
+<div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">
+  <a href="{{url}}">{{name}}</a>
+  {{#if image_url}}
+    <div style="text-align: center; margin-top: 10px;">
+      <a href="{{url}}" title="{{name}}">
+        <img src="{{image_url}}" alt="">
+      </a>
+    </div>
+  {{/if}}
+</div>
+{% endtplhandlebars %}
 
-	div.bubble_header {
-		background-color:#BE0903;
-		padding-top:8px;
-		padding-bottom:4px;
-		padding-left:5px;
-	}
-	div.bubble_header h3 {
-		color:#fff;
-	}
-</style>
+<script src="//maps.google.com/maps/api/js?sensor=false"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>	
-<script type="text/javascript" charset="utf-8">
-  var jQ = jQuery.noConflict();
+<script src="{{MEDIA_URL}}core/js/jquery.ui.map.full.min.js"></script>
+<script src="{{MEDIA_URL}}core/js/handlebars-1.0.0.beta.6.min.js"></script>
 
-  function loadGlobalMap() {
-    var center = new google.maps.LatLng(0,0);
-    {% for organisation in organisations %}
-      var organisation_{{ organisation.id }}_url = "{{organisation.get_absolute_url}}";
-      var organisation_{{ organisation.id }}_latitude = {{ organisation.primary_location.latitude|unlocalize }};
-      var organisation_{{ organisation.id }}_longitude = {{ organisation.primary_location.longitude|unlocalize }};
-      var organisation_{{ organisation.id }}_coordinates = new google.maps.LatLng(organisation_{{ organisation.id }}_latitude, organisation_{{ organisation.id }}_longitude);
-      var zoom = {{ zoom }};
-    {% endfor %}
+<script>
+  jQuery.noConflict();
+  jQuery(document).ready(function($) {
+    var ajaxLoader, dataURL, handlebarsTemplate, icon,
+        mapCanvas, mapInfoWindowTemplate, mapOptions, mapType, markerIcon;
 
-    var mapCanvas = document.getElementById('map_canvas');
-    var mapOptions = {
-      {% if map_type == 'static' %}
-        draggable: false,
-        disableDefaultUI: true,
-      {% endif %}
-      center: center,
+    // Django variables
+    dataURL = "{{data_url}}";
+    mapType = "{{map_type}}";
+    markerIcon = "{{marker_icon}}";
+
+    // HTML target elements
+    ajaxLoader = $("#ajaxLoader");
+    mapCanvas = $("#mapCanvas");
+    mapInfoWindowTemplate = $("#mapInfoWindowTemplate");
+
+    // Map options
+    mapOptions = {
+      center: new google.maps.LatLng(0, 0),
       mapTypeId: google.maps.MapTypeId.ROADMAP,
-      scrollwheel: false,
-      zoom: zoom,
-      streetViewControl: false
+      scrollwheel: true,
+      streetViewControl: false,
+      zoom: 1
     };
 
-    var markerIcon = "{{ marker_icon }}";
-    var smallIcon = new google.maps.MarkerImage(markerIcon, null, null, null, new google.maps.Size(10.5,17));
-    var normalIcon = new google.maps.MarkerImage(markerIcon);
+    if (mapType === "static") {
+      icon = new google.maps.MarkerImage(markerIcon, null, null, null,
+          new google.maps.Size(10.5, 17));
+      mapOptions.draggable = false;
+      mapOptions.disableDefaultUI = true;
+    } else {
+      icon = new google.maps.MarkerImage(markerIcon);
+    }
 
-    var map = new google.maps.Map(mapCanvas, mapOptions);
+    // AJAX setup
+    $.ajaxSetup({
+      complete: function() {
+        ajaxLoader.fadeOut();
+      }
+    });
 
-    {% if organisations %}
-      {% for organisation in organisations %}
-        var organisation_{{ organisation.id }}_marker = new google.maps.Marker({
-          {% if map_type == 'static' %}
-            icon: smallIcon,
-          {% else %}
-            icon: normalIcon,
-          {% endif %}
-          map: map,
-          position: organisation_{{ organisation.id }}_coordinates, title: 'Organisation {{ organisation.id }}'
+    // Map
+    mapCanvas.gmap(mapOptions).bind("init", function() {
+      $.getJSON(dataURL, function(data) {
+        $.each(data, function(i, organisation) {
+          mapCanvas.gmap("addMarker", {
+            bounds: true,
+            icon: icon,
+            position: new google.maps.LatLng(organisation.latitude, organisation.longitude),
+            title: organisation.name
+          })
+          .click(function() {
+            if (mapType !== "static") {
+              handlebarsTemplate = Handlebars.compile(mapInfoWindowTemplate.html());
+              mapCanvas.gmap("openInfoWindow", {
+                content: handlebarsTemplate(organisation)
+              }, this);
+            }
+          });
         });
-
-        {% if map_type != 'static' %}
-          var organisation_{{ organisation.id }}_info = '<div class="mapInfoWindow">' +
-            '<a href="' + organisation_{{ organisation.id }}_url + '">' +
-            '{{ organisation.name|smart_truncate:35}}</a><br>' +
-            '<a href="' + organisation_{{ organisation.id }}_url + '">' +
-            '<img src="{% thumbnail organisation.logo 100x100 autocrop sharpen %}" alt="" /></a>' +
-            '<p class="small grey" style="margin:0;">{% trans 'Location' %}:' +
-            '{{organisation.primary_location.country.continent}}<br />' +
-            '{{organisation.primary_location.country}}' +
-            '{% if organisation.primary_location.city and organisation.primary_location.country %},{% endif %} {{organisation.primary_location.city}}</p></div>' +
-            '</div>';
-
-          var organisation_{{ organisation.id }}_infowindow = new google.maps.InfoWindow({
-            content: organisation_{{ organisation.id }}_info
-          });
-          google.maps.event.addListener(organisation_{{ organisation.id }}_marker, 'click', function() {
-            organisation_{{ organisation.id }}_infowindow.open(map, organisation_{{ organisation.id }}_marker);
-          });
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-  }
-
-  jQ(document).ready(function() {
-    loadGlobalMap();
+      });
+    });
   });
-</script>
 
-{% if width == 0 and height == 0 %}
-    <div id="map_canvas" style="width: 100%; height: 100%;"></div>
-{% else %}
-    <div id="map_canvas" style="width: {{ width }}px; height: {{ height }}px;"></div>
-{% endif %}
+  /*
+  function setCSS() {
+    var css, head, style, rules;  
+
+    css = "#mapCanvas {font-size: 12px; font-family: Arial, Helvetica, \"Liberation Sans\", FreeSans, sans-serif;}";
+    css += ".mapInfoWindow {min-height: 150px;}";
+			
+    head = document.getElementsByTagName("head")[0];
+    style = document.createElement("style");
+		rules = document.createTextNode(css);
+
+    style.type = "text/css";
+    if (style.styleSheet) {
+      style.styleSheet.cssText = rules.nodeValue;
+    } else { 
+      style.appendChild(rules);
+    }
+    head.appendChild(style);			
+  }
+  */
+</script>

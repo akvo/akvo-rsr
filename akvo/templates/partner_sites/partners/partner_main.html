@@ -1,5 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail rsr_filters project_map humanize %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters maps humanize %}
 {% load url from future %}
 
 {% block title %}{{partner}} - {% endblock title %}
@@ -73,7 +73,7 @@
           </p>
           {% if partner.primary_location %}
             {% if organisation.primary_location.latitude != 0.0 or organisation.primary_location.longitude != 0.0 %}
-              {% project_map 1 1 organisation.pk 195 160 %}
+              {% organisation_map organisation.pk 195 160 %}
             {% else %}
               <p class="small" style="color: red;">{% trans 'No map available' %}</p>
             {% endif %}

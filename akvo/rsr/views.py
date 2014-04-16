@@ -1145,7 +1145,7 @@ def project_map_widget(request, org_id):
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     width = request.GET.get('width', '600')
     zoom = request.GET.get('zoom', '1')
-    state = request.GET.get('state', 'static')
+    state = request.GET.get('state', 'dynamic')
 
     if state != 'dynamic':
         state = 'static'
