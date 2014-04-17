@@ -109,8 +109,7 @@ def global_project_map(width, height, dynamic='dynamic'):
     for project in Project.objects.all().active():
         try:
             location = project.primary_location
-            # TODO: Ugly hack for creating thumbnails
-            thumbnail = MEDIA_URL + '_'.join(str(project.current_image).rsplit('.',1)) + '_160x120_autocrop_detail_q85.jpg'
+            thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
             locations.append([location.latitude,
                               location.longitude,
                               [str(project.pk),project.title.encode('utf8'), thumbnail, 'project']])
@@ -150,8 +149,7 @@ def global_organisation_map(width, height, dynamic='dynamic'):
     for organisation in Organisation.objects.all():
         try:
             location = organisation.primary_location
-            # TODO: Ugly hack for creating thumbnails
-            thumbnail = MEDIA_URL + '_'.join(str(organisation.logo).rsplit('.',1)) + '_160x120_autocrop_q85.jpg'
+            thumbnail = organisation.logo.extra_thumbnails['map_thumb'].absolute_url
             locations.append([location.latitude,
                               location.longitude,
                               [str(organisation.pk),organisation.name.encode('utf8'), thumbnail, 'organisation']])
@@ -195,8 +193,7 @@ def organisation_projects_map(organisation_id, width, height, dynamic='dynamic')
         proj_locations = ProjectLocation.objects.filter(location_target=project)
         for location in proj_locations:
             try:
-                # TODO: Ugly hack for creating thumbnails
-                thumbnail = MEDIA_URL + '_'.join(str(project.current_image).rsplit('.',1)) + '_160x120_autocrop_detail_q85.jpg'
+                thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
                 locations.append([location.latitude,
                                   location.longitude,
                                   [str(project.pk),project.title.encode('utf8'), thumbnail, 'project']])

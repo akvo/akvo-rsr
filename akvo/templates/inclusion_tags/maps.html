@@ -30,9 +30,7 @@
                 {% if infowindows and partnersite_widget %}
                 window['contentString'+i] = '<div class="mapInfoWindow">'+
                     '<a href="/'+this.locations[i][2][2]+'/'+this.locations[i][2][0]+'/">'+this.locations[i][2][1]+'</a><br>'+
-                    '<p class="small grey">'+
-                    'Location: '+this.locations[i][3]+
-                    '</p>'
+                    '<p class="small grey">'+this.locations[i][3]+'</p>'+
                     '</div>';
 
                 {% elif infowindows %}
