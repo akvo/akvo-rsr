@@ -1,5 +1,7 @@
+{% load i18n rsr_filters humanize rsr_tags %}
+
 <div class="demo-wrapper html5-progress-bar">
   <div class="progress-bar-wrapper">
-    <progress id="progressbar" value="{{project.funds}}" max="{{project.budget}}" class="pbar"></progress>
+    <progress id="progressbar" value="{{project.funds|round}}" max="{{project.budget|round}}" class="pbar"></progress>
   </div>
 </div>

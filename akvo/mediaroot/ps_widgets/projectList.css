@@ -59,12 +59,17 @@ td.projectDescrTd { width: 35%; }
 td.projectLocTd { width: 15%; }
 td.projectStatusTd { width: 15%; }
 td.projectPartnerTd { width: 15%; }
-td.projectFundingTd { margin-top:-45px; display:inline-block !important;}
+td.projectFundingTd {
+    margin-top:-45px;
+    display:inline-block !important;
+    width:90%;
+    height:220px;
+}
 .projectListWidget .projectBudget {
 	position: relative;
 	overflow: auto;
 	float: none;
-	width: 95%;
+	width: 100%;
 	margin: 0;
 }
 .projectStatusTd span { display: block; }
@@ -87,6 +92,7 @@ td.projectFundingTd { margin-top:-45px; display:inline-block !important;}
 	white-space: normal;
 	text-overflow: ellipsis;
 	overflow: hidden;
+    line-height: 1.5;
 }
 .rsrWidget {
 	font-size:0.8em;
