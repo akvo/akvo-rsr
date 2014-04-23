@@ -17,6 +17,7 @@ from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationForm
 
 from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
+from akvo.urls.rsr import urlpatterns
 
 from akvo.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
                             get_random_from_qs, state_equals, right_now_in_akvo)
@@ -411,9 +412,14 @@ def partners_widget(request, org_type='all'):
 def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
-    # Check for exeptions to the return to start of sign in process
-    if redirect_to == "/accounts/register/complete/":
-        redirect_to = "/home"
+    # Check for exceptions to the return to start of sign in process
+    # TODO: search in urlpatterns for url and url.regex.pattern
+    redirect_blacklist = ["/accounts/register/complete/",
+                          "/accounts/register1/",
+                          "/signin/"]
+
+    if redirect_to in redirect_blacklist:
+        redirect_to = "/"
 
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
