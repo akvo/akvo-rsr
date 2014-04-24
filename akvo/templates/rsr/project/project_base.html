@@ -133,12 +133,18 @@
     <div class="white_box">
       <div class="space20">
         <div style="width:45%; float:left; padding-top:10px;">
+            {% if can_add_update %}
           <a class="aqua awesome" href="{% url 'project_add_update' project.id %}">{% trans 'Add update' %}</a>
+            {% else %}
+          <span class="grey awesome">{% trans 'Add update' %}</span>
+            {% endif %}
         </div>
         <div style="width:45%; float:right;">
           <p style="margin:0;" class="tiny grey">
             {% if not user.username %}
               {% trans 'Sign in to add an update to your project.' %}
+            {% elif not can_add_update %}
+              {% trans 'You are not allowed to post updates for this project.' %}
             {% endif %}
           </p>
         </div>

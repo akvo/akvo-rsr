@@ -920,6 +920,8 @@ def projectmain(request, project, draft=False, can_add_update=False):
     else:
         admin_change_url = None
 
+    can_add_update = project.connected_to_user(request.user)
+
     return {
         'admin_change_url': admin_change_url,
         'benchmarks': benchmarks,
