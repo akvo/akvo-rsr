@@ -17,7 +17,6 @@ from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationForm
 
 from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
-from akvo.urls.rsr import urlpatterns
 
 from akvo.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
                             get_random_from_qs, state_equals, right_now_in_akvo)
