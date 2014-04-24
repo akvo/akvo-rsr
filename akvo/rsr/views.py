@@ -671,6 +671,7 @@ def projectcomments(request, project_id):
     comments = Project.objects.get(id=project_id).comments.all().order_by('-time')
     form = CommentForm()
     updates = project.project_updates.all().order_by('-created_at')[:3]
+    can_add_update = project.connected_to_user(request.user)
     return {
         'project': project,
         'comments': comments,
@@ -678,6 +679,7 @@ def projectcomments(request, project_id):
         'project_section': 'comments',
         'hide_comments': True,
         'updates': updates,
+        'can_add_update': can_add_update
         }
 
 
@@ -947,6 +949,7 @@ def projectdetails(request, project_id):
 def projectpartners(request, project, draft=False, can_add_update=False):
     updates = project.project_updates.all().order_by('-created_at')[:3]
     comments = project.comments.all().order_by('-time')[:3]
+    can_add_update = project.connected_to_user(request.user)
     return {
         'can_add_update': can_add_update,
         'draft': draft,
@@ -964,6 +967,7 @@ def projectfunding(request, project, draft=False, can_add_update=False):
     public_donations = project.public_donations()
     updates = project.project_updates.all().order_by('-created_at')[:3]
     comments = project.comments.all().order_by('-time')[:3]
+    can_add_update = project.connected_to_user(request.user)
     return {
         'can_add_update': can_add_update,
         'draft': draft,
