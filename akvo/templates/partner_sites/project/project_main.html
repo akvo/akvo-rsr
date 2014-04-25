@@ -4,7 +4,7 @@
 
 
 {% block head %}
-    <meta property="og:title" content="Akvo.org - {{project.title}}"/>
+    <meta property="og:title" content="{{organisation}} - {{project.title}}"/>
     <meta property="og:description" content="{{project.subtitle}} {{project.project_plan_summary}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'project_main' project.id %}"/>
     {% if project.current_image %}
