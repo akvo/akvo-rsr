@@ -1179,7 +1179,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         # the 'notes' field is added in get_fieldsets() for eligible users
         (u'General', dict(fields=('organisation', 'enabled',))),
-        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text'))),
         (u'Style and content',
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),

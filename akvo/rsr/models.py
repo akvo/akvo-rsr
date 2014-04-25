@@ -2157,10 +2157,10 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'should be returned when leaving the partner site.</p>'
         )
     )
-    custom_return_url_text = models.CharField(_(u'Return URL text'), max_length=50, default='',
+    custom_return_url_text = models.CharField(_(u'Return URL text'), blank=True, max_length=50, default='',
         help_text=_(
-            u'<p>The text shown for the return URL in the navigation and back button.'
-            u'Leave empty to display the organisation name.</p>'
+            u'<p>Enter a text for the back button and return URL. '
+            u'Leave empty to display "Back to %organisation name%".</p>'
         )
     )
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
