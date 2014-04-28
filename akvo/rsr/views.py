@@ -412,9 +412,16 @@ def partners_widget(request, org_type='all'):
 def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME):
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get(redirect_field_name, '')
-    # Check for exeptions to the return to start of sign in process
-    if redirect_to == "/accounts/register/complete/":
-        redirect_to = "/home"
+
+    # Non logical URLs for redirection after signing in
+    redirect_blacklist = [reverse('signin'),
+                          reverse('signout'),
+                          reverse('register1'),
+                          reverse('register2'),
+                          reverse('registration_update_complete')]
+
+    if redirect_to in redirect_blacklist:
+        redirect_to = "/"
 
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
