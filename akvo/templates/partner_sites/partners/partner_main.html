@@ -72,11 +72,7 @@
             {% if partner.primary_location.country %}{{partner.primary_location.country}}{% endif %}
           </p>
           {% if partner.primary_location %}
-            {% if organisation.primary_location.latitude != 0.0 or organisation.primary_location.longitude != 0.0 %}
-              {% organisation_map organisation.pk 195 160 %}
-            {% else %}
-              <p class="small" style="color: red;">{% trans 'No map available' %}</p>
-            {% endif %}
+            {% organisation_map partner.pk 195 160 %}
           {% else %}
             <p class="small" style="color: red;">{% trans 'No map available' %}</p>
           {% endif %}
