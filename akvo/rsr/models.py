@@ -739,6 +739,9 @@ class Project(TimestampsMixin, models.Model):
     # donate button
     donate_button = models.BooleanField(_(u'donate button'), default=True, help_text=(u'Show donate button for this project.'))
 
+    # synced projects
+    sync_owner_id = models.ForeignKey(Organisation, null=True, on_delete=models.SET_NULL)
+
     # denormalized data
     # =================
     budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
@@ -2225,6 +2228,9 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'Follow the instructions <A href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</A>'
         )
     )
+
+    # Allowed to manually edit information on projects of this partnersite
+    allow_edit = models.BooleanField(_(u'Users allowed to manually edit information on projects of this partnersite'), default=True)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
