@@ -8,15 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'PartnerSite.custom_return_url_text'
-        db.add_column('rsr_partnersite', 'custom_return_url_text',
-                      self.gf('django.db.models.fields.CharField')(default='', max_length=50),
+        # Adding field 'Project.sync_owner'
+        db.add_column('rsr_project', 'sync_owner',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Organisation'], null=True, on_delete=models.SET_NULL, blank=True),
+                      keep_default=False)
+
+        # Adding field 'PartnerSite.allow_edit'
+        db.add_column('rsr_partnersite', 'allow_edit',
+                      self.gf('django.db.models.fields.BooleanField')(default=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'PartnerSite.custom_return_url_text'
-        db.delete_column('rsr_partnersite', 'custom_return_url_text')
+        # Deleting field 'Project.sync_owner'
+        db.delete_column('rsr_project', 'sync_owner')
+
+        # Deleting field 'PartnerSite.allow_edit'
+        db.delete_column('rsr_partnersite', 'allow_edit')
 
 
     models = {

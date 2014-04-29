@@ -1194,13 +1194,9 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # (currently means an Akvo staff user (or superuser))
         # note that this is somewhat fragile as it relies on adding/removing from the _first_ fieldset
         if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
-            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
-            self.fieldsets[2][1]['fields'] = ('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',
-                                              'allow_edit')
+            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'allow_edit', 'notes',)
         else:
             self.fieldsets[0][1]['fields'] = ('organisation', 'enabled',)
-            self.fieldsets[2][1]['fields'] = ('about_box', 'about_image', 'custom_css', 'custom_logo',
-                                              'custom_favicon',)
         return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
 
     # def get_fieldsets(self, request, obj=None):
