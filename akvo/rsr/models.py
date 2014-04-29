@@ -427,6 +427,10 @@ class Organisation(TimestampsMixin, models.Model):
         "returns True if the organisation is a support partner to at least one project"
         return self.is_partner_type(Partnership.SUPPORT_PARTNER)
 
+    def partnersites(self):
+        "returns the partnersites belonging to the organisation in a PartnerSite queryset"
+        return PartnerSite.objects.filter(organisation=self)
+
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True

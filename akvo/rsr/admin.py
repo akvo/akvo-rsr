@@ -695,16 +695,30 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         "own" projects, organisation and user profiles
         """
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
-            return True
-        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            projects = request.user.get_profile().organisation.all_projects()
-           #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
-            if obj:
-                return obj in projects
-            else:
+
+        # Check to see if organisation has partner site with projects that are allowed to be edited
+        allow_edit = True
+        for site in request.user.get_profile().organisation.partnersites():
+            if not site.allow_edit:
+                allow_edit = False
+
+        if allow_edit:
+            if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
                 return True
-        return False
+            if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+                projects = request.user.get_profile().organisation.all_projects()
+               #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
+                if obj:
+                    return obj in projects
+                else:
+                    return True
+            return False
+
+        else:
+            if request.user.has_perm(opts.app_label + '.' + opts.get_add_permission()):
+                return True
+            else:
+                return False
 
     @csrf_protect_m
     @transaction.commit_on_success
