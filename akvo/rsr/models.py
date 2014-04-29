@@ -740,7 +740,7 @@ class Project(TimestampsMixin, models.Model):
     donate_button = models.BooleanField(_(u'donate button'), default=True, help_text=(u'Show donate button for this project.'))
 
     # synced projects
-    sync_owner_id = models.ForeignKey(Organisation, null=True, on_delete=models.SET_NULL)
+    sync_owner = models.ForeignKey(Organisation, null=True, on_delete=models.SET_NULL)
 
     # denormalized data
     # =================
