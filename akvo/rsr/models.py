@@ -46,7 +46,9 @@ from permissions.models import Role
 from akvo.api.models import create_api_key
 from akvo.gateway.models import GatewayNumber, Gateway
 
-from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
+from akvo.rsr.validators import string_validator
+from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ValidCharField, ValidTextField
+from akvo.rsr.fields import ProjectLimitedTextField
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import (
@@ -99,15 +101,15 @@ OLD_CONTINENTS = (
 
 class Country(models.Model):
 
-    name = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
-    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES,)
-    continent = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
-    continent_code = models.CharField(_(u'continent code'), max_length=2, db_index=True, choices=CONTINENTS)
+    name = ValidCharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
+    iso_code = ValidCharField(_(u'ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES,)
+    continent = ValidCharField(_(u'continent name'), max_length=20, db_index=True,)
+    continent_code = ValidCharField(_(u'continent code'), max_length=2, db_index=True, choices=CONTINENTS)
 
-#    name = models.CharField(_(u'country name'), max_length=50,)
-#    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
-#    continent = models.CharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
-#    continent_code = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
+#    name = ValidCharField(_(u'country name'), max_length=50,)
+#    iso_code = ValidCharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
+#    continent = ValidCharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
+#    continent_code = ValidCharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -132,12 +134,12 @@ class Country(models.Model):
 #                   u'to get the decimal coordinates of your project.')
 #    latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
 #    longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
-#    city = models.CharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
-#    state = models.CharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
+#    city = ValidCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
+#    state = ValidCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
 #    country = models.ForeignKey(Country, verbose_name=_(u'country'))
-#    address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
-#    address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
-#    postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
+#    address_1 = ValidCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
+#    address_2 = ValidCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
+#    postcode = ValidCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
 #    content_type = models.ForeignKey(ContentType)
 #    object_id = models.PositiveIntegerField()
 #    content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -165,12 +167,12 @@ class BaseLocation(models.Model):
                    u'to get the decimal coordinates of your project.')
     latitude = LatitudeField(_(u'latitude'), db_index=True, default=0, help_text=_help_text)
     longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
-    city = models.CharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
-    state = models.CharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
+    city = ValidCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
+    state = ValidCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
     country = models.ForeignKey(Country, verbose_name=_(u'country'))
-    address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
-    address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
-    postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
+    address_1 = ValidCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
+    address_2 = ValidCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
+    postcode = ValidCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
     primary = models.BooleanField(_(u'primary location'), db_index=True, default=True)
 
 #    def __unicode__(self):
@@ -202,8 +204,8 @@ class ProjectLocation(BaseLocation):
 
 
 class PartnerType(models.Model):
-    id = models.CharField(max_length=8, primary_key=True, unique=True)
-    label = models.CharField(max_length=30, unique=True)
+    id = ValidCharField(max_length=8, primary_key=True, unique=True)
+    label = ValidCharField(max_length=30, unique=True)
 
     def __unicode__(self):
         return self.label
@@ -231,17 +233,17 @@ class Partnership(models.Model):
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
-    partner_type = models.CharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
+    partner_type = ValidCharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2,
         blank=True, null=True, db_index=True
     )
-    partner_type_extra = models.CharField(
+    partner_type_extra = ValidCharField(
         _(u'partner type extra'), max_length=30,
         blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
     )
-    iati_activity_id = models.CharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
-    internal_id = models.CharField(
+    iati_activity_id = ValidCharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
+    internal_id = ValidCharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
@@ -291,25 +293,25 @@ class Organisation(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
-    name = models.CharField(
+    name = ValidCharField(
         _(u'name'), max_length=25, db_index=True,
         help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'),
     )
-    long_name = models.CharField(
+    long_name = ValidCharField(
         _(u'long name'), blank=True, max_length=75,
         help_text=_(u'Full name of organisation (75 characters).'),
     )
-    language = models.CharField(
+    language = ValidCharField(
         max_length=2, choices=settings.LANGUAGES, default='en',
         help_text=u'The main language of the organisation',
     )
     partner_types = models.ManyToManyField(PartnerType)
-    organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
+    organisation_type = ValidCharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
         help_text=u'Check that this field is set to an organisation type that matches your organisation.',
     )
-    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True)
+    iati_org_id = ValidCharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True)
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
     )
@@ -327,20 +329,20 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'Enter the full address of your web site, beginning with http://.'),
     )
 
-    phone = models.CharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    mobile = models.CharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    fax = models.CharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    contact_person = models.CharField(
+    phone = ValidCharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    mobile = ValidCharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    fax = ValidCharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    contact_person = ValidCharField(
         _(u'contact person'), blank=True, max_length=30,
         help_text=_(u'Name of external contact person for your organisation (30 characters).'),
     )
-    contact_email = models.CharField(
+    contact_email = ValidCharField(
         _(u'contact email'), blank=True, max_length=50,
         help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'),
     )
-    description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'),)
+    description = ValidTextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'))
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
+    notes = ValidTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
@@ -503,7 +505,7 @@ class InternalOrganisationID(models.Model):
     referenced_org = models.ForeignKey(Organisation,
                                        verbose_name=u'referenced organisation', related_name='reference_ids',)
     #TODO: add index
-    identifier = models.CharField(max_length=200, verbose_name=u'internal ID of referenced organisation',)
+    identifier = ValidCharField(max_length=200, verbose_name=u'internal ID of referenced organisation',)
 
     def __unicode__(self):
         return u"{rec_org_name}'s internal ID for {ref_org_name}: {identifier}".format(
@@ -528,7 +530,7 @@ class OrganisationAccount(models.Model):
         ('premium', u'Premium'),
     )
     organisation = models.OneToOneField(Organisation, verbose_name=u'organisation', primary_key=True)
-    account_level = models.CharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
+    account_level = ValidCharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
     class Meta:
         verbose_name = u'organisation account'
@@ -538,9 +540,9 @@ class OrganisationAccount(models.Model):
 class FocusArea(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
-    name = models.CharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
+    name = ValidCharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
     slug = models.SlugField(u'slug', max_length=50, db_index=True, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
-    description = models.TextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
+    description = ValidTextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
     image = ImageWithThumbnailsField(
                     _(u'focus area image'),
                     upload_to=image_path,
@@ -567,7 +569,7 @@ class FocusArea(models.Model):
 
 
 class Benchmarkname(models.Model):
-    name = models.CharField(_(u'benchmark name'), max_length=80, help_text=_(u'Enter a name for the benchmark. (80 characters).'))
+    name = ValidCharField(_(u'benchmark name'), max_length=80, help_text=_(u'Enter a name for the benchmark. (80 characters).'))
     order = models.IntegerField(_(u'order'), default=0, help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
 
     def __unicode__(self):
@@ -583,7 +585,7 @@ class Category(models.Model):
     #def image_path(instance, file_name):
     #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
 
-    name = models.CharField(
+    name = ValidCharField(
         _(u'category name'), max_length=50, db_index=True,
         help_text=_(u'Enter a name for the category. (50 characters).')
     )
@@ -640,8 +642,8 @@ class MiniCMS(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
 
-    label = models.CharField(u'label', max_length=50, help_text=u'The label is used for identification only', )
-    feature_box = models.TextField(
+    label = ValidCharField(u'label', max_length=50, help_text=u'The label is used for identification only', )
+    feature_box = ValidTextField(
         u'feature box text', max_length=350,
         help_text=_(dedent(u'''Enter the text that will appear in the feature box of the home page. (350 characters)
             <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
@@ -665,7 +667,7 @@ class MiniCMS(models.Model):
         u'feature image', blank=True, upload_to=image_path,
         help_text=u'Ideally the image should be 645x363 pixels in size.'
     )
-    top_right_box = models.TextField(
+    top_right_box = ValidTextField(
         u'top right box text', max_length=350,
         help_text=u'Enter the text that will appear in the top right box of the home page. (350 characters)'
     )
@@ -690,9 +692,9 @@ class Project(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
-    title = models.CharField(_(u'title'), max_length=45, db_index=True, help_text=_(u'A short descriptive title for your project (45 characters).'))
-    subtitle = models.CharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
-    status = models.CharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default='N', help_text=_(u'Current project state.'))
+    title = ValidCharField(_(u'title'), max_length=45, db_index=True, help_text=_(u'A short descriptive title for your project (45 characters).'))
+    subtitle = ValidCharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
+    status = ValidCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default='N', help_text=_(u'Current project state.'))
     categories = models.ManyToManyField(Category, verbose_name=_(u'categories'), related_name='projects',)
     partners = models.ManyToManyField(Organisation, verbose_name=_(u'partners'), through=Partnership, related_name='projects',)
     project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=400, help_text=_(u'Briefly summarize the project (400 characters).'))
@@ -707,29 +709,29 @@ class Project(TimestampsMixin, models.Model):
                         },
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
-    current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
-    current_image_credit = models.CharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
+    current_image_caption = ValidCharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
+    current_image_credit = ValidCharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
 
-    # goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-    # goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
-    # goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
-    # goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
-    # goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
+    # goal_1 = ValidCharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
+    # goal_2 = ValidCharField(_('goal 2'), blank=True, max_length=60)
+    # goal_3 = ValidCharField(_('goal 3'), blank=True, max_length=60)
+    # goal_4 = ValidCharField(_('goal 4'), blank=True, max_length=60)
+    # goal_5 = ValidCharField(_('goal 5'), blank=True, max_length=60)
 
     current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
-    project_plan = models.TextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
-    sustainability = models.TextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
+    project_plan = ValidTextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
+    sustainability = ValidTextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
     background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
     target_group = ProjectLimitedTextField(_(u'target group'), blank=True, max_length=600, help_text=_(u'Information about the people, organisations or resources that are being impacted by this project (600 characters).'))
 
     # project meta info
-    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
+    language = ValidCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
-    notes = models.TextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
+    notes = ValidTextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
 
     # budget
-    currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+    currency = ValidCharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
     date_request_posted = models.DateField(_(u'start date'), default=date.today)
     date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
@@ -1165,7 +1167,7 @@ class Project(TimestampsMixin, models.Model):
 
 class Goal(models.Model):
     project = models.ForeignKey(Project, verbose_name=u'project', related_name='goals')
-    text = models.CharField(_(u'goal'), blank=True, max_length=100, help_text=_(u'(100 characters)'))
+    text = ValidCharField(_(u'goal'), blank=True, max_length=100, help_text=_(u'(100 characters)'))
 
 
 class Benchmark(models.Model):
@@ -1190,7 +1192,7 @@ class Benchmark(models.Model):
 
 
 class BudgetItemLabel(models.Model):
-    label = models.CharField(_(u'label'), max_length=20, unique=True, db_index=True)
+    label = ValidCharField(_(u'label'), max_length=20, unique=True, db_index=True)
 
     def __unicode__(self):
         return self.label
@@ -1207,7 +1209,7 @@ class BudgetItem(models.Model):
 
     project     = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
     label       = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
-    other_extra = models.CharField(
+    other_extra = ValidCharField(
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
@@ -1247,7 +1249,7 @@ class PublishingStatus(models.Model):
     #TODO: change to a generic relation if we want to have publishing stats on
     #other objects than projects
     project = models.OneToOneField(Project,)
-    status = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
+    status = ValidCharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
 
     class Meta:
         verbose_name = _(u'publishing status')
@@ -1263,9 +1265,9 @@ class Link(models.Model):
         ('A', _(u'Akvopedia entry')),
         ('E', _(u'External link')),
     )
-    kind = models.CharField(_(u'kind'), max_length=1, choices=LINK_KINDS)
+    kind = ValidCharField(_(u'kind'), max_length=1, choices=LINK_KINDS)
     url = models.URLField(_(u'URL'))
-    caption = models.CharField(_(u'caption'), max_length=50)
+    caption = ValidCharField(_(u'caption'), max_length=50)
     project = models.ForeignKey(Project, verbose_name=u'project', related_name='links')
 
     def __unicode__(self):
@@ -1315,10 +1317,10 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     user = models.OneToOneField(User)
     organisation = models.ForeignKey(Organisation)
-    phone_number = models.CharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
-    validation = models.CharField(_('validation code'), max_length=20, blank=True)
+    phone_number = ValidCharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
+    validation = ValidCharField(_('validation code'), max_length=20, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
+    notes = ValidTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     objects = UserProfileManager()
 
@@ -1812,10 +1814,10 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     project = models.ForeignKey(Project, related_name='project_updates', verbose_name=_(u'project'))
     user = models.ForeignKey(User, verbose_name=_(u'user'))
-    title = models.CharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
-    text = models.TextField(_(u'text'), blank=True)
-    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
-    #status = models.CharField(max_length=1, choices=STATUSES, default='N')
+    title = ValidCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
+    text = ValidTextField(_(u'text'), blank=True)
+    language = ValidCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
+    #status = ValidCharField(max_length=1, choices=STATUSES, default='N')
     photo = ImageWithThumbnailsField(
         _(u'photo'),
         blank=True,
@@ -1823,20 +1825,20 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
         help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
     )
-    photo_location = models.CharField(_(u'photo location'), max_length=1, choices=PHOTO_LOCATIONS)
-    photo_caption = models.CharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
-    photo_credit = models.CharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
+    photo_location = ValidCharField(_(u'photo location'), max_length=1, choices=PHOTO_LOCATIONS)
+    photo_caption = ValidCharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
+    photo_credit = ValidCharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
-    video_caption = models.CharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
-    video_credit = models.CharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
-    update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
+    video_caption = ValidCharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
+    video_credit = ValidCharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
+    update_method = ValidCharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
     # time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
     # time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
-    user_agent = models.CharField(_(u'user agent'), blank=True, max_length=200, default='')
-    uuid = models.CharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
+    user_agent = ValidCharField(_(u'user agent'), blank=True, max_length=200, default='')
+    uuid = ValidCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
         help_text=_(u'Universally unique ID set by creating user agent'))
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
+    notes = ValidTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
         get_latest_by = "created_at"
@@ -1931,7 +1933,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 class ProjectComment(models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='comments')
     user = models.ForeignKey(User, verbose_name=_(u'user'))
-    comment = models.TextField(_(u'comment'))
+    comment = ValidTextField(_(u'comment'))
     time = models.DateTimeField(_(u'time'), db_index=True)
 
     class Meta:
@@ -1942,9 +1944,9 @@ class ProjectComment(models.Model):
 
 # Payment engines
 class PaymentGateway(models.Model):
-    name = models.CharField(max_length=255, help_text=u'Use a short, descriptive name.')
-    description = models.TextField(blank=True)
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
+    name = ValidCharField(max_length=255, help_text=u'Use a short, descriptive name.')
+    description = ValidTextField(blank=True)
+    currency = ValidCharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
     notification_email = models.EmailField(u'notification email',
         help_text=u'When a donation is completed successfully, notification emails will be sent to the donor and to this address.')
 
@@ -1960,14 +1962,14 @@ class PayPalGateway(PaymentGateway):
         ('US', u'US English'),
     )
     account_email = models.EmailField()
-    locale = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
+    locale = ValidCharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
 
     class Meta:
         verbose_name = u'PayPal gateway'
 
 
 class MollieGateway(PaymentGateway):
-    partner_id = models.CharField(max_length=10)
+    partner_id = ValidCharField(max_length=10)
 
     class Meta:
         verbose_name = u'Mollie/iDEAL gateway'
@@ -2024,7 +2026,7 @@ class Invoice(models.Model):
     )
     # Setup
     test = models.BooleanField(u'test donation', help_text=u'This flag is set if the donation was made in test mode.')
-    engine = models.CharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
+    engine = ValidCharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project, related_name='invoices')
     # Common
@@ -2034,19 +2036,19 @@ class Invoice(models.Model):
         help_text=u'Amount actually received after charges have been applied.'
     )
     time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75, blank=True, null=True)
+    name = ValidCharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField('status', choices=STATUS_CHOICES, default=1)
-    http_referer = models.CharField(u'HTTP referer', max_length=255, blank=True)
-    campaign_code = models.CharField(u'Campaign code', blank=True, max_length=15)
+    http_referer = ValidCharField(u'HTTP referer', max_length=255, blank=True)
+    campaign_code = ValidCharField(u'Campaign code', blank=True, max_length=15)
     is_anonymous = models.BooleanField(u'anonymous donation')
     # PayPal
-    ipn = models.CharField(u'PayPal IPN', blank=True, null=True, max_length=75)
+    ipn = ValidCharField(u'PayPal IPN', blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
-    transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
+    bank = ValidCharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
+    transaction_id = ValidCharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
+    notes = ValidTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -2137,8 +2139,8 @@ class PartnerSite(TimestampsMixin, models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
-    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
-    hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
+    notes = ValidTextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
+    hostname = ValidCharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '
             u'The web address created from  the hostname <em>myorganisation</em> would be '
@@ -2157,7 +2159,7 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'should be returned when leaving the partner site.</p>'
         )
     )
-    custom_return_url_text = models.CharField(_(u'Return URL text'), blank=True, max_length=50, default='',
+    custom_return_url_text = ValidCharField(_(u'Return URL text'), blank=True, max_length=50, default='',
         help_text=_(
             u'<p>Enter a text for the back button and return URL. '
             u'Leave empty to display "Back to %organisation name%".</p>'
@@ -2176,7 +2178,7 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'on tabs and in the bookmark menu.</p>'
         )
     )
-    about_box = models.TextField(_(u'about box text'), max_length=500, blank=True,
+    about_box = ValidTextField(_(u'about box text'), max_length=500, blank=True,
         help_text=_(dedent(u'''
             Enter HTML that will make up the top left box of the home page. (500 characters)
             <p>
@@ -2209,7 +2211,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     )
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
-    default_language = models.CharField(_(u'Site UI default language'),
+    default_language = ValidCharField(_(u'Site UI default language'),
                                         max_length=5,
                                         choices=settings.LANGUAGES,
                                         default=settings.LANGUAGE_CODE)
@@ -2218,7 +2220,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
     facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
     twitter_button = models.BooleanField(_(u'Twitter button'), default=False)
-    facebook_app_id = models.CharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
+    facebook_app_id = ValidCharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
         help_text=_(
             u'<p>Your FaceBook app id is used when sharing pages from your partner site. '
             u'It can be obtained by creating a Facebook app, which will let you monitor when your pages are referenced. '
