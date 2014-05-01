@@ -28,6 +28,13 @@ class HttpNoContent(HttpResponse):
 def post_an_activity(activity_element, user):
     try:
         iati_id = activity_element.findall('iati-identifier')[0].text
+
+        # Remove all xml:lang attributes except the one in the iati-activity tag.
+        for element in activity_element.iter():
+            if (not element.tag == 'iati-activity') and\
+                    ('{http://www.w3.org/XML/1998/namespace}lang' in element.attrib.keys()):
+                del element.attrib['{http://www.w3.org/XML/1998/namespace}lang']
+
         project = Requester(
             method='post',
             url_template="http://{domain}/api/{api_version}/iati_activity/"
@@ -70,6 +77,13 @@ def put_an_activity(activity_element, pk, url_args):
     url_args.update(pk=pk)
     try:
         iati_id = activity_element.findall('iati-identifier')[0].text
+
+        # Remove all xml:lang attributes except the one in the iati-activity tag.
+        for element in activity_element.iter():
+            if (not element.tag == 'iati-activity') and\
+                    ('{http://www.w3.org/XML/1998/namespace}lang' in element.attrib.keys()):
+                del element.attrib['{http://www.w3.org/XML/1998/namespace}lang']
+                
         project = Requester(
             method='put',
             url_template="http://{domain}/api/{api_version}/iati_activity/{pk}/?"
