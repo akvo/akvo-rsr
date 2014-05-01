@@ -31,7 +31,8 @@ __all__ = [
     'ProjectUpdateEditView',
     'ProjectUpdateListView',
     'ProjectUpdateView',
-    'ProjectDonationThanksView'
+    'ProjectDonationThanksView',
+    'ProjectDonationRedirectView'
 ]
 
 
