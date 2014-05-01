@@ -31,7 +31,8 @@ __all__ = [
     'ProjectUpdateEditView',
     'ProjectUpdateListView',
     'ProjectUpdateView',
-    'ProjectDonationThanksView'
+    'ProjectDonationThanksView',
+    'ProjectDonationRedirectView'
 ]
 
 
@@ -223,4 +224,13 @@ class ProjectDonationThanksView(BaseView):
         if not invoice:
             raise Http404
         context["invoice"] = invoice
+        return context
+
+class ProjectDonationRedirectView(BaseProjectView):
+    "Show a redirect page before redirecting to the core RSR donate page"
+    template_name = "partner_sites/project/donate/donate_redirect.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectDonationRedirectView, self).get_context_data(**kwargs)
+        _project = get_object_or_404(Project, id=context['project'].pk)
         return context

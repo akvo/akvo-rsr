@@ -41,10 +41,14 @@ urlpatterns = i18n_patterns(
         project_views.ProjectFundingView.as_view(),
         name='project_funding'),
 
-    # Project donation thanks
+    # Project donations
     url(r'^donate/thanks/$',
         project_views.ProjectDonationThanksView.as_view(),
         name='donate_thanks'),
+
+    url(r'^project/(?P<project_id>\d+)/donate/$',
+        project_views.ProjectDonationRedirectView.as_view(),
+        name='donate_redirect'),
 
     # Project updates
     url(r'^project/(?P<project_id>\d+)/updates/$',
