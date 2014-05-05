@@ -18,12 +18,13 @@ def set_budget_totals():
     print "\nGetting all budget items...\n"
 
     budget_items = BudgetItem.objects.filter(label_id="13")
+    budgets_count = budget_items.count()
 
     for count, item in enumerate(budget_items, start=1):
         item.label_id = 14
         item.save()
 
-        print "Budget item", str(item.pk), "adjusted (" + str(count) + "out of", str(budget_items.count()) + ")..."
+        print "Budget item", str(item.pk), "adjusted (" + str(count), "out of", str(budgets_count) + ")..."
 
 
 def remove_budgetitem_label():
@@ -33,23 +34,35 @@ def remove_budgetitem_label():
     print "\nRemoved the total budget item, label 13..."
 
 
+def update_budgetitem_label():
+    '''Update label of budget item 14'''
+
+    total_budget_label = BudgetItemLabel.objects.get(id="14")
+    total_budget_label.label = 'total'
+    total_budget_label.save()
+
+    print "\nUpdated label of item 14 to 'total'...\n"
+
+
 def update_projects():
     '''Updates all projects using the budget sum calculator'''
 
     print "\nGetting all projects...\n"
 
     projects = Project.objects.all()
+    projects_count = projects.count()
 
     for count, project in enumerate(projects):
         project.update_budget()
         project.update_funds_needed()
 
-        print "Updating project:", project.id, "(" + str(count), "out of", str(projects.count()) + ")..."
+        print "Updating project:", project.id, "(" + str(count), "out of", str(projects_count) + ")..."
 
 
 if __name__ == '__main__':
     set_budget_totals()
     remove_budgetitem_label()
+    update_budgetitem_label()
     update_projects()
 
     # Update all projects
