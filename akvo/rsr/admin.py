@@ -358,17 +358,17 @@ class BudgetItemAdminInLineFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         super(BudgetItemAdminInLineFormSet, self).clean()
 
-        total = 0
+        budget_item_count = 0
         including_total = False
         for form in self.forms:
             if not form.is_valid():
                 return
             if form.cleaned_data and not form.cleaned_data.get('DELETE'):
-                total += 1
+                budget_item_count += 1
                 if form.cleaned_data.get('label').label == 'total':
                     including_total = True
 
-        if total > 1 and including_total:
+        if budget_item_count > 1 and including_total:
             raise forms.ValidationError(_("The 'total' budget item cannot be used in combination with other budget items."))
 
 
