@@ -999,6 +999,11 @@ class Project(TimestampsMixin, models.Model):
         def all_partners(self):
                 return self._partners()
 
+        def countries(self):
+            """Returns a queryset of countries for this project"""
+            return Country.objects.filter(id__in=ProjectLocation.objects.filter(project__in=self).
+                                          values_list('country', flat=True))
+
     def __unicode__(self):
         return u'%s' % self.title
 
