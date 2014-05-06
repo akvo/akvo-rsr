@@ -357,9 +357,28 @@ class BudgetItemLabelAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
 
 
+class BudgetItemAdminInLineFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        super(BudgetItemAdminInLineFormSet, self).clean()
+
+        budget_item_count = 0
+        including_total = False
+        for form in self.forms:
+            if not form.is_valid():
+                return
+            if form.cleaned_data and not form.cleaned_data.get('DELETE'):
+                budget_item_count += 1
+                if form.cleaned_data.get('label').label == 'total':
+                    including_total = True
+
+        if budget_item_count > 1 and including_total:
+            raise forms.ValidationError(_("The 'total' budget item cannot be used in combination with other budget items."))
+
+
 class BudgetItemAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budgetitem')
     extra = 1
+    formset = BudgetItemAdminInLineFormSet
 
     class Media:
         css = {'all': (os.path.join(settings.MEDIA_URL, 'akvo/css/src/rsr_admin.css').replace('\\', '/'),)}
