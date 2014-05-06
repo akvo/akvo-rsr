@@ -85,11 +85,14 @@ class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
             for form in self.forms:
                 if form.is_valid() and not form.cleaned_data.get('DELETE', False):
                     form_count += 1
-                    primary_count += 1 if form.cleaned_data['primary'] else 0
+                    try:
+                        primary_count += 1 if form.cleaned_data['primary'] else 0
+                    except:
+                        pass
                 # if we have any forms left there must be exactly 1 primary location
             if form_count > 0 and not primary_count == 1:
                 self._non_form_errors = ErrorList([
-                    _(u'The project must have exactly one primary location if any locations at all are to be included')
+                    _(u'The project must have exactly one filled in primary location if any locations at all are to be included')
                 ])
 
 
