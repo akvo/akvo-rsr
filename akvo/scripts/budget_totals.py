@@ -65,6 +65,4 @@ if __name__ == '__main__':
     update_budgetitem_label()
     update_projects()
 
-    # Update all projects
-
     print "\nDone!\n"
