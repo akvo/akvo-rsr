@@ -120,7 +120,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',
-                                                'content_owner',)}),
+                                                'allow_edit',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
@@ -696,11 +696,20 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         opts = self.opts
 
-        # Check to see if organisation has partner site with projects that are allowed to be edited
+        # Check to see if the projects have an organisation as support partner that allows manual project edits
         allow_edit = True
-        for site in request.user.get_profile().organisation.partnersites():
-            if not site.allow_edit:
-                allow_edit = False
+
+        project_id = str(request.path.rstrip('/').rsplit('/',1)[1])
+        partner_admins_allowed = []
+        if project_id not in ['admin', 'rsr', 'project']:
+            try:
+                project = get_model('rsr', 'project').objects.get(pk=project_id)
+                for partner in project.support_partners():
+                    if not partner.allow_edit:
+                        allow_edit = False
+                        partner_admins_allowed.append(partner)
+            except:
+                return False
 
         if allow_edit:
             if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
@@ -715,8 +724,16 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             return False
 
         else:
-            if request.user.has_perm(opts.app_label + '.' + opts.get_add_permission()):
-                return True
+            user = request.user
+            user_profile = user.get_profile()
+
+            if user.has_perm(opts.app_label + '.' + opts.get_add_permission()):
+                # Org admins of a different organisation are not allowed to edit projects set to non-editable by
+                # a different organisation.
+                if user_profile.get_is_org_admin() and (not user_profile.organisation in partner_admins_allowed):
+                    return False
+                else:
+                    return True
             else:
                 return False
 

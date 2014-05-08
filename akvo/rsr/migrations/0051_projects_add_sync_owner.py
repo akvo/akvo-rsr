@@ -13,8 +13,8 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Organisation'], null=True, on_delete=models.SET_NULL, blank=True),
                       keep_default=False)
 
-        # Adding field 'PartnerSite.allow_edit'
-        db.add_column('rsr_partnersite', 'allow_edit',
+        # Adding field 'Organisation.allow_edit'
+        db.add_column('rsr_organisation', 'allow_edit',
                       self.gf('django.db.models.fields.BooleanField')(default=True),
                       keep_default=False)
 
@@ -23,8 +23,8 @@ class Migration(SchemaMigration):
         # Deleting field 'Project.sync_owner'
         db.delete_column('rsr_project', 'sync_owner')
 
-        # Deleting field 'PartnerSite.allow_edit'
-        db.delete_column('rsr_partnersite', 'allow_edit')
+        # Deleting field 'Organisation.allow_edit'
+        db.delete_column('rsr_organisation', 'allow_edit')
 
 
     models = {
@@ -196,6 +196,7 @@ class Migration(SchemaMigration):
         },
         'rsr.organisation': {
             'Meta': {'ordering': "['name']", 'object_name': 'Organisation'},
+            'allow_edit': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'contact_email': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'contact_person': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'content_owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
@@ -254,7 +255,6 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "('organisation__name',)", 'object_name': 'PartnerSite'},
             'about_box': ('django.db.models.fields.TextField', [], {'max_length': '500', 'blank': 'True'}),
             'about_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'allow_edit': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'cname': ('akvo.rsr.fields.NullCharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'custom_css': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),

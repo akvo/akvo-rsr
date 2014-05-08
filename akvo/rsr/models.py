@@ -348,6 +348,15 @@ class Organisation(TimestampsMixin, models.Model):
     content_owner = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.'),
     )
+
+    # Allowed to manually edit information on projects of this organisation
+    allow_edit = models.BooleanField(
+        _(u'Partner editors of this organisation are allowed to manually edit projects where this organisation is '
+          u'support partner'),
+        help_text=_(u'When manual edits are disallowed, partner admins and editors of other organisations are also not '
+                    u'allowed to edit these projects.'),
+        default=True
+    )
                                       
 
     # Managers, one default, one custom
@@ -2233,8 +2242,6 @@ class PartnerSite(TimestampsMixin, models.Model):
         )
     )
 
-    # Allowed to manually edit information on projects of this partnersite
-    allow_edit = models.BooleanField(_(u'Users allowed to manually edit information on projects of this partnersite'), default=True)
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
