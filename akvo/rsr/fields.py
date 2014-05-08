@@ -50,25 +50,25 @@ class LongitudeField(models.FloatField):
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 
-class ValidCharField(models.CharField):
+class ValidXMLCharField(models.CharField):
 
     description = "A CharField containing only valid XML characters"
 
     def __init__(self, *args, **kwargs):
-        super(ValidCharField, self).__init__(*args, **kwargs)
+        super(ValidXMLCharField, self).__init__(*args, **kwargs)
         self.validators += [string_validator]
 
 
-class ValidTextField(models.TextField):
+class ValidXMLTextField(models.TextField):
 
     description = "A TextField containing only valid XML characters"
 
     def __init__(self, *args, **kwargs):
-        super(ValidTextField, self).__init__(*args, **kwargs)
+        super(ValidXMLTextField, self).__init__(*args, **kwargs)
         self.validators += [string_validator]
 
 
-class LimitedTextField(ValidTextField):
+class LimitedTextField(ValidXMLTextField):
 
     description = "A TextField that honors the max_length param"
 
@@ -98,7 +98,7 @@ class ProjectLimitedTextField(LimitedTextField):
 add_introspection_rules([], ["^akvo\.rsr\.fields\.NullCharField"])
 add_introspection_rules([], ["^akvo\.rsr\.fields\.LatitudeField"])
 add_introspection_rules([], ["^akvo\.rsr\.fields\.LongitudeField"])
-add_introspection_rules([], ["^akvo\.rsr\.fields\.ValidCharField"])
-add_introspection_rules([], ["^akvo\.rsr\.fields\.ValidTextField"])
+add_introspection_rules([], ["^akvo\.rsr\.fields\.ValidXMLCharField"])
+add_introspection_rules([], ["^akvo\.rsr\.fields\.ValidXMLTextField"])
 add_introspection_rules([], ["^akvo\.rsr\.fields\.LimitedTextField"])
 add_introspection_rules([], ["^akvo\.rsr\.fields\.ProjectLimitedTextField"])
