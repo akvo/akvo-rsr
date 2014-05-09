@@ -44,7 +44,4 @@ class PartnerView(BaseView):
         context['partner'] = get_object_or_404(
             Organisation, pk=self.kwargs['org_id']
         )
-        if context['partner'] != context['organisation'] and \
-           context['partner'] not in context['organisation'].partners():
-            raise Http404
         return context

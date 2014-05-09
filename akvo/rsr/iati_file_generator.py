@@ -189,7 +189,7 @@ def iati_participating_org(activity, project, participating_orgs):
 
     return activity
 
-def iati_budget(activity, budgets):
+def iati_budget(activity, budgets, project):
     """Collects budget of the RSR project and adds it to the activity."""
 
     # Ignore total budgets -- label 13 or 14 -- if not all budgets are a total budget
@@ -203,6 +203,10 @@ def iati_budget(activity, budgets):
 
         if check_value(budget.amount):
             budget_value = schema.textType(valueOf_=budget.amount)
+
+            if check_value(project.date_request_posted):
+                budget_value.set_anyAttributes_({"value-date": project.date_request_posted})
+
             budget_node.add_value(budget_value)
 
         if check_value(budget_label):
@@ -523,7 +527,7 @@ def process_project(xml, project, org_id):
     activity = iati_goals(activity, goals)
     activity = iati_photo(activity, project)
     activity = iati_location(activity, location, country)
-    activity = iati_budget(activity, budgets)
+    activity = iati_budget(activity, budgets, project)
     activity = iati_participating_org(activity, project, participating_orgs)
     activity = iati_links(activity, links)
     activity = iati_outcome(activity, benchmarks, benchmark_names, categories)

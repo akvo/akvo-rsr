@@ -1,5 +1,5 @@
 {% extends 'rsr/base.html' %}
-{% load i18n map %}
+{% load i18n maps %}
 {% load url from future %}
 
 
@@ -25,7 +25,7 @@
   <h1>
     {% trans 'Map of all organisations' %}
   </h1>
-  {% map 'organisation' 975 600 'dynamic' %}
+  {% global_organisation_map 975 600 %}
   <!--
   <p style="background-color:#dc143c;color:white;margin:3em 0;padding:0.5em;text-align:center">We have temporarily disabled Interactive Global Maps in Akvo RSR. We are working on this and will update this page as soon as we can. In the meantime you can still access all organisations by viewing the <a href="{% url 'rsr_org_list' %}">Organisation List</a>.</p>
   <img src="{{MEDIA_URL}}akvo/img/maps/global_organisation_map.png" alt="Global organisation map" style="display:block;margin-left:auto;margin-right:auto">

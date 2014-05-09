@@ -1,5 +1,5 @@
 {% extends "rsr/project/project_base.html" %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags project_map %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags maps %}
 {% load url from future %}
 
 {% block head %}
@@ -59,7 +59,7 @@
         </p>
         {# Google Map #}
         {% if p.primary_location %}
-          {% project_map 1 0 project.pk 260 180 %}
+          {% project_map project.pk 260 180 %}
         {% else %}
           <p style="color: red;">{% trans 'No map available' %}</p>
         {% endif %}
@@ -129,7 +129,7 @@
     </div>
     <div style="float:right; width:166px; margin-left:15px;">
       <div class="white_box">
-        <div class="space20">
+        <div class="space20" style="word-wrap: break-word;">
           <h2>{% trans 'Related to this project' %}</h2>
           <hr />
           {% if not p.links.all %}

@@ -1,10 +1,10 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail counter_tags humanize project_map %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags humanize maps %}
 {% load url from future %}
 
 
 {% block head %}
-    <meta property="og:title" content="Akvo.org - {{project.title}}"/>
+    <meta property="og:title" content="{{organisation}} - {{project.title}}"/>
     <meta property="og:description" content="{{project.subtitle}} {{project.project_plan_summary}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'project_main' project.id %}"/>
     {% if project.current_image %}
@@ -105,7 +105,7 @@
           {{ project.primary_location.latitude }},
           {{ project.primary_location.longitude }}
         </p>
-        {% project_map 1 0 project.pk 260 180 %}
+        {% project_map project.pk 260 180 %}
       {% else %}
         <p style="color: red;">{% trans 'No map available' %}</p>
       {% endif %}

@@ -1,4 +1,4 @@
-{% load google_maps humanize i18n rsr_tags piwik_tags %}
+{% load maps humanize i18n rsr_tags piwik_tags %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -27,7 +27,7 @@
 
 </head>
 <body>
-{% google_organisation_projects_map org.id state width height zoom %}
+{% organisation_projects_map org.id width height state %}
 <div id="footer">
   <a href="http://akvo.org">
     <img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
