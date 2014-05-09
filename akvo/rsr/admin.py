@@ -700,9 +700,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         user = request.user
         user_profile = user.get_profile()
 
-        allow_edit = True
-        partner_admins_allowed = []
-
         # RSR editors/managers
         if user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return True
