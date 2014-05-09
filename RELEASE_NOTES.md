@@ -65,6 +65,8 @@ Github issue [#443](https://github.com/akvo/akvo-rsr/issues/443)
 
 We have added a new timed redirection page that users will see when completing a donation from an Akvo Pages instance. This provides information to the user to inform them that they will be leaving the previous domain and be directed to the Akvo.org donation process.
 
+Github issue [#480](https://github.com/akvo/akvo-rsr/issues/480)
+
 ### Translation management process
 
 We have documented our process for managing the content translations with a team of external language translators. This is just a documentation update.
