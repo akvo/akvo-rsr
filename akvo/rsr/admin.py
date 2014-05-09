@@ -674,12 +674,14 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         qs = super(ProjectAdmin, self).queryset(request)
         opts = self.opts
+        user_profile = request.user.get_profile()
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            projects = request.user.get_profile().organisation.all_projects()
-            #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
-            return qs.filter(pk__in=projects)
+            projects = user_profile.organisation.all_projects()
+            # Access to Partner users may be limited by Support partner "ownership"
+            allowed_projects = [project.pk for project in projects if user_profile.allow_edit(project)]
+            return qs.filter(pk__in=allowed_projects)
         else:
             raise PermissionDenied
 
@@ -695,47 +697,25 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         "own" projects, organisation and user profiles
         """
         opts = self.opts
+        user = request.user
+        user_profile = user.get_profile()
 
-        # Check to see if the projects have an organisation as support partner that allows manual project edits
         allow_edit = True
-
-        project_id = str(request.path.rstrip('/').rsplit('/',1)[1])
         partner_admins_allowed = []
-        if project_id not in ['admin', 'rsr', 'project']:
-            try:
-                project = get_model('rsr', 'project').objects.get(pk=project_id)
-                for partner in project.support_partners():
-                    if not partner.allow_edit:
-                        allow_edit = False
-                        partner_admins_allowed.append(partner)
-            except:
-                return False
 
-        if allow_edit:
-            if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
-                return True
-            if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-                projects = request.user.get_profile().organisation.all_projects()
-               #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
-                if obj:
-                    return obj in projects
-                else:
-                    return True
-            return False
+        # RSR editors/managers
+        if user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            return True
 
-        else:
-            user = request.user
-            user_profile = user.get_profile()
+        # RSR Partner admins/editors
+        if user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            # On the Project form
+            if obj:
+                return user_profile.allow_edit(obj)
+            return True
 
-            if user.has_perm(opts.app_label + '.' + opts.get_add_permission()):
-                # Org admins of a different organisation are not allowed to edit projects set to non-editable by
-                # a different organisation.
-                if user_profile.get_is_org_admin() and (not user_profile.organisation in partner_admins_allowed):
-                    return False
-                else:
-                    return True
-            else:
-                return False
+        return False
+
 
     @csrf_protect_m
     @transaction.commit_on_success
