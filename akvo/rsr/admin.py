@@ -123,7 +123,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',
-                                                'content_owner',)}),
+                                                'allow_edit',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
@@ -696,12 +696,14 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         qs = super(ProjectAdmin, self).queryset(request)
         opts = self.opts
+        user_profile = request.user.get_profile()
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            projects = request.user.get_profile().organisation.all_projects()
-            #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
-            return qs.filter(pk__in=projects)
+            projects = user_profile.organisation.all_projects()
+            # Access to Partner users may be limited by Support partner "ownership"
+            allowed_projects = [project.pk for project in projects if user_profile.allow_edit(project)]
+            return qs.filter(pk__in=allowed_projects)
         else:
             raise PermissionDenied
 
@@ -717,16 +719,22 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         "own" projects, organisation and user profiles
         """
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        user = request.user
+        user_profile = user.get_profile()
+
+        # RSR editors/managers
+        if user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return True
-        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            projects = request.user.get_profile().organisation.all_projects()
-           #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
+
+        # RSR Partner admins/editors
+        if user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            # On the Project form
             if obj:
-                return obj in projects
-            else:
-                return True
+                return user_profile.allow_edit(obj)
+            return True
+
         return False
+
 
     @csrf_protect_m
     @transaction.commit_on_success
@@ -1216,7 +1224,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # (currently means an Akvo staff user (or superuser))
         # note that this is somewhat fragile as it relies on adding/removing from the _first_ fieldset
         if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
-            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
+            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'allow_edit', 'notes',)
         else:
             self.fieldsets[0][1]['fields'] = ('organisation', 'enabled',)
         return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)

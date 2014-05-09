@@ -350,6 +350,15 @@ class Organisation(TimestampsMixin, models.Model):
     content_owner = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.'),
     )
+
+    # Allowed to manually edit information on projects of this organisation
+    allow_edit = models.BooleanField(
+        _(u'Partner editors of this organisation are allowed to manually edit projects where this organisation is '
+          u'support partner'),
+        help_text=_(u'When manual edits are disallowed, partner admins and editors of other organisations are also not '
+                    u'allowed to edit these projects.'),
+        default=True
+    )
                                       
 
     # Managers, one default, one custom
@@ -428,6 +437,10 @@ class Organisation(TimestampsMixin, models.Model):
     def is_support_partner(self):
         "returns True if the organisation is a support partner to at least one project"
         return self.is_partner_type(Partnership.SUPPORT_PARTNER)
+
+    def partnersites(self):
+        "returns the partnersites belonging to the organisation in a PartnerSite queryset"
+        return PartnerSite.objects.filter(organisation=self)
 
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
@@ -740,6 +753,9 @@ class Project(TimestampsMixin, models.Model):
 
     # donate button
     donate_button = models.BooleanField(_(u'donate button'), default=True, help_text=(u'Show donate button for this project.'))
+
+    # synced projects
+    sync_owner = models.ForeignKey(Organisation, null=True, on_delete=models.SET_NULL)
 
     # denormalized data
     # =================
@@ -1437,6 +1453,27 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
 
     def my_projects(self):
         return self.organisation.all_projects()
+
+    def allow_edit(self, project):
+        """ Support partner organisations may "take ownership" of projects, meaning that editing of them is restricted
+        This method is used "on top" of normal checking for user access to projects since it is only relevant for
+        Partner users
+        """
+        allow_edit = True
+        partner_admins_allowed = []
+        # compile list of support orgs that limit editing
+        for partner in project.support_partners():
+            if not partner.allow_edit:
+                allow_edit = False
+                partner_admins_allowed.append(partner)
+        # no-one limits editing, all systems go
+        if allow_edit:
+            return True
+        # Only Partner admins on the list of "limiters" list may edit
+        else:
+            if self.get_is_org_admin() and self.organisation in partner_admins_allowed:
+                return True
+        return False
 
     def my_unreported_projects(self):
         """
@@ -2235,6 +2272,7 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'Follow the instructions <A href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</A>'
         )
     )
+
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}
