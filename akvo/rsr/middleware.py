@@ -19,6 +19,8 @@ from django.utils import translation
 from django.utils.cache import patch_vary_headers
 
 from akvo.rsr.models import PartnerSite
+
+import logging
 import re
 
 
@@ -217,3 +219,11 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
             if isinstance(url_pattern, LocaleRegexURLResolver):
                 return True
         return False
+
+
+class ExceptionLoggingMiddleware(object):
+    """ Used to log exceptions on production systems
+    """
+    def process_exception(self, request, exception):
+
+        logging.exception('Exception handling request for ' + request.path)
