@@ -5,6 +5,140 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.6 Voavanga
+---
+
+Wednesday 14th May 2014, adriancollier
+
+New Features
+---
+
+### Country options on project list
+
+We have added the feature now that only the countries that are present within the list of available projects are displayed in the dropdown. This allows the country selection to always return a project and provides a shorter list to select from.
+
+Github issue [#176](https://github.com/akvo/akvo-rsr/issues/176)
+
+### Add Update button change
+
+If a user was attempting to add an update to a project that they didn't have the permission for, then they were being served a 403 error page. We have now changed this activity to grey out the Add Update button for users that do not have permission to add updates on individual projects.
+
+Github issue [#150](https://github.com/akvo/akvo-rsr/issues/150)
+
+### Character validation in admin
+
+Now that we are working with XML more deeply with the API and IATI information, we have added validation to the RSR admin to check for any characters that have been included within the added fields that are not valid within XML. A warning is now displayed in the event that any of these characters are present.
+
+Github issue [#242](https://github.com/akvo/akvo-rsr/issues/242)
+
+### Back button on Akvo Pages
+
+We have added a custom option to Akvo Pages to allow the back button to have a different text added. So now our partners can allow this button to say something more appropriate to the location that the user will be taken to upon pressing.
+
+Github issue [#258](https://github.com/akvo/akvo-rsr/issues/258)
+
+### Sign in target location
+
+We have tidied up the signing in process to direct users to the main page after completing the sign in process.
+
+Github issue [#301](https://github.com/akvo/akvo-rsr/issues/301)
+
+### Organisation filter on Akvo Pages
+
+We had previously removed the project filter on Akvo Pages that allows any project to be viewed within a Pages instance. This has now been extended to organisations so that organisations can be visualised within an instance without the need for that organisation to be present within projects.
+
+Github issue [#433](https://github.com/akvo/akvo-rsr/issues/433)
+
+### Facebook meta information
+
+We have tidied up the meta information when sharing projects via Facebook to provide the information of the organisation that owns the Akvo Pages instance in place of Akvo.
+
+Github issue [#442](https://github.com/akvo/akvo-rsr/issues/442)
+
+### RSR favicon
+
+We have replaced the favicon being used within RSR to use the more updated icon as is present within the Akvo.org website.
+
+Github issue [#443](https://github.com/akvo/akvo-rsr/issues/443)
+
+### Donation redirect page for Akvo Pages
+
+We have added a new timed redirection page that users will see when completing a donation from an Akvo Pages instance. This provides information to the user to inform them that they will be leaving the previous domain and be directed to the Akvo.org donation process.
+
+### Translation management process
+
+We have documented our process for managing the content translations with a team of external language translators. This is just a documentation update.
+
+Github issue [#494](https://github.com/akvo/akvo-rsr/issues/494)
+
+### Documentation Update
+
+We have performed a merging process to pull some recent documentation efforts into the main code repository to ensure that the right information is always available for users to see.
+
+Github issue [#512](https://github.com/akvo/akvo-rsr/issues/512)
+
+### Project summary pop-up Akvo Pages map widget
+
+We have added a project summary pop-up to the Akvo Pages map widget that displays basic information about a project to the user when they click on the pin for a specific project.
+
+Github issue [#505](https://github.com/akvo/akvo-rsr/issues/505)
+
+### Project and organisation management flags
+
+Following on from recent work on management flags, we have extended this functionality to projects. Now it is possible to set a flag on both projects and organisations that will prevent unwanted changes being made.
+
+Organisations can have an owner flag set so that any changes made by other organisations inform the user that these changes could be overwritten by the managing organisation.
+
+Partners can also set a flag on their organisation record to prevent their projects being modified by other organisations. Only Admins from the support partner organisation will be able to make changes to the project content for these projects.
+
+Github issue [#233](https://github.com/akvo/akvo-rsr/issues/233)
+
+
+Bug Fixes
+---
+
+### Blank location error
+
+We were experiencing a problem where if new locations were added to a project but no information was completed, the admin form would not save. This has been corrected to now ignore any added but incomplete locations.
+
+Github issue [#312](https://github.com/akvo/akvo-rsr/issues/312)
+
+### Budget totals
+
+We previously had 2 different budget items within the dataset that referred to total budgets. This has now been consolidated so that we only have a single entry and all information will be merged to this single entry.
+
+Github issue [#471](https://github.com/akvo/akvo-rsr/issues/471)
+
+### Akvo Pages widgets layout error
+
+We have tidied up some layout issues with the widgets being provided for Akvo Pages.
+
+Github issue [#498](https://github.com/akvo/akvo-rsr/issues/498)
+
+### Wrapped links on project pages
+
+We have fixed an issue that long links provided on projects were extending beyond the box provided in the visual layout. These links will now wrap to the next line if they are too long to fit within the available space.
+
+Github issue [#506](https://github.com/akvo/akvo-rsr/issues/506)
+
+### Global maps in Internet Explorer 8
+
+We have resolved some visualisation issues when viewing the global maps in IE8. Now the maps are correctly displaying the points.
+
+Github issue [#507](https://github.com/akvo/akvo-rsr/issues/507)
+
+### IATI export missing data
+
+We were missing some date information within the budget item export when creating IATI files. This prevented the files from validating as a correct IATI XML file. This has now been included.
+
+Github issue [#533](https://github.com/akvo/akvo-rsr/issues/533)
+
+### Live server logging
+
+We have made a small change to the underlying code that will provide better logging information for our system to help discover and troubleshoot any issues that occur.
+
+Github issue [#432](https://github.com/akvo/akvo-rsr/issues/432)
+
 Akvo RSR ver 2.3.5 Uglyfruit
 ---
 
