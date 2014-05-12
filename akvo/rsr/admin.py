@@ -1034,16 +1034,22 @@ class UserProfileAdmin(admin.ModelAdmin):
         return form
 
     def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:
-            # only superusers are allowed to add/remove sms updaters in beta phase
-            self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
-            self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
-            # user and org are only shown as text, not select widget
-            return ['user', 'organisation', ]
-        else:
+        opts = self.opts
+        if request.user.is_superuser:
             self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
             self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
             return []
+        else:
+            # only superusers are allowed to add/remove sms updaters in beta phase
+            self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
+            self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
+
+            if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+                # user is only shown as text, not select widget
+                return ['user', ]
+            else:
+                # user and org are only shown as text, not select widget
+                return ['user', 'organisation', ]
 
     def queryset(self, request):
         """
