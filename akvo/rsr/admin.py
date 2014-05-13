@@ -1130,7 +1130,7 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'fields': ('title','text','language', ),
         }),
         (_(u'Image and video'), {
-            'fields': ('photo', 'photo_location', 'photo_caption', 'photo_credit', 'video', 'video_caption', 'video_credit',),
+            'fields': ('photo', 'photo_caption', 'photo_credit', 'video', 'video_caption', 'video_credit',),
         }),
     )
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)

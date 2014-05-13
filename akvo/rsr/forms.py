@@ -327,10 +327,6 @@ class ReadonlyFKAdminField(object):
 class ProjectUpdateForm(forms.ModelForm):
     """Form representing a ProjectUpdate."""
 
-    MEDIA_LOCATIONS = (
-        ('B', _('At the beginning of the update.')),
-        ('E', _('At the end of the update.'))
-    )
     title = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '42',
@@ -347,8 +343,6 @@ class ProjectUpdateForm(forms.ModelForm):
         'size': '15',
         'style': 'height: 2em',
         }))
-    photo_location = forms.CharField(required=False, widget=forms.RadioSelect(
-        choices=ProjectUpdate.PHOTO_LOCATIONS, attrs={'class': 'radio'}))
     photo_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
