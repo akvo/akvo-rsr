@@ -2207,7 +2207,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     custom_return_url_text = ValidXMLCharField(_(u'Return URL text'), blank=True, max_length=50, default='',
         help_text=_(
             u'<p>Enter a text for the back button and return URL. '
-            u'Leave empty to display "Back to %organisation name%".</p>'
+            u'Leave empty to display "Back to <em>myorganisation</em>".</p>'
         )
     )
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
