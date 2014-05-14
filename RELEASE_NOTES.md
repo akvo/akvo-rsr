@@ -13,12 +13,6 @@ Wednesday 14th May 2014, adriancollier
 New Features
 ---
 
-### Country options on project list
-
-We have added the feature now that only the countries that are present within the list of available projects are displayed in the dropdown. This allows the country selection to always return a project and provides a shorter list to select from.
-
-Github issue [#176](https://github.com/akvo/akvo-rsr/issues/176)
-
 ### Add Update button change
 
 If a user was attempting to add an update to a project that they didn't have the permission for, then they were being served a 403 error page. We have now changed this activity to grey out the Add Update button for users that do not have permission to add updates on individual projects.
@@ -140,6 +134,13 @@ Github issue [#533](https://github.com/akvo/akvo-rsr/issues/533)
 We have made a small change to the underlying code that will provide better logging information for our system to help discover and troubleshoot any issues that occur.
 
 Github issue [#432](https://github.com/akvo/akvo-rsr/issues/432)
+
+### Using Sentry within RSR
+
+We have added Sentry as a tool to assist us with monitoring and logging with RSR as part of our efforts to ensure we have a great performing system and access to all the right information to investigate when things don't go entirely to plan. You can read more about Sentry [here](http://sentry.readthedocs.org/en/latest/).
+
+Github issue [#541](https://github.com/akvo/akvo-rsr/issues/541)
+
 
 Akvo RSR ver 2.3.5 Uglyfruit
 ---
