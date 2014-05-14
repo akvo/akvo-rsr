@@ -139,6 +139,13 @@ We have made a small change to the underlying code that will provide better logg
 
 Github issue [#432](https://github.com/akvo/akvo-rsr/issues/432)
 
+### Using Sentry within RSR
+
+We have added Sentry as a tool to assist us with monitoring and logging with RSR as part of our efforts to ensure we have a great performing system and access to all the right information to investigate when things don't go entirely to plan. You can read more about Sentry [here](http://sentry.readthedocs.org/en/latest/).
+
+Github issue [#541](https://github.com/akvo/akvo-rsr/issues/541)
+
+
 Akvo RSR ver 2.3.5 Uglyfruit
 ---
 
