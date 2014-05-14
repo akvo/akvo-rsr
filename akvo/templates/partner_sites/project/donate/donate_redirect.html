@@ -1,0 +1,39 @@
+{% extends "partner_sites/base.html" %}
+{% load i18n rsr_tags thumbnail %}
+{% load url from future %}
+
+{% block head %}
+
+<meta http-equiv="refresh" content="5;url={{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}{% url 'donate_thanks' %}">
+
+<script type="text/javascript">
+window.onload = function() {
+    var timerVar = setInterval(function(){timer()},1000);
+    var runCount = 0;
+
+    function timer() {
+        runCount++;
+        if (runCount > 2) {
+            clearInterval(timerVar);
+        };
+        document.getElementById("dots").innerHTML+='.';
+    };
+};
+</script>
+
+{% endblock head %}
+
+{% block content %}
+
+<h1>{% trans 'Donate to' %} {{project.title}}</h1>
+
+<div class="white_box" style="border:1px solid #DEDEE3; border-bottom:2px solid #DEDEE3; padding:10px; margin-top:20px;">
+		<p>
+			{% trans 'You will be redirected to the Akvo donate page' %} <span id="dots"></span>
+		</p>
+        <p>
+            {% trans 'If you are not redirected within 10 seconds,' %} <a href="{{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}{% url 'donate_thanks' %}">{% trans 'click here' %}</a>
+        </p>
+</div>
+
+{% endblock content %}

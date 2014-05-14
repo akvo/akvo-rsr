@@ -6,7 +6,7 @@
 {% block title %}{{update.title}} - {% endblock title %}
 
 {% block head %}
-    <meta property="og:title" content="Akvo.org - {{update.title}}"/>
+    <meta property="og:title" content="{{update.user.userprofile.organisation.name}} - {{update.title}}"/>
     <meta property="og:description" content="{{update.text}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'update_main' project_id=project.id update_id=update.id %}"/>
     {% if update.photo %}

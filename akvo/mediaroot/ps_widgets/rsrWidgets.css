@@ -267,7 +267,6 @@ ul.basicInfo li .projectLocation {
 	background: url(pinLocation.png) left center no-repeat;
 	margin: 0 0 0 5px;
 	text-overflow: ellipsis;
-	overflow: hidden;
 	line-height: 1;
 }
 #container.lightBG ul.basicInfo li .projectLocation {
@@ -428,11 +427,10 @@ li.neededBudget {
 .html5-progress-bar progress {
 	background-color: #f3f3f3;
 	border: 0;
-	width: 90%;
-	height: 2px;
-	border-radius: 9px;
+	border-radius: 15px;
 	margin: 0 auto;
 	border: 3px solid rgb(52,52,52);
+    width: 95%;
 }
 .html5-progress-bar progress::-webkit-progress-bar {
  background-color: rgb(225,225,225);

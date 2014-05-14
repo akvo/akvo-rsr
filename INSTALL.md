@@ -1,8 +1,8 @@
-INSTALL.md, v1.1, 29 May 2012 [ogl]
+INSTALL.md, v1.2, 12 Dec 2013 [adriancollier]
 
 Akvo RSR documentation
 ===
 
-* [Akvo RSR documentation](http://www.akvo.org/web/akvo-rsr-documentation)
-* [Akvo RSR installation guide](http://www.akvo.org/web/akvo-rsr-installation)
-* [Akvo RSR user help](http://help.akvo.org)
+* [Akvo RSR documentation](https://github.com/akvo/akvo-rsr/tree/wiki-docs/docs)
+* [Akvo RSR installation guide](https://github.com/akvo/akvo-rsr/tree/wiki-docs/vagrant)
+* [Akvo RSR user help](http://rsrhelp.akvo.org)
