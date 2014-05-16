@@ -7,6 +7,8 @@
 
 import getopt
 import sys
+import collections
+import itertools
 
 from lxml import etree
 
@@ -25,15 +27,88 @@ from requester import Requester
 class HttpNoContent(HttpResponse):
     status_code = 204
 
+def check_activity_language(activity_element):
+    """Checks whether the activity element has an xml:lang tag.
+    If so, look for identical elements (with identical attributes) and check if there is an element containing the
+    xml:lang of the activity element or one element without a xml:lang tag. In these cases, all other elements are
+    removed."""
+
+    def compare_dicts(dict1, dict2):
+        """Compares two dicts while ignoring xml:lang attribute.
+        Returns True if they're the same and False otherwise."""
+
+        dict1_extra = 0
+        dict2_extra = 0
+
+        # Check if xml:lang attribute is present in one dict and missing in the other
+        if '{http://www.w3.org/XML/1998/namespace}lang' in dict1 and \
+                (not '{http://www.w3.org/XML/1998/namespace}lang' in dict2):
+            dict1_extra += 1
+        elif '{http://www.w3.org/XML/1998/namespace}lang' in dict2 and \
+                (not '{http://www.w3.org/XML/1998/namespace}lang' in dict1):
+            dict2_extra += 1
+
+        # Return False if the number of shared attributes is different
+        shared_keys = set(dict1.keys()) & set(dict2.keys())
+        if not ( len(shared_keys) == len(dict1.keys()) - dict1_extra and
+                         len(shared_keys) == len(dict2.keys()) - dict2_extra):
+            return False
+
+        # Return True if all attributes are similar
+        dicts_are_equal = True
+        for key in dict1.keys():
+            if key != '{http://www.w3.org/XML/1998/namespace}lang':
+                dicts_are_equal = dicts_are_equal and (dict1[key] == dict2[key])
+
+        return dicts_are_equal
+
+    def check_lang(element, lang):
+        """Check if the element has the xml:lang corresponding to the activity language or no xml:lang attribute.
+        Return True if so, False otherwise."""
+
+        if not '{http://www.w3.org/XML/1998/namespace}lang' in element.attrib:
+            return True
+
+        elif element.attrib['{http://www.w3.org/XML/1998/namespace}lang'].lower() == lang:
+            return True
+
+        return False
+
+
+    if '{http://www.w3.org/XML/1998/namespace}lang' in activity_element.attrib:
+        lang = activity_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'].lower()
+
+        # For each element in the activity
+        for element in activity_element.iter():
+
+            # Look up the elements' children and count their number of appearances
+            child_tag_list = [child.tag for child in list(element.iterchildren())]
+            child_tag_list_counter = collections.Counter(child_tag_list)
+            multiple_children_list = [i for i in child_tag_list_counter if child_tag_list_counter[i]>1]
+
+            # For all children that appear multiple times
+            for child_tag in multiple_children_list:
+                children = element.findall(child_tag)
+
+                # Make a comparison for all combinations
+                for child1, child2 in itertools.combinations(children, 2):
+                    if compare_dicts(child1.attrib, child2.attrib):
+                        # Remove element if xml:lang differs from activity language and there is another element
+                        # that does match the xml:lang or does not have a xml:lang specified.
+                        if check_lang(child1, lang) and not check_lang(child2, lang):
+                            activity_element.remove(child2)
+                        elif not check_lang(child1, lang) and check_lang(child2, lang):
+                            activity_element.remove(child1)
+
+    return activity_element
+
+
+
 def post_an_activity(activity_element, user):
     try:
         iati_id = activity_element.findall('iati-identifier')[0].text
 
-        # Remove all xml:lang attributes except the one in the iati-activity tag.
-        for element in activity_element.iter():
-            if (not element.tag == 'iati-activity') and\
-                    ('{http://www.w3.org/XML/1998/namespace}lang' in element.attrib.keys()):
-                del element.attrib['{http://www.w3.org/XML/1998/namespace}lang']
+        activity_element = check_activity_language(activity_element)
 
         project = Requester(
             method='post',
@@ -78,11 +153,7 @@ def put_an_activity(activity_element, pk, url_args):
     try:
         iati_id = activity_element.findall('iati-identifier')[0].text
 
-        # Remove all xml:lang attributes except the one in the iati-activity tag.
-        for element in activity_element.iter():
-            if (not element.tag == 'iati-activity') and\
-                    ('{http://www.w3.org/XML/1998/namespace}lang' in element.attrib.keys()):
-                del element.attrib['{http://www.w3.org/XML/1998/namespace}lang']
+        activity_element = check_activity_language(activity_element)
                 
         project = Requester(
             method='put',
