@@ -1020,11 +1020,6 @@ class Project(TimestampsMixin, models.Model):
         def all_partners(self):
                 return self._partners()
 
-        def countries(self):
-            """Returns a queryset of countries for this project"""
-            return Country.objects.filter(id__in=ProjectLocation.objects.filter(project__in=self).
-                                          values_list('country', flat=True))
-
     def __unicode__(self):
         return u'%s' % self.title
 
@@ -2207,7 +2202,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     custom_return_url_text = ValidXMLCharField(_(u'Return URL text'), blank=True, max_length=50, default='',
         help_text=_(
             u'<p>Enter a text for the back button and return URL. '
-            u'Leave empty to display "Back to %organisation name%".</p>'
+            u'Leave empty to display "Back to <em>myorganisation</em>".</p>'
         )
     )
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
