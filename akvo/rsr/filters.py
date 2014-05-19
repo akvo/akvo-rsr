@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from akvo.rsr.iso3166 import CONTINENTS
 
 from akvo.rsr.models import (
-    Organisation, Project, STATUSES, CURRENCY_CHOICES, Country
+    Organisation, Project, STATUSES, CURRENCY_CHOICES
 )
 
 class CheckboxMultipleChoiceField(MultipleChoiceField):
@@ -84,7 +84,6 @@ class ProjectFilterSet(django_filters.FilterSet):
 
     def __init__(self, *args, **kwargs):
         organisation_id = kwargs.pop('organisation_id', None)
-        filtered_countries = kwargs.pop('filtered_countries', False)
         super(ProjectFilterSet, self).__init__(*args, **kwargs)
 
         self.filters['title'].field.widget.input_type = 'search'
@@ -96,8 +95,10 @@ class ProjectFilterSet(django_filters.FilterSet):
 
         self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
 
-        if filtered_countries:
-            countries = kwargs['queryset'].countries()
+        if organisation_id:
+            org = Organisation.objects.get(pk=organisation_id)
+
+            countries = org.countries_where_active()
 
             continents = [('', _(u'All continents'))]
             choices = []
@@ -107,10 +108,9 @@ class ProjectFilterSet(django_filters.FilterSet):
             continents.extend(sorted(choices))
 
             self.filters['continent'].extra.update({'choices': continents})
-            self.filters['locations__country'].extra.update({'queryset': kwargs['queryset'].countries()})
+            self.filters['locations__country'].extra.update({'queryset': countries})
 
-        if organisation_id:
-            qs = Organisation.objects.get(pk=organisation_id).partners()
+            qs = org.partners()
             self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
         else:
             qs = Organisation.objects.all()
