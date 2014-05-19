@@ -1915,6 +1915,9 @@ class ProjectUpdate(TimestampsMixin, models.Model):
             try:
                 data = oembed.site.embed(self.video).get_data()
                 html = data.get('html', '')
+                # Add 'rel=0' to the video link for not showing related Youtube videos
+                if "youtube" in html:
+                    html = html.replace("feature=oembed", "feature=oembed&rel=0")
             except:
                 pass
         return mark_safe(html)
