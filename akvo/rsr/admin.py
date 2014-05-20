@@ -20,6 +20,7 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
+from django.utils.encoding import force_text
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 import os.path
@@ -748,7 +749,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
         ModelForm = self.get_form(request)
         formsets = []
-        inline_instances = self.get_inline_instances(request)
+        inline_instances = self.get_inline_instances(request, None)
         if request.method == 'POST':
             form = ModelForm(request.POST, request.FILES)
             if form.is_valid():
@@ -809,9 +810,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 formsets.append(formset)
 
         adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)),
-                                      self.get_prepopulated_fields(request),
-                                      self.get_readonly_fields(request),
-                                      model_admin=self)
+            self.get_prepopulated_fields(request),
+            self.get_readonly_fields(request),
+            model_admin=self)
         media = self.media + adminForm.media
 
         inline_admin_formsets = []
@@ -820,12 +821,12 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             readonly = list(inline.get_readonly_fields(request))
             prepopulated = dict(inline.get_prepopulated_fields(request))
             inline_admin_formset = helpers.InlineAdminFormSet(inline, formset,
-                                                              fieldsets, prepopulated, readonly, model_admin=self)
+                fieldsets, prepopulated, readonly, model_admin=self)
             inline_admin_formsets.append(inline_admin_formset)
             media = media + inline_admin_formset.media
 
         context = {
-            'title': _('Add %s') % force_unicode(opts.verbose_name),
+            'title': _('Add %s') % force_text(opts.verbose_name),
             'adminform': adminForm,
             'is_popup': "_popup" in request.REQUEST,
             'show_delete': False,
@@ -833,7 +834,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'inline_admin_formsets': inline_admin_formsets,
             'errors': helpers.AdminErrorList(form, formsets),
             'app_label': opts.app_label,
-            }
+        }
         context.update(extra_context or {})
         return self.render_change_form(request, context, form_url=form_url, add=True)
 
