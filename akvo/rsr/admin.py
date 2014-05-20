@@ -85,11 +85,14 @@ class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
             for form in self.forms:
                 if form.is_valid() and not form.cleaned_data.get('DELETE', False):
                     form_count += 1
-                    primary_count += 1 if form.cleaned_data['primary'] else 0
+                    try:
+                        primary_count += 1 if form.cleaned_data['primary'] else 0
+                    except:
+                        pass
                 # if we have any forms left there must be exactly 1 primary location
             if form_count > 0 and not primary_count == 1:
                 self._non_form_errors = ErrorList([
-                    _(u'The project must have exactly one primary location if any locations at all are to be included')
+                    _(u'The project must have exactly one filled in primary location if any locations at all are to be included')
                 ])
 
 
@@ -120,7 +123,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',
-                                                'content_owner',)}),
+                                                'allow_edit',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
@@ -354,9 +357,28 @@ class BudgetItemLabelAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
 
 
+class BudgetItemAdminInLineFormSet(forms.models.BaseInlineFormSet):
+    def clean(self):
+        super(BudgetItemAdminInLineFormSet, self).clean()
+
+        budget_item_count = 0
+        including_total = False
+        for form in self.forms:
+            if not form.is_valid():
+                return
+            if form.cleaned_data and not form.cleaned_data.get('DELETE'):
+                budget_item_count += 1
+                if form.cleaned_data.get('label').label == 'total':
+                    including_total = True
+
+        if budget_item_count > 1 and including_total:
+            raise forms.ValidationError(_("The 'total' budget item cannot be used in combination with other budget items."))
+
+
 class BudgetItemAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budgetitem')
     extra = 1
+    formset = BudgetItemAdminInLineFormSet
 
     class Media:
         css = {'all': (os.path.join(settings.MEDIA_URL, 'akvo/css/src/rsr_admin.css').replace('\\', '/'),)}
@@ -674,12 +696,14 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         qs = super(ProjectAdmin, self).queryset(request)
         opts = self.opts
+        user_profile = request.user.get_profile()
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            projects = request.user.get_profile().organisation.all_projects()
-            #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
-            return qs.filter(pk__in=projects)
+            projects = user_profile.organisation.all_projects()
+            # Access to Partner users may be limited by Support partner "ownership"
+            allowed_projects = [project.pk for project in projects if user_profile.allow_edit(project)]
+            return qs.filter(pk__in=allowed_projects)
         else:
             raise PermissionDenied
 
@@ -695,16 +719,22 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         "own" projects, organisation and user profiles
         """
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        user = request.user
+        user_profile = user.get_profile()
+
+        # RSR editors/managers
+        if user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return True
-        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            projects = request.user.get_profile().organisation.all_projects()
-           #projects = get_model('rsr', 'organisation').projects.filter(pk__in=[request.user.get_profile().organisation.pk])
+
+        # RSR Partner admins/editors
+        if user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            # On the Project form
             if obj:
-                return obj in projects
-            else:
-                return True
+                return user_profile.allow_edit(obj)
+            return True
+
         return False
+
 
     @csrf_protect_m
     @transaction.commit_on_success
@@ -1100,7 +1130,7 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'fields': ('title','text','language', ),
         }),
         (_(u'Image and video'), {
-            'fields': ('photo', 'photo_location', 'photo_caption', 'photo_credit', 'video', 'video_caption', 'video_credit',),
+            'fields': ('photo', 'photo_caption', 'photo_credit', 'video', 'video_caption', 'video_credit',),
         }),
     )
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
@@ -1179,7 +1209,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         # the 'notes' field is added in get_fieldsets() for eligible users
         (u'General', dict(fields=('organisation', 'enabled',))),
-        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url',))),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text'))),
         (u'Style and content',
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),

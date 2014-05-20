@@ -42,7 +42,15 @@ class SignInView(PartnerSitesMixin, FormView):
     def form_valid(self, form):
         """On valid form login and redirect the user to the appropriate url"""
         login(self.request, form.get_user())
-        return HttpResponseRedirect(self.request.POST.get('next', '/'))
+
+        redirect_blacklist = [reverse('sign_in'),
+                              reverse('sign_out')]
+
+        redirect_to = self.request.POST.get('next', '/')
+        if redirect_to in redirect_blacklist:
+            redirect_to = "/"
+
+        return HttpResponseRedirect(redirect_to)
 
     def get_context_data(self, **kwargs):
         context = super(SignInView, self).get_context_data(**kwargs)
@@ -88,8 +96,8 @@ class SignInView(PartnerSitesMixin, FormView):
         hostname = self.request.partner_site.hostname
         app_domain = getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org')
         request_path = self.request.get_full_path()
-        url = 'http://%s.%s%s' % (hostname, app_domain, request_path)
 
+        url = 'http://%s.%s%s' % (hostname, app_domain, request_path)
         if getattr(settings, 'HTTPS_SUPPORT', True):
             return url.replace('http://', 'https://')
         return url

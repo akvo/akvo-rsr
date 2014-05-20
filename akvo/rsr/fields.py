@@ -12,6 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from south.modelsinspector import add_introspection_rules
 
+from akvo.rsr.validators import string_validator
+
 
 class NullCharField(models.CharField):
 
@@ -48,7 +50,25 @@ class LongitudeField(models.FloatField):
         self.validators = [MinValueValidator(-180), MaxValueValidator(180)]
 
 
-class LimitedTextField(models.TextField):
+class ValidXMLCharField(models.CharField):
+
+    description = "A CharField containing only valid XML characters"
+
+    def __init__(self, *args, **kwargs):
+        super(ValidXMLCharField, self).__init__(*args, **kwargs)
+        self.validators += [string_validator]
+
+
+class ValidXMLTextField(models.TextField):
+
+    description = "A TextField containing only valid XML characters"
+
+    def __init__(self, *args, **kwargs):
+        super(ValidXMLTextField, self).__init__(*args, **kwargs)
+        self.validators += [string_validator]
+
+
+class LimitedTextField(ValidXMLTextField):
 
     description = "A TextField that honors the max_length param"
 
@@ -78,5 +98,7 @@ class ProjectLimitedTextField(LimitedTextField):
 add_introspection_rules([], ["^akvo\.rsr\.fields\.NullCharField"])
 add_introspection_rules([], ["^akvo\.rsr\.fields\.LatitudeField"])
 add_introspection_rules([], ["^akvo\.rsr\.fields\.LongitudeField"])
+add_introspection_rules([], ["^akvo\.rsr\.fields\.ValidXMLCharField"])
+add_introspection_rules([], ["^akvo\.rsr\.fields\.ValidXMLTextField"])
 add_introspection_rules([], ["^akvo\.rsr\.fields\.LimitedTextField"])
 add_introspection_rules([], ["^akvo\.rsr\.fields\.ProjectLimitedTextField"])

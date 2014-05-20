@@ -14,9 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.iso3166 import CONTINENTS
 
-from akvo.rsr.models import (
-    Organisation, Project, STATUSES, CURRENCY_CHOICES
-)
+from akvo.rsr.models import Organisation, Project, STATUSES, CURRENCY_CHOICES
 
 class CheckboxMultipleChoiceField(MultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple

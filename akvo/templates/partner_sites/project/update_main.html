@@ -6,7 +6,7 @@
 {% block title %}{{update.title}} - {% endblock title %}
 
 {% block head %}
-    <meta property="og:title" content="Akvo.org - {{update.title}}"/>
+    <meta property="og:title" content="{{update.user.userprofile.organisation.name}} - {{update.title}}"/>
     <meta property="og:description" content="{{update.text}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'update_main' project_id=project.id update_id=update.id %}"/>
     {% if update.photo %}
@@ -120,14 +120,6 @@
       	</div>
     	{% endif %}
     
-    
-    {% if update.text_location == 'B' %}
-      <p class="small grey">
-        {% autoescape off %}
-          {{ update.text|force_escape|urlize|markdown }}
-        {% endautoescape %}
-      </p>
-    {% endif %}	
     {% if update.video %}
       <div class="marg20">
         <div style="width:580px; max-width:580px; overflow:auto;">
@@ -151,13 +143,11 @@
         {% update_thumb update 580 435 %}
       </div>
     {% endif %}
-    {% if update.text_location == 'E' %}
-      <p class="small grey">
-        {% autoescape off %}
-          {{ update.text|force_escape|urlize|markdown }}
-        {% endautoescape %}
-      </p>
-    {% endif %}
+    <p class="small grey">
+      {% autoescape off %}
+        {{ update.text|force_escape|urlize|markdown }}
+      {% endautoescape %}
+    </p>
     <hr style="margin-bottom:5px;" />
     <div class="txt_right">
       <a class="small" href=".">{% trans 'Permalink' %}</a>

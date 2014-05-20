@@ -52,6 +52,7 @@ class PartnerSitesMixin(object):
             Organisation, pk=self.request.organisation_id
         )
         context['return_url'] = self.request.partner_site.return_url
+        context['return_url_text'] = self.request.partner_site.custom_return_url_text
         context['stylesheet'] = self.request.partner_site.stylesheet
         context['akvoapp_root_url'] = self.request.akvoapp_root_url
         context['domain_url'] = self.request.domain_url

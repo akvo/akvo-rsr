@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load i18n rsr_filters rsr_tags thumbnail humanize project_map %}
+{% load i18n rsr_filters rsr_tags thumbnail humanize maps %}
 {% load url from future %}
 
 
@@ -84,7 +84,7 @@
           </p>
           {% if organisation.primary_location %}
             {% if organisation.primary_location.latitude != 0.0 or organisation.primary_location.longitude != 0.0 %}
-              {% project_map 1 1 organisation.pk 180 135 %}
+              {% organisation_map organisation.pk 180 135 %}
             {% else %}
               <p class="small" style="color: red;">{% trans 'No map available' %}</p>
             {% endif %}
