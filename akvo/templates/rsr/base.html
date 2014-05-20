@@ -1,4 +1,4 @@
-{% load i18n rsr_tags webdesign piwik_tags %}
+{% load i18n rsr_tags webdesign piwik_tags staticfiles %}
 {% load url from future %}
 
 
@@ -17,17 +17,21 @@
 	<title>Akvo.org - {% block title %}{% trans 'See it happen' %}{% endblock %}</title>
 
   <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,900,700,600,300,200,500|Questrial|Inconsolata|Muli:400,300italic,400italic,300|Raleway:400,900,800,700,600,500,100,200,300|Lobster|Lobster+Two:400,400italic,700,700italic|Lato:400,100,300,700,900,100italic,300italic,400italic,900italic,700italic' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="{% static "rsr/site/css/akvo_style_min.css" %}" type="text/css" media="screen" title="main">
+  {% comment %}
 	{% asset_bundle 'akvo_style' %}
 	<!--[if IE 6]>
 		{% asset_bundle 'akvo_ie6_style' %}
 	<![endif]-->
+  {% endcomment %}
 
   <style type="text/css" media="screen">
   	{% block inline_styles %}{% endblock inline_styles %}
 	</style>
   
-	<link rel="shortcut icon" href="{{MEDIA_URL}}akvo/img/favicon.ico" type="image/x-icon">
-
+  <link rel="shortcut icon" href="{% static "rsr/site/img/favicon.ico" %}" type="image/x-icon">
+  
   {#  Piwik #}
   {% tracking_code %}
 
@@ -203,16 +207,15 @@
       </section>
       <!-- <p id="back-top"> <a href="#header"><span></span>Back to Top</a> </p> -->
     </div>
-    <?php wp_footer(); ?>
   </footer>
 
   {% if debug %}
-    <script src="{{MEDIA_URL}}core/js/jquery-1.7.1.js"></script>
-    <script src="{{MEDIA_URL}}core/js/jquery-ui.1.8.9.js"></script>
+    <script src="{% static "lib/js/jquery-1.7.1.js" %}"></script>
+    <script src="{% static "lib/js/jquery-ui.1.8.9.js" %}"></script>
   {% else %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script type="text/javascript">
-      !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.7.1.min.js"><\/script>');
+      !window.jQuery && document.write('<script src="{% static "rsr/site/lib/js/jquery-1.7.1.min.js" %}"><\/script>');
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
   {% endif %}
@@ -222,7 +225,12 @@
     !window.google && document.write('<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"><\/script>');
   </script>
 
-  {% asset_bundle 'akvo_script' %}
+  {# asset_bundle 'akvo_script' #}
+  <script src="{% static "lib/js/galleria.1.1.95.js" %}"></script>
+  <script src="{% static "lib/js/jquery.ui.map.full.min.js" %}"></script>
+  <script src="{% static "lib/js/handlebars-1.0.rc.1.js" %}"></script>
+  <script src="{% static "lib/js/purl-2.2.1.js" %}"></script>
+  <script src="{% static "common/js/akvo-maps.js" %}"></script>
 
 	<script type="text/javascript">{% block inline_js %}{% endblock inline_js %}</script>
 	{% block js %}{% endblock js %}
