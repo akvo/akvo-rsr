@@ -10,12 +10,10 @@ import os
 import sys
 import tablib
 
-from django.core.management import setup_environ
-from django.utils.encoding import smart_str, smart_unicode
-
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 from akvo import settings
 
-setup_environ(settings)
+from django.utils.encoding import smart_str, smart_unicode
 
 API_VERSION = 'v1'
 

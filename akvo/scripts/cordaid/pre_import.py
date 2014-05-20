@@ -14,11 +14,8 @@ import sys
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
-from django.core.management import setup_environ
 
-from akvo import settings
-
-setup_environ(settings)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import (

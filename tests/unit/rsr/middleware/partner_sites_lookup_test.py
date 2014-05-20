@@ -52,9 +52,8 @@ if __name__ == '__main__':
 
 import mox
 
-from django.core.management import setup_environ
-import akvo.settings
-setup_environ(akvo.settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from django.contrib.sites.models import Site, SiteManager
 
