@@ -160,7 +160,7 @@
     addPin = function (map, location, template) {
         var marker, opts;
         opts = map.mapOpts;
-        marker = opts.host + opts.media_url + 'core/img/';
+        marker = opts.host + opts.media_url + 'common/img/';
 
         // get a custom marker if there is one, otherwise it's red for organisations and blue for projects
         if (opts.marker_icon) {
