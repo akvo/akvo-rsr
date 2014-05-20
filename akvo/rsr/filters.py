@@ -14,9 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.iso3166 import CONTINENTS
 
-from akvo.rsr.models import (
-    Organisation, Project, STATUSES, CURRENCY_CHOICES,
-)
+from akvo.rsr.models import Organisation, Project, STATUSES, CURRENCY_CHOICES
 
 class CheckboxMultipleChoiceField(MultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -96,7 +94,21 @@ class ProjectFilterSet(django_filters.FilterSet):
         self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
 
         if organisation_id:
-            qs = Organisation.objects.get(pk=organisation_id).partners()
+            org = Organisation.objects.get(pk=organisation_id)
+
+            countries = org.countries_where_active()
+
+            continents = [('', _(u'All continents'))]
+            choices = []
+            for country in countries:
+                if not country.continent_code in [code[0] for code in choices]:
+                    choices.append((country.continent_code, _(country.continent)))
+            continents.extend(sorted(choices))
+
+            self.filters['continent'].extra.update({'choices': continents})
+            self.filters['locations__country'].extra.update({'queryset': countries})
+
+            qs = org.partners()
             self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
         else:
             qs = Organisation.objects.all()
