@@ -1,5 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load i18n rsr_filters rsr_tags thumbnail humanize maps %}
+{% load i18n rsr_filters rsr_tags thumbnail humanize maps static %}
 {% load url from future %}
 
 
@@ -38,14 +38,14 @@
       <h1 style="margin-bottom:0px;">{{organisation.name}}</h1>
       <div style="float:right; width:20px; text-align:right;">
         <a href="{%  url 'rss_org_updates' organisation.id %}">
-          <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
+          <img src="{% static "common/img/icon_rss.gif" %}" width="12" height="12" alt="RSS" title="RSS">
         </a>
       </div>
       <p class="grey">{{organisation.long_name}}, {{organisation.primary_location.country}}</p>
     {% else %}
       <div style="float:right; width:20px; text-align:right; margin-top: 10px;">
-        <a href="{%  url 'rss_org_updates' organisation.id %}">
-          <img src="{{MEDIA_URL}}core/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
+        <a href="{% url 'rss_org_updates' organisation.id %}">
+          <img src="{% static "common/img/icon_rss.gif" %}" width="12" height="12" alt="RSS" title="RSS">
         </a>
       </div>
       <h1>{{organisation.name}}</h1>

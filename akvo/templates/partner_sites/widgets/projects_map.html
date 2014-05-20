@@ -1,7 +1,7 @@
 {% load cache maps humanize i18n rsr_tags %}
-
 {% load url from future %}
-
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
 
 <!doctype html>
 <html lang="en">
@@ -34,7 +34,7 @@
 {% partnersite_widget_project_map organisation.id width height|add:-30 state %}
   <div id="footer">
     <a href="http://akvo.org">
-      <img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
+      <img src="{{ STATIC_URL }}rsr/widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
     </a>
   </div>
 </body>

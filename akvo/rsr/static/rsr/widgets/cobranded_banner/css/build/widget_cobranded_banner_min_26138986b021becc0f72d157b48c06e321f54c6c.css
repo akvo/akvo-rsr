@@ -1,0 +1,779 @@
+
+
+/*---------------------------------------------------------------------------
+ Contents from: x_reset.css
+---------------------------------------------------------------------------*/
+
+/* 
+html5doctor.com Reset Stylesheet
+v1.4.1 
+2010-03-01
+Author: Richard Clark - http://richclarkdesign.com
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+body {
+    line-height:1;
+}
+
+article,aside,canvas,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section,summary { 
+	display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, q {
+    quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    border:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted #000;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, select {
+    vertical-align:middle;
+}
+
+
+/*---------------------------------------------------------------------------
+ Contents from: x_typography.css
+---------------------------------------------------------------------------*/
+
+body {font-size:75%;color:#222;background:#fff;font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;}
+h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#111;}
+h1 {font-size:3em;line-height:1;margin-bottom:0.5em;}
+h2 {font-size:2em;margin-bottom:0.75em;}
+h3 {font-size:1.5em;line-height:1;margin-bottom:1em;}
+h4 {font-size:1.2em;line-height:1.25;margin-bottom:1.25em;}
+h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+h6 {font-size:1em;font-weight:bold;}
+h1 img, h2 img, h3 img, h4 img, h5 img, h6 img {margin:0;}
+p {margin:0 0 1.5em;}
+p img.widget_cobranded_banner-left {float:left;margin:1.5em 1.5em 1.5em 0;padding:0;}
+p img.widget_cobranded_banner-right {float:right;margin:1.5em 0 1.5em 1.5em;}
+a:focus, a:hover {color:#000;}
+a {color:#009;text-decoration:underline;}
+blockquote {margin:1.5em;color:#666;font-style:italic;}
+strong {font-weight:bold;}
+em, dfn {font-style:italic;}
+dfn {font-weight:bold;}
+sup, sub {line-height:0;}
+abbr, acronym {border-bottom:1px dotted #666;}
+address {margin:0 0 1.5em;font-style:italic;}
+del {color:#666;}
+pre {margin:1.5em 0;white-space:pre;}
+pre, code, tt {font:1em 'andale mono', 'lucida console', monospace;line-height:1.5;}
+li ul, li ol {margin:0 1.5em;}
+ul, ol {margin:0 1.5em 1.5em 1.5em;}
+ul {list-style-type:disc;}
+ol {list-style-type:decimal;}
+dl {margin:0 0 1.5em 0;}
+dl dt {font-weight:bold;}
+dd {margin-left:1.5em;}
+table {margin-bottom:1.4em;width:100%;}
+th {font-weight:bold;}
+thead th {background:#c3d9ff;}
+th, td, caption {padding:4px 10px 4px 5px;}
+tr.widget_cobranded_banner-even td {background:#e5ecf9;}
+tfoot {font-style:italic;}
+caption {background:#eee;}
+.widget_cobranded_banner-small {font-size:.8em;margin-bottom:1.875em;line-height:1.875em;}
+.widget_cobranded_banner-large {font-size:1.2em;line-height:2.5em;margin-bottom:1.25em;}
+.widget_cobranded_banner-hide {display:none;}
+.widget_cobranded_banner-quiet {color:#666;}
+.widget_cobranded_banner-loud {color:#000;}
+.widget_cobranded_banner-highlight {background:#ff0;}
+.widget_cobranded_banner-added {background:#060;color:#fff;}
+.widget_cobranded_banner-removed {background:#900;color:#fff;}
+.widget_cobranded_banner-first {margin-left:0;padding-left:0;}
+.widget_cobranded_banner-last {margin-right:0;padding-right:0;}
+.widget_cobranded_banner-top {margin-top:0;padding-top:0;}
+.widget_cobranded_banner-bottom {margin-bottom:0;padding-bottom:0;}
+
+/*---------------------------------------------------------------------------
+ Contents from: x_grid.css
+---------------------------------------------------------------------------*/
+
+.widget_cobranded_banner-container {width:459px;margin:0 auto;}
+.widget_cobranded_banner-showgrid {background:url(src/grid.png);}
+.widget_cobranded_banner-column, div.widget_cobranded_banner-span-1, div.widget_cobranded_banner-span-2, div.widget_cobranded_banner-span-3, div.widget_cobranded_banner-span-4, div.widget_cobranded_banner-span-5, div.widget_cobranded_banner-span-6, div.widget_cobranded_banner-span-7, div.widget_cobranded_banner-span-8, div.widget_cobranded_banner-span-9, div.widget_cobranded_banner-span-10, div.widget_cobranded_banner-span-11, div.widget_cobranded_banner-span-12 {float:left;margin-right:9px;}
+.widget_cobranded_banner-last, div.widget_cobranded_banner-last {margin-right:0;}
+.widget_cobranded_banner-span-1 {width:30px;}
+.widget_cobranded_banner-span-2 {width:69px;}
+.widget_cobranded_banner-span-3 {width:108px;}
+.widget_cobranded_banner-span-4 {width:147px;}
+.widget_cobranded_banner-span-5 {width:186px;}
+.widget_cobranded_banner-span-6 {width:225px;}
+.widget_cobranded_banner-span-7 {width:264px;}
+.widget_cobranded_banner-span-8 {width:303px;}
+.widget_cobranded_banner-span-9 {width:342px;}
+.widget_cobranded_banner-span-10 {width:381px;}
+.widget_cobranded_banner-span-11 {width:420px;}
+.widget_cobranded_banner-span-12, div.widget_cobranded_banner-span-12 {width:459px;margin:0;}
+input.widget_cobranded_banner-span-1, textarea.widget_cobranded_banner-span-1, select.widget_cobranded_banner-span-1 {width:30px!important;}
+input.widget_cobranded_banner-span-2, textarea.widget_cobranded_banner-span-2, select.widget_cobranded_banner-span-2 {width:50px!important;}
+input.widget_cobranded_banner-span-3, textarea.widget_cobranded_banner-span-3, select.widget_cobranded_banner-span-3 {width:89px!important;}
+input.widget_cobranded_banner-span-4, textarea.widget_cobranded_banner-span-4, select.widget_cobranded_banner-span-4 {width:128px!important;}
+input.widget_cobranded_banner-span-5, textarea.widget_cobranded_banner-span-5, select.widget_cobranded_banner-span-5 {width:167px!important;}
+input.widget_cobranded_banner-span-6, textarea.widget_cobranded_banner-span-6, select.widget_cobranded_banner-span-6 {width:206px!important;}
+input.widget_cobranded_banner-span-7, textarea.widget_cobranded_banner-span-7, select.widget_cobranded_banner-span-7 {width:245px!important;}
+input.widget_cobranded_banner-span-8, textarea.widget_cobranded_banner-span-8, select.widget_cobranded_banner-span-8 {width:284px!important;}
+input.widget_cobranded_banner-span-9, textarea.widget_cobranded_banner-span-9, select.widget_cobranded_banner-span-9 {width:323px!important;}
+input.widget_cobranded_banner-span-10, textarea.widget_cobranded_banner-span-10, select.widget_cobranded_banner-span-10 {width:362px!important;}
+input.widget_cobranded_banner-span-11, textarea.widget_cobranded_banner-span-11, select.widget_cobranded_banner-span-11 {width:401px!important;}
+input.widget_cobranded_banner-span-12, textarea.widget_cobranded_banner-span-12, select.widget_cobranded_banner-span-12 {width:449px!important;}
+.widget_cobranded_banner-append-1 {padding-right:39px;}
+.widget_cobranded_banner-append-2 {padding-right:78px;}
+.widget_cobranded_banner-append-3 {padding-right:117px;}
+.widget_cobranded_banner-append-4 {padding-right:156px;}
+.widget_cobranded_banner-append-5 {padding-right:195px;}
+.widget_cobranded_banner-append-6 {padding-right:234px;}
+.widget_cobranded_banner-append-7 {padding-right:273px;}
+.widget_cobranded_banner-append-8 {padding-right:312px;}
+.widget_cobranded_banner-append-9 {padding-right:351px;}
+.widget_cobranded_banner-append-10 {padding-right:390px;}
+.widget_cobranded_banner-append-11 {padding-right:429px;}
+.widget_cobranded_banner-prepend-1 {padding-left:39px;}
+.widget_cobranded_banner-prepend-2 {padding-left:78px;}
+.widget_cobranded_banner-prepend-3 {padding-left:117px;}
+.widget_cobranded_banner-prepend-4 {padding-left:156px;}
+.widget_cobranded_banner-prepend-5 {padding-left:195px;}
+.widget_cobranded_banner-prepend-6 {padding-left:234px;}
+.widget_cobranded_banner-prepend-7 {padding-left:273px;}
+.widget_cobranded_banner-prepend-8 {padding-left:312px;}
+.widget_cobranded_banner-prepend-9 {padding-left:351px;}
+.widget_cobranded_banner-prepend-10 {padding-left:390px;}
+.widget_cobranded_banner-prepend-11 {padding-left:429px;}
+div.widget_cobranded_banner-border {padding-right:3px;margin-right:4px;border-right:1px solid #eee;}
+div.widget_cobranded_banner-colborder {padding-right:24px;margin-right:25px;border-right:1px solid #eee;}
+.widget_cobranded_banner-pull-1 {margin-left:-39px;}
+.widget_cobranded_banner-pull-2 {margin-left:-78px;}
+.widget_cobranded_banner-pull-3 {margin-left:-117px;}
+.widget_cobranded_banner-pull-4 {margin-left:-156px;}
+.widget_cobranded_banner-pull-5 {margin-left:-195px;}
+.widget_cobranded_banner-pull-6 {margin-left:-234px;}
+.widget_cobranded_banner-pull-7 {margin-left:-273px;}
+.widget_cobranded_banner-pull-8 {margin-left:-312px;}
+.widget_cobranded_banner-pull-9 {margin-left:-351px;}
+.widget_cobranded_banner-pull-10 {margin-left:-390px;}
+.widget_cobranded_banner-pull-11 {margin-left:-429px;}
+.widget_cobranded_banner-pull-12 {margin-left:-468px;}
+.widget_cobranded_banner-pull-1, .widget_cobranded_banner-pull-2, .widget_cobranded_banner-pull-3, .widget_cobranded_banner-pull-4, .widget_cobranded_banner-pull-5, .widget_cobranded_banner-pull-6, .widget_cobranded_banner-pull-7, .widget_cobranded_banner-pull-8, .widget_cobranded_banner-pull-9, .widget_cobranded_banner-pull-10, .widget_cobranded_banner-pull-11, .widget_cobranded_banner-pull-12 {float:left;position:relative;}
+.widget_cobranded_banner-push-1 {margin:0 -39px 1.5em 39px;}
+.widget_cobranded_banner-push-2 {margin:0 -78px 1.5em 78px;}
+.widget_cobranded_banner-push-3 {margin:0 -117px 1.5em 117px;}
+.widget_cobranded_banner-push-4 {margin:0 -156px 1.5em 156px;}
+.widget_cobranded_banner-push-5 {margin:0 -195px 1.5em 195px;}
+.widget_cobranded_banner-push-6 {margin:0 -234px 1.5em 234px;}
+.widget_cobranded_banner-push-7 {margin:0 -273px 1.5em 273px;}
+.widget_cobranded_banner-push-8 {margin:0 -312px 1.5em 312px;}
+.widget_cobranded_banner-push-9 {margin:0 -351px 1.5em 351px;}
+.widget_cobranded_banner-push-10 {margin:0 -390px 1.5em 390px;}
+.widget_cobranded_banner-push-11 {margin:0 -429px 1.5em 429px;}
+.widget_cobranded_banner-push-12 {margin:0 -468px 1.5em 468px;}
+.widget_cobranded_banner-push-1, .widget_cobranded_banner-push-2, .widget_cobranded_banner-push-3, .widget_cobranded_banner-push-4, .widget_cobranded_banner-push-5, .widget_cobranded_banner-push-6, .widget_cobranded_banner-push-7, .widget_cobranded_banner-push-8, .widget_cobranded_banner-push-9, .widget_cobranded_banner-push-10, .widget_cobranded_banner-push-11, .widget_cobranded_banner-push-12 {float:right;position:relative;}
+.widget_cobranded_banner-prepend-top {margin-top:1.5em;}
+.widget_cobranded_banner-append-bottom {margin-bottom:1.5em;}
+.widget_cobranded_banner-box {padding:1.5em;margin-bottom:1.5em;background:#E5ECF9;}
+hr {background:#ddd;color:#ddd;clear:both;float:none;width:100%;height:.1em;margin:0 0 1.45em;border:none;}
+hr.widget_cobranded_banner-space {background:#fff;color:#fff;}
+.widget_cobranded_banner-clearfix:after, .widget_cobranded_banner-container:after {content:"\0020";display:block;height:0;clear:both;visibility:hidden;overflow:hidden;}
+.widget_cobranded_banner-clearfix, .widget_cobranded_banner-container {display:block;}
+.widget_cobranded_banner-clear {clear:both;}
+
+/*---------------------------------------------------------------------------
+ Contents from: x_forms.css
+---------------------------------------------------------------------------*/
+
+label {font-weight:bold;}
+fieldset {padding:1.4em;margin:0 0 1.5em 0;border:1px solid #ccc;}
+legend {font-weight:bold;font-size:1.2em;}
+input.widget_cobranded_banner-text, input.widget_cobranded_banner-title, textarea, select {margin:0.5em 0;border:1px solid #bbb;}
+input.widget_cobranded_banner-text:focus, input.widget_cobranded_banner-title:focus, textarea:focus, select:focus {border:1px solid #666;}
+input.widget_cobranded_banner-text, input.widget_cobranded_banner-title {width:300px;padding:5px;}
+input.widget_cobranded_banner-title {font-size:1.5em;}
+textarea {width:390px;height:250px;padding:5px;}
+.widget_cobranded_banner-error, .widget_cobranded_banner-notice, .widget_cobranded_banner-success {padding:.8em;margin-bottom:1em;border:2px solid #ddd;}
+.widget_cobranded_banner-error {background:#FBE3E4;color:#8a1f11;border-color:#FBC2C4;}
+.widget_cobranded_banner-notice {background:#FFF6BF;color:#514721;border-color:#FFD324;}
+.widget_cobranded_banner-success {background:#E6EFC2;color:#264409;border-color:#C6D880;}
+.widget_cobranded_banner-error a {color:#8a1f11;}
+.widget_cobranded_banner-notice a {color:#514721;}
+.widget_cobranded_banner-success a {color:#264409;}
+
+/*---------------------------------------------------------------------------
+ Contents from: ../../../base/css/src/widget_global_horizontal.css
+---------------------------------------------------------------------------*/
+
+html {
+	margin: 0;
+	overflow:auto;
+	border: none;
+	height:100%;
+}
+
+body {
+	margin: 0;
+	border:none;
+	font-family: Helvetica, Arial, "MS Trebuchet", sans-serif;
+	overflow: visible;
+}
+
+p {
+	line-height:1.3em;
+	font-size:1.0em; /* 0.9*/
+}
+
+table {
+	margin:0;
+}
+
+a {
+	color:#0073bc;
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
+
+h2 {
+	color:#EC008D;
+	margin: 1px 0px 7px 0px;
+	padding:0;
+	font-size:1.3em !important;
+	font-weight:bold;
+	line-height:1.3em;
+}
+
+
+.black {
+	color:#000;
+}
+
+.grey {
+	color:#7b7f8e;
+}
+
+.lightgrey {
+	color:#CFCED7;
+}
+
+.green {
+	color:#008c00;
+}
+
+.red {
+	color:#ec0056;
+}
+
+.arrowSize {
+	font-size:0.7em;
+}
+
+.smallFont {
+	margin:0;
+}
+
+.miniFont {
+	font-size:0.8em;
+	margin:0;
+}
+
+.capz {
+	text-transform: uppercase;
+}
+
+.topmargin {
+	margin-top:3px;
+}
+
+.right {
+	text-align:right;
+}
+
+.left {
+    text-align:left;
+}
+
+hr.divider {
+	margin: 12px 0 13px 0;
+	width:100%;
+	display: inline-block;
+}
+
+div#next_control {
+	width:45%; 
+	float:left; 
+	margin: 0px 0px 3px 0px;
+	padding: 0px;
+	font-size:0.9em;
+}
+
+div#prev_control {
+	float:right; 
+	width:45%; 
+	margin: 0px 0px 3px 0px;
+	padding: 0px;
+	text-align:right;
+	font-size:0.9em;
+}
+
+.inner {
+    padding:5px;
+}
+
+/*------------------------------------------------------------------ 
+[1. common styles] 
+*/
+h2#project_title {
+	margin-top:13px;
+} 
+
+p#project_subtitle {
+	margin-bottom:5px;
+}
+
+div.photo_frame {
+	margin:0;
+	margin-bottom:7px;
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+	max-width:185px;
+	width:185px;
+	overflow:hidden !important;
+}
+
+p#project_plan_summary {
+	margin-top:3px;
+	margin-bottom:0;
+}
+
+
+
+/*------------------------------------------------------------------ 
+[1. container] 
+*/
+#container {
+	border-left:1px solid #9B9AAC;
+	border-right:1px solid #9B9AAC;
+}
+
+#container a {
+	color: #0073bc;
+	text-decoration:none;
+}
+
+#container a:hover {
+	text-decoration:underline;
+	color: #0073bc;
+}
+
+/*------------------------------------------------------------------ 
+[1. Header] 
+*/
+
+#header {
+	color:#fff;
+	padding:0;
+	padding-top:2px;
+	padding-bottom:0px;
+	border-top:1px solid #9B9AAC;
+}
+
+#header h1 {
+	color:#fff;
+	display: inline;
+	font-size:1.2em;
+	font-weight:bold;
+	padding-left:10px;
+	line-height:24px;
+}
+
+#header h1 span {
+	font-size:0.9em;
+	font-weight:normal;
+}
+
+#header p {
+	display:inline;
+}
+
+#header a {
+	color: #65ffff !important;
+	text-decoration:none;
+}
+
+#header a:hover {
+	text-decoration:underline;
+	color: #65ffff !important;
+}
+
+
+/*------------------------------------------------------------------ 
+[1. Footer] 
+*/
+
+#footer {
+	color:#fff;
+	text-align:right;
+	border-bottom:1px solid #9B9AAC;
+}
+#footer img {
+	margin:5px;
+	padding:0;
+}
+
+/* fundingbox */
+
+.fundingwrap {
+	margin:0;
+	padding:0;
+	text-align:center;
+	font-size:1.0em;
+}
+
+.fundingbox-header {
+	background: transparent url(../../../img/fundingbox.png) no-repeat 0 0;
+	height:5px;
+	width:172px;
+	overflow:hidden;
+	margin:5px auto 0px auto;
+}
+
+.fundingbox-footer {
+    background: transparent url(../../../img/fundingbox.png) no-repeat -344px 0;
+	height:6px;
+	width:172px;
+	overflow:hidden;
+	margin:0px auto 5px auto;
+}
+
+.fundingbox-content {
+	background: transparent url(../../../img/fundingbox.png) repeat-y -172px 0;
+	width:172px;
+	margin:0px auto 0px auto;
+	overflow:hidden;
+	text-align:center;
+}
+
+table.fundingbox-table  {
+	width:162px;
+	margin: 5px 5px 0px 5px;
+	padding-left:3px;
+	padding-right:3px;
+}
+
+table.fullyfunded-table {
+	width:120px !important;
+	margin: 30px auto 10px auto !important;
+}
+
+
+table.fullyfunded-table th {
+	text-align:right !important;
+}
+table.fullyfunded-table td {
+	text-align:left !important;
+}
+
+
+.fundingbox-table th {
+	padding: 0px 1px 0px 1px;
+	margin: 2px 0px 0px 0px;
+}
+
+.fundingbox-table td {
+	text-align:right;
+	padding: 0px 1px 0px 1px;
+	margin: 2px 0px 0px 0px;
+	font-weight:bold;
+}
+
+.fundingbox-progress-bar {
+	background-color:#ffefeb;
+	border:1px solid #625e5b;
+	margin:5px 9px 0px 9px;
+	padding:0;
+	height:12px;
+	overflow:hidden;
+	text-align:left;
+}
+
+.fundingbox-progress-bar-progress {
+	background-color:#00b200 !important;
+	height:12px;
+}
+
+.fundingbox-donate-container {
+	width:154px;
+	padding:0px 0px 0px 0px;
+	margin:3px auto 0px auto;
+	text-align:center;
+	overflow:hidden;
+}
+
+.fundingbox-funded{
+	margin: 0px auto 0px auto !important;
+	padding:0;
+	padding-top:35px;
+	width:90%;
+	max-width:90%;
+	text-align:center;
+}
+
+div.fullyfunded-text {
+	border-bottom:1px solid #9B9AAC;
+	margin:0;
+	margin-bottom:10px;
+	padding-bottom:10px;
+}
+
+.fullyfunded-text p {
+	margin:0;
+	padding:0;
+	color:#008c00 !important;
+	font-size:12px; 
+	font-weight:bold;
+}
+
+.fundingbox-donate-funded {
+	border-top:1px solid #9B9AAC; 
+	margin-top:5px;
+}
+
+.fundingbox-donate-funded p {
+	padding:0; 
+	margin: 5px 0px 0px 0px;
+}
+
+.fundingbox-donate-left p {
+	margin:0;
+	padding:0;
+}
+
+a.fundingbox-donate-left-button {
+	color:#000 !important;
+	background: transparent url(../../../img/donate-button.gif) no-repeat;
+	display:block;
+	width:75px;
+	padding-top:5px;
+	padding-bottom:6px;
+	margin: 5px auto 0px auto;
+	overflow:hidden;
+}
+
+.fundingbox-donate-right p {
+	margin:0;
+	padding:0;
+}
+
+.fundingbox-donate-right-sponsor {
+	display:block; 
+	margin-top:10px;
+}
+
+/* funding_box_wide */
+
+.fundingboxwide-header {
+	background: transparent url(../../../img/fundingbox_wide.png) no-repeat 0 0;
+	height:5px;
+	width:260px;
+	overflow:hidden;
+	margin:5px auto 0px auto;
+}
+.fundingboxwide-footer {
+    background: transparent url(../../../img/fundingbox_wide.png) no-repeat -520px 0;
+	height:6px;
+	width:260px;
+	overflow:hidden;
+	margin:0px auto 5px auto;
+}
+.fundingboxwide-content {
+	background: transparent url(../../../img/fundingbox_wide.png) repeat-y -260px 0;
+	width:260px;
+	margin:0px auto 0px auto;
+	overflow:hidden;
+	text-align:center;
+}
+
+
+/* start new button */
+
+
+div#donate_individual {
+	width:47%; 
+	float:left; 
+	margin: 0px 0px 3px 0px;
+	padding: 0px;
+	padding-left:10px;
+	font-size:0.9em;
+	text-align:center;
+	margin-top:10px;
+}
+
+div#donate_institutions {
+	float:right; 
+	width:44%; 
+	margin: 0px 0px 3px 0px;
+	padding: 0px;
+	padding-right:5px;
+	text-align:right;
+	font-size:0.9em;
+	text-align:center;
+	margin-top:10px;
+}
+
+
+a.donate_button {
+	background:  transparent url(../../../img/donate_button.gif) no-repeat 0px 0px;
+	color: #000 !important;
+	display: block;
+	font: normal 12px arial, sans-serif;
+	height: 24px;
+	width:75px;
+	text-decoration: none !important;
+	outline: none;
+	margin-top:3px;
+}
+a.donate_button:hover {
+	background:  transparent url(../../../img/donate_button.gif) no-repeat 0px -23px;
+	color: #000 !important;
+	display: block;
+	font: normal 12px arial, sans-serif;
+	height: 24px;
+	width:75px;
+	text-decoration: none !important;
+	outline: none;
+}
+a.donate_button:active {
+	background:  transparent url(../../../img/donate_button.gif) no-repeat 0px -46px;
+	color: #fff !important;
+	display: block;
+	font: normal 12px arial, sans-serif;
+	height: 24px;
+	width:75px;
+	text-decoration: none !important;
+	outline: none;
+}
+
+/*
+a.donate_button:focus {
+	background: transparent url('../../img/donate-button-pushed.gif') no-repeat scroll top left;
+	color: #000 !important;
+	display: block;
+	font: normal 12px arial, sans-serif;
+	height: 24px;
+	width:75px;
+	text-decoration: none !important;
+	outline: none;
+}
+*/
+
+a.donate_button span {
+    display: block;
+    line-height: 14px;
+	padding:5px;
+}
+
+/* stop new button */
+
+
+/* fundingbox grid*/
+div.widget_donate_box-span-1, div.widget_donate_box-span-2 {float:left;margin-right:4px;}
+.widget_donate_box-last, div.widget_donate_box-last {margin-right:0;}
+.widget_donate_box-span-1 {width:75px;}
+.widget_donate_box-span-2, div.widget_donate_box-span-2 {width:154px;margin:0;}
+input.widget_donate_box-span-1, textarea.widget_donate_box-span-1, select.widget_donate_box-span-1 {width:75px!important;}
+input.widget_donate_box-span-2, textarea.widget_donate_box-span-2, select.widget_donate_box-span-2 {width:144px!important;}
+.widget_donate_box-first {margin-left:0;padding-left:0;}
+.widget_donate_box-last {margin-right:0;padding-right:0;}
+
+
+
+
+
+/*---------------------------------------------------------------------------
+ Contents from: x_widget_cobranded_banner.css
+---------------------------------------------------------------------------*/
+
+#container {width:464px;min-width:464px;max-width:464px;}
+#heightconstrain {padding:5px;}
+#project_title {font-size:1.2em !important;}
+div.photo_frame {max-width:150px !important;width:150px !important;}
+.fundingboxnarrow-header {background:transparent url(../../img/fundingboxnarrow.png) no-repeat 0 0;height:5px;width:150px;overflow:hidden;margin:5px auto 0px auto;}
+.fundingboxnarrow-footer {background:transparent url(../../img/fundingboxnarrow.png) no-repeat -300px 0;height:6px;width:150px;overflow:hidden;margin:0px auto 5px auto;}
+.fundingboxnarrow-content {background:transparent url(../../img/fundingboxnarrow.png) repeat-y -150px 0;width:150px;margin:0px auto 0px auto;overflow:hidden;text-align:center;}
+#footer2 {clear:both;border-bottom:1px solid #9B9AAC;height:1px;overflow:hidden;}
