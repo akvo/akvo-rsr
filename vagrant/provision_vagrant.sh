@@ -22,7 +22,7 @@ fi
 
 sudo -u rsr /var/akvo/rsr/venv/bin/pip install -r /var/akvo/rsr/code/scripts/deployment/pip/requirements/2_rsr.txt
 
-manage='sudo -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/akvo/manage.py'
+manage='sudo -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/manage.py'
 
 $manage syncdb --noinput
 

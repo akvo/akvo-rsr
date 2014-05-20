@@ -6,9 +6,8 @@ Script for generating an IATI file of an organisation, taking an organisation as
 the possibility to select partner types and exclude individual projects.
 """
 
-from django.core.management import setup_environ
-from akvo import settings
-setup_environ(settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from datetime import datetime
 from akvo.rsr.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANISATION_ROLE, IATI_LIST_SECTOR

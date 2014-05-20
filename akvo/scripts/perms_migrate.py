@@ -24,10 +24,6 @@
 #
 ################################################################################
 
-#from django.core.management import setup_environ
-#import settings
-#setup_environ(settings)
-
 from optparse import OptionParser
 import os
 import pprint
@@ -137,14 +133,7 @@ def run_terminal_command(argv=None):
     if options.settings:
         os.environ['DJANGO_SETTINGS_MODULE'] = options.settings
     else:
-        from django.core.management import setup_environ
-        try:
-            import settings
-        except ImportError:
-            print "You don't appear to have a settings file in this directory!"
-            print "Please run this from inside a project directory"
-            sys.exit()
-        setup_environ(settings)
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
     if action == 'load':
         load(options)

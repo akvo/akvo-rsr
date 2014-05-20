@@ -4,15 +4,15 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 from akvo import settings
-from django.core.management import setup_environ
+
 from akvo.scripts.cordaid import ERROR_EXCEPTION, ERROR_CREATE_ORG, ERROR_UPLOAD_ORG, ACTION_CREATE_ORG, log, init_log, print_log, ACTION_CREATE_IOI, ACTION_UPDATE_ORG
 
-setup_environ(settings)
 
 import getopt
 import json
-import os
 import sys
 from lxml import etree
 
