@@ -100,7 +100,7 @@
                   <div style="width:108px; height: 81px; float: right;">
                     <a class="video_thumb" href="{% url 'update_main' project.id update.id %}" style="width:108px;">
                       <img src="{{ update.get_video_thumbnail_url }}" alt="" style="width:108px;">
-                      <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
+                      <i style="background-image: url({{ STATIC_URL }}common/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
                     </a>
                   </div>
                 {% else %}

@@ -826,7 +826,9 @@
 
 {% block js %}
 {{block.super}}
-{% asset_bundle 'akvo_machinery_js' %}
+
+<script src="{{ STATIC_URL }}rsr/site/js/akvo_machinery.min.js"></script>
+{# asset_bundle 'akvo_machinery_js' #}
 {% endblock js %}
 
 {% block jq_ready %}

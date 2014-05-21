@@ -6,8 +6,8 @@
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	{% asset_bundle 'widget_project_contribute' %}
-	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_contribute/css/screen.css" type="text/css" media="screen, projection" /> #}
+	{# asset_bundle 'widget_project_contribute' #}
+	<link rel="stylesheet" href="{{ STATIC_URL }}rsr/widgets/project_contribute/css/build/widget_project_contribute.min.css" type="text/css" media="screen, projection" />
 {% endblock style %}
 
 {% block inline_styles %}

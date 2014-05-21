@@ -14,7 +14,8 @@
   <meta http-equiv="pragma" content="no-cache">
   <meta http-equiv="cache-control" content="no-cache">
 
-  {% asset_bundle 'widget_cobranded_banner' %}
+  {# asset_bundle 'widget_cobranded_banner' #}
+  <link rel="stylesheet" href="{{ STATIC_URL }}rsr/widgets/cobranded_banner/css/build/widget_cobranded_banner.min.css" type="text/css" media="screen, projection" />
 
   <style type="text/css" media="screen">
     {% block inline_styles %}
@@ -23,10 +24,10 @@
       h2 a {color:#{{bgcolor}} !important;}
 
       #progress_back {
-        background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
+        background: url({{ STATIC_URL }}rsr/widgets/img/progressbar_background.png);
       }
       #progress_green {
-        background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
+        background: url({{ STATIC_URL }}rsr/widgets/img/progressbar_green.png);
       }
 
     {% endblock inline_styles %}
@@ -53,7 +54,7 @@
 
   <div id="header">
     <div style="float:right; margin-right:4px; margin-top:2px;">
-      <a href="{% url 'index' %}"><img src="{{MEDIA_URL}}widgets/img/akvo-badge_small.png"></a>
+      <a href="{% url 'index' %}"><img src="{{ STATIC_URL }}rsr/widgets/img/akvo-badge_small.png"></a>
     </div>
     <h1 style="width:200px; display:inline;">{% trans 'Project' %}</h1>
   </div>
@@ -116,7 +117,7 @@
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script>
-    !window.jQuery && document.write('<script src="{{MEDIA_URL}}core/js/jquery-1.4.2.min.js"><\/script>')
+    !window.jQuery && document.write('<script src="{{ STATIC_URL }}lib/js/jquery-1.4.3.min.js"><\/script>')
   </script>
 
   <script type="text/javascript">

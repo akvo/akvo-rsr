@@ -359,4 +359,5 @@ if 'rosetta' in settings.INSTALLED_APPS:
         url(r'^rosetta/', include('rosetta.urls')),
     )
 
-urlpatterns += staticfiles_urlpatterns()
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()
