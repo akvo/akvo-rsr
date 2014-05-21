@@ -172,7 +172,7 @@
 
 {% block js %}
   {{ block.super }}
-  <script src="{% static "lib/js/galleria-1.2.8/galleria-1.2.8.js" %}"></script>
+  <script src="{{ STATIC_URL }}lib/js/galleria-1.2.8/galleria-1.2.8.js"></script>
   <script>
     var galleria_data = [
         {
@@ -235,7 +235,7 @@
 {% block jq_ready %}
   jQ('#project_tabs').tabs();
   {{block.super}}
-  Galleria.loadTheme('{% static "lib/js/galleria-1.2.8/themes/classic/galleria.classic.min.js" %}');
+  Galleria.loadTheme('{{ STATIC_URL }}lib/js/galleria-1.2.8/themes/classic/galleria.classic.min.js');
   Galleria.configure({
     showInfo: false
   });
