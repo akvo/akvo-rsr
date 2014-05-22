@@ -95,9 +95,9 @@ def check_activity_language(activity_element):
                         # Remove element if xml:lang differs from activity language and there is another element
                         # that does match the xml:lang or does not have a xml:lang specified.
                         if check_lang(child1, lang) and not check_lang(child2, lang):
-                            child2.getparent().remove(child2)
+                            element.remove(child2)
                         elif not check_lang(child1, lang) and check_lang(child2, lang):
-                            child1.getparent().remove(child1)
+                            element.remove(child1)
 
     return activity_element
 
