@@ -6,8 +6,8 @@
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	{% asset_bundle 'widget_cobranded_short' %}
-	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_narrow/css/screen.css" type="text/css" media="screen, projection" /> #}
+	{# asset_bundle 'widget_cobranded_short' #}
+	<link rel="stylesheet" href="{{ STATIC_URL }}rsr/widgets/cobranded_short/css/build/widget_cobranded_short.min.css" type="text/css" media="screen, projection" />
 	<!--[if IE]>
 	<style type="text/css" media="screen">
 		.divider { 

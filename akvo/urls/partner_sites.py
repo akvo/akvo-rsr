@@ -156,4 +156,5 @@ urlpatterns += patterns(
         {'document_root': settings.MEDIA_ROOT}),
 )
 
-urlpatterns += staticfiles_urlpatterns()
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()

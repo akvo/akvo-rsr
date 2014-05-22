@@ -6,8 +6,8 @@
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	{% asset_bundle 'widget_project_narrow' %}
-	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_narrow/css/screen.css" type="text/css" media="screen, projection" /> #}
+	{# asset_bundle 'widget_project_narrow' #}
+	<link rel="stylesheet" href="{{ STATIC_URL }}rsr/widgets/project_narrow/css/build/widget_project_narrow.min.css" type="text/css" media="screen, projection" />
 	<!--[if IE]>
 	<style type="text/css" media="screen">
 		.divider { 

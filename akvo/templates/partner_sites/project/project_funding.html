@@ -2,6 +2,7 @@
 {% load i18n rsr_tags webdesign thumbnail counter_tags humanize rsr_filters %}
 {% load url from future %}
 
+
 {% block breadcrum_items %}
   {{block.super}}
   <li><a href="{% url 'project_main' project.id %}"><span>{{project|truncatewords:3}}</span></a></li>
