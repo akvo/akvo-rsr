@@ -23,6 +23,7 @@ setup_environ(settings)
 from akvo.scripts.cordaid import log, API_VERSION, CORDAID_IATI_ACTIVITIES_XML, CORDAID_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION, ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT, CORDAID_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS
 from requester import Requester
 
+XML_LANG = "{http://www.w3.org/XML/1998/namespace}lang"
 
 class HttpNoContent(HttpResponse):
     status_code = 204
@@ -41,23 +42,21 @@ def check_activity_language(activity_element):
         dict2_extra = 0
 
         # Check if xml:lang attribute is present in one dict and missing in the other
-        if '{http://www.w3.org/XML/1998/namespace}lang' in dict1 and \
-                (not '{http://www.w3.org/XML/1998/namespace}lang' in dict2):
+        if XML_LANG in dict1 and (not XML_LANG in dict2):
             dict1_extra += 1
-        elif '{http://www.w3.org/XML/1998/namespace}lang' in dict2 and \
-                (not '{http://www.w3.org/XML/1998/namespace}lang' in dict1):
+        elif XML_LANG in dict2 and (not XML_LANG in dict1):
             dict2_extra += 1
 
         # Return False if the number of shared attributes is different
         shared_keys = set(dict1.keys()) & set(dict2.keys())
-        if not ( len(shared_keys) == len(dict1.keys()) - dict1_extra and
+        if not (len(shared_keys) == len(dict1.keys()) - dict1_extra and
                          len(shared_keys) == len(dict2.keys()) - dict2_extra):
             return False
 
         # Return True if all attributes are similar
         dicts_are_equal = True
         for key in dict1.keys():
-            if key != '{http://www.w3.org/XML/1998/namespace}lang':
+            if key != XML_LANG:
                 dicts_are_equal = dicts_are_equal and (dict1[key] == dict2[key])
 
         return dicts_are_equal
@@ -66,17 +65,17 @@ def check_activity_language(activity_element):
         """Check if the element has the xml:lang corresponding to the activity language or no xml:lang attribute.
         Return True if so, False otherwise."""
 
-        if not '{http://www.w3.org/XML/1998/namespace}lang' in element.attrib:
+        if not XML_LANG in element.attrib:
             return True
 
-        elif element.attrib['{http://www.w3.org/XML/1998/namespace}lang'].lower() == lang:
+        elif element.attrib[XML_LANG].lower() == lang:
             return True
 
         return False
 
 
-    if '{http://www.w3.org/XML/1998/namespace}lang' in activity_element.attrib:
-        lang = activity_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'].lower()
+    if XML_LANG in activity_element.attrib:
+        lang = activity_element.attrib[XML_LANG].lower()
 
         # For each element in the activity
         for element in activity_element.iter():
@@ -96,9 +95,9 @@ def check_activity_language(activity_element):
                         # Remove element if xml:lang differs from activity language and there is another element
                         # that does match the xml:lang or does not have a xml:lang specified.
                         if check_lang(child1, lang) and not check_lang(child2, lang):
-                            activity_element.remove(child2)
+                            child2.getparent().remove(child2)
                         elif not check_lang(child1, lang) and check_lang(child2, lang):
-                            activity_element.remove(child1)
+                            child1.getparent().remove(child1)
 
     return activity_element
 
