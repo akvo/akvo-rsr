@@ -11,7 +11,7 @@ from django.conf.urls import (include, patterns, url)
 from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 from paypal.standard.ipn.views import ipn as paypal_ipn
 
 from akvo.rsr.feeds import (ProjectUpdates, OrganisationUpdates,
@@ -121,9 +121,7 @@ urlpatterns = patterns(
         'akvo.rsr.views.donate_thanks',
         name='donate_thanks'),
 
-    url(r'^donate/500/$',
-        direct_to_template, {'template': 'rsr/donate_500.html'},
-        name='donate_500'),
+    url(r'^donate/500/$', TemplateView.as_view(template_name="rsr/donate_500.html"), name='donate_500'),
 
     url(r'^donate/paypal/ipn/$',
         csrf_exempt(paypal_ipn),
@@ -155,15 +153,9 @@ urlpatterns = patterns(
         'akvo.rsr.views.global_organisation_map_json',
         name='global_organisation_map_json'),
 
-    url(r'^maps/projects/all/$',
-        direct_to_template,
-        {'template': 'rsr/project/global_project_map.html'},
-        name='global_project_map'),
+    url(r'^maps/projects/all/$', TemplateView.as_view(template_name='rsr/project/global_project_map.html'), name='global_project_map'),
 
-    url(r'^maps/organisations/all/$',
-        direct_to_template,
-        {'template': 'rsr/organisation/global_organisation_map.html'},
-        name='global_organisation_map'),
+    url(r'^maps/organisations/all/$', TemplateView.as_view(template_name='rsr/organisation/global_organisation_map.html'), name='global_organisation_map'),
 
     # MyAkvo
     url(r'^myakvo/mobile/$',
@@ -245,16 +237,11 @@ urlpatterns += patterns(
         {'set_password_form': RSR_SetPasswordForm},
         name='auth_password_reset_confirm'),
 
-    url(r'^accounts/update/complete/$',
-        direct_to_template, {'template': 'registration/update_complete.html'},
-        name='registration_update_complete'),
+    url(r'^accounts/update/complete/$', TemplateView.as_view(template_name='registration/update_complete.html'), name='registration_update_complete'),
 
     (r'^accounts/', include('registration.urls')),
 
-    url(r'^error/access_denied/$',
-        direct_to_template,
-        {'template': 'rsr/error_access_denied.html'},
-        name='access_denied'),
+    url(r'^error/access_denied/$', TemplateView.as_view(template_name='rsr/error_access_denied.html'), name='access_denied'),
 
     # RSS
     url(r'^rss/updates/(?P<project_id>\d+)/$',

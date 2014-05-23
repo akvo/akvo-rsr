@@ -93,7 +93,7 @@ class ConditionalFullFieldMixin(object):
 
 class ConditionalFullToOneField(ConditionalFullFieldMixin, fields.ToOneField):
 
-    def dehydrate(self, bundle):
+    def dehydrate(self, bundle, for_list=False):
         try:
             foreign_obj = getattr(bundle.obj, self.attribute)
         except ObjectDoesNotExist:
@@ -116,7 +116,7 @@ class ConditionalFullToOneField(ConditionalFullFieldMixin, fields.ToOneField):
 
 class ConditionalFullToManyField(ConditionalFullFieldMixin, fields.ToManyField):
 
-    def dehydrate(self, bundle):
+    def dehydrate(self, bundle, for_list=False):
         if not bundle.obj or not bundle.obj.pk:
             if not self.null:
                 raise ApiFieldError("The model '%r' does not have a primary key and can not be used in a ToMany context." % bundle.obj)
@@ -182,7 +182,7 @@ class Base64FileField(fields.FileField):
     
     """
 
-    def dehydrate(self, bundle, return_url=True, url=""):
+    def dehydrate(self, bundle, for_list=False, return_url=True, url=""):
         """
         Return a URL or a base64-encoded string.
 
