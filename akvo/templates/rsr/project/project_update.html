@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load url from future %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags markup %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags markup_tags %}
 
 {% block head %}
     <meta property="og:title" content="Akvo.org - {{update.title}}"/>
@@ -65,7 +65,7 @@
   <div class="space20">
     {% if update.text_location == 'B' %}
       {% autoescape off %}
-        {{ update.text|force_escape|urlize|markdown }}
+        {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
       {% endautoescape %}
     {% endif %}
     {% if update.video %}
@@ -91,7 +91,7 @@
     {% endif %}
     {% if update.text_location == 'E' %}
       {% autoescape off %}
-        {{ update.text|force_escape|urlize|markdown }}
+        {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
       {% endautoescape %}
     {% endif %}
     <hr style="margin-bottom:5px;" />
