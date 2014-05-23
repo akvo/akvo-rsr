@@ -247,7 +247,10 @@ class Partnership(models.Model):
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
-    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.'))
+    iati_url = models.URLField(
+        blank=True,
+        help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.')
+    )
 
     class Meta:
         verbose_name = _(u'project partner')
@@ -325,7 +328,7 @@ class Organisation(TimestampsMixin, models.Model):
     )
 
     url = models.URLField(
-        blank=True, verify_exists=False,
+        blank=True,
         help_text=_(u'Enter the full address of your web site, beginning with http://.'),
     )
 
@@ -562,7 +565,12 @@ class FocusArea(models.Model):
                     thumbnail={'size': (20, 20), 'options': ('crop', )},
                     help_text=_(u'The image that will appear on the focus area project listing page.'),
                 )
-    link_to = models.URLField(_(u'accordion link'), max_length=200, blank=True, help_text=_(u'Where the link in the accordion for the focus area points if other than the focus area project listing.'))
+    link_to = models.URLField(
+        _(u'accordion link'),
+        max_length=200,
+        blank=True,
+        help_text=_(u'Where the link in the accordion for the focus area points if other than the focus area project listing.')
+    )
 
     @models.permalink
     def get_absolute_url(self):
@@ -1868,7 +1876,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     photo_location = ValidXMLCharField(_(u'photo location'), max_length=1, choices=PHOTO_LOCATIONS)
     photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     photo_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
-    video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
+    video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'))
     video_caption = ValidXMLCharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     video_credit = ValidXMLCharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
