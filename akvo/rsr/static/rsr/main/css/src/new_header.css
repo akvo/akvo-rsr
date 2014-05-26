@@ -1,0 +1,461 @@
+@charset "UTF-8";
+/* CSS Document */
+/*--------------------------------------------------------------
+   						Default Typography.
+  --------------------------------------------------------------*/
+
+/* Default font settings.
+   The font-size percentage is of 16px. (0.875 * 16px = 14px) */
+   
+/*--------------------------------------------------------------
+   						RESET DEFAUKT BROWSER STYLES
+  --------------------------------------------------------------*/
+.newHeadFoot div, .newHeadFoot span, .newHeadFoot applet, .newHeadFoot object, .newHeadFoot iframe, .newHeadFoot h1, .newHeadFoot h2, .newHeadFoot h3, .newHeadFoot h4, .newHeadFoot h5, .newHeadFoot h6, .newHeadFoot p, .newHeadFoot blockquote, .newHeadFoot pre, .newHeadFoot a, .newHeadFoot abbr, .newHeadFoot acronym, .newHeadFoot address, .newHeadFoot big, .newHeadFoot cite, .newHeadFoot code, .newHeadFoot del, .newHeadFoot dfn, .newHeadFoot em, .newHeadFoot img, .newHeadFoot ins, .newHeadFoot kbd, .newHeadFoot q, .newHeadFoot s, .newHeadFoot samp, .newHeadFoot small, .newHeadFoot strike, .newHeadFoot strong, .newHeadFoot sub, .newHeadFoot sup, .newHeadFoot tt, .newHeadFoot var, .newHeadFoot b, .newHeadFoot u, .newHeadFoot i, .newHeadFoot center, .newHeadFoot dl, .newHeadFoot dt, .newHeadFoot dd, .newHeadFoot ol, .newHeadFoot ul, .newHeadFoot li, .newHeadFoot fieldset, .newHeadFoot form, .newHeadFoot label, .newHeadFoot legend, .newHeadFoot table, .newHeadFoot caption, .newHeadFoot tbody, .newHeadFoot tfoot, .newHeadFoot thead, .newHeadFoot tr, .newHeadFoot th, .newHeadFoot td, .newHeadFoot article, .newHeadFoot aside, .newHeadFoot canvas, .newHeadFoot details, .newHeadFoot embed, .newHeadFoot figure, .newHeadFoot figcaption, .newHeadFoot footer, .newHeadFoot header, .newHeadFoot hgroup, .newHeadFoot menu, .newHeadFoot nav, .newHeadFoot output, .newHeadFoot ruby, .newHeadFoot section, .newHeadFoot summary, .newHeadFoot time, .newHeadFoot mark, .newHeadFoot audio, .newHeadFoot video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	outline: none;
+}
+html { height: 101%; }
+article, .newHeadFoot aside, .newHeadFoot details, .newHeadFoot figcaption, .newHeadFoot figure, .newHeadFoot footer, .newHeadFoot header, .newHeadFoot hgroup, .newHeadFoot menu, .newHeadFoot nav, .newHeadFoot section { display: block; }
+header { width: 100%; }
+.newHeadFoot ol, .newHeadFoot ul { list-style: none; }
+.newHeadFoot blockquote, .newHeadFoot q { quotes: none; }
+.newHeadFoot blockquote:before, .newHeadFoot blockquote:after, .newHeadFoot q:before, .newHeadFoot q:after {
+	content: '';
+	content: none;
+}
+.newHeadFoot table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.newHeadFoot img {
+	border: 0;
+	max-width: 100%;
+	height: auto;
+}
+
+.newHeadFoot a {
+	text-decoration: none;
+	color: #3B91AF;
+    font-weight: normal;
+    line-height: 22px;
+	transition: color .2s linear;
+	-webkit-transition: color .2s linear;
+	-moz-transition: color .2s linear;
+}
+.newHeadFoot a:hover {
+	text-decoration: underline;
+	color: #3f7cc0;
+}
+
+.newHeadFoot .floats-in:after {
+	display: block;
+	visibility: hidden;
+	clear: both;
+	height: 0;
+	content: ".";
+}
+
+
+header, footer {
+	font-size: 100%;
+	margin-top: 0 !important;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	background: transparent;
+}
+header, footer {
+	font-size: 1em;
+	color: rgb(32,32,36);
+	text-rendering: optimizeLegibility;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	line-height: 1.4em;
+}
+
+/* .header
+--------------------------------------------- */
+.newHeadFoot #mainbody {
+	display: block;
+	z-index: auto;
+	width: 100%;
+}
+.newHeadFoot .wrapper {
+	position: relative;
+	width: 975px;
+	margin: 0 auto;
+	padding:0 5px;
+}
+
+.newHeadFoot .wrapperHead {
+margin: 0 auto;
+max-width: 975px;
+min-width: 700px;
+position: relative;
+}
+
+.newHeadFoot .content {
+	display:block;
+	background:red;
+	height:600px;
+	}
+header#top {
+	position: fixed;
+	margin: 0 0 50px 0;
+	padding: 0;
+	width: 100%;
+	background: rgb(64,64,64); /* Old browsers */
+	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQwNDA0MCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxMTExMTEiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgb(64,64,64)), color-stop(100%, rgb(17,17,17))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* IE10+ */
+	background: linear-gradient(to bottom, rgb(64,64,64) 0%, rgb(17,17,17) 100%); /* W3C */
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#404040', endColorstr='#111111', GradientType=0 ); /* IE6-8 */
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+	z-index: 99999;
+	top: 0;
+}
+.newHeadFoot div.headerWrap {
+	position: relative;
+	width: 80%;
+	width: 975px;
+	margin: 0 auto;
+}
+header#top h1 {
+	position: absolute;
+	top: 8px;
+	left: 5px;
+	width: 169px;
+	height: 35px;
+}
+header#top h1 a {
+	display: block;
+	width: 169px;
+	height: 35px;
+	background: url(../../img/new_header/akvoLogoTop.png) no-repeat center top;
+	text-indent: -9999px;
+}
+header#top h1:hover a { background: url(../../img/new_header/akvoLogoTop.png) no-repeat center bottom; }
+.newHeadFoot #openSource {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: none;
+	width: 100px;
+	height: 100px;
+}
+.newHeadFoot #openSource h2 {
+	width: 100px;
+	height: 100px;
+	background: url(../../img/new_header/openSource.png) no-repeat center -1px;
+	text-indent: -9999px;
+}
+.newHeadFoot .logInHeader {
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 0.8em;
+}
+.newHeadFoot .logInHeader a {
+	color:rgb(222, 137, 41);
+}
+
+.newHeadFoot .logInHeader a:hover {
+	color:rgb(255,255,255);
+}
+.newHeadFoot .logInHeader ul li {
+	display: inline-block;
+	position: relative;
+	font-size: 1.2em;
+	margin-right: -3px;
+	background: url("../../img/new_header/navSeparator.png") no-repeat scroll right center transparent;
+}
+.newHeadFoot .logInHeader ul li a {
+	padding: 0px 5px;
+	line-height: 50px;
+	color: rgb(255,255,255);
+	color: rgba(255,255,255,0.8);
+	display: block;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	-webkit-transition: color .4s linear;
+	-moz-transition: color .4s linear;
+	-o-transition: color .4s linear;
+	transition: color .4s linear;
+}
+.newHeadFoot .logInHeader ul li a:hover {
+	color: rgb(222,137,41);
+	text-decoration: none;
+}
+
+/* ---------------------------------------------
+			Top navigation styles
+--------------------------------------------- */
+.newHeadFoot #navbar { display: none; }
+.newHeadFoot nav { display: block; }
+.newHeadFoot nav#n { margin: 0 0 0 180px; }
+.newHeadFoot #n ul { display: block; }
+.newHeadFoot #n ul li {
+	display: inline-block;
+	position: relative;
+	font-size: 1.2em;
+	margin-right: -3px;
+	background: url("../../img/new_header/navSeparator.png") no-repeat scroll right center transparent;
+}
+.newHeadFoot #n ul li a {
+	padding: 0px 7px;
+	line-height: 50px;
+	color: rgb(255,255,255);
+	color: rgba(255,255,255,0.8);
+	display: block;
+	font-size: 0.9em;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	-webkit-transition: color .4s linear;
+	-moz-transition: color .4s linear;
+	-o-transition: color .4s linear;
+	transition: color .4s linear;
+}
+.newHeadFoot #n ul li a:hover {
+	color: rgb(222,137,41);
+	text-decoration: none;
+}
+.newHeadFoot nav#n ul li:last-child { background: none; }
+.newHeadFoot #n ul li:hover > ul { display: block; }
+.newHeadFoot #n ul li:hover > a { text-decoration: none; }
+
+
+/*----------------------------------------------------------------------
+								Footer
+-----------------------------------------------------------------------*/
+
+footer.bottomPage {
+	position: relative;
+	padding: 0 0 0 0;
+	width: 100%;
+	border-top: 1px solid rgb(235, 235, 235);
+	background: rgb(248,248,248);
+	background: url(../../img/new_header/debut_light.png) repeat;
+	margin: 0px auto 0 auto;
+}
+footer.bottomPage h1 { font-size: 2em; }
+footer.bottomPage section#siteMap {
+	position: relative;
+	padding: 50px 0 3em 0;
+}
+footer#newFooter section#siteMap h3 {
+	margin: 0 0 0.5em 0;
+	color: rgb(32,32,36);
+	text-align: left;
+    font-family: 'Questrial', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    text-transform: none;
+    font-weight: normal;
+    font-size: 1.8em;
+    line-height: 1.2em;
+}
+footer.bottomPage section#siteMap h3:nth-of-type(2n) { margin: 0.5em 0 0.25em 0; }
+footer.bottomPage section#siteMap div.siteMapListMenu {
+	float: left;
+	width: 17%;
+	padding: 0 0 0 0.5%;
+}
+
+footer.newHeadFoot a  {font-size:0.9em;}
+
+.newHeadFoot div.socialAkvo h1.backLinedGrey {
+	margin: -10px auto 0 auto;
+	width: 80%;
+	text-align: center;
+}
+.newHeadFoot div.socialAkvo .backLinedGrey span { background: transparent; }
+h1.backLinedGrey {
+    position: relative;
+    padding: 0 0 0px 0px;
+    color: #DE8929;
+    text-shadow: none;
+}
+#aboutAkvo p {
+    color: #B9B9B9;
+}
+footer.bottomPage section#siteMap div.siteMapListMenu ul { margin: 0 0 0 5px; }
+footer.bottomPage section#siteMap div.siteMapListMenu ul li { margin: 0 0 2px 0; height: 22px;}
+footer.bottomPage section#siteMap div.siteMapListMenu ul li.problem, footer.bottomPage section#siteMap div.siteMapListMenu ul li.mediaPress { margin: 2em 0 0 0; }
+footer.bottomPage section#siteMap div.siteMapListMenu ul li.problem a {
+	color: rgb(227, 27, 35);
+	opacity: 1;
+	-webkit-transition: opacity 0.2s linear;
+	-moz-transition: opacity 0.2s linear;
+	-o-transition: opacity 0.2s linear;
+	transition: opacity 0.2s linear;
+}
+footer.bottomPage section#siteMap div.siteMapListMenu ul li.problem a:hover { opacity: 0.7; }
+footer.bottomPage section#siteMap div.socialAkvo {
+	position: relative;
+	float: right;
+	min-height: 100px;
+	width: 30%;
+}
+footer.bottomPage section#siteMap div.socialAkvo h1 { color: rgb(222, 137, 41); }
+footer.bottomPage section#siteMap div.socialAkvo div.newsLetter {
+	position: relative;
+	display: block;
+	margin: 5px auto 0;
+	width: 100%;
+}
+footer.bottomPage section#siteMap div.socialAkvo div.newsLetter label {
+	display: block;
+	font-size: 0.9em;
+	letter-spacing: 0.01em;
+	color: rgb(32,32,36);
+	display: none;
+}
+footer.bottomPage section#siteMap div.socialAkvo div.newsLetter input {
+	display: inline-block;
+	font-size: 0.8em;
+	padding: 0.75em 0.5em;
+	border: 1px solid rgb(222, 220, 220);
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	-o-box-shadow: none;
+	box-shadow: none;
+}
+footer.bottomPage section#siteMap div.socialAkvo div.newsLetter p.sml_name input, footer.bottomPage section#siteMap div.socialAkvo div.newsLetter p.sml_email input {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	display: inline;
+	float: left;
+	padding:0.8em;
+}
+.newHeadFoot p.sml_submit input {
+	float: right;
+	margin-top: 0;
+	width:17.8%;
+}
+footer.bottomPage section#siteMap div.socialAkvo div.newsLetter p.sml_name input { width:28%;}
+footer.bottomPage section#siteMap div.socialAkvo div.newsLetter p.sml_email input { width:36.5%; margin:0 0 0 0.5%;}
+footer.bottomPage section#siteMap div.socialAkvo nav.socialLinks {
+	position: relative;
+	margin: 0 auto;
+	width: 100%;
+}
+footer.bottomPage section#siteMap nav.socialLinks li {
+	display: inline;
+	float: left;
+	width: 25%;
+	height: 85px;
+	text-align: center;
+}
+footer.bottomPage section#siteMap nav.socialLinks li a {
+	display: block;
+	float: left;
+	width: 100%;
+	height: 100%;
+	text-indent: -9999px;
+	opacity: 1;
+	-webkit-transition: opacity 0.2s linear;
+	-moz-transition: opacity 0.2s linear;
+	-o-transition: opacity 0.2s linear;
+	transition: opacity 0.2s linear;
+}
+footer.bottomPage section#siteMap nav.socialLinks li a:hover { opacity: 0.5; }
+footer.bottomPage section#siteMap nav.socialLinks li.twitter a { background: url(../../img/new_header/socialTwitter.png) center center no-repeat; }
+footer.bottomPage section#siteMap nav.socialLinks li.github a { background: url(../../img/new_header/socialGithub.png) center center no-repeat; }
+footer.bottomPage section#siteMap nav.socialLinks li.facebook a { background: url(../../img/new_header/socialFacebook.png) center center no-repeat; }
+footer.bottomPage section#siteMap nav.socialLinks li.flickr a { background: url(../../img/new_header/socialFlickr.png) center center no-repeat; }
+footer.bottomPage section#siteMap nav.socialLinks li.youtube a { background: url(../../img/new_header/socialYoutube.png) center center no-repeat; }
+footer.bottomPage section#siteMap nav.socialLinks li.rss a { background: url(../../img/new_header/socialRss.png) center center no-repeat; }
+footer.bottomPage section#siteMap nav.socialLinks li.email a { background: url(../../img/new_header/socialEmail.png) center center no-repeat; }
+footer.bottomPage section#siteMap nav.socialLinks li.contactInfo a { background: url(../../img/new_header/socialContact.png) center center no-repeat; }
+footer.bottomPage section#aboutAkvo {
+	position: relative;
+	width: 100%;
+	background: rgb(32, 32, 36);
+	color: rgb(185,185,185);
+	margin: 0 auto 50px auto;
+	padding: 20px 0 25px 0;
+}
+footer.bottomPage section#aboutAkvo div h1 { margin: 0 0 0 5px; }
+footer.bottomPage section#aboutAkvo div p {
+	font-weight: normal;
+	margin: 0.25em 0 0 5px;/*	-moz-column-count: 2;
+	-webkit-column-count: 2;
+	-o-column-count: 2;
+	column-count: 2;
+*/
+}
+footer.bottomPage small {
+	position: relative;
+	display: block;
+	margin: 0 auto;
+	padding: 0.5em 0;
+	width: 100%;
+	color: rgb(124,124,124);
+	text-align: center;
+	font-weight: normal;
+	font-size: 0.8em;
+}
+footer.bottomPage small:before {
+	content: "";
+	border-top: 1px solid rgb(0,0,0);
+	border-bottom: 1px solid rgb(86, 86, 86);
+	display: block;
+	margin: 0 auto 0.5em auto;
+	width: 100%;
+}
+footer.bottomPage div#backToTop { }
+footer.bottomPage a[rel="self"] { }
+footer.bottomPage a[rel="self"]:hover { }
+
+/*---------------------------------------------
+                  Back to top
+--------------------------------------------- */
+#back-top {
+    position: fixed;
+    right: 5px;
+    bottom: 0px;
+}
+#back-top a {
+    font-size: 0.71em;
+    display: block;
+    width: 80px;
+    color: rgb(32,32,36);
+    -moz-text-shadow: 0 1px 0 rgb(245,245,245);
+    -webkit-text-shadow: 0 1px 0 rgb(245,245,245);
+    -o-text-shadow: 0 1px 0 rgb(245,245,245);
+    text-shadow: 0 1px 0 rgb(245,245,245);
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -o-transition: 1s;
+    transition: 1s;
+}
+#back-top a:hover { color: rgb(55, 146, 179); }
+#back-top span {
+    display: block;
+    margin: 0 auto;
+    width: 28px;
+    height: 28px;
+    -webkit-border-radius: 0.2em;
+    -moz-border-radius: 0.2em;
+    -o-border-radius: 0.2em;
+    border-radius: 0.2em;
+    background: rgb(32,32,36) url(../../img/new_header/up-arrow.png) no-repeat center center;
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -o-transition: 1s;
+    transition: 1s;
+    -moz-box-shadow: 1px 1px 0 rgb(255,255,255);
+    -webkit-box-shadow: 1px 1px 0 rgb(255,255,255);
+    -o-box-shadow: 1px 1px 0 rgb(255,255,255);
+    box-shadow: 1px 1px 0 rgb(255,255,255);
+}
+#back-top a:hover span { background-color: rgb(55, 146, 179); }

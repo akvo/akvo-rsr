@@ -643,19 +643,6 @@ a.donate_button:active {
 	outline: none;
 }
 
-/*
-a.donate_button:focus {
-	background: transparent url('../../img/donate-button-pushed.gif') no-repeat scroll top left;
-	color: #000 !important;
-	display: block;
-	font: normal 12px arial, sans-serif;
-	height: 24px;
-	width:75px;
-	text-decoration: none !important;
-	outline: none;
-}
-*/
-
 a.donate_button span {
     display: block;
     line-height: 14px;

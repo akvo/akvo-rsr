@@ -349,7 +349,7 @@ div.fullyfunded-text {
 
 a.fundingbox-donate-left-button {
 	color:#000 !important;
-	background: transparent url(../../../img/donate-button.gif) no-repeat;
+	background: transparent url(../../../img/donate_button.gif) no-repeat;
 	display:block;
 	width:75px;
 	padding-top:5px;
@@ -451,19 +451,6 @@ a.donate_button:active {
 	text-decoration: none !important;
 	outline: none;
 }
-
-/*
-a.donate_button:focus {
-	background: transparent url('../../img/donate-button-pushed.gif') no-repeat scroll top left;
-	color: #000 !important;
-	display: block;
-	font: normal 12px arial, sans-serif;
-	height: 24px;
-	width:75px;
-	text-decoration: none !important;
-	outline: none;
-}
-*/
 
 a.donate_button span {
     display: block;
