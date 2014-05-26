@@ -1,6 +1,5 @@
 {% extends "rsr/base_sheet.html" %}
 {% load i18n thumbnail rsr_filters l10n %}
-{% load url from future %}
 
 
 {% block title %}{% trans 'Global map' %}{% endblock %}

@@ -1,7 +1,5 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load url from future %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail markup %}
-{% load url from future %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail markup_tags %}
 
 
 {% block breadcrum_items %}
@@ -54,7 +52,7 @@
                   {% if update.text %}
                     <span class="grey small">
                       {% autoescape off %}
-                        {{ update.text|force_escape|smart_truncate:150|urlize|markdown }}
+                        {{ update.text|force_escape|smart_truncate:150|urlize|apply_markup:"markdown" }}
                       {% endautoescape %}
                     </span>
                   {% endif %}
