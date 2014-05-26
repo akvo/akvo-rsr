@@ -1,6 +1,5 @@
 {% extends "rsr/base.html" %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags markup %}
-{% load url from future %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags markup_tags %}
 
 
 {% block title %}{{project.title}}{% endblock title %}
@@ -85,7 +84,7 @@
                     <b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b><br/>
                     <div class="update_preview">
                       {% autoescape off %}
-                        {{ update.text|force_escape|smart_truncate:50|urlize|markdown }}
+                        {{ update.text|force_escape|smart_truncate:50|urlize|apply_markup:"markdown" }}
                       {% endautoescape %}
                     </div>
                 </p>
@@ -103,7 +102,7 @@
                   <p class="small last" style="padding:5px 5px 0 5px;">
                     <b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b><br/>
                     <div class="update_preview">
-                      {{update.text|smart_truncate:50|markdown:"safe"}}
+                      {{update.text|smart_truncate:50|apply_markup:"markdown"}}
                     </div>
                   </p>
                 </div>
@@ -117,7 +116,7 @@
                 <p class="small" style="padding:5px; margin-bottom:0px; padding-bottom:0;">
                   <b><a href="{{ update.get_absolute_url }}">{{update.title}}</a></b><br />
                   <div class="update_preview">
-                    {{update.text|smart_truncate:150|markdown:"safe"}}
+                    {{update.text|smart_truncate:150|apply_markup:"markdown"}}
                   </div>
                 </p>
               {% endif %}

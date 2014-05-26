@@ -1,6 +1,5 @@
 {% extends "partner_sites/base.html" %}
-{% load i18n rsr_tags webdesign thumbnail rsr_filters humanize markup %}
-{% load url from future %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters humanize markup_tags %}
 
 
 {% block title %}{{project}} - {% endblock title %}
@@ -91,7 +90,7 @@
                     <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br/>
                     <div class="update_preview">
                       {% autoescape off %}
-                        {{ update.text|force_escape|smart_truncate:50|urlize|markdown }}
+                        {{ update.text|force_escape|smart_truncate:50|urlize|apply_markup:"markdown" }}
                       {% endautoescape %}
                     </div>
                   </p>
@@ -119,7 +118,7 @@
                   <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
                   <div class="update_preview">
                     {% autoescape off %}
-                        {{ update.text|force_escape|smart_truncate:120|urlize|markdown }}
+                        {{ update.text|force_escape|smart_truncate:120|urlize|apply_markup:"markdown" }}
                       {% endautoescape %}
                   </div>
                 </p>
