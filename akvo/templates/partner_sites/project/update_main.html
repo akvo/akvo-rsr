@@ -119,14 +119,6 @@
       	</div>
     	{% endif %}
     
-    
-    {% if update.text_location == 'B' %}
-      <p class="small grey">
-        {% autoescape off %}
-          {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
-        {% endautoescape %}
-      </p>
-    {% endif %}	
     {% if update.video %}
       <div class="marg20">
         <div style="width:580px; max-width:580px; overflow:auto;">
@@ -150,13 +142,11 @@
         {% update_thumb update 580 435 %}
       </div>
     {% endif %}
-    {% if update.text_location == 'E' %}
-      <p class="small grey">
-        {% autoescape off %}
+    <p class="small grey">
+      {% autoescape off %}
           {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
-        {% endautoescape %}
-      </p>
-    {% endif %}
+      {% endautoescape %}
+    </p>
     <hr style="margin-bottom:5px;" />
     <div class="txt_right">
       <a class="small" href=".">{% trans 'Permalink' %}</a>
