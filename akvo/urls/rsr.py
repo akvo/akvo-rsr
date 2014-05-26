@@ -158,22 +158,9 @@ urlpatterns = patterns(
     url(r'^maps/organisations/all/$', TemplateView.as_view(template_name='rsr/organisation/global_organisation_map.html'), name='global_organisation_map'),
 
     # MyAkvo
-    url(r'^myakvo/mobile/$',
-        'akvo.rsr.views.myakvo_mobile',
-        name='myakvo_mobile'),
-
-    url(r'^myakvo/mobile/number/$',
-        'akvo.rsr.views.myakvo_mobile_number',
-        name='myakvo_mobile_number'),
-
-    url(r'^myakvo/mobile/cancel-reporter/(?P<reporter_id>\d+)/$',
-        'akvo.rsr.views.myakvo_cancel_reporter',
-        name='myakvo_cancel_reporter'),
-
     url(r'^myakvo/$',
         'akvo.rsr.views.update_user_profile',
         name='myakvo'),
-
 )
 
 # Non muli-lingual urls
@@ -256,10 +243,6 @@ urlpatterns += patterns(
         AllProjectUpdates(),
         name="rss_all_updates"),
 
-    # Phone
-    #(r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),
-    #(r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
-
     # Auth token for mobile apps
     url(r'^auth/token/$',
         'akvo.rsr.views.get_api_key',
@@ -268,8 +251,6 @@ urlpatterns += patterns(
     # Includes
     (r'^admin/', include(admin.site.urls)),
     (r'^counter/', include('django_counter.urls')),
-    (r'^notices/', include('notification.urls')),
-    (r'^gateway/', include('akvo.gateway.urls')),
     # TODO: proper versioning, appending v1/ for now to future-proof
     (r'^rest/v1/', include('akvo.rest.urls')),
     #(r'^i18n/', include('django.conf.urls.i18n')),

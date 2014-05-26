@@ -932,44 +932,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
 
-class SmsReporterInline(admin.TabularInline):
-    model = get_model('rsr', 'smsreporter')
-    extra = 1
-
-    def get_readonly_fields(self, request, obj=None):
-        """ Only allow viewing of gateway number and project for non-superusers
-        """
-        #opts = self.opts
-        user = request.user
-        if not user.is_superuser:
-            self.readonly_fields = ('gw_number', 'project',)
-        else:
-            self.readonly_fields = ()
-        return super(SmsReporterInline, self).get_readonly_fields(request, obj)
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        """
-        Hook for specifying the form Field instance for a given database Field
-        instance.
-
-        If kwargs are given, they're passed to the form Field's constructor.
-
-        Added by GvH:
-        Use hook to implement limits to project list select for org users.
-        """
-        request = kwargs.get("request", None)
-
-        # Limit the choices of the project db_field to projects linked to user's org
-        # if we have an org user
-        if db_field.attname == 'project_id':
-            opts = self.opts
-            user = request.user
-            if user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-                db_field.rel.limit_choices_to = {'pk__in': user.get_profile().organisation.all_projects()}
-
-        return super(SmsReporterInline, self).formfield_for_dbfield(db_field, **kwargs)
-
-
 class UserProfileAdminForm(forms.ModelForm):
     """
     This form displays two extra fields that show if the user belongs to the groups
@@ -981,7 +943,6 @@ class UserProfileAdminForm(forms.ModelForm):
     is_active = forms.BooleanField(required=False, label=_(u'account is active'),)
     is_org_admin = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
     is_org_editor = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
-    is_sms_updater = forms.BooleanField(required=False, label=_(u'can create sms updates',),)
 
     def __init__(self, *args, **kwargs):
         initial_data = {}
@@ -990,17 +951,15 @@ class UserProfileAdminForm(forms.ModelForm):
             initial_data['is_active'] = instance.get_is_active()
             initial_data['is_org_admin'] = instance.get_is_org_admin()
             initial_data['is_org_editor'] = instance.get_is_org_editor()
-            initial_data['is_sms_updater'] = instance.has_perm_add_sms_updates()
             kwargs.update({'initial': initial_data})
         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'has_perm_add_sms_updates', 'latest_update_date',)
+    list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
     search_fields = ('user__username', 'organisation__name', 'organisation__long_name',)
     list_filter = ('organisation',)
     ordering = ("user__username",)
-    inlines = [SmsReporterInline, ]
     form = UserProfileAdminForm
 
     def get_actions(self, request):
@@ -1012,37 +971,11 @@ class UserProfileAdmin(admin.ModelAdmin):
         return actions
 
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
-    def get_form(self, request, obj=None, **kwargs):
-        # non-superusers don't get to see it all
-        if not request.user.is_superuser:
-            # hide sms-related stuff
-            self.exclude = ('phone_number', 'validation',)
-            # user and org are only shown as text, not select widget
-            #self.readonly_fields = ('user', 'organisation',)
-        # this is needed to remove some kind of caching on exclude and readonly_fk,
-        # resulting in the above fields being hidden/changed from superusers after
-        # a vanilla user has accessed the form!
-        else:
-            self.exclude = None
-            #self.readonly_fields = ()
-        form = super(UserProfileAdmin, self).get_form(request, obj, **kwargs)
-        if not request.user.is_superuser and obj.validation != obj.VALIDATED:
-            self.inlines = []
-            self.inline_instances = []
-        #else:
-        #    self.inlines = [SmsReporterInline,]
-        return form
-
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
-            # only superusers are allowed to add/remove sms updaters in beta phase
-            self.form.declared_fields['is_sms_updater'].widget.attrs['readonly'] = 'readonly'
-            self.form.declared_fields['is_sms_updater'].widget.attrs['disabled'] = 'disabled'
             # user and org are only shown as text, not select widget
             return ['user', 'organisation', ]
         else:
-            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('readonly', None)
-            self.form.declared_fields['is_sms_updater'].widget.attrs.pop('disabled', None)
             return []
 
     def queryset(self, request):
@@ -1089,18 +1022,10 @@ class UserProfileAdmin(admin.ModelAdmin):
         is_active = form.cleaned_data['is_active']
         is_admin = form.cleaned_data['is_org_admin']
         is_editor = form.cleaned_data['is_org_editor']
-        is_sms_updater = form.cleaned_data['is_sms_updater']
         obj.set_is_active(is_active)  # master switch
         obj.set_is_org_admin(is_admin)  # can modify other users user profile and own organisation
         obj.set_is_org_editor(is_editor)  # can edit projects
         obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser)  # implicitly needed to log in to admin
-        # TODO: fix "real" permissions, currently only superusers can change sms updter status
-        if is_sms_updater:
-            obj.add_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
-            obj.init_sms_update_workflow()
-        else:
-            obj.disable_sms_update_workflow(request.user)
-            obj.remove_role(obj.user, Role.objects.get(name=self.model.ROLE_SMS_UPDATER))
         obj.save()
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)

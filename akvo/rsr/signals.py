@@ -201,43 +201,6 @@ def user_activated_callback(sender, **kwargs):
                                msg_context={'user': user, 'organisation': org}
                               )
 
-#def manage_workflow_roles(sender, **kwargs):
-#    """When a user is assigned the SMS updater group assign the Role with the same name.
-#    Do the same for SMS manager
-#    """
-#    logger.debug("Entering: %s()" % who_am_i())
-#    action  = kwargs.get('action', None)
-#    reverse = kwargs.get('reverse', False)
-#    model   = kwargs.get('model', False)
-#    pk_set  = kwargs.get('pk_set', False)
-#    if model == Group and action == 'post_add' and not reverse:
-#        groups = model.objects.filter(pk__in=pk_set)
-#        new_sms = kwargs['instance']
-#        try:
-#            profile = get_model('rsr', 'UserProfile').objects.process_sms(new_sms)
-#        except Exception, e:
-#            logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-#    logger.debug("Exiting: %s()" % who_am_i())
-    
-def handle_incoming_sms(sender, **kwargs):
-    """
-    called through post_save.connect(handle_incoming_sms, sender=MoSms)
-    """
-    logger.debug("Entering: %s()" % who_am_i())
-    # kwargs['raw'] is True when we're running manage.py loaddata
-    if kwargs.get('created', False) and not kwargs.get('raw', False):
-        new_sms = kwargs['instance']
-        try:
-            profile = get_model('rsr', 'UserProfile').objects.process_sms(new_sms)
-        except Exception, e:
-            logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-    logger.debug("Exiting: %s()" % who_am_i())
-
-def cleanup_reporters(profile, user):
-    if not profile.validation == profile.VALIDATED:
-        get_model('rsr', 'SmsReporter').objects.filter(userprofile=profile).delete()
-
-
 def update_project_budget(sender, **kwargs):
     """
     called when BudgetItem objects are added/changed/deleted
