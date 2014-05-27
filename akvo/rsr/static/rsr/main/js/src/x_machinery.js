@@ -51,7 +51,8 @@ function hex_validator(hexcolor)
     return strPattern.test(hexcolor);
 }
 
-function preview_widget()
+//function preview_widget()
+window.preview_widget = function ()
 {
 	// Remove old warnings
 	var error_message = '';

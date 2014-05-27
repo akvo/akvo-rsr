@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load i18n rsr_tags %}
-
+{% load compressed %}
 
 {% block head %}
 	<!--[if IE 7]>
@@ -258,7 +258,7 @@
 {% block js %}
 	{{block.super}}
 
-	{% asset_bundle 'akvo_machinery_js' %}
+	{% compressed_js 'akvo_machinery' %}
 	
 	<script type="text/javascript">
 		var akvo_project_id = {{project.id}};
