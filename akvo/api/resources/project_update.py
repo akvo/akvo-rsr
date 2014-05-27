@@ -22,6 +22,7 @@ from .resources import ConditionalFullResource
 class ProjectUpdateModelForm(ModelForm):
     class Meta:
         model = ProjectUpdate
+        fields = "__all__"
 
 
 class ProjectUpdateResource(ConditionalFullResource):

@@ -35,6 +35,7 @@ from .partnership import FIELD_NAME, FIELD_LONG_NAME
 class IATIProjectModelForm(ModelForm):
     class Meta:
         model = Project
+        fields = "__all__"
 
 
 class IATIProjectResource(ModelResource):
