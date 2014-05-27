@@ -764,7 +764,7 @@ class CommentForm(ModelForm):
 
     class Meta:
         model = ProjectComment
-        exclude = ('time', 'project', 'user', )
+        fields = ('comment',)
 
 
 @login_required()
