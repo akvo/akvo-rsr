@@ -5,6 +5,49 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+Akvo RSR ver 2.3.7 Watermelon
+---
+
+Wednesday 28th May 2014, rumca
+
+New Features
+---
+
+### Country options on project list
+
+We have added a feature to only populate the countries dropdown on AkvoSites with a list of countries where there are projects present. This allows the country selection to always return a project and provides a shorter list to select from.
+
+Github issue [#176](https://github.com/akvo/akvo-rsr/issues/176)
+
+
+Bug Fixes
+---
+
+### Content owner in org admin
+
+The content owner field was accidentally removed during a previous release, this has been reinstated on the organisation admin now.
+
+Github issue [#558](https://github.com/akvo/akvo-rsr/issues/558)
+
+### Image/Video files positioning
+
+We have made a change to the way in which image or videos are positioned on RSR updates. We now only allow the media links to be placed before the update.
+
+Github issue [#243](https://github.com/akvo/akvo-rsr/issues/243)
+
+### Removal of YouTube related videos
+
+When YouTube videos were added to project updates they would display related videos after they had been played. We have made a change to prevent this from happening, as often times the videos were not relevant.
+
+Github issue [#540](https://github.com/akvo/akvo-rsr/issues/540)
+
+### Django version upgrade
+
+As an intermediary step whilst we complete a full upgrade from Django 1.4 to 1.7, we have upgraded to Django 1.4.13 from 1.4.2 to plug recently identified security vulnerabilities.
+
+Github issue [#522](https://github.com/akvo/akvo-rsr/issues/522)
+
+
 Akvo RSR ver 2.3.6 Voavanga
 ---
 
