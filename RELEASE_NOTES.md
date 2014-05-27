@@ -8,14 +8,14 @@ Read more about [Akvo Products](http://akvo.org/products/).
 Akvo RSR ver 2.3.7 Watermelon
 ---
 
-Wednesday 27th May 2014, rumca
+Wednesday 28th May 2014, rumca
 
 New Features
 ---
 
 ### Country options on project list
 
-We have added a feature now that means only countries which are present within the list of available projects are displayed in the dropdown on AkvoSites. This allows the country selection to always return a project and provides a shorter list to select from.
+We have added a feature to only populate the countries dropdown on AkvoSites with a list of countries where there are projects present. This allows the country selection to always return a project and provides a shorter list to select from.
 
 Github issue [#176](https://github.com/akvo/akvo-rsr/issues/176)
 
