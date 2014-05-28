@@ -1,4 +1,0 @@
-/* hide the "extra info" inputs from view. This is needed to make new elements created via jQuery hidden */
-.other_extra input, .funding_amount input {
-    display: none;
-}
