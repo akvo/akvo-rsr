@@ -371,7 +371,8 @@ class ProjectUpdateForm(forms.ModelForm):
 
     class Meta:
         model = get_model('rsr', 'projectupdate')
-        exclude = ('created_at', 'project', 'user', 'last_modified_at')
+        fields = ('title', 'text', 'language', 'photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
+        'video_credit')
 
     def clean_video(self):
         data = self.cleaned_data['video']
@@ -393,9 +394,6 @@ class ProjectUpdateForm(forms.ModelForm):
 
 
 class PartnerSiteAdminForm(forms.ModelForm):
-    class Meta:
-        model = get_model('rsr', 'partnersite')
-
     def clean_hostname(self):
         hostname = slugify(self.cleaned_data['hostname'])
         if hostname == 'www':  # TODO: test for other reserved hostnames

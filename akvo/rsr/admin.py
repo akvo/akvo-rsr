@@ -110,9 +110,6 @@ admin.site.register(get_model('rsr', 'internalorganisationid'), InternalOrganisa
 
 
 class OrganisationAdminForm(forms.ModelForm):
-    class Meta:
-        model = get_model('rsr', 'organisation')
-
     def clean_iati_org_id(self):
         return self.cleaned_data['iati_org_id'] or None
 
@@ -507,9 +504,6 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
 
 
 class RSR_PartnershipInlineForm(forms.ModelForm):
-    class Meta:
-        model = get_model('rsr', 'Partnership')
-
     def clean_partner_type(self):
         partner_types = get_model('rsr', 'PartnerType').objects.all()
         partner_types_dict = {partner_type.id: partner_type.label for partner_type in partner_types}
@@ -937,9 +931,6 @@ class UserProfileAdminForm(forms.ModelForm):
     This form displays two extra fields that show if the user belongs to the groups
     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
     """
-    class Meta:
-        model = get_model('rsr', 'userprofile')
-
     is_active = forms.BooleanField(required=False, label=_(u'account is active'),)
     is_org_admin = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
     is_org_editor = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
