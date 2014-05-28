@@ -24,7 +24,6 @@
 
   {% compressed_css 'partner_sites' %}
 
-  {#<link rel="stylesheet" href=" {{ STATIC_URL }}rsr/sites/css/partner_sites_style.min.css" type="text/css" media="screen" title="main">#}
   {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
   {% if favicon %}<link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">{% endif %}
 

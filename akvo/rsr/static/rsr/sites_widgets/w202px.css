@@ -1,0 +1,61 @@
+.w202px {
+	width: 100%;
+	height: 100%;
+}
+.w202px ul.basicInfo { padding: 0.5em 1.5%; }
+.w202px ul.basicInfo li {
+	margin: 0 auto 0.25em auto;
+	display: table;
+}
+.w202px ul.basicInfo li .projectStatus {
+	font-size: 0.9em;
+	text-align: center;
+	margin: 0.25em auto 0.5em;
+}
+.w202px #project_title {
+	width: 98%;
+	display: block;
+	font-size: 1em;
+	text-transform: uppercase;
+	margin: 0.75em 0 0.25em 5px;
+	color: rgb(255,255,255);
+}
+.w202px .photo_frame {
+	float: none;
+	margin: 0 2%;
+}
+.w202px .photo_frame img {
+	width: 96%;
+	height: auto;
+}
+.w202px #project_subtitle {
+	width: 197px;
+	margin: 5px 5px 10px 5px;
+	float: none;
+}
+.w202px .projectBudget {
+	display: inline-block;
+	position: relative;
+	float: none;
+	width: 192px;
+	margin: 10px 5px 0 0;
+	max-height: none;
+	padding: 15px 4px;
+}
+.w202px ul.fundingwrap {
+	margin: 15px 0 0 0;
+	padding: 5px 0;
+}
+.w202px ul.fundingwrap li {
+	padding: 10px 0;
+	margin: 5px 0;
+}
+.w202px ul.fundingwrap li:first-child {
+	padding: 10px 0;
+	margin: 0px 0;
+}
+.w202px .orangeAction {
+	font-size: 0.9em;
+	padding: 0.15em 2em;
+	margin: 20px auto 0;
+}
