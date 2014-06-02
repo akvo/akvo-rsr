@@ -47,7 +47,7 @@ class UserResource(ConditionalFullResource):
         if self._meta.authentication.is_authenticated(bundle.request):
             if getattr(bundle.request.user, 'get_profile', False):
                 # get the org of the API key owner
-                organisation = bundle.request.user.get_profile().organisation
+                organisation = bundle.request.user.userprofile.organisation
             else:
                 organisation = None
             # find out if the user has a profile that's associated with the API key owner org

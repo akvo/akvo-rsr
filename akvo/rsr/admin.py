@@ -188,7 +188,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            organisation = request.user.get_profile().organisation
+            organisation = request.user.userprofile.organisation
             return qs.filter(pk=organisation.id)
         else:
             raise PermissionDenied
@@ -209,7 +209,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             return True
         if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
             if obj:
-                return obj == request.user.get_profile().organisation
+                return obj == request.user.userprofile.organisation
             else:
                 return True
         return False
@@ -242,7 +242,7 @@ def partner_clean(obj, field_name='organisation'):
         obj: a formset for one of the partner types
         field_name: the filed name of the foreign key field that points to the org
     """
-    user_profile = obj.request.user.get_profile()
+    user_profile = obj.request.user.userprofile
     # superusers can do whatever they like!
     if obj.request.user.is_superuser:
         found = True
@@ -298,54 +298,54 @@ def partner_clean(obj, field_name='organisation'):
 #        return formset
 
 #see above
-class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-    def clean(self):
-        partner_clean(self, 'field_organisation')
+# class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+#     def clean(self):
+#         partner_clean(self, 'field_organisation')
 
 
-class FieldPartnerInline(admin.TabularInline):
-    model = get_model('rsr', 'fieldpartner')
-    extra = 1
-    formset = RSR_FieldPartnerInlineFormFormSet
-
-    def get_formset(self, request, *args, **kwargs):
-        formset = super(FieldPartnerInline, self).get_formset(request, *args, **kwargs)
-        formset.request = request
-        return formset
-
-
-#see above
-class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-    def clean(self):
-        partner_clean(self, 'support_organisation')
-
-
-class SupportPartnerInline(admin.TabularInline):
-    model = get_model('rsr', 'supportpartner')
-    extra = 1
-    formset = RSR_SupportPartnerInlineFormFormSet
-
-    def get_formset(self, request, *args, **kwargs):
-        formset = super(SupportPartnerInline, self).get_formset(request, *args, **kwargs)
-        formset.request = request
-        return formset
+# class FieldPartnerInline(admin.TabularInline):
+#     model = get_model('rsr', 'fieldpartner')
+#     extra = 1
+#     formset = RSR_FieldPartnerInlineFormFormSet
+#
+#     def get_formset(self, request, *args, **kwargs):
+#         formset = super(FieldPartnerInline, self).get_formset(request, *args, **kwargs)
+#         formset.request = request
+#         return formset
 
 
 #see above
-class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-    def clean(self):
-        partner_clean(self, 'sponsor_organisation')
+# class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+#     def clean(self):
+#         partner_clean(self, 'support_organisation')
 
 
-class SponsorPartnerInline(admin.TabularInline):
-    model = get_model('rsr', 'sponsorpartner')
-    extra = 1
-    formset = RSR_SponsorPartnerInlineFormFormSet
+# class SupportPartnerInline(admin.TabularInline):
+#     model = get_model('rsr', 'supportpartner')
+#     extra = 1
+#     formset = RSR_SupportPartnerInlineFormFormSet
+#
+#     def get_formset(self, request, *args, **kwargs):
+#         formset = super(SupportPartnerInline, self).get_formset(request, *args, **kwargs)
+#         formset.request = request
+#         return formset
 
-    def get_formset(self, request, *args, **kwargs):
-        formset = super(SponsorPartnerInline, self).get_formset(request, *args, **kwargs)
-        formset.request = request
-        return formset
+
+#see above
+# class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
+#     def clean(self):
+#         partner_clean(self, 'sponsor_organisation')
+
+
+# class SponsorPartnerInline(admin.TabularInline):
+#     model = get_model('rsr', 'sponsorpartner')
+#     extra = 1
+#     formset = RSR_SponsorPartnerInlineFormFormSet
+#
+#     def get_formset(self, request, *args, **kwargs):
+#         formset = super(SponsorPartnerInline, self).get_formset(request, *args, **kwargs)
+#         formset.request = request
+#         return formset
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
@@ -384,8 +384,8 @@ class BudgetItemAdminInLine(admin.TabularInline):
 #admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
 
 
-class BudgetAdminInLine(admin.TabularInline):
-    model = get_model('rsr', 'budget')
+# class BudgetAdminInLine(admin.TabularInline):
+#     model = get_model('rsr', 'budget')
 
 
 class PublishingStatusAdmin(admin.ModelAdmin):
@@ -463,7 +463,7 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
             return len(seq) != len(seq_set)
 
         user = self.request.user
-        user_profile = user.get_profile()
+        user_profile = user.userprofile
         errors = []
         # superusers can do whatever they like!
         if user.is_superuser:
@@ -690,7 +690,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         qs = super(ProjectAdmin, self).queryset(request)
         opts = self.opts
-        user_profile = request.user.get_profile()
+        user_profile = request.user.userprofile
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
@@ -714,7 +714,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         opts = self.opts
         user = request.user
-        user_profile = user.get_profile()
+        user_profile = user.userprofile
 
         # RSR editors/managers
         if user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
@@ -794,7 +794,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 # hack by GvH to get user's organisation preset as partner when adding a new project
                 if prefix == 'partnerships':
                     formset = FormSet(instance=self.model(), prefix=prefix,
-                                      initial=[{'organisation': request.user.get_profile().organisation}],
+                                      initial=[{'organisation': request.user.userprofile.organisation}],
                                       queryset=inline.queryset(request))
                 else:
                     formset = FormSet(instance=self.model(), prefix=prefix,
@@ -978,7 +978,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            organisation = request.user.get_profile().organisation
+            organisation = request.user.userprofile.organisation
             return qs.filter(organisation=organisation)
         else:
             raise PermissionDenied
@@ -998,7 +998,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return True
         if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            my_org = request.user.get_profile().organisation
+            my_org = request.user.userprofile.organisation
             if obj:
                 return obj.organisation == my_org
             else:
@@ -1179,7 +1179,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-            organisation = request.user.get_profile().organisation
+            organisation = request.user.userprofile.organisation
             return qs.filter(organisation=organisation)
         else:
             raise PermissionDenied
@@ -1200,7 +1200,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             return True
         if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
             if obj:
-                return obj.organisation == request.user.get_profile().organisation
+                return obj.organisation == request.user.userprofile.organisation
             else:
                 return True
         return False

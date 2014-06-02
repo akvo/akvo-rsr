@@ -615,7 +615,7 @@ def update_user_profile(
         template_name,
         {
             'form': form,
-            'profile': user.get_profile()
+            'profile': user.userprofile
         },
         context_instance=context
     )
@@ -901,7 +901,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
     '''
     if not request.POST:
         try:
-            account_level = request.user.get_profile().organisation.organisationaccount.account_level
+            account_level = request.user.userprofile.organisation.organisationaccount.account_level
         except:
             account_level = 'free'
         # project = get_object_or_404(Project.objects, pk=project_id)

@@ -1304,7 +1304,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='userprofile')
     organisation = models.ForeignKey(Organisation)
 
     notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
