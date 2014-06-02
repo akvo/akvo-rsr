@@ -461,6 +461,13 @@ class Organisation(TimestampsMixin, models.Model):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.published_projects().all_partners().exclude(id__exact=self.id)
 
+    def countries_where_active(self):
+        """Returns a Country queryset of countries where this organisation has published projects."""
+        return Country.objects.filter(
+            projectlocation__project__partnerships__organisation=self,
+            projectlocation__project__publishingstatus__status='published'
+        ).distinct()
+
     # New API
 
     def euros_pledged(self):
@@ -1842,10 +1849,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ('S', _(u'SMS')),
         ('M', _(u'mobile')),
     )
-    PHOTO_LOCATIONS = (
-        ('B', _(u'At the beginning of the update')),
-        ('E', _(u'At the end of the update')),
-    )
+
 
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
@@ -1865,7 +1869,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
         help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
     )
-    photo_location = ValidXMLCharField(_(u'photo location'), max_length=1, choices=PHOTO_LOCATIONS)
     photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     photo_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
@@ -1915,6 +1918,9 @@ class ProjectUpdate(TimestampsMixin, models.Model):
             try:
                 data = oembed.site.embed(self.video).get_data()
                 html = data.get('html', '')
+                # Add 'rel=0' to the video link for not showing related Youtube videos
+                if "youtube" in html:
+                    html = html.replace("feature=oembed", "feature=oembed&rel=0")
             except:
                 pass
         return mark_safe(html)
@@ -1951,16 +1957,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     def view_count(self):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
-
-    @property
-    def media_location(self):
-        return self.photo_location
-
-    @property
-    def text_location(self, location='B'):
-        if self.media_location == 'B':
-            location = 'E'
-        return location
 
     @models.permalink
     def get_absolute_url(self):
