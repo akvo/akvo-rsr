@@ -1190,7 +1190,7 @@ class Goal(models.Model):
 
 
 class Benchmark(models.Model):
-    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name=_(u'benchmarks'), )
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='benchmarks', )
     category = models.ForeignKey(Category, verbose_name=_(u'category'), )
     name = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
     value = models.IntegerField(_(u'benchmark value'), )
@@ -1304,7 +1304,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='userprofile')
     organisation = models.ForeignKey(Organisation)
 
     notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')

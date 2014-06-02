@@ -290,7 +290,7 @@ class ProjectResource(ConditionalFullResource):
                 return object_list
             elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
                 object_list = object_list.published() | object_list.of_partner(
-                    request.user.get_profile().organisation
+                    request.user.userprofile.organisation
                 )
                 return object_list.distinct()
         return object_list.published()
