@@ -4,27 +4,21 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
-from django.contrib.admin.util import unquote, flatten_fieldsets
+from django.contrib.admin.util import flatten_fieldsets
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
-from django.contrib.contenttypes import generic
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
 from django.forms.util import ErrorList
-from django.http import Http404
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_unicode
-from django.utils.html import escape
-from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 import os.path
-
-from permissions.models import Role
 
 from akvo.rsr.forms import PartnerSiteAdminForm
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
@@ -69,7 +63,6 @@ class CountryAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-#            return u'iso_code', u'name', u'continent', u'continent_code'
             return u'name', u'continent', u'continent_code'
         else:
             return u'name', u'continent', u'continent_code'
@@ -89,7 +82,7 @@ class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
                         primary_count += 1 if form.cleaned_data['primary'] else 0
                     except:
                         pass
-                # if we have any forms left there must be exactly 1 primary location
+            # if we have any forms left there must be exactly 1 primary location
             if form_count > 0 and not primary_count == 1:
                 self._non_form_errors = ErrorList([
                     _(u'The project must have exactly one filled in primary location if any locations at all are to be included')
@@ -163,23 +156,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # parter_types is read only unless you have change permission for organisations
         if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
             self.readonly_fields = ('partner_types', 'created_at', 'last_modified_at',)
-            # hack to set the help text
-            #try:
-            #    field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
-            #    if len(field) > 0:
-            #        field[0].help_text = 'The allowed partner types for this organisation'
-            #except:
-            #    pass
         else:
             self.readonly_fields = ('created_at', 'last_modified_at',)
-            # hack to set the help text
-            #try:
-            #    if not obj is None:
-            #        field = [f for f in obj._meta.local_many_to_many if f.name == 'partner_types']
-            #        if len(field) > 0:
-            #            field[0].help_text = 'The allowed partner types for this organisation. Hold down "Control", or "Command" on a Mac, to select more than one.'
-            #except:
-            #    pass
         return super(OrganisationAdmin, self).get_readonly_fields(request, obj=obj)
 
     def queryset(self, request):
@@ -222,9 +200,6 @@ class OrganisationAccountAdmin(admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
-
-#class LinkAdmin(admin.ModelAdmin):
-#    list_display = ('url', 'caption', 'show_link', )
 
 class LinkInline(admin.TabularInline):
     model = get_model('rsr', 'link')
@@ -278,76 +253,6 @@ def partner_clean(obj, field_name='organisation'):
     obj.instance.partner_formsets.append(obj)
 
 
-#class RSR_FundingPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-#    # do cleaning looking for the user's org in the funding partner forms
-#    def clean(self):
-#        partner_clean(self, 'funding_organisation')
-#
-#class FundingPartnerInline(admin.TabularInline):
-#    model = get_model('rsr', 'fundingpartner')
-#    extra = 1
-#    # put custom formset in chain of inheritance. the formset creation ends up
-#    # returning a formset of type FundingPartnerFormForm (I think...) but the
-#    # RSR_FundingPartnerInlineFormFormSet is a parent to it and thus we can access
-#    # the custom clean()
-#    formset = RSR_FundingPartnerInlineFormFormSet
-#
-#    def get_formset(self, request, *args, **kwargs):
-#        formset = super(FundingPartnerInline, self).get_formset(request, *args, **kwargs)
-#        formset.request = request
-#        return formset
-
-#see above
-# class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-#     def clean(self):
-#         partner_clean(self, 'field_organisation')
-
-
-# class FieldPartnerInline(admin.TabularInline):
-#     model = get_model('rsr', 'fieldpartner')
-#     extra = 1
-#     formset = RSR_FieldPartnerInlineFormFormSet
-#
-#     def get_formset(self, request, *args, **kwargs):
-#         formset = super(FieldPartnerInline, self).get_formset(request, *args, **kwargs)
-#         formset.request = request
-#         return formset
-
-
-#see above
-# class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-#     def clean(self):
-#         partner_clean(self, 'support_organisation')
-
-
-# class SupportPartnerInline(admin.TabularInline):
-#     model = get_model('rsr', 'supportpartner')
-#     extra = 1
-#     formset = RSR_SupportPartnerInlineFormFormSet
-#
-#     def get_formset(self, request, *args, **kwargs):
-#         formset = super(SupportPartnerInline, self).get_formset(request, *args, **kwargs)
-#         formset.request = request
-#         return formset
-
-
-#see above
-# class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-#     def clean(self):
-#         partner_clean(self, 'sponsor_organisation')
-
-
-# class SponsorPartnerInline(admin.TabularInline):
-#     model = get_model('rsr', 'sponsorpartner')
-#     extra = 1
-#     formset = RSR_SponsorPartnerInlineFormFormSet
-#
-#     def get_formset(self, request, *args, **kwargs):
-#         formset = super(SponsorPartnerInline, self).get_formset(request, *args, **kwargs)
-#         formset.request = request
-#         return formset
-
-
 class BudgetItemLabelAdmin(admin.ModelAdmin):
     list_display = (u'label',)
 
@@ -381,12 +286,6 @@ class BudgetItemAdminInLine(admin.TabularInline):
         css = {'all': (os.path.join(settings.MEDIA_URL, 'akvo/css/src/rsr_admin.css').replace('\\', '/'),)}
         js = (os.path.join(settings.MEDIA_URL, 'akvo/js/src/rsr_admin.js').replace('\\', '/'),)
 
-#admin.site.register(get_model('rsr', 'budgetitem'), BudgetItemAdminInLine)
-
-
-# class BudgetAdminInLine(admin.TabularInline):
-#     model = get_model('rsr', 'budget')
-
 
 class PublishingStatusAdmin(admin.ModelAdmin):
     list_display = (u'project', u'status', )
@@ -394,16 +293,6 @@ class PublishingStatusAdmin(admin.ModelAdmin):
     list_filter = ('status', )
 
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
-
-
-#class ProjectAdminForm(forms.ModelForm):
-#    class Meta:
-#        model = get_model('rsr', 'project')
-#
-#    def clean(self):
-#        return self.cleaned_data
-#
-#admin.site.register(get_model('rsr', 'location'))
 
 
 class FocusAreaAdmin(admin.ModelAdmin):
@@ -542,66 +431,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline,
     )
     save_as = True
-    # fieldsets = (
-    #     (_(u'Project description'), {
-    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-    #             u'Give your project a short title and subtitle in RSR. These fields are the '
-    #             u'newspaper headline for your project: use them to attract attention to what you are doing.'
-    #         ),
-    #        'fields': ('title', 'subtitle', 'status', 'language',),
-    #     }),
-    #     (_(u'Categories'), {
-    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-    #             u'Please select all categories applicable to your project. '
-    #             u'(The Focus area(s) of each category is shown in parenthesis after the category name)'
-    #         ),
-    #         'fields': (('categories',)),
-    #     }),
-    #     (_(u'Project info'), {
-    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-    #             u'The summary should <em>briefly</em> explain why the project is being carried out, '
-    #             u'where it is taking place, who will benefit and/or participate, what it specifically '
-    #             u'hopes to accomplish and how those specific goals will be accomplished.'
-    #         ),
-    #         'fields': ('project_plan_summary', 'current_image', 'current_image_caption', )
-    #     }),
-    #     (_(u'Project details'), {
-    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-    #             u'In-depth information about your project should be put in this section. '
-    #             u'Use the Background, Project plan, Current status and Sustainability fields '
-    #             u'to tell people more about the project.'
-    #         ),
-    #         'fields': ('background', 'project_plan', 'current_status', 'sustainability', ),
-    #     }),
-    #     (_(u'Project meta info'), {
-    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-    #             u'The project meta information fields are not public. '
-    #             u'They allow you to make notes to other members of your organisation or '
-    #             u'partners with access to your projects on the RSR Admin pages.'
-    #         ),
-    #         'fields': ('project_rating', 'notes', ),
-    #     }),
-    #     (_(u'Project budget'), {
-    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-    #             u'The request posted date is filled in for you automatically when you create a project. '
-    #             u'When the project implementation phase is complete, enter the <em>Date complete</em> here.'
-    #         ),
-    #         'fields': ('currency', 'date_request_posted', 'date_complete', ),
-    #     }),
-    #     (_(u'Aggregates'), {
-    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _('Aggregate financial data'),
-    #         'fields': (('funds',  'funds_needed',), ),
-    #     }),
-    #     (_(u'Goals'), {
-    #         'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-    #             u'Describe what the project hopes to accomplish. Keep in mind the SMART criteria: '
-    #             u'Specific, Measurable, Agreed upon, Realistic and Time-specific. '
-    #             u'The numbered fields can be used to list specific goals whose accomplishment '
-    #             u'will be used to measure overall project success.'
-    #         ),
-    #         'fields': ('goals_overview', )
-    #     }),
-    # )
+
     fieldsets = (
         (_(u'General Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -657,7 +487,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             ),
             'fields': ('notes',),
             }),
-
     )
 
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
@@ -665,7 +494,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     list_filter = ('currency', 'status', )
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
-    #form = ProjectAdminForm
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
@@ -831,97 +659,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         context.update(extra_context or {})
         return self.render_change_form(request, context, form_url=form_url, add=True)
 
-# benchmark change, budgetitem all, goal all, location all,
-
-#    @csrf_protect_m
-#    @transaction.commit_on_success
-#    def change_view(self, request, object_id, extra_context=None):
-#        "The 'change' admin view for this model."
-#        model = self.model
-#        opts = model._meta
-#
-#        obj = self.get_object(request, unquote(object_id))
-#
-#        if not self.has_change_permission(request, obj):
-#            raise PermissionDenied
-#
-#        if obj is None:
-#            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-#
-#        if request.method == 'POST' and "_saveasnew" in request.POST:
-#            return self.add_view(request, form_url='../add/')
-#
-#        ModelForm = self.get_form(request, obj)
-#        formsets = []
-#        if request.method == 'POST':
-#            form = ModelForm(request.POST, request.FILES, instance=obj)
-#            if form.is_valid():
-#                form_validated = True
-#                new_object = self.save_form(request, form, change=True)
-#            else:
-#                form_validated = False
-#                new_object = obj
-#            prefixes = {}
-#            for FormSet, inline in zip(self.get_formsets(request, new_object),
-#                                       self.inline_instances):
-#                prefix = FormSet.get_default_prefix()
-#                prefixes[prefix] = prefixes.get(prefix, 0) + 1
-#                if prefixes[prefix] != 1:
-#                    prefix = "%s-%s" % (prefix, prefixes[prefix])
-#                formset = FormSet(request.POST, request.FILES,
-#                                  instance=new_object, prefix=prefix,
-#                                  queryset=inline.queryset(request))
-#
-#                formsets.append(formset)
-#            if all_valid(formsets) and form_validated:
-#                self.save_model(request, new_object, form, change=True)
-#                form.save_m2m()
-#                for formset in formsets:
-#                    self.save_formset(request, form, formset, change=True)
-#
-#                change_message = self.construct_change_message(request, form, formsets)
-#                self.log_change(request, new_object, change_message)
-#                return self.response_change(request, new_object)
-#
-#        else:
-#            form = ModelForm(instance=obj)
-#            prefixes = {}
-#            for FormSet, inline in zip(self.get_formsets(request, obj), self.inline_instances):
-#                prefix = FormSet.get_default_prefix()
-#                prefixes[prefix] = prefixes.get(prefix, 0) + 1
-#                if prefixes[prefix] != 1:
-#                    prefix = "%s-%s" % (prefix, prefixes[prefix])
-#                formset = FormSet(instance=obj, prefix=prefix,
-#                                  queryset=inline.queryset(request))
-#                formsets.append(formset)
-#
-#        adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj),
-#                                      self.prepopulated_fields, self.get_readonly_fields(request, obj),
-#                                      model_admin=self)
-#        media = self.media + adminForm.media
-#
-#        inline_admin_formsets = []
-#        for inline, formset in zip(self.inline_instances, formsets):
-#            fieldsets = list(inline.get_fieldsets(request, obj))
-#            readonly = list(inline.get_readonly_fields(request, obj))
-#            inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets, readonly, model_admin=self)
-#            inline_admin_formsets.append(inline_admin_formset)
-#            media = media + inline_admin_formset.media
-#
-#        context = {
-#            'title': _(u'Change project'),
-#            'adminform': adminForm,
-#            'object_id': object_id,
-#            'original': obj,
-#            'is_popup': "_popup" in request.REQUEST,
-#            'media': mark_safe(media),
-#            'inline_admin_formsets': inline_admin_formsets,
-#            'errors': helpers.AdminErrorList(form, formsets),
-#            'root_path': self.admin_site.root_path,
-#            'app_label': opts.app_label,
-#        }
-#        context.update(extra_context or {})
-#        return self.render_change_form(request, context, change=True, obj=obj)
 
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
@@ -1144,13 +881,6 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         else:
             self.fieldsets[0][1]['fields'] = ('organisation', 'enabled',)
         return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
-
-    # def get_fieldsets(self, request, obj=None):
-    #     # don't show the notes field unless you have "add" permission on the PartnerSite model
-    #     # (currently means an Akvo staff user (or superuser))
-    #     if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
-    #         return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
-    #     return self.restricted_fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
         """ Workaround bug http://code.djangoproject.com/ticket/9360
