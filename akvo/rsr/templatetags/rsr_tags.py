@@ -14,8 +14,6 @@ from django.template.defaulttags import WidthRatioNode
 from django.template.base import TemplateSyntaxError
 from django.utils.translation import ugettext as _
 
-from akvo.scripts.asset_manager import map, asset_bundles
-
 register = template.Library()
 
 
@@ -157,52 +155,6 @@ def gallery_thumb(context, image, width, height, caption='', style=''):
         'wxh': '%sx%s' % (width, height,),
         'caption': caption,
         'style': style,
-    }
-
-
-@register.inclusion_tag('inclusion_tags/asset_bundle.html',
-                        takes_context=True)
-def asset_bundle(context, bundle):
-    '''Uses akvo/scripts/asset_manager/map.py to retrive a resource file'''
-    cant_get_map = False
-    script_import_string = ''
-    include = ''
-    try:
-        bundle_hash = map.BUNDLE_MAP['%s' % str(bundle)]['hash']
-        bundle_type = map.BUNDLE_MAP['%s' % str(bundle)]['type']
-        bundle_path = map.BUNDLE_MAP['%s' % str(bundle)]['path']
-    except:
-        print 'Got problems'
-        bundle_hash = '000'
-        cant_get_map = True
-
-    try:
-        dev_mode = settings.ASSET_MANAGER_DEV
-    except:
-        dev_mode = False
-
-    if dev_mode or cant_get_map:
-        if asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['type'] == 'css':
-            url = '%s%sbuild/%s_raw.%s' % (settings.MEDIA_URL, bundle_path,
-                                           bundle, bundle_type)
-            script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
-            include = script_string
-        else:
-            script_import_string = ''
-            for file_element in asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['files']:
-                url = '%s%ssrc/%s' % (settings.MEDIA_URL, asset_bundles.ASSET_BUNDLES['%s' % str(bundle)]['path'], file_element)
-                script_import_string = '%s<script src="%s" type="text/javascript" charset="utf-8"></script>\n\t' % (script_import_string, url)
-            include = script_import_string
-    else:
-        url = '%s%sbuild/%s_min_%s.%s' % (settings.MEDIA_URL, bundle_path, bundle, bundle_hash, bundle_type)
-        if bundle_type == 'css':
-            script_string = '%s<link rel="stylesheet" href="%s" type="text/css" media="screen" title="main">\n' % (script_import_string, url)
-        else:
-            script_string = '%s<script src="%s" type="text/javascript" charset="utf-8"></script>\n' % (script_import_string, url)
-        include = script_string
-
-    return {
-        'include': include,
     }
 
 
