@@ -22,6 +22,7 @@ from .resources import ConditionalFullResource
 class ProjectUpdateModelForm(ModelForm):
     class Meta:
         model = ProjectUpdate
+        fields = "__all__"
 
 
 class ProjectUpdateResource(ConditionalFullResource):
@@ -73,7 +74,7 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
         def org_data_for_update(update):
             """ return relevant data for the organisation that is linked to an update through the user that created the update
             """
-            update_org = update.user.get_profile().organisation
+            update_org = update.user.userprofile.organisation
             return dict(
                 absolute_url=update_org.get_absolute_url(),
                 long_name=update_org.long_name,
