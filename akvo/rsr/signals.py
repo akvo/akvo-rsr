@@ -188,7 +188,7 @@ def user_activated_callback(sender, **kwargs):
 
     user = kwargs.get("user", False)
     if user:
-        org = user.get_profile().organisation
+        org = user.userprofile.organisation
         users = User.objects.all()
         #find all users that are 1) superusers 2) RSR editors
         #3) org admins for the same org as the just activated user
