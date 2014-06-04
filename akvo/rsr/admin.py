@@ -253,41 +253,6 @@ def partner_clean(obj, field_name='organisation'):
     obj.instance.partner_formsets.append(obj)
 
 
-#see above
-class RSR_FieldPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-    def clean(self):
-        partner_clean(self, 'field_organisation')
-
-
-class FieldPartnerInline(admin.TabularInline):
-    model = get_model('rsr', 'fieldpartner')
-    extra = 1
-    formset = RSR_FieldPartnerInlineFormFormSet
-
-    def get_formset(self, request, *args, **kwargs):
-        formset = super(FieldPartnerInline, self).get_formset(request, *args, **kwargs)
-        formset.request = request
-        return formset
-
-
-#see above
-class RSR_SupportPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-    def clean(self):
-        partner_clean(self, 'support_organisation')
-
-
-class SupportPartnerInline(admin.TabularInline):
-    model = get_model('rsr', 'supportpartner')
-    extra = 1
-    formset = RSR_SupportPartnerInlineFormFormSet
-
-    def get_formset(self, request, *args, **kwargs):
-        formset = super(SupportPartnerInline, self).get_formset(request, *args, **kwargs)
-        formset.request = request
-        return formset
-
-
-#see above
 class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         partner_clean(self, 'sponsor_organisation')
