@@ -5,9 +5,8 @@
 Script for setting all budgets with budget item 13 to 14 and remove budget item 13 (total) from RSR.
 """
 
-from django.core.management import setup_environ
-from akvo import settings
-setup_environ(settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from akvo.rsr.models import BudgetItem, BudgetItemLabel, Project
 

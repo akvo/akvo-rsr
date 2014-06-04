@@ -34,7 +34,7 @@ class UserProfileResource(ConditionalFullResource):
     def get_object_list(self, request):
         """ Limit access to the users in your own organisation
         """
-        organisation = request.user.get_profile().organisation
+        organisation = request.user.userprofile.organisation
         return UserProfile.objects.filter(organisation=organisation)
 
     def dehydrate(self, bundle):

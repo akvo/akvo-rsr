@@ -8,7 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from __future__ import absolute_import
 
 from django.conf import settings
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django_counter.urls import urlpatterns as counter_urls
@@ -156,4 +156,5 @@ urlpatterns += patterns(
         {'document_root': settings.MEDIA_ROOT}),
 )
 
-urlpatterns += staticfiles_urlpatterns()
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()

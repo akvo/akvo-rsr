@@ -1,13 +1,12 @@
 {% extends "widgets/base_widget.html" %}
 {% load i18n thumbnail rsr_tags rsr_filters humanize %}
-{% load url from future %}
 
 
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	{% asset_bundle 'widget_project' %}
-	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project/css/screen.css" type="text/css" media="screen, projection" /> #}
+	{# asset_bundle 'widget_project' #}
+	<link rel="stylesheet" href="{{ STATIC_URL }}rsr/widgets/project/css/build/widget_project.min.css" type="text/css" media="screen, projection" />
 	
 	<!--[if IE]>
 	<style type="text/css" media="screen">
