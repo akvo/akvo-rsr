@@ -4,6 +4,7 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
+from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.util import flatten_fieldsets
 from django.contrib.auth import get_permission_codename
 from django.contrib.auth.admin import GroupAdmin
@@ -14,9 +15,9 @@ from django.db.models import get_model
 from django.forms.formsets import all_valid
 from django.forms.util import ErrorList
 from django.utils.decorators import method_decorator
-from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
+from django.utils.encoding import force_text
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 import os.path
@@ -204,52 +205,6 @@ class LinkInline(admin.TabularInline):
     model = get_model('rsr', 'link')
     extra = 3
     list_display = ('url', 'caption', 'show_link')
-
-
-def partner_clean(obj, field_name='organisation'):
-    """
-    this function figures out if a given user's organisation is a partner in some function
-    associated with the current project. This is to avoid the situation where a user
-    who is a partner admin creates a project without the own org as a partner
-    resulting in a project that can't be edited by that user or anyone else form the org.
-    params:
-        obj: a formset for one of the partner types
-        field_name: the filed name of the foreign key field that points to the org
-    """
-    user_profile = obj.request.user.userprofile
-    # superusers can do whatever they like!
-    if obj.request.user.is_superuser:
-        found = True
-    # if the user is a partner org we try to avoid foot shooting
-    elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
-        my_org = user_profile.organisation
-        found = False
-        for i in range(0, obj.total_form_count()):
-            form = obj.forms[i]
-            try:
-                form_org = form.cleaned_data[field_name]
-                if not form.cleaned_data.get('DELETE', False) and my_org == form_org:
-                    # found our own org, all is well move on!
-                    found = True
-                    break
-            except:
-                pass
-    else:
-        found = True
-    try:
-        #obj instance is the Project instance. We use it to store the info about
-        #wether we have found our own org in the found attribute.
-        if not obj.instance.found:
-            obj.instance.found = found
-    except AttributeError:
-        obj.instance.found = found
-    try:
-        # add the formset to attribute partner_formsets. This is to conveniently
-        # be able to dig up these formsets later for error assignment
-        obj.instance.partner_formsets
-    except AttributeError:
-        obj.instance.partner_formsets = []
-    obj.instance.partner_formsets.append(obj)
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
@@ -555,7 +510,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
 
     @csrf_protect_m
-    @transaction.commit_on_success
+    @transaction.atomic
     def add_view(self, request, form_url='', extra_context=None):
         "The 'add' admin view for this model."
         model = self.model
@@ -566,7 +521,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
         ModelForm = self.get_form(request)
         formsets = []
-        inline_instances = self.get_inline_instances(request)
+        inline_instances = self.get_inline_instances(request, None)
         if request.method == 'POST':
             form = ModelForm(request.POST, request.FILES)
             if form.is_valid():
@@ -627,9 +582,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 formsets.append(formset)
 
         adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)),
-                                      self.get_prepopulated_fields(request),
-                                      self.get_readonly_fields(request),
-                                      model_admin=self)
+            self.get_prepopulated_fields(request),
+            self.get_readonly_fields(request),
+            model_admin=self)
         media = self.media + adminForm.media
 
         inline_admin_formsets = []
@@ -638,23 +593,23 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             readonly = list(inline.get_readonly_fields(request))
             prepopulated = dict(inline.get_prepopulated_fields(request))
             inline_admin_formset = helpers.InlineAdminFormSet(inline, formset,
-                                                              fieldsets, prepopulated, readonly, model_admin=self)
+                fieldsets, prepopulated, readonly, model_admin=self)
             inline_admin_formsets.append(inline_admin_formset)
             media = media + inline_admin_formset.media
 
         context = {
-            'title': _('Add %s') % force_unicode(opts.verbose_name),
+            'title': _('Add %s') % force_text(opts.verbose_name),
             'adminform': adminForm,
-            'is_popup': "_popup" in request.REQUEST,
+            'is_popup': IS_POPUP_VAR in request.REQUEST,
             'show_delete': False,
             'media': media,
             'inline_admin_formsets': inline_admin_formsets,
             'errors': helpers.AdminErrorList(form, formsets),
             'app_label': opts.app_label,
-            }
+            'preserved_filters': self.get_preserved_filters(request),
+        }
         context.update(extra_context or {})
         return self.render_change_form(request, context, form_url=form_url, add=True)
-
 
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
