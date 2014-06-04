@@ -161,8 +161,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             self.readonly_fields = ('created_at', 'last_modified_at',)
         return super(OrganisationAdmin, self).get_readonly_fields(request, obj=obj)
 
-    def queryset(self, request):
-        qs = super(OrganisationAdmin, self).queryset(request)
+    def get_queryset(self, request):
+        qs = super(OrganisationAdmin, self).get_queryset(request)
         opts = self.opts
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
@@ -511,11 +511,11 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectAdmin, self).__init__(model, admin_site)
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)
         """
-        qs = super(ProjectAdmin, self).queryset(request)
+        qs = super(ProjectAdmin, self).get_queryset(request)
         opts = self.opts
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
@@ -589,7 +589,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                     formset = FormSet(data=request.POST, files=request.FILES,
                                       instance=new_object,
                                       save_as_new="_saveasnew" in request.POST,
-                                      prefix=prefix, queryset=inline.queryset(request))
+                                      prefix=prefix, queryset=inline.get_queryset(request))
                     formsets.append(formset)
             if all_valid(formsets) and form_validated:
                 self.save_model(request, new_object, form, False)
@@ -619,10 +619,10 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 if prefix == 'partnerships':
                     formset = FormSet(instance=self.model(), prefix=prefix,
                                       initial=[{'organisation': request.user.userprofile.organisation}],
-                                      queryset=inline.queryset(request))
+                                      queryset=inline.get_queryset(request))
                 else:
                     formset = FormSet(instance=self.model(), prefix=prefix,
-                                      queryset=inline.queryset(request))
+                                      queryset=inline.get_queryset(request))
                 # end hack
                 formsets.append(formset)
 
@@ -702,11 +702,11 @@ class UserProfileAdmin(admin.ModelAdmin):
         else:
             return []
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)
         """
-        qs = super(UserProfileAdmin, self).queryset(request)
+        qs = super(UserProfileAdmin, self).get_queryset(request)
         opts = self.opts
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
@@ -897,8 +897,8 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             del actions['delete_selected']
         return actions
 
-    def queryset(self, request):
-        qs = super(PartnerSiteAdmin, self).queryset(request)
+    def get_queryset(self, request):
+        qs = super(PartnerSiteAdmin, self).get_queryset(request)
         opts = self.opts
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
