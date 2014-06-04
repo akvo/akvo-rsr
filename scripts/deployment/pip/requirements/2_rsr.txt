@@ -1,5 +1,5 @@
 # Django
-https://www.djangoproject.com/download/1.7.b4/tarball/#egg=django
+Django==1.6.5
 
 # Django apps
 django-filter==0.7
