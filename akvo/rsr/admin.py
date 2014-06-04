@@ -207,68 +207,6 @@ class LinkInline(admin.TabularInline):
     list_display = ('url', 'caption', 'show_link')
 
 
-def partner_clean(obj, field_name='organisation'):
-    """
-    this function figures out if a given user's organisation is a partner in some function
-    associated with the current project. This is to avoid the situation where a user
-    who is a partner admin creates a project without the own org as a partner
-    resulting in a project that can't be edited by that user or anyone else form the org.
-    params:
-        obj: a formset for one of the partner types
-        field_name: the filed name of the foreign key field that points to the org
-    """
-    user_profile = obj.request.user.userprofile
-    # superusers can do whatever they like!
-    if obj.request.user.is_superuser:
-        found = True
-    # if the user is a partner org we try to avoid foot shooting
-    elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
-        my_org = user_profile.organisation
-        found = False
-        for i in range(0, obj.total_form_count()):
-            form = obj.forms[i]
-            try:
-                form_org = form.cleaned_data[field_name]
-                if not form.cleaned_data.get('DELETE', False) and my_org == form_org:
-                    # found our own org, all is well move on!
-                    found = True
-                    break
-            except:
-                pass
-    else:
-        found = True
-    try:
-        #obj instance is the Project instance. We use it to store the info about
-        #wether we have found our own org in the found attribute.
-        if not obj.instance.found:
-            obj.instance.found = found
-    except AttributeError:
-        obj.instance.found = found
-    try:
-        # add the formset to attribute partner_formsets. This is to conveniently
-        # be able to dig up these formsets later for error assignment
-        obj.instance.partner_formsets
-    except AttributeError:
-        obj.instance.partner_formsets = []
-    obj.instance.partner_formsets.append(obj)
-
-
-class RSR_SponsorPartnerInlineFormFormSet(forms.models.BaseInlineFormSet):
-    def clean(self):
-        partner_clean(self, 'sponsor_organisation')
-
-
-class SponsorPartnerInline(admin.TabularInline):
-    model = get_model('rsr', 'sponsorpartner')
-    extra = 1
-    formset = RSR_SponsorPartnerInlineFormFormSet
-
-    def get_formset(self, request, *args, **kwargs):
-        formset = super(SponsorPartnerInline, self).get_formset(request, *args, **kwargs)
-        formset.request = request
-        return formset
-
-
 class BudgetItemLabelAdmin(admin.ModelAdmin):
     list_display = (u'label',)
 
