@@ -136,11 +136,6 @@ def groups_from_user(user):
     return [group.name for group in user.groups.all()]
 
 
-#Modeled on Options method get_change_permission in django/db/models/options.py
-def get_rsr_limited_change_permission(obj):
-    return '%s_%s' % (RSR_LIMITED_CHANGE, obj.object_name.lower())
-
-
 def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
     """
     Use to set ImageField upload_to attribute.

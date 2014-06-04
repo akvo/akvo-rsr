@@ -18,9 +18,6 @@ from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationForm
 from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
 
-from akvo.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
-                            get_random_from_qs, state_equals, right_now_in_akvo)
-
 from django import forms
 from django import http
 from django.conf import settings
@@ -828,18 +825,9 @@ def projectmain(request, project, draft=False, can_add_update=False):
             if project.benchmarks.filter(category=category).aggregate(Sum('value'))['value__sum']
         ])
 
-    # a little model meta data magic
-    opts = project._meta
-    if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-        admin_change_url = reverse('admin:rsr_project_change', args=(project.id,)),
-        admin_change_url = admin_change_url[0]  # don't friggin ask why!!!
-    else:
-        admin_change_url = None
-
     can_add_update = project.connected_to_user(request.user)
 
     return {
-        'admin_change_url': admin_change_url,
         'benchmarks': benchmarks,
         'can_add_update': can_add_update,
         'draft': draft,
