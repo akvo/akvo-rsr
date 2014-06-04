@@ -456,6 +456,13 @@ class Organisation(TimestampsMixin, models.Model):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.published_projects().all_partners().exclude(id__exact=self.id)
 
+    def countries_where_active(self):
+        """Returns a Country queryset of countries where this organisation has published projects."""
+        return Country.objects.filter(
+            projectlocation__project__partnerships__organisation=self,
+            projectlocation__project__publishingstatus__status='published'
+        ).distinct()
+
     # New API
 
     def euros_pledged(self):
@@ -1503,6 +1510,9 @@ class ProjectUpdate(TimestampsMixin, models.Model):
             try:
                 data = oembed.site.embed(self.video).get_data()
                 html = data.get('html', '')
+                # Add 'rel=0' to the video link for not showing related Youtube videos
+                if "youtube" in html:
+                    html = html.replace("feature=oembed", "feature=oembed&rel=0")
             except:
                 pass
         return mark_safe(html)

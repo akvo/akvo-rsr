@@ -83,7 +83,7 @@
       {% update_thumb update 580 435 %}
     {% endif %}
     {% autoescape off %}
-        {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
+      {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
     {% endautoescape %}
     <hr style="margin-bottom:5px;" />
     <div class="text_right">

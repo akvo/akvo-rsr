@@ -114,7 +114,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',
-                                                'allow_edit',)}),
+                                                'content_owner', 'allow_edit',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
