@@ -72,14 +72,14 @@ from tastypie.models import ApiKey
 #based on http://www.djangosnippets.org/snippets/562/ and
 #http://simonwillison.net/2008/May/1/orm/
 class QuerySetManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return self.model.QuerySet(self.model)
 
     def __getattr__(self, attr, *args):
         try:
             return getattr(self.__class__, attr, *args)
         except AttributeError:
-            return getattr(self.get_query_set(), attr, *args)
+            return getattr(self.get_queryset(), attr, *args)
 
 OLD_CONTINENTS = (
     ("1", _(u'Africa')),
@@ -254,7 +254,7 @@ class Partnership(models.Model):
 
 
 class ProjectsQuerySetManager(QuerySetManager):
-    def get_query_set(self):
+    def get_queryset(self):
         return self.model.ProjectsQuerySet(self.model)
 
 
@@ -455,6 +455,13 @@ class Organisation(TimestampsMixin, models.Model):
     def partners(self):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.published_projects().all_partners().exclude(id__exact=self.id)
+
+    def countries_where_active(self):
+        """Returns a Country queryset of countries where this organisation has published projects."""
+        return Country.objects.filter(
+            projectlocation__project__partnerships__organisation=self,
+            projectlocation__project__publishingstatus__status='published'
+        ).distinct()
 
     # New API
 
@@ -697,7 +704,7 @@ class MiniCMS(models.Model):
 
 
 class OrganisationsQuerySetManager(QuerySetManager):
-    def get_query_set(self):
+    def get_queryset(self):
         return self.model.OrganisationsQuerySet(self.model)
 
 
@@ -1503,6 +1510,9 @@ class ProjectUpdate(TimestampsMixin, models.Model):
             try:
                 data = oembed.site.embed(self.video).get_data()
                 html = data.get('html', '')
+                # Add 'rel=0' to the video link for not showing related Youtube videos
+                if "youtube" in html:
+                    html = html.replace("feature=oembed", "feature=oembed&rel=0")
             except:
                 pass
         return mark_safe(html)
@@ -1606,14 +1616,14 @@ class PaymentGatewaySelector(models.Model):
 
 
 class InvoiceManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         """Returns a queryset of all invoices
         Test invoices are excluded in production mode
         """
         if not settings.DONATION_TEST:
-            return super(InvoiceManager, self).get_query_set().exclude(test=True)
+            return super(InvoiceManager, self).get_queryset().exclude(test=True)
         else:
-            return super(InvoiceManager, self).get_query_set()
+            return super(InvoiceManager, self).get_queryset()
 
     def stale(self):
         """Returns a queryset of invoices which have been pending

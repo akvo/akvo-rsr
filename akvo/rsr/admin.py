@@ -4,7 +4,9 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import helpers, widgets
+from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.util import flatten_fieldsets
+from django.contrib.auth import get_permission_codename
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -13,16 +15,16 @@ from django.db.models import get_model
 from django.forms.formsets import all_valid
 from django.forms.util import ErrorList
 from django.utils.decorators import method_decorator
-from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
+from django.utils.encoding import force_text
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 import os.path
 
 from akvo.rsr.forms import PartnerSiteAdminForm
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
-from akvo.utils import get_rsr_limited_change_permission, permissions, custom_get_or_create_country
+from akvo.utils import permissions, custom_get_or_create_country, RSR_LIMITED_CHANGE
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -53,7 +55,7 @@ class CountryAdmin(admin.ModelAdmin):
         """ Remove delete admin action for "non certified" users"""
         actions = super(CountryAdmin, self).get_actions(request)
         opts = self.opts
-        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+        if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
             del actions['delete_selected']
         return actions
 
@@ -113,7 +115,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
                                                 'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',
-                                                'allow_edit',)}),
+                                                'content_owner', 'allow_edit',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
@@ -130,7 +132,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """ Remove delete admin action for "non certified" users"""
         actions = super(OrganisationAdmin, self).get_actions(request)
         opts = self.opts
-        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+        if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
             del actions['delete_selected']
         return actions
 
@@ -148,24 +150,24 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     def get_list_display(self, request):
         # see the notes fields in the change list if you have the right permissions
-        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
+        if request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('change', self.opts)):
             return list(self.list_display) + ['allowed_partner_types']
         return super(OrganisationAdmin, self).get_list_display(request)
 
     def get_readonly_fields(self, request, obj=None):
         # parter_types is read only unless you have change permission for organisations
-        if not request.user.has_perm(self.opts.app_label + '.' + self.opts.get_change_permission()):
+        if not request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('change', self.opts)):
             self.readonly_fields = ('partner_types', 'created_at', 'last_modified_at',)
         else:
             self.readonly_fields = ('created_at', 'last_modified_at',)
         return super(OrganisationAdmin, self).get_readonly_fields(request, obj=obj)
 
-    def queryset(self, request):
-        qs = super(OrganisationAdmin, self).queryset(request)
+    def get_queryset(self, request):
+        qs = super(OrganisationAdmin, self).get_queryset(request)
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
-        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             organisation = request.user.userprofile.organisation
             return qs.filter(pk=organisation.id)
         else:
@@ -178,14 +180,12 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
-
-        get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
-        "own" projects, organisation and user profiles
         """
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return True
-        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             if obj:
                 return obj == request.user.userprofile.organisation
             else:
@@ -205,52 +205,6 @@ class LinkInline(admin.TabularInline):
     model = get_model('rsr', 'link')
     extra = 3
     list_display = ('url', 'caption', 'show_link')
-
-
-def partner_clean(obj, field_name='organisation'):
-    """
-    this function figures out if a given user's organisation is a partner in some function
-    associated with the current project. This is to avoid the situation where a user
-    who is a partner admin creates a project without the own org as a partner
-    resulting in a project that can't be edited by that user or anyone else form the org.
-    params:
-        obj: a formset for one of the partner types
-        field_name: the filed name of the foreign key field that points to the org
-    """
-    user_profile = obj.request.user.userprofile
-    # superusers can do whatever they like!
-    if obj.request.user.is_superuser:
-        found = True
-    # if the user is a partner org we try to avoid foot shooting
-    elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
-        my_org = user_profile.organisation
-        found = False
-        for i in range(0, obj.total_form_count()):
-            form = obj.forms[i]
-            try:
-                form_org = form.cleaned_data[field_name]
-                if not form.cleaned_data.get('DELETE', False) and my_org == form_org:
-                    # found our own org, all is well move on!
-                    found = True
-                    break
-            except:
-                pass
-    else:
-        found = True
-    try:
-        #obj instance is the Project instance. We use it to store the info about
-        #wether we have found our own org in the found attribute.
-        if not obj.instance.found:
-            obj.instance.found = found
-    except AttributeError:
-        obj.instance.found = found
-    try:
-        # add the formset to attribute partner_formsets. This is to conveniently
-        # be able to dig up these formsets later for error assignment
-        obj.instance.partner_formsets
-    except AttributeError:
-        obj.instance.partner_formsets = []
-    obj.instance.partner_formsets.append(obj)
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
@@ -499,7 +453,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """ Remove delete admin action for "non certified" users"""
         actions = super(ProjectAdmin, self).get_actions(request)
         opts = self.opts
-        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+        if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
             del actions['delete_selected']
         return actions
 
@@ -512,16 +466,16 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectAdmin, self).__init__(model, admin_site)
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)
         """
-        qs = super(ProjectAdmin, self).queryset(request)
+        qs = super(ProjectAdmin, self).get_queryset(request)
         opts = self.opts
-        user_profile = request.user.userprofile
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
-        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
+            user_profile = request.user.userprofile
             projects = user_profile.organisation.all_projects()
             # Access to Partner users may be limited by Support partner "ownership"
             allowed_projects = [project.pk for project in projects if user_profile.allow_edit(project)]
@@ -536,20 +490,17 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
-
-        get_rsr_limited_change_permission is used for  partner orgs to limit their listing and editing to
-        "own" projects, organisation and user profiles
         """
         opts = self.opts
         user = request.user
         user_profile = user.userprofile
 
         # RSR editors/managers
-        if user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        if user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return True
 
-        # RSR Partner admins/editors
-        if user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
+        if user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             # On the Project form
             if obj:
                 return user_profile.allow_edit(obj)
@@ -559,7 +510,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
 
     @csrf_protect_m
-    @transaction.commit_on_success
+    @transaction.atomic
     def add_view(self, request, form_url='', extra_context=None):
         "The 'add' admin view for this model."
         model = self.model
@@ -570,7 +521,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
         ModelForm = self.get_form(request)
         formsets = []
-        inline_instances = self.get_inline_instances(request)
+        inline_instances = self.get_inline_instances(request, None)
         if request.method == 'POST':
             form = ModelForm(request.POST, request.FILES)
             if form.is_valid():
@@ -593,7 +544,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                     formset = FormSet(data=request.POST, files=request.FILES,
                                       instance=new_object,
                                       save_as_new="_saveasnew" in request.POST,
-                                      prefix=prefix, queryset=inline.queryset(request))
+                                      prefix=prefix, queryset=inline.get_queryset(request))
                     formsets.append(formset)
             if all_valid(formsets) and form_validated:
                 self.save_model(request, new_object, form, False)
@@ -623,17 +574,17 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 if prefix == 'partnerships':
                     formset = FormSet(instance=self.model(), prefix=prefix,
                                       initial=[{'organisation': request.user.userprofile.organisation}],
-                                      queryset=inline.queryset(request))
+                                      queryset=inline.get_queryset(request))
                 else:
                     formset = FormSet(instance=self.model(), prefix=prefix,
-                                      queryset=inline.queryset(request))
+                                      queryset=inline.get_queryset(request))
                 # end hack
                 formsets.append(formset)
 
         adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)),
-                                      self.get_prepopulated_fields(request),
-                                      self.get_readonly_fields(request),
-                                      model_admin=self)
+            self.get_prepopulated_fields(request),
+            self.get_readonly_fields(request),
+            model_admin=self)
         media = self.media + adminForm.media
 
         inline_admin_formsets = []
@@ -642,23 +593,23 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             readonly = list(inline.get_readonly_fields(request))
             prepopulated = dict(inline.get_prepopulated_fields(request))
             inline_admin_formset = helpers.InlineAdminFormSet(inline, formset,
-                                                              fieldsets, prepopulated, readonly, model_admin=self)
+                fieldsets, prepopulated, readonly, model_admin=self)
             inline_admin_formsets.append(inline_admin_formset)
             media = media + inline_admin_formset.media
 
         context = {
-            'title': _('Add %s') % force_unicode(opts.verbose_name),
+            'title': _('Add %s') % force_text(opts.verbose_name),
             'adminform': adminForm,
-            'is_popup': "_popup" in request.REQUEST,
+            'is_popup': IS_POPUP_VAR in request.REQUEST,
             'show_delete': False,
             'media': media,
             'inline_admin_formsets': inline_admin_formsets,
             'errors': helpers.AdminErrorList(form, formsets),
             'app_label': opts.app_label,
-            }
+            'preserved_filters': self.get_preserved_filters(request),
+        }
         context.update(extra_context or {})
         return self.render_change_form(request, context, form_url=form_url, add=True)
-
 
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
@@ -694,7 +645,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         """ Remove delete admin action for "non certified" users"""
         actions = super(UserProfileAdmin, self).get_actions(request)
         opts = self.opts
-        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+        if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
             del actions['delete_selected']
         return actions
 
@@ -706,15 +657,15 @@ class UserProfileAdmin(admin.ModelAdmin):
         else:
             return []
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         """
         Return a queryset possibly filtered depending on current user's group(s)
         """
-        qs = super(UserProfileAdmin, self).queryset(request)
+        qs = super(UserProfileAdmin, self).get_queryset(request)
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
-        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             organisation = request.user.userprofile.organisation
             return qs.filter(organisation=organisation)
         else:
@@ -727,14 +678,12 @@ class UserProfileAdmin(admin.ModelAdmin):
 
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
-
-        get_rsr_limited_change_permission is used for partner orgs to limit their listing and editing to
-        "own" projects, organisation and user profiles
         """
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return True
-        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             my_org = request.user.userprofile.organisation
             if obj:
                 return obj.organisation == my_org
@@ -876,7 +825,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # don't show the notes field unless you have "add" permission on the PartnerSite model
         # (currently means an Akvo staff user (or superuser))
         # note that this is somewhat fragile as it relies on adding/removing from the _first_ fieldset
-        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
+        if request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('add', self.opts)):
             self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
         else:
             self.fieldsets[0][1]['fields'] = ('organisation', 'enabled',)
@@ -891,7 +840,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     def get_list_display(self, request):
         # see the notes fields in the change list if you have the right permissions
-        if request.user.has_perm(self.opts.app_label + '.' + self.opts.get_add_permission()):
+        if request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('add', self.opts)):
             return list(self.list_display) + ['notes']
         return super(PartnerSiteAdmin, self).get_list_display(request)
 
@@ -899,16 +848,16 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """ Remove delete admin action for "non certified" users"""
         actions = super(PartnerSiteAdmin, self).get_actions(request)
         opts = self.opts
-        if not request.user.has_perm(opts.app_label + '.' + opts.get_delete_permission()):
+        if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
             del actions['delete_selected']
         return actions
 
-    def queryset(self, request):
-        qs = super(PartnerSiteAdmin, self).queryset(request)
+    def get_queryset(self, request):
+        qs = super(PartnerSiteAdmin, self).get_queryset(request)
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
-        elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             organisation = request.user.userprofile.organisation
             return qs.filter(organisation=organisation)
         else:
@@ -921,14 +870,12 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
         If `obj` is None, this should return True if the given request has
         permission to change *any* object of the given type.
-
-        get_rsr_limited_change_permission is used for partner orgs to limit their listing and editing to
-        "own" projects, organisation, patner_site and user profiles
         """
         opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return True
-        if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+        # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             if obj:
                 return obj.organisation == request.user.userprofile.organisation
             else:

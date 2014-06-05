@@ -144,7 +144,7 @@
     {% endif %}
     <p class="small grey">
       {% autoescape off %}
-          {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
+        {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
       {% endautoescape %}
     </p>
     <hr style="margin-bottom:5px;" />

@@ -14,7 +14,7 @@ from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import Base64FileField, ConditionalFullToOneField
 from akvo.api.validation import ModelFormValidation
 
-from akvo.rsr.models import ProjectUpdate
+from akvo.rsr.models import ProjectUpdate, Country
 
 from .resources import ConditionalFullResource
 
@@ -22,7 +22,6 @@ from .resources import ConditionalFullResource
 class ProjectUpdateModelForm(ModelForm):
     class Meta:
         model = ProjectUpdate
-        fields = "__all__"
 
 
 class ProjectUpdateResource(ConditionalFullResource):
@@ -47,6 +46,7 @@ class ProjectUpdateResource(ConditionalFullResource):
             title               = ALL,
             update_method       = ALL,
             uuid                = ALL,
+            photo               = ALL,
             # foreign keys
             project             = ALL_WITH_RELATIONS,
             user                = ALL_WITH_RELATIONS,
@@ -71,34 +71,65 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
         resource_name = 'project_update_extra'
 
     def dehydrate(self, bundle):
-        def org_data_for_update(update):
+        def primary_location_data_for_update(obj):
+            """ We need similar data for both the project and the organisation associated with the update
+            """
+            primary_location = dict(obj.primary_location.__dict__)
+            # remove Django internal field
+            primary_location.pop('_state', None)
+            country_id = primary_location.pop('country_id', None)
+            if country_id:
+                primary_location['country'] = dict(
+                    resource_uri=reverse(
+                        'api_dispatch_detail', kwargs={
+                            'resource_name':'country', 'api_name': 'v1', 'pk': country_id
+                        }
+                    ),
+                )
+                country = Country.objects.get(pk=country_id)
+                country_dict = country.__dict__
+                # remove Django internal field
+                country_dict.pop('_state', None)
+                primary_location['country'].update(country_dict)
+
+            return primary_location
+
+        def org_data_for_update(organisation):
             """ return relevant data for the organisation that is linked to an update through the user that created the update
             """
-            update_org = update.user.userprofile.organisation
             return dict(
-                absolute_url=update_org.get_absolute_url(),
-                long_name=update_org.long_name,
-                name=update_org.name,
+                absolute_url=organisation.get_absolute_url(),
+                long_name=organisation.long_name,
+                name=organisation.name,
                 resource_uri=reverse(
                     'api_dispatch_detail', kwargs={
-                        'resource_name':'organisation', 'api_name': 'v1', 'pk': update_org.pk
+                        'resource_name':'organisation', 'api_name': 'v1', 'pk': organisation.pk
                     }
                 ),
             )
 
         def user_data_for_update(user):
-            if user.first_name or user.last_name:
-                return dict(
-                    full_name=u"{} {}".format(user.first_name, user.last_name)
-                )
-            return {}
+            return dict(
+                first_name=user.first_name,
+                last_name=user.last_name,
+            )
+
+        def project_data_for_update(bundle):
+            return dict(
+                resource_uri=bundle.data['project'],
+            )
 
         bundle = super(ProjectUpdateResourceExtra, self).dehydrate(bundle)
-        org = org_data_for_update(bundle.obj)
+
+        organisation = bundle.obj.user.userprofile.organisation
+        org_dict = org_data_for_update(organisation)
         user_resource_uri = bundle.data['user']
         bundle.data['user'] = user_data_for_update(bundle.obj.user)
         bundle.data['user'].update(resource_uri=user_resource_uri)
-        bundle.data['user']['organisation'] = org
+        bundle.data['user']['organisation'] = org_dict
+        bundle.data['user']['organisation'].update(primary_location=primary_location_data_for_update(organisation))
+        bundle.data['project'] = project_data_for_update(bundle)
+        bundle.data['project'].update(primary_location=primary_location_data_for_update(bundle.obj.project))
         return bundle
 
     def build_schema(self):
