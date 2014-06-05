@@ -535,14 +535,17 @@ class InternalOrganisationID(models.Model):
 
 class OrganisationAccount(models.Model):
     """
-    This model keps track of organisation account levels and other relevant data.
+    This model keeps track of organisation account levels and other relevant data.
     The reason for having this in a separate model form Organisation is to hide
     it from the org admins.
     """
+
     ACCOUNT_LEVEL = (
         ('free', u'Free'),
-        ('plus', u'Plus'),
+        ('freemium', u'Freemium'),
         ('premium', u'Premium'),
+        ('plus', u'Premium Plus'),
+        ('archived', u'Archived'),
     )
     organisation = models.OneToOneField(Organisation, verbose_name=u'organisation', primary_key=True)
     account_level = ValidXMLCharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
