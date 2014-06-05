@@ -652,8 +652,13 @@ class UserProfileAdmin(admin.ModelAdmin):
     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
-            # user and org are only shown as text, not select widget
-            return ['user', 'organisation', ]
+            opts = self.opts
+            if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
+                # user is only shown as text, not select widget
+                return ['user', ]
+            else:
+                # user and org are only shown as text, not select widget
+                return ['user', 'organisation', ]
         else:
             return []
 
