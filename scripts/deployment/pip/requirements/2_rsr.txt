@@ -42,6 +42,7 @@ Markdown==2.4
 Pillow==2.4.0
 python-memcached==1.53
 template-utils==0.4p2
+django-pipeline
 
 # Database requirements
 MySQL-python==1.2.5
