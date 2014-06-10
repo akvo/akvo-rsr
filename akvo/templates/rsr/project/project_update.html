@@ -1,6 +1,5 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load url from future %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags markup %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags markup_tags %}
 
 {% block head %}
     <meta property="og:title" content="Akvo.org - {{update.title}}"/>
@@ -84,7 +83,7 @@
       {% update_thumb update 580 435 %}
     {% endif %}
     {% autoescape off %}
-      {{ update.text|force_escape|urlize|markdown }}
+      {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
     {% endautoescape %}
     <hr style="margin-bottom:5px;" />
     <div class="text_right">

@@ -10,13 +10,11 @@ from decimal import Decimal
 from lxml import etree
 from os.path import splitext
 
-from django.core.management import setup_environ
-import sys
-import akvo.settings
-
-setup_environ(akvo.settings)
-
 import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
+
+import sys
+
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 

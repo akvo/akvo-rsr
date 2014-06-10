@@ -1,5 +1,5 @@
 {% load i18n rsr_tags rsr_filters thumbnail humanize piwik_tags %}
-{% load url from future %}
+{% load compressed %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -10,8 +10,7 @@
   <base target="_top" />
 
   {% block style %}
-    {% asset_bundle 'widget_project_small' %}
-    {# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_small/css/screen.css" type="text/css" media="screen, projection" /> #}
+    {% compressed_css 'widget_project_small' %}
   {% endblock style %}
 
   <style type="text/css" media="screen">

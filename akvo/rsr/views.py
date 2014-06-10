@@ -9,17 +9,14 @@ from urlparse import urljoin
 from lxml import etree
 
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
-from akvo.rsr.models import (MiniCMS, FocusArea, Organisation,
+from akvo.rsr.models import (FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
-                             UserProfile, Invoice, SmsReporter, PartnerSite)
+                             UserProfile, Invoice, PartnerSite)
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
 from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
-
-from akvo.utils import (wordpress_get_lastest_posts, get_rsr_limited_change_permission,
-                            get_random_from_qs, state_equals, right_now_in_akvo)
 
 from django import forms
 from django import http
@@ -53,7 +50,7 @@ import json
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
-from notification.models import Notice
+# from notification.models import Notice
 
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
@@ -615,7 +612,7 @@ def update_user_profile(
         template_name,
         {
             'form': form,
-            'profile': user.get_profile()
+            'profile': user.userprofile
         },
         context_instance=context
     )
@@ -754,99 +751,6 @@ def updateform(request, project_id,
         RequestContext(request))
 
 
-class MobileProjectForm(forms.Form):
-    project = forms.ChoiceField(required=False, widget=forms.Select())
-
-    def __init__(self, *args, **kwargs):
-        profile = kwargs.pop('profile', None)
-        forms.Form.__init__(self, *args, **kwargs)
-        if profile and profile.available_gateway_numbers():
-            self.fields['project'].choices = ((u'', u'---------'),) + tuple([(p.id, "%s - %s" % (unicode(p.pk), p.title)) for p in profile.my_unreported_projects()])
-
-    def clean(self):
-        return self.cleaned_data
-
-
-class MobileNumberForm(forms.Form):
-    phone_number = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input', 'size': '25', 'maxlength': '15', }))
-
-    def clean(self):
-        cd = self.cleaned_data
-        if not 'phone_number' in cd:
-            raise forms.ValidationError(u'Field phone_number missing from MobileForm.')
-        if cd['phone_number']:
-            if self.has_changed():
-                try:
-                    UserProfile.objects.get(phone_number=cd['phone_number'])
-                except:
-                    pass
-                else:
-                    raise forms.ValidationError(_(u'The phone number %s is already registered for updating. Please check the number entered.' % cd['phone_number']))
-        else:
-            pass  # disable updating for this user
-        return self.cleaned_data
-
-
-@login_required()
-def myakvo_mobile_number(request):
-    '''
-    Add (or change) mobile phone number for SMS reporting
-    '''
-    profile = request.user.get_profile()
-    if request.method == 'POST':
-        form = MobileNumberForm(request.POST, request.FILES, initial={'phone_number': profile.phone_number})
-        if form.is_valid():
-            # workflow for mobile Akvo
-            if 'phone_number' in form.changed_data:
-                if form.cleaned_data['phone_number']:  # phone number added or changed
-                    profile.add_phone_number(form.cleaned_data['phone_number'])
-                else:  # phone number removed
-                    profile.disable_sms_update_workflow()
-                #always save change to phone number
-                profile.phone_number = form.cleaned_data['phone_number']
-                profile.save()
-            return HttpResponseRedirect(reverse('myakvo_mobile'))
-    else:
-        form = MobileNumberForm(initial={'phone_number': profile.phone_number},)
-    return render_to_response('rsr/myakvo/mobile_number.html', {'form': form, }, RequestContext(request))
-
-
-@login_required()
-def myakvo_mobile(request):
-    '''
-    Handle the selection of projects for SMS reporting
-    '''
-    profile = request.user.get_profile()
-    form_data = {'phone_number': profile.phone_number}
-    notices = Notice.objects.notices_for(request.user, on_site=True)
-
-    if request.method == 'POST':
-        form = MobileProjectForm(request.POST, request.FILES, profile=profile)
-        if form.is_valid():
-            project = Project.objects.get(pk=form.cleaned_data['project'])
-            profile.create_reporter(project)
-            return HttpResponseRedirect('./')
-    else:
-        form = MobileProjectForm(form_data, profile=profile)
-    return render_to_response(
-        'rsr/myakvo/mobile.html', {
-            'profile': profile,
-            'form': form,
-            'sms_updating_enabled': state_equals(profile, profile.STATE_UPDATES_ENABLED),
-            'notices': notices,
-        }, RequestContext(request))
-
-
-@login_required()
-def myakvo_cancel_reporter(request, reporter_id):
-    '''
-    '''
-    profile = request.user.get_profile()
-    reporter = SmsReporter.objects.get(id=reporter_id)
-    profile.destroy_reporter(reporter)
-    return HttpResponseRedirect(reverse('myakvo_mobile'))
-
-
 class CommentForm(ModelForm):
 
     comment = forms.CharField(widget=forms.Textarea(attrs={
@@ -857,7 +761,7 @@ class CommentForm(ModelForm):
 
     class Meta:
         model = ProjectComment
-        exclude = ('time', 'project', 'user', )
+        fields = ('comment',)
 
 
 @login_required()
@@ -921,18 +825,9 @@ def projectmain(request, project, draft=False, can_add_update=False):
             if project.benchmarks.filter(category=category).aggregate(Sum('value'))['value__sum']
         ])
 
-    # a little model meta data magic
-    opts = project._meta
-    if request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
-        admin_change_url = reverse('admin:rsr_project_change', args=(project.id,)),
-        admin_change_url = admin_change_url[0]  # don't friggin ask why!!!
-    else:
-        admin_change_url = None
-
     can_add_update = project.connected_to_user(request.user)
 
     return {
-        'admin_change_url': admin_change_url,
         'benchmarks': benchmarks,
         'can_add_update': can_add_update,
         'draft': draft,
@@ -994,7 +889,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
     '''
     if not request.POST:
         try:
-            account_level = request.user.get_profile().organisation.organisationaccount.account_level
+            account_level = request.user.userprofile.organisation.organisationaccount.account_level
         except:
             account_level = 'free'
         # project = get_object_or_404(Project.objects, pk=project_id)

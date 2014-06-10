@@ -1,6 +1,7 @@
 {% extends "rsr/project/project_base.html" %}
 {% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags maps %}
-{% load url from future %}
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
 
 {% block head %}
     <meta property="og:title" content="Akvo.org - {{project.title}}"/>
@@ -9,7 +10,7 @@
     {% if project.current_image %}
       <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{project.current_image.extra_thumbnails.fb_thumb}}"/>
     {% else %}
-      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{MEDIA_URL}}core/img/Akvo_RGB_tagline2_logo_square.png"/>
+      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{ STATIC_URL }}core/img/Akvo_RGB_tagline2_logo_square.png"/>
     {% endif %}
 
 {{block.super}}
@@ -170,7 +171,7 @@
 
 {% block js %}
   {{ block.super }}
-  <script src="{{MEDIA_URL}}core/galleria/galleria-1.2.8.js"></script>
+  <script src="{{ STATIC_URL }}lib/js/galleria-1.2.8/galleria-1.2.8.js"></script>
   <script>
     var galleria_data = [
         {
@@ -230,11 +231,10 @@
   </script>
 {% endblock js %}
 
-
 {% block jq_ready %}
   jQ('#project_tabs').tabs();
   {{block.super}}
-  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic/galleria.classic.min.js');
+  Galleria.loadTheme('{{ STATIC_URL }}lib/js/galleria-1.2.8/themes/classic/galleria.classic.min.js');
   Galleria.configure({
     showInfo: false
   });
