@@ -21,7 +21,7 @@ djangorestframework==2.3.13
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
 -e git://github.com/akvo/djangoembed.git@3a1d6b955bcff4b2ec04eefca79a0b2ebb31289a#egg=djangoembed
 -e git://github.com/akvo/django-tastypie.git@781fea26200b741c292cf166b30b7066e9e40f44#egg=django-tastypie
--e git://github.com/akvo/django-registration.git@a586ba92bcf7c373f3c0d94e24edd9a1e312dd16#egg=registration
+-e git://github.com/akvo/django-registration.git@d1ff9eba18854fc41892de5a16562db77b93a25a#egg=registration
 
 # Akvonaut apps
 -e git://github.com/peeb/django-mollie-ideal.git#egg=mollie
