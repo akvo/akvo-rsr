@@ -219,7 +219,7 @@ urlpatterns += patterns(
             'post_reset_redirect': '/accounts/password/reset/done/'},
         name='rsr_password_reset'),
 
-    url(r'^accounts/password/reset/confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
+    url(r'^accounts/password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
         auth_views.password_reset_confirm,
         {'set_password_form': RSR_SetPasswordForm},
         name='auth_password_reset_confirm'),
