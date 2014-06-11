@@ -64,7 +64,7 @@ def permissions(self):
         change='no',
         delete='no',
         rsr_limited_change='no',
-        admin_media=settings.MEDIA_URL+'admin/'
+        admin_media=settings.STATIC_URL+'admin/'
     )
 
     def table_row(row):
