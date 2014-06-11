@@ -45,7 +45,7 @@ Github issue [#566](https://github.com/akvo/akvo-rsr/issues/566)
 
 ### Upgraded Python Libraries
 
-We have performed updates of all dependent python libraries where possible to allow us to use the latst versions.
+We have performed updates of all dependent python libraries where possible to allow us to use the latest versions.
 
 Github issue [#570](https://github.com/akvo/akvo-rsr/issues/570)
 
@@ -93,7 +93,7 @@ Github issue [#583](https://github.com/akvo/akvo-rsr/issues/583)
 
 ### Change in permission methods
 
-We have replaced ``get_(add|change|delete)_permission`` ``model _meta`` methods with ``django.contrib.auth.get_permission_codename`` as the previous are now depreciated.
+We have replaced ``get_(add|change|delete)_permission`` methods with ``django.contrib.auth.get_permission_codename`` as the previous are now depreciated.
 
 Github issue [#584](https://github.com/akvo/akvo-rsr/issues/584)
 
