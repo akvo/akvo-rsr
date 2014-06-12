@@ -220,8 +220,10 @@ urlpatterns += patterns(
         name='rsr_password_reset'),
 
     url(r'^accounts/password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        auth_views.password_reset_confirm,
-        {'set_password_form': RSR_SetPasswordForm},
+        auth_views.password_reset_confirm, {
+            'set_password_form': RSR_SetPasswordForm,
+            'post_reset_redirect':'django.contrib.auth.views.password_reset_complete'
+        },
         name='auth_password_reset_confirm'),
 
     url(r'^accounts/update/complete/$', TemplateView.as_view(template_name='registration/update_complete.html'), name='registration_update_complete'),
