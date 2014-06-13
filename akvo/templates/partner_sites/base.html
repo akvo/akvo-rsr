@@ -1,6 +1,7 @@
 {% load i18n rsr_tags webdesign rsr_tags thumbnail piwik_tags static %}
 {% load static %}
 {% get_static_prefix as STATIC_URL %}
+{% load compressed %}
 
 
 <!doctype html>
@@ -21,9 +22,10 @@
 
   <title>{% block title %}{% endblock title %}{{organisation}}</title>
 
-  <link rel="stylesheet" href=" {{ STATIC_URL }}rsr/sites/css/partner_sites_style.min.css" type="text/css" media="screen" title="main">
-  {% if stylesheet %}<link rel="stylesheet" href="{{STATIC_URL}}{{stylesheet}}">{% endif %}
-  {% if favicon %}<link rel="shortcut icon" href="{{STATIC_URL}}{{favicon}}" type="image/x-icon">{% endif %}
+  {% compressed_css 'partner_sites' %}
+
+  {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+  {% if favicon %}<link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">{% endif %}
 
   {#  Piwik #}
   {% tracking_code %}

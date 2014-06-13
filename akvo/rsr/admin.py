@@ -237,8 +237,8 @@ class BudgetItemAdminInLine(admin.TabularInline):
     formset = BudgetItemAdminInLineFormSet
 
     class Media:
-        css = {'all': (os.path.join(settings.MEDIA_URL, 'akvo/css/src/rsr_admin.css').replace('\\', '/'),)}
-        js = (os.path.join(settings.MEDIA_URL, 'akvo/js/src/rsr_admin.js').replace('\\', '/'),)
+        css = {'all': (os.path.join(settings.STATIC_URL, 'rsr/main/css/src/rsr_admin.css').replace('\\', '/'),)}
+        js = (os.path.join(settings.STATIC_URL, 'rsr/main/js/src/rsr_admin.js').replace('\\', '/'),)
 
 
 class PublishingStatusAdmin(admin.ModelAdmin):
