@@ -1,6 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail humanize rsr_filters markup %}
-{% load url from future %}
+{% load i18n rsr_tags webdesign thumbnail humanize rsr_filters markup_tags %}
 
 
 {% block title %}{% trans "Project updates" %} - {% endblock title %}
@@ -30,7 +29,7 @@
               <div class="clearfix">
                 <a class="video_thumb" href="{% url 'update_main' project.id update.id %}">
                   <img src="{{update.get_video_thumbnail_url}}" style="width:240px;" alt="" />
-                  <i style="background-image: url({{ MEDIA_URL }}core/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
+                  <i style="background-image: url({{ STATIC_URL }}common/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
                 </a>
               </div>
             {% else %}
@@ -52,7 +51,7 @@
                 {% if update.text %}
                   <span class="grey small">
                   {% autoescape off %}
-                    {{ update.text|force_escape|smart_truncate:150|urlize|markdown }}
+                    {{ update.text|force_escape|smart_truncate:150|urlize|apply_markup:"markdown" }}
                   {% endautoescape %}
                   </span>
                 {% endif %}

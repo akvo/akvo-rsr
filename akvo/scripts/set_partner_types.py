@@ -5,9 +5,8 @@
 Script for setting all organisations to at least 'field' and 'funding' partner type.
 """
 
-from django.core.management import setup_environ
-from akvo import settings
-setup_environ(settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from akvo.rsr.models import Organisation, PartnerType
 

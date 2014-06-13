@@ -11,9 +11,8 @@
 
 import sys, types
 
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from akvo.rsr.models import Project, Category, FocusArea, Benchmarkname, Benchmark
 from akvo.rsr.signals import create_benchmark_objects

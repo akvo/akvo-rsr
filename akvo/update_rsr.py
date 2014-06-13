@@ -4,9 +4,8 @@
 #to be run in the akvo rsr root folder. setting up all projects as published, if they have no status
 # and setting all orgs to free account if they have none
 
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from os.path import basename, splitext
 

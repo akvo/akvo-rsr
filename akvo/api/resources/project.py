@@ -3,10 +3,12 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+
 from decimal import Decimal
 
+from django.contrib.auth import get_permission_codename
 from django.core.exceptions import ObjectDoesNotExist
-
 from django.forms.models import ModelForm
 
 from tastypie import fields
@@ -26,7 +28,7 @@ from akvo.api.serializers import IATISerializer
 from akvo.rsr.models import (
     Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark
 )
-from akvo.utils import get_rsr_limited_change_permission
+from akvo.utils import RSR_LIMITED_CHANGE
 
 from .resources import ConditionalFullResource, get_extra_thumbnails
 from .partnership import FIELD_NAME, FIELD_LONG_NAME
@@ -35,6 +37,7 @@ from .partnership import FIELD_NAME, FIELD_LONG_NAME
 class IATIProjectModelForm(ModelForm):
     class Meta:
         model = Project
+        fields = "__all__"
 
 
 class IATIProjectResource(ModelResource):
@@ -285,11 +288,11 @@ class ProjectResource(ConditionalFullResource):
         object_list = super(ProjectResource, self).get_object_list(request)
         if self._meta.authentication.is_authenticated(request):
             opts = Project._meta
-            if request.user.has_perm(opts.app_label + '.' + opts.get_change_permission()):
+            if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
                 return object_list
-            elif request.user.has_perm(opts.app_label + '.' + get_rsr_limited_change_permission(opts)):
+            elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
                 object_list = object_list.published() | object_list.of_partner(
-                    request.user.get_profile().organisation
+                    request.user.userprofile.organisation
                 )
                 return object_list.distinct()
         return object_list.published()
