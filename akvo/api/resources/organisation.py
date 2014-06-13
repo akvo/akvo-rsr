@@ -43,9 +43,14 @@ class OrganisationResource(ConditionalFullResource):
         )
 
     def dehydrate(self, bundle):
-        """ add thumbnails inline info for Organisation.logo
+        """check if created_at and last_modified_at are boolean instead of null
+        add thumbnails inline info for Organisation.logo
         """
         bundle = super(OrganisationResource, self).dehydrate(bundle)
+        if isinstance(bundle.data['created_at'], bool):
+            bundle.data['created_at'] = None
+        if isinstance(bundle.data['last_modified_at'], bool):
+            bundle.data['last_modified_at'] = None
         bundle.data['logo'] = {
             'original': bundle.data['logo'],
             'thumbnails': get_extra_thumbnails(bundle.obj.logo),

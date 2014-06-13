@@ -302,6 +302,10 @@ class ProjectResource(ConditionalFullResource):
         """ add thumbnails inline info for Project.current_image
         """
         bundle = super(ProjectResource, self).dehydrate(bundle)
+        if isinstance(bundle.data['created_at'], bool):
+            bundle.data['created_at'] = None
+        if isinstance(bundle.data['last_modified_at'], bool):
+            bundle.data['last_modified_at'] = None
         bundle.data['current_image'] = {
             'original': bundle.data['current_image'],
             'thumbnails': get_extra_thumbnails(bundle.obj.current_image),

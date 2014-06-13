@@ -62,6 +62,8 @@ class ProjectUpdateResource(ConditionalFullResource):
             bundle.data['time_last_updated'] = bundle.data['last_modified_at']
             del bundle.data['created_at']
             del bundle.data['last_modified_at']
+            if isinstance(bundle.data['time'], bool): bundle.data['time'] = None
+            if isinstance(bundle.data['time_last_updated'], bool): bundle.data['time_last_updated'] = None
             return bundle
 
 
@@ -130,6 +132,7 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
         bundle.data['user']['organisation'].update(primary_location=primary_location_data_for_update(organisation))
         bundle.data['project'] = project_data_for_update(bundle)
         bundle.data['project'].update(primary_location=primary_location_data_for_update(bundle.obj.project))
+
         return bundle
 
     def build_schema(self):
