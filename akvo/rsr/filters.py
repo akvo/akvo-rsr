@@ -30,7 +30,7 @@ class ProjectFilterSet(django_filters.FilterSet):
 
     def filter_by_project_title(qs, what):
         if what:
-            bits = what.split(' ')
+            bits = what.strip().split(' ')
             if len(bits) == 1 and bits[0].isdigit():
                 query = Q(id__exact=int(bits[0]))
                 return qs.filter(query)
