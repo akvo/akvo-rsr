@@ -1,11 +1,11 @@
 {% extends "partner_sites/widgets/base.html" %}
 {% load i18n rsr_filters rsr_tags rsr_widgets addparam %}
-{% load static %}
-{% get_static_prefix as STATIC_URL %}
+
+{% load compressed %}
 
 {% block style %}
 {{block.super}}
-<link rel="stylesheet" href="{{ STATIC_URL }}rsr/sites_widgets/projectList.css" type="text/css" media="screen" title="main">
+{% compressed_css 'sites_widget_project_list' %}
 {% endblock style %}
 
 {% block body %}
