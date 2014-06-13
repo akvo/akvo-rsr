@@ -153,9 +153,13 @@ urlpatterns = patterns(
         'akvo.rsr.views.global_organisation_map_json',
         name='global_organisation_map_json'),
 
-    url(r'^maps/projects/all/$', TemplateView.as_view(template_name='rsr/project/global_project_map.html'), name='global_project_map'),
+    url(r'^maps/projects/all/$',
+        TemplateView.as_view(template_name='rsr/project/global_project_map.html'),
+        name='global_project_map'),
 
-    url(r'^maps/organisations/all/$', TemplateView.as_view(template_name='rsr/organisation/global_organisation_map.html'), name='global_organisation_map'),
+    url(r'^maps/organisations/all/$',
+        TemplateView.as_view(template_name='rsr/organisation/global_organisation_map.html'),
+        name='global_organisation_map'),
 
     # MyAkvo
     url(r'^myakvo/$',
@@ -219,16 +223,22 @@ urlpatterns += patterns(
             'post_reset_redirect': '/accounts/password/reset/done/'},
         name='rsr_password_reset'),
 
-    url(r'^accounts/password/reset/confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        auth_views.password_reset_confirm,
-        {'set_password_form': RSR_SetPasswordForm},
+    url(r'^accounts/password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        auth_views.password_reset_confirm, {
+            'set_password_form': RSR_SetPasswordForm,
+            'post_reset_redirect':'django.contrib.auth.views.password_reset_complete'
+        },
         name='auth_password_reset_confirm'),
 
-    url(r'^accounts/update/complete/$', TemplateView.as_view(template_name='registration/update_complete.html'), name='registration_update_complete'),
+    url(r'^accounts/update/complete/$',
+        TemplateView.as_view(template_name='registration/update_complete.html'),
+        name='registration_update_complete'),
 
     (r'^accounts/', include('registration.urls')),
 
-    url(r'^error/access_denied/$', TemplateView.as_view(template_name='rsr/error_access_denied.html'), name='access_denied'),
+    url(r'^error/access_denied/$',
+        TemplateView.as_view(template_name='rsr/error_access_denied.html'),
+        name='access_denied'),
 
     # RSS
     url(r'^rss/updates/(?P<project_id>\d+)/$',

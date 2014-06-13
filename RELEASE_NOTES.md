@@ -5,6 +5,112 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+--------
+
+Akvo RSR ver 2.3.8 Xylocarp
+---
+
+Wednesday 11th June 2014, adriancollier
+
+New and Noteworthy
+---
+
+### Upgrade to Django 1.6
+
+This latest release of Akvo RSR contains a wide variety of back end changes to upgrade the underlying framework that RSR runs on - Django. We were previously running on version 1.4, so we've performed a double staged upgrade to make use of the later features than have been developed with Django.
+
+Github issue [#544](https://github.com/akvo/akvo-rsr/issues/544)
+
+
+Areas Modified
+---
+
+### Separated Static and User Media assets
+
+We have now separated the server location for static media from media that is uploaded by users. This ensures that we can manage and maintain the information in different ways if needed by the use cases of the different sources.
+
+Github issue [#564](https://github.com/akvo/akvo-rsr/issues/564)
+
+### Updated Folder Structure
+
+The folders structure for the application was improved in Django 1.4, but we continued to use the legacy structure. We have now updated this to bring RSR in line with the latest Django folder structure.
+
+Github issue [#565](https://github.com/akvo/akvo-rsr/issues/565)
+
+### Fixed ProjectAdmin add view
+
+We have updated the new project form to work with the improved standards bring implemented in Django 1.5
+
+Github issue [#566](https://github.com/akvo/akvo-rsr/issues/566)
+
+### Upgraded Python Libraries
+
+We have performed updates of all dependent python libraries where possible to allow us to use the latest versions.
+
+Github issue [#570](https://github.com/akvo/akvo-rsr/issues/570)
+
+### New Markdown Solution
+
+We have implemented a new method of managing Markdown included within Project Updates that uses django_markup.
+
+Github issue [#572](https://github.com/akvo/akvo-rsr/issues/572)
+
+### Removed SMS Code
+
+We had in the past implemented a beta version of an SMS updating tool for RSR that was never fully functional. To tidy up the codebase, we have now removed this code and all references to this.
+
+Github issue [#574](https://github.com/akvo/akvo-rsr/issues/574)
+
+### URL Encoding removal
+
+As part of the Django 1.6 changes, we have removed the URL Encoding from ``reverse()`` arguments.
+
+Github issue [#575](https://github.com/akvo/akvo-rsr/issues/575)
+
+### Default value for Boolean Fields
+
+Required with the Django 1.6 upgrade, we have to specify a default value for Boolean fields within RSR. These have now been specified where previously not present.
+
+Github issue [#578](https://github.com/akvo/akvo-rsr/issues/578)
+
+### Update Django URLs
+
+We have updated the code to ensure that the names of views in {% url %} tag are strings.
+
+Github issue [#579](https://github.com/akvo/akvo-rsr/issues/579)
+
+### Fixes for Django 1.7 Upgrade
+
+While we are not yet planning to update the Django framework to 1.7 yet, we have already provided some updates to key libraries including Tastypie (which runs parts of the RSR API) to provide 1.7 compatibility.
+
+Github issue [#580](https://github.com/akvo/akvo-rsr/issues/580)
+
+### Rename ``get_query_set()``
+
+A change that takes advantage of some newer features provided in Django 1.6, we have renamed this function.
+
+Github issue [#583](https://github.com/akvo/akvo-rsr/issues/583)
+
+### Change in permission methods
+
+We have replaced ``get_(add|change|delete)_permission`` methods with ``django.contrib.auth.get_permission_codename`` as the previous are now depreciated.
+
+Github issue [#584](https://github.com/akvo/akvo-rsr/issues/584)
+
+### Check ``ModelForms``
+
+As part of the Django 1.6 upgrade we have updated ``ModelForms``.
+
+Github issue [#586](https://github.com/akvo/akvo-rsr/issues/586)
+
+### Implement ``ALLOWED_HOST`` setting
+
+We have added a new ``ALLOWED_HOST`` setting as needed as part of the Django 1.6 upgrade.
+
+Github issue [#596](https://github.com/akvo/akvo-rsr/issues/596)
+
+--------------
+
 Akvo RSR ver 2.3.7 Watermelon
 ---
 
@@ -15,7 +121,7 @@ New Features
 
 ### Country options on project list
 
-We have added a feature to only populate the countries dropdown on AkvoSites with a list of countries where there are projects present. This allows the country selection to always return a project and provides a shorter list to select from.
+We have added a feature to only populate the countries dropdown on Akvo Pages with a list of countries where there are projects present. This allows the country selection to always return a project and provides a shorter list to select from.
 
 Github issue [#176](https://github.com/akvo/akvo-rsr/issues/176)
 

@@ -1,4 +1,5 @@
 {% load i18n rsr_tags rsr_filters thumbnail humanize piwik_tags %}
+{% load compressed %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -13,8 +14,7 @@
   <meta http-equiv="pragma" content="no-cache">
   <meta http-equiv="cache-control" content="no-cache">
 
-  {# asset_bundle 'widget_cobranded_leader' #}
-  <link rel="stylesheet" href="{{ STATIC_URL }}rsr/widgets/cobranded_leader/css/build/widget_cobranded_leader.min.css" type="text/css" media="screen, projection" />
+  {% compressed_css 'widget_cobranded_leader' %}
 
   <style type="text/css" media="screen">
     {% block inline_styles %}

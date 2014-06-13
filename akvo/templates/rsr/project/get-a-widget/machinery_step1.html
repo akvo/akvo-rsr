@@ -1,6 +1,6 @@
 {% extends "rsr/project/project_subpage_base.html" %}
 {% load i18n rsr_tags %}
-
+{% load compressed %}
 
 {% block breadcrum_items %}
 {{block.super}}
@@ -825,9 +825,7 @@
 
 {% block js %}
 {{block.super}}
-
-<script src="{{ STATIC_URL }}rsr/site/js/akvo_machinery.min.js"></script>
-{# asset_bundle 'akvo_machinery_js' #}
+	{% compressed_js 'akvo_machinery' %}
 {% endblock js %}
 
 {% block jq_ready %}
