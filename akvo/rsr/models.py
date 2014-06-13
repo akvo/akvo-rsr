@@ -398,6 +398,15 @@ class Organisation(TimestampsMixin, models.Model):
         def supportpartners(self):
             return self.partners(Partnership.SUPPORT_PARTNER)
 
+        def supportpartners_with_projects(self):
+            """return the organisations in the queryset that are support partners with published projects, not
+            counting archived projects"""
+            support_partners = self.supportpartners()
+            for org in support_partners:
+                if len(org.active_projects()) == 0:
+                    support_partners = support_partners.exclude(pk=org.pk)
+            return support_partners
+
         def ngos(self):
             return self.filter(organisation_type__exact=Organisation.ORG_TYPE_NGO)
 
