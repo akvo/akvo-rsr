@@ -310,7 +310,7 @@ def orglist(request, org_type='all'):
     if org_type == 'field':
         orgs = orgs.fieldpartners()
     elif org_type == 'support':
-        orgs = orgs.supportpartners()
+        orgs = orgs.supportpartners_with_projects()
     elif org_type == 'funding':
         orgs = orgs.fundingpartners()
     elif org_type == 'sponsor':
