@@ -249,7 +249,7 @@ class ProjectResource(ConditionalFullResource):
 
     class Meta:
         allowed_methods         = ['get']
-        authentication          = MultiAuthentication(ApiKeyAuthentication(), Authentication(),)
+        authentication          = ConditionalApiKeyAuthentication(methods_requiring_key=['POST', 'PUT'])
         queryset                = Project.objects.all() #Note: this is modified in get_object_list()
         resource_name           = 'project'
         include_absolute_url    = True
