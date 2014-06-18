@@ -23,7 +23,7 @@ class UserResource(ConditionalFullResource):
     class Meta:
         authentication  = ApiKeyAuthentication()
         allowed_methods = ['get']
-        queryset = get_user_model.objects.filter(is_active=True)
+        queryset = get_user_model().objects.filter(is_active=True)
         resource_name = 'user'
         fields = ['username', 'first_name', 'last_name', 'last_login',]
         filtering = dict(
