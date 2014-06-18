@@ -4,7 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
 from django.conf import settings
 
 from rest_framework import viewsets
@@ -13,12 +12,11 @@ from rest_framework.compat import etree, six
 from rest_framework.exceptions import ParseError
 from rest_framework.parsers import XMLParser
 from rest_framework.permissions import IsAuthenticated
-from akvo.rest.models import TastyTokenAuthentication
 
-from .serializers import OrganisationSerializer, OrganisationLocationSerializer, InternalOrganisationIDSerializer
+from akvo.rsr.models import Organisation, Country
 
-from akvo.rsr.models import Organisation, OrganisationLocation, Country, InternalOrganisationID
-
+from ..models import TastyTokenAuthentication
+from ..serializers import OrganisationSerializer
 
 class AkvoOrganisationParser(XMLParser):
     def parse(self, stream, media_type=None, parser_context=None):
@@ -76,47 +74,3 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     parser_classes = (AkvoOrganisationParser,)
     authentication_classes = (SessionAuthentication, BasicAuthentication, TastyTokenAuthentication)
     permission_classes = (IsAuthenticated,)
-
-
-class OrganisationLocationViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows organisations to be viewed or edited.
-    """
-    queryset = OrganisationLocation.objects.all()
-    serializer_class = OrganisationLocationSerializer
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TastyTokenAuthentication)
-    permission_classes = (IsAuthenticated,)
-
-
-class InternalOrganisationIDViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows organisations to be viewed or edited.
-    """
-    serializer_class = InternalOrganisationIDSerializer
-    queryset = InternalOrganisationID.objects.all()
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TastyTokenAuthentication)
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        """
-        filter on recording org and/or identifier
-        """
-        queryset = self.queryset
-        recording_org = self.request.QUERY_PARAMS.get('recording_org', None)
-        identifier = self.request.QUERY_PARAMS.get('identifier', None)
-        filter_params = {}
-        if recording_org is not None:
-            filter_params.update(recording_org__id=recording_org)
-        if identifier is not None:
-            filter_params.update(identifier=identifier)
-        if filter:
-            queryset = queryset.filter(**filter_params)
-        return queryset
-
-
-#class CountryViewSet(viewsets.ModelViewSet):
-#    """
-#    API endpoint that allows organisations to be viewed or edited.
-#    """
-#    queryset = Country.objects.all()
-#    serializer_class = CountrySerializer
