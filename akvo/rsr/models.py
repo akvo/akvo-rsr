@@ -121,39 +121,6 @@ class Country(models.Model):
         ordering = ['name']
 
 
-#class Location(models.Model):
-#    _help_text = _(u"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> "
-#                   u'to get the decimal coordinates of your project.')
-#    latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
-#    longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
-#    city = ValidXMLCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
-#    state = ValidXMLCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
-#    country = models.ForeignKey(Country, verbose_name=_(u'country'))
-#    address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
-#    address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
-#    postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
-#    content_type = models.ForeignKey(ContentType)
-#    object_id = models.PositiveIntegerField()
-#    content_object = generic.GenericForeignKey('content_type', 'object_id')
-#    primary = models.BooleanField(_(u'primary location'), default=True)
-#
-#    def __unicode__(self):
-#        return u'%s, %s (%s)' % (self.city, self.state, self.country)
-#
-#    def save(self, *args, **kwargs):
-#        if self.primary:
-#            qs = Location.objects.filter(content_type=self.content_type,
-#                                         object_id=self.object_id, primary=True)
-#            if self.pk:
-#                qs = qs.exclude(pk=self.pk)
-#                if qs.count() != 0:
-#                    self.primary = False
-#        super(Location, self).save(*args, **kwargs)
-#
-#    class Meta:
-#        ordering = ['-primary',]
-
-
 class BaseLocation(models.Model):
     _help_text = _(u"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> "
                    u'to get the decimal coordinates of your project.')
@@ -165,20 +132,19 @@ class BaseLocation(models.Model):
     address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
     address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
     postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
-    primary = models.BooleanField(_(u'primary location'), db_index=True, default=True)
-
-#    def __unicode__(self):
-#        return u'%s, %s (%s)' % (self.city, self.state, self.country)
+    primary = models.BooleanField(_(u'primary location'), db_index=True, default=False)
 
     def save(self, *args, **kwargs):
-        super(BaseLocation, self).save(*args, **kwargs)
+        location_target = self.location_target
+
         if self.primary:
-            location_target = self.location_target
-            # this is probably redundant since the admin form saving should handle this
-            # but if we ever save a location from other code it's an extra safety
             location_target.locations.exclude(pk__exact=self.pk).update(primary=False)
             location_target.primary_location = self
             location_target.save()
+        else:
+            #TODO
+
+        super(BaseLocation, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
