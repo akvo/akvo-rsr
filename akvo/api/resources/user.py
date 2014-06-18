@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.constants import ALL_WITH_RELATIONS, ALL
@@ -23,7 +23,7 @@ class UserResource(ConditionalFullResource):
     class Meta:
         authentication  = ApiKeyAuthentication()
         allowed_methods = ['get']
-        queryset = User.objects.filter(is_active=True)
+        queryset = get_user_model.objects.filter(is_active=True)
         resource_name = 'user'
         fields = ['username', 'first_name', 'last_name', 'last_login',]
         filtering = dict(
