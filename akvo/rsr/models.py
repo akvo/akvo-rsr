@@ -742,13 +742,6 @@ class Project(TimestampsMixin, models.Model):
     current_image_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
     current_image_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
-
-    # goal_1 = ValidXMLCharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-    # goal_2 = ValidXMLCharField(_('goal 2'), blank=True, max_length=60)
-    # goal_3 = ValidXMLCharField(_('goal 3'), blank=True, max_length=60)
-    # goal_4 = ValidXMLCharField(_('goal 4'), blank=True, max_length=60)
-    # goal_5 = ValidXMLCharField(_('goal 5'), blank=True, max_length=60)
-
     current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
     project_plan = ValidXMLTextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
     sustainability = ValidXMLTextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
@@ -759,13 +752,15 @@ class Project(TimestampsMixin, models.Model):
     language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = ValidXMLTextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
+    keywords = ValidXMLTextField(_(u'keywords'), blank=True, default='', max_length=100,
+                                 help_text=_(u'Separate keywords by spaces'))
 
     # budget
     currency = ValidXMLCharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
     date_request_posted = models.DateField(_(u'start date'), default=date.today)
     date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
-    # old_locations = generic.GenericRelation(Location)
+    # primary location
     primary_location = models.ForeignKey(ProjectLocation, null=True, on_delete=models.SET_NULL)
 
     # donate button
@@ -775,7 +770,6 @@ class Project(TimestampsMixin, models.Model):
     sync_owner = models.ForeignKey(Organisation, null=True, on_delete=models.SET_NULL)
 
     # denormalized data
-    # =================
     budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
     funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
     funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
@@ -1868,6 +1862,11 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'Follow the instructions <A href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</A>'
         )
     )
+
+    # Project selection for partner site
+    partner_projects = models.BooleanField(_(u'Show only projects of this partner'), default=True)
+    keywords = ValidXMLTextField(_(u'Keyword filter'), blank=True, default='', max_length=100,
+                                 help_text=_(u'Separate keywords by spaces, projects containing one of the keywords will be shown.'))
 
 
     def __unicode__(self):
