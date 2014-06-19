@@ -1,13 +1,12 @@
 {% extends "widgets/base_widget.html" %}
 {% load i18n rsr_tags rsr_filters thumbnail humanize %}
-{% load url from future %}
-
+{% load compressed %}
 
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	{% asset_bundle 'widget_cobranded_narrow' %}
-	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/cobranded_narrow/css/screen.css" type="text/css" media="screen, projection" /> #}
+	{% compressed_css 'widget_cobranded_narrow' %}
+	
 	<!--[if IE]>
 	<style type="text/css" media="screen">
 		.divider { 
@@ -32,11 +31,11 @@
 	}
 	
 	#progress_back {
-		background: url({{MEDIA_URL}}widgets/img/progressbar_background.png);
+		background: url({{ STATIC_URL }}rsr/widgets/img/progressbar_background.png);
 	}
 	
 	#progress_green {
-		background: url({{MEDIA_URL}}widgets/img/progressbar_green.png);
+		background: url({{ STATIC_URL }}rsr/widgets/img/progressbar_green.png);
 	}
 	
 	#project_title {

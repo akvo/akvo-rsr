@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from django.db.models import get_model
 

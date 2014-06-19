@@ -4,8 +4,6 @@ import os
 import sys
 from syslog import syslog
 
-from django.core.management import setup_environ
-
 script_path = os.path.abspath(os.path.dirname(sys.argv[0]))
 base_rsr_path = os.path.split(script_path)[0]
 base_akvo_path = os.path.split(base_rsr_path)[0]
@@ -13,8 +11,7 @@ base_akvo_path = os.path.split(base_rsr_path)[0]
 sys.path.append(base_rsr_path)
 sys.path.append(base_akvo_path)
 
-import settings
-setup_environ(settings)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from akvo.rsr.models import Invoice
 

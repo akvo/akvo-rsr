@@ -4,10 +4,8 @@
 import os, sys
 from syslog import syslog
 
-from django.core.management import setup_environ
-
-import settings
-setup_environ(settings)
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
+from akvo import settings
 
 from os.path import basename, splitext
 from akvo.rsr.models import *

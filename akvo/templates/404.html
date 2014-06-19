@@ -1,6 +1,5 @@
 {% extends "rsr/base.html" %}
 {% load i18n %}
-{% load url from future %}
 
 {% block head %}
 {{ block.super }}
@@ -21,7 +20,7 @@
     </h1>
     </header>
     <section class="post-content twoColumns floats-in">
-      <div><img src="/media/akvo/img/404/Surprise-polaroid-L.png" alt="Products"  style="max-height:450px;margin-left:5%;"/></div>
+      <div><img src="{{ STATIC_URL }}site/img/404/Surprise-polaroid-L.png" alt="Products"  style="max-height:450px;margin-left:5%;"/></div>
       <div style="margin-top:2em;">
         <p class="strongType">
           <br/>

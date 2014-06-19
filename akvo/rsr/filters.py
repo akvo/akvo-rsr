@@ -14,9 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.iso3166 import CONTINENTS
 
-from akvo.rsr.models import (
-    Organisation, Project, STATUSES, CURRENCY_CHOICES, Country
-)
+from akvo.rsr.models import Organisation, Project, STATUSES, CURRENCY_CHOICES
 
 class CheckboxMultipleChoiceField(MultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -32,24 +30,16 @@ class ProjectFilterSet(django_filters.FilterSet):
 
     def filter_by_project_title(qs, what):
         if what:
-            if qs.filter_and:
-                bits = what.split(' ')
-                query = Q(title__icontains=bits[0])
-                query = query&Q(subtitle__icontains=bits[0])
-                if len(bits) > 1:
-                    for bit in bits[1:]:
-                        query = query&Q(title__icontains=bit)
-                        query = query&Q(subtitle__icontains=bit)
+            bits = what.strip().split(' ')
+            if len(bits) == 1 and bits[0].isdigit():
+                query = Q(id__exact=int(bits[0]))
                 return qs.filter(query)
-            else:
-                bits = what.split(' ')
-                query = Q(title__icontains=bits[0])
-                query = query|Q(subtitle__icontains=bits[0])
-                if len(bits) > 1:
-                    for bit in bits[1:]:
-                        query = query|Q(title__icontains=bit)
-                        query = query|Q(subtitle__icontains=bit)
-                return qs.filter(query)
+            query = Q(title__icontains=bits[0]) | Q(subtitle__icontains=bits[0])
+            if len(bits) > 1:
+                for bit in bits[1:]:
+                    query2 = Q(title__icontains=bit) | Q(subtitle__icontains=bit)
+                    query = query & query2
+            return qs.filter(query)
         return qs
 
     def filter_by_status(qs, what):
@@ -84,7 +74,6 @@ class ProjectFilterSet(django_filters.FilterSet):
 
     def __init__(self, *args, **kwargs):
         organisation_id = kwargs.pop('organisation_id', None)
-        filtered_countries = kwargs.pop('filtered_countries', False)
         super(ProjectFilterSet, self).__init__(*args, **kwargs)
 
         self.filters['title'].field.widget.input_type = 'search'
@@ -96,8 +85,10 @@ class ProjectFilterSet(django_filters.FilterSet):
 
         self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
 
-        if filtered_countries:
-            countries = kwargs['queryset'].countries()
+        if organisation_id:
+            org = Organisation.objects.get(pk=organisation_id)
+
+            countries = org.countries_where_active()
 
             continents = [('', _(u'All continents'))]
             choices = []
@@ -107,10 +98,9 @@ class ProjectFilterSet(django_filters.FilterSet):
             continents.extend(sorted(choices))
 
             self.filters['continent'].extra.update({'choices': continents})
-            self.filters['locations__country'].extra.update({'queryset': kwargs['queryset'].countries()})
+            self.filters['locations__country'].extra.update({'queryset': countries})
 
-        if organisation_id:
-            qs = Organisation.objects.get(pk=organisation_id).partners()
+            qs = org.partners()
             self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
         else:
             qs = Organisation.objects.all()

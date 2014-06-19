@@ -1,6 +1,5 @@
 {% extends "rsr/project/project_subpage_base.html" %}
-{% load url from future %}
-{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags markup %}
+{% load webdesign addparam humanize i18n rsr_filters rsr_tags thumbnail counter_tags oembed_tags markup_tags %}
 
 {% block head %}
     <meta property="og:title" content="Akvo.org - {{update.title}}"/>
@@ -63,37 +62,29 @@
   {% counter_badge update %}
   <div class="clear"></div>
   <div class="space20">
-    {% if update.text_location == 'B' %}
-      {% autoescape off %}
-        {{ update.text|force_escape|urlize|markdown }}
-      {% endautoescape %}
-    {% endif %}
     {% if update.video %}
       <div style="margin: 10px 10px 30px 20px;">
-        {# {{ update.video|oembed:"580x435" }} #}
         <div style="width:580px; max-width:580px; overflow:auto;">
           {{ update.get_video_oembed }}
         </div>
       </div>
-{% if update.video_caption or update.video_credit %}
-<p class="small lightx1">
-    {% if update.video_caption %}
+      {% if update.video_caption or update.video_credit %}
+      <p class="small lightx1">
+        {% if update.video_caption %}
           {{ update.video_caption }}
         {% endif %}
         {% if update.video_credit %}
           {% trans 'Video credit' %}: {{ update.video_credit }}
         {% endif %}
       </p>
-    {% endif %}
+      {% endif %}
     {% endif %}
     {% if update.photo %}
       {% update_thumb update 580 435 %}
     {% endif %}
-    {% if update.text_location == 'E' %}
-      {% autoescape off %}
-        {{ update.text|force_escape|urlize|markdown }}
-      {% endautoescape %}
-    {% endif %}
+    {% autoescape off %}
+      {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
+    {% endautoescape %}
     <hr style="margin-bottom:5px;" />
     <div class="text_right">
       <a class="small" href=".">{% trans 'Permalink' %}</a>

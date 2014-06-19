@@ -1,7 +1,0 @@
-#!/bin/bash
-
-source "$CONFIG_HOME/python_system.config"
-
-RSR_BRANCH="develop" # if this is a feature branch, e.g. feature/new_stuff only use "new_stuff"
-VIRTUALENV_NAME="rsr_$RSR_BRANCH"
-RSR_VIRTUALENV_PATH="$VIRTUALENVS_HOME/$VIRTUALENV_NAME"

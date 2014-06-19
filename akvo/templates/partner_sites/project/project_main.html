@@ -1,6 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
 {% load i18n rsr_tags webdesign thumbnail counter_tags humanize maps %}
-{% load url from future %}
 
 
 {% block head %}
@@ -68,7 +67,7 @@
       'facebook-share-dialog', 
       'width=626,height=436'); 
     return false;">
-<img src="{{MEDIA_URL}}akvo/img/social/fb_share.jpg">
+<img src="{{STATIC_URL}}rsr/main/img/social/fb_share.jpg">
 </a>
 </div>
 <!--
@@ -121,7 +120,7 @@
       <div id="project_tabs">
         <ul class="small">
           <li><a href="#tab_background"><span class="small">{% trans 'Background' %}</span></a></li>
-          {% if project.project_plan %}
+          {% if project.project_plan or project.target_group %}
             <li><a href="#tab_project_plan"><span class="small">{% trans 'Project plan' %}</span></a></li>
           {% endif %}
           <li><a href="#tab_goals"><span class="small">{% trans 'Goals' %}</span></a></li>
@@ -134,9 +133,15 @@
             <p>{{project.current_status|linebreaks}}</p>
           {% endif %}
         </div>
-        {% if project.project_plan %}
+        {% if project.project_plan or project.target_group %}
           <div id="tab_project_plan" class="tab">
-            <p>{{project.project_plan|linebreaks}}</p>
+            {% if project.project_plan %}
+              <p>{{project.project_plan|linebreaks}}</p>
+            {% endif %}
+            {% if project.target_group %}
+              <h4 style="font-weight:bold">{% trans 'Target group' %}</h4>
+              <p>{{project.target_group|linebreaks}}</p>
+            {% endif %}
           </div>
         {% endif %}
         <div id="tab_goals" class="tab">
@@ -197,13 +202,13 @@
   {{ block.super }}
 
   {% if debug %}
-    <script src="{{MEDIA_URL}}core/js/jquery-ui.1.8.9.js"></script>
+    <script src="{{STATIC_URL}}lib/js/jquery-ui.1.8.9.js"></script>
   {% else %}
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
   {% endif %}
 
   {# {% asset_bundle 'partner_sites_script' %} #}
-  <script src="{{MEDIA_URL}}core/galleria/galleria-1.2.8.js"></script>
+  <script src="{{STATIC_URL}}lib/js/galleria-1.2.8/galleria-1.2.8.js"></script>
   <script>
     var galleria_data = [
       {
@@ -270,7 +275,7 @@
 {% block jq_ready %}
   {{block.super}}
   jQ('#project_tabs').tabs();
-  Galleria.loadTheme('{{MEDIA_URL}}core/galleria/themes/classic/galleria.classic.min.js');
+  Galleria.loadTheme('{{ STATIC_URL }}lib/js/galleria-1.2.8/themes/classic/galleria.classic.min.js');
   Galleria.configure({
     showInfo: false
   });
