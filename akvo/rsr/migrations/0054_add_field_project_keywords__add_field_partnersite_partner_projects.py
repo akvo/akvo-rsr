@@ -10,12 +10,12 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Project.keywords'
         db.add_column('rsr_project', 'keywords',
-                      self.gf('django.db.models.fields.CharField')(default='', max_length=100, blank=True),
+                      self.gf('django.db.models.fields.CharField')(max_length=100, blank=True),
                       keep_default=False)
 
         # Adding field 'PartnerSite.keywords'
         db.add_column('rsr_partnersite', 'keywords',
-                      self.gf('django.db.models.fields.CharField')(default='', max_length=100, blank=True),
+                      self.gf('django.db.models.fields.CharField')(max_length=100, blank=True),
                       keep_default=False)
 
         # Adding field 'PartnerSite.partner_projects'
@@ -258,7 +258,7 @@ class Migration(SchemaMigration):
             'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'hostname': ('akvo.rsr.fields.ValidXMLCharField', [], {'unique': 'True', 'max_length': '50'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'keywords': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
+            'keywords': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rsr.Organisation']"}),
@@ -306,7 +306,7 @@ class Migration(SchemaMigration):
             'funds_needed': ('django.db.models.fields.DecimalField', [], {'decimal_places': '2', 'default': '0', 'max_digits': '10', 'blank': 'True', 'null': 'True', 'db_index': 'True'}),
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'keywords': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
+            'keywords': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '2'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),

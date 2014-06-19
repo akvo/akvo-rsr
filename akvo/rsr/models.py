@@ -752,8 +752,7 @@ class Project(TimestampsMixin, models.Model):
     language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = ValidXMLTextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
-    keywords = ValidXMLTextField(_(u'keywords'), blank=True, default='', max_length=100,
-                                 help_text=_(u'Separate keywords by spaces'))
+    keywords = ValidXMLTextField(_(u'keywords'), blank=True, max_length=100, help_text=_(u'Separate keywords by spaces (100 characters).'))
 
     # budget
     currency = ValidXMLCharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
@@ -1865,8 +1864,8 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     # Project selection for partner site
     partner_projects = models.BooleanField(_(u'Show only projects of this partner'), default=True)
-    keywords = ValidXMLTextField(_(u'Keyword filter'), blank=True, default='', max_length=100,
-                                 help_text=_(u'Separate keywords by spaces, projects containing one of the keywords will be shown.'))
+    keywords = ValidXMLTextField(_(u'Keyword filter'), blank=True, max_length=100,
+                                 help_text=_(u'Separate keywords by spaces, projects containing one of the keywords will be shown (100 characters).'))
 
 
     def __unicode__(self):
