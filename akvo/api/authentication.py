@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
 from tastypie.authentication import ApiKeyAuthentication
@@ -41,8 +41,8 @@ class ConditionalApiKeyAuthentication(ApiKeyAuthentication):
             return self._unauthorized()
 
         try:
-            user = User.objects.get(username=username)
-        except (User.DoesNotExist, User.MultipleObjectsReturned):
+            user = get_user_model().objects.get(username=username)
+        except (get_user_model().DoesNotExist, get_user_model().MultipleObjectsReturned):
             return self._unauthorized()
 
         request.user = user
