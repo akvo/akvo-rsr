@@ -19,16 +19,12 @@ import oembed
 import re
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max, Sum
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, User
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
-from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -41,12 +37,11 @@ from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from workflows import WorkflowBase
 from permissions import PermissionBase
-from permissions.models import Role
 
 from akvo.api.models import create_api_key
-from akvo.gateway.models import GatewayNumber, Gateway
 
-from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ProjectLimitedTextField
+from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ValidXMLCharField, ValidXMLTextField
+from akvo.rsr.fields import ProjectLimitedTextField
 from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import (
@@ -58,8 +53,7 @@ from akvo.utils import (
     PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE
 )
 from akvo.utils import (
-    groups_from_user, rsr_image_path,
-    who_am_i, send_now, state_equals, to_gmt
+    groups_from_user, rsr_image_path, to_gmt
 )
 from akvo.rsr.signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
@@ -78,14 +72,14 @@ from tastypie.models import ApiKey
 #based on http://www.djangosnippets.org/snippets/562/ and
 #http://simonwillison.net/2008/May/1/orm/
 class QuerySetManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return self.model.QuerySet(self.model)
 
     def __getattr__(self, attr, *args):
         try:
             return getattr(self.__class__, attr, *args)
         except AttributeError:
-            return getattr(self.get_query_set(), attr, *args)
+            return getattr(self.get_queryset(), attr, *args)
 
 OLD_CONTINENTS = (
     ("1", _(u'Africa')),
@@ -99,15 +93,15 @@ OLD_CONTINENTS = (
 
 class Country(models.Model):
 
-    name = models.CharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
-    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES,)
-    continent = models.CharField(_(u'continent name'), max_length=20, db_index=True,)
-    continent_code = models.CharField(_(u'continent code'), max_length=2, db_index=True, choices=CONTINENTS)
+    name = ValidXMLCharField(_(u'country name'), max_length=50, unique=True, db_index=True,)
+    iso_code = ValidXMLCharField(_(u'ISO 3166 code'), max_length=2, unique=True, db_index=True, choices=ISO_3166_COUNTRIES,)
+    continent = ValidXMLCharField(_(u'continent name'), max_length=20, db_index=True,)
+    continent_code = ValidXMLCharField(_(u'continent code'), max_length=2, db_index=True, choices=CONTINENTS)
 
-#    name = models.CharField(_(u'country name'), max_length=50,)
-#    iso_code = models.CharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
-#    continent = models.CharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
-#    continent_code = models.CharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
+#    name = ValidXMLCharField(_(u'country name'), max_length=50,)
+#    iso_code = ValidXMLCharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
+#    continent = ValidXMLCharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
+#    continent_code = ValidXMLCharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -132,12 +126,12 @@ class Country(models.Model):
 #                   u'to get the decimal coordinates of your project.')
 #    latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
 #    longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
-#    city = models.CharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
-#    state = models.CharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
+#    city = ValidXMLCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
+#    state = ValidXMLCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
 #    country = models.ForeignKey(Country, verbose_name=_(u'country'))
-#    address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
-#    address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
-#    postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
+#    address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
+#    address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
+#    postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
 #    content_type = models.ForeignKey(ContentType)
 #    object_id = models.PositiveIntegerField()
 #    content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -165,12 +159,12 @@ class BaseLocation(models.Model):
                    u'to get the decimal coordinates of your project.')
     latitude = LatitudeField(_(u'latitude'), db_index=True, default=0, help_text=_help_text)
     longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
-    city = models.CharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
-    state = models.CharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
+    city = ValidXMLCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
+    state = ValidXMLCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
     country = models.ForeignKey(Country, verbose_name=_(u'country'))
-    address_1 = models.CharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
-    address_2 = models.CharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
-    postcode = models.CharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
+    address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
+    address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
+    postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
     primary = models.BooleanField(_(u'primary location'), db_index=True, default=True)
 
 #    def __unicode__(self):
@@ -202,8 +196,8 @@ class ProjectLocation(BaseLocation):
 
 
 class PartnerType(models.Model):
-    id = models.CharField(max_length=8, primary_key=True, unique=True)
-    label = models.CharField(max_length=30, unique=True)
+    id = ValidXMLCharField(max_length=8, primary_key=True, unique=True)
+    label = ValidXMLCharField(max_length=30, unique=True)
 
     def __unicode__(self):
         return self.label
@@ -231,21 +225,24 @@ class Partnership(models.Model):
 
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
-    partner_type = models.CharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
+    partner_type = ValidXMLCharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2,
         blank=True, null=True, db_index=True
     )
-    partner_type_extra = models.CharField(
+    partner_type_extra = ValidXMLCharField(
         _(u'partner type extra'), max_length=30,
         blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
     )
-    iati_activity_id = models.CharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
-    internal_id = models.CharField(
+    iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
+    internal_id = ValidXMLCharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
         help_text=_(u"The organisation's internal ID for the project"),
     )
-    iati_url = models.URLField(blank=True, verify_exists=False, help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.'))
+    iati_url = models.URLField(
+        blank=True,
+        help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.')
+    )
 
     class Meta:
         verbose_name = _(u'project partner')
@@ -257,7 +254,7 @@ class Partnership(models.Model):
 
 
 class ProjectsQuerySetManager(QuerySetManager):
-    def get_query_set(self):
+    def get_queryset(self):
         return self.model.ProjectsQuerySet(self.model)
 
 
@@ -291,25 +288,25 @@ class Organisation(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
-    name = models.CharField(
+    name = ValidXMLCharField(
         _(u'name'), max_length=25, db_index=True,
         help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'),
     )
-    long_name = models.CharField(
+    long_name = ValidXMLCharField(
         _(u'long name'), blank=True, max_length=75,
         help_text=_(u'Full name of organisation (75 characters).'),
     )
-    language = models.CharField(
+    language = ValidXMLCharField(
         max_length=2, choices=settings.LANGUAGES, default='en',
         help_text=u'The main language of the organisation',
     )
     partner_types = models.ManyToManyField(PartnerType)
-    organisation_type = models.CharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
+    organisation_type = ValidXMLCharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
         help_text=u'Check that this field is set to an organisation type that matches your organisation.',
     )
-    iati_org_id = models.CharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True)
+    iati_org_id = ValidXMLCharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True)
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
     )
@@ -323,30 +320,39 @@ class Organisation(TimestampsMixin, models.Model):
     )
 
     url = models.URLField(
-        blank=True, verify_exists=False,
+        blank=True,
         help_text=_(u'Enter the full address of your web site, beginning with http://.'),
     )
 
-    phone = models.CharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    mobile = models.CharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    fax = models.CharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    contact_person = models.CharField(
+    phone = ValidXMLCharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    mobile = ValidXMLCharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    fax = ValidXMLCharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    contact_person = ValidXMLCharField(
         _(u'contact person'), blank=True, max_length=30,
         help_text=_(u'Name of external contact person for your organisation (30 characters).'),
     )
-    contact_email = models.CharField(
+    contact_email = ValidXMLCharField(
         _(u'contact email'), blank=True, max_length=50,
         help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'),
     )
-    description = models.TextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'),)
+    description = ValidXMLTextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'))
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
+    notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
 
     content_owner = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.'),
+    )
+
+    # Allowed to manually edit information on projects of this organisation
+    allow_edit = models.BooleanField(
+        _(u'Partner editors of this organisation are allowed to manually edit projects where this organisation is '
+          u'support partner'),
+        help_text=_(u'When manual edits are disallowed, partner admins and editors of other organisations are also not '
+                    u'allowed to edit these projects.'),
+        default=True
     )
                                       
 
@@ -392,6 +398,13 @@ class Organisation(TimestampsMixin, models.Model):
         def supportpartners(self):
             return self.partners(Partnership.SUPPORT_PARTNER)
 
+        def supportpartners_with_projects(self):
+            """return the organisations in the queryset that are support partners with published projects, not
+            counting archived projects"""
+            return self.filter(partnerships__partner_type=Partnership.SUPPORT_PARTNER,
+                               partnerships__project__publishingstatus__status='published',
+                               partnerships__project__status__in=['A','C','H','L']).distinct()
+
         def ngos(self):
             return self.filter(organisation_type__exact=Organisation.ORG_TYPE_NGO)
 
@@ -427,6 +440,10 @@ class Organisation(TimestampsMixin, models.Model):
         "returns True if the organisation is a support partner to at least one project"
         return self.is_partner_type(Partnership.SUPPORT_PARTNER)
 
+    def partnersites(self):
+        "returns the partnersites belonging to the organisation in a PartnerSite queryset"
+        return PartnerSite.objects.filter(organisation=self)
+
     def website(self):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True
@@ -445,6 +462,13 @@ class Organisation(TimestampsMixin, models.Model):
     def partners(self):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.published_projects().all_partners().exclude(id__exact=self.id)
+
+    def countries_where_active(self):
+        """Returns a Country queryset of countries where this organisation has published projects."""
+        return Country.objects.filter(
+            projectlocation__project__partnerships__organisation=self,
+            projectlocation__project__publishingstatus__status='published'
+        ).distinct()
 
     # New API
 
@@ -503,7 +527,7 @@ class InternalOrganisationID(models.Model):
     referenced_org = models.ForeignKey(Organisation,
                                        verbose_name=u'referenced organisation', related_name='reference_ids',)
     #TODO: add index
-    identifier = models.CharField(max_length=200, verbose_name=u'internal ID of referenced organisation',)
+    identifier = ValidXMLCharField(max_length=200, verbose_name=u'internal ID of referenced organisation',)
 
     def __unicode__(self):
         return u"{rec_org_name}'s internal ID for {ref_org_name}: {identifier}".format(
@@ -518,17 +542,20 @@ class InternalOrganisationID(models.Model):
 
 class OrganisationAccount(models.Model):
     """
-    This model keps track of organisation account levels and other relevant data.
+    This model keeps track of organisation account levels and other relevant data.
     The reason for having this in a separate model form Organisation is to hide
     it from the org admins.
     """
+
     ACCOUNT_LEVEL = (
         ('free', u'Free'),
-        ('plus', u'Plus'),
+        ('freemium', u'Freemium'),
         ('premium', u'Premium'),
+        ('plus', u'Premium Plus'),
+        ('archived', u'Archived'),
     )
     organisation = models.OneToOneField(Organisation, verbose_name=u'organisation', primary_key=True)
-    account_level = models.CharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
+    account_level = ValidXMLCharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
     class Meta:
         verbose_name = u'organisation account'
@@ -538,16 +565,21 @@ class OrganisationAccount(models.Model):
 class FocusArea(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
-    name = models.CharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
+    name = ValidXMLCharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
     slug = models.SlugField(u'slug', max_length=50, db_index=True, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
-    description = models.TextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
+    description = ValidXMLTextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
     image = ImageWithThumbnailsField(
                     _(u'focus area image'),
                     upload_to=image_path,
                     thumbnail={'size': (20, 20), 'options': ('crop', )},
                     help_text=_(u'The image that will appear on the focus area project listing page.'),
                 )
-    link_to = models.URLField(_(u'accordion link'), max_length=200, blank=True, help_text=_(u'Where the link in the accordion for the focus area points if other than the focus area project listing.'))
+    link_to = models.URLField(
+        _(u'accordion link'),
+        max_length=200,
+        blank=True,
+        help_text=_(u'Where the link in the accordion for the focus area points if other than the focus area project listing.')
+    )
 
     @models.permalink
     def get_absolute_url(self):
@@ -567,7 +599,7 @@ class FocusArea(models.Model):
 
 
 class Benchmarkname(models.Model):
-    name = models.CharField(_(u'benchmark name'), max_length=80, help_text=_(u'Enter a name for the benchmark. (80 characters).'))
+    name = ValidXMLCharField(_(u'benchmark name'), max_length=80, help_text=_(u'Enter a name for the benchmark. (80 characters).'))
     order = models.IntegerField(_(u'order'), default=0, help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
 
     def __unicode__(self):
@@ -583,7 +615,7 @@ class Category(models.Model):
     #def image_path(instance, file_name):
     #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
 
-    name = models.CharField(
+    name = ValidXMLCharField(
         _(u'category name'), max_length=50, db_index=True,
         help_text=_(u'Enter a name for the category. (50 characters).')
     )
@@ -640,8 +672,8 @@ class MiniCMS(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/home_page/%(file_name)s')
 
-    label = models.CharField(u'label', max_length=50, help_text=u'The label is used for identification only', )
-    feature_box = models.TextField(
+    label = ValidXMLCharField(u'label', max_length=50, help_text=u'The label is used for identification only', )
+    feature_box = ValidXMLTextField(
         u'feature box text', max_length=350,
         help_text=_(dedent(u'''Enter the text that will appear in the feature box of the home page. (350 characters)
             <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
@@ -665,7 +697,7 @@ class MiniCMS(models.Model):
         u'feature image', blank=True, upload_to=image_path,
         help_text=u'Ideally the image should be 645x363 pixels in size.'
     )
-    top_right_box = models.TextField(
+    top_right_box = ValidXMLTextField(
         u'top right box text', max_length=350,
         help_text=u'Enter the text that will appear in the top right box of the home page. (350 characters)'
     )
@@ -682,7 +714,7 @@ class MiniCMS(models.Model):
 
 
 class OrganisationsQuerySetManager(QuerySetManager):
-    def get_query_set(self):
+    def get_queryset(self):
         return self.model.OrganisationsQuerySet(self.model)
 
 
@@ -690,9 +722,9 @@ class Project(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
-    title = models.CharField(_(u'title'), max_length=45, db_index=True, help_text=_(u'A short descriptive title for your project (45 characters).'))
-    subtitle = models.CharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
-    status = models.CharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default='N', help_text=_(u'Current project state.'))
+    title = ValidXMLCharField(_(u'title'), max_length=45, db_index=True, help_text=_(u'A short descriptive title for your project (45 characters).'))
+    subtitle = ValidXMLCharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
+    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default='N', help_text=_(u'Current project state.'))
     categories = models.ManyToManyField(Category, verbose_name=_(u'categories'), related_name='projects',)
     partners = models.ManyToManyField(Organisation, verbose_name=_(u'partners'), through=Partnership, related_name='projects',)
     project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=400, help_text=_(u'Briefly summarize the project (400 characters).'))
@@ -707,29 +739,29 @@ class Project(TimestampsMixin, models.Model):
                         },
                         help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
                     )
-    current_image_caption = models.CharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
-    current_image_credit = models.CharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
+    current_image_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
+    current_image_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
 
-    # goal_1 = models.CharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-    # goal_2 = models.CharField(_('goal 2'), blank=True, max_length=60)
-    # goal_3 = models.CharField(_('goal 3'), blank=True, max_length=60)
-    # goal_4 = models.CharField(_('goal 4'), blank=True, max_length=60)
-    # goal_5 = models.CharField(_('goal 5'), blank=True, max_length=60)
+    # goal_1 = ValidXMLCharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
+    # goal_2 = ValidXMLCharField(_('goal 2'), blank=True, max_length=60)
+    # goal_3 = ValidXMLCharField(_('goal 3'), blank=True, max_length=60)
+    # goal_4 = ValidXMLCharField(_('goal 4'), blank=True, max_length=60)
+    # goal_5 = ValidXMLCharField(_('goal 5'), blank=True, max_length=60)
 
     current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
-    project_plan = models.TextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
-    sustainability = models.TextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
+    project_plan = ValidXMLTextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
+    sustainability = ValidXMLTextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
     background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
     target_group = ProjectLimitedTextField(_(u'target group'), blank=True, max_length=600, help_text=_(u'Information about the people, organisations or resources that are being impacted by this project (600 characters).'))
 
     # project meta info
-    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
+    language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
-    notes = models.TextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
+    notes = ValidXMLTextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
 
     # budget
-    currency = models.CharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+    currency = ValidXMLCharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
     date_request_posted = models.DateField(_(u'start date'), default=date.today)
     date_complete = models.DateField(_(u'date complete'), null=True, blank=True)
 
@@ -738,6 +770,9 @@ class Project(TimestampsMixin, models.Model):
 
     # donate button
     donate_button = models.BooleanField(_(u'donate button'), default=True, help_text=(u'Show donate button for this project.'))
+
+    # synced projects
+    sync_owner = models.ForeignKey(Organisation, null=True, on_delete=models.SET_NULL)
 
     # denormalized data
     # =================
@@ -788,7 +823,10 @@ class Project(TimestampsMixin, models.Model):
     # New API, de-normalized fields support
 
     def get_budget(self):
-        return BudgetItem.objects.filter(project__exact=self).aggregate(Sum('amount'))['amount__sum'] or 0
+        if 'total' in BudgetItemLabel.objects.filter(budgetitem__project__exact=self):
+            return BudgetItem.objects.filter(project__exact=self).filter(label__label='total')[0].amount
+        else:
+            return BudgetItem.objects.filter(project__exact=self).aggregate(Sum('amount'))['amount__sum'] or 0
 
     def update_budget(self):
         "Update de-normalized field"
@@ -1165,11 +1203,11 @@ class Project(TimestampsMixin, models.Model):
 
 class Goal(models.Model):
     project = models.ForeignKey(Project, verbose_name=u'project', related_name='goals')
-    text = models.CharField(_(u'goal'), blank=True, max_length=100, help_text=_(u'(100 characters)'))
+    text = ValidXMLCharField(_(u'goal'), blank=True, max_length=100, help_text=_(u'(100 characters)'))
 
 
 class Benchmark(models.Model):
-    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name=_(u'benchmarks'), )
+    project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='benchmarks', )
     category = models.ForeignKey(Category, verbose_name=_(u'category'), )
     name = models.ForeignKey(Benchmarkname, verbose_name=_(u'benchmark name'), )
     value = models.IntegerField(_(u'benchmark value'), )
@@ -1190,7 +1228,7 @@ class Benchmark(models.Model):
 
 
 class BudgetItemLabel(models.Model):
-    label = models.CharField(_(u'label'), max_length=20, unique=True, db_index=True)
+    label = ValidXMLCharField(_(u'label'), max_length=20, unique=True, db_index=True)
 
     def __unicode__(self):
         return self.label
@@ -1207,7 +1245,7 @@ class BudgetItem(models.Model):
 
     project     = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='budget_items')
     label       = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
-    other_extra = models.CharField(
+    other_extra = ValidXMLCharField(
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
@@ -1247,7 +1285,7 @@ class PublishingStatus(models.Model):
     #TODO: change to a generic relation if we want to have publishing stats on
     #other objects than projects
     project = models.OneToOneField(Project,)
-    status = models.CharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
+    status = ValidXMLCharField(max_length=30, choices=PUBLISHING_STATUS, default='unpublished')
 
     class Meta:
         verbose_name = _(u'publishing status')
@@ -1263,9 +1301,9 @@ class Link(models.Model):
         ('A', _(u'Akvopedia entry')),
         ('E', _(u'External link')),
     )
-    kind = models.CharField(_(u'kind'), max_length=1, choices=LINK_KINDS)
+    kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS)
     url = models.URLField(_(u'URL'))
-    caption = models.CharField(_(u'caption'), max_length=50)
+    caption = ValidXMLCharField(_(u'caption'), max_length=50)
     project = models.ForeignKey(Project, verbose_name=u'project', related_name='links')
 
     def __unicode__(self):
@@ -1279,67 +1317,14 @@ class Link(models.Model):
         verbose_name_plural = _(u'links')
 
 
-class UserProfileManager(models.Manager):
-    def process_sms(self, mo_sms):
-        try:
-            profile = self.get(phone_number__exact=mo_sms.sender)  # ??? reporter instead ???
-            #state = get_state(profile)
-            #if state:
-            if state_equals(profile, profile.STATE_PHONE_NUMBER_ADDED):
-                logger.debug("%s: state is %s." % (who_am_i(), profile.STATE_PHONE_NUMBER_ADDED))
-                # look for validation code
-                if profile.validation == mo_sms.message.strip().upper():
-                    profile.confirm_validation(mo_sms)
-                else:
-                    logger.error('Error in UserProfileManager.process_sms: "%s" is not the correct validation code expected "%s". Locals:\n %s\n\n' % (mo_sms.message, profile.validation, locals()))
-            #elif state_equals(profile, profile.STATE_PHONE_NUMBER_VALIDATED):
-            #    # we shouldn't be here...phone ok, but no project selected :(
-            #    logger.error('Error in UserProfileManager.process_sms: workflow in state "%s" meaning phone is validated, but no project has been selected. Locals:\n %s\n\n' % (profile.STATE_PHONE_NUMBER_VALIDATED, locals()))
-            elif state_equals(profile, profile.STATE_UPDATES_ENABLED):
-                logger.debug("%s: state is %s." % (who_am_i(), profile.STATE_UPDATES_ENABLED))
-                # time to make an SMS update!
-                try:
-                    reporter = profile.reporters.get(gw_number=GatewayNumber.objects.get(number=mo_sms.receiver))
-                    reporter.create_sms_update(mo_sms)
-                except Exception, e:
-                    logger.error("Error in UserProfileManager.process_sms: %s. Locals:\n %s\n\n" % (e.message, locals()))
-            else:
-                logger.error('Error in UserProfileManager.process_sms: workflow disabled or in an unknown state. Locals:\n %s\n\n' % (locals()))
-        except Exception, e:
-            logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-
-
 class UserProfile(models.Model, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='userprofile')
     organisation = models.ForeignKey(Organisation)
-    phone_number = models.CharField(max_length=50, blank=True)  # TODO: check uniqueness if non-empty
-    validation = models.CharField(_('validation code'), max_length=20, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
-
-    objects = UserProfileManager()
-
-    # "constants" for use with SMS updating workflow
-    VALIDATED = u'IS_VALID'  # _ in IS_VALID guarantees validation code will never be generated to equal VALIDATED
-    WORKFLOW_SMS_UPDATE = u'SMS update'  # Name of workflow for SMS updating
-    STATE_PHONE_NUMBER_ADDED = u'Phone number added'  # Phone number has been added to the profile
-    #STATE_PHONE_NUMBER_VALIDATED = u'Phone number validated' #The phone has been validated with a validation code SMS
-    STATE_UPDATES_ENABLED = u'Updates enabled'  # The phone is enabled, registered reporters will create updates on respective project
-    STATE_PHONE_DISABLED = u'Phone disabled'  # The phone is disabled, preventing the processing of incoming SMSs
-    TRANSITION_ADD_PHONE_NUMBER = u'Add phone number'
-    TRANSITION_VALIDATE_PHONE_NUMBER = u'Validate phone number'
-    TRANSITION_ENABLE_UPDATING = u'Enable updating'
-    TRANSITION_DISABLE_UPDATING = u'Disable updating'
-    GROUP_SMS_UPDATER = u'SMS updater'
-    GROUP_SMS_MANAGER = u'SMS manager'
-    ROLE_SMS_UPDATER = u'SMS updater'
-    ROLE_SMS_MANAGER = u'SMS manager'
-    PERMISSION_ADD_SMS_UPDATES = 'add_sms_updates'
-    PERMISSION_MANAGE_SMS_UPDATES = 'manage_sms_updates'
-    GATEWAY_42IT = '42it'
+    notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
         verbose_name = _(u'user profile')
@@ -1428,246 +1413,26 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     def my_projects(self):
         return self.organisation.all_projects()
 
-    def my_unreported_projects(self):
+    def allow_edit(self, project):
+        """ Support partner organisations may "take ownership" of projects, meaning that editing of them is restricted
+        This method is used "on top" of normal checking for user access to projects since it is only relevant for
+        Partner users
         """
-        Projects I may do SMS updates for that aren't linked through an SmsReporter yet, filtering out reporters that have no project set
-        """
-        return self.my_projects().exclude(pk__in=[r.project.pk for r in self.reporters.exclude(project=None)])
-
-    def available_gateway_numbers(self):
-        # TODO: user selectable gateways
-        gw = Gateway.objects.get(name=self.GATEWAY_42IT)
-        # find all "free" numbers
-        numbers = GatewayNumber.objects.filter(gateway=gw).exclude(number__in=[r.gw_number.number for r in self.reporters.exclude(project=None)])
-        return numbers
-
-    def create_reporter(self, project=None):
-        """
-        Create a new SMSReporter object with a gateway number that is currently not in use
-        """
-        logger.debug("Entering: %s()" % who_am_i())
-        try:
-            #do we have a reporter without a project? Then we' use it to set the project
-            reporter = self.reporters.get(project=None)
-            if project:
-                reporter.project = project
-                reporter.save()
-                self.enable_reporting(reporter)
-                logger.info(u'%s(): SMS updating set up for project %s, user %s.' % (who_am_i(), project, self.user))
-            logger.debug("Exiting: %s()" % who_am_i())
-            return reporter
-        except:
-            numbers = self.available_gateway_numbers()
-            if numbers:
-                new_number = numbers[0]
-                reporter = SmsReporter.objects.create(userprofile=self, project=project, gw_number=new_number)
-                if project:
-                    self.enable_reporting(reporter)
-                    logger.info(u'%s(): SMS updating set up for project %s, user %s.' % (who_am_i(), project, self.user))
-                logger.debug("Exiting: %s()" % who_am_i())
-                return reporter
-            else:
-                logger.error(u"%s(): No numbers defined for gateway. Can't create a reporter for user %s ." % (who_am_i(), self.user))
-                logger.debug("Exiting: %s()" % who_am_i())
-                return None
-
-    def find_reporter(self):
-        """
-        Find or create a reporter to validate phone number
-        """
-        logger.debug("Entering: %s()" % who_am_i())
-        reporters = self.reporters.all()
-        if reporters:
-            logger.debug("Exiting: %s()" % who_am_i())
-            return reporters[0]
+        allow_edit = True
+        partner_admins_allowed = []
+        # compile list of support orgs that limit editing
+        for partner in project.support_partners():
+            if not partner.allow_edit:
+                allow_edit = False
+                partner_admins_allowed.append(partner)
+        # no-one limits editing, all systems go
+        if allow_edit:
+            return True
+        # Only Partner admins on the list of "limiters" list may edit
         else:
-            logger.debug("Exiting: %s()" % who_am_i())
-            return self.create_reporter()
-
-    def disable_reporting(self, reporter=None):
-        """
-        Disable SMS reporting for one or all projects linked to a userprofile
-        """
-        logger.debug("Entering: %s()" % who_am_i())
-        if reporter and reporter.project:
-            reporters = [reporter]
-        else:
-            reporters = self.reporters.exclude(project=None)  # exclude reporter that's not set up with a project
-        for sms_reporter in reporters:
-            try:
-                sms_reporter.reporting_cancelled()
-                logger.info(u'SMS updating cancelled for project: %s Locals:\n %s\n\n' % (sms_reporter.project, locals(), ))
-            except Exception, e:
-                logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-        #if self.validation == self.VALIDATED and self.reporters.count() < 1:
-        #    try:
-        #        user = self.user
-        #        do_transition(self, self.TRANSITION_VALIDATE_PHONE_NUMBER, user)
-        #    except Exception, e:
-        #        logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), user))
-        logger.debug("Exiting: %s()" % who_am_i())
-
-    def disable_all_reporters(self):
-        self.disable_reporting()
-
-    def destroy_reporter(self, reporter=None):
-        logger.debug("Entering: %s()" % who_am_i())
-        if reporter:
-            reporters = [reporter]
-        else:
-            reporters = self.reporters.all()
-        for reporter in reporters:
-            self.disable_reporting(reporter)
-            reporter.delete()
-        logger.debug("Exiting: %s()" % who_am_i())
-
-    def disable_sms_update_workflow(self, admin_user=None):
-        logger.debug("Entering: %s()" % who_am_i())
-        # this profile's user
-        user = self.user
-        # user calling disable_sms_update_workflow
-        admin_user = admin_user or user
-        try:
-            if (
-                self.state_equals(UserProfile.STATE_PHONE_DISABLED) or
-                Role.objects.get(name=self.ROLE_SMS_UPDATER) not in self.get_roles(user)
-            ):
-                logger.debug("Exiting: %s()" % who_am_i())
-                return
-            else:
-                trans_ok = self.do_transition(self.TRANSITION_DISABLE_UPDATING, admin_user)
-            if not trans_ok:
-                logger.error('Error in UserProfileManager.disable_sms_update_workflow: Locals:\n %s\n\n' % (locals(),))
-                logger.debug("Exiting: %s()" % who_am_i())
-                return
-            send_now([user], 'phone_disabled', extra_context={'phone_number': self.phone_number}, on_site=True)
-            self.disable_all_reporters()
-            logger.info('SMS updating disabled for user %s' % user.username)
-        except Exception, e:
-            logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-        logger.debug("Exiting: %s()" % who_am_i())
-
-    def confirm_validation(self, mo_sms):
-        logger.debug("Entering: %s()" % who_am_i())
-        try:
-            logger.debug("Trying to find a reporter with number %s for user %s." % (mo_sms.receiver, self.user))
-            reporter = self.reporters.get(gw_number=GatewayNumber.objects.get(number=mo_sms.receiver))
-            if self.do_transition(self.TRANSITION_ENABLE_UPDATING, self.user):
-                reporter.phone_confirmation()
-                self.validation = self.VALIDATED
-                self.save()
-                logger.info("%s: transition to %s for user %s." % (who_am_i(), self.TRANSITION_ENABLE_UPDATING, self.user))
-            else:
-                logger.error('Error in UserProfile  Manager.process_sms: Not allowed to do transition %s for user %s. Locals:\n %s\n\n' % (self.TRANSITION_VALIDATE_PHONE_NUMBER, self.user, locals()))
-            self.enable_reporting()
-        except Exception, e:
-            logger.exception('Error in %s(): %s Locals:\n %s\n\n' % (who_am_i(), e.message, locals(), ))
-        logger.debug("Exiting: %s()" % who_am_i())
-
-    def enable_reporting(self, reporter=None):
-        """
-        Check for correct state and send email and SMS notifying the user about the enabled project
-        If reporters=None we try to enable all reporters
-        """
-        logger.debug("Entering: %s()" % who_am_i())
-        if reporter and reporter.project:
-            reporters = [reporter]
-        else:
-            reporters = self.reporters.exclude(project=None)
-        #if state_equals(self, [self.STATE_UPDATES_ENABLED, self.STATE_PHONE_NUMBER_VALIDATED]):
-        if self.state_equals(self.STATE_UPDATES_ENABLED):
-            for sms_reporter in reporters:
-                #if state_equals(self, self.STATE_PHONE_NUMBER_VALIDATED):
-                #    try:
-                #        enabled = self.do_transition(self.TRANSITION_ENABLE_UPDATING, self.user)
-                #    except Exception, e:
-                #        logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(),))
-                try:
-                    sms_reporter.reporting_enabled()
-                    logger.info('Project enabled for updating: %s Locals:\n %s\n\n' % (sms_reporter.project.pk, locals(), ))
-                except Exception, e:
-                    logger.exception('%s Locals:\n %s\n\n' % (e.message, locals(), ))
-        else:
-            logger.error('UserProfile.enable_reporting() called with bad State: %s Locals:\n %s\n\n' % (self.get_state(), locals(), ))
-        logger.debug("Exiting: %s()" % who_am_i())
-
-    def enable_all_reporters(self):
-        self.enable_reporting()
-
-    def init_sms_update_workflow(self):
-        '''
-        Check that workflow exists ie the DB is setup correctly
-        Disable reporters if we have any
-        (Re)set state to STATE_PHONE_DISABLED
-        '''
-        logger.debug("Entering: %s()" % who_am_i())
-        workflow = self.get_workflow()
-        #in case of DB config bork:
-        if not workflow:
-            logger.error('Error in %s. Workflow not defined for %s. Locals: %s' % (who_am_i(), self.user.username, locals()))
-            return
-        #set up current UserProfile with the workflow
-        #this creates the WorkflowObjectRelation, sets initial State and
-        #assigns permissions for the state (ObjectPermission)
-        self.set_workflow(workflow)
-        if state_equals(self, self.STATE_UPDATES_ENABLED):
-            self.disable_all_reporters()
-        self.set_initial_state()  # Phone disabled
-        logger.debug("Exiting: %s()" % who_am_i())
-
-    def add_phone_number(self, phone_number):
-        """
-        Set up workflow
-        Transit to STATE_PHONE_NUMBER_ADDED
-        Save phone number and generated validation code
-        Get or create a Reporter
-        Send a validation request
-        """
-        logger.debug("Entering: %s()" % who_am_i())
-        user = self.user
-        self.init_sms_update_workflow()
-        #get workflow from model relation
-        #check that we're allowed to do SMS updates
-        if self.do_transition(self.TRANSITION_ADD_PHONE_NUMBER, user):
-            self.validation = User.objects.make_random_password(length=6).upper()
-            self.phone_number = phone_number
-            self.save()
-            # TODO: gateway selection!
-            #gw_number = Gateway.objects.get(name=self.GATEWAY_42IT).gatewaynumber_set.all()[0]
-            # Setup an initial SmsReporter for handling of registration SMSs so no project assigned to reporter yet.
-            reporter = self.find_reporter()
-            reporter.create_validation_request()
-            logger.info('UserProfile.%s(): successfully set up workflow "%s" for user %s' % (who_am_i(), self.WORKFLOW_SMS_UPDATE, user.username, ))
-        else:
-            logger.info('UserProfile.%s(): user %s not allowed to set up workflow "%s"' % (who_am_i(), user.username, self.WORKFLOW_SMS_UPDATE, ))
-        logger.debug("Exiting: %s()" % who_am_i())
-
-    def has_permission(self, user, permission, roles=[]):
-        """Grant SMS manager role if we're doing this for ourselves
-        """
-        #TODO: check that we have SMS updater role, if not we shouldn't get SMS manager role either :-p
-        if self == user.get_profile() and Role.objects.get(name=self.ROLE_SMS_UPDATER) in self.get_roles(user):
-            roles.append(Role.objects.get(name=self.ROLE_SMS_MANAGER))
-        return super(UserProfile, self).has_permission(user, permission, roles)
-
-    def has_perm_add_sms_updates(self):
-        """used in myakvo navigation template to determin what links to show
-        """
-        return (
-            self.has_permission(self.user, UserProfile.PERMISSION_ADD_SMS_UPDATES, []) or
-            self.has_permission(self.user, UserProfile.PERMISSION_MANAGE_SMS_UPDATES, [])
-        )
-    has_perm_add_sms_updates.boolean = True  # make pretty icons in the admin list view
-    has_perm_add_sms_updates.short_description = _('may create SMS project updates')
-
-
-    #def phone_number_changed(self, phone_number):
-    #    logger.debug("Entering: %s()" % who_am_i())
-    #    #sanity check, if number are the same we shouldn't do anything
-    #    if self.phone_number != phone_number:
-    #
-    #
-    #    logger.debug("Exiting: %s()" % who_am_i())
+            if self.get_is_org_admin() and self.organisation in partner_admins_allowed:
+                return True
+        return False
 
     @property
     def api_key(self, key=""):
@@ -1679,120 +1444,6 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
         return key
 
 
-class SmsReporterManager(models.Manager):
-    def select(self, profile=None, gw_number=None, project=None):
-        #need either gw_number or project
-        if gw_number or project:
-            if gw_number:
-                return self.get(userprofile=profile, gw_number=gw_number)
-            else:
-                return self.get(userprofile=profile, project=project)
-        raise SmsReporter.DoesNotExists
-
-
-class SmsReporter(models.Model):
-    """
-    Mapping between projects, gateway phone numbers and users phones
-    """
-    userprofile = models.ForeignKey(UserProfile, related_name='reporters')
-    gw_number = models.ForeignKey(GatewayNumber)
-    project = models.ForeignKey(Project, null=True, blank=True, )
-
-    objects = SmsReporterManager()
-
-    class Meta:
-        unique_together = ('userprofile', 'gw_number', 'project',)
-        permissions = (
-            ("%s_smsreporter" % RSR_LIMITED_CHANGE, u'RSR limited change sms reporter'),
-        )
-
-    def __unicode__(self):
-        if self.project:
-            return "%s:%s:%s" % (self.userprofile.user.username, self.gw_number, self.project)
-        else:
-            return "%s:%s" % (self.userprofile.user.username, self.gw_number)
-
-    def create_sms_update(self, mo_sms):
-        """
-        Create a project update from an incoming SMS
-        """
-        logger.debug("Entering: %s()" % who_am_i())
-        if not self.project:
-            logger.error("No project defined for SmsReporter %s. Locals:\n %s\n\n" % (self.__unicode__, locals()))
-            return False
-        update_data = {
-            'project': self.project,
-            'user': self.userprofile.user,
-            'title': 'SMS update',
-            'update_method': 'S',
-            'text': mo_sms.message,
-        }
-        try:
-            update = ProjectUpdate.objects.create(**update_data)
-            logger.info("Created new project update from sms. ProjectUpdate.id: %d" % update.pk)
-            self.update_received(update)
-            logger.debug("Exiting: %s()" % who_am_i())
-            return update
-        except Exception, e:
-            logger.exception("Exception when creating an sms project update. Error: %s Locals:\n %s\n\n" % (e.message, locals(), ))
-            logger.debug("Exiting: %s()" % who_am_i())
-            return False
-
-    def update_received(self, update):
-        profile = self.userprofile
-        extra_context = {
-            'gw_number': self.gw_number,
-            'phone_number': profile.phone_number,
-            'project': self.project,
-            'update': update,
-            'domain': Site.objects.get_current().domain,
-        }
-        send_now([profile.user], 'update_received', extra_context=extra_context, on_site=True)
-
-    def reporting_cancelled(self, set_delete=False):
-        profile = self.userprofile
-        #self.delete = set_delete
-        extra_context = {
-            'gw_number': self.gw_number,
-            'phone_number': profile.phone_number,
-            'project': self.project,
-        }
-        send_now([profile.user], 'reporting_cancelled', extra_context=extra_context, on_site=True)
-
-    def reporting_enabled(self):
-        profile = self.userprofile
-        extra_context = {
-            'gw_number': self.gw_number,
-            'phone_number': profile.phone_number,
-            'project': self.project,
-        }
-        send_now([profile.user], 'reporting_enabled', extra_context=extra_context, on_site=True)
-
-    def create_validation_request(self):
-        """
-        send validation code through email and an SMS that the user can easily
-        reply to with the code to validate the phone number
-        """
-        # check we aren't already validated
-        profile = self.userprofile
-        if profile.validation != profile.VALIDATED:
-            extra_context = {
-                'gw_number': self.gw_number,
-                'validation': profile.validation,
-                'phone_number': profile.phone_number,
-            }
-            send_now([profile.user], 'phone_added', extra_context=extra_context, on_site=True)
-
-    def phone_confirmation(self):
-        profile = self.userprofile
-        extra_context = {
-            'gw_number': self.gw_number,
-            'phone_number': profile.phone_number,
-            'domain': Site.objects.get_current().domain,
-        }
-        send_now([profile.user], 'phone_confirmed', extra_context=extra_context, on_site=True)
-
-
 class ProjectUpdate(TimestampsMixin, models.Model):
     UPDATE_METHODS = (
         ('W', _(u'web')),
@@ -1800,10 +1451,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ('S', _(u'SMS')),
         ('M', _(u'mobile')),
     )
-    PHOTO_LOCATIONS = (
-        ('B', _(u'At the beginning of the update')),
-        ('E', _(u'At the end of the update')),
-    )
+
 
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
@@ -1812,10 +1460,10 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     project = models.ForeignKey(Project, related_name='project_updates', verbose_name=_(u'project'))
     user = models.ForeignKey(User, verbose_name=_(u'user'))
-    title = models.CharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
-    text = models.TextField(_(u'text'), blank=True)
-    language = models.CharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
-    #status = models.CharField(max_length=1, choices=STATUSES, default='N')
+    title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
+    text = ValidXMLTextField(_(u'text'), blank=True)
+    language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
+    #status = ValidXMLCharField(max_length=1, choices=STATUSES, default='N')
     photo = ImageWithThumbnailsField(
         _(u'photo'),
         blank=True,
@@ -1823,20 +1471,19 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
         help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
     )
-    photo_location = models.CharField(_(u'photo location'), max_length=1, choices=PHOTO_LOCATIONS)
-    photo_caption = models.CharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
-    photo_credit = models.CharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
-    video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'), verify_exists=False)
-    video_caption = models.CharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
-    video_credit = models.CharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
-    update_method = models.CharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
+    photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
+    photo_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
+    video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'))
+    video_caption = ValidXMLCharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
+    video_credit = ValidXMLCharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
+    update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
     # time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
     # time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
-    user_agent = models.CharField(_(u'user agent'), blank=True, max_length=200, default='')
-    uuid = models.CharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
+    user_agent = ValidXMLCharField(_(u'user agent'), blank=True, max_length=200, default='')
+    uuid = ValidXMLCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
         help_text=_(u'Universally unique ID set by creating user agent'))
     
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
+    notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
         get_latest_by = "created_at"
@@ -1873,6 +1520,9 @@ class ProjectUpdate(TimestampsMixin, models.Model):
             try:
                 data = oembed.site.embed(self.video).get_data()
                 html = data.get('html', '')
+                # Add 'rel=0' to the video link for not showing related Youtube videos
+                if "youtube" in html:
+                    html = html.replace("feature=oembed", "feature=oembed&rel=0")
             except:
                 pass
         return mark_safe(html)
@@ -1910,16 +1560,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
 
-    @property
-    def media_location(self):
-        return self.photo_location
-
-    @property
-    def text_location(self, location='B'):
-        if self.media_location == 'B':
-            location = 'E'
-        return location
-
     @models.permalink
     def get_absolute_url(self):
         return ('update_main', (), {'project_id': self.project.pk, 'update_id': self.pk})
@@ -1931,7 +1571,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 class ProjectComment(models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='comments')
     user = models.ForeignKey(User, verbose_name=_(u'user'))
-    comment = models.TextField(_(u'comment'))
+    comment = ValidXMLTextField(_(u'comment'))
     time = models.DateTimeField(_(u'time'), db_index=True)
 
     class Meta:
@@ -1942,9 +1582,9 @@ class ProjectComment(models.Model):
 
 # Payment engines
 class PaymentGateway(models.Model):
-    name = models.CharField(max_length=255, help_text=u'Use a short, descriptive name.')
-    description = models.TextField(blank=True)
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
+    name = ValidXMLCharField(max_length=255, help_text=u'Use a short, descriptive name.')
+    description = ValidXMLTextField(blank=True)
+    currency = ValidXMLCharField(max_length=3, choices=CURRENCY_CHOICES, default='EUR')
     notification_email = models.EmailField(u'notification email',
         help_text=u'When a donation is completed successfully, notification emails will be sent to the donor and to this address.')
 
@@ -1960,14 +1600,14 @@ class PayPalGateway(PaymentGateway):
         ('US', u'US English'),
     )
     account_email = models.EmailField()
-    locale = models.CharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
+    locale = ValidXMLCharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
 
     class Meta:
         verbose_name = u'PayPal gateway'
 
 
 class MollieGateway(PaymentGateway):
-    partner_id = models.CharField(max_length=10)
+    partner_id = ValidXMLCharField(max_length=10)
 
     class Meta:
         verbose_name = u'Mollie/iDEAL gateway'
@@ -1986,14 +1626,14 @@ class PaymentGatewaySelector(models.Model):
 
 
 class InvoiceManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         """Returns a queryset of all invoices
         Test invoices are excluded in production mode
         """
         if not settings.DONATION_TEST:
-            return super(InvoiceManager, self).get_query_set().exclude(test=True)
+            return super(InvoiceManager, self).get_queryset().exclude(test=True)
         else:
-            return super(InvoiceManager, self).get_query_set()
+            return super(InvoiceManager, self).get_queryset()
 
     def stale(self):
         """Returns a queryset of invoices which have been pending
@@ -2023,8 +1663,11 @@ class Invoice(models.Model):
         ('ideal', u'iDEAL'),
     )
     # Setup
-    test = models.BooleanField(u'test donation', help_text=u'This flag is set if the donation was made in test mode.')
-    engine = models.CharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
+    test = models.BooleanField(
+        u'test donation',
+        help_text=u'This flag is set if the donation was made in test mode.',
+        default=False)
+    engine = ValidXMLCharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey(Project, related_name='invoices')
     # Common
@@ -2034,19 +1677,19 @@ class Invoice(models.Model):
         help_text=u'Amount actually received after charges have been applied.'
     )
     time = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=75, blank=True, null=True)
+    name = ValidXMLCharField(max_length=75, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     status = models.PositiveSmallIntegerField('status', choices=STATUS_CHOICES, default=1)
-    http_referer = models.CharField(u'HTTP referer', max_length=255, blank=True)
-    campaign_code = models.CharField(u'Campaign code', blank=True, max_length=15)
-    is_anonymous = models.BooleanField(u'anonymous donation')
+    http_referer = ValidXMLCharField(u'HTTP referer', max_length=255, blank=True)
+    campaign_code = ValidXMLCharField(u'Campaign code', blank=True, max_length=15)
+    is_anonymous = models.BooleanField(u'anonymous donation', default=False)
     # PayPal
-    ipn = models.CharField(u'PayPal IPN', blank=True, null=True, max_length=75)
+    ipn = ValidXMLCharField(u'PayPal IPN', blank=True, null=True, max_length=75)
     # Mollie
-    bank = models.CharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
-    transaction_id = models.CharField(u'mollie.nl transaction ID', max_length=100, blank=True)
+    bank = ValidXMLCharField(u'mollie.nl bank ID', max_length=4, choices=get_mollie_banklist(), blank=True)
+    transaction_id = ValidXMLCharField(u'mollie.nl transaction ID', max_length=100, blank=True)
 
-    notes = models.TextField(verbose_name=_("Notes and comments"), blank=True, default='')
+    notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     admin_objects = models.Manager()
     objects = InvoiceManager()
@@ -2137,8 +1780,8 @@ class PartnerSite(TimestampsMixin, models.Model):
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')
     )
-    notes = models.TextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
-    hostname = models.CharField(_(u'hostname'), max_length=50, unique=True,
+    notes = ValidXMLTextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
+    hostname = ValidXMLCharField(_(u'hostname'), max_length=50, unique=True,
         help_text=_(
             u'<p>Your hostname is used in the default web address of your partner site. '
             u'The web address created from  the hostname <em>myorganisation</em> would be '
@@ -2157,10 +1800,10 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'should be returned when leaving the partner site.</p>'
         )
     )
-    custom_return_url_text = models.CharField(_(u'Return URL text'), blank=True, max_length=50, default='',
+    custom_return_url_text = ValidXMLCharField(_(u'Return URL text'), blank=True, max_length=50, default='',
         help_text=_(
             u'<p>Enter a text for the back button and return URL. '
-            u'Leave empty to display "Back to %organisation name%".</p>'
+            u'Leave empty to display "Back to <em>myorganisation</em>".</p>'
         )
     )
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
@@ -2176,7 +1819,7 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'on tabs and in the bookmark menu.</p>'
         )
     )
-    about_box = models.TextField(_(u'about box text'), max_length=500, blank=True,
+    about_box = ValidXMLTextField(_(u'about box text'), max_length=500, blank=True,
         help_text=_(dedent(u'''
             Enter HTML that will make up the top left box of the home page. (500 characters)
             <p>
@@ -2209,7 +1852,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     )
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
-    default_language = models.CharField(_(u'Site UI default language'),
+    default_language = ValidXMLCharField(_(u'Site UI default language'),
                                         max_length=5,
                                         choices=settings.LANGUAGES,
                                         default=settings.LANGUAGE_CODE)
@@ -2218,13 +1861,14 @@ class PartnerSite(TimestampsMixin, models.Model):
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
     facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
     twitter_button = models.BooleanField(_(u'Twitter button'), default=False)
-    facebook_app_id = models.CharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
+    facebook_app_id = ValidXMLCharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
         help_text=_(
             u'<p>Your FaceBook app id is used when sharing pages from your partner site. '
             u'It can be obtained by creating a Facebook app, which will let you monitor when your pages are referenced. '
             u'Follow the instructions <A href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</A>'
         )
     )
+
 
     def __unicode__(self):
         return u'Partner site for %(organisation_name)s' % {'organisation_name': self.organisation.name}

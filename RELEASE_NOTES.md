@@ -5,6 +5,292 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+--------
+
+Akvo RSR ver 2.3.8 Xylocarp
+---
+
+Wednesday 11th June 2014, adriancollier
+
+New and Noteworthy
+---
+
+### Upgrade to Django 1.6
+
+This latest release of Akvo RSR contains a wide variety of back end changes to upgrade the underlying framework that RSR runs on - Django. We were previously running on version 1.4, so we've performed a double staged upgrade to make use of the later features than have been developed with Django.
+
+Github issue [#544](https://github.com/akvo/akvo-rsr/issues/544)
+
+
+Areas Modified
+---
+
+### Separated Static and User Media assets
+
+We have now separated the server location for static media from media that is uploaded by users. This ensures that we can manage and maintain the information in different ways if needed by the use cases of the different sources.
+
+Github issue [#564](https://github.com/akvo/akvo-rsr/issues/564)
+
+### Updated Folder Structure
+
+The folders structure for the application was improved in Django 1.4, but we continued to use the legacy structure. We have now updated this to bring RSR in line with the latest Django folder structure.
+
+Github issue [#565](https://github.com/akvo/akvo-rsr/issues/565)
+
+### Fixed ProjectAdmin add view
+
+We have updated the new project form to work with the improved standards bring implemented in Django 1.5
+
+Github issue [#566](https://github.com/akvo/akvo-rsr/issues/566)
+
+### Upgraded Python Libraries
+
+We have performed updates of all dependent python libraries where possible to allow us to use the latest versions.
+
+Github issue [#570](https://github.com/akvo/akvo-rsr/issues/570)
+
+### New Markdown Solution
+
+We have implemented a new method of managing Markdown included within Project Updates that uses django_markup.
+
+Github issue [#572](https://github.com/akvo/akvo-rsr/issues/572)
+
+### Removed SMS Code
+
+We had in the past implemented a beta version of an SMS updating tool for RSR that was never fully functional. To tidy up the codebase, we have now removed this code and all references to this.
+
+Github issue [#574](https://github.com/akvo/akvo-rsr/issues/574)
+
+### URL Encoding removal
+
+As part of the Django 1.6 changes, we have removed the URL Encoding from ``reverse()`` arguments.
+
+Github issue [#575](https://github.com/akvo/akvo-rsr/issues/575)
+
+### Default value for Boolean Fields
+
+Required with the Django 1.6 upgrade, we have to specify a default value for Boolean fields within RSR. These have now been specified where previously not present.
+
+Github issue [#578](https://github.com/akvo/akvo-rsr/issues/578)
+
+### Update Django URLs
+
+We have updated the code to ensure that the names of views in {% url %} tag are strings.
+
+Github issue [#579](https://github.com/akvo/akvo-rsr/issues/579)
+
+### Fixes for Django 1.7 Upgrade
+
+While we are not yet planning to update the Django framework to 1.7 yet, we have already provided some updates to key libraries including Tastypie (which runs parts of the RSR API) to provide 1.7 compatibility.
+
+Github issue [#580](https://github.com/akvo/akvo-rsr/issues/580)
+
+### Rename ``get_query_set()``
+
+A change that takes advantage of some newer features provided in Django 1.6, we have renamed this function.
+
+Github issue [#583](https://github.com/akvo/akvo-rsr/issues/583)
+
+### Change in permission methods
+
+We have replaced ``get_(add|change|delete)_permission`` methods with ``django.contrib.auth.get_permission_codename`` as the previous are now depreciated.
+
+Github issue [#584](https://github.com/akvo/akvo-rsr/issues/584)
+
+### Check ``ModelForms``
+
+As part of the Django 1.6 upgrade we have updated ``ModelForms``.
+
+Github issue [#586](https://github.com/akvo/akvo-rsr/issues/586)
+
+### Implement ``ALLOWED_HOST`` setting
+
+We have added a new ``ALLOWED_HOST`` setting as needed as part of the Django 1.6 upgrade.
+
+Github issue [#596](https://github.com/akvo/akvo-rsr/issues/596)
+
+--------------
+
+Akvo RSR ver 2.3.7 Watermelon
+---
+
+Wednesday 28th May 2014, rumca
+
+New Features
+---
+
+### Country options on project list
+
+We have added a feature to only populate the countries dropdown on Akvo Pages with a list of countries where there are projects present. This allows the country selection to always return a project and provides a shorter list to select from.
+
+Github issue [#176](https://github.com/akvo/akvo-rsr/issues/176)
+
+
+Bug Fixes
+---
+
+### Content owner in org admin
+
+The content owner field was accidentally removed during a previous release, this has been reinstated on the organisation admin now.
+
+Github issue [#558](https://github.com/akvo/akvo-rsr/issues/558)
+
+### Image/Video files positioning
+
+We have made a change to the way in which image or videos are positioned on RSR updates. We now only allow the media links to be placed before the update.
+
+Github issue [#243](https://github.com/akvo/akvo-rsr/issues/243)
+
+### Removal of YouTube related videos
+
+When YouTube videos were added to project updates they would display related videos after they had been played. We have made a change to prevent this from happening, as often times the videos were not relevant.
+
+Github issue [#540](https://github.com/akvo/akvo-rsr/issues/540)
+
+### Django version upgrade
+
+As an intermediary step whilst we complete a full upgrade from Django 1.4 to 1.7, we have upgraded to Django 1.4.13 from 1.4.2 to plug recently identified security vulnerabilities.
+
+Github issue [#522](https://github.com/akvo/akvo-rsr/issues/522)
+
+
+Akvo RSR ver 2.3.6 Voavanga
+---
+
+Wednesday 14th May 2014, adriancollier
+
+New Features
+---
+
+### Add Update button change
+
+If a user was attempting to add an update to a project that they didn't have the permission for, then they were being served a 403 error page. We have now changed this activity to grey out the Add Update button for users that do not have permission to add updates on individual projects.
+
+Github issue [#150](https://github.com/akvo/akvo-rsr/issues/150)
+
+### Character validation in admin
+
+Now that we are working with XML more deeply with the API and IATI information, we have added validation to the RSR admin to check for any characters that have been included within the added fields that are not valid within XML. A warning is now displayed in the event that any of these characters are present.
+
+Github issue [#242](https://github.com/akvo/akvo-rsr/issues/242)
+
+### Back button on Akvo Pages
+
+We have added a custom option to Akvo Pages to allow the back button to have a different text added. So now our partners can allow this button to say something more appropriate to the location that the user will be taken to upon pressing.
+
+Github issue [#258](https://github.com/akvo/akvo-rsr/issues/258)
+
+### Sign in target location
+
+We have tidied up the signing in process to direct users to the main page after completing the sign in process.
+
+Github issue [#301](https://github.com/akvo/akvo-rsr/issues/301)
+
+### Organisation filter on Akvo Pages
+
+We had previously removed the project filter on Akvo Pages that allows any project to be viewed within a Pages instance. This has now been extended to organisations so that organisations can be visualised within an instance without the need for that organisation to be present within projects.
+
+Github issue [#433](https://github.com/akvo/akvo-rsr/issues/433)
+
+### Facebook meta information
+
+We have tidied up the meta information when sharing projects via Facebook to provide the information of the organisation that owns the Akvo Pages instance in place of Akvo.
+
+Github issue [#442](https://github.com/akvo/akvo-rsr/issues/442)
+
+### RSR favicon
+
+We have replaced the favicon being used within RSR to use the more updated icon as is present within the Akvo.org website.
+
+Github issue [#443](https://github.com/akvo/akvo-rsr/issues/443)
+
+### Donation redirect page for Akvo Pages
+
+We have added a new timed redirection page that users will see when completing a donation from an Akvo Pages instance. This provides information to the user to inform them that they will be leaving the previous domain and be directed to the Akvo.org donation process.
+
+Github issue [#480](https://github.com/akvo/akvo-rsr/issues/480)
+
+### Translation management process
+
+We have documented our process for managing the content translations with a team of external language translators. This is just a documentation update.
+
+Github issue [#494](https://github.com/akvo/akvo-rsr/issues/494)
+
+### Documentation Update
+
+We have performed a merging process to pull some recent documentation efforts into the main code repository to ensure that the right information is always available for users to see.
+
+Github issue [#512](https://github.com/akvo/akvo-rsr/issues/512)
+
+### Project summary pop-up Akvo Pages map widget
+
+We have added a project summary pop-up to the Akvo Pages map widget that displays basic information about a project to the user when they click on the pin for a specific project.
+
+Github issue [#505](https://github.com/akvo/akvo-rsr/issues/505)
+
+### Project and organisation management flags
+
+Following on from recent work on management flags, we have extended this functionality to projects. Now it is possible to set a flag on both projects and organisations that will prevent unwanted changes being made.
+
+Organisations can have an owner flag set so that any changes made by other organisations inform the user that these changes could be overwritten by the managing organisation.
+
+Partners can also set a flag on their organisation record to prevent their projects being modified by other organisations. Only Admins from the support partner organisation will be able to make changes to the project content for these projects.
+
+Github issue [#233](https://github.com/akvo/akvo-rsr/issues/233)
+
+
+Bug Fixes
+---
+
+### Blank location error
+
+We were experiencing a problem where if new locations were added to a project but no information was completed, the admin form would not save. This has been corrected to now ignore any added but incomplete locations.
+
+Github issue [#312](https://github.com/akvo/akvo-rsr/issues/312)
+
+### Budget totals
+
+We previously had 2 different budget items within the dataset that referred to total budgets. This has now been consolidated so that we only have a single entry and all information will be merged to this single entry.
+
+Github issue [#471](https://github.com/akvo/akvo-rsr/issues/471)
+
+### Akvo Pages widgets layout error
+
+We have tidied up some layout issues with the widgets being provided for Akvo Pages.
+
+Github issue [#498](https://github.com/akvo/akvo-rsr/issues/498)
+
+### Wrapped links on project pages
+
+We have fixed an issue that long links provided on projects were extending beyond the box provided in the visual layout. These links will now wrap to the next line if they are too long to fit within the available space.
+
+Github issue [#506](https://github.com/akvo/akvo-rsr/issues/506)
+
+### Global maps in Internet Explorer 8
+
+We have resolved some visualisation issues when viewing the global maps in IE8. Now the maps are correctly displaying the points.
+
+Github issue [#507](https://github.com/akvo/akvo-rsr/issues/507)
+
+### IATI export missing data
+
+We were missing some date information within the budget item export when creating IATI files. This prevented the files from validating as a correct IATI XML file. This has now been included.
+
+Github issue [#533](https://github.com/akvo/akvo-rsr/issues/533)
+
+### Live server logging
+
+We have made a small change to the underlying code that will provide better logging information for our system to help discover and troubleshoot any issues that occur.
+
+Github issue [#432](https://github.com/akvo/akvo-rsr/issues/432)
+
+### Using Sentry within RSR
+
+We have added Sentry as a tool to assist us with monitoring and logging with RSR as part of our efforts to ensure we have a great performing system and access to all the right information to investigate when things don't go entirely to plan. You can read more about Sentry [here](http://sentry.readthedocs.org/en/latest/).
+
+Github issue [#541](https://github.com/akvo/akvo-rsr/issues/541)
+
+
 Akvo RSR ver 2.3.5 Uglyfruit
 ---
 

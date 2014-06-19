@@ -16,9 +16,8 @@ from tastypie.http import HttpCreated, HttpNoContent
 
 from django.http import HttpResponse
 
-from django.core.management import setup_environ
-from akvo import settings
-setup_environ(settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from akvo.scripts.cordaid import log, API_VERSION, CORDAID_IATI_ACTIVITIES_XML, CORDAID_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION, ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT, CORDAID_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS
 from requester import Requester

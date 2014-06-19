@@ -6,9 +6,8 @@ Script for generating an IATI file of an organisation, taking an organisation as
 the possibility to select partner types and exclude individual projects.
 """
 
-from django.core.management import setup_environ
-from akvo import settings
-setup_environ(settings)
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from datetime import datetime
 from akvo.rsr.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANISATION_ROLE, IATI_LIST_SECTOR
@@ -189,7 +188,7 @@ def iati_participating_org(activity, project, participating_orgs):
 
     return activity
 
-def iati_budget(activity, budgets):
+def iati_budget(activity, budgets, project):
     """Collects budget of the RSR project and adds it to the activity."""
 
     # Ignore total budgets -- label 13 or 14 -- if not all budgets are a total budget
@@ -203,6 +202,10 @@ def iati_budget(activity, budgets):
 
         if check_value(budget.amount):
             budget_value = schema.textType(valueOf_=budget.amount)
+
+            if check_value(project.date_request_posted):
+                budget_value.set_anyAttributes_({"value-date": project.date_request_posted})
+
             budget_node.add_value(budget_value)
 
         if check_value(budget_label):
@@ -523,7 +526,7 @@ def process_project(xml, project, org_id):
     activity = iati_goals(activity, goals)
     activity = iati_photo(activity, project)
     activity = iati_location(activity, location, country)
-    activity = iati_budget(activity, budgets)
+    activity = iati_budget(activity, budgets, project)
     activity = iati_participating_org(activity, project, participating_orgs)
     activity = iati_links(activity, links)
     activity = iati_outcome(activity, benchmarks, benchmark_names, categories)

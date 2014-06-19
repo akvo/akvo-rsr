@@ -327,10 +327,6 @@ class ReadonlyFKAdminField(object):
 class ProjectUpdateForm(forms.ModelForm):
     """Form representing a ProjectUpdate."""
 
-    MEDIA_LOCATIONS = (
-        ('B', _('At the beginning of the update.')),
-        ('E', _('At the end of the update.'))
-    )
     title = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '42',
@@ -347,8 +343,6 @@ class ProjectUpdateForm(forms.ModelForm):
         'size': '15',
         'style': 'height: 2em',
         }))
-    photo_location = forms.CharField(required=False, widget=forms.RadioSelect(
-        choices=ProjectUpdate.PHOTO_LOCATIONS, attrs={'class': 'radio'}))
     photo_caption = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
@@ -377,7 +371,8 @@ class ProjectUpdateForm(forms.ModelForm):
 
     class Meta:
         model = get_model('rsr', 'projectupdate')
-        exclude = ('created_at', 'project', 'user', 'last_modified_at')
+        fields = ('title', 'text', 'language', 'photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
+        'video_credit')
 
     def clean_video(self):
         data = self.cleaned_data['video']
@@ -399,9 +394,6 @@ class ProjectUpdateForm(forms.ModelForm):
 
 
 class PartnerSiteAdminForm(forms.ModelForm):
-    class Meta:
-        model = get_model('rsr', 'partnersite')
-
     def clean_hostname(self):
         hostname = slugify(self.cleaned_data['hostname'])
         if hostname == 'www':  # TODO: test for other reserved hostnames

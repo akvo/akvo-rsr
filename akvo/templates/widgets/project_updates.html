@@ -1,13 +1,11 @@
 {% extends "widgets/base_widget.html" %}
-{% load i18n rsr_tags rsr_filters thumbnail humanize markup %}
-{% load url from future %}
-
+{% load i18n rsr_tags rsr_filters thumbnail humanize markup_tags %}
+{% load compressed %}
 
 {% block title %}updates@{{block.super}}{% endblock title %}
 
 {% block style %}
-	{% asset_bundle 'widget_project_updates' %}
-	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project_updates/css/screen.css" type="text/css" media="screen, projection" /> #}
+	{% compressed_css 'widget_project_updates' %}
 	
 	<!--[if IE]>
 	<style type="text/css" media="screen">
@@ -109,7 +107,7 @@
 					</div>
 			    {% endif %}
 				<p class="smallFont" style="margin-top:3px;">
-					{{latest_update.text|smart_truncate:120|markdown:"safe"}}
+					{{latest_update.text|smart_truncate:120|apply_markup:"markdown"}}
 					<a href="{% url 'project_updates' project.id %}#{{latest_update.id}}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
 				</p>
 			{% else %}

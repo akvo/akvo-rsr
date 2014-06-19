@@ -1,0 +1,72 @@
+<div class= "akvo_map" id="{{map_id}}" style="width:{{width}}px;height:{{height}}px;"></div>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+    var googleMap = {
+        canvas: document.getElementById('{{map_id}}'),
+        options: {
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            streetViewControl: false{% if not dynamic %},
+            disableDefaultUI: true,
+            draggable: false,
+            scrollwheel: false{% endif %}
+        },
+        locations: {{ locations|safe }},
+        load: function() {
+            var map = new google.maps.Map(this.canvas, this.options);
+            var bounds = new google.maps.LatLngBounds();
+
+            var i;
+
+            for (i = 0; i < this.locations.length; i++) {
+                var position = new google.maps.LatLng(this.locations[i][0], this.locations[i][1]);
+
+                var marker = new google.maps.Marker({
+                    {% if not partnersite_widget %}icon: '{{ marker_icon }}',{% endif %}
+                    position: position,
+                    map: map{% if not infowindows %},
+                    clickable: false{% endif %}
+                });
+
+                {% if infowindows and partnersite_widget %}
+                window['contentString'+i] = '<div class="mapInfoWindow">'+
+                    '<a href="/'+this.locations[i][2][2]+'/'+this.locations[i][2][0]+'/">'+this.locations[i][2][1]+'</a><br>'+
+                    '<p class="small grey">'+this.locations[i][3]+'</p>'+
+                    '</div>';
+
+                {% elif infowindows %}
+                window['contentString'+i] = '<div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">'+
+                    '<a href="/'+this.locations[i][2][3]+'/'+this.locations[i][2][0]+'/">'+this.locations[i][2][1]+'</a>'+
+                    '<div style="text-align: center; margin-top: 10px;">'+
+                    '<a href="/'+this.locations[i][2][3]+'/'+this.locations[i][2][0]+'/" title="'+this.locations[i][2][1]+'">'+
+                    '<img src="'+this.locations[i][2][2]+'" alt="">'+
+                    '</a>'+
+                    '</div>'+
+                    '</div>';
+                {% endif %}
+
+                {% if infowindows %}
+                (function(marker, i) {
+                    google.maps.event.addListener(marker, 'click', function() {
+                        infowindow = new google.maps.InfoWindow({
+                            content: window['contentString'+i]
+                        });
+                        infowindow.open(map, marker);
+                    });
+                })(marker, i);
+                {% endif %}
+
+                bounds.extend(marker.position);
+            }
+
+            map.fitBounds(bounds);
+            map.panToBounds(bounds);
+
+            var listener = google.maps.event.addListener(map, "idle", function() {
+                if (map.getZoom() > 8) map.setZoom(8);
+                google.maps.event.removeListener(listener);
+            });
+
+        }
+    };
+	window.onload = function (){googleMap.load()};
+</script>

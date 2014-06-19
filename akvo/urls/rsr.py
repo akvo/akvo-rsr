@@ -11,7 +11,7 @@ from django.conf.urls import (include, patterns, url)
 from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 from paypal.standard.ipn.views import ipn as paypal_ipn
 
 from akvo.rsr.feeds import (ProjectUpdates, OrganisationUpdates,
@@ -121,9 +121,7 @@ urlpatterns = patterns(
         'akvo.rsr.views.donate_thanks',
         name='donate_thanks'),
 
-    url(r'^donate/500/$',
-        direct_to_template, {'template': 'rsr/donate_500.html'},
-        name='donate_500'),
+    url(r'^donate/500/$', TemplateView.as_view(template_name="rsr/donate_500.html"), name='donate_500'),
 
     url(r'^donate/paypal/ipn/$',
         csrf_exempt(paypal_ipn),
@@ -156,32 +154,17 @@ urlpatterns = patterns(
         name='global_organisation_map_json'),
 
     url(r'^maps/projects/all/$',
-        direct_to_template,
-        {'template': 'rsr/project/global_project_map.html'},
+        TemplateView.as_view(template_name='rsr/project/global_project_map.html'),
         name='global_project_map'),
 
     url(r'^maps/organisations/all/$',
-        direct_to_template,
-        {'template': 'rsr/organisation/global_organisation_map.html'},
+        TemplateView.as_view(template_name='rsr/organisation/global_organisation_map.html'),
         name='global_organisation_map'),
 
     # MyAkvo
-    url(r'^myakvo/mobile/$',
-        'akvo.rsr.views.myakvo_mobile',
-        name='myakvo_mobile'),
-
-    url(r'^myakvo/mobile/number/$',
-        'akvo.rsr.views.myakvo_mobile_number',
-        name='myakvo_mobile_number'),
-
-    url(r'^myakvo/mobile/cancel-reporter/(?P<reporter_id>\d+)/$',
-        'akvo.rsr.views.myakvo_cancel_reporter',
-        name='myakvo_cancel_reporter'),
-
     url(r'^myakvo/$',
         'akvo.rsr.views.update_user_profile',
         name='myakvo'),
-
 )
 
 # Non muli-lingual urls
@@ -240,20 +223,21 @@ urlpatterns += patterns(
             'post_reset_redirect': '/accounts/password/reset/done/'},
         name='rsr_password_reset'),
 
-    url(r'^accounts/password/reset/confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        auth_views.password_reset_confirm,
-        {'set_password_form': RSR_SetPasswordForm},
+    url(r'^accounts/password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        auth_views.password_reset_confirm, {
+            'set_password_form': RSR_SetPasswordForm,
+            'post_reset_redirect':'django.contrib.auth.views.password_reset_complete'
+        },
         name='auth_password_reset_confirm'),
 
     url(r'^accounts/update/complete/$',
-        direct_to_template, {'template': 'registration/update_complete.html'},
+        TemplateView.as_view(template_name='registration/update_complete.html'),
         name='registration_update_complete'),
 
     (r'^accounts/', include('registration.urls')),
 
     url(r'^error/access_denied/$',
-        direct_to_template,
-        {'template': 'rsr/error_access_denied.html'},
+        TemplateView.as_view(template_name='rsr/error_access_denied.html'),
         name='access_denied'),
 
     # RSS
@@ -269,10 +253,6 @@ urlpatterns += patterns(
         AllProjectUpdates(),
         name="rss_all_updates"),
 
-    # Phone
-    #(r'^rsr/mosms/$', 'akvo.rsr.views.sms_update', ),
-    #(r'^rsr/momms/$', 'akvo.rsr.views.mms_update', ),
-
     # Auth token for mobile apps
     url(r'^auth/token/$',
         'akvo.rsr.views.get_api_key',
@@ -281,8 +261,6 @@ urlpatterns += patterns(
     # Includes
     (r'^admin/', include(admin.site.urls)),
     (r'^counter/', include('django_counter.urls')),
-    (r'^notices/', include('notification.urls')),
-    (r'^gateway/', include('akvo.gateway.urls')),
     # TODO: proper versioning, appending v1/ for now to future-proof
     (r'^rest/v1/', include('akvo.rest.urls')),
     #(r'^i18n/', include('django.conf.urls.i18n')),
@@ -359,4 +337,5 @@ if 'rosetta' in settings.INSTALLED_APPS:
         url(r'^rosetta/', include('rosetta.urls')),
     )
 
-urlpatterns += staticfiles_urlpatterns()
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()

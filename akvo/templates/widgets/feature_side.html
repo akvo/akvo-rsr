@@ -1,13 +1,11 @@
 {% extends "widgets/base_widget.html" %}
 {% load i18n thumbnail rsr_tags rsr_filters humanize %}
-{% load url from future %}
-
+{% load compressed %}
 
 {% block title %}project@{{block.super}}{% endblock title %}
 
 {% block style %}
-	{% asset_bundle 'widget_project' %}
-	{# <link rel="stylesheet" href="{{MEDIA_URL}}widgets/project/css/screen.css" type="text/css" media="screen, projection" /> #}
+	{% compressed_css 'widget_project' %}
 	
 	<!--[if IE]>
 	<style type="text/css" media="screen">

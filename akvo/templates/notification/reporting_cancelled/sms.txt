@@ -1,2 +1,0 @@
-{% load i18n %}
-{% blocktrans with project.pk as project_pk and project.title as project_title %}SMS updates for project {{project_pk}} - {{project_title}} are no longer enabled.{% endblocktrans %}

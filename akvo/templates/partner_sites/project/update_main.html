@@ -1,6 +1,5 @@
 {% extends "partner_sites/project/base_project.html" %}
-{% load i18n rsr_tags webdesign thumbnail counter_tags oembed_tags markup %}
-{% load url from future %}
+{% load i18n rsr_tags webdesign thumbnail counter_tags oembed_tags markup_tags %}
 
 
 {% block title %}{{update.title}} - {% endblock title %}
@@ -54,7 +53,7 @@
       'facebook-share-dialog', 
       'width=626,height=436'); 
     return false;">
-<img src="{{MEDIA_URL}}akvo/img/social/fb_share.jpg">
+<img src="{{STATIC_URL}}rsr/main/img/social/fb_share.jpg">
 </a>
 </div>
 <!--
@@ -120,14 +119,6 @@
       	</div>
     	{% endif %}
     
-    
-    {% if update.text_location == 'B' %}
-      <p class="small grey">
-        {% autoescape off %}
-          {{ update.text|force_escape|urlize|markdown }}
-        {% endautoescape %}
-      </p>
-    {% endif %}	
     {% if update.video %}
       <div class="marg20">
         <div style="width:580px; max-width:580px; overflow:auto;">
@@ -151,13 +142,11 @@
         {% update_thumb update 580 435 %}
       </div>
     {% endif %}
-    {% if update.text_location == 'E' %}
-      <p class="small grey">
-        {% autoescape off %}
-          {{ update.text|force_escape|urlize|markdown }}
-        {% endautoescape %}
-      </p>
-    {% endif %}
+    <p class="small grey">
+      {% autoescape off %}
+        {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
+      {% endautoescape %}
+    </p>
     <hr style="margin-bottom:5px;" />
     <div class="txt_right">
       <a class="small" href=".">{% trans 'Permalink' %}</a>

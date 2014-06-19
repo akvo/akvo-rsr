@@ -1,11 +1,10 @@
 {% extends "admin/change_form.html" %}
 {% load i18n admin_modify %}
-{% load url from future %}
 
 
 {% block extrastyle %}
   {{block.super}}
-  <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}akvo/akvo_admin.css" />
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}rsr/admin/css/akvo_admin.css" />
 {% endblock %}
 
 {% block pretitle %}
@@ -35,6 +34,22 @@
               {% endif %}
           {% endif %}
       {% endblock object-tools %}
+      {% if original.sync_owner %}
+            <ul class="messagelist">
+                <li class="warning">
+                    {% blocktrans with org_name=original.sync_owner.name org_url=original.sync_owner.get_absolute_url %}
+                        The information about this project is automatically updated by <a href="{{org_url}}">{{ org_name }}</a>.
+                    {% endblocktrans %}
+                    {% if original.sync_owner.contact_email %}
+                        {% blocktrans with org_contact_email=original.sync_owner.contact_email %}
+                            Please ensure you inform <a href="mailto:{{ org_contact_email }}">{{ org_contact_email }}</a> of any changes to the data as they may otherwise be overwritten.
+                        {% endblocktrans %}
+                    {% else %}
+                        {% trans 'Please ensure you inform <a href="mailto:support@akvo.org">support@akvo.org</a> of any changes to the data as they may otherwise be overwritten.' %}
+                    {% endif %}
+                </li>
+            </ul>
+      {% endif %}
     <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">
         {% csrf_token %}
         {% block form_top %}{% endblock %}
