@@ -7,6 +7,7 @@
 from .benchmark import BenchmarkSerializer
 from .benchmark_name import BenchmarknameSerializer
 from .budget_item import BudgetItemSerializer
+from .budget_item_label import BudgetItemLabelSerializer
 from .category import CategorySerializer
 from .country import CountrySerializer
 from .focus_area import FocusAreaSerializer
@@ -24,11 +25,14 @@ from .project_comment import ProjectCommentSerializer
 from .project_location import ProjectLocationSerializer
 from .project_update import ProjectUpdateSerializer
 from .publishing_status import PublishingStatusSerializer
+from .user import UserSerializer
+from .user_profile import UserProfileSerializer
 
 __all__ = [
     'BenchmarkSerializer',
     'BenchmarknameSerializer',
     'BudgetItemSerializer',
+    'BudgetItemLabelSerializer',
     'CategorySerializer,'
     'CountrySerializer',
     'FocusAreaSerializer',
@@ -46,4 +50,6 @@ __all__ = [
     'ProjectLocationSerializer',
     'ProjectUpdateSerializer',
     'PublishingStatusSerializer',
+    'UserSerializer,'
+    'UserProfileSerializer',
 ]

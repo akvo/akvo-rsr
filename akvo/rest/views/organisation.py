@@ -6,17 +6,14 @@
 
 from django.conf import settings
 
-from rest_framework import viewsets
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.compat import etree, six
 from rest_framework.exceptions import ParseError
 from rest_framework.parsers import XMLParser
-from rest_framework.permissions import IsAuthenticated
 
 from akvo.rsr.models import Organisation, Country
 
-from ..models import TastyTokenAuthentication
 from ..serializers import OrganisationSerializer
+from ..viewsets import BaseRSRViewSet
 
 class AkvoOrganisationParser(XMLParser):
     def parse(self, stream, media_type=None, parser_context=None):
@@ -65,12 +62,10 @@ class AkvoOrganisationParser(XMLParser):
         )
 
 
-class OrganisationViewSet(viewsets.ModelViewSet):
+class OrganisationViewSet(BaseRSRViewSet):
     """
     API endpoint that allows organisations to be viewed or edited.
     """
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
     parser_classes = (AkvoOrganisationParser,)
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TastyTokenAuthentication)
-    permission_classes = (IsAuthenticated,)

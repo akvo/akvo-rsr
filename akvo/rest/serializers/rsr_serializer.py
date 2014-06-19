@@ -7,14 +7,13 @@
 
 from rest_framework import serializers
 
-from akvo.rsr.models import FocusArea
 
-from .rsr_serializer import BaseRSRSerializer
+# These classes are for easy switching between URL based foreign key representation and ID based
+# If we want both it might make sense to use a meta class to keep the underlying code DRY
+
+class BaseRSRSerializer(serializers.HyperlinkedModelSerializer):
+    pass
 
 
-class FocusAreaSerializer(BaseRSRSerializer):
-
-    class Meta:
-        model = FocusArea
-        fields = (
-        )
+# class BaseRSRSerializer(serializers.ModelSerializer):
+#     pass

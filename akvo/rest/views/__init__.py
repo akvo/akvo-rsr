@@ -8,6 +8,7 @@
 from .benchmark import BenchmarkViewSet
 from .benchmark_name import BenchmarknameViewSet
 from .budget_item import BudgetItemViewSet
+from .budget_item_label import BudgetItemLabelViewSet
 from .category import CategoryViewSet
 from .country import CountryViewSet
 from .focus_area import FocusAreaViewSet
@@ -25,11 +26,14 @@ from .project_comment import ProjectCommentViewSet
 from .project_location import ProjectLocationViewSet
 from .project_update import ProjectUpdateViewSet
 from .publishing_status import PublishingStatusViewSet
+from .user import UserViewSet
+from .user_profile import UserProfileViewSet
 
 __all__ = [
     'BenchmarkViewSet',
     'BenchmarknameViewSet',
     'BudgetItemViewSet',
+    'BudgetItemLabelViewSet',
     'CategoryViewSet,'
     'CountryViewSet',
     'FocusAreaViewSet',
@@ -47,4 +51,6 @@ __all__ = [
     'ProjectLocationViewSet',
     'ProjectUpdateViewSet',
     'PublishingStatusViewSet',
+    'UserViewSet',
+    'UserProfileViewSet,'
 ]

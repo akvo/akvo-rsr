@@ -5,12 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from rest_framework import serializers
-
 from akvo.rsr.models import Project
 
+from .rsr_serializer import BaseRSRSerializer
 
-class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+
+class ProjectSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Project

@@ -9,17 +9,12 @@ from rest_framework import serializers
 
 from akvo.rsr.models import BudgetItem
 
+from .rsr_serializer import BaseRSRSerializer
 
-class BudgetItemSerializer(serializers.HyperlinkedModelSerializer):
-    # project = ProjectSerializer(many=True, required=False)
-    # label = BudgetItemLabelSerializer(many=True, required=False)
+
+class BudgetItemSerializer(BaseRSRSerializer):
 
     class Meta:
         model = BudgetItem
         fields = (
-            # TODO: related fields
-            # 'project',
-            # 'label',
-            'other_extra',
-            'amount',
         )

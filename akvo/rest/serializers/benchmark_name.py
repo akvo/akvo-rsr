@@ -5,16 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from rest_framework import serializers
-
 from akvo.rsr.models import Benchmarkname
 
+from .rsr_serializer import BaseRSRSerializer
 
-class BenchmarknameSerializer(serializers.HyperlinkedModelSerializer):
+
+class BenchmarknameSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Benchmarkname
         fields = (
-            'name',
-            'order',
         )

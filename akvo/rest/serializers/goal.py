@@ -9,8 +9,10 @@ from rest_framework import serializers
 
 from akvo.rsr.models import Goal
 
+from .rsr_serializer import BaseRSRSerializer
 
-class GoalSerializer(serializers.HyperlinkedModelSerializer):
+
+class GoalSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Goal

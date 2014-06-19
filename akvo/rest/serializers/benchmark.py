@@ -5,21 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from rest_framework import serializers
-
 from akvo.rsr.models import Benchmark
 
+from .rsr_serializer import BaseRSRSerializer
 
-class BenchmarkSerializer(serializers.HyperlinkedModelSerializer):
-    # project = ProjectSerializer(many=True, required=False)
-    # category = CategorySerializer(many=True, required=False)
+
+class BenchmarkSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Benchmark
         fields = (
-            # TODO: related fields
-            # 'project',
-            # 'category',
-            'name',
-            'value',
         )

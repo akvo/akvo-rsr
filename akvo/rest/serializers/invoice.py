@@ -5,12 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from rest_framework import serializers
-
 from akvo.rsr.models import Invoice
 
+from .rsr_serializer import BaseRSRSerializer
 
-class InvoiceSerializer(serializers.HyperlinkedModelSerializer):
+
+class InvoiceSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Invoice

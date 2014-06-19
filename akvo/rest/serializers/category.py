@@ -9,8 +9,10 @@ from rest_framework import serializers
 
 from akvo.rsr.models import Category
 
+from .rsr_serializer import BaseRSRSerializer
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+
+class CategorySerializer(BaseRSRSerializer):
 
     class Meta:
         model = Category

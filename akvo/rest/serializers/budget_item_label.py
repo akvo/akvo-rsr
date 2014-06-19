@@ -9,8 +9,10 @@ from rest_framework import serializers
 
 from akvo.rsr.models import BudgetItemLabel
 
+from .rsr_serializer import BaseRSRSerializer
 
-class BudgetItemLabelSerializer(serializers.HyperlinkedModelSerializer):
+
+class BudgetItemLabelSerializer(BaseRSRSerializer):
 
     class Meta:
         model = BudgetItemLabel

@@ -14,6 +14,7 @@ router = routers.DefaultRouter()
 router.register(r'benchmark', views.BenchmarkViewSet)
 router.register(r'benchmark_name', views.BenchmarknameViewSet)
 router.register(r'budget_item', views.BudgetItemViewSet)
+router.register(r'budget_item_label', views.BudgetItemLabelViewSet)
 router.register(r'category', views.CategoryViewSet)
 router.register(r'country', views.CountryViewSet)
 router.register(r'focus_area', views.FocusAreaViewSet)
@@ -31,6 +32,8 @@ router.register(r'project_comment', views.ProjectCommentViewSet)
 router.register(r'project_location', views.ProjectLocationViewSet)
 router.register(r'project_update', views.ProjectUpdateViewSet)
 router.register(r'publishing_status', views.PublishingStatusViewSet)
+router.register(r'user', views.UserViewSet)
+router.register(r'user_profile', views.UserProfileViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browseable API.

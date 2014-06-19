@@ -5,19 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from rest_framework import serializers
-
 from akvo.rsr.models import InternalOrganisationID
 
+from .rsr_serializer import BaseRSRSerializer
 
-class InternalOrganisationIDSerializer(serializers.HyperlinkedModelSerializer):
-    recording_org = serializers.PrimaryKeyRelatedField()
-    referenced_org = serializers.PrimaryKeyRelatedField()
+
+class InternalOrganisationIDSerializer(BaseRSRSerializer):
 
     class Meta:
         model = InternalOrganisationID
         fields = (
-            'recording_org',
-            'referenced_org',
-            'identifier',
         )

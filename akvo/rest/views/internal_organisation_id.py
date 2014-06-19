@@ -5,23 +5,18 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from rest_framework import viewsets
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-
 from akvo.rsr.models import InternalOrganisationID
 
-from ..models import TastyTokenAuthentication
 from ..serializers import InternalOrganisationIDSerializer
+from ..viewsets import BaseRSRViewSet
 
-class InternalOrganisationIDViewSet(viewsets.ModelViewSet):
+
+class InternalOrganisationIDViewSet(BaseRSRViewSet):
     """
     API endpoint that allows internal organisation IDs to be viewed or edited.
     """
     serializer_class = InternalOrganisationIDSerializer
     queryset = InternalOrganisationID.objects.all()
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TastyTokenAuthentication)
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         """
