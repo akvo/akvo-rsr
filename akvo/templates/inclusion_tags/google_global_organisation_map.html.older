@@ -1,5 +1,4 @@
 {% load i18n thumbnail rsr_filters l10n %}
-{% load url from future %}
 
 
 <style type="text/css" media="screen">
