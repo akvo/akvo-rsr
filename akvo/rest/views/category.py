@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import Category
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import CategorySerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class CategoryViewSet(BaseRSRViewSet):

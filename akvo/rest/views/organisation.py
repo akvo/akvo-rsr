@@ -15,6 +15,7 @@ from akvo.rsr.models import Organisation, Country
 from ..serializers import OrganisationSerializer
 from ..viewsets import BaseRSRViewSet
 
+
 class AkvoOrganisationParser(XMLParser):
     def parse(self, stream, media_type=None, parser_context=None):
         assert etree, 'XMLParser requires defusedxml to be installed'

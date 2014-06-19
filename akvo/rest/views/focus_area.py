@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import FocusArea
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import FocusAreaSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class FocusAreaViewSet(BaseRSRViewSet):

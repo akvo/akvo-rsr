@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import ProjectComment
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import ProjectCommentSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class ProjectCommentViewSet(BaseRSRViewSet):

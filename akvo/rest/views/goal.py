@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import Goal
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import GoalSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class GoalViewSet(BaseRSRViewSet):

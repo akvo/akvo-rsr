@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import Link
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import LinkSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class LinkViewSet(BaseRSRViewSet):

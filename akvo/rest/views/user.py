@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import User
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import UserSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class UserViewSet(BaseRSRViewSet):

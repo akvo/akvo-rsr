@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import ProjectLocation
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import ProjectLocationSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class ProjectLocationViewSet(BaseRSRViewSet):

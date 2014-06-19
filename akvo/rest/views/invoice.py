@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import Invoice
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import InvoiceSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class InvoiceViewSet(BaseRSRViewSet):

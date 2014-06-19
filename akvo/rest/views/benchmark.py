@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import Benchmark
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import BenchmarkSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class BenchmarkViewSet(BaseRSRViewSet):

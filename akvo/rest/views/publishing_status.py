@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import PublishingStatus
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import PublishingStatusSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class PublishingStatusViewSet(BaseRSRViewSet):

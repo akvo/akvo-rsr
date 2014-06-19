@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import BudgetItemLabel
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import BudgetItemLabelSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class BudgetItemLabelViewSet(BaseRSRViewSet):

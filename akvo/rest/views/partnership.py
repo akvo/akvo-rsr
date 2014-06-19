@@ -7,8 +7,8 @@
 
 from akvo.rsr.models import Partnership
 
-from ..viewsets import BaseRSRViewSet
 from ..serializers import PartnershipSerializer
+from ..viewsets import BaseRSRViewSet
 
 
 class PartnershipViewSet(BaseRSRViewSet):
