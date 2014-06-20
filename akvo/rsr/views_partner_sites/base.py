@@ -148,9 +148,27 @@ class BaseProjectListView(BaseListView):
         return super(BaseProjectListView, self).render_to_response(context)
 
     def get_queryset(self):
-        projects = get_object_or_404(
-            Organisation, pk=self.request.organisation_id
-        ).published_projects().latest_update_fields().order_by('-id')
+        """here we check if the partner site should only show the projects belonging to the organisation and whether
+        it should filter based on specified keywords
+        """
+        partner_site = self.request.partner_site
+
+        if partner_site.partner_projects:
+            projects = get_object_or_404(Organisation, pk=self.request.organisation_id).published_projects()
+        else:
+            projects = Project.objects.all().published()
+
+        projects = projects.latest_update_fields().order_by('-id')
+
+        # Slow with a big set of projects
+        if not partner_site.keywords.strip() == '':
+            partner_site_keywords = partner_site.keywords.strip().split(' ')
+            for project in projects:
+                if not project.keywords.strip() == '':
+                    project_keywords = project.keywords.strip().split(' ')
+                    if len(list(set(partner_site_keywords) & set(project_keywords))) == 0:
+                        projects = projects.exclude(pk=project.pk)
+
         return ProjectFilterSet(
             self.request.GET.copy() or None,
             queryset=projects,
