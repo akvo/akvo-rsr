@@ -373,6 +373,11 @@ class PartnershipInline(admin.TabularInline):
         return formset
 
 
+class ProjectKeywordInline(admin.TabularInline):
+    model = get_model('rsr', 'ProjectKeyword')
+    extra = 0
+
+
 class ProjectLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectlocation')
     extra = 0
@@ -382,7 +387,7 @@ class ProjectLocationInline(admin.StackedInline):
 class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline,
+        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline, ProjectKeywordInline
     )
     save_as = True
 
@@ -440,6 +445,12 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 u'You can add links to your project such as Organisation Websites or Akvopedia articles containing relevant information to improve the information available to viewers of your project. You can also make notes on the project. These notes are only visible within this Admin so can be used to identify missing information, specific contact details or status changes that you do not want to be visible on your project page.'
             ),
             'fields': ('notes',),
+            }),
+        (_(u'Keywords'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Add keywords belonging to your project. These keywords must be existing already in Akvo RSR. If you want to use a keyword that does not exist in the system, please contact support@akvo.org.'
+            ),
+            'fields': (),
             }),
     )
 
@@ -811,8 +822,14 @@ class PaymentGatewaySelectorAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 
 
+class PartnerSiteKeywordInline(admin.TabularInline):
+    model = get_model('rsr', 'PartnerSiteKeyword')
+    extra = 0
+
+
 class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     form = PartnerSiteAdminForm
+    inlines = (PartnerSiteKeywordInline,)
     fieldsets = (
         # the 'notes' field is added in get_fieldsets() for eligible users
         (u'General', dict(fields=('organisation', 'enabled',))),
@@ -821,6 +838,12 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
+        (_(u'Projects'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Choose what projects will be shown on your partnersite. By selecting one or more keywords, only projects matching that keyword will be shown on the partnersite.'
+            ),
+            'fields': ('partner_projects',),
+            }),
     )
     list_display = '__unicode__', 'full_domain', 'enabled',
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
@@ -888,3 +911,9 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         return False
 
 admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
+
+class KeywordAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'Keyword')
+    list_display = ('label',)
+
+admin.site.register(get_model('rsr', 'Keyword'), KeywordAdmin)
