@@ -22,7 +22,7 @@ from django.utils.encoding import force_text
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 import os.path
 
-from akvo.rsr.forms import PartnerSiteAdminForm
+from akvo.rsr.forms import PartnerSiteAdminForm, ProjectAdminForm
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
 from akvo.utils import permissions, custom_get_or_create_country, RSR_LIMITED_CHANGE
 
@@ -381,6 +381,7 @@ class ProjectLocationInline(admin.StackedInline):
 
 class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     model = get_model('rsr', 'project')
+    form = ProjectAdminForm
     inlines = (
         GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline,
     )
@@ -391,7 +392,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'status', 'language', 'date_request_posted', 'date_complete', 'donate_button'),
+            'fields': ('title', 'subtitle', 'status', 'language', 'keywords', 'date_request_posted', 'date_complete', 'donate_button'),
             }),
         (_(u'Description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -816,6 +817,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         # the 'notes' field is added in get_fieldsets() for eligible users
         (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'Project filters', dict(fields=('partner_projects', 'keywords'))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text'))),
         (u'Style and content',
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),

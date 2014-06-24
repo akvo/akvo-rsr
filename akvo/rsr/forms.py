@@ -30,7 +30,7 @@ from registration.models import RegistrationProfile
 from mollie.ideal.utils import get_mollie_banklist
 from akvo import settings
 
-from akvo.rsr.models import UserProfile, Organisation, ProjectUpdate
+from akvo.rsr.models import UserProfile, Organisation, Project, PartnerSite
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -392,8 +392,20 @@ class ProjectUpdateForm(forms.ModelForm):
                 data = urlunsplit((scheme, netloc, path, query, fragment))
         return data
 
+class ProjectAdminForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        widgets = {
+            'keywords': forms.Textarea(attrs={'cols': 29, 'rows': 1}),
+        }
 
 class PartnerSiteAdminForm(forms.ModelForm):
+    class Meta:
+        model = PartnerSite
+        widgets = {
+            'keywords': forms.Textarea(attrs={'cols': 29, 'rows': 1}),
+        }
+
     def clean_hostname(self):
         hostname = slugify(self.cleaned_data['hostname'])
         if hostname == 'www':  # TODO: test for other reserved hostnames
