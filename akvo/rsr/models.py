@@ -6,9 +6,7 @@
 
 
 from datetime import date, datetime, timedelta
-from decimal import Decimal
 from textwrap import dedent
-from urlparse import urljoin
 
 import logging
 import math
@@ -16,7 +14,6 @@ import math
 logger = logging.getLogger('akvo.rsr')
 
 import oembed
-import re
 
 from django.conf import settings
 from django.db import models
@@ -98,11 +95,6 @@ class Country(models.Model):
     continent = ValidXMLCharField(_(u'continent name'), max_length=20, db_index=True,)
     continent_code = ValidXMLCharField(_(u'continent code'), max_length=2, db_index=True, choices=CONTINENTS)
 
-#    name = ValidXMLCharField(_(u'country name'), max_length=50,)
-#    iso_code = ValidXMLCharField(_(u'ISO 3166 code'), max_length=2,  choices=ISO_3166_COUNTRIES, null=True, blank=True,)
-#    continent = ValidXMLCharField(_(u'continent name'), max_length=20, choices=OLD_CONTINENTS, null=True, blank=True)
-#    continent_code = ValidXMLCharField(_(u'continent code'), max_length=2, choices=CONTINENTS, null=True, blank=True)
-
     def __unicode__(self):
         return self.name
 
@@ -119,39 +111,6 @@ class Country(models.Model):
         verbose_name = _(u'country')
         verbose_name_plural = _(u'countries')
         ordering = ['name']
-
-
-#class Location(models.Model):
-#    _help_text = _(u"Go to <a href='http://itouchmap.com/latlong.html' target='_blank'>iTouchMap.com</a> "
-#                   u'to get the decimal coordinates of your project.')
-#    latitude = LatitudeField(_(u'latitude'), default=0, help_text=_help_text)
-#    longitude = LongitudeField(_(u'longitude'), default=0, help_text=_help_text)
-#    city = ValidXMLCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
-#    state = ValidXMLCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
-#    country = models.ForeignKey(Country, verbose_name=_(u'country'))
-#    address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
-#    address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
-#    postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
-#    content_type = models.ForeignKey(ContentType)
-#    object_id = models.PositiveIntegerField()
-#    content_object = generic.GenericForeignKey('content_type', 'object_id')
-#    primary = models.BooleanField(_(u'primary location'), default=True)
-#
-#    def __unicode__(self):
-#        return u'%s, %s (%s)' % (self.city, self.state, self.country)
-#
-#    def save(self, *args, **kwargs):
-#        if self.primary:
-#            qs = Location.objects.filter(content_type=self.content_type,
-#                                         object_id=self.object_id, primary=True)
-#            if self.pk:
-#                qs = qs.exclude(pk=self.pk)
-#                if qs.count() != 0:
-#                    self.primary = False
-#        super(Location, self).save(*args, **kwargs)
-#
-#    class Meta:
-#        ordering = ['-primary',]
 
 
 class BaseLocation(models.Model):
@@ -376,26 +335,13 @@ class Organisation(TimestampsMixin, models.Model):
                     u'allowed to edit these projects.'),
         default=True
     )
-                                      
 
-    # Managers, one default, one custom
-    # objects = models.Manager()
     objects = QuerySetManager()
-    # projects = ProjectsQuerySetManager()
 
     @models.permalink
     def get_absolute_url(self):
         return ('organisation_main', (), {'org_id': self.pk})
 
-    # @property
-    # def primary_location(self):
-    #     '''Returns an organisations's primary location'''
-    #     qs = self.locations.filter(primary=True)
-    #     qs = qs.exclude(latitude=0, longitude=0)
-    #     if qs:
-    #         location = qs[0]
-    #         return location
-    #     return
 
     class QuerySet(QuerySet):
         def has_location(self):
@@ -634,9 +580,6 @@ class Benchmarkname(models.Model):
 
 
 class Category(models.Model):
-    #def image_path(instance, file_name):
-    #    return rsr_image_path(instance, file_name, 'db/category/%(file_name)s')
-
     name = ValidXMLCharField(
         _(u'category name'), max_length=50, db_index=True,
         help_text=_(u'Enter a name for the category. (50 characters).')
@@ -777,12 +720,6 @@ class Project(TimestampsMixin, models.Model):
     current_image_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
     goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
 
-    # goal_1 = ValidXMLCharField(_('goal 1'), blank=True, max_length=60, help_text=_('(60 characters)'))
-    # goal_2 = ValidXMLCharField(_('goal 2'), blank=True, max_length=60)
-    # goal_3 = ValidXMLCharField(_('goal 3'), blank=True, max_length=60)
-    # goal_4 = ValidXMLCharField(_('goal 4'), blank=True, max_length=60)
-    # goal_5 = ValidXMLCharField(_('goal 5'), blank=True, max_length=60)
-
     current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
     project_plan = ValidXMLTextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
     sustainability = ValidXMLTextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
@@ -913,15 +850,6 @@ class Project(TimestampsMixin, models.Model):
         counter = ViewCounter.objects.get_for_object(self)
         return counter.count or 0
 
-#    @property
-#    def primary_location(self, location=None):
-#        '''Return a project's primary location'''
-#        qs = self.locations.filter(primary=True)
-#        qs = qs.exclude(latitude=0, longitude=0)
-#        if qs:
-#            location = qs[0]
-#            return location
-#        return
 
     class QuerySet(QuerySet):
 
@@ -1149,27 +1077,6 @@ class Project(TimestampsMixin, models.Model):
     def external_links(self):
         return self.links.filter(kind='E')
 
-#    #shortcuts to funding/budget data for a single project
-#    def funding_pledged(self, organisation=None):
-#        return Project.objects.funding(organisation).get(pk=self.pk).pledged
-#
-#    def funding_donated(self):
-#        return Project.objects.funding().get(pk=self.pk).donated
-#
-#    def funding_total_given(self):
-#        # Decimal(str(result)) conversion is necessary
-#        # because SQLite doesn't handle decimals natively
-#        # See item 16 here: http://www.sqlite.org/faq.html
-#        # MySQL and PostgreSQL are not affected by this limitation
-#        result = self.funding_pledged() + self.funding_donated()
-#        decimal_result = Decimal(str(result))
-#        return decimal_result
-#
-#    def funding_still_needed(self):
-#        result =  Project.objects.funding().get(pk=self.pk).funds_needed
-#        decimal_result = Decimal(str(result))
-#        return decimal_result
-
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
 
@@ -1326,9 +1233,6 @@ class PublishingStatus(models.Model):
         verbose_name = _(u'publishing status')
         verbose_name_plural = _(u'publishing statuses')
         ordering = ('-status', 'project')
-
-#    def project_info(self):
-#        return "%d: %s" % (self.project.pk, self.project.title)
 
 
 class Link(models.Model):
@@ -1512,8 +1416,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     video_caption = ValidXMLCharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     video_credit = ValidXMLCharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
-    # time = models.DateTimeField(_(u'time'), db_index=True, auto_now_add=True)
-    # time_last_updated = models.DateTimeField(_(u'time last updated'), db_index=True, auto_now=True)
     user_agent = ValidXMLCharField(_(u'user agent'), blank=True, max_length=200, default='')
     uuid = ValidXMLCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
         help_text=_(u'Universally unique ID set by creating user agent'))
@@ -1532,11 +1434,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         except:
             return value
     img.allow_tags = True
-
-    # def get_is_featured(self):
-    #     return self.featured
-    # get_is_featured.boolean = True #make pretty icons in the admin list view
-    # get_is_featured.short_description = _(u'update is featured')
 
     def get_video_thumbnail_url(self, url=''):
         if self.video:
@@ -1979,4 +1876,3 @@ post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
 
 post_save.connect(create_api_key, sender=UserProfile)
-#m2m_changed.connect(manage_workflow_roles, sender=User.groups.through)
