@@ -840,7 +840,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
         (_(u'Projects'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Choose what projects will be shown on your partnersite. By selecting one or more keywords, only projects matching that keyword will be shown on the partnersite.'
+                u'Choose what projects will be shown on your partnersite. By selecting one or more keywords below, only projects matching that keyword will be shown on the partnersite.'
             ),
             'fields': ('partner_projects',),
             }),

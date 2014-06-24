@@ -89,13 +89,21 @@ class ProjectListView(BaseWidgetView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
-
         order_by = self.request.GET.get('order_by', 'title')
-        organisation = (
-            get_object_or_404(Organisation, pk=self.request.organisation_id))
+        organisation = get_object_or_404(Organisation, pk=self.request.organisation_id)
 
-        projects = organisation.published_projects(). \
-            status_not_archived().status_not_cancelled()
+        partner_site = self.request.partner_site
+
+        # Check if only projects of the partner should be shown or all projects
+        if partner_site.partner_projects:
+            projects = organisation.published_projects()
+        else:
+            projects = Project.objects.all().published()
+
+        # Check if keywords have been specified for the partner site and filter projects based on keywords if so
+        if partner_site.keywords.all():
+            projects = projects.filter(keywords__in=partner_site.keywords.all())
+
         sql = (
             'SELECT MAX(created_at) '
             'FROM rsr_projectupdate '
@@ -125,8 +133,22 @@ class ProjectMapView(TemplateView):
         context['height'] = self.request.GET.get('height', '300')
         context['width'] = self.request.GET.get('width', '600')
         context['state'] = self.request.GET.get('state', 'dynamic')
-        context['organisation'] = (
-            get_object_or_404(Organisation, pk=self.request.organisation_id))
+
+        organisation = get_object_or_404(Organisation, pk=self.request.organisation_id)
+        partner_site = self.request.partner_site
+
+        # Check if only projects of the partner should be shown or all projects
+        if partner_site.partner_projects:
+            projects = organisation.published_projects()
+        else:
+            projects = Project.objects.all().published()
+
+        # Check if keywords have been specified for the partner site and filter projects based on keywords if so
+        if partner_site.keywords.all():
+            projects = projects.filter(keywords__in=partner_site.keywords.all())
+
+        context['organisation'] = organisation
+        context['projects'] = projects
 
         # To handle old free form coloring via the bgcolor query parameter
         # the new way should be to use the "style" parameter with
