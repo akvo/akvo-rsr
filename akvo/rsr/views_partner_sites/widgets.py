@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
 
-from akvo.rsr.views_partner_sites.base import BaseView
+from akvo.rsr.views_partner_sites.base import BaseView, PartnerSitesMixin
 from akvo.rsr.models import Organisation, Project
 
 
@@ -29,7 +29,7 @@ __all__ = [
 ]
 
 
-class BaseWidgetView(TemplateView):
+class BaseWidgetView(PartnerSitesMixin, TemplateView):
     """Setup a common base widget"""
     def get_context_data(self, **kwargs):
         context = super(BaseWidgetView, self).get_context_data(**kwargs)
@@ -91,18 +91,7 @@ class ProjectListView(BaseWidgetView):
         context = super(ProjectListView, self).get_context_data(**kwargs)
         order_by = self.request.GET.get('order_by', 'title')
         organisation = get_object_or_404(Organisation, pk=self.request.organisation_id)
-
-        partner_site = self.request.partner_site
-
-        # Check if only projects of the partner should be shown or all projects
-        if partner_site.partner_projects:
-            projects = organisation.published_projects()
-        else:
-            projects = Project.objects.all().published()
-
-        # Check if keywords have been specified for the partner site and filter projects based on keywords if so
-        if partner_site.keywords.all():
-            projects = projects.filter(keywords__in=partner_site.keywords.all())
+        projects = context['projects']
 
         sql = (
             'SELECT MAX(created_at) '
@@ -125,7 +114,7 @@ class ProjectListView(BaseWidgetView):
         return context
 
 
-class ProjectMapView(TemplateView):
+class ProjectMapView(BaseWidgetView):
     template_name = 'partner_sites/widgets/projects_map.html'
 
     def get_context_data(self, **kwargs):
@@ -133,22 +122,6 @@ class ProjectMapView(TemplateView):
         context['height'] = self.request.GET.get('height', '300')
         context['width'] = self.request.GET.get('width', '600')
         context['state'] = self.request.GET.get('state', 'dynamic')
-
-        organisation = get_object_or_404(Organisation, pk=self.request.organisation_id)
-        partner_site = self.request.partner_site
-
-        # Check if only projects of the partner should be shown or all projects
-        if partner_site.partner_projects:
-            projects = organisation.published_projects()
-        else:
-            projects = Project.objects.all().published()
-
-        # Check if keywords have been specified for the partner site and filter projects based on keywords if so
-        if partner_site.keywords.all():
-            projects = projects.filter(keywords__in=partner_site.keywords.all())
-
-        context['organisation'] = organisation
-        context['projects'] = projects
 
         # To handle old free form coloring via the bgcolor query parameter
         # the new way should be to use the "style" parameter with
