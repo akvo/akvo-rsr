@@ -1026,6 +1026,19 @@ class Project(TimestampsMixin, models.Model):
             return ''
     show_current_image.allow_tags = True
 
+    def show_keywords(self):
+        if len(self.keywords.all()) > 0:
+            keyword_str = '<ul>'
+            for key in self.keywords.all():
+                keyword_str += '<li>%s</li>' % key.label
+            keyword_str += '</ul>'
+            return keyword_str
+        else:
+            return 'None'
+    show_keywords.short_description = 'Keywords'
+    show_keywords.allow_tags = True
+    show_keywords.admin_order_field = 'keywords'
+
     def show_map(self):
         try:
             return '<img src="%s" />' % (self.map.url,)
@@ -1687,6 +1700,19 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     def custom_logo_path(instance, filename):
         return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
+
+    def show_keywords(self):
+        if len(self.keywords.all()) > 0:
+            keyword_str = '<ul>'
+            for key in self.keywords.all():
+                keyword_str += '<li>%s</li>' % key.label
+            keyword_str += '</ul>'
+            return keyword_str
+        else:
+            return 'None'
+    show_keywords.short_description = 'Keywords'
+    show_keywords.allow_tags = True
+    show_keywords.admin_order_field = 'keywords'
 
     organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.')

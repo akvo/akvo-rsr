@@ -449,9 +449,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             }),
     )
     filter_horizontal = ('keywords',)
-    list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
+    list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published', 'show_keywords')
     search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
-    list_filter = ('currency', 'status', )
+    list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
 
@@ -835,7 +835,8 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             }),
     )
     filter_horizontal = ('keywords',)
-    list_display = '__unicode__', 'full_domain', 'enabled',
+    list_display = ('__unicode__', 'full_domain', 'enabled', 'show_keywords')
+    list_filter = ('enabled', 'keywords')
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at',)
 
