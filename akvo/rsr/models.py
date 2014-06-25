@@ -154,27 +154,6 @@ class ProjectLocation(BaseLocation):
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
 
 
-class ProjectKeyword(models.Model):
-    keyword = models.ForeignKey('Keyword', null=True, related_name='keywordprojects')
-    keyword_target = models.ForeignKey('Project', null=True, related_name='projectkeywords')
-
-    def __unicode__(self):
-        return self.keyword.label
-
-    class Meta:
-        ordering = ['-id',]
-
-
-class PartnerSiteKeyword(models.Model):
-    keyword = models.ForeignKey('Keyword', null=True, related_name='keywordpartnersites')
-    keyword_target = models.ForeignKey('PartnerSite', null=True, related_name='partnersitekeywords')
-
-    def __unicode__(self):
-        return self.keyword.label
-
-    class Meta:
-        ordering = ['-id',]
-
 
 class PartnerType(models.Model):
     id = ValidXMLCharField(max_length=8, primary_key=True, unique=True)
@@ -730,7 +709,7 @@ class Project(TimestampsMixin, models.Model):
     language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = ValidXMLTextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
-    keywords = models.ManyToManyField(Keyword, verbose_name=_(u'keywords'), through=ProjectKeyword, related_name='projects',)
+    keywords = models.ManyToManyField(Keyword, verbose_name=_(u'keywords'), related_name='projects', blank=True)
 
     # budget
     currency = ValidXMLCharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
@@ -1802,7 +1781,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     )
     partner_projects = models.BooleanField(_(u'Show only projects of partner'), default=True,
                                            help_text=_(u'Uncheck to list all projects on this partnersite.'))
-    keywords = models.ManyToManyField(Keyword, verbose_name=_(u'keywords'), through=PartnerSiteKeyword, related_name='partnersites',)
+    keywords = models.ManyToManyField(Keyword, verbose_name=_(u'keywords'), related_name='partnersites', blank=True)
 
 
     def __unicode__(self):

@@ -95,11 +95,6 @@
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}
-              {% if forloop.counter == 10 %}
-                  {% with inline_admin_formset=inline_admin_formsets.6 %}
-                      {% include inline_admin_formset.opts.template %}
-                  {% endwith %}
-              {% endif %}
           {% endfor %}
 
           {% block after_field_sets %}{% endblock %}

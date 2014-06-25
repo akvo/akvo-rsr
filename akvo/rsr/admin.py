@@ -373,11 +373,6 @@ class PartnershipInline(admin.TabularInline):
         return formset
 
 
-class ProjectKeywordInline(admin.TabularInline):
-    model = get_model('rsr', 'ProjectKeyword')
-    extra = 0
-
-
 class ProjectLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectlocation')
     extra = 0
@@ -387,7 +382,7 @@ class ProjectLocationInline(admin.StackedInline):
 class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline, ProjectKeywordInline
+        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline
     )
     save_as = True
 
@@ -450,10 +445,10 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Add keywords belonging to your project. These keywords must be existing already in Akvo RSR. If you want to use a keyword that does not exist in the system, please contact support@akvo.org.'
             ),
-            'fields': (),
+            'fields': ('keywords',),
             }),
     )
-
+    filter_horizontal = ('keywords',)
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
     search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
     list_filter = ('currency', 'status', )
@@ -822,14 +817,8 @@ class PaymentGatewaySelectorAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySelectorAdmin)
 
 
-class PartnerSiteKeywordInline(admin.TabularInline):
-    model = get_model('rsr', 'PartnerSiteKeyword')
-    extra = 0
-
-
 class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     form = PartnerSiteAdminForm
-    inlines = (PartnerSiteKeywordInline,)
     fieldsets = (
         # the 'notes' field is added in get_fieldsets() for eligible users
         (u'General', dict(fields=('organisation', 'enabled',))),
@@ -842,9 +831,10 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Choose what projects will be shown on your partnersite. By selecting one or more keywords below, only projects matching that keyword will be shown on the partnersite.'
             ),
-            'fields': ('partner_projects',),
+            'fields': ('partner_projects', 'keywords'),
             }),
     )
+    filter_horizontal = ('keywords',)
     list_display = '__unicode__', 'full_domain', 'enabled',
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at',)

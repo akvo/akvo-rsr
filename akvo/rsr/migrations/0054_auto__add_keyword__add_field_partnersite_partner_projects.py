@@ -9,54 +9,48 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding model 'Keyword'
-        db.create_table('rsr_keyword', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('label', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=30, unique=True, db_index=True))
+        db.create_table(u'rsr_keyword', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('label', self.gf('akvo.rsr.fields.ValidXMLCharField')(unique=True, max_length=30, db_index=True)),
         ))
-        db.send_create_signal('rsr', ['Keyword'])
+        db.send_create_signal(u'rsr', ['Keyword'])
 
-        # Adding model 'ProjectKeyword'
-        db.create_table('rsr_projectkeyword', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('keyword', self.gf('django.db.models.fields.related.ForeignKey')(related_name='targets',
-                                                                              null=True,
-                                                                              to=orm['rsr.Keyword'])),
-            ('keyword_target', self.gf('django.db.models.fields.related.ForeignKey')(related_name='keywords',
-                                                                                     null=True,
-                                                                                     to=orm['rsr.Project']))
+        # Adding M2M table for field keywords on 'Project'
+        m2m_table_name = db.shorten_name(u'rsr_project_keywords')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('project', models.ForeignKey(orm[u'rsr.project'], null=False)),
+            ('keyword', models.ForeignKey(orm[u'rsr.keyword'], null=False))
         ))
-        db.send_create_signal('rsr', ['ProjectKeyword'])
-
-        # Adding model 'PartnerSiteKeyword'
-        db.create_table('rsr_partnersitekeyword', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('keyword', self.gf('django.db.models.fields.related.ForeignKey')(related_name='targets',
-                                                                              null=True,
-                                                                              to=orm['rsr.Keyword'])),
-            ('keyword_target', self.gf('django.db.models.fields.related.ForeignKey')(related_name='keywords',
-                                                                                     null=True,
-                                                                                     to=orm['rsr.PartnerSite']))
-        ))
-        db.send_create_signal('rsr', ['PartnerSiteKeyword'])
+        db.create_unique(m2m_table_name, ['project_id', 'keyword_id'])
 
         # Adding field 'PartnerSite.partner_projects'
-        db.add_column('rsr_partnersite', 'partner_projects',
+        db.add_column(u'rsr_partnersite', 'partner_projects',
                       self.gf('django.db.models.fields.BooleanField')(default=True),
                       keep_default=False)
+
+        # Adding M2M table for field keywords on 'PartnerSite'
+        m2m_table_name = db.shorten_name(u'rsr_partnersite_keywords')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('partnersite', models.ForeignKey(orm[u'rsr.partnersite'], null=False)),
+            ('keyword', models.ForeignKey(orm[u'rsr.keyword'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['partnersite_id', 'keyword_id'])
 
 
     def backwards(self, orm):
         # Deleting model 'Keyword'
-        db.delete_table('rsr_keyword')
+        db.delete_table(u'rsr_keyword')
 
-        # Deleting model 'ProjectKeyword'
-        db.delete_table('rsr_projectkeyword')
-
-        # Deleting model 'PartnerSiteKeyword'
-        db.delete_table('rsr_partnersitekeyword')
+        # Removing M2M table for field keywords on 'Project'
+        db.delete_table(db.shorten_name(u'rsr_project_keywords'))
 
         # Deleting field 'PartnerSite.partner_projects'
-        db.delete_column('rsr_partnersite', 'partner_projects')
+        db.delete_column(u'rsr_partnersite', 'partner_projects')
+
+        # Removing M2M table for field keywords on 'PartnerSite'
+        db.delete_table(db.shorten_name(u'rsr_partnersite_keywords'))
 
 
     models = {
@@ -78,7 +72,7 @@ class Migration(SchemaMigration):
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
+            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -86,7 +80,7 @@ class Migration(SchemaMigration):
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
+            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         u'contenttypes.contenttype': {
@@ -101,7 +95,7 @@ class Migration(SchemaMigration):
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rsr.Category']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rsr.Benchmarkname']"}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'benchmarks'", 'to': u"orm['rsr.Project']"}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'benchmarks'", 'to': u"orm['rsr.Project']"}),
             'value': ('django.db.models.fields.IntegerField', [], {})
         },
         u'rsr.benchmarkname': {
@@ -182,9 +176,9 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
         u'rsr.keyword': {
-            'Meta': {'ordering': "['label',]", 'object_name': 'Keyword'},
+            'Meta': {'ordering': "('label',)", 'object_name': 'Keyword'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30', 'db_index': 'True'})
+            'label': ('akvo.rsr.fields.ValidXMLCharField', [], {'unique': 'True', 'max_length': '30', 'db_index': 'True'})
         },
         u'rsr.link': {
             'Meta': {'object_name': 'Link'},
@@ -288,19 +282,13 @@ class Migration(SchemaMigration):
             'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'hostname': ('akvo.rsr.fields.ValidXMLCharField', [], {'unique': 'True', 'max_length': '50'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'keywords': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'partnersites'", 'through': u"orm['rsr.PartnerSiteKeyword']", 'to': u"orm['rsr.Keyword']"}),
+            'keywords': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'partnersites'", 'blank': 'True', 'to': u"orm['rsr.Keyword']"}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rsr.Organisation']"}),
             'partner_projects': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'twitter_button': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'ui_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        },
-        u'rsr.partnersitekeyword': {
-            'Meta': {'ordering': "('-id')", 'object_name': 'PartnerSiteKeyword'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'keyword': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'targets'", 'null': 'True', 'to': u"orm['rsr.Keyword']"}),
-            'keyword_target': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'partnersitekeywords'", 'null': 'True', 'to': u"orm['rsr.PartnerSite']"})
         },
         u'rsr.partnertype': {
             'Meta': {'ordering': "('label',)", 'object_name': 'PartnerType'},
@@ -342,7 +330,7 @@ class Migration(SchemaMigration):
             'funds_needed': ('django.db.models.fields.DecimalField', [], {'decimal_places': '2', 'default': '0', 'max_digits': '10', 'blank': 'True', 'null': 'True', 'db_index': 'True'}),
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'keywords': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'through': u"orm['rsr.ProjectKeyword']", 'to': u"orm['rsr.Keyword']"}),
+            'keywords': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'projects'", 'blank': 'True', 'to': u"orm['rsr.Keyword']"}),
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '2'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
@@ -365,12 +353,6 @@ class Migration(SchemaMigration):
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comments'", 'to': u"orm['rsr.Project']"}),
             'time': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
-        },
-        u'rsr.projectkeyword': {
-            'Meta': {'ordering': "('-id')", 'object_name': 'ProjectKeyword'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'keyword': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'targets'", 'null': 'True', 'to': u"orm['rsr.Keyword']"}),
-            'keyword_target': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'projectkeywords'", 'null': 'True', 'to': u"orm['rsr.Project']"})
         },
         u'rsr.projectlocation': {
             'Meta': {'ordering': "['-primary']", 'object_name': 'ProjectLocation'},
@@ -418,7 +400,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rsr.Organisation']"}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True'})
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'userprofile'", 'unique': 'True', 'to': u"orm['auth.User']"})
         }
     }
 
