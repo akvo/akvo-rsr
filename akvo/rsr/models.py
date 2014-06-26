@@ -50,7 +50,7 @@ from akvo.utils import (
     PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_STALE
 )
 from akvo.utils import (
-    groups_from_user, rsr_image_path, to_gmt
+    groups_from_user, rsr_image_path, to_gmt, rsr_show_keywords
 )
 from akvo.rsr.signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
@@ -1027,14 +1027,7 @@ class Project(TimestampsMixin, models.Model):
     show_current_image.allow_tags = True
 
     def show_keywords(self):
-        if len(self.keywords.all()) > 0:
-            keyword_str = '<ul>'
-            for key in self.keywords.all():
-                keyword_str += '<li>%s</li>' % key.label
-            keyword_str += '</ul>'
-            return keyword_str
-        else:
-            return 'None'
+        return rsr_show_keywords(self)
     show_keywords.short_description = 'Keywords'
     show_keywords.allow_tags = True
     show_keywords.admin_order_field = 'keywords'
@@ -1702,14 +1695,7 @@ class PartnerSite(TimestampsMixin, models.Model):
         return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
 
     def show_keywords(self):
-        if len(self.keywords.all()) > 0:
-            keyword_str = '<ul>'
-            for key in self.keywords.all():
-                keyword_str += '<li>%s</li>' % key.label
-            keyword_str += '</ul>'
-            return keyword_str
-        else:
-            return 'None'
+        return rsr_show_keywords(self)
     show_keywords.short_description = 'Keywords'
     show_keywords.allow_tags = True
     show_keywords.admin_order_field = 'keywords'
