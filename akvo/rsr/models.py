@@ -124,44 +124,34 @@ class BaseLocation(models.Model):
     address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
     address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
     postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
-    primary = models.BooleanField(_(u'primary location'), db_index=True, default=False)
 
     def delete(self, *args, **kwargs):
-        location_target = self.location_target
-        other_locations = [loc for loc in location_target.locations.exclude(pk__exact=self.pk)]
-
-        if self.primary and len(other_locations) > 0:
-            primary_loc = other_locations.pop(0)
-            primary_loc.primary = True
-            primary_loc.save()
-            location_target.locations.exclude(pk__exact=primary_loc.pk).update(primary=False)
-            location_target.primary_location = primary_loc
-            location_target.save()
-
         super(BaseLocation, self).delete(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
+        # If location_target has more locations, set the first as primary location
         location_target = self.location_target
-        primaries = [loc for loc in location_target.locations.exclude(pk__exact=self.pk) if loc.primary]
+        other_locations = location_target.locations.all()
+        if len(other_locations) > 0:
+            location_target.primary_location = other_locations.first()
+            location_target.save()
 
-        if self.primary:
-            primary_loc = self
-        else:
-            if len(primaries) == 0:
-                self.primary = True
-                primary_loc = self
-            elif len(primaries) > 0:
-                primary_loc = primaries.pop(0)
-
-        location_target.locations.exclude(pk__exact=primary_loc.pk).update(primary=False)
-        location_target.primary_location = primary_loc
-        location_target.save()
-
+    def save(self, *args, **kwargs):
         super(BaseLocation, self).save(*args, **kwargs)
+
+        # Set location as primary location if it is the first location
+        location_target = self.location_target
+
+        try:
+            if location_target.primary_location.pk > self.pk:
+                location_target.primary_location = self
+                location_target.save()
+        except:
+            location_target.primary_location = self
+            location_target.save()
 
     class Meta:
         abstract = True
-        ordering = ['-primary', ]
+        ordering = ['id', ]
 
 
 class OrganisationLocation(BaseLocation):

@@ -75,7 +75,6 @@ admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 class OrganisationLocationInline(admin.StackedInline):
     model = get_model('rsr', 'organisationlocation')
     extra = 0
-    exclude = ['primary',]
 
 
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
@@ -357,7 +356,6 @@ class PartnershipInline(admin.TabularInline):
 class ProjectLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectlocation')
     extra = 0
-    exclude = ['primary',]
 
 
 class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
