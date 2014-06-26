@@ -59,6 +59,8 @@ CORDAID_UPLOAD_CSV_FILE = os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_UPLOAD_CS
 CORDAID_PROJECT_IMAGES_DIR =  os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_PROJECT_IMAGES_SUBDIR)
 CORDAID_LOGOS_DIR =  os.path.join(me.CORDAID_ROOT_DIR, me.CORDAID_LOGOS_SUBDIR)
 
+AKVO_NS = os.path.join(me.CORDAID_ROOT_DIR, me.AKVO_NS)
+
 def outsys(txt):
     sys.stdout.write(txt)
     sys.stdout.flush()
