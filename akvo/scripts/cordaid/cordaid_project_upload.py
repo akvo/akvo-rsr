@@ -19,7 +19,11 @@ from django.http import HttpResponse
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
-from akvo.scripts.cordaid import log, API_VERSION, CORDAID_IATI_ACTIVITIES_XML, CORDAID_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION, ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT, CORDAID_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS
+from akvo.scripts.cordaid import (
+    log, API_VERSION, CORDAID_IATI_ACTIVITIES_XML, CORDAID_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION,
+    ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT,
+    CORDAID_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS, AKVO_NS
+)
 from requester import Requester
 
 XML_LANG = "{http://www.w3.org/XML/1998/namespace}lang"
@@ -279,7 +283,8 @@ def upload_activities(argv):
     if user:
         with open(CORDAID_IATI_ACTIVITIES_XML, 'r') as f:
             root = etree.fromstring(f.read())
-            AKVO_NS = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
+            document_akvo_ns = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
+            assert document_akvo_ns == AKVO_NS, "Akvo name space is incorrect in the IATI XML"
             activities = root.findall('iati-activity')
             activity_count = len(activities)
             for i in range(activity_count):
