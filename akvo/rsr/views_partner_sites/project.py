@@ -181,11 +181,7 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
     """Edit update on partner sites"""
 
     def get_context_data(self, **kwargs):
-        try:
-            update_id = self.kwargs['update_id']
-        except KeyError:
-            raise Http404
-
+        update_id = self.kwargs.get('update_id', None)
         update = get_object_or_404(ProjectUpdate, pk=update_id)
         self.object = update
         context = super(ProjectUpdateEditView, self).get_context_data(**kwargs)
