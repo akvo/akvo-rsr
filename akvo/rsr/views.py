@@ -31,10 +31,8 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
 from django.forms import ModelForm
-from django.http import (
-        HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed,
-        HttpResponsePermanentRedirect, Http404
-)
+from django.http import (HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponsePermanentRedirect,
+                         Http404)
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import Context, RequestContext, loader
 from django.utils.translation import ugettext_lazy as _, get_language
@@ -50,7 +48,6 @@ import json
 
 from mollie.ideal.utils import query_mollie, get_mollie_fee
 from paypal.standard.forms import PayPalPaymentsForm
-# from notification.models import Notice
 
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
@@ -310,7 +307,7 @@ def orglist(request, org_type='all'):
     if org_type == 'field':
         orgs = orgs.fieldpartners()
     elif org_type == 'support':
-        orgs = orgs.supportpartners()
+        orgs = orgs.supportpartners_with_projects()
     elif org_type == 'funding':
         orgs = orgs.fundingpartners()
     elif org_type == 'sponsor':
@@ -809,11 +806,6 @@ def projectmain(request, project, draft=False, can_add_update=False):
     comments: the three latest comments
     site_section: for use in the main nav hilighting
     '''
-    #project = get_object_or_404(Project, pk=project_id)
-#    related = Project.objects.filter(
-#        categories__in=Category.objects.filter(projects=project)
-#    ).distinct().exclude(pk=project.pk).published()
-#    related = get_random_from_qs(related, 2)
     all_updates = project.project_updates.all().order_by('-created_at')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-created_at')
     comments = project.comments.all().order_by('-time')[:3]
@@ -922,33 +914,6 @@ def getwidget(request, project, draft=False, can_add_update=False):
             'site_section': 'projects',
             'draft': draft,
             }, context_instance=RequestContext(request))
-
-
-# def fundingbarimg(request):
-#     '''
-#     create an image for use in the funding bar graphic
-#     '''
-#     import Image, ImageDraw
-
-#     size = (100, 20)  # size of the image to create
-#     im = Image.new('RGB', size, '#fff')  # create the image
-#     draw = ImageDraw.Draw(im)  # create a drawing object that is
-#                                 # used to draw on the new image
-#     # Now, we'll do the drawing:
-#     pct = request.GET.get('pct', 0)
-#     if pct:
-#         box = [(0,0),(min(int(pct), 100),20)]
-#         draw.rectangle(box, fill='#99ff99')
-
-#     del draw # I'm done drawing so I don't need this anymore
-
-#     # We need an HttpResponse object with the correct mimetype
-#     response = HttpResponse(mimetype="image/png")
-#     # now, we tell the image to save as a PNG to the
-#     # provided file-like object
-#     im.save(response, 'PNG')
-
-#     return response # and we're done!
 
 
 def templatedev(request, template_name):

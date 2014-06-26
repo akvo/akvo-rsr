@@ -26,7 +26,7 @@ from akvo.api.fields import ConditionalFullToManyField
 from akvo.api.serializers import IATISerializer
 
 from akvo.rsr.models import (
-    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark
+    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark, Keyword
 )
 from akvo.utils import RSR_LIMITED_CHANGE
 
@@ -105,6 +105,7 @@ class IATIProjectResource(ModelResource):
             ProjectLocation.objects.filter(location_target=bundle.obj).delete()
             Partnership.objects.filter(project=bundle.obj).delete()
             Benchmark.objects.filter(project=bundle.obj).delete()
+            Keyword.objects.filter(project=bundle.obj).delete()
             bundle.obj.categories.clear()
 
         self.authorized_update_detail(self.get_object_list(bundle.request), bundle)
@@ -239,6 +240,7 @@ class ProjectResource(ConditionalFullResource):
     budget_items = ConditionalFullToManyField('akvo.api.resources.BudgetItemResource', 'budget_items')
     categories = ConditionalFullToManyField('akvo.api.resources.CategoryResource', 'categories')
     goals = ConditionalFullToManyField('akvo.api.resources.GoalResource', 'goals')
+    keywords = ConditionalFullToManyField('akvo.api.resources.KeywordResource', 'keywords')
     invoices = ConditionalFullToManyField('akvo.api.resources.InvoiceResource', 'invoices')
     links = ConditionalFullToManyField('akvo.api.resources.LinkResource', 'links')
     locations = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
@@ -249,7 +251,7 @@ class ProjectResource(ConditionalFullResource):
 
     class Meta:
         allowed_methods         = ['get']
-        authentication          = MultiAuthentication(ApiKeyAuthentication(), Authentication(),)
+        authentication          = ConditionalApiKeyAuthentication(methods_requiring_key=['POST', 'PUT'])
         queryset                = Project.objects.all() #Note: this is modified in get_object_list()
         resource_name           = 'project'
         include_absolute_url    = True

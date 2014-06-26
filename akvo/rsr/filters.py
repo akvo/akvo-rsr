@@ -30,24 +30,16 @@ class ProjectFilterSet(django_filters.FilterSet):
 
     def filter_by_project_title(qs, what):
         if what:
-            if qs.filter_and:
-                bits = what.split(' ')
-                query = Q(title__icontains=bits[0])
-                query = query&Q(subtitle__icontains=bits[0])
-                if len(bits) > 1:
-                    for bit in bits[1:]:
-                        query = query&Q(title__icontains=bit)
-                        query = query&Q(subtitle__icontains=bit)
+            bits = what.strip().split(' ')
+            if len(bits) == 1 and bits[0].isdigit():
+                query = Q(id__exact=int(bits[0]))
                 return qs.filter(query)
-            else:
-                bits = what.split(' ')
-                query = Q(title__icontains=bits[0])
-                query = query|Q(subtitle__icontains=bits[0])
-                if len(bits) > 1:
-                    for bit in bits[1:]:
-                        query = query|Q(title__icontains=bit)
-                        query = query|Q(subtitle__icontains=bit)
-                return qs.filter(query)
+            query = Q(title__icontains=bits[0]) | Q(subtitle__icontains=bits[0])
+            if len(bits) > 1:
+                for bit in bits[1:]:
+                    query2 = Q(title__icontains=bit) | Q(subtitle__icontains=bit)
+                    query = query & query2
+            return qs.filter(query)
         return qs
 
     def filter_by_status(qs, what):
