@@ -131,9 +131,13 @@ class BaseLocation(models.Model):
         # If location_target has more locations, set the first as primary location
         location_target = self.location_target
         other_locations = location_target.locations.all()
+
         if len(other_locations) > 0:
             location_target.primary_location = other_locations.first()
-            location_target.save()
+        else:
+            location_target.primary_location = None
+
+        location_target.save()
 
     def save(self, *args, **kwargs):
         super(BaseLocation, self).save(*args, **kwargs)
@@ -141,11 +145,7 @@ class BaseLocation(models.Model):
         # Set location as primary location if it is the first location
         location_target = self.location_target
 
-        try:
-            if location_target.primary_location.pk > self.pk:
-                location_target.primary_location = self
-                location_target.save()
-        except:
+        if location_target.primary_location is None or location_target.primary_location.pk > self.pk:
             location_target.primary_location = self
             location_target.save()
 
