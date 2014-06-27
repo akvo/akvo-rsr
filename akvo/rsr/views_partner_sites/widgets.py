@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
 
-from akvo.rsr.views_partner_sites.base import BaseView
+from akvo.rsr.views_partner_sites.base import BaseView, PartnerSitesMixin
 from akvo.rsr.models import Organisation, Project
 
 
@@ -29,7 +29,7 @@ __all__ = [
 ]
 
 
-class BaseWidgetView(TemplateView):
+class BaseWidgetView(PartnerSitesMixin, TemplateView):
     """Setup a common base widget"""
     def get_context_data(self, **kwargs):
         context = super(BaseWidgetView, self).get_context_data(**kwargs)
@@ -89,13 +89,10 @@ class ProjectListView(BaseWidgetView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
-
         order_by = self.request.GET.get('order_by', 'title')
-        organisation = (
-            get_object_or_404(Organisation, pk=self.request.organisation_id))
+        organisation = get_object_or_404(Organisation, pk=self.request.organisation_id)
+        projects = context['projects']
 
-        projects = organisation.published_projects(). \
-            status_not_archived().status_not_cancelled()
         sql = (
             'SELECT MAX(created_at) '
             'FROM rsr_projectupdate '
@@ -117,7 +114,7 @@ class ProjectListView(BaseWidgetView):
         return context
 
 
-class ProjectMapView(TemplateView):
+class ProjectMapView(BaseWidgetView):
     template_name = 'partner_sites/widgets/projects_map.html'
 
     def get_context_data(self, **kwargs):
@@ -125,8 +122,6 @@ class ProjectMapView(TemplateView):
         context['height'] = self.request.GET.get('height', '300')
         context['width'] = self.request.GET.get('width', '600')
         context['state'] = self.request.GET.get('state', 'dynamic')
-        context['organisation'] = (
-            get_object_or_404(Organisation, pk=self.request.organisation_id))
 
         # To handle old free form coloring via the bgcolor query parameter
         # the new way should be to use the "style" parameter with

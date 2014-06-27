@@ -464,3 +464,13 @@ def right_now_in_akvo():
         'projects_budget_millions': round(projects.budget_sum() / 100000) / 10.0,
     }
 
+
+def rsr_show_keywords(instance):
+    if len(instance.keywords.all()) > 0:
+        keyword_str = '<ul>'
+        for key in instance.keywords.all():
+            keyword_str += '<li>%s</li>' % key.label
+        keyword_str += '</ul>'
+        return keyword_str
+    else:
+        return 'None'

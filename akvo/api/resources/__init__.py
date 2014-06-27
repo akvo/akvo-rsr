@@ -12,6 +12,7 @@ from .country import CountryResource
 from .focus_area import FocusAreaResource
 from .goal import GoalResource, IATIGoalResource
 from .invoice import InvoiceResource
+from .keyword import KeywordResource
 from .link import LinkResource
 from .location import (
     IATIProjectLocationResource, OrganisationLocationResource, OrganisationMapLocationResource,
@@ -44,6 +45,7 @@ __all__ = [
     'IATIProjectLocationResource',
     'IATIProjectResource',
     'InvoiceResource',
+    'KeywordResource',
     'LinkResource',
     'OrganisationResource',
     'OrganisationLocationResource',

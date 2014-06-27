@@ -121,7 +121,7 @@ New Features
 
 ### Country options on project list
 
-We have added a feature to only populate the countries dropdown on AkvoSites with a list of countries where there are projects present. This allows the country selection to always return a project and provides a shorter list to select from.
+We have added a feature to only populate the countries dropdown on Akvo Pages with a list of countries where there are projects present. This allows the country selection to always return a project and provides a shorter list to select from.
 
 Github issue [#176](https://github.com/akvo/akvo-rsr/issues/176)
 

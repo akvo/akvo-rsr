@@ -26,7 +26,7 @@ from akvo.api.fields import ConditionalFullToManyField
 from akvo.api.serializers import IATISerializer
 
 from akvo.rsr.models import (
-    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark
+    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark, Keyword
 )
 from akvo.utils import RSR_LIMITED_CHANGE
 
@@ -105,6 +105,7 @@ class IATIProjectResource(ModelResource):
             ProjectLocation.objects.filter(location_target=bundle.obj).delete()
             Partnership.objects.filter(project=bundle.obj).delete()
             Benchmark.objects.filter(project=bundle.obj).delete()
+            Keyword.objects.filter(project=bundle.obj).delete()
             bundle.obj.categories.clear()
 
         self.authorized_update_detail(self.get_object_list(bundle.request), bundle)
@@ -239,6 +240,7 @@ class ProjectResource(ConditionalFullResource):
     budget_items = ConditionalFullToManyField('akvo.api.resources.BudgetItemResource', 'budget_items')
     categories = ConditionalFullToManyField('akvo.api.resources.CategoryResource', 'categories')
     goals = ConditionalFullToManyField('akvo.api.resources.GoalResource', 'goals')
+    keywords = ConditionalFullToManyField('akvo.api.resources.KeywordResource', 'keywords')
     invoices = ConditionalFullToManyField('akvo.api.resources.InvoiceResource', 'invoices')
     links = ConditionalFullToManyField('akvo.api.resources.LinkResource', 'links')
     locations = ConditionalFullToManyField('akvo.api.resources.ProjectLocationResource', 'locations')
@@ -302,6 +304,10 @@ class ProjectResource(ConditionalFullResource):
         """ add thumbnails inline info for Project.current_image
         """
         bundle = super(ProjectResource, self).dehydrate(bundle)
+        if isinstance(bundle.data['created_at'], bool):
+            bundle.data['created_at'] = None
+        if isinstance(bundle.data['last_modified_at'], bool):
+            bundle.data['last_modified_at'] = None
         bundle.data['current_image'] = {
             'original': bundle.data['current_image'],
             'thumbnails': get_extra_thumbnails(bundle.obj.current_image),
