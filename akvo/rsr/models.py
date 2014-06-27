@@ -132,7 +132,7 @@ class BaseLocation(models.Model):
         location_target = self.location_target
         other_locations = location_target.locations.all()
 
-        if len(other_locations) > 0:
+        if other_locations.count() > 0:
             location_target.primary_location = other_locations.first()
         else:
             location_target.primary_location = None
