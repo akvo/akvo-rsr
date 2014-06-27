@@ -124,24 +124,34 @@ class BaseLocation(models.Model):
     address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
     address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
     postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
-    primary = models.BooleanField(_(u'primary location'), db_index=True, default=True)
 
-#    def __unicode__(self):
-#        return u'%s, %s (%s)' % (self.city, self.state, self.country)
+    def delete(self, *args, **kwargs):
+        super(BaseLocation, self).delete(*args, **kwargs)
+
+        # If location_target has more locations, set the first as primary location
+        location_target = self.location_target
+        other_locations = location_target.locations.all()
+
+        if other_locations.count() > 0:
+            location_target.primary_location = other_locations.first()
+        else:
+            location_target.primary_location = None
+
+        location_target.save()
 
     def save(self, *args, **kwargs):
         super(BaseLocation, self).save(*args, **kwargs)
-        if self.primary:
-            location_target = self.location_target
-            # this is probably redundant since the admin form saving should handle this
-            # but if we ever save a location from other code it's an extra safety
-            location_target.locations.exclude(pk__exact=self.pk).update(primary=False)
+
+        # Set location as primary location if it is the first location
+        location_target = self.location_target
+
+        if location_target.primary_location is None or location_target.primary_location.pk > self.pk:
             location_target.primary_location = self
             location_target.save()
 
     class Meta:
         abstract = True
-        ordering = ['-primary', ]
+        ordering = ['id', ]
 
 
 class OrganisationLocation(BaseLocation):
