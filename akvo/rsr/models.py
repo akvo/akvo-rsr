@@ -1155,6 +1155,7 @@ class Benchmark(models.Model):
 
 
 class BudgetItemLabel(models.Model):
+    TOTAL_BUDGET_LABEL_ID = 14
     label = ValidXMLCharField(_(u'label'), max_length=20, unique=True, db_index=True)
 
     def __unicode__(self):
