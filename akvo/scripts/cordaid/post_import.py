@@ -113,7 +113,7 @@ def fix_funding(budgets):
             old_budgets.delete()
             BudgetItem.objects.create(
                 project=project,
-                label = BudgetItemLabel.objects.get(pk=13), #total budget label
+                label = BudgetItemLabel.objects.get(pk=BudgetItemLabel.TOTAL_BUDGET_LABEL_ID),
                 amount = total_budget
             )
             log(
