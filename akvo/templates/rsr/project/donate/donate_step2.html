@@ -282,7 +282,7 @@
     <div style="margin-left:300px; padding-top:20px;">
       <p style="margin-bottom:20px;" class="grey">{% trans 'You will be able to review and confirm your donation on the next page.' %}</p>
       <div style="float:left; height:24px; padding-top:5px; padding-right:30px; padding-left:100px;">
-        <a class="small" href="{% url 'project_main' project.id %}">{% trans 'Cancel' %}</a>
+        <a class="small" href="{{ request.session.cancel_url }}">{% trans 'Cancel' %}</a>
       </div>
       <a class="aqua awesome" href="javascript:document.donate_form.submit();"><span>{% trans 'Next...' %}</span></a>
     </div>
