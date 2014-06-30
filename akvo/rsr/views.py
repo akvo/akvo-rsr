@@ -1084,7 +1084,7 @@ def donate(request, p, engine):
                 invoice.test = True
             if request.session.get("donation_return_url", False):
                 return_url = urljoin(request.session["donation_return_url"], reverse("donate_thanks"))
-                del request.session["donation_return_url"]
+                # del request.session["donation_return_url"]
             else:
                 return_url = urljoin(request.domain_url, reverse("donate_thanks"))
             if engine == "ideal":
@@ -1159,7 +1159,12 @@ def void_invoice(request, invoice_id, action=None):
                             project_id=invoice.project.id,
                             engine=invoice.engine)
         elif action == "cancel":
-            return redirect("project_main", project_id=invoice.project.id)
+            if request.session.get("donation_return_url", False):
+                return redirect(urljoin(request.session["donation_return_url"],
+                                        reverse("project_main",
+                                                kwargs={'project_id': invoice.project.id})))
+            else:
+                return redirect("project_main", project_id=invoice.project.id)
     return redirect("project_list", slug="all")
 
 
