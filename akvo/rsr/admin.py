@@ -331,6 +331,9 @@ class RSR_PartnershipInlineForm(forms.ModelForm):
         partner_types = get_model('rsr', 'PartnerType').objects.all()
         partner_types_dict = {partner_type.id: partner_type.label for partner_type in partner_types}
         allowed = [partner_type.pk for partner_type in self.cleaned_data['organisation'].partner_types.all()]
+        # always allow field and funding partnerships
+        allowed.extend([u'field', u'funding'])
+        allowed = list(set(allowed))
         data = self.cleaned_data['partner_type']
         if data not in allowed:
             raise forms.ValidationError("{org} is not allowed to be a {partner_type_label}".format(
