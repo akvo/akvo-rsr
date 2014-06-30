@@ -7,6 +7,120 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.3.9 Yam
+---
+
+Wednesday 2nd July 2014, adriancollier
+
+New and Noteworthy
+---
+
+### Akvo Pages by Keyword
+
+We have implemented a big change to the way that Akvo Pages can collect a set of projects. With the addition of Keywords that can be added to projects within the RSR Admin, it will now be possible to create Akvo Pages that utilise one or more of these keywords to select the projects that are being visualised.
+
+This work will be expanded to also build out more API and other resources that will help our partners to use this functionality in a flexible manner.
+
+Github issue [#620](https://github.com/akvo/akvo-rsr/issues/620)
+
+### Updated search functionality
+
+We have improved the search functionality for searching that now used an AND function on search terms that narrows the results to help you find projects or organisations that match all of the terms entered instead of only 1 of them.
+We have also added the project ID to the search options, so that you can now search for a project directly if you know its identifier.
+
+Github issue [#441](https://github.com/akvo/akvo-rsr/issues/441)
+
+### Target Group Visualisation
+
+After including the Target Group field in the project model, we were able to accept data being populated in this field from a file import or directly in the Admin, however this information was not being visualised. The templates have now been updated to include this content within the Background tab on the project page.
+
+Github issue [#255](https://github.com/akvo/akvo-rsr/issues/255)
+
+### Akvo Manager user permissions for Organisation
+
+We have updated the user permissions for the Akvo Manager role so that they are able to update or change the organisation that a user belongs to. This is extrmeely useful in the event that a user mistakenly registers under an incorrect organisation.
+
+Github issue [#278](https://github.com/akvo/akvo-rsr/issues/278)
+
+### Bug in Editing updates on Akvo Pages
+
+We discovered a bug that prevented updates from being edited when viewed on a partnersite. It should be possible that within the first 20 minutes of posting an update the user can edit the content to fix any small issues with the content. This was generating an error which has now been resolved.
+
+Github issue [#647](https://github.com/akvo/akvo-rsr/issues/647)
+
+### Change in Geolocation Provider for the Admin
+
+We were previously using http://itouchmap.com to link partners to a map to generate their location information. After a suggestion from the Akvo Partner Team we have now swapped this link with http://mygeoposition.com/ that provides a more simple workflow for populating this information.
+
+Github issue [#649](https://github.com/akvo/akvo-rsr/issues/649)
+
+Features
+---
+
+### Removed Primary Location
+
+After some consideration and user feedback we have simplified the locations models by removing the Primary Location information from the system. It is now implicit that the first project entered into the Admin is the primary location for the project. This prevents many issues that were arising using the Admin project form.
+
+Github issue [#141](https://github.com/akvo/akvo-rsr/issues/141)
+
+### Tidying the Support Partner List
+
+We have made a change to the [support partner list](http://rsr.akvo.org//organisations/support/) that now means only partners with published projects are being displayed here.
+
+Github issue [#204](https://github.com/akvo/akvo-rsr/issues/204)
+
+### API Resource Documentation
+
+We have created [some documentation](https://github.com/akvo/akvo-rsr/blob/develop/docs/RSR%20Features/API/API-Resources.md) that provides information about the Custom API Resources we have created. This will assist developers who are wishing to onboard with the Read API by providing them with a list of the existing resources available in a consumable manner.
+
+Github issue [#510](https://github.com/akvo/akvo-rsr/issues/510)
+
+### Organisation Account Types
+
+We have added some new account types for the Organisation account model that will enable Akvo to tag organisations by their activty and contractual status within RSR to help with accounting and reporting purposes.
+
+Github issue [#608](https://github.com/akvo/akvo-rsr/issues/608)
+
+Bug Fixes
+---
+
+### Multiple languages in XML Import
+
+If an incoming IATI XML contained 2 tags with the same information in 2 different languages then the scripts were simply importing the last in the list. This has now been updated to actually consider the language tags that are specified in the file so that the correct contents is imported.
+
+Github issue [#252](https://github.com/akvo/akvo-rsr/issues/252)
+
+### Post Import Budget Error
+
+As part of the XML Import functionality there is the functionality to create the budget items included within the file. Due to a recent change in the Budget Item Labels, this process was not working correctly, so we have now made a change to fix this issue.
+
+Github issue [#652](https://github.com/akvo/akvo-rsr/issues/652)
+
+### NULL value returned for ``last_modified_at``
+
+We fixed a small bug in the API that was returning an incorrect boolean value when querying on the ``last_modified_date`` field where there was no value set for the row being returned.
+
+Github issue [#477](https://github.com/akvo/akvo-rsr/issues/477)
+
+
+Under the hood
+---
+
+### Removing old deployment scripts
+
+With the introduction of newer deployment scripts we have done some work to clear out the old ones that are no longer used.
+
+Github issue [#362](https://github.com/akvo/akvo-rsr/issues/362)
+
+### Move akvo.rsr.utils to akvo.utils
+
+We have refactored the code within akvo.rsr.utils to be compiled into akvo.utils.
+
+Github issue [#434](https://github.com/akvo/akvo-rsr/issues/434)
+
+
+--------
+
 Akvo RSR ver 2.3.8 Xylocarp
 ---
 
