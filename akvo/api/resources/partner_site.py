@@ -23,21 +23,27 @@ class PartnerSiteResource(ConditionalFullResource):
 
     class Meta:
         allowed_methods = ['get']
-        queryset        = PartnerSite.objects.all()
-        resource_name   = 'partner_site'
-        fields          = [
-            'id', 'organisation', 'hostname', 'cname', 'enabled', 'ui_translation',
-            'google_translation', 'partner_projects', 'keywords',
+        queryset = PartnerSite.objects.all()
+        resource_name = 'partner_site'
+        fields = [
+            'id',
+            'organisation',
+            'hostname',
+            'cname',
+            'enabled',
+            'ui_translation',
+            'google_translation',
+            'partner_projects',
+            'keywords',
         ]
-
 
         filtering = dict(
             hostname = ALL,
-            cname=ALL,
-            enabled=ALL,
+            cname = ALL,
+            enabled = ALL,
             ui_translation = ALL,
             google_translation = ALL,
             partner_projects = ALL,
             keywords = ALL_WITH_RELATIONS,
-            organisation=ALL_WITH_RELATIONS,
+            organisation = ALL_WITH_RELATIONS,
         )

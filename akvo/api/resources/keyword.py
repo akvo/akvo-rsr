@@ -13,13 +13,15 @@ from .resources import ConditionalFullResource
 
 
 class KeywordResource(ConditionalFullResource):
+
     class Meta:
         allowed_methods = ['get']
-        queryset        = Keyword.objects.all()
-        resource_name   = 'keyword'
-        fields          = ['id', 'label',]
-
-
+        queryset = Keyword.objects.all()
+        resource_name = 'keyword'
+        fields = [
+            'id',
+            'label',
+        ]
         filtering = dict(
-            label=ALL,
+            label = ALL,
         )
