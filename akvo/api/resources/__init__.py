@@ -20,6 +20,7 @@ from .location import (
 )
 from .map import OrganisationMapResource, ProjectMapResource
 from .organisation import OrganisationResource
+from .partner_site import PartnerSiteResource
 from .partnership import PartnershipResource, IATIPartnershipResource
 from .project import ProjectResource, IATIProjectResource
 from .project_comment import ProjectCommentResource
@@ -51,6 +52,7 @@ __all__ = [
     'OrganisationLocationResource',
     'OrganisationMapLocationResource',
     'OrganisationMapResource',
+    'PartnerSiteResource',
     'PartnershipResource',
     'ProjectResource',
     'ProjectCommentResource',
