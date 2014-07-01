@@ -72,29 +72,9 @@ class CountryAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
 
-class RSR_LocationFormFormSet(forms.models.BaseInlineFormSet):
-    def clean(self):
-        if self.forms:
-            # keep track of how many non-deleted forms we have and how many primary locations are ticked
-            form_count = primary_count = 0
-            for form in self.forms:
-                if form.is_valid() and not form.cleaned_data.get('DELETE', False):
-                    form_count += 1
-                    try:
-                        primary_count += 1 if form.cleaned_data['primary'] else 0
-                    except:
-                        pass
-            # if we have any forms left there must be exactly 1 primary location
-            if form_count > 0 and not primary_count == 1:
-                self._non_form_errors = ErrorList([
-                    _(u'The project must have exactly one filled in primary location if any locations at all are to be included')
-                ])
-
-
 class OrganisationLocationInline(admin.StackedInline):
     model = get_model('rsr', 'organisationlocation')
     extra = 0
-    formset = RSR_LocationFormFormSet
 
 
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
@@ -376,13 +356,12 @@ class PartnershipInline(admin.TabularInline):
 class ProjectLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectlocation')
     extra = 0
-    formset = RSR_LocationFormFormSet
 
 
 class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline,
+        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline
     )
     save_as = True
 
@@ -441,11 +420,17 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             ),
             'fields': ('notes',),
             }),
+        (_(u'Keywords'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Add keywords belonging to your project. These keywords must be existing already in Akvo RSR. If you want to use a keyword that does not exist in the system, please contact support@akvo.org.'
+            ),
+            'fields': ('keywords',),
+            }),
     )
-
-    list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',)
+    filter_horizontal = ('keywords',)
+    list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published', 'show_keywords')
     search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
-    list_filter = ('currency', 'status', )
+    list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
 
@@ -821,8 +806,16 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
          dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
+        (_(u'Projects'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Choose what projects will be shown on your partnersite. By selecting one or more keywords below, only projects matching that keyword will be shown on the partnersite.'
+            ),
+            'fields': ('partner_projects', 'keywords'),
+            }),
     )
-    list_display = '__unicode__', 'full_domain', 'enabled',
+    filter_horizontal = ('keywords',)
+    list_display = ('__unicode__', 'full_domain', 'enabled', 'show_keywords')
+    list_filter = ('enabled', 'keywords')
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at',)
 
@@ -888,3 +881,9 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         return False
 
 admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
+
+class KeywordAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'Keyword')
+    list_display = ('label',)
+
+admin.site.register(get_model('rsr', 'Keyword'), KeywordAdmin)

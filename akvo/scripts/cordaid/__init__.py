@@ -21,6 +21,8 @@ API_VERSION = 'v1'
 me = sys.modules[__name__]
 
 cordaid_settings = dict(
+    AKVO_NS='{http://akvo.org/iati-activities}',
+
     CORDAID_ROOT_DIR = '/var/tmp/cordaid',
     CORDAID_PROJECT_IMAGES_SUBDIR = 'project_images',
     CORDAID_LOGOS_SUBDIR = 'logos',
