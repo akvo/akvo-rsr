@@ -13,7 +13,7 @@ import math
 
 logger = logging.getLogger('akvo.rsr')
 
-import oembed
+import urllib, httplib2, json
 
 from django.conf import settings
 from django.db import models
@@ -1431,28 +1431,38 @@ class ProjectUpdate(TimestampsMixin, models.Model):
             return value
     img.allow_tags = True
 
-    def get_video_thumbnail_url(self, url=''):
+    def get_video_info(self, response=''):
+        """Get info regarding video using the embed.ly API"""
         if self.video:
             try:
-                data = oembed.site.embed(self.video).get_data()
-                url = data.get('thumbnail_url', '')
+                video = self.video
+                if "youtube.com" in video:
+                    video += "&rel=0"
+
+                data = urllib.urlencode({"key": settings.EMBEDLY_API, "url": video, "maxwidth": 580})
+                url = settings.EMBEDLY_URL + data
+
+                h = httplib2.Http(".cache")
+                resp, content = h.request(url, "GET")
+
+                if int(resp['status']) < 400:
+                    return json.loads(content)
             except:
                 pass
+        return response
+
+    def get_video_thumbnail_url(self, url=''):
+        """Render thumbnail for the given video URL, using the embed.ly API"""
+        content = self.get_video_info()
+        if content:
+            url = content['thumbnail_url']
         return url
 
     def get_video_oembed(self, html=''):
-        """Render OEmbed HTML for the given video URL.
-        This is to workaround a but between Django 1.4 and djangoembed template tags.
-        A full solution is required."""
-        if self.video:
-            try:
-                data = oembed.site.embed(self.video).get_data()
-                html = data.get('html', '')
-                # Add 'rel=0' to the video link for not showing related Youtube videos
-                if "youtube" in html:
-                    html = html.replace("feature=oembed", "feature=oembed&rel=0")
-            except:
-                pass
+        """Render HTML for the given video URL, using the embed.ly API"""
+        content = self.get_video_info()
+        if content:
+            html = content['html']
         return mark_safe(html)
 
     def edit_window_has_expired(self):
