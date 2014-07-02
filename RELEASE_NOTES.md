@@ -32,13 +32,13 @@ Github issue [#441](https://github.com/akvo/akvo-rsr/issues/441)
 
 ### Target Group Visualisation
 
-After including the Target Group field in the project model, we were able to accept data being populated in this field from a file import or directly in the Admin, however this information was not being visualised. The templates have now been updated to include this content within the Background tab on the project page.
+After including the Target Group field in the project model, we were able to accept data being populated in this field from a file import or directly in the Admin, however this information was not being visualised. The templates have now been updated to include this content within the Project Plan tab on the project page.
 
 Github issue [#255](https://github.com/akvo/akvo-rsr/issues/255)
 
 ### Akvo Manager user permissions for Organisation
 
-We have updated the user permissions for the Akvo Manager role so that they are able to update or change the organisation that a user belongs to. This is extrmeely useful in the event that a user mistakenly registers under an incorrect organisation.
+We have updated the user permissions for the Akvo Manager role so that they are able to update or change the organisation that a user belongs to. This is extremely useful in the event that a user mistakenly registers under an incorrect organisation.
 
 Github issue [#278](https://github.com/akvo/akvo-rsr/issues/278)
 
