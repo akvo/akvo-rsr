@@ -73,7 +73,7 @@ class PartnerSitesMixin(object):
         if partner_site.keywords.all():
             projects = projects.filter(keywords__in=partner_site.keywords.all())
 
-        return projects
+        return projects.latest_update_fields().order_by('-id')
 
 
 class BaseView(DebugViewMixin, PartnerSitesMixin, TemplateView):
