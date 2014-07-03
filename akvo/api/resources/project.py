@@ -272,6 +272,7 @@ class ProjectResource(ConditionalFullResource):
             invoices            = ALL_WITH_RELATIONS,
             links               = ALL_WITH_RELATIONS,
             locations           = ALL_WITH_RELATIONS,
+            keywords            = ALL_WITH_RELATIONS,
             partnerships        = ALL_WITH_RELATIONS,
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,

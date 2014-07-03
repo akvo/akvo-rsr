@@ -5,14 +5,23 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from tastypie.constants import ALL
+
 from akvo.rsr.models import Keyword
 
 from .resources import ConditionalFullResource
 
 
 class KeywordResource(ConditionalFullResource):
+
     class Meta:
         allowed_methods = ['get']
-        queryset        = Keyword.objects.all()
-        resource_name   = 'keyword'
-        fields          = ['id', 'label',]
+        queryset = Keyword.objects.all()
+        resource_name = 'keyword'
+        fields = [
+            'id',
+            'label',
+        ]
+        filtering = dict(
+            label = ALL,
+        )
