@@ -1227,7 +1227,12 @@ def data_overview(request):
     orgs = Organisation.objects.all()
 
     projects_by_country = [['Country', 'No. of Projects']]
-    country_projects = groupby(projects.filter(primary_location__isnull=False), get_country)
+    # Group projects by country.
+    # The exclude filter is there to remove projects with broken data, i.e. a primary_loction that is set,
+    # but has no corresponding ProjectLocation object
+    country_projects = groupby(projects.filter(
+        primary_location__isnull=False).exclude(primary_location__latitude__isnull=True), get_country
+    )
     projects_by_country.extend([[country_project[0], len(list(country_project[1]))] for country_project in country_projects])
     country_lookup = dict([(country.name, country.pk) for country in Country.objects.all()])
 
