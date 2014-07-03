@@ -954,7 +954,7 @@ def select_project_widget(request, org_id, template=''):
 
 def project_widget(request, template='feature-side', project_id=None):
     if template.replace('-', '_') not in ALLOWED_WIDGET_TEMPLATES:
-        return Http404
+        raise Http404
     if project_id:
         p = get_object_or_404(Project, pk=project_id)
     else:
@@ -977,7 +977,7 @@ def project_widget(request, template='feature-side', project_id=None):
 
 def project_list_widget(request, template='project-list', org_id=0):
     if template.replace('-', '_') not in ALLOWED_WIDGET_TEMPLATES:
-        return Http404
+        raise Http404
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'rsr.akvo.org')
