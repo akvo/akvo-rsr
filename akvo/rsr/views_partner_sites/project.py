@@ -181,24 +181,20 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
     """Edit update on partner sites"""
 
     def get_context_data(self, **kwargs):
+        update_id = self.kwargs.get('update_id', None)
+        update = get_object_or_404(ProjectUpdate, pk=update_id)
+        self.object = update
         context = super(ProjectUpdateEditView, self).get_context_data(**kwargs)
-        user_is_authorized = context['project'].connected_to_user(
-            self.request.user)
+
+        user_is_authorized = context['project'].connected_to_user(self.request.user)
         if not user_is_authorized:
             raise PermissionDenied
-        update = None
-        try:
-            update_id = self.kwargs['update_id']
-        except KeyError:
-            update_id = None
 
-        if update_id:
-            update = get_object_or_404(ProjectUpdate, pk=update_id)
-            self.object = update
-            context['update'] = update
-            expired = update.edit_window_has_expired()
-            if not (self.request.user == update.user and not expired):
-                raise PermissionDenied
+        context['update'] = update
+        
+        expired = update.edit_window_has_expired()
+        if not (self.request.user == update.user and not expired):
+            raise PermissionDenied
 
         context['form'] = self.form_class(instance=update)
         return context

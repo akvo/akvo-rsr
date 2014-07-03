@@ -56,7 +56,24 @@ class PartnerSitesMixin(object):
         context['stylesheet'] = self.request.partner_site.stylesheet
         context['akvoapp_root_url'] = self.request.akvoapp_root_url
         context['domain_url'] = self.request.domain_url
+        context['projects'] = self.get_queryset()
+
         return context
+
+    def get_queryset(self):
+        partner_site = self.request.partner_site
+
+        # Check if only projects of the partner should be shown or all projects
+        if partner_site.partner_projects:
+            projects = get_object_or_404(Organisation, pk=self.request.organisation_id).published_projects()
+        else:
+            projects = Project.objects.all().published()
+
+        # Check if keywords have been specified for the partner site and filter projects based on keywords if so
+        if partner_site.keywords.all():
+            projects = projects.filter(keywords__in=partner_site.keywords.all())
+
+        return projects.latest_update_fields().order_by('-id')
 
 
 class BaseView(DebugViewMixin, PartnerSitesMixin, TemplateView):
@@ -148,9 +165,8 @@ class BaseProjectListView(BaseListView):
         return super(BaseProjectListView, self).render_to_response(context)
 
     def get_queryset(self):
-        projects = get_object_or_404(
-            Organisation, pk=self.request.organisation_id
-        ).published_projects().latest_update_fields().order_by('-id')
+        projects = super(BaseProjectListView, self).get_queryset()
+
         return ProjectFilterSet(
             self.request.GET.copy() or None,
             queryset=projects,
