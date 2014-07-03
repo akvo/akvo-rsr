@@ -52,6 +52,10 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
+ALLOWED_WIDGET_TEMPLATES = ['project_narrow', 'cobranded_narrow', 'cobranded_short', 'cobranded_banner',
+                            'cobranded_leader', 'feature_side', 'project_updates', 'project_contribute',
+                            'project_small', 'project_list', 'project_map']
+
 
 def forbidden(request, template_name='403.html'):
     '''
@@ -949,6 +953,8 @@ def select_project_widget(request, org_id, template=''):
 
 
 def project_widget(request, template='feature-side', project_id=None):
+    if template.replace('-', '_') not in ALLOWED_WIDGET_TEMPLATES:
+        raise Http404
     if project_id:
         p = get_object_or_404(Project, pk=project_id)
     else:
@@ -970,6 +976,8 @@ def project_widget(request, template='feature-side', project_id=None):
 
 
 def project_list_widget(request, template='project-list', org_id=0):
+    if template.replace('-', '_') not in ALLOWED_WIDGET_TEMPLATES:
+        raise Http404
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'rsr.akvo.org')
