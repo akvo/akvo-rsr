@@ -11,9 +11,9 @@ from rest_framework import serializers
 # These classes are for easy switching between URL based foreign key representation and ID based
 # If we want both it might make sense to use a meta class to keep the underlying code DRY
 
-class BaseRSRSerializer(serializers.HyperlinkedModelSerializer):
-    pass
-
-
-# class BaseRSRSerializer(serializers.ModelSerializer):
+# class BaseRSRSerializer(serializers.HyperlinkedModelSerializer):
 #     pass
+
+
+class BaseRSRSerializer(serializers.ModelSerializer):
+    pass
