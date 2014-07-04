@@ -8,7 +8,7 @@ from django.conf import settings
 
 from rest_framework.compat import etree, six
 from rest_framework.exceptions import ParseError
-from rest_framework.parsers import XMLParser
+from rest_framework.parsers import XMLParser, JSONParser
 
 from akvo.rsr.models import Organisation, Country
 
@@ -69,4 +69,4 @@ class OrganisationViewSet(BaseRSRViewSet):
     """
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
-    parser_classes = (AkvoOrganisationParser,)
+    parser_classes = (AkvoOrganisationParser, JSONParser,)
