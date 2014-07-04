@@ -7,10 +7,14 @@
 
 from akvo.rsr.models import Organisation
 
+from ..fields import Base64ImageField
+
 from .rsr_serializer import BaseRSRSerializer
 
 
 class OrganisationSerializer(BaseRSRSerializer):
+
+    logo = Base64ImageField(required=False, allow_empty_file=True)
 
     class Meta:
         model = Organisation
