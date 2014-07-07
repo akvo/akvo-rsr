@@ -178,16 +178,12 @@ def organisation_projects_map(projects, width, height, dynamic='dynamic'):
         width, height: the dimensions of the map.
         dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
     """
-
     if dynamic != 'dynamic':
         dynamic = False
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
     marker_icon = PROJECT_MARKER_ICON
-
     locations = []
-
-    # projects = Project.objects.filter(partnerships__organisation=organisation_id).active()
 
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
