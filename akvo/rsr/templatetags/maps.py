@@ -171,7 +171,7 @@ def global_organisation_map(width, height, dynamic='dynamic'):
 
 
 @register.inclusion_tag('inclusion_tags/maps.html')
-def organisation_projects_map(organisation_id, width, height, dynamic='dynamic'):
+def organisation_projects_map(projects, width, height, dynamic='dynamic'):
     """
     params:
         organisation_id: id of organisation.
@@ -187,7 +187,7 @@ def organisation_projects_map(organisation_id, width, height, dynamic='dynamic')
 
     locations = []
 
-    projects = Project.objects.filter(partnerships__organisation=organisation_id).active()
+    # projects = Project.objects.filter(partnerships__organisation=organisation_id).active()
 
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
