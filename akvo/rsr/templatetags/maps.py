@@ -171,32 +171,37 @@ def global_organisation_map(width, height, dynamic='dynamic'):
 
 
 @register.inclusion_tag('inclusion_tags/maps.html')
-def organisation_projects_map(organisation_id, width, height, dynamic='dynamic'):
+def organisation_projects_map(projects, width, height, dynamic='dynamic'):
     """
     params:
         organisation_id: id of organisation.
         width, height: the dimensions of the map.
         dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
     """
-
     if dynamic != 'dynamic':
         dynamic = False
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
     marker_icon = PROJECT_MARKER_ICON
-
     locations = []
-
-    projects = Project.objects.filter(partnerships__organisation=organisation_id).active()
 
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
         for location in proj_locations:
             try:
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
-                locations.append([location.latitude,
-                                  location.longitude,
-                                  [str(project.pk),project.title.encode('utf8'), thumbnail, 'project']])
+                locations.append(
+                    [
+                        location.latitude,
+                        location.longitude,
+                        [
+                            str(project.pk),
+                            project.title.encode('utf8'),
+                            thumbnail,
+                            'project'
+                        ]
+                    ]
+                )
             except:
                 pass
 
