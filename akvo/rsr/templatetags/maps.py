@@ -194,11 +194,20 @@ def organisation_projects_map(organisation_id, width, height, dynamic='dynamic')
         for location in proj_locations:
             try:
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
-                locations.append([location.latitude,
-                                  location.longitude,
-                                  [str(project.pk),project.title.encode('utf8'), thumbnail, 'project']])
             except:
-                pass
+                thumbnail = ""
+            locations.append(
+                [
+                    location.latitude,
+                    location.longitude,
+                    [
+                        str(project.pk),
+                        project.title.encode('utf8'),
+                        thumbnail,
+                        'project'
+                    ]
+                ]
+            )
 
     template_context = {
         'map_id': map_id,
