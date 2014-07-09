@@ -161,6 +161,7 @@ class PartnerSitesRouterMiddleware(object):
             )
             request.akvoapp_root_url = "http://%s" % request.app_domain
             request.organisation_id = partner_site.organisation.id
+            request.partner_site = partner_site
             request.default_language = partner_site.default_language
 
         request.domain_url = "http://%s" % settings.RSR_DOMAIN
