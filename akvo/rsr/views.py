@@ -1084,7 +1084,6 @@ def donate(request, p, engine):
                 invoice.test = True
             if request.session.get("donation_return_url", False):
                 return_url = urljoin(request.session["donation_return_url"], reverse("donate_thanks"))
-                # del request.session["donation_return_url"]
             else:
                 return_url = urljoin(request.domain_url, reverse("donate_thanks"))
             if engine == "ideal":
@@ -1139,7 +1138,8 @@ def donate(request, p, engine):
                                   engine=engine,
                                   initial=dict(is_public=True))
         if request.session.get("donation_return_url", False):
-            request.session["cancel_url"] = request.session["donation_return_url"] + "/project/" + str(p.id)
+            request.session["cancel_url"] = urljoin(request.session["donation_return_url"],
+                                                    reverse("project_main", kwargs={'project_id': p.id}))
         else:
             request.session["cancel_url"] = reverse("project_main", kwargs={'project_id': p.id})
     return render_to_response("rsr/project/donate/donate_step2.html",
