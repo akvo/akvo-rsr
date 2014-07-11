@@ -39,7 +39,7 @@ from akvo.api.models import create_api_key
 
 from akvo.rsr.fields import LatitudeField, LongitudeField, NullCharField, ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.fields import ProjectLimitedTextField
-from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import (
     GROUP_RSR_EDITORS, RSR_LIMITED_CHANGE, GROUP_RSR_PARTNER_ADMINS,

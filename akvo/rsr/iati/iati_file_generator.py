@@ -10,7 +10,7 @@ import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 from datetime import datetime
-from akvo.rsr.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANISATION_ROLE, IATI_LIST_SECTOR
+from akvo.rsr.iati.iati_code_lists import IATI_LIST_ACTIVITY_STATUS, IATI_LIST_ORGANISATION_ROLE, IATI_LIST_SECTOR
 from akvo.rsr.models import (Project, Organisation, Partnership, Goal, ProjectLocation, Country, BudgetItem,
                              BudgetItemLabel, InternalOrganisationID, Link, Benchmark, Benchmarkname, Category)
 
