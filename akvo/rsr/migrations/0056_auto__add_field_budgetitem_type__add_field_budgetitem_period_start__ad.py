@@ -25,6 +25,7 @@ class Migration(SchemaMigration):
         db.create_table(u'rsr_sector', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sectors', to=orm['rsr.Project'])),
+            ('sector_code', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=5, blank=True)),
             ('text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('vocabulary', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=5, blank=True)),
             ('percentage', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=4, decimal_places=1, blank=True)),
@@ -327,6 +328,11 @@ class Migration(SchemaMigration):
                       self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=100, blank=True),
                       keep_default=False)
 
+        # Adding field 'ProjectLocation.location_code'
+        db.add_column(u'rsr_projectlocation', 'location_code',
+                      self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=25, blank=True),
+                      keep_default=False)
+
         # Adding field 'ProjectLocation.description'
         db.add_column(u'rsr_projectlocation', 'description',
                       self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=255, blank=True),
@@ -503,6 +509,9 @@ class Migration(SchemaMigration):
 
         # Deleting field 'ProjectLocation.reference'
         db.delete_column(u'rsr_projectlocation', 'reference')
+
+        # Deleting field 'ProjectLocation.location_code'
+        db.delete_column(u'rsr_projectlocation', 'location_code')
 
         # Deleting field 'ProjectLocation.vocabulary'
         db.delete_column(u'rsr_projectlocation', 'vocabulary')
@@ -960,6 +969,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'latitude': ('akvo.rsr.fields.LatitudeField', [], {'default': '0', 'db_index': 'True'}),
             'location_class': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
+            'location_code': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '25', 'blank': 'True'}),
             'location_reach': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             'location_target': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'locations'", 'null': 'True', 'to': u"orm['rsr.Project']"}),
             'longitude': ('akvo.rsr.fields.LongitudeField', [], {'default': '0', 'db_index': 'True'}),
@@ -1026,6 +1036,7 @@ class Migration(SchemaMigration):
         u'rsr.sector': {
             'Meta': {'object_name': 'Sector'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'sector_code': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '5', 'blank': 'True'}),
             'percentage': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '1', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sectors'", 'to': u"orm['rsr.Project']"}),
             'text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),

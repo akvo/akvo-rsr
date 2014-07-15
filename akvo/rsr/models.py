@@ -190,7 +190,7 @@ class ProjectLocation(BaseLocation):
 
     # Extra IATI fields
     reference = ValidXMLCharField(_(u'reference'), blank=True, max_length=50)
-    code = ValidXMLCharField(_(u'code'), blank=True, max_length=25)
+    location_code = ValidXMLCharField(_(u'code'), blank=True, max_length=25)
     vocabulary = ValidXMLCharField(
         _(u'vocabulary'), blank=True, max_length=2, choices=[code[:2] for code in codelists.GEOGRAPHIC_VOCABULARY]
     )
@@ -1432,7 +1432,7 @@ class IndicatorPeriod(models.Model):
 
 class Sector(models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='sectors')
-    code = ValidXMLCharField(
+    sector_code = ValidXMLCharField(
         _(u'code'), blank=True, max_length=5, choices=[code[:2] for code in codelists.SECTOR]
     )
     text = ValidXMLCharField(_(u'sector'), blank=True, max_length=100, help_text=_(u'(max 100 characters)'))

@@ -28,7 +28,8 @@ def pythonify_codelist_name(codelist_name):
 
 def stringify(bits):
     "Add unicode string 'markup' to strings"
-    return [(lambda bit: bit if bit.isdigit() else "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
+    return [(lambda bit: "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
+    # return [(lambda bit: bit if bit.isdigit() else "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
 
 
 def codelist_to_tuples(xml_string, codelist, version):

@@ -359,6 +359,17 @@ class PartnershipInline(admin.TabularInline):
 class ProjectLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectlocation')
     extra = 0
+    fieldsets = (
+        (None, {
+            'fields': ('latitude', 'longitude', 'city', 'state', 'country', 'address_1', 'address_2', 'postcode')
+        }),
+        ('IATI fields (advanced)', {
+            'classes': ('collapse',),
+            'fields': ('reference', 'location_code', 'name', 'description', 'activity_description', 'administrative_code',
+            'administrative_vocabulary', 'administrative_level', 'exactness', 'location_reach', 'location_class',
+            'feature_designation')
+        }),
+    )
 
 
 class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
