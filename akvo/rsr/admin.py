@@ -373,7 +373,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'status', 'language', 'date_request_posted', 'date_complete', 'donate_button'),
+            'fields': ('title', 'subtitle', 'status', 'language', 'date_start_actual', 'date_end_actual', 'donate_button'),
             }),
         (_(u'Description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(

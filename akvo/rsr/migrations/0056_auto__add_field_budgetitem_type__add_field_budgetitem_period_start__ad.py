@@ -206,21 +206,21 @@ class Migration(SchemaMigration):
         # # Deleting field 'Project.date_request_posted'
         # db.delete_column(u'rsr_project', 'date_request_posted')
 
-        # Rename 'date_request_posted' field to 'date_start_planned'
-        db.rename_column(u'rsr_project', 'date_request_posted', 'date_start_planned')
+        # Rename 'date_request_posted' field to 'date_start_actual'
+        db.rename_column(u'rsr_project', 'date_request_posted', 'date_start_actual')
 
         # Rename 'date_complete' field to 'date_end_actual'
         db.rename_column(u'rsr_project', 'date_complete', 'date_end_actual')
 
-        # # Adding field 'Project.date_start_planned'
-        # db.add_column(u'rsr_project', 'date_start_planned',
-        #               self.gf('django.db.models.fields.DateField')(default=datetime.date.today),
-        #               keep_default=False)
-
-        # Adding field 'Project.date_start_actual'
-        db.add_column(u'rsr_project', 'date_start_actual',
-                      self.gf('django.db.models.fields.DateField')(null=True, blank=True),
+        # Adding field 'Project.date_start_planned'
+        db.add_column(u'rsr_project', 'date_start_planned',
+                      self.gf('django.db.models.fields.DateField')(default=datetime.date.today),
                       keep_default=False)
+
+        # # Adding field 'Project.date_start_actual'
+        # db.add_column(u'rsr_project', 'date_start_actual',
+        #               self.gf('django.db.models.fields.DateField')(null=True, blank=True),
+        #               keep_default=False)
 
         # Adding field 'Project.date_end_planned'
         db.add_column(u'rsr_project', 'date_end_planned',
@@ -425,8 +425,8 @@ class Migration(SchemaMigration):
         # Deleting field 'Link.language'
         db.delete_column(u'rsr_link', 'language')
 
-        # Rename 'date_start_planned' field to 'date_request_posted'
-        db.rename_column(u'rsr_project', 'date_start_planned', 'date_request_posted')
+        # Rename 'date_start_actual' field to 'date_request_posted'
+        db.rename_column(u'rsr_project', 'date_start_actual', 'date_request_posted')
 
         # Rename 'date_end_actual' field to 'date_complete'
         db.rename_column(u'rsr_project', 'date_end_actual', 'date_complete')
@@ -442,10 +442,10 @@ class Migration(SchemaMigration):
         #               keep_default=False)
 
         # Deleting field 'Project.date_start_planned'
-        # db.delete_column(u'rsr_project', 'date_start_planned')
+        db.delete_column(u'rsr_project', 'date_start_planned')
 
-        # Deleting field 'Project.date_start_actual'
-        db.delete_column(u'rsr_project', 'date_start_actual')
+        # # Deleting field 'Project.date_start_actual'
+        # db.delete_column(u'rsr_project', 'date_start_actual')
 
         # Deleting field 'Project.date_end_planned'
         db.delete_column(u'rsr_project', 'date_end_planned')
