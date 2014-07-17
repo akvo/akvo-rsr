@@ -258,6 +258,7 @@ class Organisation(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
+    # TODO: make name unique
     name = ValidXMLCharField(
         _(u'name'), max_length=25, db_index=True,
         help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'),

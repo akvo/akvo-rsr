@@ -16,19 +16,26 @@ from requester2 import Requester
 from image_importer import ImageImporter
 
 
-# the dir where the json data files are stored
-JSON_BASE_PATH = 'json'
+def data_from_json_reponse(request):
+    return json.loads(request.response.text)
+
+
+class NotFoundError(Exception):
+    pass
 
 
 class RSRModelInstance(object):
-    """ A representation of one RSR model instance
-    Object data:
-        self.model: the API name of the model
-        self.data: the python dict representation of the instance
-        self.response: the API response object
-        self.error: if the API call results in an exception, the error message is stored here
+    """ Create model instances in RSR. Uses Requester to do the talking to the API
     """
     def __init__(self, host, api_token, model, data):
+        """ Object data:
+                self.host: the API host
+                self.api_token: the RSR UserProfile API key
+                self.model: the API name of the model
+                self.data: the python dict representation of the instance
+                self.response: the API response object
+                self.error: if the API call results in an exception, the error message is stored here
+        """
         self.host = host
         self.api_token = api_token
         self.model = model
@@ -37,20 +44,22 @@ class RSRModelInstance(object):
         self.error = None
 
     def send_to_rsr(self):
+        """ Determine if we're to POST or PUT and then do it
+        """
         try:
             # TODO: maybe change to pk and lookup of pk field, but this requires RSR models introspection
             self.id = id = self.data.get('id', 0)
             if id:
-                self.response = self.put_to_rsr(id)
+                self.put_to_rsr(id)
             else:
-                self.response = self.post_to_rsr()
+                self.post_to_rsr()
             print self.response.response.text
         except Exception, e:
             print e.message
             self.error = e
 
     def post_to_rsr(self):
-        return Requester(
+        self.response = Requester(
             'post',
             'http://{host}/rest/v1/{model}/',
             dict(host=self.host, model=self.model.lower()),
@@ -64,7 +73,7 @@ class RSRModelInstance(object):
         )
 
     def put_to_rsr(self, id):
-        return Requester(
+        self.response = Requester(
             'put',
             'http://{host}/rest/v1/{model}/{id}/',
             dict(host=self.host, model=self.model.lower(), id=id),
@@ -78,45 +87,104 @@ class RSRModelInstance(object):
         )
 
     def get_id(self):
-        self.id = json.loads(self.response.response.text)['id']
+        self.id = data_from_json_reponse(self.response)['id']
 
     def handle_special_fields(self):
+        """ For each field check if there is a method defined based on the model and field names and run it.
+        """
         for field in self.data.keys():
-            field_method = getattr(self, "{}__{}".format(self.model, field), None)
+            field_method = getattr(self, "{model}__{field}".format(model=self.model, field=field), None)
             if field_method:
                 field_method()
 
+    ### Special fields methods
+
     def organisation__logo(self):
+        """ The logo data should be either a URL to the image or a path to it on the local machine
+            Use the ImageImporter to get the image and turn it into a base64 encoded string
+        """
         if self.data['logo']:
             logo = ImageImporter(self.data['logo'])
             logo.get_image()
             self.data['logo'] = logo.to_base64()
 
     def project__current_image(self):
+        """ The image data should be either a URL to the image or a path to it on the local machine
+            Use the ImageImporter to get the image and turn it into a base64 encoded string
+        """
         if self.data['current_image']:
+            current_image = ImageImporter(self.data['current_image'])
+            current_image.get_image()
+            self.data['current_image'] = current_image.to_base64()
 
-            ### DEBUG ###
-            import pdb
-            pdb.set_trace()
-            ### DEBUG ###
 
-            logo = ImageImporter(self.data['current_image'])
-            logo.get_image()
-            self.data['current_image'] = logo.to_base64()
+    def partnership__organisation(self):
+        """ The Partnership object has two FKs, one to the Project and one to the Organisation. Since the Organisation
+            may not exist when the JSON is created we need a way to lookup the Organisation from the API. This is done
+            using the IATI organisation ID if it exists, and if not lookup of the organisation name is used.
+            Note that currently Organisation.name isn't unique. This should be fixed.
+        """
+        def lookup_organisation(instance):
+            request = Requester(
+                url_template='http://{host}/rest/v1/{model}/?iati_org_id={iati_org_id}',
+                url_args=dict(host=instance.host, model='organisation', iati_org_id=instance.data['organisation']),
+                headers={
+                    'content-type': 'application/json',
+                    'encoding': 'utf-8',
+                    'Authorization': 'Token {}'.format(instance.api_token),
+                },
+                accept_codes=[codes.ok],
+            )
+            if request.response.status_code == codes.ok:
+                data = data_from_json_reponse(request)
+                if data['count'] == 1:
+                    return data['results'][0]['id']
+
+            request = Requester(
+                url_template='http://{host}/rest/v1/{model}/?name={name}',
+                url_args=dict(host=instance.host, model='organisation', name=instance.data['organisation']),
+                headers={
+                    'content-type': 'application/json',
+                    'encoding': 'utf-8',
+                    'Authorization': 'Token {}'.format(instance.api_token),
+                },
+                accept_codes=[codes.ok],
+            )
+            if request.response.status_code == codes.ok:
+                data = data_from_json_reponse(request)
+                if data['count'] == 1:
+                    return data['results'][0]['id']
+
+            raise NotFoundError, 'Organisation not found, using filters "iati_org_id={}" and "name={}"'.format(
+                instance.data['organisation'], instance.data['organisation']
+            )
+
+        organisation = self.data.get('organisation', False)
+        if organisation:
+            # if we have an integer ID we're happy
+            if isinstance(organisation, int):
+                return
+            # otherwise try to get the ID from the API
+            elif isinstance(organisation, (str, unicode)):
+                id = lookup_organisation(self)
+                if id:
+                    self.data['organisation'] = id
 
 
 class Entity(object):
-    """ An entity is made up of many Django model instances that together make up the representation of for example
-    an RSR project
-    The entity has one parent model that all other models refer to via a foreign key
-    Object data:
-        self.parent_model: the name of the parent model
-        self.file_name: the source JSON file
-        self.data: python representation of all model objects, it's as traight transform of the source JSON,
-            a dict of dicts, each object is a dict with field names as keys and field values as values
-        self.parent: RSRModelInstance object of the parent model
+    """ The Entity represents many Django model instances that together make up a "real world" object such as an RSR
+     project. The entity has one parent model that all other models refer to via a foreign key.
     """
     def __init__(self, host, api_token, file_name, parent_model):
+        """ Object data
+                self.host: the API host
+                self.api_token: the RSR UserProfile API key
+                self.file_name: the source JSON with the data to be uploaded
+                self.parent_model: the name of the "parent" model, i.e. the model that all other objects refer to via FKs
+                self.data: python representation of all model objects, it's as straight transform of the source JSON,
+                    a dict of dicts, each object is a dict with field names as keys and field values as values
+                self.parent: RSRModelInstance object of the parent model
+        """
         self.host = host
         self.api_token = api_token
         self.file_name = file_name
@@ -128,12 +196,14 @@ class Entity(object):
         """ Load the json data for all objects
         """
         try:
-            self.data = json.loads(self.json())
+            self.data = json.loads(self.read_json())
         except Exception, e:
             print "Can't load JSON, error message: {}".format(e.message)
             sys.exit()
 
-    def json(self):
+    def read_json(self):
+        """ The actual reading of the file
+        """
         if os.path.isabs(self.file_name):
             path = self.file_name
         else:
@@ -144,7 +214,7 @@ class Entity(object):
         return _json
 
     def create_parent(self):
-        """ Create the parent model instance in RSR
+        """ Create the parent model instance, both as part of the Entity and in RSR
             Use the response to record the ID of the parent for use by all the children
         """
         parent_data = self.data[self.parent_model]
@@ -156,16 +226,17 @@ class Entity(object):
         self.parent.get_id()
 
     def create_children(self):
-        """ Create child objects in RSR, using the ID of the parent to include the foregin key ID
-            Ths works on the assumption that the foreign key field is named after the parent model name
+        """ Create child objects. Use the ID of the parent to add the foreign key ID. This assumes the FK field is named
+            after the parent model, which is true for all objects except locations
         """
+        # The FK field to Project and Organisation are not named after their target models in locations
         FOREIGN_KEY_FIELDS = {"project_location": "location_target", "organisation_location": "location_target"}
         for model, objects in self.data.items():
             if not isinstance(objects, list):
                 objects = [objects]
             for object in objects:
                 child = RSRModelInstance(self.host, self.api_token, model, object)
-                # look for a foreign key field that's not named after the related model
+                # check if the FK field is not named after the related model
                 fk_field = FOREIGN_KEY_FIELDS.get(model, self.parent_model)
                 child.data[fk_field] = self.parent.id
                 child.handle_special_fields()
@@ -175,6 +246,7 @@ class Entity(object):
         self.get_data()
         self.create_parent()
         self.create_children()
+
 
 def usage(script_name):
     print(
@@ -186,6 +258,9 @@ def usage(script_name):
         % script_name)
 
 def get_script_args(argv):
+    """ Using the OptionParser turned out to be overkill, since all options went out the window!
+        Keeping it anyway it's a nice library.
+    """
     parser = optparse.OptionParser()
     options, args = parser.parse_args(argv)
     if len(args) < 5:

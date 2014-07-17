@@ -49,12 +49,6 @@ class ImageImporter():
                 print "*** Error getting image from da Indertubes ***"
 
     def get_from_path(self):
-
-        ### DEBUG ###
-        import pdb
-        pdb.set_trace()
-        ### DEBUG ###
-
         _, extension = splitext(self.path_or_uri)
         # and get the image if the extension is in ALLOWED_EXTENSIONS
         if extension.lower() in self.ALLOWED_EXTENSIONS:
