@@ -1,11 +1,11 @@
 {
     "organisation": {
-        "name": "Short organisation name",
-        "long_name": "Longer organisation name (by one char!)",
+        "name": "A nice little org",
+        "long_name": "The friendly org with a nice name",
         "language": "en",
         "organisation_type": "N",
         "new_organisation_type": 22,
-        "iati_org_id": null,
+        "iati_org_id": "NL-2",
         "logo": "http://www.flubu.com/blog/wp-content/uploads/2012/07/recharging.jpg",
         "url": "http://www.exampleorg.com/",
         "phone": "",

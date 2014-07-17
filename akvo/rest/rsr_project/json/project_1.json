@@ -95,5 +95,23 @@
         "user_agent": "",
         "uuid": "",
         "notes": ""
+    },
+    "partnership": {
+        "organisation": "A nice little org",
+        "partner_type": "field",
+        "funding_amount": null,
+        "partner_type_extra": null,
+        "iati_activity_id": null,
+        "internal_id": null,
+        "iati_url": ""
+    },
+    "partnership": {
+        "organisation": "NL-2",
+        "partner_type": "funding",
+        "funding_amount": 4711,
+        "partner_type_extra": null,
+        "iati_activity_id": null,
+        "internal_id": null,
+        "iati_url": ""
     }
 }
