@@ -96,7 +96,10 @@ def create_cats_and_benches(business_units):
                 log(u"Created bench: {id}, {name}", dict(id=new_bench.id, name=name))
             else:
                 log(u"Found existing bench: {id}, {name}", dict(id=new_bench.id, name=name))
-            data['category'].benchmarknames.add(new_bench)
+            try:
+                data['category'].benchmarknames.add(new_bench)
+            except:
+                log(u"Did not find bench: {id}, {name}", dict(id=new_bench.id, name=name))
 
 
 def import_cordaid_benchmarks(csv_file):
