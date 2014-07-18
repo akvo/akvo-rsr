@@ -144,12 +144,7 @@ class BaseLocation(models.Model):
 
         # Set location as primary location if it is the first location
         location_target = self.location_target
-
-        try:
-            if location_target.primary_location is None or location_target.primary_location.pk > self.pk:
-                location_target.primary_location = self
-                location_target.save()
-        except:
+        if location_target.primary_location is None or location_target.primary_location.pk > self.pk:
             location_target.primary_location = self
             location_target.save()
 
