@@ -205,6 +205,8 @@ def iati_budget(activity, budgets, project):
 
             if check_value(project.date_start_actual):
                 budget_value.set_anyAttributes_({"value-date": project.date_start_actual})
+            elif check_value(project.date_start_planned):
+                budget_value.set_anyAttributes_({"value-date": project.date_start_planned})
 
             budget_node.add_value(budget_value)
 
@@ -414,17 +416,29 @@ def iati_activity(activity, project):
     goals_overview.set_anyAttributes_({"akvo:type":"8"})
     activity.add_description(goals_overview)
 
-    # Date request posted
+    # Date start (actual)
     if check_value(project.date_start_actual):
         start_actual = schema.activity_date(iso_date=project.date_start_actual, type_="start-actual",
                                             valueOf_=project.date_start_actual)
         activity.add_activity_date(start_actual)
 
-    # Date complete
+    # Date start (planned)
+    if check_value(project.date_start_planned):
+        start_planned = schema.activity_date(iso_date=project.date_start_planned, type_="start-planned",
+                                             valueOf_=project.date_start_planned)
+        activity.add_activity_date(start_planned)
+
+    # Date end (actual)
     if check_value(project.date_end_actual):
         end_actual = schema.activity_date(iso_date=project.date_end_actual, type_="end-actual",
                                           valueOf_=project.date_end_actual)
         activity.add_activity_date(end_actual)
+
+    # Date end (planned)
+    if check_value(project.date_end_planned):
+        end_planned = schema.activity_date(iso_date=project.date_end_planned, type_="end-planned",
+                                           valueOf_=project.date_end_planned)
+        activity.add_activity_date(end_planned)
 
     return activity
 
