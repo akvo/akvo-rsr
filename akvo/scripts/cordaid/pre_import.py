@@ -17,7 +17,7 @@ from django.core.files.temp import NamedTemporaryFile
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
-from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import (
     Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID, OrganisationLocation
 )

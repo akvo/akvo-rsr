@@ -183,33 +183,33 @@
     </currency>
   </xsl:template>
 
-  <!-- date_request_posted -->
+  <!-- date_start_actual -->
   <xsl:template match="activity-date[@type='start-actual']">
     <!-- two ways of expressing the date, either as data in the node or as the iso-date attribute -->
     <xsl:if test="not(.='')">
-      <date_request_posted>
+      <date_start_actual>
         <xsl:value-of select="normalize-space(.)" />
-      </date_request_posted>
+      </date_start_actual>
     </xsl:if>
     <xsl:if test=".=''">
-      <date_request_posted>
+      <date_start_actual>
         <xsl:value-of select="normalize-space(@iso-date)"/>
-      </date_request_posted>
+      </date_start_actual>
     </xsl:if>
   </xsl:template>
 
-  <!-- date_complete -->
+  <!-- date_end_actual -->
   <xsl:template match="activity-date[@type='end-actual']">
     <!-- two ways of expressing the date, either as data in the node or as the iso-date attribute -->
     <xsl:if test="not(.='')">
-      <date_complete>
+      <date_end_actual>
         <xsl:value-of select="normalize-space(.)" />
-      </date_complete>
+      </date_end_actual>
     </xsl:if>
     <xsl:if test=".=''">
-      <date_complete>
+      <date_end_actual>
         <xsl:value-of select="normalize-space(@iso-date)"/>
-      </date_complete>
+      </date_end_actual>
     </xsl:if>
   </xsl:template>
 
