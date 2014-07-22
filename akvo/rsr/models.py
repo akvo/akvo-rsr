@@ -20,6 +20,7 @@ from django.db import models
 from django.db.models import Max, Sum
 from django.db.models.query import QuerySet
 from django.db.models.signals import pre_save, post_save, post_delete
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, User
 from django.utils.safestring import mark_safe
@@ -117,8 +118,9 @@ class Country(models.Model):
 
 class RecipientCountry(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='recipient_countries')
-    country = ValidXMLCharField(_(u'country'), max_length=2, choices=codelists.COUNTRY)
-    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1)
+    country = ValidXMLCharField(_(u'country'), blank=True, max_length=2, choices=codelists.COUNTRY)
+    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+                                     validators=[MaxValueValidator(100), MinValueValidator(0)])
     text = ValidXMLCharField(_(u'country description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
 
     class Meta:
@@ -128,9 +130,12 @@ class RecipientCountry(models.Model):
 
 class RecipientRegion(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='recipient_regions')
-    region = ValidXMLCharField(_(u'region'), max_length=2, choices=codelists.REGION)
-    region_vocabulary = ValidXMLCharField(_(u'region vocabulary'), max_length=1, choices=codelists.REGION_VOCABULARY)
-    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1)
+    region = ValidXMLCharField(_(u'region'), blank=True, max_length=3, choices=codelists.REGION)
+    region_vocabulary = ValidXMLCharField(
+        _(u'region vocabulary'), blank=True, max_length=1, choices=codelists.REGION_VOCABULARY
+    )
+    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+                                     validators=[MaxValueValidator(100), MinValueValidator(0)])
     text = ValidXMLCharField(_(u'region description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
 
     class Meta:
@@ -798,7 +803,8 @@ class Project(TimestampsMixin, models.Model):
         _(u'project scope'), blank=True, max_length=2, choices=codelists.ACTIVITY_SCOPE
     )
     capital_spend_percentage = models.DecimalField(
-        _(u'capital spend percentage'), blank=True, null=True, max_digits=4, decimal_places=1
+        _(u'capital spend percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
     collaboration_type = ValidXMLCharField(
         _(u'collaboration type'), blank=True, max_length=1, choices=[code[:2] for code in codelists.COLLABORATION_TYPE]
@@ -1234,15 +1240,15 @@ class ProjectCondition(models.Model):
 class ProjectContact(models.Model):
     project = models.ForeignKey(Project, verbose_name=u'project', related_name='contacts')
     type = ValidXMLCharField(_(u'type'), blank=True, max_length=1, choices=codelists.CONTACT_TYPE)
-    person_name = ValidXMLCharField(_(u'name'), max_length=100, help_text=_('(100 characters)'))
+    person_name = ValidXMLCharField(_(u'name'), blank=True, max_length=100, help_text=_('(100 characters)'))
     email = models.EmailField(_(u'email'), blank=True)
     job_title = ValidXMLCharField(_(u'job title'), max_length=100, blank=True, help_text=_('(100 characters)'))
     mailing_address = ValidXMLCharField(
         _(u'mailing address'), max_length=255, blank=True, help_text=_('(255 characters).')
     )
     state = ValidXMLCharField(_(u'state'), blank=True, max_length=100, help_text=_('(100 characters)'))
-    country = models.ForeignKey(Country, verbose_name=u'country', related_name='contacts')
-    organisation = ValidXMLCharField(_(u'organisation'), max_length=100, help_text=_('(100 characters)'))
+    country = models.ForeignKey(Country, blank=True, null=True, verbose_name=u'country', related_name='contacts')
+    organisation = ValidXMLCharField(_(u'organisation'), blank=True, max_length=100, help_text=_('(100 characters)'))
     telephone = ValidXMLCharField(_(u'telephone'), blank=True, max_length=15)
     website = models.URLField(_(u'website'), blank=True)
 
@@ -1336,13 +1342,14 @@ class BudgetItem(models.Model):
 class CountryBudgetItem(models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='country_budget_items')
     code = ValidXMLCharField(
-        _(u'budget item code'), max_length=6, choices=[code[:2] for code in codelists.BUDGET_IDENTIFIER]
+        _(u'budget item'), max_length=6, choices=[code[:2] for code in codelists.BUDGET_IDENTIFIER], blank=True
     )
     description = ValidXMLCharField(_(u'description'), max_length=100, blank=True, help_text=_(u'(max 100 characters)'))
     vocabulary = ValidXMLCharField(
         _(u'country budget vocabulary'), blank=True, max_length=1, choices=codelists.BUDGET_IDENTIFIER_VOCABULARY
     )
-    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1)
+    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+                                     validators=[MaxValueValidator(100), MinValueValidator(0)])
 
     class Meta:
         verbose_name = _(u'country budget item')
@@ -1351,9 +1358,9 @@ class CountryBudgetItem(models.Model):
 
 class PlannedDisbursement(models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='planned_disbursements')
-    value = models.DecimalField(_(u'value'), max_digits=10, decimal_places=2)
+    value = models.DecimalField(_(u'value'), blank=True, max_digits=10, decimal_places=2)
     value_date = models.DateField(_(u'value date'), null=True, blank=True)
-    currency = ValidXMLCharField(_(u'currency'), max_length=3, choices=codelists.CURRENCY)
+    currency = ValidXMLCharField(_(u'currency'), blank=True, max_length=3, choices=codelists.CURRENCY)
     updated = models.DateField(_(u'updated'), null=True, blank=True)
     period_start = models.DateField(_(u'period start'), null=True, blank=True)
     period_end = models.DateField(_(u'period end'), null=True, blank=True)
@@ -1433,13 +1440,14 @@ class IndicatorPeriod(models.Model):
 class Sector(models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='sectors')
     sector_code = ValidXMLCharField(
-        _(u'code'), blank=True, max_length=5, choices=[code[:2] for code in codelists.SECTOR]
+        _(u'sector'), blank=True, max_length=5, choices=[code[:2] for code in codelists.SECTOR]
     )
-    text = ValidXMLCharField(_(u'sector'), blank=True, max_length=100, help_text=_(u'(max 100 characters)'))
+    text = ValidXMLCharField(_(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)'))
     vocabulary = ValidXMLCharField(
         _(u'vocabulary'), blank=True, max_length=5, choices=[code[:2] for code in codelists.VOCABULARY]
     )
-    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1)
+    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+                                     validators=[MaxValueValidator(100), MinValueValidator(0)])
 
     class Meta:
         verbose_name = _(u'sector')
@@ -1451,6 +1459,9 @@ class Transaction(models.Model):
     reference = ValidXMLCharField(_(u'reference'), blank=True, max_length=25)
     aid_type = ValidXMLCharField(
         _(u'aid type'), blank=True, max_length=3, choices=[code[:2] for code in codelists.AID_TYPE]
+    )
+    aid_type_text = ValidXMLCharField(
+        _(u'aid type text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
     )
     description = ValidXMLCharField(_(u'description'), max_length=255, blank=True, help_text=_(u'(max 255 characters)'))
     disbursement_channel = ValidXMLCharField(
@@ -1467,6 +1478,9 @@ class Transaction(models.Model):
     )
     flow_type = ValidXMLCharField(
         _(u'flow type'), max_length=2, blank=True, choices=[code[:2] for code in codelists.FLOW_TYPE]
+    )
+    flow_type_text = ValidXMLCharField(
+        _(u'flow type text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
     )
     tied_status = ValidXMLCharField(
         _(u'tied status'), blank=True, max_length=1, choices=[code[:2] for code in codelists.TIED_STATUS]
@@ -1505,7 +1519,7 @@ class Transaction(models.Model):
 
 class PolicyMarker(models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='policy_markers')
-    policy_marker = ValidXMLCharField(_(u'policy marker'), max_length=2, choices=codelists.POLICY_MARKER)
+    policy_marker = ValidXMLCharField(_(u'policy marker'), blank=True, max_length=2, choices=codelists.POLICY_MARKER)
     significance = ValidXMLCharField(
         _(u'significance'), max_length=2, blank=True, choices=[code[:2] for code in codelists.POLICY_SIGNIFICANCE]
     )
@@ -2173,7 +2187,7 @@ class PartnerSite(TimestampsMixin, models.Model):
 class LegacyData(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='legacy_data')
     name = ValidXMLCharField(_(u'name'), blank=True, max_length=100, help_text=_(u'(100 characters).'))
-    value = ValidXMLCharField(_(u'value'), max_length=100, help_text=_(u'(100 characters).'))
+    value = ValidXMLCharField(_(u'value'), max_length=100, blank=True, help_text=_(u'(100 characters).'))
     iati_equivalent = ValidXMLCharField(
         _(u'iati equivalent'), blank=True, max_length=100, help_text=_(u'(100 characters).')
     )

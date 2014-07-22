@@ -12,9 +12,9 @@ class Migration(SchemaMigration):
         db.create_table(u'rsr_planneddisbursement', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='planned_disbursements', to=orm['rsr.Project'])),
-            ('value', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
+            ('value', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2, blank=True)),
             ('value_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('currency', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=3)),
+            ('currency', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=3, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
             ('period_start', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
             ('period_end', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
@@ -48,8 +48,8 @@ class Migration(SchemaMigration):
         db.create_table(u'rsr_recipientregion', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='recipient_regions', to=orm['rsr.Project'])),
-            ('region', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2)),
-            ('region_vocabulary', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=1)),
+            ('region', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=3, blank=True)),
+            ('region_vocabulary', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=1, blank=True)),
             ('percentage', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=4, decimal_places=1, blank=True)),
             ('text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=50, blank=True)),
         ))
@@ -70,11 +70,21 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'rsr', ['Indicator'])
 
+        # Adding model 'RecipientCountry'
+        db.create_table(u'rsr_recipientcountry', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='recipient_countries', to=orm['rsr.Project'])),
+            ('country', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2, blank=True)),
+            ('percentage', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=4, decimal_places=1, blank=True)),
+            ('text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=50, blank=True)),
+        ))
+        db.send_create_signal(u'rsr', ['RecipientCountry'])
+
         # Adding model 'CountryBudgetItem'
         db.create_table(u'rsr_countrybudgetitem', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='country_budget_items', to=orm['rsr.Project'])),
-            ('code', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=6)),
+            ('code', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=6, blank=True)),
             ('description', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('vocabulary', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=1, blank=True)),
             ('percentage', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=4, decimal_places=1, blank=True)),
@@ -86,7 +96,7 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='legacy_data', to=orm['rsr.Project'])),
             ('name', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
-            ('value', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100)),
+            ('value', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('iati_equivalent', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
         ))
         db.send_create_signal(u'rsr', ['LegacyData'])
@@ -96,13 +106,13 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='contacts', to=orm['rsr.Project'])),
             ('type', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=1, blank=True)),
-            ('person_name', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100)),
+            ('person_name', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('email', self.gf('django.db.models.fields.EmailField')(max_length=75, blank=True)),
             ('job_title', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('mailing_address', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=255, blank=True)),
             ('state', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
-            ('country', self.gf('django.db.models.fields.related.ForeignKey')(related_name='contacts', to=orm['rsr.Country'])),
-            ('organisation', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100)),
+            ('country', self.gf('django.db.models.fields.related.ForeignKey')(related_name='contacts', blank=True, null=True, to=orm['rsr.Country'])),
+            ('organisation', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('telephone', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=15, blank=True)),
             ('website', self.gf('django.db.models.fields.URLField')(max_length=200, blank=True)),
         ))
@@ -114,12 +124,14 @@ class Migration(SchemaMigration):
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='transactions', to=orm['rsr.Project'])),
             ('reference', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=25, blank=True)),
             ('aid_type', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=3, blank=True)),
+            ('aid_type_text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('description', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=255, blank=True)),
             ('disbursement_channel', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=1, blank=True)),
             ('disbursement_channel_text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('finance_type', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=3, blank=True)),
             ('finance_type_text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('flow_type', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2, blank=True)),
+            ('flow_type_text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('tied_status', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=1, blank=True)),
             ('tied_status_text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
             ('transaction_date', self.gf('django.db.models.fields.DateField')(blank=True)),
@@ -137,21 +149,11 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'rsr', ['Transaction'])
 
-        # Adding model 'RecipientCountry'
-        db.create_table(u'rsr_recipientcountry', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='recipient_countries', to=orm['rsr.Project'])),
-            ('country', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2)),
-            ('percentage', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=4, decimal_places=1, blank=True)),
-            ('text', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=50, blank=True)),
-        ))
-        db.send_create_signal(u'rsr', ['RecipientCountry'])
-
         # Adding model 'PolicyMarker'
         db.create_table(u'rsr_policymarker', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='policy_markers', to=orm['rsr.Project'])),
-            ('policy_marker', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2)),
+            ('policy_marker', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2, blank=True)),
             ('significance', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2, blank=True)),
             ('vocabulary', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=5, blank=True)),
             ('description', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=255, blank=True)),
@@ -207,31 +209,31 @@ class Migration(SchemaMigration):
         # # Deleting field 'Project.date_request_posted'
         # db.delete_column(u'rsr_project', 'date_request_posted')
 
-        # Rename 'date_request_posted' field to 'date_start_actual'
-        db.rename_column(u'rsr_project', 'date_request_posted', 'date_start_actual')
+        # Rename 'date_request_posted' field to 'date_start_planned'
+        db.rename_column(u'rsr_project', 'date_request_posted', 'date_start_planned')
 
-        # Rename 'date_complete' field to 'date_end_actual'
-        db.rename_column(u'rsr_project', 'date_complete', 'date_end_actual')
+        # Rename 'date_complete' field to 'date_end_planned'
+        db.rename_column(u'rsr_project', 'date_complete', 'date_end_planned')
 
-        # Adding field 'Project.date_start_planned'
-        db.add_column(u'rsr_project', 'date_start_planned',
-                      self.gf('django.db.models.fields.DateField')(default=datetime.date.today),
-                      keep_default=False)
-
-        # # Adding field 'Project.date_start_actual'
-        # db.add_column(u'rsr_project', 'date_start_actual',
-        #               self.gf('django.db.models.fields.DateField')(null=True, blank=True),
+        # # Adding field 'Project.date_start_planned'
+        # db.add_column(u'rsr_project', 'date_start_planned',
+        #               self.gf('django.db.models.fields.DateField')(default=datetime.date.today),
         #               keep_default=False)
 
-        # Adding field 'Project.date_end_planned'
-        db.add_column(u'rsr_project', 'date_end_planned',
+        # Adding field 'Project.date_start_actual'
+        db.add_column(u'rsr_project', 'date_start_actual',
                       self.gf('django.db.models.fields.DateField')(null=True, blank=True),
                       keep_default=False)
 
-        # # Adding field 'Project.date_end_actual'
-        # db.add_column(u'rsr_project', 'date_end_actual',
+        # # Adding field 'Project.date_end_planned'
+        # db.add_column(u'rsr_project', 'date_end_planned',
         #               self.gf('django.db.models.fields.DateField')(null=True, blank=True),
         #               keep_default=False)
+
+        # Adding field 'Project.date_end_actual'
+        db.add_column(u'rsr_project', 'date_end_actual',
+                      self.gf('django.db.models.fields.DateField')(null=True, blank=True),
+                      keep_default=False)
 
         # Adding field 'Project.hierarchy'
         db.add_column(u'rsr_project', 'hierarchy',
@@ -318,6 +320,11 @@ class Migration(SchemaMigration):
                       self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=50, blank=True),
                       keep_default=False)
 
+        # Adding field 'ProjectLocation.location_code'
+        db.add_column(u'rsr_projectlocation', 'location_code',
+                      self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=25, blank=True),
+                      keep_default=False)
+
         # Adding field 'ProjectLocation.vocabulary'
         db.add_column(u'rsr_projectlocation', 'vocabulary',
                       self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=2, blank=True),
@@ -326,11 +333,6 @@ class Migration(SchemaMigration):
         # Adding field 'ProjectLocation.name'
         db.add_column(u'rsr_projectlocation', 'name',
                       self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=100, blank=True),
-                      keep_default=False)
-
-        # Adding field 'ProjectLocation.location_code'
-        db.add_column(u'rsr_projectlocation', 'location_code',
-                      self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=25, blank=True),
                       keep_default=False)
 
         # Adding field 'ProjectLocation.description'
@@ -395,6 +397,9 @@ class Migration(SchemaMigration):
         # Deleting model 'Indicator'
         db.delete_table(u'rsr_indicator')
 
+        # Deleting model 'RecipientCountry'
+        db.delete_table(u'rsr_recipientcountry')
+
         # Deleting model 'CountryBudgetItem'
         db.delete_table(u'rsr_countrybudgetitem')
 
@@ -406,9 +411,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Transaction'
         db.delete_table(u'rsr_transaction')
-
-        # Deleting model 'RecipientCountry'
-        db.delete_table(u'rsr_recipientcountry')
 
         # Deleting model 'PolicyMarker'
         db.delete_table(u'rsr_policymarker')
@@ -431,33 +433,33 @@ class Migration(SchemaMigration):
         # Deleting field 'Link.language'
         db.delete_column(u'rsr_link', 'language')
 
-        # Rename 'date_start_actual' field to 'date_request_posted'
-        db.rename_column(u'rsr_project', 'date_start_actual', 'date_request_posted')
-
-        # Rename 'date_end_actual' field to 'date_complete'
-        db.rename_column(u'rsr_project', 'date_end_actual', 'date_complete')
-
         # # Adding field 'Project.date_complete'
         # db.add_column(u'rsr_project', 'date_complete',
         #               self.gf('django.db.models.fields.DateField')(null=True, blank=True),
         #               keep_default=False)
-
+        #
         # # Adding field 'Project.date_request_posted'
         # db.add_column(u'rsr_project', 'date_request_posted',
         #               self.gf('django.db.models.fields.DateField')(default=datetime.date.today),
         #               keep_default=False)
 
-        # Deleting field 'Project.date_start_planned'
-        db.delete_column(u'rsr_project', 'date_start_planned')
+        # Rename 'date_request_posted' field to 'date_start_planned'
+        db.rename_column(u'rsr_project', 'date_start_planned', 'date_request_posted')
 
-        # # Deleting field 'Project.date_start_actual'
-        # db.delete_column(u'rsr_project', 'date_start_actual')
+        # Rename 'date_complete' field to 'date_end_planned'
+        db.rename_column(u'rsr_project', 'date_end_planned', 'date_complete')
 
-        # Deleting field 'Project.date_end_planned'
-        db.delete_column(u'rsr_project', 'date_end_planned')
+        # # Deleting field 'Project.date_start_planned'
+        # db.delete_column(u'rsr_project', 'date_start_planned')
 
-        # # Deleting field 'Project.date_end_actual'
-        # db.delete_column(u'rsr_project', 'date_end_actual')
+        # Deleting field 'Project.date_start_actual'
+        db.delete_column(u'rsr_project', 'date_start_actual')
+
+        # # Deleting field 'Project.date_end_planned'
+        # db.delete_column(u'rsr_project', 'date_end_planned')
+
+        # Deleting field 'Project.date_end_actual'
+        db.delete_column(u'rsr_project', 'date_end_actual')
 
         # Deleting field 'Project.hierarchy'
         db.delete_column(u'rsr_project', 'hierarchy')
@@ -635,7 +637,7 @@ class Migration(SchemaMigration):
         },
         u'rsr.countrybudgetitem': {
             'Meta': {'object_name': 'CountryBudgetItem'},
-            'code': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '6'}),
+            'code': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '6', 'blank': 'True'}),
             'description': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'percentage': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '1', 'blank': 'True'}),
@@ -720,7 +722,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'legacy_data'", 'to': u"orm['rsr.Project']"}),
-            'value': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100'})
+            'value': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'})
         },
         u'rsr.link': {
             'Meta': {'object_name': 'Link'},
@@ -860,20 +862,20 @@ class Migration(SchemaMigration):
         },
         u'rsr.planneddisbursement': {
             'Meta': {'object_name': 'PlannedDisbursement'},
-            'currency': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3'}),
+            'currency': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'period_end': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'period_start': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'planned_disbursements'", 'to': u"orm['rsr.Project']"}),
             'updated': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'value': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
+            'value': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
             'value_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'})
         },
         u'rsr.policymarker': {
             'Meta': {'object_name': 'PolicyMarker'},
             'description': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'policy_marker': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2'}),
+            'policy_marker': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'policy_markers'", 'to': u"orm['rsr.Project']"}),
             'significance': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
             'vocabulary': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '5', 'blank': 'True'})
@@ -940,13 +942,13 @@ class Migration(SchemaMigration):
         },
         u'rsr.projectcontact': {
             'Meta': {'object_name': 'ProjectContact'},
-            'country': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'contacts'", 'to': u"orm['rsr.Country']"}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'contacts'", 'to': u"orm['rsr.Country']", 'blank': 'True', 'null': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'job_title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'mailing_address': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'}),
-            'organisation': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100'}),
-            'person_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100'}),
+            'organisation': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
+            'person_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'contacts'", 'to': u"orm['rsr.Project']"}),
             'state': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'telephone': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '15', 'blank': 'True'}),
@@ -1008,7 +1010,7 @@ class Migration(SchemaMigration):
         },
         u'rsr.recipientcountry': {
             'Meta': {'object_name': 'RecipientCountry'},
-            'country': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2'}),
+            'country': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'percentage': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '1', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'recipient_countries'", 'to': u"orm['rsr.Project']"}),
@@ -1019,8 +1021,8 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'percentage': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '1', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'recipient_regions'", 'to': u"orm['rsr.Project']"}),
-            'region': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2'}),
-            'region_vocabulary': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1'}),
+            'region': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
+            'region_vocabulary': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             'text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'})
         },
         u'rsr.result': {
@@ -1036,15 +1038,16 @@ class Migration(SchemaMigration):
         u'rsr.sector': {
             'Meta': {'object_name': 'Sector'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'sector_code': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '5', 'blank': 'True'}),
             'percentage': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '1', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sectors'", 'to': u"orm['rsr.Project']"}),
+            'sector_code': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '5', 'blank': 'True'}),
             'text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'vocabulary': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '5', 'blank': 'True'})
         },
         u'rsr.transaction': {
             'Meta': {'object_name': 'Transaction'},
             'aid_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
+            'aid_type_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'currency': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
             'description': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'}),
             'disbursement_channel': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
@@ -1052,6 +1055,7 @@ class Migration(SchemaMigration):
             'finance_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
             'finance_type_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'flow_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
+            'flow_type_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'transactions'", 'to': u"orm['rsr.Project']"}),
             'provider_organisation': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
