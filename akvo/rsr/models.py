@@ -164,6 +164,10 @@ class ProjectLocation(BaseLocation):
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
 
 
+class ProjectUpdateLocation(BaseLocation):
+    # the project update that's related to this location
+    location_target = models.ForeignKey('ProjectUpdate', null=True, related_name='locations')
+
 
 class PartnerType(models.Model):
     id = ValidXMLCharField(max_length=8, primary_key=True, unique=True)
@@ -1387,7 +1391,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ('M', _(u'mobile')),
     )
 
-
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
@@ -1398,7 +1401,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
     language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
-    #status = ValidXMLCharField(max_length=1, choices=STATUSES, default='N')
+    primary_location = models.ForeignKey(ProjectUpdateLocation, null=True, blank=True, on_delete=models.SET_NULL)
     photo = ImageWithThumbnailsField(
         _(u'photo'),
         blank=True,

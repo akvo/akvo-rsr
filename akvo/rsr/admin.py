@@ -709,11 +709,17 @@ class ProjectCommentAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 
+class ProjectUpdateLocationInline(admin.StackedInline):
+    model = get_model('rsr', 'projectupdatelocation')
+    extra = 0
+
+
 class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     list_display = ('id', 'project', 'user', 'text', 'language', 'created_at', 'img',)
     list_filter = ('created_at', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
+    inlines = (ProjectUpdateLocationInline,)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at')
 
@@ -736,6 +742,7 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
+
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
 
 
