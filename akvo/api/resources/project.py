@@ -182,16 +182,16 @@ class IATIProjectResource(ModelResource):
                 partnership[FIELD_LONG_NAME] = partnership[FIELD_LONG_NAME][:75]
         return data
 
-    def hydrate_date_complete(self, bundle):
-        date_complete = bundle.data.get('date_complete')
-        if date_complete and date_complete[-1] == 'Z':
-            bundle.data['date_complete'] = date_complete[:-1]
+    def hydrate_date_end_actual(self, bundle):
+        date_end_actual = bundle.data.get('date_end_actual')
+        if date_end_actual and date_end_actual[-1] == 'Z':
+            bundle.data['date_end_actual'] = date_end_actual[:-1]
         return bundle
 
-    def hydrate_date_request_posted(self, bundle):
-        date_request_posted = bundle.data.get('date_request_posted')
-        if date_request_posted and date_request_posted[-1] == 'Z':
-            bundle.data['date_request_posted'] = date_request_posted[:-1]
+    def hydrate_date_start_actual(self, bundle):
+        date_start_actual = bundle.data.get('date_start_actual')
+        if date_start_actual and date_start_actual[-1] == 'Z':
+            bundle.data['date_start_planned'] = date_start_actual[:-1]
         return bundle
 
     # def hydrate_categories(self, bundle):
