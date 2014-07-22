@@ -183,11 +183,19 @@ class OrganisationAccountAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
-class LinkInline(admin.TabularInline):
+class LinkInline(admin.StackedInline):
     model = get_model('rsr', 'link')
-    extra = 3
+    extra = 1
     list_display = ('url', 'caption', 'show_link')
-    fields = ('kind', 'url', 'caption')
+    fieldsets = (
+        (None, {
+            'fields': ('kind', 'url', 'caption')
+        }),
+        ('IATI fields (advanced)', {
+            'classes': ('collapse',),
+            'fields': ('format', 'category', 'language')
+        })
+    )
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
@@ -524,7 +532,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
             'fields': ('title', 'subtitle', 'status', 'language', 'date_start_planned', 'date_start_actual',
-                       'date_end_planned', 'date_end_actual', 'donate_button'),
+                       'date_end_planned', 'date_end_actual', 'donate_button', 'hierarchy'),
             }),
         (_(u'Description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -585,7 +593,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 u'Optionally, you can add additional information based on the IATI standard.'
             ),
             'classes': ('collapse',),
-            'fields': ('hierarchy', 'project_scope', 'capital_spend_percentage', 'collaboration_type',
+            'fields': ('project_scope', 'capital_spend_percentage', 'collaboration_type',
                        'default_aid_type', 'default_finance_type', 'default_flow_type', 'default_tied_status'),
             }),
     )
