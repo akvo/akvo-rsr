@@ -702,9 +702,10 @@ admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):
-    list_display = ('project', 'user', 'comment', 'time', )
-    list_filter = ('project', 'time', )
+    list_display = ('project', 'user', 'comment', 'created_at', )
+    list_filter = ('project', 'created_at', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
+    readonly_fields = ('created_at', 'last_modified_at')
 
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
@@ -719,7 +720,7 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     fieldsets = (
         (_(u'General Information'), {
-            'fields': ('project','user','update_method', ),
+            'fields': ('project','user','update_method', 'created_at', 'last_modified_at'),
         }),
         (_(u'Content'), {
             'fields': ('title','text','language', ),
