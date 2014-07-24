@@ -5,17 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import ProjectUpdate
+from akvo.rsr.models import ProjectUpdateLocation
 
 from .rsr_serializer import BaseRSRSerializer
-from .project_update_location import ProjectUpdateLocationSerializer
 
 
-class ProjectUpdateSerializer(BaseRSRSerializer):
-
-    locations = ProjectUpdateLocationSerializer(source='locations', many=True)
+class ProjectUpdateLocationSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = ProjectUpdate
+        model = ProjectUpdateLocation
         fields = (
         )
+
