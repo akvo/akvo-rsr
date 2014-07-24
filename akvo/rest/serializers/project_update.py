@@ -7,6 +7,8 @@
 
 from akvo.rsr.models import ProjectUpdate
 
+from ..fields import Base64ImageField
+
 from .rsr_serializer import BaseRSRSerializer
 from .project_update_location import ProjectUpdateLocationSerializer
 
@@ -14,6 +16,7 @@ from .project_update_location import ProjectUpdateLocationSerializer
 class ProjectUpdateSerializer(BaseRSRSerializer):
 
     locations = ProjectUpdateLocationSerializer(source='locations', many=True)
+    photo = Base64ImageField(required=False, allow_empty_file=True)
 
     class Meta:
         model = ProjectUpdate
