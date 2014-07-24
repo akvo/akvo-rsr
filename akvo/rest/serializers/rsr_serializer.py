@@ -3,11 +3,11 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from django.db import models
 
 from rest_framework import serializers
 
-from ..fields import NonNullCharField
+from ..fields import NonNullCharField, NonNullURLField, Base64ImageField
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 
 
@@ -24,6 +24,7 @@ class BaseRSRSerializer(serializers.ModelSerializer):
         super(BaseRSRSerializer, self).__init__(*args, **kwargs)
         self.field_mapping.update(
             {
+                models.URLField: NonNullURLField,
                 ValidXMLCharField: NonNullCharField,
                 ValidXMLTextField: NonNullCharField,
             }

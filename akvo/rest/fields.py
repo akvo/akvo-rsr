@@ -29,6 +29,10 @@ class NonNullCharField(serializers.CharField):
         return smart_text(value)
 
 
+class NonNullURLField(NonNullCharField, serializers.URLField):
+    pass
+
+
 class Base64ImageField(ImageField):
     """ A django-rest-framework field for handling image-uploads through raw post data.
         It uses base64 for en-/decoding the contents of the file.
