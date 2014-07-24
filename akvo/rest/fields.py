@@ -7,12 +7,26 @@
 
 import base64
 import imghdr
+import six
 import uuid
 
 from django.core.files.base import ContentFile
+from django.utils.encoding import smart_text
 
 from rest_framework import serializers
 from rest_framework.fields import ImageField
+
+
+class NonNullCharField(serializers.CharField):
+    """ Fix fo CharField so that '' is returned if the field value is None
+        see https://github.com/tomchristie/django-rest-framework/pull/1665
+    """
+    def from_native(self, value):
+        if isinstance(value, six.string_types):
+            return value
+        if value is None:
+            return u''
+        return smart_text(value)
 
 
 class Base64ImageField(ImageField):
