@@ -7,13 +7,24 @@
 
 from rest_framework import serializers
 
+from ..fields import NonNullCharField
+from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 
-# These classes are for easy switching between URL based foreign key representation and ID based
-# If we want both it might make sense to use a meta class to keep the underlying code DRY
 
 # class BaseRSRSerializer(serializers.HyperlinkedModelSerializer):
+#     TODO: find a way to use the HyperlinkedModelSerializer when using the browsable API
 #     pass
 
 
 class BaseRSRSerializer(serializers.ModelSerializer):
-    pass
+    def __init__(self, *args, **kwargs):
+        """ Add the ValidXMLXXXFields to the model-to-rest-field mapping and use the modified CharField,
+            NonNullCharField, that returns '' for None values
+        """
+        super(BaseRSRSerializer, self).__init__(*args, **kwargs)
+        self.field_mapping.update(
+            {
+                ValidXMLCharField: NonNullCharField,
+                ValidXMLTextField: NonNullCharField,
+            }
+        )
