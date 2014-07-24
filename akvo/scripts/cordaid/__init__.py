@@ -24,11 +24,11 @@ cordaid_settings = dict(
     AKVO_NS='{http://akvo.org/iati-activities}',
 
     CORDAID_ROOT_DIR = '/var/tmp/cordaid',
-    CORDAID_PROJECT_IMAGES_SUBDIR = 'project_images',
-    CORDAID_LOGOS_SUBDIR = 'logos',
+    CORDAID_PROJECT_IMAGES_SUBDIR = 'out_proj',
+    CORDAID_LOGOS_SUBDIR = 'out_rltn',
 
-    CORDAID_IATI_ACTIVITES_FILENAME = 'iati_export0.xml',
-    CORDAID_ORGANISATIONS_FILENAME = 'organisations.xml',
+    CORDAID_IATI_ACTIVITES_FILENAME = 'iati-activities.xml',
+    CORDAID_ORGANISATIONS_FILENAME = 'akvo-organizations.xml',
     CORDAID_INDICATORS_CSV_FILE_NAME = '20130711_indicators.csv',
     CORDAID_LOG_FILENAME = 'cordaid_import.log',
     CORDAID_ORG_CSV_FILENAME = 'cordaid_organisations_import_{datetime}.csv',
@@ -127,6 +127,8 @@ ACTION_CREATE_IOI = 'internal org id created'
 ACTION_CREATE_ORG = 'organisation created'
 ACTION_UPDATE_ORG = 'organisation updated'
 ACTION_PUBLISHING_SET = 'set publishing status'
+ACTION_BENCH_CREATE = 'benchmarkname created'
+ACTION_BENCH_FOUND = 'benchmarkname found'
 
 ERROR_COUNTRY_CODE = 'invalid country code'
 ERROR_MULTIPLE_OBJECTS = 'multiple objects'
@@ -139,3 +141,5 @@ ERROR_NO_ORGS = "participating orgs missing error"
 ERROR_CREATE_ORG = 'organisation create error'
 ERROR_UPDATE_ORG = 'organisation update error'
 ERROR_UPLOAD_ORG = "organisation upload error"
+ERROR_BUSINESS_UNIT_MISSING = "business unit organisation missing error"
+ERROR_CATEGORY_MISSING = "category missing for business unit error"
