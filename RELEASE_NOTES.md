@@ -7,6 +7,22 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.3.9.2 Yam - Hotfix 2
+
+Thursday 24th July 2014, adriancollier
+
+Included Changes
+---
+
+### Fixes to Import Scripts
+
+We made some small fixes to the import scripts to ensure that all was working correctly for the IATI XML Import processes.
+
+Github issue [#680](https://github.com/akvo/akvo-rsr/issues/680)
+
+
+--------
+
 Akvo RSR ver 2.3.9.1 Yam - Hotfix
 
 Tuesday 8th Juyl 2014, adriancollier
