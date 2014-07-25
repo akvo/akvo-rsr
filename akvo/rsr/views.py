@@ -1091,8 +1091,7 @@ def donate(request, p, engine):
             if is_test_donation:
                 invoice.test = True
             if request.session.get("donation_return_url", False):
-                return_url = request.session["donation_return_url"]
-                del request.session["donation_return_url"]
+                return_url = urljoin(request.session["donation_return_url"], reverse("donate_thanks"))
             else:
                 return_url = urljoin(request.domain_url, reverse("donate_thanks"))
             if engine == "ideal":
@@ -1146,6 +1145,11 @@ def donate(request, p, engine):
         donate_form = InvoiceForm(project=p,
                                   engine=engine,
                                   initial=dict(is_public=True))
+        if request.session.get("donation_return_url", False):
+            request.session["cancel_url"] = urljoin(request.session["donation_return_url"],
+                                                    reverse("project_main", kwargs={'project_id': p.id}))
+        else:
+            request.session["cancel_url"] = reverse("project_main", kwargs={'project_id': p.id})
     return render_to_response("rsr/project/donate/donate_step2.html",
                               dict(donate_form=donate_form,
                                    payment_engine=engine,
@@ -1163,7 +1167,12 @@ def void_invoice(request, invoice_id, action=None):
                             project_id=invoice.project.id,
                             engine=invoice.engine)
         elif action == "cancel":
-            return redirect("project_main", project_id=invoice.project.id)
+            if request.session.get("donation_return_url", False):
+                return redirect(urljoin(request.session["donation_return_url"],
+                                        reverse("project_main",
+                                                kwargs={'project_id': invoice.project.id})))
+            else:
+                return redirect("project_main", project_id=invoice.project.id)
     return redirect("project_list", slug="all")
 
 
