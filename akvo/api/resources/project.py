@@ -103,9 +103,11 @@ class IATIProjectResource(ModelResource):
             Goal.objects.filter(project=bundle.obj).delete()
             BudgetItem.objects.filter(project=bundle.obj).delete()
             ProjectLocation.objects.filter(location_target=bundle.obj).delete()
+            # Since all locations for the project are deleted we need to make sure Project.primary_location is set to None
+            bundle.obj.primary_location = None
+            bundle.obj.save()
             Partnership.objects.filter(project=bundle.obj).delete()
             Benchmark.objects.filter(project=bundle.obj).delete()
-            Keyword.objects.filter(project=bundle.obj).delete()
             bundle.obj.categories.clear()
 
         self.authorized_update_detail(self.get_object_list(bundle.request), bundle)
