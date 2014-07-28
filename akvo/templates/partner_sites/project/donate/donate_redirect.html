@@ -3,7 +3,7 @@
 
 {% block head %}
 
-<meta http-equiv="refresh" content="5;url={{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}{% url 'donate_thanks' %}">
+<meta http-equiv="refresh" content="5;url={{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}">
 
 <script type="text/javascript">
 window.onload = function() {
@@ -31,7 +31,7 @@ window.onload = function() {
 			{% trans 'You will be redirected to the Akvo donate page' %} <span id="dots"></span>
 		</p>
         <p>
-            {% trans 'If you are not redirected within 10 seconds,' %} <a href="{{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}{% url 'donate_thanks' %}">{% trans 'click here' %}</a>
+            {% trans 'If you are not redirected within 10 seconds,' %} <a href="{{domain_url}}/project/{{project.id}}/donate/?return_url=http://{{request.META.HTTP_HOST}}">{% trans 'click here' %}</a>
         </p>
 </div>
 
