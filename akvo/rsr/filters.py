@@ -84,36 +84,39 @@ class ProjectFilterSet(django_filters.FilterSet):
         choices.extend(list(CONTINENTS))
         self.filters['continent'].extra.update({'choices': choices})
 
-
         # The request is sent when the call is made from a partner site view
         if request:
             partner_site = request.partner_site
             organisation = partner_site.organisation
-            # If the partner site is "normal"
-            if partner_site.partner_projects:
-                countries = organisation.countries_where_active()
 
-                continents = [('', _(u'Active continents'))]
-                choices = []
-                for country in countries:
-                    if not country.continent_code in [code[0] for code in choices]:
-                        choices.append((country.continent_code, _(country.continent)))
-                continents.extend(sorted(choices))
+            # Countries
+            countries = projects.countries()
+            self.filters['locations__country'].extra.update({'queryset': countries})
+            self.filters['locations__country'].extra.update({'empty_label': _(u'Active countries')})
 
-                self.filters['continent'].extra.update({'choices': continents})
-                self.filters['locations__country'].extra.update({'queryset': countries})
-                self.filters['locations__country'].extra.update({'empty_label': _(u'Active countries')})
+            # Continents
+            continents = [('', _(u'Active continents'))]
+            choices = []
+            for country in countries:
+                if not country.continent_code in [code[0] for code in choices]:
+                    choices.append((country.continent_code, _(country.continent)))
+            continents.extend(sorted(choices))
+            self.filters['continent'].extra.update({'choices': continents})
 
+            # Partners
+            if partner_site.partner_projects and partner_site.keywords == 0:
                 organisations = organisation.partners()
-            # Keyword driven partner site.
-            # Performance issues preclude filtering of filter drop-downs right now
+                self.filters['organisation'].extra.update({'empty_label': _(u'Active partners')})
             else:
                 organisations = Organisation.objects.all()
-                self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
-            self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
+                self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
+            
+        # No request (no partner site)
         else:
             organisations = Organisation.objects.all()
+            self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
             self.filters['organisation'].extra.update({'empty_label': _(u'All organisations')})
+
         self.filters['organisation'].extra.update({'queryset': organisations})
 
         self.filters['andor'].field_class = BooleanField
