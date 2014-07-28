@@ -51,12 +51,12 @@
 				{% trans "Schedule" %}</h3>
               <p class="white tiny">
                 {% trans "Begun" %}<br />
-                <span class="fat">{{project.date_request_posted}}</span>
+                <span class="fat">{{project.date_start_actual}}</span>
               </p>
               <p class="white tiny">
                 {% trans "Completed" %}<br />
-                {% if project.date_complete %}
-                  <span class="fat">{{project.date_complete}}</span>
+                {% if project.date_end_actual %}
+                  <span class="fat">{{project.date_end_actual}}</span>
                 {% else %}
                 <span class="fat">{% trans "Not yet" %}</span>
                 {% endif %}
