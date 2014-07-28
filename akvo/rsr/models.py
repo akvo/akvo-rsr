@@ -748,6 +748,12 @@ class Project(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
+    HIERARCHY_OPTIONS = (
+        (1, u'Core Activity'),
+        (2, u'Sub Activity'),
+        (3, u'Lower Sub Activity')
+    )
+
     title = ValidXMLCharField(_(u'title'), max_length=45, db_index=True, help_text=_(u'A short descriptive title for your project (45 characters).'))
     subtitle = ValidXMLCharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default='N', help_text=_(u'Current project state.'))
@@ -798,7 +804,9 @@ class Project(TimestampsMixin, models.Model):
     sync_owner = models.ForeignKey(Organisation, null=True, on_delete=models.SET_NULL)
 
     # extra IATI fields
-    hierarchy = models.PositiveIntegerField(_(u'hierarchy'), null=True, blank=True, max_length=1)
+    hierarchy = models.PositiveIntegerField(
+        _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS
+    )
     project_scope = ValidXMLCharField(
         _(u'project scope'), blank=True, max_length=2, choices=codelists.ACTIVITY_SCOPE
     )

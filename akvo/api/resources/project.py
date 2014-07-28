@@ -194,6 +194,18 @@ class IATIProjectResource(ModelResource):
             bundle.data['date_start_planned'] = date_start_actual[:-1]
         return bundle
 
+    def hydrate_date_end_planned(self, bundle):
+        date_end_planned = bundle.data.get('date_end_planned')
+        if date_end_planned and date_end_planned[-1] == 'Z':
+            bundle.data['date_end_planned'] = date_end_planned[:-1]
+        return bundle
+
+    def hydrate_date_start_planned(self, bundle):
+        date_start_planned = bundle.data.get('date_start_planned')
+        if date_start_planned and date_start_planned[-1] == 'Z':
+            bundle.data['date_start_planned'] = date_start_planned[:-1]
+        return bundle
+
     # def hydrate_categories(self, bundle):
     #     if bundle.data['categories']:
     #         bundle.data['categories'] = [
