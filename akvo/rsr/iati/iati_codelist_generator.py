@@ -31,6 +31,28 @@ def stringify(bits):
     return [(lambda bit: "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
     # return [(lambda bit: bit if bit.isdigit() else "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
 
+def prettify_country_name(country):
+    """ ALL CAPS IS UGLY!
+    """
+    country = country.lower()
+    bits = []
+    previous = ''
+    for bit in country.split(' '):
+        # don't capitalize small words unless they follow a comma
+        if bit not in ['the', 'and', 'of', 'da'] or previous[-1] == ',':
+            bit = bit.capitalize()
+        # special case fo U.S.
+        if bit == 'U.s.':
+            bit = 'U.S.'
+        # Capitalize inside parentheses
+        if bit[0] == '(':
+            bit = "({}".format(bit[1:].capitalize())
+        # Fix hyphenated names
+        if '-' in bit:
+            bit = '-'.join([b.capitalize() for b in bit.split('-')])
+        bits.append(bit)
+        previous = bit
+    return ' '.join(bits)
 
 def codelist_to_tuples(xml_string, codelist, version):
     "Takes XML codelist string and converts it to tuples"
@@ -57,7 +79,11 @@ def codelist_to_tuples(xml_string, codelist, version):
             if not codelist_field_item.tag in codelist_tags:
                 codelist_tags.append(codelist_field_item.tag)
                 if codelist_field_item.text:
-                    codelist_field_content.append(codelist_field_item.text.replace("\n", "").replace("\r", ""))
+                    # Make country names look nice
+                    if codelist == "Country" and codelist_field_item.tag == "name":
+                        codelist_field_content.append(prettify_country_name(codelist_field_item.text))
+                    else:
+                        codelist_field_content.append(codelist_field_item.text.replace("\n", "").replace("\r", ""))
                 else:
                     codelist_field_content.append("")
         codelist_content.append(codelist_field_content)
