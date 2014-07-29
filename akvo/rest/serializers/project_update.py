@@ -5,12 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from rest_framework import serializers
+
 from akvo.rsr.models import ProjectUpdate
 
 from ..fields import Base64ImageField
 
 from .rsr_serializer import BaseRSRSerializer
-from .project_update_location import ProjectUpdateLocationSerializer
+from .project_update_location import ProjectUpdateLocationSerializer, ProjectUpdateLocationExtraSerializer
+from .user import UserExtraSerializer
 
 
 class ProjectUpdateSerializer(BaseRSRSerializer):
@@ -20,5 +23,16 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectUpdate
-        fields = (
-        )
+
+
+class ProjectUpdateExtraSerializer(BaseRSRSerializer):
+    """ This serializer includes User data and data about the Organisation the user is connected to
+    """
+    photo = Base64ImageField(required=False, allow_empty_file=True)
+    primary_location = ProjectUpdateLocationExtraSerializer()
+    project = serializers.Field(source='project.pk')
+    user = UserExtraSerializer()
+
+    class Meta:
+        model = ProjectUpdate
+        depth = 2
