@@ -7,6 +7,62 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.3.10 Zambo
+---
+
+Thursday 31st July 2014, adriancollier
+
+New and Noteworthy
+---
+
+### IATI Fields in RSR
+
+We have made the first contribution to the RSR Database and Admin resources to be able to accomodate all of the IATI Standard. This now means that we can collect and store any information delivered for the IATI Standard within RSR. We are working towards visualising this information wihtin the front end of RSR.
+
+Github issue [#678](https://github.com/akvo/akvo-rsr/issues/678)
+
+Bug Fixes
+---
+
+### 404 page missing media
+
+We have corrected a bug where the 404 page was no longer displaying the image and styling.
+
+Github issue [#686](https://github.com/akvo/akvo-rsr/issues/686)
+
+### Incorrect Password on Akvo Pages
+
+When a user was logging into RSR via Akvo Pages and they entered their password incorrectly, the format of the page was not displaying correctly. This has now been resolved.
+
+Github issue [#664](https://github.com/akvo/akvo-rsr/issues/664)
+
+### Donate Image on PayPal Donation Screen
+
+The Donate button was missing its visual display button when making a donation through PayPal, so this has now been corrected.
+
+Github issue [#663](https://github.com/akvo/akvo-rsr/issues/663)
+
+### Galleria Error on Akvo Pages
+
+Some users were experiencing errors with images when viewing projects within Akvo Pages. This resulted in the images not being displayed and only an error message in their place. We have made some fixes that we believe should resolve this for all users, but we will be keeping an eye on this.
+
+Github issue [#473](https://github.com/akvo/akvo-rsr/issues/473)
+
+### Requesting a non existing Widget
+
+When a user was requesting an widget that did not exist in RSR, they were receiving a 500 error. This has been changed to correctly provide a 404 error to display that the content is not available.
+
+Github issue [#198](https://github.com/akvo/akvo-rsr/issues/198)
+
+### Cancelling donations from Akvo Pages
+
+When a user is within the donation process and presses the cancel button, they are now correctly redirected back to the page that they came from even if this is on an Akvo Pages instace, where previously they were only being returned to http://rsr.akvo.org.
+
+Github issue [#147](https://github.com/akvo/akvo-rsr/issues/147)
+
+
+--------
+
 Akvo RSR ver 2.3.9.2 Yam - Hotfix 2
 ---
 
