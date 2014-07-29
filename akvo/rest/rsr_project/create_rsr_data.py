@@ -64,8 +64,9 @@ class RSRModelInstance(object):
             'http://{host}/rest/v1/{model}/',
             dict(host=self.host, model=self.model.lower()),
             headers={
-                'content-type': 'application/json',
-                'encoding': 'utf-8',
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+                'Encoding': 'utf-8',
                 'Authorization': 'Token {}'.format(self.api_token),
             },
             data=json.dumps(self.data),
@@ -78,8 +79,9 @@ class RSRModelInstance(object):
             'http://{host}/rest/v1/{model}/{id}/',
             dict(host=self.host, model=self.model.lower(), id=id),
             headers={
-                'content-type': 'application/json',
-                'encoding': 'utf-8',
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+                'Encoding': 'utf-8',
                 'Authorization': 'Token {}'.format(self.api_token),
             },
             data=json.dumps(self.data),
@@ -118,6 +120,16 @@ class RSRModelInstance(object):
             self.data['current_image'] = current_image.to_base64()
 
 
+    def project_update__photo(self):
+        """ The image data should be either a URL to the image or a path to it on the local machine
+            Use the ImageImporter to get the image and turn it into a base64 encoded string
+        """
+        if self.data['photo']:
+            photo = ImageImporter(self.data['photo'])
+            photo.get_image()
+            self.data['photo'] = photo.to_base64()
+
+
     def partnership__organisation(self):
         """ The Partnership object has two FKs, one to the Project and one to the Organisation. Since the Organisation
             may not exist when the JSON is created we need a way to lookup the Organisation from the API. This is done
@@ -129,8 +141,9 @@ class RSRModelInstance(object):
                 url_template='http://{host}/rest/v1/{model}/?iati_org_id={iati_org_id}',
                 url_args=dict(host=instance.host, model='organisation', iati_org_id=instance.data['organisation']),
                 headers={
-                    'content-type': 'application/json',
-                    'encoding': 'utf-8',
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json',
+                    'Encoding': 'utf-8',
                     'Authorization': 'Token {}'.format(instance.api_token),
                 },
                 accept_codes=[codes.ok],
@@ -144,8 +157,9 @@ class RSRModelInstance(object):
                 url_template='http://{host}/rest/v1/{model}/?name={name}',
                 url_args=dict(host=instance.host, model='organisation', name=instance.data['organisation']),
                 headers={
-                    'content-type': 'application/json',
-                    'encoding': 'utf-8',
+                    'Content-type': 'application/json',
+                    'Accept': 'application/json',
+                    'Encoding': 'utf-8',
                     'Authorization': 'Token {}'.format(instance.api_token),
                 },
                 accept_codes=[codes.ok],
@@ -167,6 +181,59 @@ class RSRModelInstance(object):
             # otherwise try to get the ID from the API
             elif isinstance(organisation, (str, unicode)):
                 id = lookup_organisation(self)
+                if id:
+                    self.data['organisation'] = id
+
+    def lookup_organisation(self):
+
+        ### DEBUG ###
+        import pdb
+        pdb.set_trace()
+        ### DEBUG ###
+
+        request = Requester(
+            url_template='http://{host}/rest/v1/{model}/?iati_org_id={iati_org_id}',
+            url_args=dict(host=self.host, model='organisation', iati_org_id=self.data['organisation']),
+            headers={
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+                'Encoding': 'utf-8',
+                'Authorization': 'Token {}'.format(self.api_token),
+            },
+            accept_codes=[codes.ok],
+        )
+        if request.response.status_code == codes.ok:
+            data = data_from_json_reponse(request)
+            if data['count'] == 1:
+                return data['results'][0]['id']
+
+        request = Requester(
+            url_template='http://{host}/rest/v1/{model}/?name={name}',
+            url_args=dict(host=self.host, model='organisation', name=self.data['organisation']),
+            headers={
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+                'Encoding': 'utf-8',
+                'Authorization': 'Token {}'.format(self.api_token),
+            },
+            accept_codes=[codes.ok],
+        )
+        if request.response.status_code == codes.ok:
+            data = data_from_json_reponse(request)
+            if data['count'] == 1:
+                return data['results'][0]['id']
+
+        raise NotFoundError, 'Organisation not found, using filters "iati_org_id={}" and "name={}"'.format(
+            self.data['organisation'], self.data['organisation']
+        )
+
+    def partnership__organisation(self):
+        organisation = self.data.get('organisation', False)
+        if organisation:
+            if isinstance(organisation, int):
+                return
+            elif isinstance(organisation, (str, unicode)):
+                id = self.lookup_organisation()
                 if id:
                     self.data['organisation'] = id
 

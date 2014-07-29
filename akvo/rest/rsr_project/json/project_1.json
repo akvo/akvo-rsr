@@ -85,7 +85,7 @@
         "title": "Project update title",
         "text": "### A subtitle\n\nSome text",
         "language": "en",
-        "photo": "",
+        "photo": "http://www.flubu.com/blog/wp-content/uploads/2012/07/recharging.jpg",
         "photo_caption": "Pic cap",
         "photo_credit": "Pic cred",
         "video": "",
@@ -94,10 +94,11 @@
         "update_method": "W",
         "user_agent": "",
         "uuid": "",
-        "notes": ""
+        "notes": "",
+        "locations": []
     },
     "partnership": {
-        "organisation": "A nice little org",
+        "organisation": "Akvo",
         "partner_type": "field",
         "funding_amount": null,
         "partner_type_extra": null,
@@ -106,7 +107,7 @@
         "iati_url": ""
     },
     "partnership": {
-        "organisation": "NL-2",
+        "organisation": "Akvo",
         "partner_type": "funding",
         "funding_amount": 4711,
         "partner_type_extra": null,
