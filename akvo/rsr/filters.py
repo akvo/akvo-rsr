@@ -73,8 +73,9 @@ class ProjectFilterSet(django_filters.FilterSet):
     currency        = django_filters.ChoiceFilter()
 
     def __init__(self, *args, **kwargs):
-        organisation_id = kwargs.pop('organisation_id', None)
+        request = kwargs.pop('request', None)
         super(ProjectFilterSet, self).__init__(*args, **kwargs)
+        projects = kwargs.pop('queryset', None)
 
         self.filters['title'].field.widget.input_type = 'search'
         self.filters['title'].field.widget.attrs = {'results': '5', 'autosave': 'project_search', 'placeholder': _(u'Project title or subtitle')}
@@ -83,29 +84,37 @@ class ProjectFilterSet(django_filters.FilterSet):
         choices.extend(list(CONTINENTS))
         self.filters['continent'].extra.update({'choices': choices})
 
-        self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
 
-        if organisation_id:
-            org = Organisation.objects.get(pk=organisation_id)
+        # The request is sent when the call is made from a partner site view
+        if request:
+            partner_site = request.partner_site
+            organisation = partner_site.organisation
+            # If the partner site is "normal"
+            if partner_site.partner_projects:
+                countries = organisation.countries_where_active()
 
-            countries = org.countries_where_active()
+                continents = [('', _(u'Active continents'))]
+                choices = []
+                for country in countries:
+                    if not country.continent_code in [code[0] for code in choices]:
+                        choices.append((country.continent_code, _(country.continent)))
+                continents.extend(sorted(choices))
 
-            continents = [('', _(u'All continents'))]
-            choices = []
-            for country in countries:
-                if not country.continent_code in [code[0] for code in choices]:
-                    choices.append((country.continent_code, _(country.continent)))
-            continents.extend(sorted(choices))
+                self.filters['continent'].extra.update({'choices': continents})
+                self.filters['locations__country'].extra.update({'queryset': countries})
+                self.filters['locations__country'].extra.update({'empty_label': _(u'Active countries')})
 
-            self.filters['continent'].extra.update({'choices': continents})
-            self.filters['locations__country'].extra.update({'queryset': countries})
-
-            qs = org.partners()
+                organisations = organisation.partners()
+            # Keyword driven partner site.
+            # Performance issues preclude filtering of filter drop-downs right now
+            else:
+                organisations = Organisation.objects.all()
+                self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
             self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
         else:
-            qs = Organisation.objects.all()
+            organisations = Organisation.objects.all()
             self.filters['organisation'].extra.update({'empty_label': _(u'All organisations')})
-        self.filters['organisation'].extra.update({'queryset': qs})
+        self.filters['organisation'].extra.update({'queryset': organisations})
 
         self.filters['andor'].field_class = BooleanField
         self.filters['status'].field_class = CheckboxMultipleChoiceField

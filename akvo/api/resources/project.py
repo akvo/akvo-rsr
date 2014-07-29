@@ -103,9 +103,11 @@ class IATIProjectResource(ModelResource):
             Goal.objects.filter(project=bundle.obj).delete()
             BudgetItem.objects.filter(project=bundle.obj).delete()
             ProjectLocation.objects.filter(location_target=bundle.obj).delete()
+            # Since all locations for the project are deleted we need to make sure Project.primary_location is set to None
+            bundle.obj.primary_location = None
+            bundle.obj.save()
             Partnership.objects.filter(project=bundle.obj).delete()
             Benchmark.objects.filter(project=bundle.obj).delete()
-            Keyword.objects.filter(project=bundle.obj).delete()
             bundle.obj.categories.clear()
 
         self.authorized_update_detail(self.get_object_list(bundle.request), bundle)
@@ -182,16 +184,32 @@ class IATIProjectResource(ModelResource):
                 partnership[FIELD_LONG_NAME] = partnership[FIELD_LONG_NAME][:75]
         return data
 
-    def hydrate_date_complete(self, bundle):
-        date_complete = bundle.data.get('date_complete')
-        if date_complete and date_complete[-1] == 'Z':
-            bundle.data['date_complete'] = date_complete[:-1]
+    def hydrate_date_end_actual(self, bundle):
+        date_end_actual = bundle.data.get('date_end_actual')
+        if date_end_actual and date_end_actual[-1] == 'Z':
+            bundle.data['date_end_actual'] = date_end_actual[:-1]
         return bundle
 
-    def hydrate_date_request_posted(self, bundle):
-        date_request_posted = bundle.data.get('date_request_posted')
-        if date_request_posted and date_request_posted[-1] == 'Z':
-            bundle.data['date_request_posted'] = date_request_posted[:-1]
+    def hydrate_date_start_actual(self, bundle):
+        date_start_actual = bundle.data.get('date_start_actual')
+        if date_start_actual and date_start_actual[-1] == 'Z':
+            bundle.data['date_start_actual'] = date_start_actual[:-1]
+        return bundle
+
+    def hydrate_date_end_planned(self, bundle):
+        date_end_planned = bundle.data.get('date_end_planned')
+        if date_end_planned and date_end_planned[-1] == 'Z':
+            bundle.data['date_end_planned'] = date_end_planned[:-1]
+        if date_end_planned:
+            bundle.data['date_complete'] = bundle.data.pop('date_end_planned')
+        return bundle
+
+    def hydrate_date_start_planned(self, bundle):
+        date_start_planned = bundle.data.get('date_start_planned')
+        if date_start_planned and date_start_planned[-1] == 'Z':
+            bundle.data['date_start_planned'] = date_start_planned[:-1]
+        if date_start_planned:
+            bundle.data['date_request_posted'] = bundle.data.pop('date_start_planned')
         return bundle
 
     # def hydrate_categories(self, bundle):
@@ -313,4 +331,6 @@ class ProjectResource(ConditionalFullResource):
             'original': bundle.data['current_image'],
             'thumbnails': get_extra_thumbnails(bundle.obj.current_image),
         }
+        bundle.data['date_request_posted'] = bundle.data.pop('date_start_planned')
+        bundle.data['date_complete'] = bundle.data.pop('date_end_planned')
         return bundle

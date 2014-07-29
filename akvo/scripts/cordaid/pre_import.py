@@ -17,54 +17,57 @@ from django.core.files.temp import NamedTemporaryFile
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
-from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import (
     Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID, OrganisationLocation
 )
 from akvo.utils import model_and_instance_based_filename, custom_get_or_create_country, who_am_i
 from akvo.scripts.cordaid import (
-    CORDAID_ORG_ID, CORDAID_IATI_ID, DGIS_ORG_ID, DGIS_IATI_ID, CORDAID_INDICATORS_CSV,
-    CORDAID_LOGOS_DIR, CORDAID_ORGANISATIONS_XML,
+    CORDAID_ORG_ID, CORDAID_IATI_ID, DGIS_ORG_ID, DGIS_IATI_ID, CORDAID_LOGOS_DIR, CORDAID_ORGANISATIONS_XML,
     print_log, log, LOG_ORGANISATIONS, ACTION_FOUND, ERROR_MULTIPLE_OBJECTS, ACTION_LOCATION_SET,
     ERROR_COUNTRY_CODE, ACTION_CREATE_ORG, ERROR_EXCEPTION, ACTION_LOCATION_FOUND, ACTION_SET_IMAGE,
-    CORDAID_ORG_CSV_FILE,
-    init_log,
-    outsys, CORDAID_IATI_ACTIVITIES_XML, ACTION_UPDATE_ORG, ACTION_CREATE_IOI)
+    CORDAID_ORG_CSV_FILE, init_log, outsys, CORDAID_IATI_ACTIVITIES_XML, ACTION_UPDATE_ORG, ACTION_CREATE_IOI,
+    ERROR_BUSINESS_UNIT_MISSING, ACTION_BENCH_FOUND, ACTION_BENCH_CREATE, ERROR_CATEGORY_MISSING
+)
 
-
-def create_cordaid_business_units(business_units):
+def find_cordaid_business_units(business_units):
     outsys("\nRunning {}() ".format(who_am_i()))
-    business_units_info = [
-        dict(pk=CORDAID_ORG_ID,  internal_id="27239"),
-        dict(pk=959,  internal_id="K6020", cat_name="Children & Education", fa="Education"),
-        dict(pk=962,  internal_id="K6090", cat_name="Domestic", fa="Economic development"),
-        dict(pk=961,  internal_id="K6030", cat_name="Disaster Recovery", fa="Economic development"),
-        dict(pk=950,  internal_id="K6070", cat_name="Entrepreneurship", fa="Economic development"),
-        dict(pk=1099, internal_id="K6110", cat_name="Food Security", fa="Healthcare"),
-        dict(pk=953,  internal_id="K6100", cat_name="Investments", fa="Economic development"),
-        dict(pk=949,  internal_id="K6010", cat_name="Healthcare", fa="Healthcare"),
-        dict(pk=1241, internal_id="K6060", cat_name="Security & Justice", fa="Economic development"),
-        dict(pk=946,  internal_id="K6080", cat_name="Urban Matters", fa="Economic development"),
-        dict(pk=955,  internal_id="K6040", cat_name="Women's leadership", fa="Economic development"),
-        dict(pk=960,  internal_id="K6050", cat_name="Extractives", fa="Economic development"),
-    ]
+    known_business_units = {
+        "27239": dict(pk=CORDAID_ORG_ID),
+        "K6020": dict(pk=959, cat_name="Children & Education", fa="Education"),
+        "K6090": dict(pk=962, cat_name="Domestic", fa="Economic development"),
+        "K6030": dict(pk=961, cat_name="Disaster Recovery", fa="Economic development"),
+        "K6070": dict(pk=950, cat_name="Entrepreneurship", fa="Economic development"),
+        "K6110": dict(pk=1099, cat_name="Food Security", fa="Healthcare"),
+        "K6100": dict(pk=953, cat_name="Investments", fa="Economic development"),
+        "K6010": dict(pk=949, cat_name="Healthcare", fa="Healthcare"),
+        "K6060": dict(pk=1241, cat_name="Security & Justice", fa="Economic development"),
+        "K6080": dict(pk=946, cat_name="Urban Matters", fa="Economic development"),
+        "K6040": dict(pk=955, cat_name="Women's leadership", fa="Economic development"),
+        "K6050": dict(pk=960, cat_name="Extractives", fa="Economic development"),
+    }
     cordaid = Organisation.objects.get(pk=CORDAID_ORG_ID)
-    for data in business_units_info:
-        outsys('.')
-        pk, identifier = data['pk'], data['internal_id']
-        cat_name, fa_name = data.get('cat_name'), data.get('fa')
+
+    for internal_id in business_units.keys():
+        cbu = known_business_units.get(internal_id, {'pk': -1})
+        pk, cat_name, fa_name = cbu['pk'], cbu.get('cat_name'), cbu.get('fa'),
         try:
             organisation = Organisation.objects.get(pk=pk)
+            outsys('.')
         except:
+            outsys('*')
             log(
-                u"No business unit with id {pk}, internal ID {identifier}",
-                dict(pk=pk, identifier=identifier),
+                u"No business unit with internal ID {internal_id}",
+                dict(
+                    internal_id=internal_id,
+                    event=ERROR_BUSINESS_UNIT_MISSING
+                )
             )
             continue
         internal_org, created = InternalOrganisationID.objects.get_or_create(
             recording_org=cordaid,
             referenced_org=organisation,
-            identifier= identifier
+            identifier= internal_id
         )
         if cat_name:
             new_cat, created = Category.objects.get_or_create(name=cat_name)
@@ -73,7 +76,7 @@ def create_cordaid_business_units(business_units):
                 new_cat.focus_area.add(FocusArea.objects.get(name=fa_name))
             else:
                 log(u"Found existing cat: {id}, {cat_name}", dict(id=new_cat.id, cat_name=cat_name))
-            business_units.setdefault(identifier, {'category': None, 'benchmarknames': []})['category'] = new_cat
+            business_units.setdefault(internal_id, {'category': None, 'benchmarknames': []})['category'] = new_cat
 
     cordaid.iati_org_id = CORDAID_IATI_ID
     cordaid.save()
@@ -89,14 +92,40 @@ def create_cordaid_business_units(business_units):
 def create_cats_and_benches(business_units):
     outsys("\nRunning {}() ".format(who_am_i()))
     for internal_id, data in business_units.items():
-        for name in data['benchmarknames']:
-            outsys('.')
-            new_bench, created = Benchmarkname.objects.get_or_create(name=name)
-            if created:
-                log(u"Created bench: {id}, {name}", dict(id=new_bench.id, name=name))
-            else:
-                log(u"Found existing bench: {id}, {name}", dict(id=new_bench.id, name=name))
-            data['category'].benchmarknames.add(new_bench)
+        if data.get('category'):
+            for name in data['benchmarknames']:
+                outsys('.')
+                new_bench, created = Benchmarkname.objects.get_or_create(name=name)
+                if created:
+                    log(u"Created bench: {pk}, {label}",
+                        dict(
+                            label=name,
+                            pk=new_bench.id,
+                            event=ACTION_BENCH_CREATE
+                        )
+                    )
+                else:
+                    log(u"Found existing bench: {pk}, {label}",
+                        dict(
+                            label=name,
+                            pk=new_bench.id,
+                            event=ACTION_BENCH_FOUND
+                        )
+                    )
+                try:
+                    data['category'].benchmarknames.add(new_bench)
+                except:
+                    # we shouldn't end up here since we're testing for the existance of the category above
+                    pass
+        else:
+            outsys('*')
+            log(
+                u"No category set of business unit with internal ID {internal_id}",
+                dict(
+                    internal_id=internal_id,
+                    event=ERROR_CATEGORY_MISSING
+                )
+            )
 
 
 def import_cordaid_benchmarks(csv_file):
@@ -392,7 +421,7 @@ def import_orgs(xml_file):
 if __name__ == '__main__':
     #business_units = import_cordaid_benchmarks(CORDAID_INDICATORS_CSV)
     business_units = find_benchmarknames_and_BUs()
-    business_units = create_cordaid_business_units(business_units)
+    business_units = find_cordaid_business_units(business_units)
     create_cats_and_benches(business_units)
     import_orgs(CORDAID_ORGANISATIONS_XML)
     log_file = init_log(CORDAID_ORG_CSV_FILE)

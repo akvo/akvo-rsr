@@ -95,6 +95,41 @@
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}
+              {% if forloop.counter == 11 %}
+                  {% with inline_admin_formset=inline_admin_formsets.6 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.7 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.8 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.9 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.10 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.11 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.12 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.13 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.14 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.15 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.16 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+              {% endif %}
           {% endfor %}
 
           {% block after_field_sets %}{% endblock %}
