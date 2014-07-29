@@ -23,3 +23,12 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
     """
     queryset = ProjectUpdate.objects.all()
     serializer_class = ProjectUpdateExtraSerializer
+
+    def get_queryset(self):
+        """ Allow filtering on single projects
+        """
+        queryset = self.queryset
+        project = self.request.QUERY_PARAMS.get('project', None)
+        if project is not None:
+            queryset = self.queryset.filter(project=project)
+        return queryset
