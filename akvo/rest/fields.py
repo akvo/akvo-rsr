@@ -7,6 +7,7 @@
 
 import base64
 import imghdr
+import os
 import six
 import uuid
 
@@ -15,6 +16,8 @@ from django.utils.encoding import smart_text
 
 from rest_framework import serializers
 from rest_framework.fields import ImageField
+
+from akvo import settings
 
 
 class NonNullCharField(serializers.CharField):
@@ -64,6 +67,12 @@ class Base64ImageField(ImageField):
             data = base64_data
 
         return super(Base64ImageField, self).from_native(data)
+
+    def to_native(self, value):
+        """ Return the full path to the image, including the MEDIA_URL part
+        """
+        value = super(Base64ImageField, self).to_native(value)
+        return os.path.join(settings.MEDIA_URL, value)
 
     def get_file_extension(self, filename, decoded_file):
         extension = imghdr.what(filename, decoded_file)
