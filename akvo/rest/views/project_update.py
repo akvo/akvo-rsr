@@ -7,7 +7,7 @@
 
 from akvo.rsr.models import ProjectUpdate
 
-from ..serializers import ProjectUpdateSerializer
+from ..serializers import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
 from ..viewsets import BaseRSRViewSet
 
 
@@ -16,3 +16,10 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     """
     queryset = ProjectUpdate.objects.all()
     serializer_class = ProjectUpdateSerializer
+
+
+class ProjectUpdateExtraViewSet(BaseRSRViewSet):
+    """
+    """
+    queryset = ProjectUpdate.objects.all()
+    serializer_class = ProjectUpdateExtraSerializer
