@@ -23,7 +23,7 @@ from .partnership import PartnershipSerializer
 from .project import ProjectSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_location import ProjectLocationSerializer
-from .project_update import ProjectUpdateSerializer
+from .project_update import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
 from .project_update_location import ProjectUpdateLocationSerializer
 from .publishing_status import PublishingStatusSerializer
 from .user import UserSerializer
@@ -50,6 +50,7 @@ __all__ = [
     'ProjectCommentSerializer',
     'ProjectLocationSerializer',
     'ProjectUpdateSerializer',
+    'ProjectUpdateExtraSerializer,'
     'ProjectUpdateLocationSerializer',
     'PublishingStatusSerializer',
     'UserSerializer,'
