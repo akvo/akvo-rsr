@@ -14,5 +14,3 @@ class UserProfileSerializer(BaseRSRSerializer):
 
     class Meta:
         model = UserProfile
-        fields = (
-        )

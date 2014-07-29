@@ -18,5 +18,3 @@ class ProjectSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Project
-        fields = (
-        )
