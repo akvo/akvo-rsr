@@ -171,60 +171,7 @@ def global_organisation_map(width, height, dynamic='dynamic'):
 
 
 @register.inclusion_tag('inclusion_tags/maps.html')
-def organisation_projects_map(organisation_id, width, height, dynamic='dynamic'):
-    """
-    params:
-        organisation_id: id of organisation.
-        width, height: the dimensions of the map.
-        dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
-    """
-
-    if dynamic != 'dynamic':
-        dynamic = False
-
-    projects = Project.objects.filter(partnerships__organisation=organisation_id).active()
-
-    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
-    marker_icon = PROJECT_MARKER_ICON
-
-    locations = []
-
-    for project in projects:
-        proj_locations = ProjectLocation.objects.filter(location_target=project)
-        for location in proj_locations:
-            try:
-                thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
-            except:
-                thumbnail = ""
-            locations.append(
-                [
-                    location.latitude,
-                    location.longitude,
-                    [
-                        str(project.pk),
-                        project.title.encode('utf8'),
-                        thumbnail,
-                        'project'
-                    ]
-                ]
-            )
-
-    template_context = {
-        'map_id': map_id,
-        'width': width,
-        'height': height,
-        'marker_icon': marker_icon,
-        'locations': locations,
-        'dynamic': dynamic,
-        'infowindows': True,
-        'partnersite_widget': False
-    }
-
-    return template_context
-
-
-@register.inclusion_tag('inclusion_tags/maps.html')
-def partnersite_projects_map(projects, width, height, dynamic='dynamic'):
+def projects_map(projects, width, height, dynamic='dynamic'):
     """
     params:
         projects: Project queryset.
