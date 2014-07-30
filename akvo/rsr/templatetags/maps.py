@@ -6,7 +6,7 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import os
+import os, collections
 from django import template
 from django.conf import settings
 
@@ -171,7 +171,7 @@ def global_organisation_map(width, height, dynamic='dynamic'):
 
 
 @register.inclusion_tag('inclusion_tags/maps.html')
-def organisation_projects_map(projects, width, height, dynamic='dynamic'):
+def organisation_projects_map(organisation_id, projects, width, height, dynamic='dynamic'):
     """
     params:
         organisation_id: id of organisation.
@@ -182,12 +182,14 @@ def organisation_projects_map(projects, width, height, dynamic='dynamic'):
     if dynamic != 'dynamic':
         dynamic = False
 
+    # In case of RSR core maps widget, the project list is unknown
+    if not projects:
+        projects = Project.objects.filter(partnerships__organisation=organisation_id).active()
+
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
     marker_icon = PROJECT_MARKER_ICON
 
     locations = []
-
-    # projects = Project.objects.filter(partnerships__organisation=organisation_id).active()
 
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
