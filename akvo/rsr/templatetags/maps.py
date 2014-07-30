@@ -6,7 +6,7 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import os, collections
+import os
 from django import template
 from django.conf import settings
 
