@@ -150,7 +150,6 @@ class BaseLocation(models.Model):
     longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
     city = ValidXMLCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
     state = ValidXMLCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
-    country = models.ForeignKey(Country, verbose_name=_(u'country'))
     address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
     address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
     postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
@@ -187,11 +186,13 @@ class BaseLocation(models.Model):
 class OrganisationLocation(BaseLocation):
     # the organisation that's related to this location
     location_target = models.ForeignKey('Organisation', null=True, related_name='locations')
+    country = models.ForeignKey(Country, verbose_name=_(u'country'))
 
 
 class ProjectLocation(BaseLocation):
     # the project that's related to this location
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
+    country = models.ForeignKey(Country, verbose_name=_(u'country'))
 
     # Extra IATI fields
     reference = ValidXMLCharField(_(u'reference'), blank=True, max_length=50)
@@ -226,6 +227,7 @@ class ProjectLocation(BaseLocation):
 class ProjectUpdateLocation(BaseLocation):
     # the project update that's related to this location
     location_target = models.ForeignKey('ProjectUpdate', null=True, related_name='locations')
+    country = models.ForeignKey(Country, verbose_name=_(u'country'), null=True, blank=True,)
 
 
 class PartnerType(models.Model):
