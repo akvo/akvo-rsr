@@ -14,6 +14,7 @@ from django.db import models, transaction
 from django.db.models import get_model
 from django.forms.formsets import all_valid
 from django.forms.util import ErrorList
+from django.forms import TextInput, Textarea
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
@@ -25,6 +26,7 @@ import os.path
 from akvo.rsr.forms import PartnerSiteAdminForm
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
 from akvo.utils import permissions, custom_get_or_create_country, RSR_LIMITED_CHANGE
+from akvo.rsr.fields import ValidXMLCharField
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -181,10 +183,19 @@ class OrganisationAccountAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
-class LinkInline(admin.TabularInline):
+class LinkInline(admin.StackedInline):
     model = get_model('rsr', 'link')
-    extra = 3
+    extra = 1
     list_display = ('url', 'caption', 'show_link')
+    fieldsets = (
+        (None, {
+            'fields': ('kind', 'url', 'caption')
+        }),
+        ('IATI fields (advanced)', {
+            'classes': ('collapse',),
+            'fields': ('format', 'category', 'language')
+        })
+    )
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
@@ -215,6 +226,8 @@ class BudgetItemAdminInLine(admin.TabularInline):
     model = get_model('rsr', 'budgetitem')
     extra = 1
     formset = BudgetItemAdminInLineFormSet
+    fields = ('label', 'other_extra', 'amount', 'type', 'period_start', 'period_start_text', 'period_end',
+              'period_end_text', 'value_date')
 
     class Media:
         css = {'all': (os.path.join(settings.STATIC_URL, 'rsr/main/css/src/rsr_admin.css').replace('\\', '/'),)}
@@ -331,6 +344,9 @@ class RSR_PartnershipInlineForm(forms.ModelForm):
         partner_types = get_model('rsr', 'PartnerType').objects.all()
         partner_types_dict = {partner_type.id: partner_type.label for partner_type in partner_types}
         allowed = [partner_type.pk for partner_type in self.cleaned_data['organisation'].partner_types.all()]
+        # always allow field and funding partnerships
+        allowed.extend([u'field', u'funding'])
+        allowed = list(set(allowed))
         data = self.cleaned_data['partner_type']
         if data not in allowed:
             raise forms.ValidationError("{org} is not allowed to be a {partner_type_label}".format(
@@ -345,6 +361,10 @@ class PartnershipInline(admin.TabularInline):
     extra = 1
     form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
+    formfield_overrides = {
+        ValidXMLCharField: {'widget': TextInput(attrs={'size':'20'})},
+        models.URLField: {'widget': TextInput(attrs={'size':'30'})}
+    }
 
     def get_formset(self, request, *args, **kwargs):
         "Add the request to the formset for use in RSR_PartnershipInlineFormFormSet.clean()"
@@ -356,12 +376,153 @@ class PartnershipInline(admin.TabularInline):
 class ProjectLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectlocation')
     extra = 0
+    fieldsets = (
+        (None, {
+            'fields': ('latitude', 'longitude', 'city', 'state', 'country', 'address_1', 'address_2', 'postcode')
+        }),
+        ('IATI fields (advanced)', {
+            'classes': ('collapse',),
+            'fields': ('reference', 'location_code', 'name', 'description', 'activity_description',
+                       'administrative_code', 'administrative_vocabulary', 'administrative_level', 'exactness',
+                       'location_reach', 'location_class', 'feature_designation')
+        }),
+    )
+
+
+class CountryBudgetInline(admin.StackedInline):
+    model = get_model('rsr', 'CountryBudgetItem')
+    extra = 0
+    fieldsets = (
+        ('Country Budget Item', {
+            'classes': ('collapse',),
+            'fields': ('code', 'description', 'vocabulary', 'percentage')
+        }),
+    )
+
+
+class ResultInline(admin.StackedInline):
+    model = get_model('rsr', 'Result')
+    extra = 0
+    fieldsets = (
+        ('Result', {
+            'classes': ('collapse',),
+            'fields': ('title', 'type', 'aggregation_status', 'description', 'description_type')
+        }),
+    )
+
+
+class PlannedDisbursementInline(admin.StackedInline):
+    model = get_model('rsr', 'PlannedDisbursement')
+    extra = 0
+    fieldsets = (
+        ('Planned Disbursement', {
+            'classes': ('collapse',),
+            'fields': ('currency', 'value', 'value_date', 'period_start', 'period_end', 'updated')
+        }),
+    )
+
+
+class PolicyMarkerInline(admin.StackedInline):
+    model = get_model('rsr', 'PolicyMarker')
+    extra = 0
+    fieldsets = (
+        ('Policy Marker', {
+            'classes': ('collapse',),
+            'fields': ('policy_marker', 'significance', 'vocabulary', 'description')
+        }),
+    )
+
+
+class ProjectConditionInline(admin.StackedInline):
+    model = get_model('rsr', 'ProjectCondition')
+    extra = 0
+    fieldsets = (
+        ('Project Condition', {
+            'classes': ('collapse',),
+            'fields': ('type', 'text', 'attached')
+        }),
+    )
+
+
+class ProjectContactInline(admin.StackedInline):
+    model = get_model('rsr', 'ProjectContact')
+    extra = 0
+    fieldsets = (
+        ('Project Contact', {
+            'classes': ('collapse',),
+            'fields': ('person_name', 'organisation', 'type', 'email', 'job_title', 'mailing_address', 'state',
+            'country', 'telephone', 'website')
+        }),
+    )
+
+
+class RecipientCountryInline(admin.StackedInline):
+    model = get_model('rsr', 'RecipientCountry')
+    extra = 0
+    fieldsets = (
+        ('Recipient Country', {
+            'classes': ('collapse',),
+            'fields': ('country', 'percentage', 'text')
+        }),
+    )
+
+
+class RecipientRegionInline(admin.StackedInline):
+    model = get_model('rsr', 'RecipientRegion')
+    extra = 0
+    fieldsets = (
+        ('Recipient Region', {
+            'classes': ('collapse',),
+            'fields': ('region', 'region_vocabulary', 'percentage', 'text')
+        }),
+    )
+
+
+class SectorInline(admin.StackedInline):
+    model = get_model('rsr', 'Sector')
+    extra = 0
+    fieldsets = (
+        ('Sector', {
+            'classes': ('collapse',),
+            'fields': ('sector_code', 'vocabulary', 'percentage', 'text')
+        }),
+    )
+
+
+class TransactionInline(admin.StackedInline):
+    model = get_model('rsr', 'Transaction')
+    extra = 0
+    fieldsets = (
+        ('Transaction', {
+            'classes': ('collapse',),
+            'fields': ('currency', 'value', 'value_date', 'description', 'transaction_date', 'reference',
+                       'transaction_type', 'transaction_type_text', 'provider_organisation',
+                       'provider_organisation_ref', 'provider_organisation_activity', 'receiver_organisation',
+                       'receiver_organisation_ref', 'receiver_organisation_activity', 'aid_type', 'aid_type_text',
+                       'disbursement_channel', 'disbursement_channel_text', 'finance_type', 'finance_type_text',
+                       'flow_type', 'flow_type_text', 'tied_status', 'tied_status_text', )
+        }),
+    )
+
+
+class LegacyDataInline(admin.StackedInline):
+    model = get_model('rsr', 'LegacyData')
+    extra = 0
+    fieldsets = (
+        ('Legacy Data', {
+            'classes': ('collapse',),
+            'fields': ('name', 'value', 'iati_equivalent')
+        }),
+    )
 
 
 class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline
+        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline,
+        ProjectConditionInline, ProjectContactInline, CountryBudgetInline, PlannedDisbursementInline,
+        PolicyMarkerInline, RecipientCountryInline, RecipientRegionInline, ResultInline, SectorInline,
+        TransactionInline, LegacyDataInline
     )
     save_as = True
 
@@ -370,7 +531,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'status', 'language', 'date_request_posted', 'date_complete', 'donate_button'),
+            'fields': ('title', 'subtitle', 'status', 'language', 'date_start_planned', 'date_start_actual',
+                       'date_end_planned', 'date_end_actual', 'donate_button', 'hierarchy'),
             }),
         (_(u'Description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -425,6 +587,14 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 u'Add keywords belonging to your project. These keywords must be existing already in Akvo RSR. If you want to use a keyword that does not exist in the system, please contact support@akvo.org.'
             ),
             'fields': ('keywords',),
+            }),
+        (_(u'Additional IATI information'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Optionally, you can add additional information based on the IATI standard.'
+            ),
+            'classes': ('collapse',),
+            'fields': ('project_scope', 'capital_spend_percentage', 'collaboration_type',
+                       'default_aid_type', 'default_finance_type', 'default_flow_type', 'default_tied_status'),
             }),
     )
     filter_horizontal = ('keywords',)
@@ -696,6 +866,20 @@ class UserProfileAdmin(admin.ModelAdmin):
         obj.save()
 
 admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
+
+
+class IndicatorPeriodInline(admin.TabularInline):
+    model = get_model('rsr', 'IndicatorPeriod')
+    extra = 1
+
+
+class ResultIndicatorAdmin(admin.ModelAdmin):
+    list_display = ('result', 'title', 'description')
+    list_filter = ('result', 'title')
+    search_fields = ('result', 'title',)
+    inlines = (IndicatorPeriodInline,)
+
+admin.site.register(get_model('rsr', 'Indicator'), ResultIndicatorAdmin)
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):

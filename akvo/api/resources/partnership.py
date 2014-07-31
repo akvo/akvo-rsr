@@ -20,7 +20,7 @@ logger = logging.getLogger('akvo.rsr')
 from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToOneField
 
-from akvo.rsr.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import Organisation, Partnership, InternalOrganisationID
 
 from .resources import ConditionalFullResource

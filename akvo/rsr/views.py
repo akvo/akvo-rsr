@@ -52,6 +52,10 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 REGISTRATION_RECEIVERS = ['gabriel@akvo.org', 'thomas@akvo.org', 'beth@akvo.org']
 
+ALLOWED_WIDGET_TEMPLATES = ['project_narrow', 'cobranded_narrow', 'cobranded_short', 'cobranded_banner',
+                            'cobranded_leader', 'feature_side', 'project_updates', 'project_contribute',
+                            'project_small', 'project_list', 'project_map']
+
 
 def forbidden(request, template_name='403.html'):
     '''
@@ -949,6 +953,8 @@ def select_project_widget(request, org_id, template=''):
 
 
 def project_widget(request, template='feature-side', project_id=None):
+    if template.replace('-', '_') not in ALLOWED_WIDGET_TEMPLATES:
+        raise Http404
     if project_id:
         p = get_object_or_404(Project, pk=project_id)
     else:
@@ -970,6 +976,8 @@ def project_widget(request, template='feature-side', project_id=None):
 
 
 def project_list_widget(request, template='project-list', org_id=0):
+    if template.replace('-', '_') not in ALLOWED_WIDGET_TEMPLATES:
+        raise Http404
     bgcolor = request.GET.get('bgcolor', 'B50000')
     textcolor = request.GET.get('textcolor', 'FFFFFF')
     site = request.GET.get('site', 'rsr.akvo.org')
@@ -1021,6 +1029,8 @@ def project_map_widget(request, org_id):
     zoom = request.GET.get('zoom', '1')
     state = request.GET.get('state', 'dynamic')
 
+    projects = Project.objects.filter(partnerships__organisation=org_id).active()
+
     if state != 'dynamic':
         state = 'static'
 
@@ -1033,6 +1043,7 @@ def project_map_widget(request, org_id):
         'bgcolor': bgcolor,
         'height': map_height,
         'org': get_object_or_404(Organisation, pk=org_id),
+        'projects': projects,
         'textcolor': textcolor,
         'width': width,
         'zoom': zoom,
@@ -1083,8 +1094,7 @@ def donate(request, p, engine):
             if is_test_donation:
                 invoice.test = True
             if request.session.get("donation_return_url", False):
-                return_url = request.session["donation_return_url"]
-                del request.session["donation_return_url"]
+                return_url = urljoin(request.session["donation_return_url"], reverse("donate_thanks"))
             else:
                 return_url = urljoin(request.domain_url, reverse("donate_thanks"))
             if engine == "ideal":
@@ -1138,6 +1148,11 @@ def donate(request, p, engine):
         donate_form = InvoiceForm(project=p,
                                   engine=engine,
                                   initial=dict(is_public=True))
+        if request.session.get("donation_return_url", False):
+            request.session["cancel_url"] = urljoin(request.session["donation_return_url"],
+                                                    reverse("project_main", kwargs={'project_id': p.id}))
+        else:
+            request.session["cancel_url"] = reverse("project_main", kwargs={'project_id': p.id})
     return render_to_response("rsr/project/donate/donate_step2.html",
                               dict(donate_form=donate_form,
                                    payment_engine=engine,
@@ -1155,7 +1170,12 @@ def void_invoice(request, invoice_id, action=None):
                             project_id=invoice.project.id,
                             engine=invoice.engine)
         elif action == "cancel":
-            return redirect("project_main", project_id=invoice.project.id)
+            if request.session.get("donation_return_url", False):
+                return redirect(urljoin(request.session["donation_return_url"],
+                                        reverse("project_main",
+                                                kwargs={'project_id': invoice.project.id})))
+            else:
+                return redirect("project_main", project_id=invoice.project.id)
     return redirect("project_list", slug="all")
 
 

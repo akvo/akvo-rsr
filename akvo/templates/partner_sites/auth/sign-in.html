@@ -15,7 +15,7 @@
 {% endblock breadcrum_items %}
 
 {% block content %}
-<section class="whitebox pad20 marg_bottom40" style="height:350px">
+<section class="whitebox pad20 marg_bottom40" style="height:450px">
   <h1>{% trans "Sign in with your Akvo account" %}</h1>
   {% if form.errors %}
     <div class="error">
@@ -58,6 +58,9 @@
         {% endif %}
       </fieldset>
     </form>
+    <span class="small">
+      <a href="{{rsr_password_reset_url}}" style="float:left;">{% trans "I forgot my username and/or password" %}</a>
+    </span>
   </div>
   <div class="clearfix" style="float:left;width:465px;padding-top:20px">
     <h3>{% trans "I don't have an account" %}</h3>
@@ -70,6 +73,7 @@
       <li>{% trans "Create updates on your organisation's projects" %}</li>
       <li>{% trans "Leave comments on projects" %}</li>
     </ul>
+    <p>{% trans 'And much more! <a href="http://akvo.org/about-us/">Learn about</a> how Akvo works.' %}</p>
     <p>
       {% blocktrans %}
         You will be registering as a user under the organisation <a href="{{organisation_absolute_url}}">{{organisation}}</a>
@@ -81,14 +85,6 @@
         please click <a target="_blank" href="{{register1_url}}">here</a> to select your organisation from the list.
       {% endblocktrans %}
     </p>
-
-
-
-
-    <p>{% trans 'And much more! <a href="http://akvo.org/about-us/">Learn about</a> how Akvo works.' %}</p>
-    <span class="small">
-      <a href="{{rsr_password_reset_url}}">{% trans "I forgot my username and/or password" %}</a>
-    </span>
   </div>
 </section>
 {% endblock content %}
