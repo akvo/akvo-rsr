@@ -7,19 +7,17 @@
 """
 from __future__ import absolute_import
 
-from urlparse import urljoin
-
 from django.conf import settings
-from django.http import Http404
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView
-from django.core.urlresolvers import reverse, set_urlconf
-from django.utils import translation
+from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
+
 
 from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS
 from akvo.rsr.models import Organisation, Country, Project
+from akvo.rsr.decorators import project_viewing_permissions
 
 
 __all__ = [
@@ -86,38 +84,22 @@ class BaseView(DebugViewMixin, PartnerSitesMixin, TemplateView):
 
 
 class BaseProjectView(BaseView):
-    """View that extends BaseView with current project or throws a 404. We
-    also verify that the project is related to the current organisation,
-    if not we throw a 404."""
+    """View that extends BaseView with current project information and viewing permissions."""
+
+    @method_decorator(project_viewing_permissions)
+    def dispatch(self, *args, **kwargs):
+        return super(BaseProjectView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(BaseProjectView, self).get_context_data(**kwargs)
-        project = get_object_or_404(Project, pk=self.kwargs['project_id'])
 
-        privileged_user = project.connected_to_user(self.request.user)
-        unprivileged_user = not privileged_user
-        authenticated_user = self.request.user.is_authenticated()
-        unpublished_project = not project.is_published()
-        draft = False
-
-        # Enable draft preview for privileged users, additional logic in
-        # the draft section of project pages templates
-        if unpublished_project and authenticated_user and unprivileged_user:
-            raise PermissionDenied
-        if unpublished_project and unprivileged_user:
-            raise Http404
-        if unpublished_project and privileged_user:
-            draft = True
-
-        updates = project.project_updates.all().order_by('-created_at')
+        # Get project updates
+        updates = context['project'].project_updates.all().order_by('-created_at')
         updates_with_images = updates.exclude(photo__exact='')
 
         context.update({
-            'project': project,
             'updates': updates,
             'updates_with_images': updates_with_images,
-            'can_add_update': privileged_user,
-            'draft': draft,
             'fb_app_id': getattr(settings, 'FB_APP_ID', ''),
         })
         return context
@@ -125,7 +107,7 @@ class BaseProjectView(BaseView):
 
 class BaseListView(DebugViewMixin, PartnerSitesMixin, ListView):
     """List view that are extended with the current organisation and the
-    proejcts connected to the organisation available in the template context
+    projects connected to the organisation available in the template context
     variable project_list"""
 
     def get_context_data(self, **kwargs):
@@ -170,5 +152,5 @@ class BaseProjectListView(BaseListView):
         return ProjectFilterSet(
             self.request.GET.copy() or None,
             queryset=projects,
-            organisation_id=self.request.organisation_id
+            request=self.request
         )

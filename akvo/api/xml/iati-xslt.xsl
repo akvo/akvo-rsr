@@ -213,6 +213,36 @@
     </xsl:if>
   </xsl:template>
 
+  <!-- date_start_planned -->
+  <xsl:template match="activity-date[@type='start-planned']">
+    <!-- two ways of expressing the date, either as data in the node or as the iso-date attribute -->
+    <xsl:if test="not(.='')">
+      <date_start_planned>
+        <xsl:value-of select="normalize-space(.)" />
+      </date_start_planned>
+    </xsl:if>
+    <xsl:if test=".=''">
+      <date_start_planned>
+        <xsl:value-of select="normalize-space(@iso-date)"/>
+      </date_start_planned>
+    </xsl:if>
+  </xsl:template>
+
+  <!-- date_end_planned -->
+  <xsl:template match="activity-date[@type='end-planned']">
+    <!-- two ways of expressing the date, either as data in the node or as the iso-date attribute -->
+    <xsl:if test="not(.='')">
+      <date_end_planned>
+        <xsl:value-of select="normalize-space(.)" />
+      </date_end_planned>
+    </xsl:if>
+    <xsl:if test=".=''">
+      <date_end_planned>
+        <xsl:value-of select="normalize-space(@iso-date)"/>
+      </date_end_planned>
+    </xsl:if>
+  </xsl:template>
+
   <!-- primary_location ForeignKey -->
     <!-- set when locations are created -->
   

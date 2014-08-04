@@ -7,6 +7,51 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.3.9.2 Yam - Hotfix 2
+---
+
+Thursday 24th July 2014, adriancollier
+
+Included Changes
+---
+
+### Fixes to Import Scripts
+
+We made some small fixes to the import scripts to ensure that all was working correctly for the IATI XML Import processes.
+
+Github issue [#680](https://github.com/akvo/akvo-rsr/issues/680)
+
+
+--------
+
+Akvo RSR ver 2.3.9.1 Yam - Hotfix
+---
+
+Tuesday 8th Juyl 2014, adriancollier
+
+Included Changes
+---
+
+### Akvo Pages Keyword Maps
+
+With the implementation of keywords in [#620](https://github.com/akvo/akvo-rsr/issues/620) we noticed that the headline map on Akvo Pages was not updated to display the points for these keyword projects. This has been fixed so it matches the projects being displayed.
+
+Github issue [#671](https://github.com/akvo/akvo-rsr/issues/671)
+
+### Akvo Pages Drop-down Filtering
+
+The drop-down filters for Akvo Pages were not being correctly populated with the keyword content. After trying some things, it appeared that this area of code needs some further investigation to ensure it runs smoothly. In the meantime, we have removed the custom filtering so now all drop-downs contain all possibilities. We AIM to resolve this as soon as possible.
+
+Github issue [#673](https://github.com/akvo/akvo-rsr/issues/673)
+
+### Keyword API Management
+
+We implemented some changes in the API import processes to manage kaywords but it should only be possible to add keywords using the API, existing keywords on projects should not be removed.
+
+Github issue [#670](https://github.com/akvo/akvo-rsr/issues/670)
+
+--------
+
 Akvo RSR ver 2.3.9 Yam
 ---
 
