@@ -1842,7 +1842,6 @@ class ProjectComment(TimestampsMixin, models.Model):
     project = models.ForeignKey(Project, verbose_name=_(u'project'), related_name='comments')
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     comment = ValidXMLTextField(_(u'comment'))
-    #time = models.DateTimeField(_(u'time'), db_index=True)
 
     class Meta:
         verbose_name = _(u'project comment')
