@@ -1029,6 +1029,8 @@ def project_map_widget(request, org_id):
     zoom = request.GET.get('zoom', '1')
     state = request.GET.get('state', 'dynamic')
 
+    projects = Project.objects.filter(partnerships__organisation=org_id).active()
+
     if state != 'dynamic':
         state = 'static'
 
@@ -1041,6 +1043,7 @@ def project_map_widget(request, org_id):
         'bgcolor': bgcolor,
         'height': map_height,
         'org': get_object_or_404(Organisation, pk=org_id),
+        'projects': projects,
         'textcolor': textcolor,
         'width': width,
         'zoom': zoom,

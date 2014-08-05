@@ -21,19 +21,13 @@
                 var position = new google.maps.LatLng(this.locations[i][0], this.locations[i][1]);
 
                 var marker = new google.maps.Marker({
-                    {% if not partnersite_widget %}icon: '{{ marker_icon }}',{% endif %}
+                    icon: '{{ marker_icon }}',
                     position: position,
                     map: map{% if not infowindows %},
                     clickable: false{% endif %}
                 });
 
-                {% if infowindows and partnersite_widget %}
-                window['contentString'+i] = '<div class="mapInfoWindow">'+
-                    '<a href="/'+this.locations[i][2][2]+'/'+this.locations[i][2][0]+'/">'+this.locations[i][2][1]+'</a><br>'+
-                    '<p class="small grey">'+this.locations[i][3]+'</p>'+
-                    '</div>';
-
-                {% elif infowindows %}
+                {% if infowindows %}
                 window['contentString'+i] = '<div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">'+
                     '<a href="/'+this.locations[i][2][3]+'/'+this.locations[i][2][0]+'/">'+this.locations[i][2][1]+'</a>'+
                     '<div style="text-align: center; margin-top: 10px;">'+
