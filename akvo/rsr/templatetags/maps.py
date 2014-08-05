@@ -171,10 +171,10 @@ def global_organisation_map(width, height, dynamic='dynamic'):
 
 
 @register.inclusion_tag('inclusion_tags/maps.html')
-def organisation_projects_map(projects, width, height, dynamic='dynamic'):
+def projects_map(projects, width, height, dynamic='dynamic'):
     """
     params:
-        organisation_id: id of organisation.
+        projects: Project queryset.
         width, height: the dimensions of the map.
         dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
     """
@@ -186,8 +186,6 @@ def organisation_projects_map(projects, width, height, dynamic='dynamic'):
     marker_icon = PROJECT_MARKER_ICON
 
     locations = []
-
-    # projects = Project.objects.filter(partnerships__organisation=organisation_id).active()
 
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
@@ -216,56 +214,7 @@ def organisation_projects_map(projects, width, height, dynamic='dynamic'):
         'marker_icon': marker_icon,
         'locations': locations,
         'dynamic': dynamic,
-        'infowindows': True,
-        'partnersite_widget': False
-    }
-
-    return template_context
-
-
-@register.inclusion_tag('inclusion_tags/maps.html')
-def partnersite_widget_project_map(projects, width, height, dynamic='dynamic'):
-    """
-    params:
-        organisation_id: id of organisation.
-        width, height: the dimensions of the map.
-        dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
-    """
-
-    if dynamic != 'dynamic':
-        dynamic = False
-
-    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
-    marker_icon = PROJECT_MARKER_ICON
-
-    locations = []
-
-    for project in projects:
-        proj_locations = ProjectLocation.objects.filter(location_target=project)
-        for location in proj_locations:
-            location_name = location.country.name
-            if location.state:
-                location_name += ", " + location.state
-            if location.city:
-                location_name += ", " + location.city
-
-            try:
-                locations.append([location.latitude,
-                                  location.longitude,
-                                  [str(project.pk), project.title.encode('utf8'), 'project'],
-                                  location_name.encode('utf8')])
-            except:
-                pass
-
-    template_context = {
-        'map_id': map_id,
-        'width': width,
-        'height': height,
-        'marker_icon': marker_icon,
-        'locations': locations,
-        'dynamic': dynamic,
-        'infowindows': True,
-        'partnersite_widget': True
+        'infowindows': True
     }
 
     return template_context
