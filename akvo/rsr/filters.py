@@ -103,13 +103,18 @@ class ProjectFilterSet(django_filters.FilterSet):
             continents.extend(sorted(choices))
             self.filters['continent'].extra.update({'choices': continents})
 
-            # Partners
-            if partner_site.partner_projects and partner_site.keywords == 0:
-                organisations = organisation.partners()
-                self.filters['organisation'].extra.update({'empty_label': _(u'Active partners')})
-            else:
-                organisations = Organisation.objects.all()
-                self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
+            # Partners (always show all partners)
+            organisations = Organisation.objects.all()
+            self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
+
+
+            # TODO: Filter the partners of projects. Organisation.partners() is too slow at the moment.
+            # if partner_site.partner_projects and partner_site.keywords == 0:
+            #     organisations = organisation.partners()
+            #     self.filters['organisation'].extra.update({'empty_label': _(u'Active partners')})
+            # else:
+            #     organisations = Organisation.objects.all()
+            #     self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
             
         # No request (no partner site)
         else:
