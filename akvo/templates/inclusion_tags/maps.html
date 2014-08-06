@@ -11,12 +11,16 @@
             scrollwheel: false{% endif %}
         },
         locations: {{ locations|safe }},
+        {% if update_locations %}
+        update_locations: {{ update_locations|safe }},
+        {% endif %}
         load: function() {
             var map = new google.maps.Map(this.canvas, this.options);
             var bounds = new google.maps.LatLngBounds();
 
             var i;
 
+            // Project or Organisation locations
             for (i = 0; i < this.locations.length; i++) {
                 var position = new google.maps.LatLng(this.locations[i][0], this.locations[i][1]);
 
@@ -28,17 +32,20 @@
                 });
 
                 {% if infowindows %}
-                window['contentString'+i] = '<div class="mapInfoWindow" style="height:150px; min-height:150px; max-height:150px; overflow:hidden;">'+
-                    '<a href="/'+this.locations[i][2][3]+'/'+this.locations[i][2][0]+'/">'+this.locations[i][2][1]+'</a>'+
-                    '<div style="text-align: center; margin-top: 10px;">'+
-                    '<a href="/'+this.locations[i][2][3]+'/'+this.locations[i][2][0]+'/" title="'+this.locations[i][2][1]+'">'+
-                    '<img src="'+this.locations[i][2][2]+'" alt="">'+
-                    '</a>'+
-                    '</div>'+
-                    '</div>';
-                {% endif %}
+                window['contentString' + i] = '<div class="mapInfoWindow" style="overflow:hidden;">'+
+                    '<a href="/'+this.locations[i][2][3]+'/'+this.locations[i][2][0]+'/">'+this.locations[i][2][1]+'</a>';
 
-                {% if infowindows %}
+                if (this.locations[i][2][2] != "") {
+                    window['contentString' + i] += '<div style="text-align: center; margin-top: 10px;">' +
+                            '<a href="/' + this.locations[i][2][3] + '/' + this.locations[i][2][0] + '/" title="' + this.locations[i][2][1] + '">' +
+                            '<img src="' + this.locations[i][2][2] + '" alt="">' +
+                            '</a>' +
+                            '</div>';
+
+                }
+                    
+                window['contentString' + i] += '</div>';
+
                 (function(marker, i) {
                     google.maps.event.addListener(marker, 'click', function() {
                         infowindow = new google.maps.InfoWindow({
@@ -50,7 +57,23 @@
                 {% endif %}
 
                 bounds.extend(marker.position);
-            }
+            };
+
+            // Project update locations
+            {% if update_locations %}
+            for (i = 0; i < this.update_locations.length; i++) {
+                var position = new google.maps.LatLng(this.update_locations[i][0], this.update_locations[i][1]);
+
+                var marker = new google.maps.Marker({
+                    icon: '{{ update_marker_icon }}',
+                    position: position,
+                    map: map,
+                    clickable: false
+                });
+
+                bounds.extend(marker.position);
+            };
+            {% endif %}
 
             map.fitBounds(bounds);
             map.panToBounds(bounds);
