@@ -14,5 +14,3 @@ class BudgetItemLabelSerializer(BaseRSRSerializer):
 
     class Meta:
         model = BudgetItemLabel
-        fields = (
-        )

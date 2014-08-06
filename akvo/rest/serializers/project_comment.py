@@ -14,5 +14,3 @@ class ProjectCommentSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectComment
-        fields = (
-        )

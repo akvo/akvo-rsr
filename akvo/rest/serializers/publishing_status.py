@@ -14,5 +14,3 @@ class PublishingStatusSerializer(BaseRSRSerializer):
 
     class Meta:
         model = PublishingStatus
-        fields = (
-        )

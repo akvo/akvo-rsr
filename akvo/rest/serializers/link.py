@@ -14,5 +14,3 @@ class LinkSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Link
-        fields = (
-        )

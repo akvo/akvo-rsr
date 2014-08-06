@@ -5,12 +5,18 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Goal
+from akvo.rsr.models import ProjectUpdateLocation
 
 from .rsr_serializer import BaseRSRSerializer
 
 
-class GoalSerializer(BaseRSRSerializer):
+class ProjectUpdateLocationSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = Goal
+        model = ProjectUpdateLocation
+        exclude = ('location_target',)
+
+class ProjectUpdateLocationExtraSerializer(ProjectUpdateLocationSerializer):
+
+    class Meta(ProjectUpdateLocationSerializer.Meta):
+        depth = 2

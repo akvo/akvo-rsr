@@ -150,7 +150,6 @@ class BaseLocation(models.Model):
     longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
     city = ValidXMLCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
     state = ValidXMLCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
-    country = models.ForeignKey(Country, verbose_name=_(u'country'))
     address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
     address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
     postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
@@ -186,11 +185,13 @@ class BaseLocation(models.Model):
 class OrganisationLocation(BaseLocation):
     # the organisation that's related to this location
     location_target = models.ForeignKey('Organisation', null=True, related_name='locations')
+    country = models.ForeignKey(Country, verbose_name=_(u'country'))
 
 
 class ProjectLocation(BaseLocation):
     # the project that's related to this location
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
+    country = models.ForeignKey(Country, verbose_name=_(u'country'))
 
     # Extra IATI fields
     reference = ValidXMLCharField(_(u'reference'), blank=True, max_length=50)
@@ -221,6 +222,11 @@ class ProjectLocation(BaseLocation):
     feature_designation = ValidXMLCharField(
         _(u'feature designation'), blank=True, max_length=5, choices=[code[:2] for code in codelists.LOCATION_TYPE]
     )
+
+class ProjectUpdateLocation(BaseLocation):
+    # the project update that's related to this location
+    location_target = models.ForeignKey('ProjectUpdate', null=True, related_name='locations')
+    country = models.ForeignKey(Country, verbose_name=_(u'country'), null=True, blank=True,)
 
 
 class PartnerType(models.Model):
@@ -317,6 +323,7 @@ class Organisation(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
+    # TODO: make name unique
     name = ValidXMLCharField(
         _(u'name'), max_length=25, db_index=True,
         help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'),
@@ -1729,7 +1736,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ('M', _(u'mobile')),
     )
 
-
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
@@ -1740,7 +1746,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
     language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
-    #status = ValidXMLCharField(max_length=1, choices=STATUSES, default='N')
+    primary_location = models.ForeignKey(ProjectUpdateLocation, null=True, blank=True, on_delete=models.SET_NULL)
     photo = ImageWithThumbnailsField(
         _(u'photo'),
         blank=True,
