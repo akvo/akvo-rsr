@@ -8,15 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'ProjectComment.time'
-        db.delete_column(u'rsr_projectcomment', 'time')
+        # Adding field 'ProjectComment.created_at'
+        db.add_column(u'rsr_projectcomment', 'created_at',
+                      self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, null=True, db_index=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'ProjectComment.last_modified_at'
+        db.add_column(u'rsr_projectcomment', 'last_modified_at',
+                      self.gf('django.db.models.fields.DateTimeField')(auto_now=True, null=True, db_index=True, blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Adding field 'ProjectComment.time'
-        db.add_column(u'rsr_projectcomment', 'time',
-                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2010, 8, 5, 0, 0), db_index=True),
-                      keep_default=False)
+        # Deleting field 'ProjectComment.created_at'
+        db.delete_column(u'rsr_projectcomment', 'created_at')
+
+        # Deleting field 'ProjectComment.last_modified_at'
+        db.delete_column(u'rsr_projectcomment', 'last_modified_at')
 
 
     models = {
@@ -401,6 +409,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comments'", 'to': u"orm['rsr.Project']"}),
+            'time': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'rsr.projectcondition': {
@@ -462,6 +471,7 @@ class Migration(SchemaMigration):
             'photo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'photo_caption': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75', 'blank': 'True'}),
             'photo_credit': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '25', 'blank': 'True'}),
+            'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rsr.ProjectUpdateLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'project_updates'", 'to': u"orm['rsr.Project']"}),
             'text': ('akvo.rsr.fields.ValidXMLTextField', [], {'blank': 'True'}),
             'title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'db_index': 'True'}),
@@ -472,6 +482,19 @@ class Migration(SchemaMigration):
             'video': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'video_caption': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75', 'blank': 'True'}),
             'video_credit': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '25', 'blank': 'True'})
+        },
+        u'rsr.projectupdatelocation': {
+            'Meta': {'ordering': "['id']", 'object_name': 'ProjectUpdateLocation'},
+            'address_1': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'}),
+            'address_2': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'}),
+            'city': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['rsr.Country']", 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'latitude': ('akvo.rsr.fields.LatitudeField', [], {'default': '0', 'db_index': 'True'}),
+            'location_target': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'locations'", 'null': 'True', 'to': u"orm['rsr.ProjectUpdate']"}),
+            'longitude': ('akvo.rsr.fields.LongitudeField', [], {'default': '0', 'db_index': 'True'}),
+            'postcode': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '10', 'blank': 'True'}),
+            'state': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'})
         },
         u'rsr.publishingstatus': {
             'Meta': {'ordering': "('-status', 'project')", 'object_name': 'PublishingStatus'},
