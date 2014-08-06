@@ -7,8 +7,11 @@
 # NOTE: this is a modified version of the Requester used for the Cordaid upload scripts
 # TODO: Consolidate the two versions, possibly creating an external python library
 
+import os
 import requests
-from requests import codes
+
+from rest_framework.status import HTTP_200_OK
+
 
 class Requester():
     """
@@ -32,7 +35,7 @@ class Requester():
         self.data = data
         self.error = None
         if accept_codes is None:
-            accept_codes = [codes.ok]
+            accept_codes = [requests.codes.ok]
         if kwargs is None:
             kwargs = {}
 
@@ -52,3 +55,54 @@ class Requester():
                 message="\nResponse text: {text}".format(text=self.response.text) if self.response.text else ""
             )
             raise Exception(error_msg)
+
+
+class ImageImporter():
+    """ fetch an image from either a path or a full URL
+"""
+    ALLOWED_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif")
+    METHOD_HTTP = 1
+    METHOD_FILE = 2
+
+    def __init__(self, path_or_uri):
+        # TODO: do we really need the path? Shouldn't path_or_uri be the full path including file name if we load local files?
+        # If the image is in a directory self.name is set to /path/to/images/<name>.*
+        if path_or_uri[:4] == "http":
+            self.path_or_uri = path_or_uri
+            self._method = self.METHOD_HTTP
+        else:
+            if os.path.isabs(path_or_uri):
+                path = path_or_uri
+            else:
+                path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path_or_uri)
+            self.path_or_uri = path
+            self._method = self.METHOD_FILE
+        self.image = b''
+
+    def get_from_url(self):
+        try:
+            request = Requester(url_template=self.path_or_uri, **{'kwargs': {'stream': True}})
+        except Exception, e:
+            print "*** Error getting image from da Indertubes: *** \n{}".format(e.message)
+        else:
+            if request.response.status_code is HTTP_200_OK:
+                for chunk in request.response.iter_content(1024):
+                    self.image += chunk
+            else:
+                print "*** Error getting image from da Indertubes ***"
+
+    def get_from_path(self):
+        _, extension = os.path.splitext(self.path_or_uri)
+        # and get the image if the extension is in ALLOWED_EXTENSIONS
+        if extension.lower() in self.ALLOWED_EXTENSIONS:
+            with open(self.path_or_uri, "rb") as f:
+                self.image = f.read()
+
+    def get_image(self):
+        if self._method == self.METHOD_HTTP:
+            self.get_from_url()
+        else:
+            self.get_from_path()
+
+    def to_base64(self):
+        return self.image.encode("base64")
