@@ -14,5 +14,3 @@ class BenchmarknameSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Benchmarkname
-        fields = (
-        )

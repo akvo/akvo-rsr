@@ -14,6 +14,6 @@ class OrganisationLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = OrganisationLocation
-        fields = (
-        )
+        depth = 1
+        exclude = ('location_target',)
 

@@ -14,5 +14,3 @@ class BudgetItemSerializer(BaseRSRSerializer):
 
     class Meta:
         model = BudgetItem
-        fields = (
-        )

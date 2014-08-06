@@ -7,12 +7,14 @@
 
 from akvo.rsr.models import Project
 
+from ..fields import Base64ImageField
+
 from .rsr_serializer import BaseRSRSerializer
 
 
 class ProjectSerializer(BaseRSRSerializer):
 
+    current_image = Base64ImageField(required=False, allow_empty_file=True)
+
     class Meta:
         model = Project
-        fields = (
-        )

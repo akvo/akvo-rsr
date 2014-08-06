@@ -14,5 +14,3 @@ class InvoiceSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Invoice
-        fields = (
-        )
