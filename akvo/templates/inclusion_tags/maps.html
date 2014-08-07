@@ -43,13 +43,13 @@
                             '</div>';
 
                 }
-                    
+
                 window['contentString' + i] += '</div>';
 
                 (function(marker, i) {
                     google.maps.event.addListener(marker, 'click', function() {
                         infowindow = new google.maps.InfoWindow({
-                            content: window['contentString'+i]
+                            content: window['contentString' + i]
                         });
                         infowindow.open(map, marker);
                     });
@@ -61,17 +61,42 @@
 
             // Project update locations
             {% if update_locations %}
-            for (i = 0; i < this.update_locations.length; i++) {
-                var position = new google.maps.LatLng(this.update_locations[i][0], this.update_locations[i][1]);
 
-                var marker = new google.maps.Marker({
+            var j;
+
+            for (j = 0; j < this.update_locations.length; j++) {
+                var update_position = new google.maps.LatLng(this.update_locations[j][0], this.update_locations[j][1]);
+
+                var update_marker = new google.maps.Marker({
                     icon: '{{ update_marker_icon }}',
-                    position: position,
-                    map: map,
-                    clickable: false
+                    position: update_position,
+                    map: map
                 });
 
-                bounds.extend(marker.position);
+                window['contentStringUpdate' + j] = '<div class="mapInfoWindow" style="overflow:hidden;">'+
+                    '<a href="/'+this.update_locations[j][2][3]+'/'+this.update_locations[j][2][4]+'/update/'+this.update_locations[j][2][0]+'/">'+this.update_locations[j][2][1]+'</a>';
+
+                if (this.update_locations[j][2][2] != "") {
+                    window['contentStringUpdate' + j] += '<div style="text-align: center; margin-top: 10px;">' +
+                            '<a href="/' + this.update_locations[j][2][3] + '/' + this.update_locations[j][2][4] + '/update/' + this.update_locations[j][2][0] + '/" title="' + this.update_locations[j][2][1] + '">' +
+                            '<img src="' + this.update_locations[j][2][2] + '" alt="">' +
+                            '</a>' +
+                            '</div>';
+
+                }
+
+                window['contentStringUpdate' + j] += '</div>';
+
+                (function(update_marker, j) {
+                    google.maps.event.addListener(update_marker, 'click', function() {
+                        infowindow = new google.maps.InfoWindow({
+                            content: window['contentStringUpdate' + j]
+                        });
+                        infowindow.open(map, update_marker);
+                    });
+                })(update_marker, j);
+
+                bounds.extend(update_marker.position);
             };
             {% endif %}
 
