@@ -27,7 +27,6 @@ from akvo.api_utils import Requester, ImageImporter
 
 
 API_VERSION = 'v1'
-RAIN_NS = "{http://data.rainfoundation.org}"
 
 # get this module
 me = sys.modules[__name__]
@@ -214,12 +213,6 @@ def post_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
         )
 
 def put_org(pk, internal_org_id, org_as_dict, user_cred):
-
-    ### DEBUG ###
-    import pdb
-    pdb.set_trace()
-    ### DEBUG ###
-
     user_cred.update(pk=pk)
     try:
         organisation = Requester(
