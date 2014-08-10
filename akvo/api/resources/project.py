@@ -276,6 +276,7 @@ class ProjectResource(ConditionalFullResource):
 
         filtering               = dict(
             # other fields
+            id                  = ALL,
             status              = ALL,
             title               = ALL,
             budget              = ALL,
