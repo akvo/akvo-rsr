@@ -80,21 +80,27 @@ class ImageImporter():
         self.image = b''
 
     def get_from_url(self):
-        try:
-            request = Requester(url_template=self.path_or_uri, **{'kwargs': {'stream': True}})
-        except Exception, e:
-            print "*** Error getting image from da Indertubes: *** \n{}".format(e.message)
-        else:
-            if request.response.status_code is HTTP_200_OK:
+        _, extension = os.path.splitext(self.path_or_uri)
+        # get the image if the extension is in ALLOWED_EXTENSIONS
+        if extension.lower() in self.ALLOWED_EXTENSIONS:
+            self.filename = "temp{}".format(extension.lower())
+            try:
+                request = Requester(url_template=self.path_or_uri, **{'kwargs': {'stream': True}})
+            except Exception, e:
+                error_msg = "Error when fetching image at {img_url}\nError message: {message}".format(
+                    img_url=self.path_or_uri,
+                    message=e.message
+                )
+                raise Exception(error_msg)
+            else:
                 for chunk in request.response.iter_content(1024):
                     self.image += chunk
-            else:
-                print "*** Error getting image from da Indertubes ***"
 
     def get_from_path(self):
         _, extension = os.path.splitext(self.path_or_uri)
-        # and get the image if the extension is in ALLOWED_EXTENSIONS
+        # get the image if the extension is in ALLOWED_EXTENSIONS
         if extension.lower() in self.ALLOWED_EXTENSIONS:
+            self.filename = "temp{}".format(extension.lower())
             with open(self.path_or_uri, "rb") as f:
                 self.image = f.read()
 
