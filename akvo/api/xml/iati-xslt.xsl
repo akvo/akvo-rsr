@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- Edited by XMLSpy® -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:akvo="http://akvo.org/iati-activities">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:akvo="http://akvo.org/iati-activities"  xmlns:rain="http://data.rainfoundation.org">
 
   <xsl:template match="iati-activities">
       <xsl:apply-templates select="iati-activity" />
@@ -460,9 +460,20 @@
       <iati_activity_id>
         <xsl:value-of select="normalize-space(//iati-identifier)"/>
       </iati_activity_id>
-      <internal_id>
-        <xsl:value-of select="//iati-activity/@akvo:internal-project-id"/>
-      </internal_id>
+      <xsl:choose>
+        <!-- Cordaid internal ID -->
+        <xsl:when test="//iati-activity/@akvo:internal-project-id">
+          <internal_id>
+            <xsl:value-of select="//iati-activity/@akvo:internal-project-id"/>
+          </internal_id>
+        </xsl:when>
+        <!-- RAIN internal ID -->
+        <xsl:otherwise>
+          <internal_id>
+            <xsl:value-of select="//iati-activity/other-identifier[@owner-name='rainpms' and @rain:type='id']/@owner-ref"/>
+          </internal_id>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="@role='Accountable'">
         <partner_type>support</partner_type>
       </xsl:if>
@@ -477,8 +488,4 @@
       </xsl:if>
     </object>
   </xsl:template>
-
-  
 </xsl:stylesheet>
-
-
