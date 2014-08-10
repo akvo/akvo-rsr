@@ -18,10 +18,10 @@ from django.http import HttpResponse
 from akvo.scripts.rain import (
     log, API_VERSION, RAIN_IATI_ACTIVITIES_XML, RAIN_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION,
     ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT,
-    RAIN_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS
-)
+    RAIN_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS,
+    RainActivity, AKVO_NS, RAIN_NS, RAIN_ORG_ID)
 
-from requester import Requester
+from akvo.api_utils import Requester
 
 
 def post_an_activity(activity_element, user):
@@ -208,6 +208,61 @@ def load_xml(location):
 
     return xml
 
+def identify_rsr_project(user, rsr_id, iati_id, internal_id):
+    """ Figure out if we can identify an RSR project from one or more of
+        the RSR ID, an IATI activity ID, and an internal ID of RAIN, with consistency checking
+    """
+    rsr_id_from_iati_id, rsr_id_from_internal_id = None, None
+    if rsr_id:
+        ok, project = get_project_count(user, **dict(id=rsr_id))
+        # IF we have an RSR ID and we don't get anything back something's seriously wrong
+        if not ok:
+            raise AssertionError, "Project with ID {} not found".format(rsr_id)
+    if iati_id:
+        ok, project = get_project_count(user, **dict(partnerships__iati_activity_id=iati_id))
+        if ok:
+            iati_project_count = project.response.json()['meta']['total_count']
+            # More than one project with the same IATI activity ID is not good
+            assert iati_project_count < 2, "Two or more projects with the same IATI ID: {}".format(iati_id)
+            if iati_project_count == 0:
+                rsr_id_from_iati_id = None
+            elif iati_project_count == 1:
+                rsr_id_from_iati_id = project.response.json()['objects'][0]['id']
+                if rsr_id:
+                    # If we have an RSR ID verify it's the same project
+                    assert int(rsr_id) == int(rsr_id_from_iati_id), \
+                        "Project with ID {} doesn't match query for project with IATI ID {}".format(rsr_id, iati_id)
+    if internal_id:
+        ok, project = get_project_count(
+            user, **dict(partnerships__internal_id=internal_id, partnerships__organisation=RAIN_ORG_ID)
+        )
+        if ok:
+            internal_id_project_count = project.response.json()['meta']['total_count']
+            # More than one project with the same internal ID is not good either
+            assert internal_id_project_count < 2, \
+                "Two or more projects with the same internal ID: {}".format(internal_id)
+            if internal_id_project_count == 0:
+                rsr_id_from_internal_id = None
+            elif internal_id_project_count == 1:
+                rsr_id_from_internal_id = project.response.json()['objects'][0]['id']
+                if rsr_id:
+                    # If we have an RSR ID verify it's the same project
+                    assert int(rsr_id) == int(rsr_id_from_internal_id), \
+                        "Project with ID {} doesn't match query for project with internal ID {}".format(rsr_id, internal_id)
+    if rsr_id_from_iati_id and rsr_id_from_internal_id:
+        # finally check that we get the same project when using IATI ID or internal ID lookup when we have both
+        assert int(rsr_id_from_iati_id) == int(rsr_id_from_internal_id), \
+            "Query for project with IATI ID {} doesn't match query for project with internal ID {}".format(rsr_id, internal_id)
+    # if we've found a project return is ID
+    if rsr_id:
+        return rsr_id
+    if rsr_id_from_iati_id:
+        return rsr_id_from_iati_id
+    if rsr_id_from_internal_id:
+        return rsr_id_from_internal_id
+    # no project found
+    return None
+
 def upload_activities(argv):
     user = credentials_from_args(argv)
     if user:
@@ -215,44 +270,35 @@ def upload_activities(argv):
         if xml:
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
             root = etree.fromstring(xml, parser=parser)
-            document_akvo_ns = '{{{akvo_ns}}}'.format(akvo_ns=root.nsmap['akvo'])
+            document_akvo_ns = akvo_ns=root.nsmap['akvo']
             assert document_akvo_ns == AKVO_NS, "Akvo name space is incorrect in the IATI XML"
             activities = root.findall('iati-activity')
             activity_count = len(activities)
-            for i in range(activity_count):
-                internal_id = activities[i].get(AKVO_NS + 'internal-project-id')
-                iati_id=activities[i].findall('iati-identifier')[0].text
+            for i, activity in enumerate(activities):
+                activity = RainActivity(activity, RAIN_NS)
+                internal_id = activity.internal_id()
+                iati_id = activity.iati_id()
+                try:
+                    assert iati_id is not None, "No IATI ID found, for activity number {} in the XML".format(i+1)
+                except AssertionError, e:
+                    # TODO: something like log(e.message, {})
+                    continue
+                rsr_id = activity.rsr_id()
                 print "({current} of {activity_count}) Processing activity {iati_id}".format(current=i+1, activity_count=activity_count, iati_id=iati_id),
-                if len(activities[i].findall('participating-org')) > 0:
-
-                    ### DEBUG ###
-                    import pdb
-                    pdb.set_trace()
-                    ### DEBUG ###
-
-                    if internal_id:
-                        ok, project = get_project_count(user, **dict(partnerships__internal_id=internal_id))
-                    elif iati_id:
-                        ok, project = get_project_count(user, **dict(partnerships__iati_activity_id=iati_id))
-                    if not ok:
-                        continue #error msg already output
-                    project_count = project.response.json()['meta']['total_count']
-                    if project_count == 0:
-                        ok, message, data = post_an_activity(activities[i], user)
+                if len(activity.tree.findall('participating-org')) > 0:
+                    try:
+                        rsr_id = identify_rsr_project(user, rsr_id, iati_id, internal_id)
+                    except AssertionError, e:
+                        print e.message # TODO: log error
+                        continue
+                    if rsr_id:
+                        ok, message, data = put_an_activity(activity.tree, rsr_id, user)
                         log(message, data)
                         print message.format(**data)
-                    elif project_count == 1:
-                        pk = project.response.json()['objects'][0]['id']
-                        ok, message, data = put_an_activity(activities[i], pk, user)
+                    else:
+                        ok, message, data = post_an_activity(activity.tree, user)
                         log(message, data)
                         print message.format(**data)
-                    elif project_count > 1:
-                        data = dict(iati_id=iati_id, event=ERROR_MULTIPLE_OBJECTS, extra=internal_id)
-                        log(None, data)
-                        print(
-                            "**** Error updating iati-activity: {iati_id}. "
-                                "More than one project with internal ID {extra} exists.".format(**data)
-                        )
                 else:
                     message = "Iati-activity {iati_id} has no participating-orgs, aborting"
                     data = dict(iati_id = iati_id, event = ERROR_NO_ORGS,)
