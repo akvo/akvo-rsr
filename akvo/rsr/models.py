@@ -1752,6 +1752,10 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         blank=True,
         upload_to=image_path,
         thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
+        extra_thumbnails={
+            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},
+            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
+        },
         help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
     )
     photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
