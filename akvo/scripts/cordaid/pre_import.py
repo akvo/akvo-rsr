@@ -27,7 +27,7 @@ from akvo.scripts.cordaid import (
     print_log, log, LOG_ORGANISATIONS, ACTION_FOUND, ERROR_MULTIPLE_OBJECTS, ACTION_LOCATION_SET,
     ERROR_COUNTRY_CODE, ACTION_CREATE_ORG, ERROR_EXCEPTION, ACTION_LOCATION_FOUND, ACTION_SET_IMAGE,
     CORDAID_ORG_CSV_FILE, init_log, outsys, CORDAID_IATI_ACTIVITIES_XML, ACTION_UPDATE_ORG, ACTION_CREATE_IOI,
-    ERROR_BUSINESS_UNIT_MISSING, ACTION_BENCH_FOUND, ACTION_BENCH_CREATE, ERROR_CATEGORY_MISSING
+    ERROR_BUSINESS_UNIT_MISSING, ACTION_BENCH_FOUND, ACTION_BENCH_CREATE, ERROR_CATEGORY_MISSING, OWNER_CONTENT
 )
 
 def find_cordaid_business_units(business_units):
@@ -239,24 +239,40 @@ def import_orgs(xml_file):
                 )
             )
 
-    def update_organisation(org_etree, internal_org_id):
+    def update_organisation(org_etree, internal_org_id, cordaid):
         try:
             org_dict = org_data_from_xml(org_etree)
             referenced_org = internal_org_id.referenced_org
             update_org = Organisation.objects.filter(pk=referenced_org.pk)
-            update_org.update(**org_dict)
-            log(
-                u"Updated organisation: {label}, Akvo ID: {pk}",
-                dict(
-                    log_type=LOG_ORGANISATIONS,
-                    internal_id=internal_org_id.identifier,
-                    label=referenced_org.name,
-                    pk=referenced_org.pk,
-                    event=ACTION_UPDATE_ORG
+            content_owner = update_org[0].content_owner
+            if content_owner and content_owner != cordaid:
+                log(
+                    u"Organisation content owned by different organisation: {label}, Akvo ID: {pk}, owned by: {owner_name}",
+                    dict(
+                        log_type=LOG_ORGANISATIONS,
+                        internal_id=internal_org_id.identifier,
+                        label=referenced_org.name,
+                        pk=referenced_org.pk,
+                        event=OWNER_CONTENT,
+                        owner_name=content_owner.name
+                    )
                 )
-            )
-            # return the updated organisation record to be used in the following steps
-            return update_org[0]
+                # return None so that organisation does not get updated afterwards
+                return None
+            else:
+                update_org.update(**org_dict)
+                log(
+                    u"Updated organisation: {label}, Akvo ID: {pk}",
+                    dict(
+                        log_type=LOG_ORGANISATIONS,
+                        internal_id=internal_org_id.identifier,
+                        label=referenced_org.name,
+                        pk=referenced_org.pk,
+                        event=ACTION_UPDATE_ORG
+                    )
+                )
+                # return the updated organisation record to be used in the following steps
+                return update_org[0]
         except Exception, e:
             log(
                 u"Error trying to update organisation with Cordaid ID {internal_id} ",
@@ -371,8 +387,9 @@ def import_orgs(xml_file):
                         event=ACTION_FOUND
                     )
                 )
-                referenced_org = update_organisation(org_etree, internal_org_id)
-                set_location_for_org(org_etree, internal_id, referenced_org)
+                referenced_org = update_organisation(org_etree, internal_org_id, cordaid)
+                if referenced_org:
+                    set_location_for_org(org_etree, internal_id, referenced_org)
             except InternalOrganisationID.MultipleObjectsReturned:
                 log(
                     u"Error from lookup of internal ID {internal_id}. Multiple objects found.",
@@ -415,7 +432,8 @@ def import_orgs(xml_file):
                         )
                 else:
                     continue
-            organisation_logo(org_etree, internal_id, referenced_org)
+            if referenced_org:
+                organisation_logo(org_etree, internal_id, referenced_org)
     outsys('\n')
 
 if __name__ == '__main__':
