@@ -247,14 +247,14 @@ def import_orgs(xml_file):
             content_owner = update_org[0].content_owner
             if content_owner and content_owner != cordaid:
                 log(
-                    u"Organisation content owned by different organisation: {label}, Akvo ID: {pk}, owned by: {owner_name}",
+                    u"Organisation content owned by different organisation: {label}, Akvo ID: {pk}, owned by: {extra}",
                     dict(
                         log_type=LOG_ORGANISATIONS,
                         internal_id=internal_org_id.identifier,
                         label=referenced_org.name,
                         pk=referenced_org.pk,
                         event=OWNER_CONTENT,
-                        owner_name=content_owner.name
+                        extra=content_owner.name
                     )
                 )
                 # return None so that organisation does not get updated afterwards
