@@ -1,0 +1,43 @@
+# -*- coding: utf-8 -*-
+
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
+from akvo.rsr.fields import ValidXMLCharField
+from akvo.rsr.models.models_utils import PARTNER_TYPE_EXTRAS, PARTNER_TYPES
+
+
+class Partnership(models.Model):
+    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
+    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
+    partner_type = ValidXMLCharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
+    funding_amount = models.DecimalField(
+        _(u'funding amount'), max_digits=10, decimal_places=2,
+        blank=True, null=True, db_index=True
+    )
+    partner_type_extra = ValidXMLCharField(
+        _(u'partner type extra'), max_length=30,
+        blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
+    )
+    iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
+    internal_id = ValidXMLCharField(
+        _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
+        help_text=_(u"The organisation's internal ID for the project"),
+    )
+    iati_url = models.URLField(
+        blank=True,
+        help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.')
+    )
+    related_activity_id = ValidXMLCharField(_(u'related IATI activity ID'), max_length=50, blank=True)
+
+    class Meta:
+        verbose_name = _(u'project partner')
+        verbose_name_plural = _(u'project partners')
+        ordering = ['partner_type']
+
+    def __unicode__(self):
+        return self.organisation.name
