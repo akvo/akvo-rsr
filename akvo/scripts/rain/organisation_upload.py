@@ -6,14 +6,17 @@
 
 
 import os
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 from akvo import settings
 
 
 from akvo.scripts.rain import (
     ERROR_EXCEPTION, ERROR_CREATE_ORG, ERROR_UPLOAD_ORG, ACTION_CREATE_ORG, log, init_log, print_log, ACTION_CREATE_IOI,
-    ACTION_UPDATE_ORG, RAIN_LOGOS_DIR
-)
+    ACTION_UPDATE_ORG, RAIN_LOGOS_DIR, RAIN_ORG_ID,
+    ERROR_OTHER_CONTENT_OWNER, ERROR_UPDATE_ORG,
+    RAIN_NS, RAIN_ORGANISATIONS_XML, RAIN_ORG_CSV_FILE,
+    ERROR_CREATE_INTERNAL_ID)
 
 import getopt
 import json
@@ -29,29 +32,29 @@ from akvo.api_utils import Requester, ImageImporter
 API_VERSION = 'v1'
 
 # get this module
-me = sys.modules[__name__]
-api_settings = dict(
-    #UPLOAD_ROOT_DIR = '/Users/gabriel/Downloads/api_upload',
-    UPLOAD_ROOT_DIR = '/var/akvo/rsr/code/akvo/rain',
-    PROJECT_IMAGES_SUBDIR = 'project_images',
-    LOGOS_SUBDIR = 'logos',
-    IATI_ACTIVITES_FILENAME = 'rain_one_activity_20140730.xml',
-    #ORGANISATIONS_FILENAME = 'organisations.xml',
-    ORGANISATIONS_FILENAME = '3_organisations_2014_08_01.xml',
-    ORGANISATIONS_UPLOAD_LOG_FILENAME = 'organisations_upload_{datetime}.csv',
-)
-
-# construct local variables for Cordaid supporting data
-for key, val in api_settings.items():
-    # try to grab the identifier from settings, if not found use the default from cordaid_settings
-    setattr(me, key, getattr(settings, key, val))
-
-IATI_ACTIVITIES_XML = os.path.join(me.UPLOAD_ROOT_DIR, me.IATI_ACTIVITES_FILENAME)
-ORGANISATIONS_XML = os.path.join(me.UPLOAD_ROOT_DIR, me.ORGANISATIONS_FILENAME)
-ORGANISATIONS_UPLOAD_LOG_FILE = os.path.join(
-    me.UPLOAD_ROOT_DIR, me.ORGANISATIONS_UPLOAD_LOG_FILENAME
-)
-LOGOS_PATH = os.path.join(me.UPLOAD_ROOT_DIR, me.LOGOS_SUBDIR)
+# me = sys.modules[__name__]
+# api_settings = dict(
+#     # RAIN_ROOT_DIR = '/Users/gabriel/git/akvo-rsr/akvo/rain',
+#     # RAIN_ROOT_DIR = '/var/akvo/rsr/code/akvo/rain',
+#     PROJECT_IMAGES_SUBDIR = 'project_images',
+#     LOGOS_SUBDIR = 'logos',
+#     IATI_ACTIVITES_FILENAME = 'rain_one_activity_20140730.xml',
+#     #ORGANISATIONS_FILENAME = 'organisations.xml',
+#     ORGANISATIONS_FILENAME = '3_organisations_2014_08_01.xml',
+#     ORGANISATIONS_UPLOAD_LOG_FILENAME = 'organisations_upload_{datetime}.csv',
+# )
+#
+# # construct local variables for Cordaid supporting data
+# for key, val in api_settings.items():
+#     # try to grab the identifier from settings, if not found use the default from cordaid_settings
+#     setattr(me, key, getattr(settings, key, val))
+#
+# IATI_ACTIVITIES_XML = os.path.join(me.RAIN_ROOT_DIR, me.IATI_ACTIVITES_FILENAME)
+# ORGANISATIONS_XML = os.path.join(me.RAIN_ROOT_DIR, me.ORGANISATIONS_FILENAME)
+# ORGANISATIONS_UPLOAD_LOG_FILE = os.path.join(
+#     me.RAIN_ROOT_DIR, me.ORGANISATIONS_UPLOAD_LOG_FILENAME
+# )
+# LOGOS_PATH = os.path.join(me.RAIN_ROOT_DIR, me.LOGOS_SUBDIR)
 
 def user_org(user_cred):
     try:
@@ -67,10 +70,13 @@ def user_org(user_cred):
         print "{message}".format(message=e.message)
         return None
 
-def find_org(user_cred, reporting_org_id, iati_org_id, internal_org_id, name):
+def find_org(user_cred, reporting_org_id, org_id, iati_org_id, internal_org_id, name):
     """
     """
-    def query_rsr(url_template, url_args, token, field_name='id'):
+    def query_rsr_for_org(url_template, url_args, token, field_name='id'):
+        """
+        wrapper around Requester for a number of similar requests to try find an organisation
+        """
         try:
             request = Requester(
                 url_template=url_template,
@@ -84,9 +90,10 @@ def find_org(user_cred, reporting_org_id, iati_org_id, internal_org_id, name):
             )
             data = request.response.json()
             if data.get('count', 0) == 1:
-                return data['results'][0][field_name]
+                # return org ID and the content owner ID if available
+                return data['results'][0][field_name], data['results'][0].get('content_owner',None)
             elif data.get('count', 0) == 0:
-                return None
+                return None, None
             else:
                 raise Exception(
                     "Multiple matches when looking for organisation using {}".format(url_template.format(**url_args))
@@ -97,9 +104,17 @@ def find_org(user_cred, reporting_org_id, iati_org_id, internal_org_id, name):
                 "Requester error, message:\n{}".format(e.message)
             )
 
+    def find_by_org_id(user_cred, org_id):
+        user_cred.update({'org_id': org_id})
+        return query_rsr_for_org(
+            "http://{domain}/rest/v1/organisation/?id={org_id}",
+            user_cred,
+            user_cred['api_key'],
+        )
+
     def find_by_iati_org_id(user_cred, iati_org_id):
         user_cred.update({'iati_org_id': iati_org_id})
-        return query_rsr(
+        return query_rsr_for_org(
             "http://{domain}/rest/v1/organisation/?iati_org_id={iati_org_id}",
             user_cred,
             user_cred['api_key'],
@@ -107,7 +122,7 @@ def find_org(user_cred, reporting_org_id, iati_org_id, internal_org_id, name):
 
     def find_by_internal_org_id(user_cred, internal_org_id):
         user_cred.update({'recording_org': reporting_org_id, 'identifier': internal_org_id})
-        return query_rsr(
+        return query_rsr_for_org(
             "http://{domain}/rest/v1/internal_organisation_id/?"
                 "recording_org={recording_org}&identifier={identifier}&format=json",
             user_cred,
@@ -117,28 +132,26 @@ def find_org(user_cred, reporting_org_id, iati_org_id, internal_org_id, name):
 
     def find_by_name(user_cred, name):
         user_cred.update({'name': name})
-        return query_rsr(
+        return query_rsr_for_org(
             "http://{domain}/rest/v1/organisation/?name={name}",
             user_cred,
             user_cred['api_key'],
         )
 
-    if iati_org_id:
-        org_id = find_by_iati_org_id(user_cred, iati_org_id)
-        if org_id:
-            return org_id
+    content_owner_id = None
+    if org_id:
+        org_id, content_owner_id = find_by_org_id(user_cred, org_id)
+    elif iati_org_id:
+        org_id, content_owner_id = find_by_iati_org_id(user_cred, iati_org_id)
+    elif internal_org_id:
+        org_id, content_owner_id = find_by_internal_org_id(user_cred, internal_org_id)
+    elif name:
+        org_id, content_owner_id = find_by_name(user_cred, name)
 
-    if internal_org_id:
-        org_id = find_by_internal_org_id(user_cred, internal_org_id)
-        if org_id:
-            return org_id
+    if org_id:
+        return org_id, content_owner_id
 
-    if name:
-        org_id = find_by_name(user_cred, name)
-        if org_id:
-            return org_id
-
-    return None
+    return None, None
 
 def post_org(internal_org_id, org_as_dict, user_cred):
     try:
@@ -201,15 +214,17 @@ def post_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
             accept_codes=[HTTP_201_CREATED],
         )
     except Exception, e:
-        return False, "{extra}", dict(
-            pk,
-            event = ERROR_EXCEPTION,
-            extra = e.message,
+        return "Error creating internal ID: {extra}", dict(
+            pk=pk,
+            event=ERROR_CREATE_INTERNAL_ID,
+            internal_org_id=internal_identifier,
+            extra=e.message,
         )
     if internal_org_id.response.status_code is HTTP_201_CREATED:
-        return True, "Created internal organisation ID: {identifier}", dict(
-            pk = internal_org_id.response.json()['identifier'],
-            event = ACTION_CREATE_IOI
+        return "Created internal organisation ID: {extra}", dict(
+            pk=pk,
+            event=ACTION_CREATE_IOI,
+            extra=internal_org_id.response.json()['id'],
         )
 
 def put_org(pk, internal_org_id, org_as_dict, user_cred):
@@ -226,10 +241,10 @@ def put_org(pk, internal_org_id, org_as_dict, user_cred):
                 'Authorization': 'Token {}'.format(user_cred['api_key'])
             },
             data=json.dumps(org_as_dict),
-            accept_codes=[HTTP_200_OK],
         )
     except Exception, e:
         return False, "{extra}", dict(
+            pk=pk,
             internal_org_id=internal_org_id,
             event=ERROR_EXCEPTION,
             extra=e.message,
@@ -243,7 +258,7 @@ def put_org(pk, internal_org_id, org_as_dict, user_cred):
             False,
             "**** Error updating organisation: {pk}. HTTP status code: {extra}", dict(
                 pk=pk,
-                event=ERROR_UPLOAD_ORG,
+                event=ERROR_UPDATE_ORG,
                 extra=organisation.response.status_code,
             )
         )
@@ -366,6 +381,7 @@ def python_organisation(tree):
     iati_type = find_text(tree, 'iati_organisation_type')
     new_organisation_type = int(iati_type) if iati_type else 22
     organisation_type = Organisation.org_type_from_iati_type(new_organisation_type)
+    content_owner = RAIN_ORG_ID
     locations = location_data(tree.find('locations/object'))
 
     logo = import_logo(tree)
@@ -376,6 +392,7 @@ def python_organisation(tree):
         url=url,
         organisation_type=organisation_type,
         new_organisation_type=new_organisation_type,
+        content_owner=content_owner,
         locations=locations,
         logo=logo,
     )
@@ -383,24 +400,44 @@ def python_organisation(tree):
 def upload_organisations(argv):
     user_cred = credentials_from_args(argv)
     if user_cred:
-        reporting_org_id = user_org(user_cred)
-        with open(ORGANISATIONS_XML, 'r') as f:
+        with open(RAIN_ORGANISATIONS_XML, 'r') as f:
             root = etree.fromstring(f.read())
             organisations = root.findall('organisation')
             for i, org_as_etree in enumerate(organisations):
-                # if i > 5:
-                #     break
-                org_id = find_text(org_as_etree, 'internal_org_id@{}akvo_identifier'.format(RAIN_NS))
+                org_id = find_text(org_as_etree, 'internal_org_id@{{{}}}akvo_identifier'.format(RAIN_NS))
                 iati_org_id = find_text(org_as_etree, 'iati_org_id')
                 internal_org_id = find_text(org_as_etree, 'internal_org_id')
                 name = find_text(org_as_etree, 'name')
+                assert org_id or ( iati_org_id or internal_org_id), \
+                    "Cannot create a new organisation without either an IATI ID or an internal ID"
 
                 print "Processing organisation {}".format(name),
                 try:
-                    pk = find_org(user_cred, reporting_org_id, iati_org_id, internal_org_id, name)
+                    pk, content_owner_id = find_org(user_cred, RAIN_ORG_ID, org_id, iati_org_id, internal_org_id, name)
                 except Exception, e:
-                    message = "Error trying to find organisation, error message: {extra}"
-                    data = dict(extra=e.message)
+                    message = "Error trying to find organisation {name} ID {pk}, error message: {extra}"
+                    data = dict(
+                        pk=org_id,
+                        name=name,
+                        iati_org_id=iati_org_id,
+                        internal_org_id=internal_org_id,
+                        event=ERROR_UPLOAD_ORG,
+                        extra=e.message,
+                    )
+                    log(message, data)
+                    print message.format(**data)
+                    continue
+                if content_owner_id is not None and int(content_owner_id) != RAIN_ORG_ID:
+                    # Don't mess with orgs managed by others
+                    message = "Organisation {name} ID {pk} is managed by another organisation: {extra}"
+                    data = dict(
+                        pk=org_id,
+                        name=name,
+                        iati_org_id=iati_org_id,
+                        internal_org_id=internal_org_id,
+                        event=ERROR_OTHER_CONTENT_OWNER,
+                        extra=content_owner_id,
+                    )
                     log(message, data)
                     print message.format(**data)
                     continue
@@ -414,14 +451,15 @@ def upload_organisations(argv):
                     ok, message, data = post_org(internal_org_id, org_as_dict, user_cred)
                     log(message, data)
                     print message.format(**data)
-                    if ok:
-                        post_internal_id(user_cred, reporting_org_id, internal_org_id, data['pk'])
-
+                if ok:
+                    message, data = post_internal_id(user_cred, RAIN_ORG_ID, internal_org_id, data['pk'])
+                    log(message, data)
+                    print message.format(**data)
 
 if __name__ == '__main__':
     upload_organisations(sys.argv)
-    log_file = init_log(ORGANISATIONS_UPLOAD_LOG_FILE)
-    names = (u'pk', u'other_id', u'event', u'extra')
+    log_file = init_log(RAIN_ORG_CSV_FILE)
+    names = (u'pk', u'name', u'iati_org_id', u'internal_org_id', u'event', u'extra')
     print_log(log_file, names)
 
 STATIC_ROOT = "/var/akvo/rsr/static/"

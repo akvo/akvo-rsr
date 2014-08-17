@@ -29,11 +29,11 @@ rain_settings = dict(
     RAIN_LOGOS_SUBDIR = 'logos',
 
     RAIN_IATI_ACTIVITES_FILENAME = 'one_rain_activity_20140730.xml',
-    RAIN_ORGANISATIONS_FILENAME = 'organisations.xml',
-    RAIN_LOG_FILENAME = 'rain_import.log',
-    RAIN_ORG_CSV_FILENAME = 'rain_organisations_import_{datetime}.csv',
-    RAIN_ACTIVITIES_CSV_FILENAME = 'rain_activities_import_{datetime}.csv',
-    RAIN_UPLOAD_CSV_FILENAME = 'rain_activities_upload_{datetime}.csv',
+    RAIN_ORGANISATIONS_FILENAME = '3_organisations_2014_08_01.xml',
+
+    RAIN_ORG_CSV_FILENAME = 'rain_organisations_upload_{datetime}.csv',
+    RAIN_ACTIVITIES_CSV_FILENAME = 'rain_activities_upload_{datetime}.csv',
+    RAIN_POST_PROCESS_CSV_FILENAME = 'rain_post_import_{datetime}.csv',
 
     RAIN_ORG_ID = 35,
     RAIN_IATI_ID = 'NL-KVK-34200988',
@@ -47,10 +47,10 @@ for key, val in rain_settings.items():
 # "me." isn't strictly necessary here, but included for the code checker's sake
 RAIN_IATI_ACTIVITIES_XML = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_IATI_ACTIVITES_FILENAME)
 RAIN_ORGANISATIONS_XML = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_ORGANISATIONS_FILENAME)
-RAIN_LOG_FILE = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_LOG_FILENAME)
+
 RAIN_ORG_CSV_FILE = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_ORG_CSV_FILENAME)
 RAIN_ACTIVITIES_CSV_FILE = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_ACTIVITIES_CSV_FILENAME)
-RAIN_UPLOAD_CSV_FILE = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_UPLOAD_CSV_FILENAME)
+RAIN_POST_PROCESS_CSV_FILE = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_POST_PROCESS_CSV_FILENAME)
 
 RAIN_PROJECT_IMAGES_DIR =  os.path.join(me.RAIN_ROOT_DIR, me.RAIN_PROJECT_IMAGES_SUBDIR)
 RAIN_LOGOS_DIR =  os.path.join(me.RAIN_ROOT_DIR, me.RAIN_LOGOS_SUBDIR)
@@ -83,7 +83,7 @@ log_bits = []
 def log(text, data):
     log_bits.append(dict(text=text, data=data or {}))
 
-def init_log(log_file=RAIN_LOG_FILE):
+def init_log(log_file):
     current_log_file = log_file.format(datetime=datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
     with open(current_log_file, "w") as f:
         pass
@@ -152,7 +152,8 @@ ERROR_NO_ORGS = "participating orgs missing error"
 ERROR_CREATE_ORG = 'organisation create error'
 ERROR_UPDATE_ORG = 'organisation update error'
 ERROR_UPLOAD_ORG = "organisation upload error"
-
+ERROR_CREATE_INTERNAL_ID = 'internal ID creation error'
+ERROR_OTHER_CONTENT_OWNER = "different organisation content owner"
 
 class RainActivity():
     """ This class holds an etree representation of an activity and is responsible for mapping the relevant bits in the
