@@ -24,7 +24,8 @@ rain_settings = dict(
     AKVO_NS='http://akvo.org/iati-activities',
     RAIN_NS="http://data.rainfoundation.org",
 
-    RAIN_ROOT_DIR = '/var/tmp/rain',
+    # RAIN_ROOT_DIR = '/var/tmp/rain',
+    RAIN_ROOT_DIR = '/Users/gabriel/git/akvo-rsr/akvo/rain',
     RAIN_PROJECT_IMAGES_SUBDIR = 'project_images',
     RAIN_LOGOS_SUBDIR = 'logos',
 
@@ -155,6 +156,8 @@ ERROR_UPLOAD_ORG = "organisation upload error"
 ERROR_CREATE_INTERNAL_ID = 'internal ID creation error'
 ERROR_OTHER_CONTENT_OWNER = "different organisation content owner"
 ERROR_XML_PARSING = "error parsing organisation XML"
+ERROR_MISSING_IATI_ID = "no IATI activity ID found"
+ERROR_IDENTIFY_RSR_PROJECT = "inconsistency found when identifying existing RSR project"
 
 class RainActivity():
     """ This class holds an etree representation of an activity and is responsible for mapping the relevant bits in the

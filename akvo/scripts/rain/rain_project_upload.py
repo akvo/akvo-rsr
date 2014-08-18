@@ -16,10 +16,11 @@ from tastypie.http import HttpCreated, HttpNoContent
 from django.http import HttpResponse
 
 from akvo.scripts.rain import (
-    log, API_VERSION, RAIN_IATI_ACTIVITIES_XML, RAIN_UPLOAD_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION,
+    log, API_VERSION, RAIN_IATI_ACTIVITIES_XML, RAIN_ACTIVITIES_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION,
     ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT,
-    RAIN_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS,
-    RainActivity, AKVO_NS, RAIN_NS, RAIN_ORG_ID)
+    RAIN_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_NO_ORGS, RainActivity, AKVO_NS, RAIN_NS, RAIN_ORG_ID,
+    ERROR_MISSING_IATI_ID, ERROR_IDENTIFY_RSR_PROJECT
+)
 
 from akvo.api_utils import Requester
 
@@ -167,7 +168,7 @@ def credentials_from_args(argv):
 
 def get_project_count(user, **q_args):
     """
-    query the API for projects associated with a given internal_id
+    Look for a project
     """
     url_args = user
     url_args.update(
@@ -177,7 +178,8 @@ def get_project_count(user, **q_args):
     )
     try:
         project = Requester(
-            url_template="http://{domain}/api/{api_version}/project/?format=json&api_key={api_key}&username={username}&{extra_args}",
+            url_template="http://{domain}/api/{api_version}/project/"
+                "?format=json&api_key={api_key}&username={username}&{extra_args}",
             url_args=url_args,
         )
     except Exception, e:
@@ -275,21 +277,37 @@ def upload_activities(argv):
             activities = root.findall('iati-activity')
             activity_count = len(activities)
             for i, activity in enumerate(activities):
-                activity = RainActivity(activity, RAIN_NS)
+                activity = RainActivity(activity, RAIN_NS, AKVO_NS)
                 internal_id = activity.internal_id()
                 iati_id = activity.iati_id()
                 try:
                     assert iati_id is not None, "No IATI ID found, for activity number {} in the XML".format(i+1)
                 except AssertionError, e:
-                    # TODO: something like log(e.message, {})
+                    message = "No IATI ID for activity number {extra}"
+                    data = dict(
+                        event=ERROR_MISSING_IATI_ID,
+                        extra=i,
+                    )
+                    log(message, data)
+                    print message.format(**data)
                     continue
                 rsr_id = activity.rsr_id()
-                print "({current} of {activity_count}) Processing activity {iati_id}".format(current=i+1, activity_count=activity_count, iati_id=iati_id),
+                print "({current} of {activity_count}) Processing activity {iati_id}".format(
+                    current=i+1, activity_count=activity_count, iati_id=iati_id
+                ),
                 if len(activity.tree.findall('participating-org')) > 0:
                     try:
                         rsr_id = identify_rsr_project(user, rsr_id, iati_id, internal_id)
                     except AssertionError, e:
-                        print e.message # TODO: log error
+                        message = "Error identifying RSR project: ID {pk}, IATI ID: {iati_id}, Error message: \n{extra}"
+                        data = dict(
+                            pk=rsr_id,
+                            iati_id=iati_id,
+                            event=ERROR_IDENTIFY_RSR_PROJECT,
+                            extra=e.message,
+                        )
+                        log(message, data)
+                        print message.format(**data)
                         continue
                     if rsr_id:
                         ok, message, data = put_an_activity(activity.tree, rsr_id, user)
@@ -307,6 +325,6 @@ def upload_activities(argv):
 
 if __name__ == '__main__':
     upload_activities(sys.argv)
-    log_file = init_log(RAIN_UPLOAD_CSV_FILE)
+    log_file = init_log(RAIN_ACTIVITIES_CSV_FILE)
     names = (u'iati_id', u'pk', u'event', u'extra')
     print_log(log_file, names)
