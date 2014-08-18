@@ -453,7 +453,16 @@
 
       <!-- InternalOrganisationID fields-->
       <internal_org_id>
-        <xsl:value-of select="normalize-space(@akvo:internal-org-ref)"/>
+        <!-- RAIN internal ID -->
+        <xsl:choose>
+          <xsl:when test="@rain:internal-org-ref">
+            <xsl:value-of select="normalize-space(@rain:internal-org-ref)"/>
+          </xsl:when>
+          <!-- CORDAID internal ID -->
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(@akvo:internal-org-ref)"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </internal_org_id>
 
       <!-- Partnership fields-->
