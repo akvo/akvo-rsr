@@ -29,7 +29,7 @@ rain_settings = dict(
     RAIN_LOGOS_SUBDIR = 'logos',
 
     RAIN_IATI_ACTIVITES_FILENAME = 'one_rain_activity_20140730.xml',
-    RAIN_ORGANISATIONS_FILENAME = '3_organisations_2014_08_01.xml',
+    RAIN_ORGANISATIONS_FILENAME = 'organisations_2014_08_01.xml',
 
     RAIN_ORG_CSV_FILENAME = 'rain_organisations_upload_{datetime}.csv',
     RAIN_ACTIVITIES_CSV_FILENAME = 'rain_activities_upload_{datetime}.csv',
@@ -154,6 +154,7 @@ ERROR_UPDATE_ORG = 'organisation update error'
 ERROR_UPLOAD_ORG = "organisation upload error"
 ERROR_CREATE_INTERNAL_ID = 'internal ID creation error'
 ERROR_OTHER_CONTENT_OWNER = "different organisation content owner"
+ERROR_XML_PARSING = "error parsing organisation XML"
 
 class RainActivity():
     """ This class holds an etree representation of an activity and is responsible for mapping the relevant bits in the

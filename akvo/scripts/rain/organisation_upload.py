@@ -13,10 +13,9 @@ from akvo import settings
 
 from akvo.scripts.rain import (
     ERROR_EXCEPTION, ERROR_CREATE_ORG, ERROR_UPLOAD_ORG, ACTION_CREATE_ORG, log, init_log, print_log, ACTION_CREATE_IOI,
-    ACTION_UPDATE_ORG, RAIN_LOGOS_DIR, RAIN_ORG_ID,
-    ERROR_OTHER_CONTENT_OWNER, ERROR_UPDATE_ORG,
-    RAIN_NS, RAIN_ORGANISATIONS_XML, RAIN_ORG_CSV_FILE,
-    ERROR_CREATE_INTERNAL_ID)
+    ACTION_UPDATE_ORG, RAIN_ORG_ID, ERROR_OTHER_CONTENT_OWNER, ERROR_UPDATE_ORG, RAIN_NS, RAIN_ORGANISATIONS_XML,
+    RAIN_ORG_CSV_FILE, ERROR_CREATE_INTERNAL_ID, ERROR_XML_PARSING
+)
 
 import getopt
 import json
@@ -30,31 +29,6 @@ from akvo.api_utils import Requester, ImageImporter
 
 
 API_VERSION = 'v1'
-
-# get this module
-# me = sys.modules[__name__]
-# api_settings = dict(
-#     # RAIN_ROOT_DIR = '/Users/gabriel/git/akvo-rsr/akvo/rain',
-#     # RAIN_ROOT_DIR = '/var/akvo/rsr/code/akvo/rain',
-#     PROJECT_IMAGES_SUBDIR = 'project_images',
-#     LOGOS_SUBDIR = 'logos',
-#     IATI_ACTIVITES_FILENAME = 'rain_one_activity_20140730.xml',
-#     #ORGANISATIONS_FILENAME = 'organisations.xml',
-#     ORGANISATIONS_FILENAME = '3_organisations_2014_08_01.xml',
-#     ORGANISATIONS_UPLOAD_LOG_FILENAME = 'organisations_upload_{datetime}.csv',
-# )
-#
-# # construct local variables for Cordaid supporting data
-# for key, val in api_settings.items():
-#     # try to grab the identifier from settings, if not found use the default from cordaid_settings
-#     setattr(me, key, getattr(settings, key, val))
-#
-# IATI_ACTIVITIES_XML = os.path.join(me.RAIN_ROOT_DIR, me.IATI_ACTIVITES_FILENAME)
-# ORGANISATIONS_XML = os.path.join(me.RAIN_ROOT_DIR, me.ORGANISATIONS_FILENAME)
-# ORGANISATIONS_UPLOAD_LOG_FILE = os.path.join(
-#     me.RAIN_ROOT_DIR, me.ORGANISATIONS_UPLOAD_LOG_FILENAME
-# )
-# LOGOS_PATH = os.path.join(me.RAIN_ROOT_DIR, me.LOGOS_SUBDIR)
 
 def user_org(user_cred):
     try:
@@ -372,7 +346,7 @@ def python_organisation(tree):
             image = ImageImporter(logo)
             image.get_image()
             return image.to_base64()
-        return ''
+        return None
 
     long_name = find_text(tree, 'name')
     name = long_name[:25]
@@ -383,9 +357,7 @@ def python_organisation(tree):
     organisation_type = Organisation.org_type_from_iati_type(new_organisation_type)
     content_owner = RAIN_ORG_ID
     locations = location_data(tree.find('locations/object'))
-
-    logo = import_logo(tree)
-    return dict(
+    org_dict = dict(
         name=name,
         long_name=long_name,
         description=description,
@@ -394,8 +366,11 @@ def python_organisation(tree):
         new_organisation_type=new_organisation_type,
         content_owner=content_owner,
         locations=locations,
-        logo=logo,
     )
+    logo = import_logo(tree)
+    if logo:
+        org_dict['logo'] = logo
+    return org_dict
 
 def upload_organisations(argv):
     user_cred = credentials_from_args(argv)
@@ -441,8 +416,18 @@ def upload_organisations(argv):
                     log(message, data)
                     print message.format(**data)
                     continue
-
-                org_as_dict = python_organisation(org_as_etree)
+                try:
+                    org_as_dict = python_organisation(org_as_etree)
+                except Exception, e:
+                    message = "Error converting organisation XML to json. Error message: {extra}"
+                    data = dict(
+                        pk=org_id,
+                        name=name,
+                        iati_org_id=iati_org_id,
+                        internal_org_id=internal_org_id,
+                        event=ERROR_XML_PARSING,
+                        extra=e.message,
+                    )
                 if pk:
                     ok, message, data = put_org(pk, internal_org_id, org_as_dict, user_cred)
                     log(message, data)
