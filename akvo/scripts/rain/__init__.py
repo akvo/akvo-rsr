@@ -24,12 +24,13 @@ rain_settings = dict(
     AKVO_NS='http://akvo.org/iati-activities',
     RAIN_NS="http://data.rainfoundation.org",
 
-    # RAIN_ROOT_DIR = '/var/tmp/rain',
-    RAIN_ROOT_DIR = '/Users/gabriel/git/akvo-rsr/akvo/rain',
+    RAIN_ROOT_DIR = '/var/tmp/rain',
+    # RAIN_ROOT_DIR = '/Users/gabriel/git/akvo-rsr/akvo/rain',
     RAIN_PROJECT_IMAGES_SUBDIR = 'project_images',
     RAIN_LOGOS_SUBDIR = 'logos',
 
-    RAIN_IATI_ACTIVITES_FILENAME = 'one_rain_activity_20140730.xml',
+    # RAIN_IATI_ACTIVITES_FILENAME = 'one_rain_activity_20140730.xml',
+    RAIN_IATI_ACTIVITES_FILENAME = 'rain_activities_20140730.xml',
     RAIN_ORGANISATIONS_FILENAME = 'organisations_2014_08_01.xml',
 
     RAIN_ORG_CSV_FILENAME = 'rain_organisations_upload_{datetime}.csv',
@@ -158,6 +159,7 @@ ERROR_OTHER_CONTENT_OWNER = "different organisation content owner"
 ERROR_XML_PARSING = "error parsing organisation XML"
 ERROR_MISSING_IATI_ID = "no IATI activity ID found"
 ERROR_IDENTIFY_RSR_PROJECT = "inconsistency found when identifying existing RSR project"
+ERROR_PROJECT_NOT_FOUND = "project not found"
 
 class RainActivity():
     """ This class holds an etree representation of an activity and is responsible for mapping the relevant bits in the
@@ -192,19 +194,19 @@ class RainActivity():
         url = self.tree.xpath("document-link['akvo:photo-id']/@url")
         if url:
             return url[0]
-        return None
+        return ''
 
     def current_image_caption(self):
         img_caption = self.tree.xpath("document-link['akvo:photo-id']/title", namespaces=self.ns_map)
         if img_caption:
             return img_caption[0].text.strip()
-        return None
+        return ''
 
     def current_image_credit(self):
         credit = self.tree.xpath("document-link['akvo:photo-id']/@akvo:photo-credit", namespaces=self.ns_map)
         if credit:
             return credit[0]
-        return None
+        return ''
 
     def publishing_status(self):
         return self.tree.get(self.akvo_ns + 'publish') == 'true'
