@@ -115,13 +115,29 @@ def find_org(user_cred, reporting_org_id, org_id, iati_org_id, internal_org_id, 
     content_owner_id = None
     if org_id:
         org_id, content_owner_id = find_by_org_id(user_cred, org_id)
-    elif iati_org_id:
-        org_id, content_owner_id = find_by_iati_org_id(user_cred, iati_org_id)
-    elif internal_org_id:
-        org_id, content_owner_id = find_by_internal_org_id(user_cred, internal_org_id)
-    elif name:
-        org_id, content_owner_id = find_by_name(user_cred, name)
-
+    else:
+        org_ids = []
+        if iati_org_id:
+            org_id_from_iati_org_id, content_owner_id = find_by_iati_org_id(user_cred, iati_org_id)
+            if org_id_from_iati_org_id:
+               org_ids.append(org_id_from_iati_org_id)
+        if internal_org_id:
+            org_id_from_internal_org_id, content_owner_id = find_by_internal_org_id(user_cred, internal_org_id)
+            if org_id_from_internal_org_id:
+                org_ids.append(org_id_from_internal_org_id)
+        if name:
+            org_id_from_name, content_owner_id = find_by_name(user_cred, name)
+            if org_id_from_name:
+                org_ids.append(org_id_from_name)
+        # Check we haven't found different orgs by making a set of the IDs.
+        # If the set contains more than one ID we're in trouble
+        org_ids = list(set(org_ids))
+        assert len(org_ids) < 2, \
+            "Different organisations found when trying to identify with RSR ID: {org_id} , IATI ID: {iati_org_id}, internal ID: {internal_org_id}, name: {name}".format(
+                org_id=org_id, iati_org_id=iati_org_id, internal_org_id=internal_org_id, name=name
+            )
+        if org_ids:
+            org_id = org_ids[0]
     if org_id:
         return org_id, content_owner_id
 
