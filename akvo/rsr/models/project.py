@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 import math
 
 from datetime import date
@@ -18,26 +19,54 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 
+from sorl.thumbnail.fields import ImageWithThumbnailsField
+
 from akvo.rsr.fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
-from akvo.rsr.models.budget_item import BudgetItem, BudgetItemLabel
-from akvo.rsr.models.category import Category
-from akvo.rsr.models.focus_area import FocusArea
-from akvo.rsr.models.invoice import Invoice
-from akvo.rsr.models.organisation import Organisation
-from akvo.rsr.models.partnership import Partnership
-from akvo.rsr.models.user_profile import UserProfile
-from akvo.rsr.models.models_utils import OrganisationsQuerySetManager, QuerySetManager
-from akvo.rsr.models.models_utils import CURRENCY_CHOICES, HIERARCHY_OPTIONS, STATUSES, STATUSES_COLORS
-from akvo.rsr.iati.codelists import codelists_v104 as codelists
-
 from akvo.utils import PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE, RSR_LIMITED_CHANGE
 from akvo.utils import rsr_image_path, rsr_show_keywords
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from .budget_item import BudgetItem, BudgetItemLabel
+# from .category import Category
+# from .focus_area import FocusArea
+from .invoice import Invoice
+from .organisation import Organisation
+from .partnership import Partnership
+from .user_profile import UserProfile
+from .models_utils import OrganisationsQuerySetManager, QuerySetManager
+from akvo.rsr.iati.codelists import codelists_v104 as codelists
 
 
 class Project(TimestampsMixin, models.Model):
+    CURRENCY_CHOICES = (
+        ('USD', '$'),
+        ('EUR', '€'),
+    )
+
+    HIERARCHY_OPTIONS = (
+        (1, u'Core Activity'),
+        (2, u'Sub Activity'),
+        (3, u'Lower Sub Activity')
+    )
+
+    STATUSES = (
+        ('N', _(u'None')),
+        ('H', _(u'Needs funding')),
+        ('A', _(u'Active')),
+        ('C', _(u'Complete')),
+        ('L', _(u'Cancelled')),
+        ('R', _(u'Archived')),
+    )
+
+    STATUSES_COLORS = {
+        'N': 'black',
+        'H': 'orange',
+        'A': '#AFF167',
+        'C': 'grey',
+        'L': 'red',
+        'R': 'grey',
+    }
+
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
@@ -410,7 +439,7 @@ class Project(TimestampsMixin, models.Model):
 
     def show_status(self):
         "Show the current project status"
-        return mark_safe("<span style='color: %s;'>%s</span>" % (STATUSES_COLORS[self.status], self.get_status_display()))
+        return mark_safe("<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.status], self.get_status_display()))
 
     def show_current_image(self):
         try:
@@ -459,10 +488,13 @@ class Project(TimestampsMixin, models.Model):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
 
     def focus_areas(self):
+        from .focus_area import FocusArea
         return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
     focus_areas.allow_tags = True
 
     def areas_and_categories(self):
+        from .focus_area import FocusArea
+        from .category import Category
         area_objs = FocusArea.objects.filter(categories__projects__exact=self).distinct().order_by('name')
         areas = []
         for area_obj in area_objs:
@@ -508,11 +540,12 @@ class Project(TimestampsMixin, models.Model):
         "Show the current project status with background"
         return mark_safe(
             "<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (
-                STATUSES_COLORS[self.status], self.get_status_display()
+                self.STATUSES_COLORS[self.status], self.get_status_display()
             )
         )
 
     class Meta:
+        app_label = 'rsr'
         permissions = (
             ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
         )

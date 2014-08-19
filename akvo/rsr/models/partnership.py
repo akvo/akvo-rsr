@@ -4,14 +4,33 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.fields import ValidXMLCharField
-from akvo.rsr.models.models_utils import PARTNER_TYPE_EXTRAS, PARTNER_TYPES
 
 
 class Partnership(models.Model):
+    FIELD_PARTNER = u'field'
+    FUNDING_PARTNER = u'funding'
+    SPONSOR_PARTNER = u'sponsor'
+    SUPPORT_PARTNER = u'support'
+
+    PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
+    PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
+
+    PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+
+    ALLIANCE_PARTNER = u'alliance'
+    KNOWLEDGE_PARTNER = u'knowledge'
+    NETWORK_PARTNER = u'network'
+
+    PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
+    PARTNER_TYPE_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
+
+    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
+
     organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = ValidXMLCharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
@@ -35,6 +54,7 @@ class Partnership(models.Model):
     related_activity_id = ValidXMLCharField(_(u'related IATI activity ID'), max_length=50, blank=True)
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'project partner')
         verbose_name_plural = _(u'project partners')
         ordering = ['partner_type']

@@ -4,21 +4,22 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from sorl.thumbnail.fields import ImageWithThumbnailsField
+
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
-
-from akvo.rsr.models.project import Project
-
 from akvo.utils import rsr_image_path
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from .project import Project
 
 
 class FocusArea(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
+
     name = ValidXMLCharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
     slug = models.SlugField(u'slug', max_length=50, db_index=True, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
     description = ValidXMLTextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
@@ -47,6 +48,7 @@ class FocusArea(models.Model):
         return self.name
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = u'focus area'
         verbose_name_plural = u'focus areas'
         ordering = ['name', ]

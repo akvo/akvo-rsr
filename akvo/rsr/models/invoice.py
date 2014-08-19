@@ -15,7 +15,8 @@ from django.utils.translation import ugettext_lazy as _
 from mollie.ideal.utils import get_mollie_banklist
 
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
-from akvo.rsr.models.models_utils import PAYMENT_ENGINES, STATUS_CHOICES
+
+from .models_utils import PAYMENT_ENGINES, STATUS_CHOICES
 
 
 class InvoiceManager(models.Manager):
@@ -140,5 +141,6 @@ class Invoice(models.Model):
         }
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = u'invoice'
         ordering = ['-id', ]

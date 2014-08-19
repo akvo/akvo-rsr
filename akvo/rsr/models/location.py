@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -46,6 +47,7 @@ class BaseLocation(models.Model):
             location_target.save()
 
     class Meta:
+        app_label = 'rsr'
         abstract = True
         ordering = ['id', ]
 
@@ -90,6 +92,7 @@ class ProjectLocation(BaseLocation):
     feature_designation = ValidXMLCharField(
         _(u'feature designation'), blank=True, max_length=5, choices=[code[:2] for code in codelists.LOCATION_TYPE]
     )
+
 
 class ProjectUpdateLocation(BaseLocation):
     # the project update that's related to this location

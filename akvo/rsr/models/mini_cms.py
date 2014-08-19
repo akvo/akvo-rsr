@@ -4,13 +4,13 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from textwrap import dedent
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
-
 from akvo.utils import rsr_image_path
 
 
@@ -57,6 +57,7 @@ class MiniCMS(models.Model):
         return '%d: %s' % (self.id, self.label)
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = u'MiniCMS'
         verbose_name_plural = u'MiniCMS'
         ordering = ['-active', '-id', ]

@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum
@@ -14,11 +15,10 @@ from akvo.rsr.mixins import TimestampsMixin
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 
-from akvo.rsr.models.models_utils import QuerySetManager
-from akvo.rsr.models.models_utils import ORG_TYPES
-from akvo.rsr.models.partner_type import PartnerType
-from akvo.rsr.models.partnership import Partnership
-from akvo.rsr.models.country import Country
+from .models_utils import QuerySetManager, ORG_TYPES
+from .partner_type import PartnerType
+from .partnership import Partnership
+from .country import Country
 
 from akvo.utils import rsr_image_path
 from akvo.utils import RSR_LIMITED_CHANGE
@@ -255,6 +255,7 @@ class Organisation(TimestampsMixin, models.Model):
     # New API end
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'organisation')
         verbose_name_plural = _(u'organisations')
         ordering = ['name']

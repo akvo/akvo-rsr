@@ -4,23 +4,24 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.contrib.auth.models import Group, User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from permissions import PermissionBase
-from workflows import WorkflowBase
+# from permissions import PermissionBase
+# from workflows import WorkflowBase
 
 from tastypie.models import ApiKey
 
 from akvo.rsr.fields import ValidXMLTextField
-from akvo.rsr.models.project_update import ProjectUpdate
-
 from akvo.utils import GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from akvo.utils import groups_from_user
 
+from .project_update import ProjectUpdate
 
-class UserProfile(models.Model, PermissionBase, WorkflowBase):
+
+class UserProfile(models.Model): #, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''
@@ -30,6 +31,7 @@ class UserProfile(models.Model, PermissionBase, WorkflowBase):
     notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'user profile')
         verbose_name_plural = _(u'user profiles')
         ordering = ['user__username', ]

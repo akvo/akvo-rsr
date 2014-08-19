@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 import logging
 logger = logging.getLogger('akvo.rsr')
 
@@ -23,28 +24,84 @@ from akvo.rsr.signals import (
     update_project_funding
 )
 
-from benchmark import Benchmark, Benchmarkname
-from budget_item import BudgetItem, BudgetItemLabel
-from country import Country, RecipientCountry
-from category import Category
-from focus_area import FocusArea
-from goal import Goal
-from invoice import Invoice
-from link import Link
-from location import OrganisationLocation, ProjectLocation, ProjectUpdateLocation
-from mini_cms import MiniCMS
-from organisation import Organisation
-from organisation_account import OrganisationAccount
-from partner_site import PartnerSite
-from partnership import Partnership
-from payment_gateway import PayPalGateway, MollieGateway, PaymentGatewaySelector
-from project import Project, PublishingStatus
-from project_comment import ProjectComment
-from project_update import ProjectUpdate
-from region import RecipientRegion
-from sms_reporter import SmsReporter
-from user_profile import UserProfile
+from .benchmark import Benchmark, Benchmarkname
+from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
+from .country import Country, RecipientCountry
+from .category import Category
+from .focus_area import FocusArea
+from .goal import Goal
+from .indicator import Indicator, IndicatorPeriod
+from .invoice import Invoice
+from .internal_organisation_id import InternalOrganisationID
+from .keyword import Keyword
+from .legacy_data import LegacyData
+from .link import Link
+from .location import OrganisationLocation, ProjectLocation, ProjectUpdateLocation
+from .mini_cms import MiniCMS
+from .organisation import Organisation
+from .organisation_account import OrganisationAccount
+from .partner_site import PartnerSite
+from .partner_type import PartnerType
+from .partnership import Partnership
+from .payment_gateway import PayPalGateway, MollieGateway, PaymentGatewaySelector
+from .planned_disbursement import PlannedDisbursement
+from .policy_marker import PolicyMarker
+from .project import Project
+from .project_comment import ProjectComment
+from .project_condition import ProjectCondition
+from .project_contact import ProjectContact
+from .project_update import ProjectUpdate
+from .publishing_status import PublishingStatus
+from .region import RecipientRegion
+from .result import Result
+from .sector import Sector
+from .transaction import Transaction
+from .user_profile import UserProfile
 
+__all__ = [
+    'Benchmark',
+    'Benchmarkname',
+    'BudgetItem',
+    'BudgetItemLabel',
+    'CountryBudgetItem',
+    'Country',
+    'RecipientCountry',
+    'Category',
+    'FocusArea',
+    'Goal',
+    'Indicator',
+    'IndicatorPeriod',
+    'Invoice',
+    'InternalOrganisationID',
+    'Keyword',
+    'LegacyData',
+    'Link',
+    'OrganisationLocation',
+    'ProjectLocation',
+    'ProjectUpdateLocation',
+    'MiniCMS',
+    'Organisation',
+    'OrganisationAccount',
+    'PartnerSite',
+    'PartnerType',
+    'Partnership',
+    'PayPalGateway',
+    'MollieGateway',
+    'PaymentGatewaySelector',
+    'PlannedDisbursement',
+    'PolicyMarker',
+    'Project',
+    'ProjectComment',
+    'ProjectCondition',
+    'ProjectContact',
+    'ProjectUpdate',
+    'PublishingStatus',
+    'RecipientRegion',
+    'Result',
+    'Sector',
+    'Transaction',
+    'UserProfile',
+]
 
 # signals!
 user_activated.connect(user_activated_callback)

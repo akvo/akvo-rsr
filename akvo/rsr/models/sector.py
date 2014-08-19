@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -25,5 +26,6 @@ class Sector(models.Model):
                                      validators=[MaxValueValidator(100), MinValueValidator(0)])
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'sector')
         verbose_name_plural = _(u'sectors')

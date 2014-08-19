@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -13,7 +14,7 @@ from akvo.rsr.iati.codelists import codelists_v104 as codelists
 
 
 class ProjectContact(models.Model):
-    project = models.ForeignKey(Project, verbose_name=u'project', related_name='contacts')
+    project = models.ForeignKey('Project', verbose_name=u'project', related_name='contacts')
     type = ValidXMLCharField(_(u'type'), blank=True, max_length=1, choices=codelists.CONTACT_TYPE)
     person_name = ValidXMLCharField(_(u'name'), blank=True, max_length=100, help_text=_('(100 characters)'))
     email = models.EmailField(_(u'email'), blank=True)
@@ -28,5 +29,6 @@ class ProjectContact(models.Model):
     website = models.URLField(_(u'website'), blank=True)
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'contact')
         verbose_name_plural = _(u'contacts')

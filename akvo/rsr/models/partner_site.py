@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from textwrap import dedent
 
 from django.conf import settings
@@ -12,7 +13,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.fields import NullCharField, ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
-
 from akvo.utils import rsr_show_keywords
 
 
@@ -169,6 +169,7 @@ class PartnerSite(TimestampsMixin, models.Model):
         return url
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = u'partner site'
         verbose_name_plural = u'partner sites'
         ordering = ('organisation__name',)

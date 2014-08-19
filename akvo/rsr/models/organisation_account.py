@@ -4,10 +4,11 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 
 from akvo.rsr.fields import ValidXMLCharField
-from akvo.rsr.models.models_utils import ACCOUNT_LEVEL
+from .models_utils import ACCOUNT_LEVEL
 
 
 class OrganisationAccount(models.Model):
@@ -20,5 +21,6 @@ class OrganisationAccount(models.Model):
     account_level = ValidXMLCharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = u'organisation account'
         verbose_name_plural = u'organisation accounts'

@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 import oembed
 
 from datetime import datetime, timedelta
@@ -16,13 +17,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 
+from sorl.thumbnail.fields import ImageWithThumbnailsField
+
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
-from akvo.rsr.models.models_utils import UPDATE_METHODS
-
 from akvo.utils import rsr_image_path, to_gmt
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from .models_utils import UPDATE_METHODS
 
 
 class ProjectUpdate(TimestampsMixin, models.Model):
@@ -57,6 +58,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
+        app_label = 'rsr'
         get_latest_by = "created_at"
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')

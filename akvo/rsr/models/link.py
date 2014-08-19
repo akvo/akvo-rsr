@@ -4,12 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.rsr.iati.codelists import codelists_v104 as codelists
-from akvo.rsr.models.models_utils import LINK_KINDS
+
+from .models_utils import LINK_KINDS
 
 
 class Link(models.Model):
@@ -35,5 +37,6 @@ class Link(models.Model):
         return u'<a href="%s">%s</a>' % (self.url, self.caption,)
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'link')
         verbose_name_plural = _(u'links')

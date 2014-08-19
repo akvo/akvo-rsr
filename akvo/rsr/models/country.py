@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -31,6 +32,7 @@ class Country(models.Model):
         return dict(iso_code=iso_code, name=name, continent=continent, continent_code=continent_code)
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'country')
         verbose_name_plural = _(u'countries')
         ordering = ['name']
@@ -44,5 +46,6 @@ class RecipientCountry(models.Model):
     text = ValidXMLCharField(_(u'country description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'recipient country')
         verbose_name_plural = _(u'recipient countries')

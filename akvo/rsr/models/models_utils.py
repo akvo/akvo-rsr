@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -39,23 +40,6 @@ OLD_CONTINENTS = (
     ("6", _(u'South America')),
 )
 
-CURRENCY_CHOICES = (
-    ('USD', '$'),
-    ('EUR', '€'),
-)
-
-STATUSES = (
-    ('N', _(u'None')),
-    ('H', _(u'Needs funding')),
-    ('A', _(u'Active')),
-    ('C', _(u'Complete')),
-    ('L', _(u'Cancelled')),
-    ('R', _(u'Archived')),
-)
-
-STATUSES_COLORS = {'N': 'black', 'A': '#AFF167', 'H': 'orange', 'C': 'grey', 'R': 'grey', 'L': 'red', }
-
-
 UPDATE_METHODS = (
     ('W', _(u'web')),
     ('E', _(u'e-mail')),
@@ -63,21 +47,7 @@ UPDATE_METHODS = (
     ('M', _(u'mobile')),
 )
 
-FIELD_PARTNER = u'field'
-FUNDING_PARTNER = u'funding'
-SPONSOR_PARTNER = u'sponsor'
-SUPPORT_PARTNER = u'support'
 
-PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
-PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
-PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
-
-ALLIANCE_PARTNER = u'alliance'
-KNOWLEDGE_PARTNER = u'knowledge'
-NETWORK_PARTNER = u'network'
-PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
-PARTNER_TYPE_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
-PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
 ORG_TYPE_NGO = 'N'
 ORG_TYPE_GOV = 'G'

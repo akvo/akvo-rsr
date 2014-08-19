@@ -4,14 +4,15 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 from django.db import models
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.fields import ValidXMLCharField
 
-from akvo.rsr.models.benchmark_name import Benchmarkname
-from akvo.rsr.models.focus_area import FocusArea
+from .benchmark import Benchmarkname
+from .focus_area import FocusArea
 
 
 class Category(models.Model):
@@ -29,6 +30,7 @@ class Category(models.Model):
     )
 
     class Meta:
+        app_label = 'rsr'
         verbose_name = _(u'category')
         verbose_name_plural = _(u'categories')
         ordering = ['name', ]
