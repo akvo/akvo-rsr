@@ -27,11 +27,12 @@ class PaymentGateway(models.Model):
 
 
 class PayPalGateway(PaymentGateway):
+    PAYPAL_US_LOCALE = 'US'
     PAYPAL_LOCALE_CHOICES = (
-        ('US', u'US English'),
+        (PAYPAL_US_LOCALE, u'US English'),
     )
     account_email = models.EmailField()
-    locale = ValidXMLCharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default='US')
+    locale = ValidXMLCharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default=PAYPAL_US_LOCALE)
 
     class Meta:
         app_label = 'rsr'

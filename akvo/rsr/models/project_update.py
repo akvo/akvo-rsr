@@ -23,10 +23,15 @@ from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import rsr_image_path, to_gmt
 
-from .models_utils import UPDATE_METHODS
-
 
 class ProjectUpdate(TimestampsMixin, models.Model):
+    UPDATE_METHODS = (
+        ('W', _(u'web')),
+        ('E', _(u'e-mail')),
+        ('S', _(u'SMS')),
+        ('M', _(u'mobile')),
+    )
+
     def image_path(instance, file_name):
         "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
         path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk

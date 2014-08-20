@@ -8,7 +8,6 @@
 from django.db import models
 
 from akvo.rsr.fields import ValidXMLCharField
-from .models_utils import ACCOUNT_LEVEL
 
 
 class OrganisationAccount(models.Model):
@@ -17,8 +16,22 @@ class OrganisationAccount(models.Model):
     The reason for having this in a separate model form Organisation is to hide
     it from the org admins.
     """
+    ACCOUNT_FREE = 'free'
+    ACCOUNT_FREEMIUM = 'freemium'
+    ACCOUNT_PREMIUM = 'premium'
+    ACCOUNT_PLUS = 'plus'
+    ACCOUNT_FREE = 'archived'
+
+    ACCOUNT_LEVEL = (
+        (ACCOUNT_FREE, u'Free'),
+        (ACCOUNT_FREEMIUM, u'Freemium'),
+        (ACCOUNT_PREMIUM, u'Premium'),
+        (ACCOUNT_PLUS, u'Premium Plus'),
+        (ACCOUNT_FREE, u'Archived'),
+    )
+
     organisation = models.OneToOneField('Organisation', verbose_name=u'organisation', primary_key=True)
-    account_level = ValidXMLCharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default='free')
+    account_level = ValidXMLCharField(u'account level', max_length=12, choices=ACCOUNT_LEVEL, default=ACCOUNT_FREE)
 
     class Meta:
         app_label = 'rsr'

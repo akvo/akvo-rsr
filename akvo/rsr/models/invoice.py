@@ -16,8 +16,6 @@ from mollie.ideal.utils import get_mollie_banklist
 
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 
-from .models_utils import PAYMENT_ENGINES, STATUS_CHOICES
-
 
 class InvoiceManager(models.Manager):
     def get_queryset(self):
@@ -46,22 +44,29 @@ class InvoiceManager(models.Manager):
 
 
 class Invoice(models.Model):
-    # STATUS_CHOICES = (
-    #     (PAYPAL_INVOICE_STATUS_PENDING, 'Pending'),
-    #     (PAYPAL_INVOICE_STATUS_VOID, 'Void'),
-    #     (PAYPAL_INVOICE_STATUS_COMPLETE, 'Complete'),
-    #     (PAYPAL_INVOICE_STATUS_STALE, 'Stale'),
-    # )
-    # PAYMENT_ENGINES = (
-    #     ('paypal', u'PayPal'),
-    #     ('ideal', u'iDEAL'),
-    # )
-    # Setup
+    PAYPAL_INVOICE_STATUS_PENDING = 1
+    PAYPAL_INVOICE_STATUS_VOID = 2
+    PAYPAL_INVOICE_STATUS_COMPLETE = 3
+    PAYPAL_INVOICE_STATUS_STALE = 4
+
+    STATUS_CHOICES = (
+        (PAYPAL_INVOICE_STATUS_PENDING, 'Pending'),
+        (PAYPAL_INVOICE_STATUS_VOID, 'Void'),
+        (PAYPAL_INVOICE_STATUS_COMPLETE, 'Complete'),
+        (PAYPAL_INVOICE_STATUS_STALE, 'Stale'),
+    )
+    # NOTE: There are still a few places in templates where the strings 'paypal' and 'ideal' are used
+    PAYMENT_ENGINE_PAYPAL = 'paypal'
+    PAYMENT_ENGINE_IDEAL = 'ideal'
+    PAYMENT_ENGINES = (
+        (PAYMENT_ENGINE_PAYPAL, u'PayPal'),
+        (PAYMENT_ENGINE_IDEAL, u'iDEAL'),
+    )
     test = models.BooleanField(
         u'test donation',
         help_text=u'This flag is set if the donation was made in test mode.',
         default=False)
-    engine = ValidXMLCharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default='paypal')
+    engine = ValidXMLCharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default=PAYMENT_ENGINE_PAYPAL)
     user = models.ForeignKey(User, blank=True, null=True)
     project = models.ForeignKey('Project', related_name='invoices')
     # Common
@@ -109,7 +114,7 @@ class Invoice(models.Model):
 
     @property
     def gateway(self):
-        if self.engine == 'paypal':
+        if self.engine == self.PAYMENT_ENGINE_PAYPAL:
             if settings.DONATION_TEST:
                 return settings.PAYPAL_SANDBOX_GATEWAY
             else:

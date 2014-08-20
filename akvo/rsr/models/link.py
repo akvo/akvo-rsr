@@ -11,10 +11,15 @@ from django.utils.translation import ugettext_lazy as _
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.rsr.iati.codelists import codelists_v104 as codelists
 
-from .models_utils import LINK_KINDS
-
 
 class Link(models.Model):
+    LINK_AKVOPEDIA = 'A'
+    LINK_EXTRNAL = 'E'
+    LINK_KINDS = (
+        (LINK_AKVOPEDIA, _(u'Akvopedia entry')),
+        (LINK_EXTRNAL, _(u'External link')),
+    )
+
     kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS)
     url = models.URLField(_(u'URL'))
     caption = ValidXMLCharField(_(u'caption'), max_length=50)

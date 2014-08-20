@@ -16,7 +16,7 @@ from registration.signals import user_activated
 
 from akvo.api.models import create_api_key
 
-from akvo.rsr.signals import (
+from ..signals import (
     change_name_of_file_on_change, change_name_of_file_on_create,
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed,

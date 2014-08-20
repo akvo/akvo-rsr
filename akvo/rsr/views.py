@@ -11,7 +11,7 @@ from lxml import etree
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
-                             UserProfile, Invoice, PartnerSite)
+                             UserProfile, Invoice, PartnerSite, OrganisationAccount)
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
@@ -887,7 +887,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
         try:
             account_level = request.user.userprofile.organisation.organisationaccount.account_level
         except:
-            account_level = 'free'
+            account_level = OrganisationAccount.ACCOUNT_FREE
         # project = get_object_or_404(Project.objects, pk=project_id)
         orgs = project.all_partners()
         return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {

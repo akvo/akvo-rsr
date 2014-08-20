@@ -26,7 +26,7 @@ from urlparse import urlsplit, urlunsplit
 
 from akvo import settings
 
-from .models import UserProfile, Organisation, ProjectUpdate
+from .models import UserProfile, Organisation, ProjectUpdate, Invoice
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -275,7 +275,7 @@ class InvoiceForm(forms.ModelForm):
 
     def over_donated(self):
         donation = self.cleaned_data.get('amount', 0)
-        if self.engine == 'paypal':
+        if self.engine == Invoice.PAYMENT_ENGINE_PAYPAL:
             if self.project.amount_needed_to_fully_fund_via_paypal() < donation:
                 return True
         else:

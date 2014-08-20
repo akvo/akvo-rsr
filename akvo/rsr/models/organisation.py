@@ -15,15 +15,28 @@ from akvo.rsr.mixins import TimestampsMixin
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 
-from .models_utils import QuerySetManager, ORG_TYPES
-from .partner_type import PartnerType
-from .partnership import Partnership
 from .country import Country
+from .models_utils import QuerySetManager
+from .partner_type import PartnerType
+from .partner_site import PartnerSite
+from .partnership import Partnership
+from .publishing_status import PublishingStatus
 
 from akvo.utils import rsr_image_path
 from akvo.utils import RSR_LIMITED_CHANGE
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
+
+ORG_TYPE_NGO = 'N'
+ORG_TYPE_GOV = 'G'
+ORG_TYPE_COM = 'C'
+ORG_TYPE_KNO = 'K'
+ORG_TYPES = (
+    (ORG_TYPE_NGO, _(u'NGO')),
+    (ORG_TYPE_GOV, _(u'Governmental')),
+    (ORG_TYPE_COM, _(u'Commercial')),
+    (ORG_TYPE_KNO, _(u'Knowledge institution')),
+)
 
 
 class Organisation(TimestampsMixin, models.Model):
@@ -31,6 +44,11 @@ class Organisation(TimestampsMixin, models.Model):
     There are four types of organisations in RSR, called Field,
     Support, Funding and Sponsor partner respectively.
     """
+    NEW_TO_OLD_TYPES = [
+        ORG_TYPE_GOV, ORG_TYPE_GOV, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO,
+        ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_NGO, ORG_TYPE_COM, ORG_TYPE_KNO
+    ]
+
     @classmethod
     def org_type_from_iati_type(cls, iati_type):
         """ utility that maps the IATI organisation types to the old Akvo organisation types
@@ -144,21 +162,29 @@ class Organisation(TimestampsMixin, models.Model):
         def supportpartners_with_projects(self):
             """return the organisations in the queryset that are support partners with published projects, not
             counting archived projects"""
-            return self.filter(partnerships__partner_type=Partnership.SUPPORT_PARTNER,
-                               partnerships__project__publishingstatus__status='published',
-                               partnerships__project__status__in=['A','C','H','L']).distinct()
+            from .project import Project
+            return self.filter(
+                partnerships__partner_type=Partnership.SUPPORT_PARTNER,
+                partnerships__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED,
+                partnerships__project__status__in=[
+                    Project.STATUS_ACTIVE,
+                    Project.STATUS_COMPLETE,
+                    Project.STATUS_NEEDS_FUNDING,
+                    Project.STATUS_CANCELLED,
+                ]
+            ).distinct()
 
         def ngos(self):
-            return self.filter(organisation_type__exact=Organisation.ORG_TYPE_NGO)
+            return self.filter(organisation_type__exact=ORG_TYPE_NGO)
 
         def governmental(self):
-            return self.filter(organisation_type__exact=Organisation.ORG_TYPE_GOV)
+            return self.filter(organisation_type__exact=ORG_TYPE_GOV)
 
         def commercial(self):
-            return self.filter(organisation_type__exact=Organisation.ORG_TYPE_COM)
+            return self.filter(organisation_type__exact=ORG_TYPE_COM)
 
         def knowledge(self):
-            return self.filter(organisation_type__exact=Organisation.ORG_TYPE_KNO)
+            return self.filter(organisation_type__exact=ORG_TYPE_KNO)
 
     def __unicode__(self):
         return self.name
@@ -210,7 +236,7 @@ class Organisation(TimestampsMixin, models.Model):
         """Returns a Country queryset of countries where this organisation has published projects."""
         return Country.objects.filter(
             projectlocation__project__partnerships__organisation=self,
-            projectlocation__project__publishingstatus__status='published'
+            projectlocation__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
         ).distinct()
 
     # New API

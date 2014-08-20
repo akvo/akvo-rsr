@@ -22,19 +22,18 @@ from django_counter.models import ViewCounter
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 from akvo.rsr.fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
+from akvo.rsr.iati.codelists import codelists_v104 as codelists
 from akvo.rsr.mixins import TimestampsMixin
-from akvo.utils import PAYPAL_INVOICE_STATUS_PENDING, PAYPAL_INVOICE_STATUS_COMPLETE, RSR_LIMITED_CHANGE
-from akvo.utils import rsr_image_path, rsr_show_keywords
+from akvo.utils import rsr_image_path, rsr_show_keywords, RSR_LIMITED_CHANGE
 
 from .budget_item import BudgetItem, BudgetItemLabel
-# from .category import Category
-# from .focus_area import FocusArea
 from .invoice import Invoice
+from .link import Link
+from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
+from .publishing_status import PublishingStatus
 from .user_profile import UserProfile
-from .models_utils import OrganisationsQuerySetManager, QuerySetManager
-from akvo.rsr.iati.codelists import codelists_v104 as codelists
 
 
 class Project(TimestampsMixin, models.Model):
@@ -49,22 +48,28 @@ class Project(TimestampsMixin, models.Model):
         (3, u'Lower Sub Activity')
     )
 
+    STATUS_NONE = 'N'
+    STATUS_NEEDS_FUNDING = 'H'
+    STATUS_ACTIVE = 'A'
+    STATUS_COMPLETE = 'C'
+    STATUS_CANCELLED = 'L'
+    STATUS_ARCHIVED = 'R'
     STATUSES = (
-        ('N', _(u'None')),
-        ('H', _(u'Needs funding')),
-        ('A', _(u'Active')),
-        ('C', _(u'Complete')),
-        ('L', _(u'Cancelled')),
-        ('R', _(u'Archived')),
+        (STATUS_NONE, _(u'None')),
+        (STATUS_NEEDS_FUNDING, _(u'Needs funding')),
+        (STATUS_ACTIVE, _(u'Active')),
+        (STATUS_COMPLETE, _(u'Complete')),
+        (STATUS_CANCELLED, _(u'Cancelled')),
+        (STATUS_ARCHIVED, _(u'Archived')),
     )
 
     STATUSES_COLORS = {
-        'N': 'black',
-        'H': 'orange',
-        'A': '#AFF167',
-        'C': 'grey',
-        'L': 'red',
-        'R': 'grey',
+        STATUS_NONE: 'black',
+        STATUS_NEEDS_FUNDING: 'orange',
+        STATUS_ACTIVE: '#AFF167',
+        STATUS_COMPLETE: 'grey',
+        STATUS_CANCELLED: 'red',
+        STATUS_ARCHIVED: 'grey',
     }
 
     def image_path(instance, file_name):
@@ -72,7 +77,7 @@ class Project(TimestampsMixin, models.Model):
 
     title = ValidXMLCharField(_(u'title'), max_length=45, db_index=True, help_text=_(u'A short descriptive title for your project (45 characters).'))
     subtitle = ValidXMLCharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
-    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default='N', help_text=_(u'Current project state.'))
+    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE, help_text=_(u'Current project state.'))
     categories = models.ManyToManyField('Category', verbose_name=_(u'categories'), related_name='projects',)
     partners = models.ManyToManyField('Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',)
     project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=400, help_text=_(u'Briefly summarize the project (400 characters).'))
@@ -164,16 +169,16 @@ class Project(TimestampsMixin, models.Model):
         return ('project_main', (), {'project_id': self.pk})
 
     def all_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE)
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE)
 
     def public_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).exclude(is_anonymous=True)
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(is_anonymous=True)
 
     def all_donations_amount(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
 
     def all_donations_amount_received(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
 
     def amount_needed_to_fully_fund_via_paypal(self):
         if self.currency == 'USD':
@@ -209,13 +214,13 @@ class Project(TimestampsMixin, models.Model):
     def get_donations(self):
         """ Confirmed donations to the project, after middleman fees"""
         return Invoice.objects.filter(project__exact=self).filter(
-            status__exact=PAYPAL_INVOICE_STATUS_COMPLETE
+            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
         ).aggregate(Sum('amount_received'))['amount_received__sum'] or 0
 
     def get_pending_donations(self):
         """ Unconfirmed donations, before middleman fees have been deducted"""
         return Invoice.objects.filter(project__exact=self).filter(
-            status__exact=PAYPAL_INVOICE_STATUS_PENDING
+            status__exact=Invoice.PAYPAL_INVOICE_STATUS_PENDING
         ).aggregate(Sum('amount'))['amount__sum'] or 0
 
     def get_pledged(self):
@@ -262,37 +267,37 @@ class Project(TimestampsMixin, models.Model):
             return self.filter(primary_location__isnull=False)
 
         def published(self):
-            return self.filter(publishingstatus__status='published')
+            return self.filter(publishingstatus__status=PublishingStatus.STATUS_PUBLISHED)
 
         def unpublished(self):
-            return self.filter(publishingstatus__status='unpublished')
+            return self.filter(publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED)
 
         def status_none(self):
-            return self.filter(status__exact='N')
+            return self.filter(status__exact=Project.STATUS_NONE)
 
         def status_active(self):
-            return self.filter(status__exact='A')
+            return self.filter(status__exact=Project.STATUS_ACTIVE)
 
         def status_onhold(self):
-            return self.filter(status__exact='H')
+            return self.filter(status__exact=Project.STATUS_NEEDS_FUNDING)
 
         def status_complete(self):
-            return self.filter(status__exact='C')
+            return self.filter(status__exact=Project.STATUS_COMPLETE)
 
         def status_not_complete(self):
-            return self.exclude(status__exact='C')
+            return self.exclude(status__exact=Project.STATUS_COMPLETE)
 
         def status_cancelled(self):
-            return self.filter(status__exact='L')
+            return self.filter(status__exact=Project.STATUS_CANCELLED)
 
         def status_not_cancelled(self):
-            return self.exclude(status__exact='L')
+            return self.exclude(status__exact=Project.STATUS_CANCELLED)
 
         def status_archived(self):
-            return self.filter(status__exact='R')
+            return self.filter(status__exact=Project.STATUS_ARCHIVED)
 
         def status_not_archived(self):
-            return self.exclude(status__exact='R')
+            return self.exclude(status__exact=Project.STATUS_ARCHIVED)
 
         def active(self):
             """Return projects that are publushed and not cancelled or archived"""
@@ -305,7 +310,9 @@ class Project(TimestampsMixin, models.Model):
             return self.filter(currency='USD')
 
         def donated(self):
-            return self.filter(invoice__status=PAYPAL_INVOICE_STATUS_COMPLETE).annotate(donated=Sum('invoice__amount_received'),).distinct()
+            return self.filter(
+                    invoice__status=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
+                ).annotate(donated=Sum('invoice__amount_received')).distinct()
 
         # aggregates
         def budget_sum(self):
@@ -474,15 +481,15 @@ class Project(TimestampsMixin, models.Model):
 
     def is_published(self):
         if self.publishingstatus:
-            return self.publishingstatus.status == 'published'
+            return self.publishingstatus.status == PublishingStatus.STATUS_PUBLISHED
         return False
     is_published.boolean = True
 
     def akvopedia_links(self):
-        return self.links.filter(kind='A')
+        return self.links.filter(kind=Link.LINK_AKVOPEDIA)
 
     def external_links(self):
-        return self.links.filter(kind='E')
+        return self.links.filter(kind=Link.LINK_EXTRNAL)
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
