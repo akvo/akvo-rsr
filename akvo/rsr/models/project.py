@@ -27,6 +27,7 @@ from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import rsr_image_path, rsr_show_keywords, RSR_LIMITED_CHANGE
 
 from .budget_item import BudgetItem, BudgetItemLabel
+from .country import Country
 from .invoice import Invoice
 from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
@@ -406,7 +407,12 @@ class Project(TimestampsMixin, models.Model):
             return self._partners(Partnership.SUPPORT_PARTNER)
 
         def all_partners(self):
-                return self._partners()
+            return self._partners()
+
+        def countries(self):
+            """Returns a Country queryset of the countries of these projects"""
+            return Country.objects.filter(projectlocation__project__in=self).distinct()
+
 
     def __unicode__(self):
         return u'%s' % self.title

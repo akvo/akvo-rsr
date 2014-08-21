@@ -10,13 +10,13 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.fields import ValidXMLTextField
+from akvo.rsr.mixins import TimestampsMixin
 
 
-class ProjectComment(models.Model):
+class ProjectComment(TimestampsMixin, models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='comments')
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     comment = ValidXMLTextField(_(u'comment'))
-    time = models.DateTimeField(_(u'time'), db_index=True)
 
     class Meta:
         app_label = 'rsr'

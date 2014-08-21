@@ -143,3 +143,5 @@ ERROR_UPDATE_ORG = 'organisation update error'
 ERROR_UPLOAD_ORG = "organisation upload error"
 ERROR_BUSINESS_UNIT_MISSING = "business unit organisation missing error"
 ERROR_CATEGORY_MISSING = "category missing for business unit error"
+
+OWNER_CONTENT = "different organisation content owner"
