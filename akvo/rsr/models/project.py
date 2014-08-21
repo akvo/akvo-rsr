@@ -147,8 +147,9 @@ class Project(TimestampsMixin, models.Model):
     )
     target_group = ProjectLimitedTextField(
         _(u'target group'), blank=True, max_length=600,
-        help_text=_(u'Information about the people, organisations or resources that are being impacted by this project '
-                    u'(600 characters).'
+        help_text=_(
+            u'Information about the people, organisations or resources that are being impacted by this project '
+            u'(600 characters).'
         )
     )
 
@@ -408,7 +409,7 @@ class Project(TimestampsMixin, models.Model):
                 )
             # annotate the greatest of the "benchmarkname" values into max_value
             return result.annotate(max_value=Max('benchmarks__value')).aggregate( # sum max_value for all projects
-               Sum('max_value')
+                Sum('max_value')
             )['max_value__sum'] or 0  # we want to return 0 instead of an empty QS
 
         def get_planned_water_calc(self):

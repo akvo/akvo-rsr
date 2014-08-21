@@ -19,7 +19,7 @@ from ..fields import ValidXMLTextField
 from .project_update import ProjectUpdate
 
 
-class UserProfile(models.Model): #, PermissionBase, WorkflowBase):
+class UserProfile(models.Model):  #, PermissionBase, WorkflowBase):
     '''
     Extra info about a user.
     '''

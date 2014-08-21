@@ -23,5 +23,3 @@ class QuerySetManager(models.Manager):
 class OrganisationsQuerySetManager(QuerySetManager):
     def get_queryset(self):
         return self.model.OrganisationsQuerySet(self.model)
-
-
