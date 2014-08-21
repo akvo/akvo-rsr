@@ -21,10 +21,11 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
-from akvo.rsr.fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
-from akvo.rsr.iati.codelists import codelists_v104 as codelists
-from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import rsr_image_path, rsr_show_keywords, RSR_LIMITED_CHANGE
+
+from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
+from ..iati.codelists import codelists_v104 as codelists
+from ..mixins import TimestampsMixin
 
 from .budget_item import BudgetItem, BudgetItemLabel
 from .country import Country

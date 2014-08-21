@@ -14,7 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from mollie.ideal.utils import get_mollie_banklist
 
-from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
+from ..fields import ValidXMLCharField, ValidXMLTextField
 
 
 class InvoiceManager(models.Manager):

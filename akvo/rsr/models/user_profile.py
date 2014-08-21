@@ -9,14 +9,12 @@ from django.contrib.auth.models import Group, User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-# from permissions import PermissionBase
-# from workflows import WorkflowBase
-
 from tastypie.models import ApiKey
 
-from akvo.rsr.fields import ValidXMLTextField
 from akvo.utils import GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
 from akvo.utils import groups_from_user
+
+from ..fields import ValidXMLTextField
 
 from .project_update import ProjectUpdate
 

@@ -19,9 +19,10 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
-from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
-from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import rsr_image_path, to_gmt
+
+from ..fields import ValidXMLCharField, ValidXMLTextField
+from ..mixins import TimestampsMixin
 
 
 class ProjectUpdate(TimestampsMixin, models.Model):

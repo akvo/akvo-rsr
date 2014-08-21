@@ -7,7 +7,7 @@
 
 from django.db import models
 
-from akvo.rsr.fields import ValidXMLCharField
+from ..fields import ValidXMLCharField
 
 
 class PartnerType(models.Model):

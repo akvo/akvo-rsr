@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.fields import ValidXMLCharField
+from ..fields import ValidXMLCharField
 
 from .benchmark import Benchmarkname
 from .focus_area import FocusArea

@@ -11,9 +11,14 @@ from django.db.models import Sum
 from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.mixins import TimestampsMixin
-from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
-from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from sorl.thumbnail.fields import ImageWithThumbnailsField
+
+from akvo.utils import rsr_image_path
+from akvo.utils import RSR_LIMITED_CHANGE
+
+from ..mixins import TimestampsMixin
+from ..fields import ValidXMLCharField, ValidXMLTextField
+from ..iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
 
 from .country import Country
 from .models_utils import QuerySetManager
@@ -21,11 +26,6 @@ from .partner_type import PartnerType
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
-
-from akvo.utils import rsr_image_path
-from akvo.utils import RSR_LIMITED_CHANGE
-
-from sorl.thumbnail.fields import ImageWithThumbnailsField
 
 ORG_TYPE_NGO = 'N'
 ORG_TYPE_GOV = 'G'

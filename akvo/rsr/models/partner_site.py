@@ -11,9 +11,10 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.fields import NullCharField, ValidXMLCharField, ValidXMLTextField
-from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import rsr_show_keywords
+
+from ..fields import NullCharField, ValidXMLCharField, ValidXMLTextField
+from ..mixins import TimestampsMixin
 
 
 class PartnerSite(TimestampsMixin, models.Model):

@@ -8,7 +8,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.fields import ValidXMLCharField
+from ..fields import ValidXMLCharField
 
 
 class LegacyData(models.Model):

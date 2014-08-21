@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.fields import ValidXMLTextField
-from akvo.rsr.mixins import TimestampsMixin
+from ..fields import ValidXMLTextField
+from ..mixins import TimestampsMixin
 
 
 class ProjectComment(TimestampsMixin, models.Model):

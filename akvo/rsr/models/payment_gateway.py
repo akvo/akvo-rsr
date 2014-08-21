@@ -7,7 +7,8 @@
 
 from django.db import models
 
-from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
+from ..fields import ValidXMLCharField, ValidXMLTextField
+
 from .project import Project
 
 

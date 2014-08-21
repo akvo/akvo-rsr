@@ -10,7 +10,7 @@ from textwrap import dedent
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
+from ..fields import ValidXMLCharField, ValidXMLTextField
 from akvo.utils import rsr_image_path
 
 

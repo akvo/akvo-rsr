@@ -9,8 +9,8 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.fields import ValidXMLCharField
-from akvo.rsr.iati.codelists import codelists_v104 as codelists
+from ..fields import ValidXMLCharField
+from ..iati.codelists import codelists_v104 as codelists
 
 
 class RecipientRegion(models.Model):

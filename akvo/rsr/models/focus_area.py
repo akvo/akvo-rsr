@@ -10,8 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
-from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.utils import rsr_image_path
+
+from ..fields import ValidXMLCharField, ValidXMLTextField
 
 from .project import Project
 
