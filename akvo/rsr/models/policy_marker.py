@@ -21,7 +21,9 @@ class PolicyMarker(models.Model):
     vocabulary = ValidXMLCharField(
         _(u'vocabulary'), blank=True, max_length=5, choices=[code[:2] for code in codelists.VOCABULARY]
     )
-    description = ValidXMLCharField(_(u'description'), max_length=255, blank=True, help_text=_(u'(max 255 characters)'))
+    description = ValidXMLCharField(
+        _(u'description'), max_length=255, blank=True, help_text=_(u'(max 255 characters)')
+    )
 
     def __unicode__(self):
         return self.policy_marker

@@ -24,23 +24,30 @@ class MiniCMS(models.Model):
     label = ValidXMLCharField(u'label', max_length=50, help_text=u'The label is used for identification only', )
     feature_box = ValidXMLTextField(
         u'feature box text', max_length=350,
-        help_text=_(dedent(u'''Enter the text that will appear in the feature box of the home page. (350 characters)
-            <p>Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner for text formatting.</p>
-            <p>The outer &lt;div&gt; can use the classes<br/>
-            <code>quarter, half, three_quarters and full</code><br/>
-            to specify the width of the text and
-            <code>bottom and right</code><br/> if a position other than top left is desired.</p>
-            <p>
-                The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent background and any inline styles you want to apply to the text itself.<br/>
-                The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.
-            </p>
-            <p>&lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; is black by default.</p>
-            <p>
-                The following classes can be used to give text "Akvo colors":
-                <code>green, red, blue, yellow, grey, black, white, lt_grey, link_blue</code>.
-            </p>
-            <p>Use the <code>serif</code> class to get a serif font (Georgia).</p>'''
-        ))
+        help_text=_(
+            u'Enter the text that will appear in the feature box of the home page. (350 characters)'
+            u'<p>'
+            u'    Text should be wrapped in two &lt;div&gt; tags, one outer specifying position and width and an inner '
+            u'    for text formatting.'
+            u'</p>'
+            u'<p>The outer &lt;div&gt; can use the classes<br/>'
+            u'<code>quarter, half, three_quarters and full</code><br/>'
+            u'to specify the width of the text and'
+            u'<code>bottom and right</code><br/> if a position other than top left is desired.</p>'
+            u'<p>'
+            u'    The inner &lt;div&gt; should have the class <code>text_bg</code> to create the semi-transparent '
+            u'    background and any inline styles you want to apply to the text itself.<br/>'
+            u'    The last &lt;p&gt; can have the class <code>last</code> to make the bottom margin smaller.'
+            u'</p>'
+            u'<p>'
+            u'    &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; tags are yellow while &lt;p&gt; is black by default.'
+            u'</p>'
+            u'<p>'
+            u'    The following classes can be used to give text "Akvo colors":'
+            u'    <code>green, red, blue, yellow, grey, black, white, lt_grey, link_blue</code>.'
+            u'</p>'
+            u'<p>Use the <code>serif</code> class to get a serif font (Georgia).</p>'
+        )
     )
     feature_image = models.ImageField(
         u'feature image', blank=True, upload_to=image_path,

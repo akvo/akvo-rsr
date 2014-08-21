@@ -80,7 +80,9 @@ class Organisation(TimestampsMixin, models.Model):
         _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
         help_text=u'Check that this field is set to an organisation type that matches your organisation.',
     )
-    iati_org_id = ValidXMLCharField(_(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True)
+    iati_org_id = ValidXMLCharField(
+        _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True
+    )
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
     )
@@ -124,8 +126,10 @@ class Organisation(TimestampsMixin, models.Model):
     allow_edit = models.BooleanField(
         _(u'Partner editors of this organisation are allowed to manually edit projects where this organisation is '
           u'support partner'),
-        help_text=_(u'When manual edits are disallowed, partner admins and editors of other organisations are also not '
-                    u'allowed to edit these projects.'),
+        help_text=_(
+            u'When manual edits are disallowed, partner admins and editors of other organisations are also not '
+            u'allowed to edit these projects.'
+        ),
         default=True
     )
 

@@ -80,43 +80,43 @@ class PartnerSite(TimestampsMixin, models.Model):
         )
     )
     about_box = ValidXMLTextField(_(u'about box text'), max_length=500, blank=True,
-        help_text=_(dedent(u'''
-            Enter HTML that will make up the top left box of the home page. (500 characters)
-            <p>
-                Any text added should be wrapped in 2 &lt;div&gt; tags, an outer one specifying position and width
-                of the text, and an inner for formatting of the text .
-            </p>
-            <p>
-                The Outer &lt;div&gt; tag can use the classes <code>quarter, half, three_quarters and full</code> to
-                specify the
-                width of the text. It can use the classes <code>bottom</code> and <code>right</code> to specify a position other than top left.
-            </p>
-            <p>
-                The Inner &lt;div&gt; tag can use the class <code>text_bg</code> to create a semi-transparent text
-                background if a background image will be uploaded. Any other inline styles can also be used within the
-                inner &lt;div&gt;. The tags &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; are blue, while &lt;p&gt;
-                tags are black by default. Use the classes <code>first</code> and <code>last</code> with &lt;p&gt; tags
-                to reduce the margins above or below respectively.
-            </p>
-            <p>
-                Add additional styling inline, or upload a .css stylesheet in the Stylesheet setting above.
-                <em>Tip:</em> When using a .css file, use the #about_box ID selector to apply a style only to
-                the About box.
-            </p>
-        '''))
+        help_text=_(
+            u'Enter HTML that will make up the top left box of the home page. (500 characters)'
+            u'<p>'
+            u'    Any text added should be wrapped in 2 &lt;div&gt; tags, an outer one specifying position and width'
+            u'    of the text, and an inner for formatting of the text .'
+            u'</p>'
+            u'<p>'
+            u'    The Outer &lt;div&gt; tag can use the classes <code>quarter, half, three_quarters and full</code> to'
+            u'    specify the'
+            u'    width of the text. It can use the classes <code>bottom</code> and <code>right</code> to specify a '
+            u'    position other than top left.'
+            u'</p>'
+            u'<p>'
+            u'    The Inner &lt;div&gt; tag can use the class <code>text_bg</code> to create a semi-transparent text'
+            u'    background if a background image will be uploaded. Any other inline styles can also be used within '
+            u'    the inner &lt;div&gt;. The tags &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; are blue, while'
+            u'    &lt;p&gt; tags are black by default. Use the classes <code>first</code> and <code>last</code> with '
+            u'    &lt;p&gt; tags to reduce the margins above or below respectively.'
+            u'</p>'
+            u'<p>'
+            u'    Add additional styling inline, or upload a .css stylesheet in the Stylesheet setting above.'
+            u'    <em>Tip:</em> When using a .css file, use the #about_box ID selector to apply a style only to'
+            u'    the About box.'
+            u'</p>'
+        )
     )
     about_image = models.ImageField(_(u'about box image'), blank=True, upload_to=about_image_path,
-        help_text=_(u'''<p>The optional background image for the About box
-            <em>must</em> be 470 pixels wide and 250 pixels tall.</p>
-        ''')
+        help_text=_(
+            u'<p>The optional background image for the About box '
+            u'<em>must</em> be 470 pixels wide and 250 pixels tall.</p>'
+        )
     )
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
-    default_language = ValidXMLCharField(_(u'Site UI default language'),
-                                        max_length=5,
-                                        choices=settings.LANGUAGES,
-                                        default=settings.LANGUAGE_CODE)
-
+    default_language = ValidXMLCharField(
+        _(u'Site UI default language'), max_length=5, choices=settings.LANGUAGES, default=settings.LANGUAGE_CODE
+    )
     ui_translation = models.BooleanField(_(u'Translate user interface'), default=False)
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
     facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
@@ -125,11 +125,14 @@ class PartnerSite(TimestampsMixin, models.Model):
         help_text=_(
             u'<p>Your FaceBook app id is used when sharing pages from your partner site. '
             u'It can be obtained by creating a Facebook app, which will let you monitor when your pages are referenced. '
-            u'Follow the instructions <A href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</A>'
+            u'Follow the instructions '
+            u'<a href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</a>'
         )
     )
-    partner_projects = models.BooleanField(_(u'Show only projects of partner'), default=True,
-                                           help_text=_(u'Uncheck to list all projects on this partnersite.'))
+    partner_projects = models.BooleanField(
+        _(u'Show only projects of partner'), default=True,
+        help_text=_(u'Uncheck to list all projects on this partnersite.')
+    )
     keywords = models.ManyToManyField('Keyword', verbose_name=_(u'keywords'), related_name='partnersites', blank=True)
 
 

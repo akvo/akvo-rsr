@@ -21,20 +21,37 @@ class FocusArea(models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
 
-    name = ValidXMLCharField(u'focus area name', max_length=50, help_text=_(u'The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).'))
-    slug = models.SlugField(u'slug', max_length=50, db_index=True, help_text=_(u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'))
-    description = ValidXMLTextField(u'description', max_length=500, help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).'))
+    name = ValidXMLCharField(
+        u'focus area name', max_length=50,
+        help_text=_(
+            u'The name of the focus area. This will show as the title of the focus area project listing page. '
+            u'(30 characters).'
+        )
+    )
+    slug = models.SlugField(
+        u'slug', max_length=50, db_index=True,
+        help_text=_(
+            u'Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area '
+            u'project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).'
+        )
+    )
+    description = ValidXMLTextField(
+        u'description', max_length=500,
+        help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).')
+    )
     image = ImageWithThumbnailsField(
-                    _(u'focus area image'),
-                    upload_to=image_path,
-                    thumbnail={'size': (20, 20), 'options': ('crop', )},
-                    help_text=_(u'The image that will appear on the focus area project listing page.'),
-                )
+        _(u'focus area image'),
+        upload_to=image_path,
+        thumbnail={'size': (20, 20), 'options': ('crop', )},
+        help_text=_(u'The image that will appear on the focus area project listing page.'),
+    )
     link_to = models.URLField(
         _(u'accordion link'),
         max_length=200,
         blank=True,
-        help_text=_(u'Where the link in the accordion for the focus area points if other than the focus area project listing.')
+        help_text=_(
+            u'Where the link in the accordion for the focus area points if other than the focus area project listing.'
+        )
     )
 
     @models.permalink

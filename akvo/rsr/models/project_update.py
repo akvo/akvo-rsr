@@ -42,7 +42,9 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     user = models.ForeignKey(User, verbose_name=_(u'user'))
     title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
-    language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update')
+    language = ValidXMLCharField(
+        max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update'
+    )
     primary_location = models.ForeignKey('ProjectUpdateLocation', null=True, blank=True, on_delete=models.SET_NULL)
     photo = ImageWithThumbnailsField(
         _(u'photo'),
@@ -60,7 +62,9 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'))
     video_caption = ValidXMLCharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     video_credit = ValidXMLCharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
-    update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W')
+    update_method = ValidXMLCharField(
+        _(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W'
+    )
     user_agent = ValidXMLCharField(_(u'user agent'), blank=True, max_length=200, default='')
     uuid = ValidXMLCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
         help_text=_(u'Universally unique ID set by creating user agent'))

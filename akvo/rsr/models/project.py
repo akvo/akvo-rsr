@@ -77,35 +77,85 @@ class Project(TimestampsMixin, models.Model):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
-    title = ValidXMLCharField(_(u'title'), max_length=45, db_index=True, help_text=_(u'A short descriptive title for your project (45 characters).'))
-    subtitle = ValidXMLCharField(_(u'subtitle'), max_length=75, help_text=_(u'A subtitle with more information on the project (75 characters).'))
-    status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE, help_text=_(u'Current project state.'))
+    title = ValidXMLCharField(
+        _(u'title'), max_length=45, db_index=True,
+        help_text=_(u'A short descriptive title for your project (45 characters).')
+    )
+    subtitle = ValidXMLCharField(
+        _(u'subtitle'), max_length=75,
+        help_text=_(u'A subtitle with more information on the project (75 characters).')
+    )
+    status = ValidXMLCharField(
+        _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE,
+        help_text=_(u'Current project state.')
+    )
     categories = models.ManyToManyField('Category', verbose_name=_(u'categories'), related_name='projects',)
-    partners = models.ManyToManyField('Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',)
-    project_plan_summary = ProjectLimitedTextField(_(u'summary of project plan'), max_length=400, help_text=_(u'Briefly summarize the project (400 characters).'))
-    current_image = ImageWithThumbnailsField(
-                        _(u'project photo'),
-                        blank=True,
-                        upload_to=image_path,
-                        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-                        extra_thumbnails={
-                            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-                            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-                        },
-                        help_text=_(u'The project image looks best in landscape format (4:3 width:height ratio), and should be less than 3.5 mb in size.'),
-                    )
-    current_image_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=50, help_text=_(u'Enter a caption for your project picture (50 characters).'))
-    current_image_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=50, help_text=_(u'Enter a credit for your project picture (50 characters).'))
-    goals_overview = ProjectLimitedTextField(_(u'overview of goals'), max_length=600, help_text=_(u'Describe what the project hopes to accomplish (600 characters).'))
+    partners = models.ManyToManyField(
+        'Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',
+    )
+    project_plan_summary = ProjectLimitedTextField(
+        _(u'summary of project plan'), max_length=400,
+        help_text=_(u'Briefly summarize the project (400 characters).')
+    )
 
-    current_status = ProjectLimitedTextField(_(u'current status'), blank=True, max_length=600, help_text=_(u'Description of current phase of project. (600 characters).'))
-    project_plan = ValidXMLTextField(_(u'project plan'), blank=True, help_text=_(u'Detailed information about the project and plans for implementing: the what, how, who and when. (unlimited).'))
-    sustainability = ValidXMLTextField(_(u'sustainability'), help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).'))
-    background = ProjectLimitedTextField(_(u'background'), blank=True, max_length=1000, help_text=_(u'Relevant background information, including geographic, political, environmental, social and/or cultural issues (1000 characters).'))
-    target_group = ProjectLimitedTextField(_(u'target group'), blank=True, max_length=600, help_text=_(u'Information about the people, organisations or resources that are being impacted by this project (600 characters).'))
+    current_image = ImageWithThumbnailsField(
+        _(u'project photo'), blank=True, upload_to=image_path,
+        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+        extra_thumbnails={
+            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
+        },
+        help_text=_(
+            u'The project image looks best in landscape format (4:3 width:height ratio), '
+            u'and should be less than 3.5 mb in size.'
+        ),
+    )
+    current_image_caption = ValidXMLCharField(
+        _(u'photo caption'), blank=True, max_length=50,
+        help_text=_(u'Enter a caption for your project picture (50 characters).')
+    )
+    current_image_credit = ValidXMLCharField(
+        _(u'photo credit'), blank=True, max_length=50,
+        help_text=_(u'Enter a credit for your project picture (50 characters).')
+    )
+
+    goals_overview = ProjectLimitedTextField(
+        _(u'overview of goals'), max_length=600,
+        help_text=_(u'Describe what the project hopes to accomplish (600 characters).')
+    )
+    current_status = ProjectLimitedTextField(
+        _(u'current status'), blank=True, max_length=600,
+        help_text=_(u'Description of current phase of project. (600 characters).')
+    )
+    project_plan = ValidXMLTextField(
+        _(u'project plan'), blank=True,
+        help_text=_(
+            u'Detailed information about the project and plans for implementing: '
+            u'the what, how, who and when. (unlimited).'
+        )
+    )
+    sustainability = ValidXMLTextField(
+        _(u'sustainability'),
+        help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).')
+    )
+    background = ProjectLimitedTextField(
+        _(u'background'), blank=True, max_length=1000,
+        help_text=_(
+            u'Relevant background information, including geographic, political, environmental, social and/or cultural '
+            u'issues (1000 characters).'
+        )
+    )
+    target_group = ProjectLimitedTextField(
+        _(u'target group'), blank=True, max_length=600,
+        help_text=_(u'Information about the people, organisations or resources that are being impacted by this project '
+                    u'(600 characters).'
+        )
+    )
 
     # project meta info
-    language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project')
+    language = ValidXMLCharField(
+        max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project'
+    )
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = ValidXMLTextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
     keywords = models.ManyToManyField('Keyword', verbose_name=_(u'keywords'), related_name='projects', blank=True)
@@ -117,11 +167,12 @@ class Project(TimestampsMixin, models.Model):
     date_end_planned = models.DateField(_(u'end date (planned)'), null=True, blank=True)
     date_end_actual = models.DateField(_(u'end date (actual)'), null=True, blank=True)
 
-    # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('ProjectLocation', null=True, on_delete=models.SET_NULL)
 
     # donate button
-    donate_button = models.BooleanField(_(u'donate button'), default=True, help_text=(u'Show donate button for this project.'))
+    donate_button = models.BooleanField(
+        _(u'donate button'), default=True, help_text=(u'Show donate button for this project.')
+    )
 
     # synced projects
     sync_owner = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
@@ -156,7 +207,9 @@ class Project(TimestampsMixin, models.Model):
 
     # denormalized data
     # =================
-    budget = models.DecimalField(_('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
+    budget = models.DecimalField(
+        _('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+    )
     funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
     funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
 
@@ -171,16 +224,24 @@ class Project(TimestampsMixin, models.Model):
         return ('project_main', (), {'project_id': self.pk})
 
     def all_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE)
+        return Invoice.objects.filter(
+            project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
+        )
 
     def public_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(is_anonymous=True)
+        return Invoice.objects.filter(project__exact=self.id).filter(
+                status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
+            ).exclude(is_anonymous=True)
 
     def all_donations_amount(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+        return Invoice.objects.filter(project__exact=self.id).filter(
+                status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
+            ).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
 
     def all_donations_amount_received(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+        return Invoice.objects.filter(project__exact=self.id).filter(
+            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
+        ).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
 
     def amount_needed_to_fully_fund_via_paypal(self):
         if self.currency == 'USD':
@@ -345,9 +406,10 @@ class Project(TimestampsMixin, models.Model):
                 result = self.filter(  # filter finds largest "benchmarkname" value in benchmarks for all categories
                     benchmarks__name__name=benchmarkname
                 )
-            return result.annotate(  # annotate the greatest of the "benchmarkname" values into max_value
-                                   max_value=Max('benchmarks__value')).aggregate(  # sum max_value for all projects
-                                   Sum('max_value'))['max_value__sum'] or 0  # we want to return 0 instead of an empty QS
+            # annotate the greatest of the "benchmarkname" values into max_value
+            return result.annotate(max_value=Max('benchmarks__value')).aggregate( # sum max_value for all projects
+               Sum('max_value')
+            )['max_value__sum'] or 0  # we want to return 0 instead of an empty QS
 
         def get_planned_water_calc(self):
             "how many will get improved water"
@@ -386,7 +448,9 @@ class Project(TimestampsMixin, models.Model):
         def latest_update_fields(self):
             #used in project_list view
             #cheating slightly, counting on that both id and time are the largest for the latest update
-            return self.annotate(latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at'))
+            return self.annotate(
+                latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at')
+            )
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
@@ -426,10 +490,11 @@ class Project(TimestampsMixin, models.Model):
         """
         for use in the admin
         lists data useful when looking for projects that haven't been updated in a while (or not at all)
-        note: it would have been useful to make this column sortable via the admin_order_field attribute, but this results in
-        multiple rows shown for the project in the admin change list view and there's no easy way to distinct() them
-        TODO: probably this can be solved by customizing ModelAdmin.queryset
+        note: it would have been useful to make this column sortable via the admin_order_field attribute,
+        but this results in multiple rows shown for the project in the admin change list view and there's no easy way
+        to distinct() them
         """
+        # TODO: probably this can be solved by customizing ModelAdmin.queryset
         updates = self.updates_desc()
         if updates:
             update = updates[0]
@@ -437,15 +502,29 @@ class Project(TimestampsMixin, models.Model):
             update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.created_at,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
-                update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (update_info, update.user.email, update.user.email, )
+                update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (
+                    update_info, update.user.email, update.user.email,
+                )
             else:
                 update_info = '%s<br/>' % update_info
         else:
             update_info = u'%s<br/><br/>' % (ugettext(u'No update yet'),)
         # links to the project's support partners
-        update_info = "%sSP: %s" % (update_info, ", ".join([u'<a href="%s">%s</a>' % (partner.get_absolute_url(), partner.name) for partner in self.support_partners()]))
+        update_info = "%sSP: %s" % (
+            update_info, ", ".join(
+                [u'<a href="%s">%s</a>' % (
+                    partner.get_absolute_url(), partner.name
+                ) for partner in self.support_partners()]
+            )
+        )
         # links to the project's field partners
-        return "%s<br/>FP: %s" % (update_info, ", ".join([u'<a href="%s">%s</a>' % (partner.get_absolute_url(), partner.name) for partner in self.field_partners()]))
+        return "%s<br/>FP: %s" % (
+            update_info, ", ".join(
+                [u'<a href="%s">%s</a>' % (
+                    partner.get_absolute_url(), partner.name
+                ) for partner in self.field_partners()]
+            )
+        )
 
     latest_update.allow_tags = True
     #no go, results in duplicate projects entries in the admin change list
@@ -453,7 +532,9 @@ class Project(TimestampsMixin, models.Model):
 
     def show_status(self):
         "Show the current project status"
-        return mark_safe("<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.status], self.get_status_display()))
+        return mark_safe(
+            "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.status], self.get_status_display())
+        )
 
     def show_current_image(self):
         try:

@@ -57,7 +57,8 @@ class BudgetItem(models.Model):
     def get_label(self):
         "Needed since we have to have a vanilla __unicode__() method for the admin"
         if self.label.label in self.OTHER_LABELS:
-            # display "other" if other_extra is empty. Translating here without translating the other labels seems corny
+            # display "other" if other_extra is empty.
+            # Translating here without translating the other labels seems corny
             return u"other" if self.other_extra is None else self.other_extra.strip()
         else:
             return self.__unicode__()
@@ -78,12 +79,16 @@ class CountryBudgetItem(models.Model):
     code = ValidXMLCharField(
         _(u'budget item'), max_length=6, choices=[code[:2] for code in codelists.BUDGET_IDENTIFIER], blank=True
     )
-    description = ValidXMLCharField(_(u'description'), max_length=100, blank=True, help_text=_(u'(max 100 characters)'))
+    description = ValidXMLCharField(
+        _(u'description'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
+    )
     vocabulary = ValidXMLCharField(
         _(u'country budget vocabulary'), blank=True, max_length=1, choices=codelists.BUDGET_IDENTIFIER_VOCABULARY
     )
-    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-                                     validators=[MaxValueValidator(100), MinValueValidator(0)])
+    percentage = models.DecimalField(
+        _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        validators=[MaxValueValidator(100), MinValueValidator(0)]
+    )
 
     class Meta:
         app_label = 'rsr'

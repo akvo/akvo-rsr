@@ -16,8 +16,11 @@ class PaymentGateway(models.Model):
     name = ValidXMLCharField(max_length=255, help_text=u'Use a short, descriptive name.')
     description = ValidXMLTextField(blank=True)
     currency = ValidXMLCharField(max_length=3, choices=Project.CURRENCY_CHOICES, default='EUR')
-    notification_email = models.EmailField(u'notification email',
-        help_text=u'When a donation is completed successfully, notification emails will be sent to the donor and to this address.')
+    notification_email = models.EmailField(
+        u'notification email',
+        help_text=u'When a donation is completed successfully, '
+                  u'notification emails will be sent to the donor and to this address.'
+    )
 
     def __unicode__(self):
         return u'%s - %s' % (self.name, self.get_currency_display())

@@ -22,8 +22,10 @@ class Sector(models.Model):
     vocabulary = ValidXMLCharField(
         _(u'vocabulary'), blank=True, max_length=5, choices=[code[:2] for code in codelists.VOCABULARY]
     )
-    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-                                     validators=[MaxValueValidator(100), MinValueValidator(0)])
+    percentage = models.DecimalField(
+        _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        validators=[MaxValueValidator(100), MinValueValidator(0)]
+    )
 
     class Meta:
         app_label = 'rsr'

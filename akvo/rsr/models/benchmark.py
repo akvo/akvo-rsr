@@ -34,8 +34,14 @@ class Benchmark(models.Model):
 
 
 class Benchmarkname(models.Model):
-    name = ValidXMLCharField(_(u'benchmark name'), max_length=80, help_text=_(u'Enter a name for the benchmark. (80 characters).'))
-    order = models.IntegerField(_(u'order'), default=0, help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.'))
+    name = ValidXMLCharField(
+        _(u'benchmark name'), max_length=80,
+        help_text=_(u'Enter a name for the benchmark. (80 characters).')
+    )
+    order = models.IntegerField(
+        _(u'order'), default=0,
+        help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.')
+    )
 
     def __unicode__(self):
         return self.name

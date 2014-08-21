@@ -49,7 +49,11 @@ class Partnership(models.Model):
     )
     iati_url = models.URLField(
         blank=True,
-        help_text=_(u'Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.')
+        help_text=_(
+            u'Please enter the URL for where the IATI Activity Id Funding details are published. '
+            u'For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. '
+            u'For other projects, an alternative URL can be used.'
+        )
     )
     related_activity_id = ValidXMLCharField(_(u'related IATI activity ID'), max_length=50, blank=True)
 
