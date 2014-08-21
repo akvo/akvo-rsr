@@ -14,7 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.iso3166 import CONTINENTS
 
-from akvo.rsr.models import Organisation, Project, STATUSES, CURRENCY_CHOICES
+from .models import Organisation, Project
 
 class CheckboxMultipleChoiceField(MultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -68,7 +68,7 @@ class ProjectFilterSet(django_filters.FilterSet):
     andor           = django_filters.BooleanFilter(widget=widgets.CheckboxInput(check_test=check_test), action=filter_andor, label=_(u'All words'))
     continent       = django_filters.ChoiceFilter(name='locations__country__continent_code')
     organisation    = django_filters.ModelChoiceFilter(name='name', action=filter_by_org,)
-    status          = django_filters.ChoiceFilter(choices=STATUSES, action=filter_by_status)
+    status          = django_filters.ChoiceFilter(choices=Project.STATUSES, action=filter_by_status)
     budget_total    = django_filters.RangeFilter(action=filter_by_budget_range)
     currency        = django_filters.ChoiceFilter()
 
@@ -128,7 +128,7 @@ class ProjectFilterSet(django_filters.FilterSet):
         self.filters['status'].field_class = CheckboxMultipleChoiceField
 
         choices = [('', '---------')]
-        choices.extend(list(CURRENCY_CHOICES))
+        choices.extend(list(Project.CURRENCY_CHOICES))
         self.filters['currency'].extra.update({'choices': choices})
 
     class Meta:

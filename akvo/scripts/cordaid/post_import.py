@@ -137,7 +137,7 @@ def set_publishing_status(publishing_statuses):
                 project__partnerships__internal_id=internal_id,
                 project__partnerships__organisation=cordaid,
             )
-            status.status = 'published' if publish else 'unpublished'
+            status.status = PublishingStatus.STATUS_PUBLISHED if publish else PublishingStatus.STATUS_UNPUBLISHED
             status.save()
             log(
                 u"Set publishing status for project ID: {pk}: {extra}",
