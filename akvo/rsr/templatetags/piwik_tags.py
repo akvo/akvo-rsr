@@ -16,10 +16,13 @@ register = template.Library()
 
 @register.inclusion_tag('piwik/tracking_code.html')
 def tracking_code():
-    try:
-        id = settings.PIWIK_SITE_ID
-    except AttributeError:
-        raise ImproperlyConfigured('PIWIK_SITE_ID does not exist.')
+    if settings.PARTNER_SITE and settings.PARTNER_SITE.piwik_id:
+        id = settings.PARTNER_SITE.piwik_id
+    else:
+        try:
+            id = settings.PIWIK_SITE_ID
+        except AttributeError:
+            raise ImproperlyConfigured('PIWIK_SITE_ID does not exist.')
     try:
         url = settings.PIWIK_URL
     except AttributeError:
