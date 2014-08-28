@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from ..serializers import UserSerializer
 from ..viewsets import BaseRSRViewSet
@@ -14,5 +14,5 @@ from ..viewsets import BaseRSRViewSet
 class UserViewSet(BaseRSRViewSet):
     """
     """
-    queryset = User.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer

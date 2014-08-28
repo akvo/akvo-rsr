@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from .organisation import OrganisationExtraSerializer
 from .rsr_serializer import BaseRSRSerializer
@@ -14,7 +14,7 @@ from .rsr_serializer import BaseRSRSerializer
 class UserSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = (
             'first_name',
             'last_name',
@@ -27,7 +27,7 @@ class UserExtraSerializer(BaseRSRSerializer):
     organisation = OrganisationExtraSerializer(source='get_profile.organisation')
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = (
             'first_name',
             'last_name',

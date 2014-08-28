@@ -5,7 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from django.contrib.auth.models import Group, User
+from django.conf import settings
+from django.contrib.auth.models import Group
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -19,11 +20,11 @@ from ..fields import ValidXMLTextField
 from .project_update import ProjectUpdate
 
 
-class UserProfile(models.Model):  #, PermissionBase, WorkflowBase):
+class UserProfile(models.Model):
     '''
     Extra info about a user.
     '''
-    user = models.OneToOneField(User, related_name='userprofile')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='userprofile')
     organisation = models.ForeignKey('Organisation')
 
     notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
