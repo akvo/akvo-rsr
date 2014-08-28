@@ -31,7 +31,7 @@ Github issue [#709](https://github.com/akvo/akvo-rsr/issues/709) & [#646](https:
 
 ### Piwik Tracking on Akvo Pages
 
-We have added some code to Akvo Pages implementations that will allow the traffic going through these to be monitored using our analytics tool Piwik. We will be rolloing this out to our partners over the coming weeks to provide portals to obtain this useful user data.
+We have added some code to Akvo Pages implementations that will allow the traffic going through these to be monitored using our analytics tool Piwik. We will be rolling this out to our partners over the coming weeks to provide portals to obtain this useful user data.
 
 Github issue [#630](https://github.com/akvo/akvo-rsr/issues/630)
 
@@ -76,7 +76,7 @@ Infrastructure Changes
 
 ### Refactor models.py into a package
 
-The existing models that define the structure of the data in RSR was becoming too large, so we have now refactored into this several different files to make management easier.
+The existing models file that defined the structure of the data in RSR was becoming too large, so we have now refactored this into several different files to make management easier.
 
 Github issue [#192](https://github.com/akvo/akvo-rsr/issues/192)
 
