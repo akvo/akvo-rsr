@@ -60,12 +60,13 @@ class PartnerSitesMixin(object):
 
     def get_queryset(self):
         partner_site = self.request.partner_site
-
         # Check if only projects of the partner should be shown or all projects
         if partner_site.partner_projects:
-            projects = get_object_or_404(Organisation, pk=self.request.organisation_id).published_projects()
+            projects = get_object_or_404(
+                    Organisation, pk=self.request.organisation_id
+                ).published_projects().prefetch_related('locations')
         else:
-            projects = Project.objects.all().published()
+            projects = Project.objects.all().published().prefetch_related('locations')
 
         # Check if keywords have been specified for the partner site and filter projects based on keywords if so
         if partner_site.keywords.all():
