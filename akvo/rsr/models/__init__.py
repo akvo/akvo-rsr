@@ -56,6 +56,7 @@ from .region import RecipientRegion
 from .result import Result
 from .sector import Sector
 from .transaction import Transaction
+from .user import CustomUser
 from .user_profile import UserProfile
 
 __all__ = [
@@ -100,6 +101,7 @@ __all__ = [
     'Result',
     'Sector',
     'Transaction',
+    'CustomUser',
     'UserProfile',
 ]
 
