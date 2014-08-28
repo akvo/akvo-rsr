@@ -1,3 +1,4 @@
+{% load i18n rsr_tags humanize piwik_tags %}
 <!doctype html>
 <html>
   <head>
@@ -6,6 +7,8 @@
   {% block style %}{% endblock style %}
   <link href='http://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'>
   <base target="_top" />
+  {#  Piwik #}
+  {% tracking_code %}
 </head>
 <body>
 {% block body %}{% endblock body %}
