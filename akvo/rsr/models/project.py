@@ -35,7 +35,8 @@ from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
-from .user_profile import UserProfile
+from .user import User
+# from .user_profile import UserProfile
 
 
 class Project(TimestampsMixin, models.Model):
@@ -569,7 +570,7 @@ class Project(TimestampsMixin, models.Model):
         '''
         is_connected = False
         try:
-            is_connected = self in UserProfile.objects.get(user=user).organisation.all_projects()
+            is_connected = self in User.organisation.all_projects()
         except:
             pass
         return is_connected

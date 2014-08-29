@@ -56,8 +56,8 @@ from .region import RecipientRegion
 from .result import Result
 from .sector import Sector
 from .transaction import Transaction
-from .user import CustomUser
-from .user_profile import UserProfile
+from .user import User
+# from .user_profile import UserProfile
 
 __all__ = [
     'Benchmark',
@@ -101,8 +101,8 @@ __all__ = [
     'Result',
     'Sector',
     'Transaction',
-    'CustomUser',
-    'UserProfile',
+    'User',
+    # 'UserProfile',
 ]
 
 # signals!
@@ -133,4 +133,4 @@ post_delete.connect(update_project_budget, sender=BudgetItem)
 post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
 
-post_save.connect(create_api_key, sender=UserProfile)
+post_save.connect(create_api_key, sender=User)

@@ -41,7 +41,7 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(email, password, True, True, **extra_fields)
 
 
-class CustomUser(AbstractBaseUser): #, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     """
     A fully featured User model with admin-compliant permissions that uses a full-length email field as the username.
     Email and password are required. Other fields are optional.
@@ -58,24 +58,26 @@ class CustomUser(AbstractBaseUser): #, PermissionsMixin):
         _('staff status'), default=False, help_text=_('Designates whether the user can log into this admin site.')
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='users')
+    organisations = models.ManyToManyField(
+        'Organisation', verbose_name=_(u'organisations'), related_name='users', blank=True
+    )
     notes = ValidXMLTextField(verbose_name=_('Notes and comments'), blank=True, default='')
 
     # From PermissionsMixin
-    is_superuser = models.BooleanField(_('superuser status'), default=False,
-        help_text=_('Designates that this user has all permissions without '
-                    'explicitly assigning them.'))
-    groups = models.ManyToManyField(Group, verbose_name=_('groups'),
-        blank=True, help_text=_('The groups this user belongs to. A user will '
-                                'get all permissions granted to each of '
-                                'his/her group.'),
-        related_name='users'
-    )
-    user_permissions = models.ManyToManyField(Permission,
-        verbose_name=_('user permissions'), blank=True,
-        help_text='Specific permissions for this user.',
-        related_name='users'
-    )
+    # is_superuser = models.BooleanField(_('superuser status'), default=False,
+    #     help_text=_('Designates that this user has all permissions without '
+    #                 'explicitly assigning them.'))
+    # groups = models.ManyToManyField(Group, verbose_name=_('groups'),
+    #     blank=True, help_text=_('The groups this user belongs to. A user will '
+    #                             'get all permissions granted to each of '
+    #                             'his/her group.'),
+    #     related_name='users'
+    # )
+    # user_permissions = models.ManyToManyField(Permission,
+    #     verbose_name=_('user permissions'), blank=True,
+    #     help_text='Specific permissions for this user.',
+    #     related_name='users'
+    # )
 
     objects = CustomUserManager()
 

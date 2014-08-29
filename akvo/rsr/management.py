@@ -9,7 +9,7 @@ if "akvo.rsr" in settings.INSTALLED_APPS:
         print "Adding RSR limited permissions"
         print
         models = [
-            rsr.Organisation, rsr.Project, rsr.UserProfile, rsr.PartnerSite
+            rsr.Organisation, rsr.Project, rsr.User, rsr.PartnerSite
         ]
         for model in models:
             opts = model._meta
