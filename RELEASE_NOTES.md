@@ -7,6 +7,82 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.4 Astana
+---
+
+Thursday 28th August 2014, adriancollier
+
+New and Noteworthy
+---
+
+### New and Improved RSR API
+
+We have developed a new API for RSR using the [Django REST Framework](http://www.django-rest-framework.org/). This new API allows organisations to both Read and Write data to the database using an existing RSR user account with the right permissions. The functionality will be tried and tested with a few select partners with which we will work on and implement a full set of API documentation to ensure that it can be effectively utilised.
+
+Github issue [#632](https://github.com/akvo/akvo-rsr/issues/632) & [#39](https://github.com/akvo/akvo-product-design/issues/39)
+
+### RSR Updates with Locations
+
+We have made the first steps in creating the functionality to have locations present with RSR Updates. With this release we can now visualise locations that are provided within RSR Updates on maps displayed within the RSR user interface.
+
+There is still further work to be done on modifying the Update form to enable the entry of updates, as well as releasing a new version of RSR Up that includes locations also.
+
+Github issue [#709](https://github.com/akvo/akvo-rsr/issues/709) & [#646](https://github.com/akvo/akvo-rsr/issues/646)
+
+### Piwik Tracking on Akvo Pages
+
+We have added some code to Akvo Pages implementations that will allow the traffic going through these to be monitored using our analytics tool Piwik. We will be rolling this out to our partners over the coming weeks to provide portals to obtain this useful user data.
+
+Github issue [#630](https://github.com/akvo/akvo-rsr/issues/630)
+
+Features
+---
+
+### Organisation duplicate logic on API Import 
+
+We have now added some logic to the API import scripts being utilised by Cordaid and soon RAIN Foundation to ensure that the organisation owner flag is considered when determining if the organisation provided should be modified or created. This change will prevent additional duplicate organisations being created during imports.
+
+Github issue [#690](https://github.com/akvo/akvo-rsr/issues/690)
+
+### Project Comment timestamp creation
+
+The timestamp present on the project comment entries were only being generated automatically when submitting new comments using the web form. We have now updated the system so that this is created automatically also if these entries are created using any other means, such as the API.
+
+Github issue [#659](https://github.com/akvo/akvo-rsr/issues/659)
+
+Bug Fixes
+---
+
+### Keyword filtered Akvo Pages dropdowns
+
+When Akvo Pages are filtered by a keyword rather than an organisation, there was an issue that the dropdowns displayed were still being populated solely with the information relevant to that organisation. This has been resolved to provide the correct dropdown lists for the users.
+
+Github issue [#665](https://github.com/akvo/akvo-rsr/issues/665)
+
+### All project widget on Akvo Pages display issue
+
+We have resolved a problem with the Akvo Pages widget displaying all projects from a partner. There was a grey border that was affecting the layout that has now been removed.
+
+Github issue [#691](https://github.com/akvo/akvo-rsr/issues/691)
+
+### Add Update button on Update listing pages
+
+We discovered an issue where the Add Update button was not being displayed on the page where all updates for a single project are being listed.
+
+Github issue [#407](https://github.com/akvo/akvo-rsr/issues/407)
+
+Infrastructure Changes
+---
+
+### Refactor models.py into a package
+
+The existing models file that defined the structure of the data in RSR was becoming too large, so we have now refactored this into several different files to make management easier.
+
+Github issue [#192](https://github.com/akvo/akvo-rsr/issues/192)
+
+
+--------
+
 Akvo RSR ver 2.3.10 Zambo
 ---
 

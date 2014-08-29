@@ -477,7 +477,13 @@ class Project(TimestampsMixin, models.Model):
 
         def countries(self):
             """Returns a Country queryset of the countries of these projects"""
-            return Country.objects.filter(projectlocation__project__in=self).distinct()
+            country_ids = []
+            for project in self:
+                for location in project.locations.all():
+                    country_ids.append(location.country.id)
+
+            country_ids = list(set(country_ids))
+            return Country.objects.filter(id__in=country_ids).distinct()
 
 
     def __unicode__(self):
