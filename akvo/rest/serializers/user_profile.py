@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import UserProfile
+from django.contrib.auth import get_user_model
 
 from .rsr_serializer import BaseRSRSerializer
 
@@ -13,4 +13,4 @@ from .rsr_serializer import BaseRSRSerializer
 class UserProfileSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = UserProfile
+        model = get_user_model()

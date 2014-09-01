@@ -26,7 +26,7 @@ from urlparse import urlsplit, urlunsplit
 
 from akvo import settings
 
-from .models import UserProfile, Organisation, ProjectUpdate, Invoice
+from .models import User, Organisation, ProjectUpdate, Invoice
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -215,8 +215,9 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         new_user.first_name = self.cleaned_data['first_name']
         new_user.last_name = self.cleaned_data['last_name']
         new_user.is_active = False
+        new_user.organisation = Organisation.objects.get(pk=self.cleaned_data['org_id'])
         new_user.save()
-        UserProfile.objects.create(user=new_user, organisation=Organisation.objects.get(pk=self.cleaned_data['org_id']))
+        # UserProfile.objects.create(user=new_user, organisation=Organisation.objects.get(pk=self.cleaned_data['org_id']))
         return new_user
 
 

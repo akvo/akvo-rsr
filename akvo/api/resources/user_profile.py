@@ -10,7 +10,7 @@ from tastypie.constants import ALL_WITH_RELATIONS
 
 from akvo.api.fields import ConditionalFullToOneField
 
-from akvo.rsr.models import UserProfile
+from akvo.rsr.models import User
 
 from .resources import ConditionalFullResource
 
@@ -22,9 +22,9 @@ class UserProfileResource(ConditionalFullResource):
     class Meta:
         authentication  = ApiKeyAuthentication()
         allowed_methods = ['get']
-        queryset        = UserProfile.objects.filter(user__is_active=True)
-        resource_name   = 'user_profile'
-        fields          = ['organisation', 'user',]
+        queryset        = User.objects.filter(is_active=True)
+        resource_name   = 'user'
+        fields          = ['organisation']
         filtering       = dict(
             # foreign keys
             user            = ALL_WITH_RELATIONS,
@@ -35,7 +35,7 @@ class UserProfileResource(ConditionalFullResource):
         """ Limit access to the users in your own organisation
         """
         organisation = request.user.userprofile.organisation
-        return UserProfile.objects.filter(organisation=organisation)
+        return User.objects.filter(organisation=organisation)
 
     def dehydrate(self, bundle):
         """ Add meta fields showing if the user profile is an organisation admin or an organisation editor

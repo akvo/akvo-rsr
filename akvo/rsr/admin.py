@@ -769,103 +769,104 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
 
-class UserProfileAdminForm(forms.ModelForm):
-    """
-    This form displays two extra fields that show if the user belongs to the groups
-    GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
-    """
-    is_active = forms.BooleanField(required=False, label=_(u'account is active'),)
-    is_org_admin = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
-    is_org_editor = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
-
-    def __init__(self, *args, **kwargs):
-        initial_data = {}
-        instance = kwargs.get('instance', None)
-        if instance:
-            initial_data['is_active'] = instance.get_is_active()
-            initial_data['is_org_admin'] = instance.get_is_org_admin()
-            initial_data['is_org_editor'] = instance.get_is_org_editor()
-            kwargs.update({'initial': initial_data})
-        super(UserProfileAdminForm, self).__init__(*args, **kwargs)
-
-
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
-    search_fields = ('user__username', 'organisation__name', 'organisation__long_name',)
-    list_filter = ('organisation',)
-    ordering = ("user__username",)
-    form = UserProfileAdminForm
-
-    def get_actions(self, request):
-        """ Remove delete admin action for "non certified" users"""
-        actions = super(UserProfileAdmin, self).get_actions(request)
-        opts = self.opts
-        if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
-            del actions['delete_selected']
-        return actions
-
-    #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
-    def get_readonly_fields(self, request, obj=None):
-        if not request.user.is_superuser:
-            opts = self.opts
-            if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
-                # user is only shown as text, not select widget
-                return ['user', ]
-            else:
-                # user and org are only shown as text, not select widget
-                return ['user', 'organisation', ]
-        else:
-            return []
-
-    def get_queryset(self, request):
-        """
-        Return a queryset possibly filtered depending on current user's group(s)
-        """
-        qs = super(UserProfileAdmin, self).get_queryset(request)
-        opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
-            return qs
-        elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            organisation = request.user.userprofile.organisation
-            return qs.filter(organisation=organisation)
-        else:
-            raise PermissionDenied
-
-    def has_change_permission(self, request, obj=None):
-        """
-        Returns True if the given request has permission to change the given
-        Django model instance.
-
-        If `obj` is None, this should return True if the given request has
-        permission to change *any* object of the given type.
-        """
-        opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
-            return True
-        # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
-        if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            my_org = request.user.userprofile.organisation
-            if obj:
-                return obj.organisation == my_org
-            else:
-                return True
-        return False
-
-    def save_model(self, request, obj, form, change):
-        """
-        override of django.contrib.admin.options.save_model
-        """
-        # Act upon the checkboxes that fake admin settings for the partner users.
-        is_active = form.cleaned_data['is_active']
-        is_admin = form.cleaned_data['is_org_admin']
-        is_editor = form.cleaned_data['is_org_editor']
-        obj.set_is_active(is_active)  # master switch
-        obj.set_is_org_admin(is_admin)  # can modify other users user profile and own organisation
-        obj.set_is_org_editor(is_editor)  # can edit projects
-        obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser)  # implicitly needed to log in to admin
-        obj.save()
-
-admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
+# TODO: Add admin form for custom User model
+# class UserProfileAdminForm(forms.ModelForm):
+#     """
+#     This form displays two extra fields that show if the user belongs to the groups
+#     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
+#     """
+#     is_active = forms.BooleanField(required=False, label=_(u'account is active'),)
+#     is_org_admin = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
+#     is_org_editor = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
+#
+#     def __init__(self, *args, **kwargs):
+#         initial_data = {}
+#         instance = kwargs.get('instance', None)
+#         if instance:
+#             initial_data['is_active'] = instance.get_is_active()
+#             initial_data['is_org_admin'] = instance.get_is_org_admin()
+#             initial_data['is_org_editor'] = instance.get_is_org_editor()
+#             kwargs.update({'initial': initial_data})
+#         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
+#
+#
+# class UserProfileAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
+#     search_fields = ('user__username', 'organisation__name', 'organisation__long_name',)
+#     list_filter = ('organisation',)
+#     ordering = ("user__username",)
+#     form = UserProfileAdminForm
+#
+#     def get_actions(self, request):
+#         """ Remove delete admin action for "non certified" users"""
+#         actions = super(UserProfileAdmin, self).get_actions(request)
+#         opts = self.opts
+#         if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
+#             del actions['delete_selected']
+#         return actions
+#
+#     #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+#     def get_readonly_fields(self, request, obj=None):
+#         if not request.user.is_superuser:
+#             opts = self.opts
+#             if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
+#                 # user is only shown as text, not select widget
+#                 return ['user', ]
+#             else:
+#                 # user and org are only shown as text, not select widget
+#                 return ['user', 'organisation', ]
+#         else:
+#             return []
+#
+#     def get_queryset(self, request):
+#         """
+#         Return a queryset possibly filtered depending on current user's group(s)
+#         """
+#         qs = super(UserProfileAdmin, self).get_queryset(request)
+#         opts = self.opts
+#         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
+#             return qs
+#         elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
+#             organisation = request.user.userprofile.organisation
+#             return qs.filter(organisation=organisation)
+#         else:
+#             raise PermissionDenied
+#
+#     def has_change_permission(self, request, obj=None):
+#         """
+#         Returns True if the given request has permission to change the given
+#         Django model instance.
+#
+#         If `obj` is None, this should return True if the given request has
+#         permission to change *any* object of the given type.
+#         """
+#         opts = self.opts
+#         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
+#             return True
+#         # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
+#         if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
+#             my_org = request.user.userprofile.organisation
+#             if obj:
+#                 return obj.organisation == my_org
+#             else:
+#                 return True
+#         return False
+#
+#     def save_model(self, request, obj, form, change):
+#         """
+#         override of django.contrib.admin.options.save_model
+#         """
+#         # Act upon the checkboxes that fake admin settings for the partner users.
+#         is_active = form.cleaned_data['is_active']
+#         is_admin = form.cleaned_data['is_org_admin']
+#         is_editor = form.cleaned_data['is_org_editor']
+#         obj.set_is_active(is_active)  # master switch
+#         obj.set_is_org_admin(is_admin)  # can modify other users user profile and own organisation
+#         obj.set_is_org_editor(is_editor)  # can edit projects
+#         obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser)  # implicitly needed to log in to admin
+#         obj.save()
+#
+# admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 
 
 class IndicatorPeriodInline(admin.TabularInline):

@@ -9,8 +9,14 @@ from django.db import models
 from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
-from django.core.mail import send_mail
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
+
+from tastypie.models import ApiKey
+
+from akvo.utils import GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
+from akvo.utils import groups_from_user
+
+from .project_update import ProjectUpdate
 
 from ..fields import ValidXMLTextField
 
@@ -63,22 +69,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     notes = ValidXMLTextField(verbose_name=_('Notes and comments'), blank=True, default='')
 
-    # From PermissionsMixin
-    # is_superuser = models.BooleanField(_('superuser status'), default=False,
-    #     help_text=_('Designates that this user has all permissions without '
-    #                 'explicitly assigning them.'))
-    # groups = models.ManyToManyField(Group, verbose_name=_('groups'),
-    #     blank=True, help_text=_('The groups this user belongs to. A user will '
-    #                             'get all permissions granted to each of '
-    #                             'his/her group.'),
-    #     related_name='users'
-    # )
-    # user_permissions = models.ManyToManyField(Permission,
-    #     verbose_name=_('user permissions'), blank=True,
-    #     help_text='Specific permissions for this user.',
-    #     related_name='users'
-    # )
-
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -90,6 +80,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
         ordering = ['email', ]
 
+    def __unicode__(self):
+        return self.email
+
     def get_absolute_url(self):
         return "/users/%s/" % urlquote(self.email)
 
@@ -100,13 +93,110 @@ class User(AbstractBaseUser, PermissionsMixin):
         full_name = '%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
 
-    def get_short_name(self):
-        "Returns the short name for the user."
-        return self.first_name
+    def user_name(self):
+        return self.__unicode__()
 
-    def email_user(self, subject, message, from_email=None):
+    def organisation_name(self):
+        return self.organisation.name
+
+    def updates(self):
         """
-        Sends an email to this User.
+        return all updates created by the user
         """
-        send_mail(subject, message, from_email, [self.email])
+        return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
+
+    def latest_update_date(self):
+        updates = self.updates()
+        if updates:
+            return updates[0].created_at
+        else:
+            return None
+
+    #methods that interact with the User model
+    def get_is_active(self):
+        return self.is_active
+    get_is_active.boolean = True  # make pretty icons in the admin list view
+    get_is_active.short_description = _(u'user is activated (may log in)')
+
+    def set_is_active(self, set_it):
+        self.is_active = set_it
+        self.save()
+
+    def get_is_staff(self):
+        return self.is_staff
+    get_is_staff.boolean = True  # make pretty icons in the admin list view
+
+    def set_is_staff(self, set_it):
+        self.is_staff = set_it
+        self.save()
+
+    def get_is_rsr_admin(self):
+        return GROUP_RSR_EDITORS in groups_from_user(self)
+
+    def get_is_org_admin(self):
+        return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self)
+    get_is_org_admin.boolean = True  # make pretty icons in the admin list view
+    get_is_org_admin.short_description = _(u'user is an organisation administrator')
+
+    def set_is_org_admin(self, set_it):
+        if set_it:
+            self._add_user_to_group(GROUP_RSR_PARTNER_ADMINS)
+        else:
+            self._remove_user_from_group(GROUP_RSR_PARTNER_ADMINS)
+
+    def get_is_org_editor(self):
+        return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self)
+    get_is_org_editor.boolean = True  # make pretty icons in the admin list view
+    get_is_org_editor.short_description = _(u'user is a project editor')
+
+    def set_is_org_editor(self, set_it):
+        if set_it:
+            self._add_user_to_group(GROUP_RSR_PARTNER_EDITORS)
+        else:
+            self._remove_user_from_group(GROUP_RSR_PARTNER_EDITORS)
+
+    def _add_user_to_group(self, group_name):
+        group = Group.objects.get(name=group_name)
+        if not group in self.groups.all():
+            self.groups.add(group)
+            self.save()
+
+    def _remove_user_from_group(self, group_name):
+        group = Group.objects.get(name=group_name)
+        if group in self.groups.all():
+            self.groups.remove(group)
+            self.save()
+
+    def my_projects(self):
+        return self.organisation.all_projects()
+
+    def allow_edit(self, project):
+        """ Support partner organisations may "take ownership" of projects, meaning that editing of them is restricted
+        This method is used "on top" of normal checking for user access to projects since it is only relevant for
+        Partner users
+        """
+        allow_edit = True
+        partner_admins_allowed = []
+        # compile list of support orgs that limit editing
+        for partner in project.support_partners():
+            if not partner.allow_edit:
+                allow_edit = False
+                partner_admins_allowed.append(partner)
+        # no-one limits editing, all systems go
+        if allow_edit:
+            return True
+        # Only Partner admins on the list of "limiters" list may edit
+        else:
+            if self.get_is_org_admin() and self.organisation in partner_admins_allowed:
+                return True
+        return False
+
+    @property
+    def api_key(self, key=""):
+        try:
+            api_key = ApiKey.objects.get(user=self)
+            key = api_key.key
+        except:
+            pass
+        return key
 

@@ -12,7 +12,7 @@ from tastypie.constants import ALL_WITH_RELATIONS, ALL
 
 from akvo.api.fields import ConditionalFullToOneField
 
-from akvo.rsr.models import UserProfile
+from akvo.rsr.models import User
 
 from .resources import ConditionalFullResource
 
@@ -51,7 +51,7 @@ class UserResource(ConditionalFullResource):
             else:
                 organisation = None
             # find out if the user has a profile that's associated with the API key owner org
-            profile = UserProfile.objects.filter(organisation=organisation, user__id=bundle.obj.id)
+            profile = User.objects.filter(organisation=organisation, id=bundle.obj.id)
         if profile:
             bundle.data['username'] = bundle.obj.username
             bundle.data['email'] = bundle.obj.email

@@ -11,7 +11,7 @@ from lxml import etree
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
-                             UserProfile, Invoice, PartnerSite, OrganisationAccount)
+                             Invoice, PartnerSite, OrganisationAccount)
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
@@ -22,6 +22,7 @@ from django import forms
 from django import http
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME
+from django.contrib.auth import get_user_model
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -1332,7 +1333,7 @@ def get_api_key(request):
         if user is not None:
             login(request, user)
             user_id = user.id
-            user_profile = UserProfile.objects.get(user=user)
+            user_profile = get_user_model().objects.get(user=user)
             org_id = user_profile.organisation.id
             projects = user_profile.organisation.published_projects()
             if not user_profile.api_key:

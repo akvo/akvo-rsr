@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import UserProfile
+from django.contrib.auth import get_user_model
 
 from ..viewsets import BaseRSRViewSet
 from ..serializers import UserProfileSerializer
@@ -14,5 +14,5 @@ from ..serializers import UserProfileSerializer
 class UserProfileViewSet(BaseRSRViewSet):
     """
     """
-    queryset = UserProfile.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = UserProfileSerializer
