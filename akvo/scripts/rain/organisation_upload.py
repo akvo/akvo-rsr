@@ -13,7 +13,7 @@ from akvo import settings
 
 from akvo.scripts.rain import (
     ERROR_EXCEPTION, ERROR_CREATE_ORG, ERROR_UPLOAD_ORG, ACTION_CREATE_ORG, log, init_log, print_log, ACTION_CREATE_IOI,
-    ACTION_UPDATE_ORG, RAIN_ORG_ID, ERROR_OTHER_CONTENT_OWNER, ERROR_UPDATE_ORG, RAIN_NS, RAIN_ORGANISATIONS_XML,
+    ACTION_UPDATE_ORG, RAIN_ORG_ID, ERROR_OTHER_CONTENT_OWNER, ERROR_UPDATE_ORG, RAIN_ORGANISATION_NS, RAIN_ORGANISATIONS_XML,
     RAIN_ORG_CSV_FILE, ERROR_CREATE_INTERNAL_ID, ERROR_XML_PARSING
 )
 
@@ -395,7 +395,7 @@ def upload_organisations(argv):
             root = etree.fromstring(f.read())
             organisations = root.findall('organisation')
             for i, org_as_etree in enumerate(organisations):
-                org_id = find_text(org_as_etree, 'internal_org_id@{{{}}}akvo_identifier'.format(RAIN_NS))
+                org_id = find_text(org_as_etree, 'internal_org_id@{{{}}}akvo_identifier'.format(RAIN_ORGANISATION_NS))
                 iati_org_id = find_text(org_as_etree, 'iati_org_id')
                 internal_org_id = find_text(org_as_etree, 'internal_org_id')
                 name = find_text(org_as_etree, 'name')

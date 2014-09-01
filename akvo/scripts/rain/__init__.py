@@ -22,16 +22,17 @@ me = sys.modules[__name__]
 
 rain_settings = dict(
     AKVO_NS='http://akvo.org/iati-activities',
-    RAIN_NS="http://data.rainfoundation.org",
+    RAIN_ORGANISATION_NS="http://data.rainfoundation.org/rsr-organisations",
+    RAIN_ACTIVITY_NS="http://data.rainfoundation.org/rsr-organisations",
 
     RAIN_ROOT_DIR = '/var/tmp/rain',
     # RAIN_ROOT_DIR = '/Users/gabriel/git/akvo-rsr/akvo/rain',
     RAIN_PROJECT_IMAGES_SUBDIR = 'project_images',
     RAIN_LOGOS_SUBDIR = 'logos',
 
-    # RAIN_IATI_ACTIVITES_FILENAME = 'one_rain_activity_20140730.xml',
-    RAIN_IATI_ACTIVITES_FILENAME = 'rain_activities_20140730.xml',
-    RAIN_ORGANISATIONS_FILENAME = 'organisations_2014_08_01.xml',
+    # RAIN_IATI_ACTIVITES_FILENAME = 'rain_one_activities_v20.xml',
+    RAIN_IATI_ACTIVITES_FILENAME = 'rain_activities_v20.xml',
+    RAIN_ORGANISATIONS_FILENAME = 'rain_organisations_v03.xml',
 
     RAIN_ORG_CSV_FILENAME = 'rain_organisations_upload_{datetime}.csv',
     RAIN_ACTIVITIES_CSV_FILENAME = 'rain_activities_upload_{datetime}.csv',

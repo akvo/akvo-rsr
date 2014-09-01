@@ -19,7 +19,7 @@ from akvo.utils import model_and_instance_based_filename, who_am_i
 
 from akvo.scripts.rain import (
     RAIN_IATI_ACTIVITIES_XML, RAIN_ORG_ID, print_log, log, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE, init_log, outsys,
-    RainActivity, RAIN_NS, AKVO_NS, RAIN_POST_PROCESS_CSV_FILE,
+    RainActivity, RAIN_ACTIVITY_NS, AKVO_NS, RAIN_POST_PROCESS_CSV_FILE,
     ERROR_PROJECT_NOT_FOUND)
 
 import logging
@@ -153,7 +153,7 @@ class PostImporter():
             iati_activity_list = iati_activities.xpath('//iati-activity')
             for iati_activity in iati_activity_list:
                 outsys(".")
-                self.activities.append(RainActivity(iati_activity, RAIN_NS, AKVO_NS))
+                self.activities.append(RainActivity(iati_activity, RAIN_ACTIVITY_NS, AKVO_NS))
 
     def run(self):
         for activity in self.activities:
@@ -187,13 +187,7 @@ if __name__ == '__main__':
     log_file = init_log(RAIN_POST_PROCESS_CSV_FILE)
     importer = PostImporter(RAIN_ORG_ID)
     importer.setup()
-
-    ### DEBUG ###
-    import pdb
-    pdb.set_trace()
-    ### DEBUG ###
-
     importer.run()
     #logging.debug("Post import done.")
-    names = (u'internal_id', u'rsr_id', u'iait_id', u'event', u'extra')
+    names = (u'internal_id', u'rsr_id', u'iati_id', u'event', u'extra')
     print_log(log_file, names)

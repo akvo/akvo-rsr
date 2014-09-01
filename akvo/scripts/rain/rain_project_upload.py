@@ -18,7 +18,7 @@ from django.http import HttpResponse
 from akvo.scripts.rain import (
     log, API_VERSION, RAIN_IATI_ACTIVITIES_XML, RAIN_ACTIVITIES_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION,
     ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT,
-    RAIN_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_NO_ORGS, RainActivity, AKVO_NS, RAIN_NS, RAIN_ORG_ID,
+    RAIN_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_NO_ORGS, RainActivity, AKVO_NS, RAIN_ACTIVITY_NS, RAIN_ORG_ID,
     ERROR_MISSING_IATI_ID, ERROR_IDENTIFY_RSR_PROJECT
 )
 
@@ -272,12 +272,12 @@ def upload_activities(argv):
         if xml:
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
             root = etree.fromstring(xml, parser=parser)
-            document_akvo_ns = akvo_ns=root.nsmap['akvo']
+            document_akvo_ns = root.nsmap['akvo']
             assert document_akvo_ns == AKVO_NS, "Akvo name space is incorrect in the IATI XML"
             activities = root.findall('iati-activity')
             activity_count = len(activities)
             for i, activity in enumerate(activities):
-                activity = RainActivity(activity, RAIN_NS, AKVO_NS)
+                activity = RainActivity(activity, RAIN_ACTIVITY_NS, AKVO_NS)
                 internal_id = activity.internal_id()
                 iati_id = activity.iati_id()
                 try:
