@@ -17,8 +17,7 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     queryset = ProjectUpdate.objects.all()
     serializer_class = ProjectUpdateSerializer
 
-
-def get_queryset(self):
+    def get_queryset(self):
         """ Allow simple filtering on selected fields
         """
         queryset = self.queryset

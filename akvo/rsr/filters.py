@@ -14,7 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.iso3166 import CONTINENTS
 
-from akvo.rsr.models import Organisation, Project, STATUSES, CURRENCY_CHOICES
+from .models import Organisation, Project
 
 class CheckboxMultipleChoiceField(MultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
@@ -68,7 +68,7 @@ class ProjectFilterSet(django_filters.FilterSet):
     andor           = django_filters.BooleanFilter(widget=widgets.CheckboxInput(check_test=check_test), action=filter_andor, label=_(u'All words'))
     continent       = django_filters.ChoiceFilter(name='locations__country__continent_code')
     organisation    = django_filters.ModelChoiceFilter(name='name', action=filter_by_org,)
-    status          = django_filters.ChoiceFilter(choices=STATUSES, action=filter_by_status)
+    status          = django_filters.ChoiceFilter(choices=Project.STATUSES, action=filter_by_status)
     budget_total    = django_filters.RangeFilter(action=filter_by_budget_range)
     currency        = django_filters.ChoiceFilter()
 
@@ -84,43 +84,51 @@ class ProjectFilterSet(django_filters.FilterSet):
         choices.extend(list(CONTINENTS))
         self.filters['continent'].extra.update({'choices': choices})
 
-
         # The request is sent when the call is made from a partner site view
         if request:
             partner_site = request.partner_site
             organisation = partner_site.organisation
-            # If the partner site is "normal"
-            if partner_site.partner_projects:
-                countries = organisation.countries_where_active()
 
-                continents = [('', _(u'Active continents'))]
-                choices = []
-                for country in countries:
-                    if not country.continent_code in [code[0] for code in choices]:
-                        choices.append((country.continent_code, _(country.continent)))
-                continents.extend(sorted(choices))
+            # Countries
+            countries = projects.countries()
+            self.filters['locations__country'].extra.update({'queryset': countries})
+            self.filters['locations__country'].extra.update({'empty_label': _(u'Active countries')})
 
-                self.filters['continent'].extra.update({'choices': continents})
-                self.filters['locations__country'].extra.update({'queryset': countries})
-                self.filters['locations__country'].extra.update({'empty_label': _(u'Active countries')})
+            # Continents
+            continents = [('', _(u'Active continents'))]
+            choices = []
+            for country in countries:
+                if not country.continent_code in [code[0] for code in choices]:
+                    choices.append((country.continent_code, _(country.continent)))
+            continents.extend(sorted(choices))
+            self.filters['continent'].extra.update({'choices': continents})
 
-                organisations = organisation.partners()
-            # Keyword driven partner site.
-            # Performance issues preclude filtering of filter drop-downs right now
-            else:
-                organisations = Organisation.objects.all()
-                self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
+            # Partners (always show all partners)
+            organisations = Organisation.objects.all()
             self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
+
+
+            # TODO: Filter the partners of projects. Organisation.partners() is too slow at the moment.
+            # if partner_site.partner_projects and partner_site.keywords == 0:
+            #     organisations = organisation.partners()
+            #     self.filters['organisation'].extra.update({'empty_label': _(u'Active partners')})
+            # else:
+            #     organisations = Organisation.objects.all()
+            #     self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
+            
+        # No request (no partner site)
         else:
             organisations = Organisation.objects.all()
+            self.filters['locations__country'].extra.update({'empty_label': _(u'All countries')})
             self.filters['organisation'].extra.update({'empty_label': _(u'All organisations')})
+
         self.filters['organisation'].extra.update({'queryset': organisations})
 
         self.filters['andor'].field_class = BooleanField
         self.filters['status'].field_class = CheckboxMultipleChoiceField
 
         choices = [('', '---------')]
-        choices.extend(list(CURRENCY_CHOICES))
+        choices.extend(list(Project.CURRENCY_CHOICES))
         self.filters['currency'].extra.update({'choices': choices})
 
     class Meta:

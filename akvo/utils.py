@@ -47,11 +47,6 @@ GROUP_RSR_PARTNER_EDITORS   = u'RSR partner editors' #can edit an org's projects
 GROUP_RSR_EDITORS           = u'RSR editors'
 GROUP_RSR_USERS             = u'RSR users'
 
-PAYPAL_INVOICE_STATUS_PENDING   = 1
-PAYPAL_INVOICE_STATUS_VOID      = 2
-PAYPAL_INVOICE_STATUS_COMPLETE  = 3
-PAYPAL_INVOICE_STATUS_STALE     = 4
-
 class HttpResponseNoContent(HttpResponse):
     status_code = 204
 

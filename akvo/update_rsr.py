@@ -52,7 +52,7 @@ def update_publishing_status():
             ps = PublishingStatus.objects.get(project=p)
             #print "Found project %s, already %s" % (ps.project, ps.status)
         except:
-            new_ps = PublishingStatus(project=p, status='unpublished')
+            new_ps = PublishingStatus(project=p, status=PublishingStatus.STATUS_UNPUBLISHED)
             new_ps.save()
 
 def update_organisation_account():
@@ -61,7 +61,7 @@ def update_organisation_account():
         try:
             acc = OrganisationAccount.objects.get(organisation=o)
         except:
-            new_acc = OrganisationAccount(organisation=o, account_level='free')
+            new_acc = OrganisationAccount(organisation=o, account_level=OrganisationAccount.ACCOUNT_FREE)
             new_acc.save()
 
 def resave_images(queryset):
