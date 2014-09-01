@@ -6,18 +6,12 @@
 Forms and validation code for user registration and updating.
 
 """
-#import re
-from urlparse import urlsplit, urlunsplit
 
 from django import forms
-#TODO fix for django 1.0
-#from django import oldforms
-#from django.core import validators
-#from django.core.validators import alnum_re
-#from django.conf import settings
-#from django.contrib.auth.models import User
+
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from django.contrib.sites.models import get_current_site
+from django.core import validators
 from django.db.models import get_model
 from django.template.defaultfilters import slugify
 from django.utils.html import escape
@@ -28,9 +22,11 @@ from registration.forms import RegistrationFormUniqueEmail
 from registration.models import RegistrationProfile
 
 from mollie.ideal.utils import get_mollie_banklist
+from urlparse import urlsplit, urlunsplit
+
 from akvo import settings
 
-from akvo.rsr.models import UserProfile, Organisation, ProjectUpdate
+from .models import UserProfile, Organisation, ProjectUpdate, Invoice
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -279,7 +275,7 @@ class InvoiceForm(forms.ModelForm):
 
     def over_donated(self):
         donation = self.cleaned_data.get('amount', 0)
-        if self.engine == 'paypal':
+        if self.engine == Invoice.PAYMENT_ENGINE_PAYPAL:
             if self.project.amount_needed_to_fully_fund_via_paypal() < donation:
                 return True
         else:
@@ -370,7 +366,7 @@ class ProjectUpdateForm(forms.ModelForm):
         }))
 
     class Meta:
-        model = get_model('rsr', 'projectupdate')
+        model = ProjectUpdate
         fields = ('title', 'text', 'language', 'photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
         'video_credit')
 

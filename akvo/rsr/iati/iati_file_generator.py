@@ -355,15 +355,15 @@ def iati_activity(activity, project):
         Mapped to the RSR Project Status: Pipeline/identification => Needs Funding,
         Implementation => Active, Completion => Completed, Post-completion => Completed, Cancelled => Cancelled."""
 
-        if project.status == 'H':
+        if project.status == Project.STATUS_NEEDS_FUNDING:
             return IATI_LIST_ACTIVITY_STATUS[0][0], IATI_LIST_ACTIVITY_STATUS[0][1]
-        elif project.status == 'A':
+        elif project.status == Project.STATUS_ACTIVE:
             return IATI_LIST_ACTIVITY_STATUS[1][0], IATI_LIST_ACTIVITY_STATUS[1][1]
-        elif project.status == 'C':
+        elif project.status == Project.STATUS_COMPLETE:
             return IATI_LIST_ACTIVITY_STATUS[2][0], IATI_LIST_ACTIVITY_STATUS[2][1]
-        elif project.status == 'R':
+        elif project.status == Project.STATUS_ARCHIVED:
             return IATI_LIST_ACTIVITY_STATUS[3][0], IATI_LIST_ACTIVITY_STATUS[3][1]
-        elif project.status == 'L':
+        elif project.status == Project.STATUS_CANCELLED:
             return IATI_LIST_ACTIVITY_STATUS[4][0], IATI_LIST_ACTIVITY_STATUS[4][1]
         else:
             # Impossible to have another status

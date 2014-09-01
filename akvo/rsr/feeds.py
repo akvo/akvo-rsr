@@ -14,7 +14,7 @@ from django.core.urlresolvers import reverse
 from django.utils.feedgenerator import Rss201rev2Feed
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.models import Project, ProjectUpdate, Organisation
+from akvo.rsr.models import Project, ProjectUpdate, Organisation, PublishingStatus
 
 
 def __dict_replace(s, d):
@@ -247,7 +247,9 @@ class AllProjectUpdates(UpdateFeed):
         # Limited to 100 items to prevent gateway timeouts & since only the last 100 items
         # are required for current usage anyway.
         # TODO: rename or create a new appropriately named feed.
-        return ProjectUpdate.objects.filter(project__publishingstatus__status='published').order_by('-created_at')[:100]
+        return ProjectUpdate.objects.filter(
+                project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
+            ).order_by('-created_at')[:100]
 
     def item_title(self, item):
         return _(

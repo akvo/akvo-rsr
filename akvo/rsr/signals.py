@@ -4,13 +4,16 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+
 import logging
 logger = logging.getLogger('akvo.rsr')
 
 import os
 from datetime import datetime
 
+from django.contrib.admin.models import ADDITION, CHANGE
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
@@ -18,12 +21,12 @@ from django.conf import settings
 
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 
-from akvo.utils import send_donation_confirmation_emails, who_am_i, rsr_send_mail_to_users
+from akvo.utils import send_donation_confirmation_emails, rsr_send_mail_to_users
 from akvo.utils import (
     GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS
 )
 
-import akvo.rsr.models
+
 
 def create_publishing_status(sender, **kwargs):
     """
@@ -31,9 +34,11 @@ def create_publishing_status(sender, **kwargs):
     project is created
     """
     # kwargs['raw'] is True when we're running manage.py loaddata
+    from .models import PublishingStatus
+
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         new_project = kwargs['instance']
-        ps = get_model('rsr', 'publishingstatus')(status='unpublished')
+        ps = get_model('rsr', 'publishingstatus')(status=PublishingStatus.STATUS_UNPUBLISHED)
         ps.project = new_project
         ps.save()
         
@@ -51,7 +56,7 @@ def create_organisation_account(sender, **kwargs):
             acc = OrganisationAccount.objects.get(organisation=new_org)
         except:
             #and when it doesn't we do this
-            new_acc = OrganisationAccount(organisation=new_org, account_level='free')
+            new_acc = OrganisationAccount(organisation=new_org, account_level=OrganisationAccount.ACCOUNT_FREE)
             new_acc.save()
 
 def change_name_of_file_on_create(sender, **kwargs):
@@ -144,25 +149,17 @@ def create_benchmark_objects(project):
     """
     create the relevant Benchmark objects for this project based on the Categories of the project
     """
+    from .models import Benchmark
+
     for category in project.categories.all():
         for benchmarkname in category.benchmarknames.all():
-            benchmark, created = akvo.rsr.models.Benchmark.objects.get_or_create(project=project, category=category, name=benchmarkname, defaults={'value': 0})
-    #if kwargs['created']:
-    #technology = kwargs['instance']
-    #for factor in Factor.objects.filter(pk__in=[pk for pk in technology.factors.all().values_list('pk', flat=True)]):
-    #    for criterion in factor.criteria.all():
-    #        try:
-    #            Relevancy.objects.get(technology=technology, criterion=criterion,)
-    #        except Relevancy.DoesNotExist:
-    #            Relevancy.objects.create(technology=technology, criterion=criterion,)
+            benchmark, created = Benchmark.objects.get_or_create(project=project, category=category, name=benchmarkname, defaults={'value': 0})
 
-from django.contrib.admin.models import ADDITION, CHANGE
-from django.contrib.contenttypes.models import ContentType
 def act_on_log_entry(sender, **kwargs):
     """
-    catch the LogEntry post_save to grab newly added Technology instances and create
-    relevancy objects for it
-    we do this at this time to be able to work with a fully populated Technology
+    catch the LogEntry post_save to grab newly added Project instances and create
+    Benchmark objects for it
+    we do this at this time to be able to work with a fully populated Project
     instance
     """
     CRITERIA = [

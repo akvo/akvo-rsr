@@ -10,7 +10,6 @@ from tastypie.constants import ALL_WITH_RELATIONS
 from akvo.api.fields import ConditionalFullToOneField
 
 from akvo.rsr.models import Invoice
-from akvo.utils import PAYPAL_INVOICE_STATUS_COMPLETE
 
 from .resources import ConditionalFullResource
 
@@ -20,7 +19,7 @@ class InvoiceResource(ConditionalFullResource):
 
     class Meta:
         allowed_methods = ['get']
-        queryset        = Invoice.objects.filter(status__exact=PAYPAL_INVOICE_STATUS_COMPLETE)
+        queryset        = Invoice.objects.filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE)
         resource_name   = 'invoice'
         fields          = ['amount', 'amount_received', 'is_anonymous',]
         filtering       = dict(
