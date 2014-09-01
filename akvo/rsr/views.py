@@ -11,7 +11,7 @@ from lxml import etree
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
-                             UserProfile, Invoice, PartnerSite)
+                             UserProfile, Invoice, PartnerSite, OrganisationAccount)
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
@@ -629,7 +629,7 @@ def projectupdates(request, project_id):
     '''
     project = get_object_or_404(Project, pk=project_id)
     updates = project.project_updates.all().order_by('-created_at')
-    comments = project.comments.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-created_at')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
         'project': project,
@@ -650,7 +650,7 @@ def projectupdate(request, project_id, update_id):
     can_add_update = project.connected_to_user(request.user)
     can_edit_update = (update.user == request.user and can_add_update and
                        not update.edit_window_has_expired())
-    comments = project.comments.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-created_at')[:3]
     edit_timeout = settings.PROJECT_UPDATE_TIMEOUT
     return {
         'project': project,
@@ -673,7 +673,7 @@ def projectcomments(request, project_id):
     updates: list of updates, ordered by time in reverse
     '''
     project = get_object_or_404(Project, pk=project_id)
-    comments = Project.objects.get(id=project_id).comments.all().order_by('-time')
+    comments = Project.objects.get(id=project_id).comments.all().order_by('-created_at')
     form = CommentForm()
     updates = project.project_updates.all().order_by('-created_at')[:3]
     can_add_update = project.connected_to_user(request.user)
@@ -776,7 +776,6 @@ def commentform(request, project_id):
         if form.is_valid():
             comment = form.save(commit=False)
             comment.project = p
-            comment.time = datetime.now()
             comment.user = request.user
             comment.save()
     return HttpResponseRedirect(reverse('project_comments', args=[project_id]))
@@ -812,7 +811,7 @@ def projectmain(request, project, draft=False, can_add_update=False):
     '''
     all_updates = project.project_updates.all().order_by('-created_at')
     updates_with_images = all_updates.exclude(photo__exact='').order_by('-created_at')
-    comments = project.comments.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-created_at')[:3]
     # comprehensions are fun! here we use it to get the categories that
     # don't contain only 0 value benchmarks
     benchmarks = project.benchmarks.filter(
@@ -846,7 +845,7 @@ def projectdetails(request, project_id):
 @render_to('rsr/project/project_partners.html')
 def projectpartners(request, project, draft=False, can_add_update=False):
     updates = project.project_updates.all().order_by('-created_at')[:3]
-    comments = project.comments.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-created_at')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
         'can_add_update': can_add_update,
@@ -864,7 +863,7 @@ def projectpartners(request, project, draft=False, can_add_update=False):
 def projectfunding(request, project, draft=False, can_add_update=False):
     public_donations = project.public_donations()
     updates = project.project_updates.all().order_by('-created_at')[:3]
-    comments = project.comments.all().order_by('-time')[:3]
+    comments = project.comments.all().order_by('-created_at')[:3]
     can_add_update = project.connected_to_user(request.user)
     return {
         'can_add_update': can_add_update,
@@ -887,7 +886,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
         try:
             account_level = request.user.userprofile.organisation.organisationaccount.account_level
         except:
-            account_level = 'free'
+            account_level = OrganisationAccount.ACCOUNT_FREE
         # project = get_object_or_404(Project.objects, pk=project_id)
         orgs = project.all_partners()
         return render_to_response('rsr/project/get-a-widget/machinery_step1.html', {
@@ -927,7 +926,7 @@ def templatedev(request, template_name):
     SAMPLE_ORG_ID = 42
     p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
     updates = Project.objects.get(id=SAMPLE_PROJECT_ID).project_updates.all().order_by('-created_at')[:3]
-    comments = Project.objects.get(id=SAMPLE_PROJECT_ID).comments.all().order_by('-time')[:3]
+    comments = Project.objects.get(id=SAMPLE_PROJECT_ID).comments.all().order_by('-created_at')[:3]
     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
 
     projects = Project.objects.published()
@@ -1029,6 +1028,8 @@ def project_map_widget(request, org_id):
     zoom = request.GET.get('zoom', '1')
     state = request.GET.get('state', 'dynamic')
 
+    projects = Project.objects.filter(partnerships__organisation=org_id).active()
+
     if state != 'dynamic':
         state = 'static'
 
@@ -1041,6 +1042,7 @@ def project_map_widget(request, org_id):
         'bgcolor': bgcolor,
         'height': map_height,
         'org': get_object_or_404(Organisation, pk=org_id),
+        'projects': projects,
         'textcolor': textcolor,
         'width': width,
         'zoom': zoom,

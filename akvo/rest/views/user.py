@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import User
+from django.contrib.auth.models import User
 
 from ..serializers import UserSerializer
 from ..viewsets import BaseRSRViewSet

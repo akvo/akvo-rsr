@@ -316,8 +316,6 @@ ul.basicInfo li .projectLocation {
 	overflow: hidden;
 }
 #container.lightBG div.projectBudget {
-	background: rgb(235,235,235);
-	background: rgba(123,123,123,0.1);
 	border: 1px solid transparent;
 }
 #project_plan_summary {
