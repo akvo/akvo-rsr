@@ -58,12 +58,33 @@ def make_tls_property(default=None):
     return TLSProperty()
 
 
+def _patch_setattr(obj):
+    """Purpose of this is to allow changes to settings object again after it is
+    changed to tls property.
+
+    Without this patch the following is not possible::
+
+        settings.SITE_ID = 1
+        settings.SITE_ID = 42
+        assert settings.SITE_ID == 42 # this fails without this patch
+
+    """
+    old_setattr = obj.__setattr__
+    def wrap_setattr(self, name, value):
+        try:
+            getattr(self.__class__, name).value = value
+        except AttributeError:
+            old_setattr(name, value)
+    obj.__class__.__setattr__ = wrap_setattr
+
+
+_patch_setattr(settings)
+
 DEFAULT_SITE_ID = getattr(settings, "SITE_ID", None)
-settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
-
 DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
-settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
+settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
+settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
 PARTNER_SITES_MARKETING_SITE = getattr(
     settings,

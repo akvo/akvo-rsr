@@ -14,5 +14,3 @@ class CountrySerializer(BaseRSRSerializer):
 
     class Meta:
         model = Country
-        fields = (
-        )

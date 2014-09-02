@@ -14,5 +14,3 @@ class FocusAreaSerializer(BaseRSRSerializer):
 
     class Meta:
         model = FocusArea
-        fields = (
-        )

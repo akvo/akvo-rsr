@@ -19,8 +19,7 @@ from django.http import Http404
 
 from akvo.rsr.forms import ProjectUpdateForm
 from akvo.rsr.models import Invoice, Project, ProjectUpdate
-from akvo.rsr.views_partner_sites.base import (
-    BaseProjectListView, BaseProjectView, BaseListView, BaseView)
+from akvo.rsr.views_partner_sites.base import (BaseProjectListView, BaseProjectView, BaseListView, BaseView)
 
 
 __all__ = [
@@ -75,8 +74,9 @@ class ProjectUpdateListView(BaseListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdateListView, self).get_context_data(**kwargs)
-        context['project'] = get_object_or_404(
-            Project, pk=self.kwargs['project_id'])
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        context['can_add_update'] = context['project'].connected_to_user(self.request.user) or \
+                                    self.request.user.has_perm('rsr.change_project')
         return context
 
     def get_queryset(self):
@@ -151,8 +151,8 @@ class ProjectUpdateAddView(ProjectUpdateFormView, FormView):
                 u"You can't add updates to unpublished projects."
             raise PermissionDenied
 
-        user_is_authorized = context['project'].connected_to_user(
-            self.request.user)
+        user_is_authorized = context['project'].connected_to_user(self.request.user) or \
+                             self.request.user.has_perm('rsr.change_project')
         if self.request.user.is_authenticated() and not user_is_authorized:
             self.request.error_message = \
                 u"You don't have permission to add updates to this project."
@@ -186,7 +186,8 @@ class ProjectUpdateEditView(ProjectUpdateFormView, UpdateView):
         self.object = update
         context = super(ProjectUpdateEditView, self).get_context_data(**kwargs)
 
-        user_is_authorized = context['project'].connected_to_user(self.request.user)
+        user_is_authorized = context['project'].connected_to_user(self.request.user) or \
+                             self.request.user.has_perm('rsr.change_project')
         if not user_is_authorized:
             raise PermissionDenied
 

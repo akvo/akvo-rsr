@@ -39,8 +39,7 @@ def project_viewing_permissions(view):
     """
     Work as @fetch_project with additional logic for draft capability.
     - Published projects can be seen by anyone.
-    - A user can see "own" unpublished projects in "draft" state (a red banner
-        on the top)
+    - A user can see "own" unpublished projects in "draft" state (a red banner on the top)
     - A user with the "view project drafts" permission can see an unpublished project
     - A signed in user gets a 403 on unpublished projects that aren't "owned"
     - Anyone not signed in will get a 404 on unpublished projects
@@ -55,10 +54,8 @@ def project_viewing_permissions(view):
         unprivileged_user = not privileged_user
         authenticated_user = request.user.is_authenticated()
         unpublished_project = not project.is_published()
-#        request.privileged_user = privileged_user
 
-        # Enable draft preview for privileged users, additional logic in
-        # the draft section of project pages templates
+        # Enable draft preview for privileged users, additional logic in the draft section of project pages templates
         draft = False
         if unpublished_project and authenticated_user and unprivileged_user:
             raise PermissionDenied

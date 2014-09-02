@@ -1,4 +1,4 @@
-{% load cache maps humanize i18n rsr_tags %}
+{% load cache maps humanize i18n rsr_tags piwik_tags %}
 {% load static %}
 {% get_static_prefix as STATIC_URL %}
 
@@ -28,6 +28,9 @@
     #footer a img { border:none;}
   </style>
   <base target="_top" />
+  {#  Piwik #}
+  {% tracking_code %}
+
 </head>
 <body>
 {% projects_map projects width height|add:-30 state %}

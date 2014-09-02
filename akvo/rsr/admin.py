@@ -883,11 +883,17 @@ admin.site.register(get_model('rsr', 'Indicator'), ResultIndicatorAdmin)
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):
-    list_display = ('project', 'user', 'comment', 'time', )
-    list_filter = ('project', 'time', )
+    list_display = ('project', 'user', 'comment', 'created_at', )
+    list_filter = ('project', 'created_at', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
+    readonly_fields = ('created_at', 'last_modified_at')
 
 admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
+
+
+class ProjectUpdateLocationInline(admin.StackedInline):
+    model = get_model('rsr', 'projectupdatelocation')
+    extra = 0
 
 
 class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
@@ -895,12 +901,13 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'user', 'text', 'language', 'created_at', 'img',)
     list_filter = ('created_at', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
+    inlines = (ProjectUpdateLocationInline,)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at')
 
     fieldsets = (
         (_(u'General Information'), {
-            'fields': ('project','user','update_method', ),
+            'fields': ('project','user','update_method', 'created_at', 'last_modified_at'),
         }),
         (_(u'Content'), {
             'fields': ('title','text','language', ),
@@ -917,6 +924,7 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
+
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
 
 
@@ -985,9 +993,9 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         # the 'notes' field is added in get_fieldsets() for eligible users
         (u'General', dict(fields=('organisation', 'enabled',))),
-        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text'))),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text', 'piwik_id',))),
         (u'Style and content',
-         dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
+            dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
         (_(u'Projects'), {
@@ -995,7 +1003,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 u'Choose what projects will be shown on your partnersite. By selecting one or more keywords below, only projects matching that keyword will be shown on the partnersite.'
             ),
             'fields': ('partner_projects', 'keywords'),
-            }),
+        }),
     )
     filter_horizontal = ('keywords',)
     list_display = ('__unicode__', 'full_domain', 'enabled', 'show_keywords')

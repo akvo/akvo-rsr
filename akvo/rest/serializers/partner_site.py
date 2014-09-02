@@ -14,5 +14,3 @@ class PartnerSiteSerializer(BaseRSRSerializer):
 
     class Meta:
         model = PartnerSite
-        fields = (
-        )

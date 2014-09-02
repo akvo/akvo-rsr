@@ -10,11 +10,12 @@ import os
 from django import template
 from django.conf import settings
 
-from akvo.rsr.models import Project, Organisation, ProjectLocation, OrganisationLocation
+from akvo.rsr.models import Project, Organisation, ProjectLocation, OrganisationLocation, ProjectUpdateLocation
 
 register = template.Library()
 
 PROJECT_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
+PROJECT_UPDATE_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_PROJECT_UPDATE_MARKER_ICON', '')
 ORGANISATION_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
 MEDIA_URL = getattr(settings, 'MEDIA_URL', '/media/')
 
@@ -35,19 +36,32 @@ def project_map(id, width, height, dynamic='dynamic'):
         dynamic = False
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
-    marker_icon = PROJECT_MARKER_ICON
 
     locations = []
+    update_locations = []
 
     for location in ProjectLocation.objects.filter(location_target=id):
         locations.append([location.latitude, location.longitude])
+
+    for update_location in ProjectUpdateLocation.objects.filter(location_target__project=id):
+        project_update = update_location.location_target
+
+        # Small map, so don't show thumbnail of updates
+        thumbnail = ""
+
+        update_locations.append([update_location.latitude,
+                                 update_location.longitude,
+                                 [str(project_update.pk),project_update.title.encode('utf8'), thumbnail, 'project',
+                                  str(id)]])
 
     template_context = {
         'map_id': map_id,
         'width': width,
         'height': height,
-        'marker_icon': marker_icon,
+        'marker_icon': PROJECT_MARKER_ICON,
+        'update_marker_icon': PROJECT_UPDATE_MARKER_ICON,
         'locations': locations,
+        'update_locations': update_locations,
         'dynamic': dynamic,
         'infowindows': False,
         'partnersite_widget': False
@@ -69,7 +83,6 @@ def organisation_map(id, width, height, dynamic='dynamic'):
         dynamic = False
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
-    marker_icon = ORGANISATION_MARKER_ICON
 
     locations = []
 
@@ -80,7 +93,7 @@ def organisation_map(id, width, height, dynamic='dynamic'):
         'map_id': map_id,
         'width': width,
         'height': height,
-        'marker_icon': marker_icon,
+        'marker_icon': ORGANISATION_MARKER_ICON,
         'locations': locations,
         'dynamic': dynamic,
         'infowindows': False,
@@ -102,26 +115,44 @@ def global_project_map(width, height, dynamic='dynamic'):
         dynamic = False
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
-    marker_icon = PROJECT_MARKER_ICON
 
     locations = []
+    update_locations = []
 
     for project in Project.objects.all().active():
         try:
             location = project.primary_location
-            thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
+            try:
+                thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
+            except:
+                thumbnail = ""
             locations.append([location.latitude,
                               location.longitude,
                               [str(project.pk),project.title.encode('utf8'), thumbnail, 'project']])
         except:
             pass
 
+        for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
+            project_update = update_location.location_target
+
+            try:
+                thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url
+            except:
+                thumbnail = ""
+
+            update_locations.append([update_location.latitude,
+                                     update_location.longitude,
+                                     [str(project_update.pk), project_update.title.encode('utf8'), thumbnail, 'project',
+                                      str(project.pk)]])
+
     template_context = {
         'map_id': map_id,
         'width': width,
         'height': height,
-        'marker_icon': marker_icon,
+        'marker_icon': PROJECT_MARKER_ICON,
+        'update_marker_icon': PROJECT_UPDATE_MARKER_ICON,
         'locations': locations,
+        'update_locations': update_locations,
         'dynamic': dynamic,
         'infowindows': True,
         'partnersite_widget': False
@@ -142,7 +173,6 @@ def global_organisation_map(width, height, dynamic='dynamic'):
         dynamic = False
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
-    marker_icon = ORGANISATION_MARKER_ICON
 
     locations = []
 
@@ -160,7 +190,7 @@ def global_organisation_map(width, height, dynamic='dynamic'):
         'map_id': map_id,
         'width': width,
         'height': height,
-        'marker_icon': marker_icon,
+        'marker_icon': ORGANISATION_MARKER_ICON,
         'locations': locations,
         'dynamic': dynamic,
         'infowindows': True,
@@ -183,9 +213,9 @@ def projects_map(projects, width, height, dynamic='dynamic'):
         dynamic = False
 
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
-    marker_icon = PROJECT_MARKER_ICON
 
     locations = []
+    update_locations = []
 
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
@@ -194,25 +224,30 @@ def projects_map(projects, width, height, dynamic='dynamic'):
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
             except:
                 thumbnail = ""
-            locations.append(
-                [
-                    location.latitude,
-                    location.longitude,
-                    [
-                        str(project.pk),
-                        project.title.encode('utf8'),
-                        thumbnail,
-                        'project'
-                    ]
-                ]
-            )
+            locations.append([location.latitude,
+                              location.longitude,
+                              [str(project.pk), project.title.encode('utf8'), thumbnail, 'project']])
+
+        for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
+            project_update = update_location.location_target
+
+            try:
+                thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url
+            except:
+                thumbnail = ""
+
+            update_locations.append([update_location.latitude,
+                                     update_location.longitude,
+                                     [str(project_update.pk), project_update.title.encode('utf8'), thumbnail, 'project', str(project.pk)]])
 
     template_context = {
         'map_id': map_id,
         'width': width,
         'height': height,
-        'marker_icon': marker_icon,
+        'marker_icon': PROJECT_MARKER_ICON,
+        'update_marker_icon': PROJECT_UPDATE_MARKER_ICON,
         'locations': locations,
+        'update_locations': update_locations,
         'dynamic': dynamic,
         'infowindows': True
     }

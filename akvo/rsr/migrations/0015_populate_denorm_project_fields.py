@@ -3,7 +3,6 @@ from south.v2 import DataMigration
 
 from django.db.models.aggregates import Sum
 
-from akvo.utils import PAYPAL_INVOICE_STATUS_COMPLETE, PAYPAL_INVOICE_STATUS_PENDING
 from akvo.rsr.models import Partnership
 
 class Migration(DataMigration):
@@ -13,11 +12,11 @@ class Migration(DataMigration):
             project.budget = orm.BudgetItem.objects.filter(project__exact=project).aggregate(Sum('amount'))['amount__sum'] or 0
 
             donations = orm.Invoice.objects.filter(project__exact=project).filter(
-                status__exact=PAYPAL_INVOICE_STATUS_COMPLETE
+                status__exact=orm.Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
             ).aggregate(Sum('amount_received'))['amount_received__sum'] or 0
 
             pending_donations = orm.Invoice.objects.filter(project__exact=project).filter(
-                status__exact=PAYPAL_INVOICE_STATUS_PENDING
+                status__exact=orm.Invoice.PAYPAL_INVOICE_STATUS_PENDING
             ).aggregate(Sum('amount'))['amount__sum'] or 0
 
             pledged = orm.Partnership.objects.filter(project__exact=project).filter(
