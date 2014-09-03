@@ -93,11 +93,24 @@ class User(AbstractBaseUser, PermissionsMixin):
         full_name = '%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
 
+    def get_full_name(self):
+        """
+        Returns the first_name plus the last_name, with a space in between.
+        """
+        full_name = '%s %s' % (self.first_name, self.last_name)
+        return full_name.strip()
+    get_full_name.short_description = _(u'full name')
+
+    def get_short_name(self):
+        "Returns the short name for the user."
+        return self.first_name
+
     def user_name(self):
         return self.__unicode__()
 
-    def organisation_name(self):
-        return self.organisation.name
+    def get_organisation_names(self):
+        return "\n".join([o.name for o in self.organisations.all()])
+    get_organisation_names.short_description = _(u'organisations')
 
     def updates(self):
         """
@@ -116,7 +129,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_is_active(self):
         return self.is_active
     get_is_active.boolean = True  # make pretty icons in the admin list view
-    get_is_active.short_description = _(u'user is activated (may log in)')
+    get_is_active.short_description = _(u'active')
 
     def set_is_active(self, set_it):
         self.is_active = set_it
@@ -136,7 +149,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_is_org_admin(self):
         return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self)
     get_is_org_admin.boolean = True  # make pretty icons in the admin list view
-    get_is_org_admin.short_description = _(u'user is an organisation administrator')
+    get_is_org_admin.short_description = _(u'organisation admin')
 
     def set_is_org_admin(self, set_it):
         if set_it:
@@ -147,7 +160,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_is_org_editor(self):
         return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self)
     get_is_org_editor.boolean = True  # make pretty icons in the admin list view
-    get_is_org_editor.short_description = _(u'user is a project editor')
+    get_is_org_editor.short_description = _(u'project editor')
 
     def set_is_org_editor(self, set_it):
         if set_it:

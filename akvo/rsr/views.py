@@ -614,7 +614,7 @@ def update_user_profile(
         template_name,
         {
             'form': form,
-            'profile': user.userprofile
+            'profile': user
         },
         context_instance=context
     )

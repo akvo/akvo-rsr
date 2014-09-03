@@ -9,7 +9,10 @@ Forms and validation code for user registration and updating.
 
 from django import forms
 
-from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import (
+    PasswordChangeForm, AuthenticationForm, PasswordResetForm, SetPasswordForm, UserCreationForm, UserChangeForm
+)
 from django.contrib.sites.models import get_current_site
 from django.core import validators
 from django.db.models import get_model
@@ -26,7 +29,7 @@ from urlparse import urlsplit, urlunsplit
 
 from akvo import settings
 
-from .models import User, Organisation, ProjectUpdate, Invoice
+from .models import Organisation, ProjectUpdate, Invoice
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -232,6 +235,33 @@ class RSR_ProfileUpdateForm(forms.Form):
         user.last_name = self.cleaned_data['last_name']
         user.save()
         return user
+
+
+class RSR_UserCreationForm(UserCreationForm):
+    """
+    A form that creates a user, with no privileges, from the given email and
+    password.
+    """
+
+    def __init__(self, *args, **kargs):
+        super(RSR_UserCreationForm, self).__init__(*args, **kargs)
+
+    class Meta:
+        model = get_user_model()
+        fields = ("email",)
+
+
+class RSR_UserChangeForm(UserChangeForm):
+    """A form for updating users. Includes all the fields on
+    the user, but replaces the password field with admin's
+    password hash display field.
+    """
+
+    def __init__(self, *args, **kargs):
+        super(RSR_UserChangeForm, self).__init__(*args, **kargs)
+
+    class Meta:
+        model = get_user_model()
 
 
 class RSR_SetPasswordForm(SetPasswordForm):

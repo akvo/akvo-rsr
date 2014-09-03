@@ -6,8 +6,8 @@ from django.contrib import admin
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.util import flatten_fieldsets
-from django.contrib.auth import get_permission_codename
-from django.contrib.auth.admin import GroupAdmin
+from django.contrib.auth import get_permission_codename, get_user_model
+from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
@@ -23,7 +23,7 @@ from django.utils.encoding import force_text
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 import os.path
 
-from akvo.rsr.forms import PartnerSiteAdminForm
+from akvo.rsr.forms import PartnerSiteAdminForm, RSR_UserChangeForm, RSR_UserCreationForm
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
 from akvo.utils import permissions, custom_get_or_create_country, RSR_LIMITED_CHANGE
 from akvo.rsr.fields import ValidXMLCharField
@@ -150,7 +150,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            organisation = request.user.userprofile.organisation
+            organisation = request.user.organisation
             return qs.filter(pk=organisation.id)
         else:
             raise PermissionDenied
@@ -169,7 +169,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             if obj:
-                return obj == request.user.userprofile.organisation
+                return obj == request.user.organisation
             else:
                 return True
         return False
@@ -299,14 +299,13 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
             return len(seq) != len(seq_set)
 
         user = self.request.user
-        user_profile = user.userprofile
         errors = []
         # superusers can do whatever they like!
         if user.is_superuser:
             my_org_found = True
         # if the user is a partner org we try to avoid foot shooting
-        elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
-            my_org = user_profile.organisation
+        elif user.get_is_org_admin() or user.get_is_org_editor():
+            my_org = user.organisation
             my_org_found = False
             for form in self.forms:
                 try:
@@ -630,10 +629,10 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            user_profile = request.user.userprofile
-            projects = user_profile.organisation.all_projects()
+            user = request.user
+            projects = user.organisation.all_projects()
             # Access to Partner users may be limited by Support partner "ownership"
-            allowed_projects = [project.pk for project in projects if user_profile.allow_edit(project)]
+            allowed_projects = [project.pk for project in projects if user.allow_edit(project)]
             return qs.filter(pk__in=allowed_projects)
         else:
             raise PermissionDenied
@@ -648,7 +647,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         opts = self.opts
         user = request.user
-        user_profile = user.userprofile
 
         # RSR editors/managers
         if user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
@@ -658,7 +656,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             # On the Project form
             if obj:
-                return user_profile.allow_edit(obj)
+                return user.allow_edit(obj)
             return True
 
         return False
@@ -728,7 +726,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 # hack by GvH to get user's organisation preset as partner when adding a new project
                 if prefix == 'partnerships':
                     formset = FormSet(instance=self.model(), prefix=prefix,
-                                      initial=[{'organisation': request.user.userprofile.organisation}],
+                                      initial=[{'organisation': request.user.organisation}],
                                       queryset=inline.get_queryset(request))
                 else:
                     formset = FormSet(instance=self.model(), prefix=prefix,
@@ -867,6 +865,32 @@ admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 #         obj.save()
 #
 # admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
+
+
+class UserAdmin(UserAdmin):
+    fieldsets = (
+        (None, {'fields': ('username', 'email', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Organisations'), {'fields': ('organisations',)}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2')}
+        ),
+    )
+    form = RSR_UserChangeForm
+    add_form = RSR_UserCreationForm
+    list_display = (
+        'email', 'username', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_org_admin',
+        'get_is_org_editor', 'latest_update_date'
+    )
+    search_fields = ('email', 'first_name', 'last_name')
+    ordering = ('email',)
+
+admin.site.register(get_user_model(), UserAdmin)
 
 
 class IndicatorPeriodInline(admin.TabularInline):
@@ -1049,7 +1073,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            organisation = request.user.userprofile.organisation
+            organisation = request.user.organisation
             return qs.filter(organisation=organisation)
         else:
             raise PermissionDenied
@@ -1068,7 +1092,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             if obj:
-                return obj.organisation == request.user.userprofile.organisation
+                return obj.organisation == request.user.organisation
             else:
                 return True
         return False
