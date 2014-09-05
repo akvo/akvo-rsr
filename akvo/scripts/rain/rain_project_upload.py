@@ -309,6 +309,12 @@ def upload_activities(argv):
                         log(message, data)
                         print message.format(**data)
                         continue
+                    # HACK! removing duplicates of RAIN as participating-org
+                    for dupe_rain in activity.tree.xpath(
+                        'participating-org[@akvo:ref="0"]',
+                        namespaces={'akvo': 'http://akvo.org/iati-activities'}
+                    ):
+                        dupe_rain.getparent().remove(dupe_rain)
                     if rsr_id:
                         ok, message, data = put_an_activity(activity.tree, rsr_id, user)
                         log(message, data)
