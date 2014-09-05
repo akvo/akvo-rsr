@@ -62,9 +62,8 @@ def get_organisation(bundle):
             organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_IATI_ORG_ID])
             return organisation
         except:
-            # return string indicating how we can create a new Organisation
-            # ret_val = FIELD_IATI_ORG_ID
-            return None #changed since orgs are now created by other script
+            # no luck here, let's try with internal ID
+            pass
     if bundle.data.get(FIELD_INTERNAL_ORG_ID) and bundle.data.get(FIELD_REPORTING_ORG):
         try:
             organisation = InternalOrganisationID.objects.get(
@@ -73,9 +72,7 @@ def get_organisation(bundle):
             ).referenced_org
             return organisation
         except:
-            # return string indicating how we can create a new Organisation
-            # return FIELD_INTERNAL_ORG_ID
-            return None #changed since orgs are now created by other script
+            return None
     return None #TODO: better error handling, we may end up here with ret_val == None
 
 def create_organisation(bundle, bundle_field_to_use):

@@ -13,7 +13,6 @@ from django.forms.models import ModelForm
 
 from tastypie import fields
 
-from tastypie.authentication import ApiKeyAuthentication, Authentication, MultiAuthentication
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import NotFound
@@ -24,9 +23,8 @@ from akvo import settings
 from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToManyField
 from akvo.api.serializers import IATISerializer
-
 from akvo.rsr.models import (
-    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark, Keyword
+    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark, Organisation
 )
 from akvo.utils import RSR_LIMITED_CHANGE
 
@@ -65,6 +63,11 @@ class IATIProjectResource(ModelResource):
     partnerships = fields.ToManyField(
         'akvo.api.resources.IATIPartnershipResource',
         'partnerships', full=True, related_name='project'
+    )
+
+    sync_owner = fields.ToOneField(
+        'akvo.api.resources.OrganisationResource',
+        'sync_owner', full=True, related_name='project'
     )
 
     class Meta:
@@ -123,6 +126,7 @@ class IATIProjectResource(ModelResource):
         reporting_iati_org_id = data['partnerships'][0]['reporting_org']
         # Cordaid custom code
         if reporting_iati_org_id == getattr(settings, 'CORDAID_IATI_ID', 'NL-KVK-41160054'):
+            data['sync_owner'] = Organisation.objects.get(iati_org_id_exact='NL-KVK-41160054')
             # Figure out the category for the project from the business unit
             business_unit_categories = {
                 "K6020": dict(cat_name="Children & Education", fa="Education"),
@@ -152,6 +156,10 @@ class IATIProjectResource(ModelResource):
                     new_benchmark['category'] = project_category.pk
                     benchmarks.append(new_benchmark)
             data['benchmarks'] = benchmarks
+        if reporting_iati_org_id == getattr(settings, 'RAIN_IATI_ID', 'NL-KVK-34200988'):
+            data['sync_owner'] = Organisation.objects.get(iati_org_id__exact='NL-KVK-34200988')
+            # remove benchmarks, as they currently have no category
+            data['benchmarks'] = []
 
         # hack to set the first location as primary
         if data.get('locations'):
@@ -276,6 +284,7 @@ class ProjectResource(ConditionalFullResource):
 
         filtering               = dict(
             # other fields
+            id                  = ALL,
             status              = ALL,
             title               = ALL,
             budget              = ALL,
