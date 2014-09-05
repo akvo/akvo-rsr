@@ -161,6 +161,8 @@ ERROR_XML_PARSING = "error parsing organisation XML"
 ERROR_MISSING_IATI_ID = "no IATI activity ID found"
 ERROR_IDENTIFY_RSR_PROJECT = "inconsistency found when identifying existing RSR project"
 ERROR_PROJECT_NOT_FOUND = "project not found"
+ERROR_PROJECT_DATA_INVALID = "project data validation error"
+ERROR_PROJECT_NOT_SAVED = "project could not be saved"
 
 class RainActivity():
     """ This class holds an etree representation of an activity and is responsible for mapping the relevant bits in the

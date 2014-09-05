@@ -3,7 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from django.core.exceptions import ValidationError
 
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
@@ -20,7 +20,7 @@ from akvo.utils import model_and_instance_based_filename, who_am_i
 from akvo.scripts.rain import (
     RAIN_IATI_ACTIVITIES_XML, RAIN_ORG_ID, print_log, log, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE, init_log, outsys,
     RainActivity, RAIN_ACTIVITY_NS, AKVO_NS, RAIN_POST_PROCESS_CSV_FILE,
-    ERROR_PROJECT_NOT_FOUND)
+    ERROR_PROJECT_NOT_FOUND, ERROR_PROJECT_DATA_INVALID, ERROR_PROJECT_NOT_SAVED)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -36,11 +36,13 @@ class ProjectSaver():
                 self.project = Project.objects.get(id=activity.rsr_id())
                 return
             except Project.DoesNotExist, e:
+                msg = "Could not find project with ID: {rsr_id}"
                 log(
-                    "Could not find project with ID: {rsr_id}",
+                    msg,
                     dict(
                         rsr_id=activity.rsr_id(),
                         event=ERROR_IMAGE_UPLOAD,
+                        extra=msg.format(rsr_id=activity.rsr_id())
                     )
                 )
         elif activity.internal_id():
@@ -50,11 +52,13 @@ class ProjectSaver():
                 )
                 return
             except Project.DoesNotExist, e:
+                msg = "Could not find project with RAIN internal ID: {internal_id}"
                 log(
-                    "Could not find project with RAIN internal ID: {internal_id}",
+                    msg,
                     dict(
                         internal_id=activity.internal_id(),
                         event=ERROR_IMAGE_UPLOAD,
+                        extra=msg.format(internal_id=activity.internal_id())
                     )
                 )
         elif activity.iati_id():
@@ -64,11 +68,13 @@ class ProjectSaver():
                 )
                 return
             except Project.DoesNotExist, e:
+                msg = "Could not find project with IATI ID: {iati_id}"
                 log(
-                    "Could not find project with IATI ID: {iati_id}",
+                    msg,
                     dict(
                         iati_id=activity.iati_id(),
                         event=ERROR_IMAGE_UPLOAD,
+                        extra=msg.format(iati_id=activity.iati_id())
                     )
                 )
         raise Project.DoesNotExist
@@ -120,7 +126,30 @@ class ProjectSaver():
         self._current_image()
         self._current_image_caption()
         self._current_image_credit()
-        self.project.save()
+        try:
+            self.project.full_clean()
+        except ValidationError, e:
+            log(
+               "Data validation error when saving project ID: {rsr_id}:\n{extra}",
+               dict(
+                   rsr_id=self.project.pk,
+                   event=ERROR_PROJECT_DATA_INVALID,
+                   extra=e,
+               )
+            )
+            return
+        try:
+            self.project.save()
+        except Exception, e:
+            log(
+               "Couldn't save project ID: {rsr_id}:\n{extra}",
+               dict(
+                   rsr_id=self.project.pk,
+                   event=ERROR_PROJECT_NOT_SAVED,
+                   extra=e,
+               )
+            )
+            return
 
 
 # class PublishingSaver():
