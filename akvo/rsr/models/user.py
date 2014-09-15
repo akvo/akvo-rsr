@@ -18,7 +18,7 @@ from akvo.utils import groups_from_user
 
 from .project_update import ProjectUpdate
 
-from ..fields import ValidXMLTextField
+from ..fields import ValidXMLCharField, ValidXMLTextField
 
 
 class CustomUserManager(BaseUserManager):
@@ -52,10 +52,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     A fully featured User model with admin-compliant permissions that uses a full-length email field as the username.
     Email and password are required. Other fields are optional.
     """
-    username = ValidXMLTextField(_('username'), max_length=30)
+    username_old = ValidXMLCharField(_('username'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), max_length=254, unique=True)
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
+    first_name = ValidXMLCharField(_('first name'), max_length=30, blank=True)
+    last_name = ValidXMLCharField(_('last name'), max_length=30, blank=True)
     is_active = models.BooleanField(
         _('active'), default=False, help_text=_('Designates whether this user should be treated as active. '
                                                 'Unselect this instead of deleting accounts.')

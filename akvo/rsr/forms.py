@@ -245,6 +245,7 @@ class RSR_UserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kargs):
         super(RSR_UserCreationForm, self).__init__(*args, **kargs)
+        del self.fields['username']
 
     class Meta:
         model = get_user_model()
@@ -259,6 +260,7 @@ class RSR_UserChangeForm(UserChangeForm):
 
     def __init__(self, *args, **kargs):
         super(RSR_UserChangeForm, self).__init__(*args, **kargs)
+        del self.fields['username']
 
     class Meta:
         model = get_user_model()

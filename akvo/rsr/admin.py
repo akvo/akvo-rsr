@@ -867,9 +867,9 @@ admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 # admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 
 
-class UserAdmin(UserAdmin):
+class RsrUserAdmin(UserAdmin):
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
+        (None, {'fields': ('email', 'username_old', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Organisations'), {'fields': ('organisations',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
@@ -884,13 +884,14 @@ class UserAdmin(UserAdmin):
     form = RSR_UserChangeForm
     add_form = RSR_UserCreationForm
     list_display = (
-        'email', 'username', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_org_admin',
+        'email', 'username_old', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_org_admin',
         'get_is_org_editor', 'latest_update_date'
     )
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
+    readonly_fields = ('last_login', 'date_joined')
 
-admin.site.register(get_user_model(), UserAdmin)
+admin.site.register(get_user_model(), RsrUserAdmin)
 
 
 class IndicatorPeriodInline(admin.TabularInline):

@@ -9,7 +9,7 @@ class Migration(DataMigration):
     def forwards(self, orm):
         for user in orm['auth.User'].objects.all():
             new_user, created = orm['rsr.User'].objects.get_or_create(pk=user.pk)
-            new_user.username = user.username
+            new_user.username_old = user.username
             new_user.password = user.password
             if not orm['rsr.User'].objects.filter(email=user.email).exclude(pk=user.pk).exists():
                 new_user.email = user.email if user.email else user.username + "@fake.mail"
@@ -35,7 +35,7 @@ class Migration(DataMigration):
         # Reverting all rsr.Users back to auth.Users
         for user in orm['rsr.User'].objects.all():
             new_user, created = orm['auth.User'].objects.get_or_create(pk=user.pk)
-            new_user.username = user.username
+            new_user.username = user.username_old
             new_user.password = user.password
             # Email might be altered after the forwards migration
             new_user.email = user.email
@@ -599,19 +599,19 @@ class Migration(DataMigration):
             'Meta': {'ordering': "['email']", 'object_name': 'User'},
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '254'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'first_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'last_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
             'organisations': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': "orm['rsr.Organisation']"}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('akvo.rsr.fields.ValidXMLTextField', [], {'max_length': '30'})
+            'username_old': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'})
         },
         'rsr.userprofile': {
             'Meta': {'ordering': "['user__username']", 'object_name': 'UserProfile'},
