@@ -487,7 +487,7 @@ def register2(request,
             new_user = form.save(request)
             return HttpResponseRedirect('/accounts/register/complete/')
     else:
-        form = form_class(initial={'org_id': org_id})
+        form = form_class(initial={'org_id': org_id, 'username': 'placeholder'})
     context = RequestContext(request)
     return render_to_response(template_name,
                               {'form': form, 'organisation': organisation},

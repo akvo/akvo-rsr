@@ -236,6 +236,10 @@ class Organisation(TimestampsMixin, models.Model):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.published_projects().all_partners().exclude(id__exact=self.id)
 
+    def support_partners(self):
+        "returns a queryset of support partners that self has at least one project in common with, excluding self"
+        return self.published_projects().support_partners().exclude(id__exact=self.id)
+
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has published projects."""
         return Country.objects.filter(
