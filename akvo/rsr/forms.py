@@ -117,14 +117,6 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
 
     org_id = forms.IntegerField(widget=forms.HiddenInput)
     username = forms.CharField(widget=forms.HiddenInput)
-    email = forms.EmailField(
-        widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=254)),
-        label=_(u'email address')
-    )
-    email2 = forms.EmailField(
-        widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=254)),
-        label=_(u'email address (again)')
-    )
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
         label=_(u'password')
@@ -141,28 +133,21 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         max_length=30,
         widget=forms.TextInput(attrs=attrs_dict)
     )
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=254)),
+        label=_(u'email address')
+    )
 
     def clean(self):
         """
-        Verifiy that the values entered into the two password fields
+        Verify that the values entered into the two password fields
         match. Note that an error here will end up in
         ``non_field_errors()`` because it doesn't apply to a single
         field.
-        Modified to do the same for the email fields and set the username to be the same as email address.
         """
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise forms.ValidationError(_(u'Passwords do not match. Please enter the same password in both fields.'))
-        if 'email' in self.cleaned_data and 'email2' in self.cleaned_data:
-            if self.cleaned_data['email'] != self.cleaned_data['email2']:
-                raise forms.ValidationError(_(u'Email addresses do not match. Please enter the email address in both fields.'))
-            self.cleaned_data['username'] = self.cleaned_data['email']
-        return self.cleaned_data
-
-    def clean_username(self):
-        """
-        Overwriting the RegistrationFormUniqueEmail.clean_username() in order to skip the check on unique usernames.
-        """
         return self.cleaned_data
 
     def save(self, request):
@@ -181,11 +166,11 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         """
         site = get_current_site(request)
         new_user = RegistrationProfile.objects.create_inactive_user(
+            username=self.cleaned_data['email'],
             email=self.cleaned_data['email'],
             password=self.cleaned_data['password1'],
             site=site,
         )
-        new_user.username_old = self.cleaned_data['email']
         new_user.first_name = self.cleaned_data['first_name']
         new_user.last_name = self.cleaned_data['last_name']
         new_user.is_active = False
@@ -213,11 +198,10 @@ class RSR_UserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kargs):
         super(RSR_UserCreationForm, self).__init__(*args, **kargs)
-        del self.fields['username']
 
     class Meta:
         model = get_user_model()
-        fields = ("email",)
+        fields = ("username",)
 
 
 class RSR_UserChangeForm(UserChangeForm):
@@ -228,7 +212,6 @@ class RSR_UserChangeForm(UserChangeForm):
 
     def __init__(self, *args, **kargs):
         super(RSR_UserChangeForm, self).__init__(*args, **kargs)
-        del self.fields['username']
 
     class Meta:
         model = get_user_model()
@@ -240,7 +223,7 @@ class RSR_SetPasswordForm(SetPasswordForm):
 
 
 class RSR_PasswordResetForm(PasswordResetForm):
-    email = forms.EmailField(label=_("E-mail"), max_length=75, widget=forms.TextInput(attrs={'class': 'input'}))
+    email = forms.EmailField(label=_("E-mail"), max_length=254, widget=forms.TextInput(attrs={'class': 'input'}))
 
 
 class InvoiceForm(forms.ModelForm):

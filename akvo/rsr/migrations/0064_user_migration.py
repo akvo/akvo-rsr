@@ -9,7 +9,7 @@ class Migration(DataMigration):
     def forwards(self, orm):
         for user in orm['auth.User'].objects.all():
             new_user, created = orm['rsr.User'].objects.get_or_create(pk=user.pk)
-            new_user.username_old = user.username
+            new_user.username = user.username
             new_user.password = user.password
             if not orm['rsr.User'].objects.filter(email=user.email).exclude(pk=user.pk).exists():
                 new_user.email = user.email if user.email else user.username + "@fake.mail"
@@ -35,7 +35,7 @@ class Migration(DataMigration):
         # Reverting all rsr.Users back to auth.Users
         for user in orm['rsr.User'].objects.all():
             new_user, created = orm['auth.User'].objects.get_or_create(pk=user.pk)
-            new_user.username = user.username_old
+            new_user.username = user.username
             new_user.password = user.password
             # Email might be altered after the forwards migration
             new_user.email = user.email
@@ -52,7 +52,6 @@ class Migration(DataMigration):
             if user.organisations.all().count() > 0:
                 new_user_profile, created = orm['rsr.UserProfile'].objects.get_or_create(user=new_user, organisation=user.organisations.all()[0])
                 new_user_profile.notes = user.notes
-                # new_user_profile.organisation = user.organisations.all()[0]
                 new_user_profile.save()
 
     models = {
@@ -611,7 +610,7 @@ class Migration(DataMigration):
             'organisations': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': "orm['rsr.Organisation']"}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username_old': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'})
+            'username': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '254', 'unique': 'True'})
         },
         'rsr.userprofile': {
             'Meta': {'ordering': "['user__username']", 'object_name': 'UserProfile'},

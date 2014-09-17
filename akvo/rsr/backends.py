@@ -26,7 +26,7 @@ class AuthBackend(object):
                 user = get_user_model().objects.get(email=username)
             else:
                 # Get user by username
-                user = get_user_model().objects.get(username_old=username)
+                user = get_user_model().objects.get(username=username)
         except get_user_model().DoesNotExist:
             return None
 

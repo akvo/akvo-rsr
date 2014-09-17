@@ -767,27 +767,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
 
-# TODO: Add admin form for custom User model
-# class UserProfileAdminForm(forms.ModelForm):
-#     """
-#     This form displays two extra fields that show if the user belongs to the groups
-#     GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
-#     """
-#     is_active = forms.BooleanField(required=False, label=_(u'account is active'),)
-#     is_org_admin = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
-#     is_org_editor = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
-#
-#     def __init__(self, *args, **kwargs):
-#         initial_data = {}
-#         instance = kwargs.get('instance', None)
-#         if instance:
-#             initial_data['is_active'] = instance.get_is_active()
-#             initial_data['is_org_admin'] = instance.get_is_org_admin()
-#             initial_data['is_org_editor'] = instance.get_is_org_editor()
-#             kwargs.update({'initial': initial_data})
-#         super(UserProfileAdminForm, self).__init__(*args, **kwargs)
-#
-#
 # class UserProfileAdmin(admin.ModelAdmin):
 #     list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
 #     search_fields = ('user__username', 'organisation__name', 'organisation__long_name',)
@@ -866,30 +845,76 @@ admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 #
 # admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
 
+class ApiKeyInline(admin.TabularInline):
+    model = get_model('tastypie', 'apikey')
+    fields = ('key',)
+    readonly_fields = ('key',)
+
+    def has_delete_permission(self, request, obj=None, **kwargs):
+        return False
+
 
 class RsrUserAdmin(UserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'username_old', 'password')}),
+        (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Organisations'), {'fields': ('organisations',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
+    inlines = (
+        ApiKeyInline,
+    )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')}
+            'fields': ('username', 'email', 'password1', 'password2')}
         ),
     )
     form = RSR_UserChangeForm
     add_form = RSR_UserCreationForm
     list_display = (
-        'email', 'username_old', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_org_admin',
+        'username', 'email', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_org_admin',
         'get_is_org_editor', 'latest_update_date'
     )
-    search_fields = ('email', 'first_name', 'last_name')
-    ordering = ('email',)
-    readonly_fields = ('last_login', 'date_joined')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    ordering = ('username',)
+
+    def get_actions(self, request):
+        """ Remove delete admin action for "non certified" users"""
+        actions = super(RsrUserAdmin, self).get_actions(request)
+        opts = self.opts
+        if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
+            del actions['delete_selected']
+        return actions
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            opts = self.opts
+            if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
+                return ['last_login', 'date_joined']
+            else:
+                # all fields are read-only if user does not have permissions to change
+                return [
+                    'username', 'email', 'password', 'first_name', 'last_name', 'organisations', 'organisation',
+                    'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions', 'last_login', 'date_joined'
+                ]
+        else:
+            return ['last_login', 'date_joined']
+
+    def get_queryset(self, request):
+        """
+        Return a queryset possibly filtered depending on current user's organisation(s)
+        """
+        qs = super(RsrUserAdmin, self).get_queryset(request)
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
+            return qs
+        elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
+            organisations = request.user.organisations
+            return qs.filter(organisations__in=organisations)
+        else:
+            raise PermissionDenied
 
 admin.site.register(get_user_model(), RsrUserAdmin)
 

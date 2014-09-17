@@ -11,9 +11,9 @@ class Migration(SchemaMigration):
         # Adding model 'User'
         db.create_table(u'rsr_user', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('username', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=254, unique=True)),
             ('password', self.gf('django.db.models.fields.CharField')(max_length=128)),
             ('last_login', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('username_old', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=30, blank=True)),
             ('email', self.gf('django.db.models.fields.EmailField')(unique=True, max_length=254)),
             ('first_name', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=30, blank=True)),
             ('last_name', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=30, blank=True)),
@@ -623,7 +623,7 @@ class Migration(SchemaMigration):
             'organisations': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': "orm['rsr.Organisation']"}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username_old': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'})
+            'username': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '254', 'unique': 'True'})
         },
         'rsr.userprofile': {
             'Meta': {'ordering': "['user__username']", 'object_name': 'UserProfile'},

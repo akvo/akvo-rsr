@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.http import urlquote
@@ -23,7 +24,7 @@ from ..fields import ValidXMLCharField, ValidXMLTextField
 
 class CustomUserManager(BaseUserManager):
 
-    def _create_user(self, email, password,
+    def _create_user(self, username, email, password,
                      is_staff, is_superuser, **extra_fields):
         """
         Creates and saves a User with the given email and password.
@@ -32,7 +33,8 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
-        user = self.model(email=email,
+        user = self.model(username=username,
+                          email=email,
                           is_staff=is_staff, is_active=True,
                           is_superuser=is_superuser, last_login=now,
                           date_joined=now, **extra_fields)
@@ -40,11 +42,11 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
-        return self._create_user(email, password, False, False, **extra_fields)
+    def create_user(self, username, email, password=None, **extra_fields):
+        return self._create_user(username, email, password, False, False, **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
-        return self._create_user(email, password, True, True, **extra_fields)
+    def create_superuser(self, username, email, password, **extra_fields):
+        return self._create_user(username, email, password, True, True, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -52,7 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     A fully featured User model with admin-compliant permissions that uses a full-length email field as the username.
     Email and password are required. Other fields are optional.
     """
-    username_old = ValidXMLCharField(_('username'), max_length=30, blank=True)
+    username = ValidXMLCharField(_('username'), max_length=254, unique=True)
     email = models.EmailField(_('email address'), max_length=254, unique=True)
     first_name = ValidXMLCharField(_('first name'), max_length=30, blank=True)
     last_name = ValidXMLCharField(_('last name'), max_length=30, blank=True)
@@ -71,27 +73,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     class Meta:
         app_label = 'rsr'
         verbose_name = _('user')
         verbose_name_plural = _('users')
-        ordering = ['email', ]
+        ordering = ['username', ]
 
     def __unicode__(self):
-        return self.email
+        return self.username
 
     def get_absolute_url(self):
         return "/users/%s/" % urlquote(self.email)
-
-    def get_full_name(self):
-        """
-        Returns the first_name plus the last_name, with a space in between.
-        """
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
 
     def get_full_name(self):
         """
@@ -213,3 +208,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             pass
         return key
 
+    def email_user(self, subject, message, from_email=None):
+        """
+        Sends an email to this User.
+        """
+        send_mail(subject, message, from_email, [self.email])
