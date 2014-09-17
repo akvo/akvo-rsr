@@ -3,7 +3,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import get_app, get_models
 from django.db.models.signals import post_syncdb
-from akvo.utils import RSR_REST_USER
+from akvo.utils import RSR_REST
 
 if "akvo.rsr" in settings.INSTALLED_APPS:
     from akvo.rsr import models as rsr
@@ -30,25 +30,27 @@ if "akvo.rsr" in settings.INSTALLED_APPS:
 
     post_syncdb.connect(create_limited_change_permissions, sender=rsr)
 
-    def create_rest_user_permissions(sender, **kwargs):
-        """ This is a temporary permission for blanket DRF API access
+    def create_rest_api_permissions(sender, **kwargs):
+        """ Permissions for each "unsafe" method: POST, PUT, PATCH, DELETE
+            Those permissions are used by akvo.rsr.rest.permissions.RSRModelPermissions
         """
-        # TODO: replace this with granular permissions for the DRF API
         app = get_app('rsr')
+        methods = ['post', 'put', 'patch', 'delete']
         for model in get_models(app):
             opts = model._meta
             model_name = opts.object_name.lower()
-            permission, created = Permission.objects.get_or_create(
-                codename="{}_{}".format(RSR_REST_USER, model_name),
-                defaults={
-                    'name': u'RSR rest API user',
-                    'content_type_id': ContentType.objects.get_for_model(model).id,
-                }
-            )
-            if created:
-                print 'Created RSR rest API user Permission for {}'.format(model_name)
-            else:
-                print 'RSR rest API user Permission for {} already exists in the database'.format(model_name)
+            for method in methods:
+                permission, created = Permission.objects.get_or_create(
+                    codename="{}_{}_{}".format(RSR_REST, method, model_name),
+                    defaults={
+                        'name': u'RSR rest API {} {}'.format(method, model_name),
+                        'content_type_id': ContentType.objects.get_for_model(model).id,
+                    }
+                )
+                if created:
+                    print 'Created RSR rest API {} permission for {}'.format(method, model_name)
+                else:
+                    print 'RSR rest API {} permission for {} already exists'.format(method, model_name)
 
 
-    post_syncdb.connect(create_rest_user_permissions, sender=rsr)
+    post_syncdb.connect(create_rest_api_permissions, sender=rsr)
