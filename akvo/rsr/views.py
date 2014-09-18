@@ -885,7 +885,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
     '''
     if not request.POST:
         try:
-            account_level = request.user.userprofile.organisation.organisationaccount.account_level
+            account_level = request.user.organisations.all()[0].organisationaccount.account_level
         except:
             account_level = OrganisationAccount.ACCOUNT_FREE
         # project = get_object_or_404(Project.objects, pk=project_id)

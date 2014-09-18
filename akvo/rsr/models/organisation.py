@@ -190,6 +190,11 @@ class Organisation(TimestampsMixin, models.Model):
         def knowledge(self):
             return self.filter(organisation_type__exact=ORG_TYPE_KNO)
 
+        def all_projects(self):
+            "returns a queryset with all projects that has self as any kind of partner"
+            from .project import Project
+            return Project.objects.filter(partnerships__organisation__in=self)
+
     def __unicode__(self):
         return self.name
 
