@@ -28,8 +28,6 @@ from requester import Requester
 
 XML_LANG = "{http://www.w3.org/XML/1998/namespace}lang"
 
-class HttpNoContent(HttpResponse):
-    status_code = 204
 
 def check_activity_language(activity_element):
     """Checks whether the activity element has an xml:lang tag.

@@ -35,7 +35,7 @@ __all__ = [
     'BenchmarknameViewSet',
     'BudgetItemViewSet',
     'BudgetItemLabelViewSet',
-    'CategoryViewSet,'
+    'CategoryViewSet',
     'CountryViewSet',
     'FocusAreaViewSet',
     'GoalViewSet',
@@ -55,5 +55,5 @@ __all__ = [
     'ProjectUpdateExtraViewSet',
     'PublishingStatusViewSet',
     'UserViewSet',
-    'UserProfileViewSet,'
+    'UserProfileViewSet',
 ]

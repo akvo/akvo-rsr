@@ -263,6 +263,7 @@ urlpatterns += patterns(
     (r'^counter/', include('django_counter.urls')),
     # TODO: proper versioning, appending v1/ for now to future-proof
     (r'^rest/v1/', include('akvo.rest.urls')),
+    url(r'^rest/docs/', include('rest_framework_swagger.urls')),
     #(r'^i18n/', include('django.conf.urls.i18n')),
 )
 

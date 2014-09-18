@@ -9,12 +9,13 @@ from akvo.rsr.models import Organisation
 
 from ..fields import Base64ImageField
 
-from .organisation_location import OrganisationLocationSerializer
+from .organisation_location import OrganisationLocationSerializer, OrganisationLocationExtraSerializer
 from .rsr_serializer import BaseRSRSerializer
 
 
 class OrganisationSerializer(BaseRSRSerializer):
 
+    locations = OrganisationLocationSerializer(source='locations', many=True, required=False, allow_add_remove=True)
     logo = Base64ImageField(required=False, allow_empty_file=True)
 
     class Meta:
@@ -23,7 +24,7 @@ class OrganisationSerializer(BaseRSRSerializer):
 
 class OrganisationExtraSerializer(OrganisationSerializer):
 
-    primary_location = OrganisationLocationSerializer()
+    primary_location = OrganisationLocationExtraSerializer()
 
     class Meta(OrganisationSerializer.Meta):
         fields = (
