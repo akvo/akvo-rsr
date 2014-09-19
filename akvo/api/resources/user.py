@@ -7,29 +7,31 @@
 
 from django.contrib.auth import get_user_model
 
-from tastypie.authentication import ApiKeyAuthentication
-from tastypie.constants import ALL_WITH_RELATIONS, ALL
+from akvo.api.authentication import ConditionalApiKeyAuthentication
 
-from akvo.api.fields import ConditionalFullToOneField
-
-from akvo.rsr.models import User
+from tastypie.constants import ALL
 
 from .resources import ConditionalFullResource
+from ..fields import ConditionalFullToManyField
 
 
 class UserResource(ConditionalFullResource):
-    user_profile = ConditionalFullToOneField('akvo.api.resources.UserProfileResource', 'userprofile', null=True)
+    organisations = ConditionalFullToManyField('akvo.api.resources.OrganisationResource', 'organisations', null=True)
 
     class Meta:
-        authentication  = ApiKeyAuthentication()
         allowed_methods = ['get']
+        authentication = ConditionalApiKeyAuthentication()
         queryset = get_user_model().objects.filter(is_active=True)
         resource_name = 'user'
-        fields = ['username', 'first_name', 'last_name', 'last_login',]
+        fields = [
+            'username',
+            'first_name',
+            'last_name',
+            'last_login',
+            'organisations'
+        ]
         filtering = dict(
             username = ALL,
-            # foreign keys
-            userprofile = ALL_WITH_RELATIONS,
         )
 
     def dehydrate(self, bundle):
@@ -45,17 +47,14 @@ class UserResource(ConditionalFullResource):
         """
         bundle = super(UserResource, self).dehydrate(bundle)
         if self._meta.authentication.is_authenticated(bundle.request):
-            if getattr(bundle.request.user, 'get_profile', False):
-                # get the org of the API key owner
-                organisation = bundle.request.user.userprofile.organisation
-            else:
-                organisation = None
+            organisations = bundle.request.user.organisations.all()
+
             # find out if the user has a profile that's associated with the API key owner org
-            profile = User.objects.filter(organisation=organisation, id=bundle.obj.id)
+            profile = get_user_model().objects.filter(organisations__in=organisations, id=bundle.obj.id)
         if profile:
             bundle.data['username'] = bundle.obj.username
             bundle.data['email'] = bundle.obj.email
         else:
-            del bundle.data['user_profile']
             del bundle.data['username']
+            del bundle.data['organisations']
         return bundle

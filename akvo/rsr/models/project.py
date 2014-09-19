@@ -327,6 +327,10 @@ class Project(TimestampsMixin, models.Model):
             "return projects that have organisation as partner"
             return self.filter(partners__exact=organisation)
 
+        def of_partners(self, organisations):
+            "return projects that have one of the organisations as partner"
+            return self.filter(partners__in=organisations)
+
         def has_location(self):
             return self.filter(primary_location__isnull=False)
 

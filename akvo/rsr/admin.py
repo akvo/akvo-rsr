@@ -1040,7 +1040,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            organisations = request.user.organisations
+            organisations = request.user.organisations.all()
             return qs.filter(organisation__in=organisations)
         else:
             raise PermissionDenied
