@@ -190,6 +190,11 @@ class Organisation(TimestampsMixin, models.Model):
         def knowledge(self):
             return self.filter(organisation_type__exact=ORG_TYPE_KNO)
 
+        def all_projects(self):
+            "returns a queryset with all projects that has self as any kind of partner"
+            from .project import Project
+            return Project.objects.filter(partnerships__organisation__in=self)
+
     def __unicode__(self):
         return self.name
 
@@ -235,6 +240,10 @@ class Organisation(TimestampsMixin, models.Model):
     def partners(self):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.published_projects().all_partners().exclude(id__exact=self.id)
+
+    def support_partners(self):
+        "returns a queryset of support partners that self has at least one project in common with, excluding self"
+        return self.published_projects().support_partners().exclude(id__exact=self.id)
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has published projects."""

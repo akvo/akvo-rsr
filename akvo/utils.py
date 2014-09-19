@@ -42,6 +42,7 @@ from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
 #from akvo.rsr.models import Country
 
 RSR_LIMITED_CHANGE          = u'rsr_limited_change'
+RSR_REST = u'rsr_rest'
 GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
 GROUP_RSR_PARTNER_EDITORS   = u'RSR partner editors' #can edit an org's projects
 GROUP_RSR_EDITORS           = u'RSR editors'

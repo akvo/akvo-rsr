@@ -143,7 +143,7 @@
         </div>
         <div style="width:45%; float:right;">
           <p style="margin:0;" class="tiny grey">
-            {% if not user.username %}
+            {% if not user.email %}
               {% trans 'Sign in to add an update to your project.' %}
             {% elif not can_add_update %}
               {% trans 'You are not allowed to post updates for this project.' %}

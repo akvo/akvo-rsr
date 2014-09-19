@@ -12,5 +12,5 @@ def create_api_key(sender, **kwargs):
     Slightly modified from the tastypie function to generate a key when saving an existing user if no key exists
     """
     if not kwargs.get('raw', False):
-        user_profile = kwargs.get('instance')
-        ApiKey.objects.get_or_create(user=user_profile.user)
+        user = kwargs.get('instance')
+        ApiKey.objects.get_or_create(user=user)

@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from mollie.ideal.utils import get_mollie_banklist
@@ -67,7 +66,7 @@ class Invoice(models.Model):
         help_text=u'This flag is set if the donation was made in test mode.',
         default=False)
     engine = ValidXMLCharField(u'payment engine', choices=PAYMENT_ENGINES, max_length=10, default=PAYMENT_ENGINE_PAYPAL)
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     project = models.ForeignKey('Project', related_name='invoices')
     # Common
     amount = models.PositiveIntegerField(help_text=u'Amount requested by user.')

@@ -57,7 +57,7 @@
       <div id="logIn" class="logInHeader">
         <nav>
           <ul>
-            {% if not user.username %}
+            {% if not user.email %}
               <li>
                 <a href="{% url 'register1' %}">Register</a>
               </li>

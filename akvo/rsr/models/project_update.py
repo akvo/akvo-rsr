@@ -10,7 +10,6 @@ import oembed
 from datetime import datetime, timedelta
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -39,7 +38,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         return rsr_image_path(instance, file_name, path)
 
     project = models.ForeignKey('Project', related_name='project_updates', verbose_name=_(u'project'))
-    user = models.ForeignKey(User, verbose_name=_(u'user'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))
     title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
     language = ValidXMLCharField(

@@ -24,13 +24,13 @@
             </div>
           <div class="clear"></div>
         {% endif %}
-        <div style="float:left; width:465px; width:270px;">
+        <div style="float:left; width:300px;">
           <div class="white_box" style="background-color:#D0FFFF;">
             <div class="space20">
               <form id="sign_in" class="boxbody" method="post" action="">{% csrf_token %}
                   <h3>{% trans 'I have an account' %}</h3>
                 <div style="margin:15px; margin-top:20px;">
-                  <label for="id_username">{% trans 'Enter username' %}</label>
+                  <label for="id_username">{% trans 'Enter email address or username' %}</label>
                   {{ form.username }}<br />
                   <label for="id_password">{% trans 'Enter password' %}</label>
                   {{ form.password }}<br />
@@ -64,7 +64,7 @@
         <div class="clear"></div>
         <br /><br />
         <p>
-          <a href="{% url 'rsr_password_reset' %}">{% trans 'I forgot my username and/or password' %}</a>
+          <a href="{% url 'rsr_password_reset' %}">{% trans 'I forgot my password' %}</a>
         </p>
       </div>
     </div>

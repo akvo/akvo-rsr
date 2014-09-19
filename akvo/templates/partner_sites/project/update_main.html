@@ -5,7 +5,7 @@
 {% block title %}{{update.title}} - {% endblock title %}
 
 {% block head %}
-    <meta property="og:title" content="{{update.user.userprofile.organisation.name}} - {{update.title}}"/>
+    <meta property="og:title" content="{{update.user.organisations.all.0.name}} - {{update.title}}"/>
     <meta property="og:description" content="{{update.text}}"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{% url 'update_main' project_id=project.id update_id=update.id %}"/>
     {% if update.photo %}
@@ -78,8 +78,8 @@
       <h2 style="padding-top:20px;">{{update.title}}</h2>
       <p class="grey small">
         {{ update.created_at|date:"d-M-Y" }},
-        {%  url 'organisation_main' update.user.userprofile.organisation.id as user_org_url %}
-        {% blocktrans with user_name=update.user.get_full_name user_org=update.user.userprofile.organisation.name update_meth=update.get_update_method_display %}by {{user_name}}, <a href='{{user_org_url}}' class="notranslate">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
+        {%  url 'organisation_main' update.user.organisations.all.0.id as user_org_url %}
+        {% blocktrans with user_name=update.user.get_full_name user_org=update.user.organisations.all.0.name update_meth=update.get_update_method_display %}by {{user_name}}, <a href='{{user_org_url}}' class="notranslate">{{user_org}}</a>, via {{update_meth}}{% endblocktrans %}
       </p>
     </div>
     {% counter_badge update %}
