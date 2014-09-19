@@ -1334,8 +1334,11 @@ def get_api_key(request):
             login(request, user)
             user_id = user.id
             user_profile = get_user_model().objects.get(user=user)
-            org_id = user_profile.organisation.id
-            projects = user_profile.organisation.published_projects()
+            try:
+                org_id = user_profile.organisations.all()[0].id
+                projects = user_profile.organisations.all()[0].published_projects()
+            except:
+                return HttpResponseForbidden()
             if not user_profile.api_key:
                 user_profile.save()
             xml_root = etree.Element("credentials")

@@ -35,7 +35,6 @@ router.register(r'project_update_extra', views.ProjectUpdateExtraViewSet)
 router.register(r'project_update_location', views.ProjectUpdateLocationViewSet)
 router.register(r'publishing_status', views.PublishingStatusViewSet)
 router.register(r'user', views.UserViewSet)
-router.register(r'user_profile', views.UserProfileViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browseable API.

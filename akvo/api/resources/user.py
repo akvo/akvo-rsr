@@ -42,8 +42,6 @@ class UserResource(ConditionalFullResource):
 
             The adding is conditional, only add fields for users in the same organisation
             as request.user which is the API key owner
-
-            For other users delete the user_profile field
         """
         bundle = super(UserResource, self).dehydrate(bundle)
         if self._meta.authentication.is_authenticated(bundle.request):

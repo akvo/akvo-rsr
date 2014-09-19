@@ -175,7 +175,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             self.save()
 
     def my_projects(self):
-        return self.organisation.all_projects()
+        return self.organisations.all().all_projects()
+
+    def first_organisation(self):
+        all_orgs = self.organisations.all()
+        if all_orgs:
+            return all_orgs[0]
+        else:
+            return None
 
     def allow_edit(self, project):
         """ Support partner organisations may "take ownership" of projects, meaning that editing of them is restricted
