@@ -4,7 +4,7 @@
 """
 ISO 3166 country names and their corresponding 3166-1-alpha-2 codes
 """
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 ISO_3166_COUNTRIES = (
     (u"af", _(u"Afghanistan")),

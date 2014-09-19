@@ -34,7 +34,7 @@ __all__ = [
     'BenchmarknameViewSet',
     'BudgetItemViewSet',
     'BudgetItemLabelViewSet',
-    'CategoryViewSet,'
+    'CategoryViewSet',
     'CountryViewSet',
     'FocusAreaViewSet',
     'GoalViewSet',

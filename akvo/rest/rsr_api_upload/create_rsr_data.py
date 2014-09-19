@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 import getopt
 
+
 import json
 import optparse
 import os
@@ -12,8 +13,8 @@ import sys
 
 from requests import codes
 
-from requester2 import Requester
-from image_importer import ImageImporter
+from akvo.api_utils import Requester
+from akvo.api_utils import ImageImporter
 
 
 def data_from_json_reponse(request):

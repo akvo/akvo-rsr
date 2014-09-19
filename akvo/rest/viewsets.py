@@ -8,9 +8,9 @@
 from rest_framework import viewsets
 
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
 
-from akvo.rest.models import TastyTokenAuthentication
+from .models import TastyTokenAuthentication
+from .permissions import RSRModelPermissions
 
 
 class BaseRSRViewSet(viewsets.ModelViewSet):
@@ -18,4 +18,4 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     Base class used for the view sets for RSR models. Provides unified auth and perms settings.
     """
     authentication_classes = (SessionAuthentication, TastyTokenAuthentication)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (RSRModelPermissions,)

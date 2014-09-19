@@ -33,7 +33,7 @@ __all__ = [
     'BenchmarknameSerializer',
     'BudgetItemSerializer',
     'BudgetItemLabelSerializer',
-    'CategorySerializer,'
+    'CategorySerializer',
     'CountrySerializer',
     'FocusAreaSerializer',
     'GoalSerializer',
@@ -49,8 +49,8 @@ __all__ = [
     'ProjectCommentSerializer',
     'ProjectLocationSerializer',
     'ProjectUpdateSerializer',
-    'ProjectUpdateExtraSerializer,'
+    'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',
     'PublishingStatusSerializer',
-    'UserSerializer,'
+    'UserSerializer,',
 ]

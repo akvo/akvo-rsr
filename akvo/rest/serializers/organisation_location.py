@@ -14,6 +14,11 @@ class OrganisationLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = OrganisationLocation
-        depth = 1
         exclude = ('location_target',)
+
+
+class OrganisationLocationExtraSerializer(OrganisationLocationSerializer):
+
+    class Meta(OrganisationLocationSerializer.Meta):
+        depth = 1
 

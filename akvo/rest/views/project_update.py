@@ -17,14 +17,14 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     queryset = ProjectUpdate.objects.all()
     serializer_class = ProjectUpdateSerializer
 
-def get_queryset(self):
-    """ Allow simple filtering on selected fields
-    """
-    queryset = self.queryset
-    uuid = self.request.QUERY_PARAMS.get('uuid', None)
-    if uuid is not None:
-        queryset = self.queryset.filter(uuid=uuid)
-    return queryset
+    def get_queryset(self):
+        """ Allow simple filtering on selected fields
+        """
+        queryset = self.queryset
+        uuid = self.request.QUERY_PARAMS.get('uuid', None)
+        if uuid is not None:
+            queryset = self.queryset.filter(uuid=uuid)
+        return queryset
 
 
 class ProjectUpdateExtraViewSet(BaseRSRViewSet):
