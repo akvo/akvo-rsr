@@ -12,6 +12,7 @@ import os
 from datetime import datetime
 
 from django.contrib.admin.models import ADDITION, CHANGE
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
@@ -185,12 +186,12 @@ def user_activated_callback(sender, **kwargs):
 
     user = kwargs.get("user", False)
     if user:
-        org = user.userprofile.organisation
-        users = User.objects.all()
+        org = user.organisations.all()[0]
+        users = get_user_model().objects.all()
         #find all users that are 1) superusers 2) RSR editors
         #3) org admins for the same org as the just activated user
         notify = (users.filter(is_superuser=True) | users.filter(groups__name__in=[GROUP_RSR_EDITORS]) | \
-            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])).distinct()
+            users.filter(organisations__in=[org], groups__name__in=[GROUP_RSR_PARTNER_ADMINS])).distinct()
         rsr_send_mail_to_users(notify,
                                subject='email/new_user_registered_subject.txt',
                                message='email/new_user_registered_message.txt',

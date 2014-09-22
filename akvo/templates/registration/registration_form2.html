@@ -22,24 +22,43 @@
 
 	<form method="post" action="" name="registrationForm">{% csrf_token %}
 		{{ form.org_id }}
+        {{ form.username }}
 	
-		{% if form.username.errors %}
-			<div class="error">
-				<p class="c1">{% trans 'A problem occurred' %}</p>
-				<p>{{ form.username.errors|join:", " }}</p>
-				<p>{% trans 'Usernames should be 30 characters or fewer. Only letters, digits and underscores are allowed.' %}</p>
-			</div>
-		{% endif %}
+		{% if form.email.errors %}
+	    <div class="error">
+        <p class="c1">{% trans 'A problem occurred' %}</p>
+      	{% if form.email.errors %}
+    	    <p>{{ form.email.errors|join:", " }}</p>
+        {% endif %}
+	    </div>
+    {% endif %}
 		<div style="width:500px;">
-			<h3>{% trans 'Enter a username:' %}</h3>
-			{{ form.username }}<br />
-			<p class="small grey">
-				{% trans 'Your user name will be permanent. Use this to log into Akvo.' %}<br />
-				{% trans 'Remember that user names as well as passwords are case sensitive.' %}
-			</p>
+			<h3>{% trans 'Enter your email address:' %}</h3>
+			{{ form.email }}
+            <p class="small grey">{% trans 'Use your email address to log into RSR.' %}</p>
 		</div>
-		<div class="clear"></div>
-		<hr>
+	<hr />
+
+		{% if form.password1.errors or form.password2.errors %}
+	     <div class="error">
+	        <p class="c1">{% trans 'A problem occurred' %}</p>
+	        {% if form.password1.errors %}
+	        	<p>{{ form.password1.errors|join:", " }}</p>
+	        {% endif %}
+	        {% if form.password2.errors %}
+	        	<p>{{ form.password2.errors|join:", " }}</p>
+	        {% endif %}
+	    </div>
+	  {% endif %}
+		<div style="width:500px;">
+			<h3>{% trans 'Enter a password:' %}</h3>
+			{{ form.password1 }}
+	    <p class="small grey">{% trans 'Enter password' %}.</p>
+	    {{ form.password2 }}
+      <p class="small grey">{% trans 'Retype password to verify' %}.</p>
+		</div>
+		<hr />
+
 		{% if form.first_name.errors or form.last_name.errors %}
 	    <div class="error">
 	      	<p class="c1">{% trans 'A problem occurred' %}</p>
@@ -64,45 +83,9 @@
 			</p>
 		</div>
 		<hr />
-		{% if form.password1.errors or form.password2.errors %}
-	     <div class="error">
-	        <p class="c1">{% trans 'A problem occurred' %}</p>
-	        {% if form.password1.errors %}
-	        	<p>{{ form.password1.errors|join:", " }}</p>
-	        {% endif %}
-	        {% if form.password2.errors %}
-	        	<p>{{ form.password2.errors|join:", " }}</p>
-	        {% endif %}
-	    </div>
-	  {% endif %}
-		<div style="width:500px;">
-			<h3>{% trans 'Enter a password:' %}</h3>
-			{{ form.password1 }}
-	    <p class="small grey">{% trans 'Enter password' %}.</p>
-	    {{ form.password2 }}
-      <p class="small grey">{% trans 'Retype password to verify' %}.</p>
-		</div>
-		<hr />
+
 	
-		{% if form.email.errors or form.email2.errors %}
-	    <div class="error">
-        <p class="c1">{% trans 'A problem occurred' %}</p>
-      	{% if form.email.errors %}
-    	    <p>{{ form.email.errors|join:", " }}</p>
-        {% endif %}
-        {% if form.email2.errors %}
-	        <p>{{ form.email2.errors|join:", " }}</p>
-        {% endif %}
-	    </div>
-    {% endif %}
-		<div style="width:500px;">
-			<h3>{% trans 'Enter your email address:' %}</h3>
-			{{ form.email }}
-      <p class="small grey">{% trans 'Enter email address.' %}</p>    
-      {{ form.email2 }}
-      <p class="small grey">{% trans 'Retype email address to verify.' %}</p>	
-		</div>
-	<hr />
+
 	<div style="text-align:center; padding-bottom:20px;">
 		<div style="float:left;">
 			<a href="{% url 'index' %}" class="small">{% trans 'Cancel' %}</a>
@@ -112,11 +95,3 @@
 		</a>
 	</div>
 {% endblock content %}
-
-
-
-
-
-
-
-

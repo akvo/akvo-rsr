@@ -6,8 +6,8 @@ from django.contrib import admin
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.util import flatten_fieldsets
-from django.contrib.auth import get_permission_codename
-from django.contrib.auth.admin import GroupAdmin
+from django.contrib.auth import get_permission_codename, get_user_model
+from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
@@ -23,7 +23,7 @@ from django.utils.encoding import force_text
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 import os.path
 
-from akvo.rsr.forms import PartnerSiteAdminForm
+from akvo.rsr.forms import PartnerSiteAdminForm, RSR_UserChangeForm, RSR_UserCreationForm
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
 from akvo.utils import permissions, custom_get_or_create_country, RSR_LIMITED_CHANGE
 from akvo.rsr.fields import ValidXMLCharField
@@ -70,8 +70,6 @@ class CountryAdmin(admin.ModelAdmin):
             return u'name', u'continent', u'continent_code'
         else:
             return u'name', u'continent', u'continent_code'
-
-admin.site.register(get_model('rsr', 'country'), CountryAdmin)
 
 
 class OrganisationLocationInline(admin.StackedInline):
@@ -150,8 +148,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            organisation = request.user.userprofile.organisation
-            return qs.filter(pk=organisation.id)
+            organisation_ids = [org.pk for org in request.user.organisations.all()]
+            return qs.filter(pk__in=organisation_ids)
         else:
             raise PermissionDenied
 
@@ -169,7 +167,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             if obj:
-                return obj == request.user.userprofile.organisation
+                return obj in request.user.organisations.all()
             else:
                 return True
         return False
@@ -299,20 +297,19 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
             return len(seq) != len(seq_set)
 
         user = self.request.user
-        user_profile = user.userprofile
         errors = []
         # superusers can do whatever they like!
         if user.is_superuser:
             my_org_found = True
         # if the user is a partner org we try to avoid foot shooting
-        elif user_profile.get_is_org_admin() or user_profile.get_is_org_editor():
-            my_org = user_profile.organisation
+        elif user.get_is_org_admin() or user.get_is_org_editor():
+            my_orgs = user.organisations.all()
             my_org_found = False
             for form in self.forms:
                 try:
                     form_org = form.cleaned_data['organisation']
-                    if not form.cleaned_data.get('DELETE', False) and my_org == form_org:
-                        # found our own org, all is well move on!
+                    if not form.cleaned_data.get('DELETE', False) and form_org in my_orgs:
+                        # found one of our own orgs, all is well move on!
                         my_org_found = True
                         break
                 except:
@@ -630,10 +627,10 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            user_profile = request.user.userprofile
-            projects = user_profile.organisation.all_projects()
+            user = request.user
+            projects = user.organisations.all_projects()
             # Access to Partner users may be limited by Support partner "ownership"
-            allowed_projects = [project.pk for project in projects if user_profile.allow_edit(project)]
+            allowed_projects = [project.pk for project in projects if user.allow_edit(project)]
             return qs.filter(pk__in=allowed_projects)
         else:
             raise PermissionDenied
@@ -648,7 +645,6 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         """
         opts = self.opts
         user = request.user
-        user_profile = user.userprofile
 
         # RSR editors/managers
         if user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
@@ -658,7 +654,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             # On the Project form
             if obj:
-                return user_profile.allow_edit(obj)
+                return user.allow_edit(obj)
             return True
 
         return False
@@ -728,7 +724,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 # hack by GvH to get user's organisation preset as partner when adding a new project
                 if prefix == 'partnerships':
                     formset = FormSet(instance=self.model(), prefix=prefix,
-                                      initial=[{'organisation': request.user.userprofile.organisation}],
+                                      initial=[{'organisation': request.user.organisations.all()[0]}],
                                       queryset=inline.get_queryset(request))
                 else:
                     formset = FormSet(instance=self.model(), prefix=prefix,
@@ -769,67 +765,63 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
 
-class UserProfileAdminForm(forms.ModelForm):
-    """
-    This form displays two extra fields that show if the user belongs to the groups
-    GROUP_RSR_PARTNER_ADMINS and/or GROUP_RSR_PARTNER_EDITORS.
-    """
-    is_active = forms.BooleanField(required=False, label=_(u'account is active'),)
-    is_org_admin = forms.BooleanField(required=False, label=_(u'organisation administrator'),)
-    is_org_editor = forms.BooleanField(required=False, label=_(u'organisation project editor'),)
+class ApiKeyInline(admin.TabularInline):
+    model = get_model('tastypie', 'apikey')
+    fields = ('key',)
+    readonly_fields = ('key',)
 
-    def __init__(self, *args, **kwargs):
-        initial_data = {}
-        instance = kwargs.get('instance', None)
-        if instance:
-            initial_data['is_active'] = instance.get_is_active()
-            initial_data['is_org_admin'] = instance.get_is_org_admin()
-            initial_data['is_org_editor'] = instance.get_is_org_editor()
-            kwargs.update({'initial': initial_data})
-        super(UserProfileAdminForm, self).__init__(*args, **kwargs)
+    def has_delete_permission(self, request, obj=None, **kwargs):
+        return False
 
 
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'organisation', 'get_is_active', 'get_is_org_admin', 'get_is_org_editor', 'latest_update_date',)
-    search_fields = ('user__username', 'organisation__name', 'organisation__long_name',)
-    list_filter = ('organisation',)
-    ordering = ("user__username",)
-    form = UserProfileAdminForm
+class UserAdmin(UserAdmin):
+    model = get_model('rsr', 'user')
+    fieldsets = (
+        (None, {'fields': ('username', 'email', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Organisations'), {'fields': ('organisations',)}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
+    inlines = (
+        ApiKeyInline,
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2')}
+        ),
+    )
+    form = RSR_UserChangeForm
+    add_form = RSR_UserCreationForm
+    list_display = (
+        'username', 'email', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_org_admin',
+        'get_is_org_editor', 'latest_update_date'
+    )
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    ordering = ('username',)
 
     def get_actions(self, request):
         """ Remove delete admin action for "non certified" users"""
-        actions = super(UserProfileAdmin, self).get_actions(request)
+        actions = super(UserAdmin, self).get_actions(request)
         opts = self.opts
         if not request.user.has_perm(opts.app_label + '.' + get_permission_codename('delete', opts)):
             del actions['delete_selected']
         return actions
 
-    #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
             opts = self.opts
             if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
-                # user is only shown as text, not select widget
-                return ['user', ]
+                return ['last_login', 'date_joined']
             else:
-                # user and org are only shown as text, not select widget
-                return ['user', 'organisation', ]
+                # all fields are read-only if user does not have permissions to change
+                return [
+                    'username', 'email', 'password', 'first_name', 'last_name', 'organisations', 'organisation',
+                    'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions', 'last_login', 'date_joined'
+                ]
         else:
-            return []
-
-    def get_queryset(self, request):
-        """
-        Return a queryset possibly filtered depending on current user's group(s)
-        """
-        qs = super(UserProfileAdmin, self).get_queryset(request)
-        opts = self.opts
-        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
-            return qs
-        elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            organisation = request.user.userprofile.organisation
-            return qs.filter(organisation=organisation)
-        else:
-            raise PermissionDenied
+            return ['last_login', 'date_joined']
 
     def has_change_permission(self, request, obj=None):
         """
@@ -844,28 +836,28 @@ class UserProfileAdmin(admin.ModelAdmin):
             return True
         # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            my_org = request.user.userprofile.organisation
+            my_orgs = request.user.organisations.all()
             if obj:
-                return obj.organisation == my_org
+                return obj.organisations in my_orgs
             else:
                 return True
         return False
 
-    def save_model(self, request, obj, form, change):
+    def get_queryset(self, request):
         """
-        override of django.contrib.admin.options.save_model
+        Return a queryset possibly filtered depending on current user's organisation(s)
         """
-        # Act upon the checkboxes that fake admin settings for the partner users.
-        is_active = form.cleaned_data['is_active']
-        is_admin = form.cleaned_data['is_org_admin']
-        is_editor = form.cleaned_data['is_org_editor']
-        obj.set_is_active(is_active)  # master switch
-        obj.set_is_org_admin(is_admin)  # can modify other users user profile and own organisation
-        obj.set_is_org_editor(is_editor)  # can edit projects
-        obj.set_is_staff(is_admin or is_editor or obj.user.is_superuser)  # implicitly needed to log in to admin
-        obj.save()
+        qs = super(UserAdmin, self).get_queryset(request)
+        opts = self.opts
+        if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
+            return qs
+        elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
+            organisations = request.user.organisations.all()
+            return qs.filter(organisations__in=organisations)
+        else:
+            raise PermissionDenied
 
-admin.site.register(get_model('rsr', 'userprofile'), UserProfileAdmin)
+admin.site.register(get_user_model(), UserAdmin)
 
 
 class IndicatorPeriodInline(admin.TabularInline):
@@ -1048,8 +1040,8 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
             return qs
         elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-            organisation = request.user.userprofile.organisation
-            return qs.filter(organisation=organisation)
+            organisations = request.user.organisations.all()
+            return qs.filter(organisation__in=organisations)
         else:
             raise PermissionDenied
 
@@ -1067,7 +1059,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # RSR Partner admins/editors: limit their listing and editing to "own" projects, organisation and user profiles
         if request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
             if obj:
-                return obj.organisation == request.user.userprofile.organisation
+                return obj.organisation in request.user.organisations.all()
             else:
                 return True
         return False

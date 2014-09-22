@@ -123,13 +123,17 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
 
         bundle = super(ProjectUpdateResourceExtra, self).dehydrate(bundle)
 
-        organisation = bundle.obj.user.userprofile.organisation
-        org_dict = org_data_for_update(organisation)
         user_resource_uri = bundle.data['user']
         bundle.data['user'] = user_data_for_update(bundle.obj.user)
         bundle.data['user'].update(resource_uri=user_resource_uri)
-        bundle.data['user']['organisation'] = org_dict
-        bundle.data['user']['organisation'].update(primary_location=primary_location_data_for_update(organisation))
+        organisations = bundle.obj.user.organisations.all()
+        for count, organisation in enumerate(organisations, start=1):
+            org_node_name = 'organisation'
+            if not count == 1:
+                org_node_name += str(count)
+            org_dict = org_data_for_update(organisation)
+            bundle.data['user'][org_node_name] = org_dict
+            bundle.data['user'][org_node_name].update(primary_location=primary_location_data_for_update(organisation))
         bundle.data['project'] = project_data_for_update(bundle)
         bundle.data['project'].update(primary_location=primary_location_data_for_update(bundle.obj.project))
 

@@ -27,7 +27,6 @@ from .project_comment import ProjectCommentResource
 from .project_update import ProjectUpdateResource, ProjectUpdateResourceExtra
 from .right_now_in_akvo import RightNowInAkvoResource
 from .user import UserResource
-from .user_profile import UserProfileResource
 
 __all__ = [
     'BenchmarkResource',
@@ -63,6 +62,5 @@ __all__ = [
     'ProjectUpdateResourceExtra',
     'RightNowInAkvoResource',
     'UserResource',
-    'UserProfileResource',
 ]
 

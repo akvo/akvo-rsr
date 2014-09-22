@@ -11,7 +11,7 @@ from lxml import etree
 from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
-                             UserProfile, Invoice, PartnerSite, OrganisationAccount)
+                             Invoice, PartnerSite, OrganisationAccount)
 from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
@@ -22,6 +22,7 @@ from django import forms
 from django import http
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME
+from django.contrib.auth import get_user_model
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -486,7 +487,7 @@ def register2(request,
             new_user = form.save(request)
             return HttpResponseRedirect('/accounts/register/complete/')
     else:
-        form = form_class(initial={'org_id': org_id})
+        form = form_class(initial={'org_id': org_id, 'username': 'placeholder'})
     context = RequestContext(request)
     return render_to_response(template_name,
                               {'form': form, 'organisation': organisation},
@@ -613,7 +614,7 @@ def update_user_profile(
         template_name,
         {
             'form': form,
-            'profile': user.userprofile
+            'profile': user
         },
         context_instance=context
     )
@@ -884,7 +885,7 @@ def getwidget(request, project, draft=False, can_add_update=False):
     '''
     if not request.POST:
         try:
-            account_level = request.user.userprofile.organisation.organisationaccount.account_level
+            account_level = request.user.organisations.all()[0].organisationaccount.account_level
         except:
             account_level = OrganisationAccount.ACCOUNT_FREE
         # project = get_object_or_404(Project.objects, pk=project_id)
@@ -1332,9 +1333,12 @@ def get_api_key(request):
         if user is not None:
             login(request, user)
             user_id = user.id
-            user_profile = UserProfile.objects.get(user=user)
-            org_id = user_profile.organisation.id
-            projects = user_profile.organisation.published_projects()
+            user_profile = get_user_model().objects.get(user=user)
+            try:
+                org_id = user_profile.organisations.all()[0].id
+                projects = user_profile.organisations.all()[0].published_projects()
+            except:
+                return HttpResponseForbidden()
             if not user_profile.api_key:
                 user_profile.save()
             xml_root = etree.Element("credentials")

@@ -28,7 +28,6 @@ from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
 from .project_update_location import ProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .user import UserViewSet
-from .user_profile import UserProfileViewSet
 
 __all__ = [
     'BenchmarkViewSet',
@@ -55,5 +54,4 @@ __all__ = [
     'ProjectUpdateExtraViewSet',
     'PublishingStatusViewSet',
     'UserViewSet',
-    'UserProfileViewSet',
 ]

@@ -35,7 +35,7 @@ from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
-from .user_profile import UserProfile
+from .user import User
 
 
 class Project(TimestampsMixin, models.Model):
@@ -327,6 +327,10 @@ class Project(TimestampsMixin, models.Model):
             "return projects that have organisation as partner"
             return self.filter(partners__exact=organisation)
 
+        def of_partners(self, organisations):
+            "return projects that have one of the organisations as partner"
+            return self.filter(partners__in=organisations)
+
         def has_location(self):
             return self.filter(primary_location__isnull=False)
 
@@ -567,12 +571,13 @@ class Project(TimestampsMixin, models.Model):
         '''
         Test if a user is connected to self through an organisation
         '''
-        is_connected = False
         try:
-            is_connected = self in UserProfile.objects.get(user=user).organisation.all_projects()
+            for organisation in user.organisations.all():
+                if self in organisation.all_projects():
+                    return True
         except:
             pass
-        return is_connected
+        return False
 
     def is_published(self):
         if self.publishingstatus:
