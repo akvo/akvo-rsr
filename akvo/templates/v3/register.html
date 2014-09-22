@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Register your Akvo RSR account</title>
+</head>
+<body>
+{% load i18n %}
+<h1>Register your Akvo RSR account</h1>
+<form method="post" action="" name="registrationForm">{% csrf_token %}
+<h2>{% trans 'Enter your email address:' %}</h2>
+{{ form.email }}
+<h3>{% trans 'Enter your password:' %}</h3>
+{{ form.password1 }}
+{{ form.password2 }}
+<br><br>
+{{ form.first_name }}
+{{ form.last_name }}
+<br><br>
+<a class="aqua awesome" href="javascript:document.registrationForm.submit();">
+{% trans 'Register' %}
+</a>
+</body>
+</html>

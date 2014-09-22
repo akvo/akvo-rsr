@@ -113,10 +113,10 @@ class RegistrationForm1(forms.Form):
     )
 
 
-class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
+class RSR_RegistrationFormUniqueEmail(forms.Form):
 
-    org_id = forms.IntegerField(widget=forms.HiddenInput)
-    username = forms.CharField(widget=forms.HiddenInput)
+    # org_id = forms.IntegerField(widget=forms.HiddenInput)
+    # username = forms.CharField(widget=forms.HiddenInput)
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
         label=_(u'password')
@@ -174,7 +174,6 @@ class RSR_RegistrationFormUniqueEmail(RegistrationFormUniqueEmail):
         new_user.first_name = self.cleaned_data['first_name']
         new_user.last_name = self.cleaned_data['last_name']
         new_user.is_active = False
-        new_user.organisations.add(Organisation.objects.get(pk=self.cleaned_data['org_id']))
         new_user.save()
         return new_user
 

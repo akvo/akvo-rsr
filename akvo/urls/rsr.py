@@ -27,10 +27,15 @@ admin.autodiscover()
 import oembed
 oembed.autodiscover()
 
+from ..rsr.vanilla_views import RegisterView
+
 # Multi-lingual urls
 # urlpatterns = i18n_patterns('',
 urlpatterns = patterns(
     '',
+
+    # Vanilla view register
+    url(r'^register/$', RegisterView.as_view(), name='register'),
 
     # Home page
     url(r'^$',
