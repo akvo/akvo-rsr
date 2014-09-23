@@ -135,7 +135,7 @@ class PartnerSite(TimestampsMixin, models.Model):
         help_text=_(u'Uncheck to list all projects on this partnersite.')
     )
     keywords = models.ManyToManyField('Keyword', verbose_name=_(u'keywords'), related_name='partnersites', blank=True)
-    exclude_keywords = models.BooleanField(_(u'Exclude projects belonging to the keyword(s)'), default=False)
+    exclude_keywords = models.BooleanField(_(u'Exclude projects with selected keyword(s)'), default=False)
 
 
     def __unicode__(self):

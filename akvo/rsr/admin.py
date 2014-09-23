@@ -998,9 +998,25 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
-        (_(u'Projects'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Choose what projects will be shown on your partnersite. By selecting one or more keywords below, only projects matching that keyword will be shown on the partnersite.'
+        (_(u'Project selection'), {
+            'description': u'{}'.format(
+                u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
+                u'Select the projects to be shown on your Site.'
+                u'</p>'
+                u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
+                u'The default setting selects all projects associated with the organisation of the Site. '
+                u'</p>'
+                u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
+                u'De-selecting the "Show only projects of partner" check-box shows all projects in RSR. '
+                u'This is meant to be used with the keywords below, '
+                u'thus selecting only projects associated with the selected keywords. '
+                u'<br/>If keywords are added to a Site showing only projects of a partner, '
+                u'the selection will be further filtered by only showing associated projects with those keywords.'
+                u'</p>'
+                u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
+                u'When "Exclude projects with selected keyword is checked" '
+                u'projects with the chosen keywords are instead excluded from the list.'
+                u'</p>'
             ),
             'fields': ('partner_projects', 'exclude_keywords', 'keywords'),
         }),
