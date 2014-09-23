@@ -6,11 +6,11 @@
 
 from django.http import HttpResponseRedirect
 from .models import User
-from .forms import RSR_RegistrationFormUniqueEmail
+from .forms import RegisterForm
 from vanilla import CreateView
 
 class RegisterView(CreateView):
-    form_class = RSR_RegistrationFormUniqueEmail
+    form_class = RegisterForm
     template_name = 'v3/register.html'
 
     def form_valid(self, form):

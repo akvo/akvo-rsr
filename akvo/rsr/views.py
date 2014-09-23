@@ -12,8 +12,8 @@ from akvo.rsr.filters import ProjectFilterSet, remove_empty_querydict_items
 from akvo.rsr.models import (FocusArea, Organisation,
                              Project, ProjectUpdate, ProjectComment, Country,
                              Invoice, PartnerSite, OrganisationAccount)
-from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
-                            RSR_ProfileUpdateForm, ProjectUpdateForm)
+# from akvo.rsr.forms import (InvoiceForm, RegistrationForm1, RSR_RegistrationFormUniqueEmail,
+#                             RSR_ProfileUpdateForm, ProjectUpdateForm)
 
 from akvo.rsr.decorators import fetch_project, project_viewing_permissions
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS
@@ -459,39 +459,39 @@ def signout(request):
     return HttpResponseRedirect(reverse('project_list', args=['all']))
 
 
-def register1(request):
-    '''
-    The user chooses organisation as a preliminary step to registering an Akvo RSR account.
-    '''
-    if request.method == 'POST':
-        form = RegistrationForm1(data=request.POST)
-        if form.is_valid():
-            return HttpResponseRedirect('/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
-    else:
-        form = RegistrationForm1()
-    context = RequestContext(request)
-    return render_to_response('registration/registration_form1.html', {'form': form}, context_instance=context)
-
-
-def register2(request,
-        form_class=RSR_RegistrationFormUniqueEmail,
-        template_name='registration/registration_form2.html',
-    ):
-    org_id = request.GET.get('org_id', None)
-    if not org_id:
-        return HttpResponseRedirect('/accounts/register1/')
-    organisation = Organisation.objects.get(pk=org_id)
-    if request.method == 'POST':
-        form = form_class(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            new_user = form.save(request)
-            return HttpResponseRedirect('/accounts/register/complete/')
-    else:
-        form = form_class(initial={'org_id': org_id, 'username': 'placeholder'})
-    context = RequestContext(request)
-    return render_to_response(template_name,
-                              {'form': form, 'organisation': organisation},
-                              context_instance=context)
+# def register1(request):
+#     '''
+#     The user chooses organisation as a preliminary step to registering an Akvo RSR account.
+#     '''
+#     if request.method == 'POST':
+#         form = RegistrationForm1(data=request.POST)
+#         if form.is_valid():
+#             return HttpResponseRedirect('/accounts/register2/?org_id=%d' % form.cleaned_data['organisation'].id)
+#     else:
+#         form = RegistrationForm1()
+#     context = RequestContext(request)
+#     return render_to_response('registration/registration_form1.html', {'form': form}, context_instance=context)
+#
+#
+# def register2(request,
+#         form_class=RSR_RegistrationFormUniqueEmail,
+#         template_name='registration/registration_form2.html',
+#     ):
+#     org_id = request.GET.get('org_id', None)
+#     if not org_id:
+#         return HttpResponseRedirect('/accounts/register1/')
+#     organisation = Organisation.objects.get(pk=org_id)
+#     if request.method == 'POST':
+#         form = form_class(data=request.POST, files=request.FILES)
+#         if form.is_valid():
+#             new_user = form.save(request)
+#             return HttpResponseRedirect('/accounts/register/complete/')
+#     else:
+#         form = form_class(initial={'org_id': org_id, 'username': 'placeholder'})
+#     context = RequestContext(request)
+#     return render_to_response(template_name,
+#                               {'form': form, 'organisation': organisation},
+#                               context_instance=context)
 
 
 #from registraion.views, to change user.is_active and send an admin email
@@ -586,38 +586,38 @@ def password_change(request, template_name='registration/password_change_form.ht
 password_change = login_required(password_change)
 
 
-@login_required
-def update_user_profile(
-    request,
-    success_url='/accounts/update/complete/',
-    form_class=RSR_ProfileUpdateForm,
-    template_name='registration/update_form.html',
-    extra_context=None
-):
-    user = request.user
-    if request.method == 'POST':
-        form = form_class(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            updated_user = form.update(user)
-            return HttpResponseRedirect(success_url)
-    else:
-        form = form_class(initial={
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-        })
-    if extra_context is None:
-        extra_context = {}
-    context = RequestContext(request)
-    for key, value in extra_context.items():
-        context[key] = callable(value) and value() or value
-    return render_to_response(
-        template_name,
-        {
-            'form': form,
-            'profile': user
-        },
-        context_instance=context
-    )
+# @login_required
+# def update_user_profile(
+#     request,
+#     success_url='/accounts/update/complete/',
+#     form_class=RSR_ProfileUpdateForm,
+#     template_name='registration/update_form.html',
+#     extra_context=None
+# ):
+#     user = request.user
+#     if request.method == 'POST':
+#         form = form_class(data=request.POST, files=request.FILES)
+#         if form.is_valid():
+#             updated_user = form.update(user)
+#             return HttpResponseRedirect(success_url)
+#     else:
+#         form = form_class(initial={
+#             'first_name': user.first_name,
+#             'last_name': user.last_name,
+#         })
+#     if extra_context is None:
+#         extra_context = {}
+#     context = RequestContext(request)
+#     for key, value in extra_context.items():
+#         context[key] = callable(value) and value() or value
+#     return render_to_response(
+#         template_name,
+#         {
+#             'form': form,
+#             'profile': user
+#         },
+#         context_instance=context
+#     )
 
 
 @render_to('rsr/project/project_updates.html')
@@ -690,67 +690,67 @@ def projectcomments(request, project_id):
 
 
 # @login_required()
-def updateform(request, project_id,
-               edit_mode=False,
-               form_class=ProjectUpdateForm,
-               update_id=None):
-    '''Form for creating or editing a project update
-
-    :project: project
-    :form: the update form
-    :update_id: the ID of the update being edited, if any
-    '''
-
-    update = None
-    project = get_object_or_404(Project, id=project_id)
-    user_is_authorized = project.connected_to_user(request.user)
-
-    if not request.user.is_authenticated():
-        return redirect_to_login(request.path)
-
-    if not project.is_published():
-        request.error_message = u"You can't add updates to unpublished projects."
-        raise PermissionDenied
-
-    if not user_is_authorized:
-        request.error_message = u"You don't have permission to add updates to this project."
-        raise PermissionDenied
-
-    if update_id is not None:
-        edit_mode = True
-        update = get_object_or_404(ProjectUpdate, id=update_id)
-        if not request.user == update.user:
-            request.error_message = u'You can only edit your own updates.'
-            raise PermissionDenied
-
-        if update.edit_window_has_expired():
-            return render_to_response('rsr/project/update_form_timeout.html',
-                dict(
-                    project=project,
-                    update=update,
-                    site_section='projects',
-                    ),
-                RequestContext(request))
-
-    if request.method == 'POST':
-        form = form_class(request.POST, request.FILES,
-                          instance=update)
-        if form.is_valid():
-            update = form.save(commit=False)
-            update.project = project
-            update.user = request.user
-            update.update_method = 'W'
-            update.save()
-            return redirect(update.get_absolute_url())
-    else:
-        form = form_class(instance=update)
-    return render_to_response('rsr/project/update_form.html',
-        dict(form=form,
-             project=project,
-             update=update,
-             edit_mode=edit_mode,
-             site_section='projects'),
-        RequestContext(request))
+# def updateform(request, project_id,
+#                edit_mode=False,
+#                form_class=ProjectUpdateForm,
+#                update_id=None):
+#     '''Form for creating or editing a project update
+#
+#     :project: project
+#     :form: the update form
+#     :update_id: the ID of the update being edited, if any
+#     '''
+#
+#     update = None
+#     project = get_object_or_404(Project, id=project_id)
+#     user_is_authorized = project.connected_to_user(request.user)
+#
+#     if not request.user.is_authenticated():
+#         return redirect_to_login(request.path)
+#
+#     if not project.is_published():
+#         request.error_message = u"You can't add updates to unpublished projects."
+#         raise PermissionDenied
+#
+#     if not user_is_authorized:
+#         request.error_message = u"You don't have permission to add updates to this project."
+#         raise PermissionDenied
+#
+#     if update_id is not None:
+#         edit_mode = True
+#         update = get_object_or_404(ProjectUpdate, id=update_id)
+#         if not request.user == update.user:
+#             request.error_message = u'You can only edit your own updates.'
+#             raise PermissionDenied
+#
+#         if update.edit_window_has_expired():
+#             return render_to_response('rsr/project/update_form_timeout.html',
+#                 dict(
+#                     project=project,
+#                     update=update,
+#                     site_section='projects',
+#                     ),
+#                 RequestContext(request))
+#
+#     if request.method == 'POST':
+#         form = form_class(request.POST, request.FILES,
+#                           instance=update)
+#         if form.is_valid():
+#             update = form.save(commit=False)
+#             update.project = project
+#             update.user = request.user
+#             update.update_method = 'W'
+#             update.save()
+#             return redirect(update.get_absolute_url())
+#     else:
+#         form = form_class(instance=update)
+#     return render_to_response('rsr/project/update_form.html',
+#         dict(form=form,
+#              project=project,
+#              update=update,
+#              edit_mode=edit_mode,
+#              site_section='projects'),
+#         RequestContext(request))
 
 
 class CommentForm(ModelForm):
@@ -920,27 +920,27 @@ def getwidget(request, project, draft=False, can_add_update=False):
             }, context_instance=RequestContext(request))
 
 
-def templatedev(request, template_name):
-    "Render a template in the dev folder. The template rendered is template_name.html when the path is /dev/template_name/"
-    dev = {'path': 'dev/'}
-    SAMPLE_PROJECT_ID = 2
-    SAMPLE_ORG_ID = 42
-    p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
-    updates = Project.objects.get(id=SAMPLE_PROJECT_ID).project_updates.all().order_by('-created_at')[:3]
-    comments = Project.objects.get(id=SAMPLE_PROJECT_ID).comments.all().order_by('-created_at')[:3]
-    grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
-
-    projects = Project.objects.published()
-    stats = akvo_at_a_glance(projects)
-
-    orgs = Organisation.objects.all()
-
-    o = Organisation.objects.get(pk=SAMPLE_ORG_ID)
-    org_projects, org_partners = org_activities(o)
-    org_stats = akvo_at_a_glance(org_projects)
-
-    return render_to_response('dev/%s.html' % template_name,
-        {'dev': dev, 'p': p, 'updates': updates, 'comments': comments, 'projects': projects, 'stats': stats, 'orgs': orgs, 'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, 'grid_projects': grid_projects, }, context_instance=RequestContext(request))
+# def templatedev(request, template_name):
+#     "Render a template in the dev folder. The template rendered is template_name.html when the path is /dev/template_name/"
+#     dev = {'path': 'dev/'}
+#     SAMPLE_PROJECT_ID = 2
+#     SAMPLE_ORG_ID = 42
+#     p = Project.objects.get(pk=SAMPLE_PROJECT_ID)
+#     updates = Project.objects.get(id=SAMPLE_PROJECT_ID).project_updates.all().order_by('-created_at')[:3]
+#     comments = Project.objects.get(id=SAMPLE_PROJECT_ID).comments.all().order_by('-created_at')[:3]
+#     grid_projects = Project.objects.filter(current_image__startswith='img').order_by('?')[:12]
+#
+#     projects = Project.objects.published()
+#     stats = akvo_at_a_glance(projects)
+#
+#     orgs = Organisation.objects.all()
+#
+#     o = Organisation.objects.get(pk=SAMPLE_ORG_ID)
+#     org_projects, org_partners = org_activities(o)
+#     org_stats = akvo_at_a_glance(org_projects)
+#
+#     return render_to_response('dev/%s.html' % template_name,
+#         {'dev': dev, 'p': p, 'updates': updates, 'comments': comments, 'projects': projects, 'stats': stats, 'orgs': orgs, 'o': o, 'org_projects': org_projects, 'org_partners': org_partners, 'org_stats': org_stats, 'grid_projects': grid_projects, }, context_instance=RequestContext(request))
 
 
 def select_project_widget(request, org_id, template=''):
@@ -1068,96 +1068,96 @@ def setup_donation(request, p):
     return dict(project=p)
 
 
-@fetch_project
-def donate(request, p, engine):
-    if not can_donate_to_project(p):
-        return redirect("project_main", project_id=p.id)
-    is_test_donation = getattr(settings, "DONATION_TEST", False)
-    if request.method == "POST":
-        donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
-        if donate_form.is_valid():
-            description = u"Akvo-%d-%s" % (p.id, p.title)
-            cd = donate_form.cleaned_data
-            invoice = donate_form.save(commit=False)
-            invoice.project = p
-            invoice.engine = engine
-            invoice.name = cd["name"]
-            invoice.email = cd["email"]
-            invoice.campaign_code = cd["campaign_code"]
-            invoice.is_anonymous = not cd["is_public"]
-            original_http_referer = request.session.get("original_http_referer", None)
-            if original_http_referer:
-                invoice.http_referer = original_http_referer
-                del request.session["original_http_referer"]
-            else:
-                invoice.http_referer = request.META.get("HTTP_REFERER", None)
-            if is_test_donation:
-                invoice.test = True
-            if request.session.get("donation_return_url", False):
-                return_url = urljoin(request.session["donation_return_url"], reverse("donate_thanks"))
-            else:
-                return_url = urljoin(request.domain_url, reverse("donate_thanks"))
-            if engine == "ideal":
-                invoice.bank = cd["bank"]
-                mollie_dict = dict(
-                    amount=invoice.amount * 100,
-                    bank_id=invoice.bank,
-                    partnerid=invoice.gateway,
-                    description=description,
-                    reporturl=urljoin(request.domain_url, reverse("mollie_report")),
-                    returnurl=return_url)
-                try:
-                    mollie_response = query_mollie(mollie_dict, "fetch")
-                    invoice.transaction_id = mollie_response["transaction_id"]
-                    order_url = mollie_response["order_url"]
-                    invoice.save()
-                except:
-                    return redirect("donate_500")
-                return render_to_response("rsr/project/donate/donate_step3.html",
-                                          dict(invoice=invoice,
-                                               project=p,
-                                               payment_engine=engine,
-                                               mollie_order_url=order_url),
-                                          context_instance=RequestContext(request))
-            elif engine == "paypal":
-                invoice.save()
-                pp_dict = dict(
-                    cmd="_donations",
-                    currency_code=invoice.currency,
-                    business=invoice.gateway,
-                    amount=invoice.amount,
-                    item_name=description,
-                    invoice=int(invoice.id),
-                    lc=invoice.locale,
-                    notify_url=urljoin(request.domain_url, reverse("paypal_ipn")),
-                    return_url=return_url,
-                    cancel_url=request.domain_url)
-                pp_form = PayPalPaymentsForm(initial=pp_dict)
-                if is_test_donation:
-                    pp_button = pp_form.sandbox()
-                else:
-                    pp_button = pp_form.render()
-                return render_to_response("rsr/project/donate/donate_step3.html",
-                                          dict(invoice=invoice,
-                                               payment_engine=engine,
-                                               pp_form=pp_form,
-                                               pp_button=pp_button,
-                                               project=p),
-                                          context_instance=RequestContext(request))
-    else:
-        donate_form = InvoiceForm(project=p,
-                                  engine=engine,
-                                  initial=dict(is_public=True))
-        if request.session.get("donation_return_url", False):
-            request.session["cancel_url"] = urljoin(request.session["donation_return_url"],
-                                                    reverse("project_main", kwargs={'project_id': p.id}))
-        else:
-            request.session["cancel_url"] = reverse("project_main", kwargs={'project_id': p.id})
-    return render_to_response("rsr/project/donate/donate_step2.html",
-                              dict(donate_form=donate_form,
-                                   payment_engine=engine,
-                                   project=p),
-                              context_instance=RequestContext(request))
+# @fetch_project
+# def donate(request, p, engine):
+#     if not can_donate_to_project(p):
+#         return redirect("project_main", project_id=p.id)
+#     is_test_donation = getattr(settings, "DONATION_TEST", False)
+#     if request.method == "POST":
+#         donate_form = InvoiceForm(data=request.POST, project=p, engine=engine)
+#         if donate_form.is_valid():
+#             description = u"Akvo-%d-%s" % (p.id, p.title)
+#             cd = donate_form.cleaned_data
+#             invoice = donate_form.save(commit=False)
+#             invoice.project = p
+#             invoice.engine = engine
+#             invoice.name = cd["name"]
+#             invoice.email = cd["email"]
+#             invoice.campaign_code = cd["campaign_code"]
+#             invoice.is_anonymous = not cd["is_public"]
+#             original_http_referer = request.session.get("original_http_referer", None)
+#             if original_http_referer:
+#                 invoice.http_referer = original_http_referer
+#                 del request.session["original_http_referer"]
+#             else:
+#                 invoice.http_referer = request.META.get("HTTP_REFERER", None)
+#             if is_test_donation:
+#                 invoice.test = True
+#             if request.session.get("donation_return_url", False):
+#                 return_url = urljoin(request.session["donation_return_url"], reverse("donate_thanks"))
+#             else:
+#                 return_url = urljoin(request.domain_url, reverse("donate_thanks"))
+#             if engine == "ideal":
+#                 invoice.bank = cd["bank"]
+#                 mollie_dict = dict(
+#                     amount=invoice.amount * 100,
+#                     bank_id=invoice.bank,
+#                     partnerid=invoice.gateway,
+#                     description=description,
+#                     reporturl=urljoin(request.domain_url, reverse("mollie_report")),
+#                     returnurl=return_url)
+#                 try:
+#                     mollie_response = query_mollie(mollie_dict, "fetch")
+#                     invoice.transaction_id = mollie_response["transaction_id"]
+#                     order_url = mollie_response["order_url"]
+#                     invoice.save()
+#                 except:
+#                     return redirect("donate_500")
+#                 return render_to_response("rsr/project/donate/donate_step3.html",
+#                                           dict(invoice=invoice,
+#                                                project=p,
+#                                                payment_engine=engine,
+#                                                mollie_order_url=order_url),
+#                                           context_instance=RequestContext(request))
+#             elif engine == "paypal":
+#                 invoice.save()
+#                 pp_dict = dict(
+#                     cmd="_donations",
+#                     currency_code=invoice.currency,
+#                     business=invoice.gateway,
+#                     amount=invoice.amount,
+#                     item_name=description,
+#                     invoice=int(invoice.id),
+#                     lc=invoice.locale,
+#                     notify_url=urljoin(request.domain_url, reverse("paypal_ipn")),
+#                     return_url=return_url,
+#                     cancel_url=request.domain_url)
+#                 pp_form = PayPalPaymentsForm(initial=pp_dict)
+#                 if is_test_donation:
+#                     pp_button = pp_form.sandbox()
+#                 else:
+#                     pp_button = pp_form.render()
+#                 return render_to_response("rsr/project/donate/donate_step3.html",
+#                                           dict(invoice=invoice,
+#                                                payment_engine=engine,
+#                                                pp_form=pp_form,
+#                                                pp_button=pp_button,
+#                                                project=p),
+#                                           context_instance=RequestContext(request))
+#     else:
+#         donate_form = InvoiceForm(project=p,
+#                                   engine=engine,
+#                                   initial=dict(is_public=True))
+#         if request.session.get("donation_return_url", False):
+#             request.session["cancel_url"] = urljoin(request.session["donation_return_url"],
+#                                                     reverse("project_main", kwargs={'project_id': p.id}))
+#         else:
+#             request.session["cancel_url"] = reverse("project_main", kwargs={'project_id': p.id})
+#     return render_to_response("rsr/project/donate/donate_step2.html",
+#                               dict(donate_form=donate_form,
+#                                    payment_engine=engine,
+#                                    project=p),
+#                               context_instance=RequestContext(request))
 
 
 def void_invoice(request, invoice_id, action=None):

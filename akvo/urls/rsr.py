@@ -16,7 +16,7 @@ from paypal.standard.ipn.views import ipn as paypal_ipn
 
 from akvo.rsr.feeds import (ProjectUpdates, OrganisationUpdates,
                             AllProjectUpdates)
-from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
+# from akvo.rsr.forms import RSR_PasswordResetForm, RSR_SetPasswordForm
 from akvo.api.urls import named_api
 
 # The next two lines enable the admin and load each admin.py file:
@@ -222,18 +222,18 @@ urlpatterns += patterns(
         'akvo.rsr.views.password_change',
         name='password_change'),
 
-    url(r'^accounts/password/reset/$',
-        auth_views.password_reset,
-        {'password_reset_form': RSR_PasswordResetForm,
-            'post_reset_redirect': '/accounts/password/reset/done/'},
-        name='rsr_password_reset'),
-
-    url(r'^accounts/password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        auth_views.password_reset_confirm, {
-            'set_password_form': RSR_SetPasswordForm,
-            'post_reset_redirect':'django.contrib.auth.views.password_reset_complete'
-        },
-        name='auth_password_reset_confirm'),
+    # url(r'^accounts/password/reset/$',
+    #     auth_views.password_reset,
+    #     {'password_reset_form': RSR_PasswordResetForm,
+    #         'post_reset_redirect': '/accounts/password/reset/done/'},
+    #     name='rsr_password_reset'),
+    #
+    # url(r'^accounts/password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+    #     auth_views.password_reset_confirm, {
+    #         'set_password_form': RSR_SetPasswordForm,
+    #         'post_reset_redirect':'django.contrib.auth.views.password_reset_complete'
+    #     },
+    #     name='auth_password_reset_confirm'),
 
     url(r'^accounts/update/complete/$',
         TemplateView.as_view(template_name='registration/update_complete.html'),

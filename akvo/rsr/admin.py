@@ -23,7 +23,7 @@ from django.utils.encoding import force_text
 from sorl.thumbnail.fields import ImageWithThumbnailsField
 import os.path
 
-from akvo.rsr.forms import PartnerSiteAdminForm, RSR_UserChangeForm, RSR_UserCreationForm
+# from akvo.rsr.forms import PartnerSiteAdminForm, RSR_UserChangeForm, RSR_UserCreationForm
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
 from akvo.utils import permissions, custom_get_or_create_country, RSR_LIMITED_CHANGE
 from akvo.rsr.fields import ValidXMLCharField
@@ -792,8 +792,8 @@ class UserAdmin(UserAdmin):
             'fields': ('username', 'email', 'password1', 'password2')}
         ),
     )
-    form = RSR_UserChangeForm
-    add_form = RSR_UserCreationForm
+    # form = RSR_UserChangeForm
+    # add_form = RSR_UserCreationForm
     list_display = (
         'username', 'email', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_org_admin',
         'get_is_org_editor', 'latest_update_date'
@@ -981,7 +981,7 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 
 
 class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
-    form = PartnerSiteAdminForm
+    # form = PartnerSiteAdminForm
     fieldsets = (
         # the 'notes' field is added in get_fieldsets() for eligible users
         (u'General', dict(fields=('organisation', 'enabled',))),

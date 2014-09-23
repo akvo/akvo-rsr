@@ -6,19 +6,22 @@
 </head>
 <body>
 {% load i18n %}
+{% load bootstrap3 %}
 <h1>Register your Akvo RSR account</h1>
-<form method="post" action="" name="registrationForm">{% csrf_token %}
-<h2>{% trans 'Enter your email address:' %}</h2>
-{{ form.email }}
-<h3>{% trans 'Enter your password:' %}</h3>
-{{ form.password1 }}
-{{ form.password2 }}
-<br><br>
-{{ form.first_name }}
-{{ form.last_name }}
-<br><br>
-<a class="aqua awesome" href="javascript:document.registrationForm.submit();">
-{% trans 'Register' %}
-</a>
+<form method="post" action="" name="registrationForm">
+
+    {% csrf_token %}
+    {% bootstrap_form form layout='inline' %}
+
+
+
+
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% bootstrap_icon "star" %} {% trans 'Register' %}
+        </button>
+    {% endbuttons %}
+
+</form>
 </body>
 </html>
