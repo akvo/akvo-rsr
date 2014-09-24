@@ -27,20 +27,21 @@ admin.autodiscover()
 import oembed
 oembed.autodiscover()
 
-from ..rsr.vanilla_views import RegisterView
+# from ..rsr.vanilla_views import RegisterView
 
 # Multi-lingual urls
 # urlpatterns = i18n_patterns('',
 urlpatterns = patterns(
     '',
 
-    # Vanilla view register
-    url(r'^register/$', RegisterView.as_view(), name='register'),
-
     # Home page
-    url(r'^$',
-        'akvo.rsr.views.index',
-        name='index'),
+    url(r'^$', 'akvo.rsr.vanilla_views.index', name='index'),
+
+    # New register view
+    url(r'^register/$', 'akvo.rsr.vanilla_views.register', name='register'),
+
+    # New login view
+    url(r'^login/$', 'akvo.rsr.vanilla_views.login', name='login'),
 
     # IATI lists
     url(r'^iati/projects/(?P<iati_activity_id>[_\-a-zA-Z0-9]+)/$',

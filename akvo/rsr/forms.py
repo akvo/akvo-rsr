@@ -19,36 +19,36 @@ from registration.models import RegistrationProfile
 class RegisterForm(forms.Form):
     email = forms.EmailField(
         label='',
+        max_length=254,
         widget=forms.TextInput(
-            attrs={'placeholder': 'email address',
-                   'max_length': 254}
+            attrs={'placeholder': 'Email'}
         ),
     )
     first_name = forms.CharField(
         label='',
+        max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': 'first name',
-                   'max_length': 30}
+            attrs={'placeholder': 'First name'}
         ),
     )
     last_name = forms.CharField(
         label='',
+        max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': 'last name',
-                   'max_length': 30}
+            attrs={'placeholder': 'Last name'}
         ),
     )
     password1 = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'password'},
+            attrs={'placeholder': 'Password'},
             render_value=False
         )
     )
     password2 = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'repeat password'},
+            attrs={'placeholder': 'Repeat password'},
             render_value=False
         )
     )

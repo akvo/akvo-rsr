@@ -2,7 +2,7 @@
 
 {% load i18n bootstrap3 %}
 
-{% block title %}{% trans 'Register your Akvo RSR account' %}{% endblock %}
+{% block title %}{% trans 'Sign in to your Akvo RSR account' %}{% endblock %}
 
 {% block maincontent %}
 <div class="col-md-6 col-md-offset-3">
@@ -14,7 +14,7 @@
     {% endfor %}
     {% buttons %}
         <button type="submit" class="btn btn-primary">
-            {% bootstrap_icon "star" %} {% trans 'Register' %}
+            {% bootstrap_icon "ok-sign" %} {% trans 'Login' %}
         </button>
     {% endbuttons %}
 </form>
