@@ -26,8 +26,12 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#">Add an update</a></li>
+        {% if not user.username %}
         <li><a href="/register">Register</a></li>
-        <li><a href="/login">Sign in</a></li>
+        <li><a href="/sign_in">Sign in</a></li>
+        {% else %}
+        <li><a href="/sign_out">Sign out</a></li>
+        {% endif %}
       </ul>
     </div>
   </div>
