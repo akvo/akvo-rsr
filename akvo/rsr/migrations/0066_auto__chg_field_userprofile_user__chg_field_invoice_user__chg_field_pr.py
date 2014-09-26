@@ -8,20 +8,32 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting model 'UserProfile'
-        db.delete_table(u'rsr_userprofile')
 
+        # Changing field 'UserProfile.user'
+        db.alter_column(u'rsr_userprofile', 'user_id', self.gf('django.db.models.fields.related.OneToOneField')(unique=True, to=orm['rsr.User']))
+
+        # Changing field 'Invoice.user'
+        db.alter_column(u'rsr_invoice', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.User'], null=True))
+
+        # Changing field 'ProjectUpdate.user'
+        db.alter_column(u'rsr_projectupdate', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.User']))
+
+        # Changing field 'ProjectComment.user'
+        db.alter_column(u'rsr_projectcomment', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.User']))
 
     def backwards(self, orm):
-        # Adding model 'UserProfile'
-        db.create_table(u'rsr_userprofile', (
-            ('notes', self.gf('akvo.rsr.fields.ValidXMLTextField')(default='', blank=True)),
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('organisation', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Organisation'])),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='userprofile', unique=True, to=orm['rsr.User'])),
-        ))
-        db.send_create_signal('rsr', ['UserProfile'])
 
+        # Changing field 'UserProfile.user'
+        db.alter_column(u'rsr_userprofile', 'user_id', self.gf('django.db.models.fields.related.OneToOneField')(unique=True, to=orm['auth.User']))
+
+        # Changing field 'Invoice.user'
+        db.alter_column(u'rsr_invoice', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True))
+
+        # Changing field 'ProjectUpdate.user'
+        db.alter_column(u'rsr_projectupdate', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']))
+
+        # Changing field 'ProjectComment.user'
+        db.alter_column(u'rsr_projectcomment', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']))
 
     models = {
         u'auth.group': {
@@ -283,6 +295,7 @@ class Migration(SchemaMigration):
             'custom_return_url_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '50', 'blank': 'True'}),
             'default_language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '5'}),
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'exclude_keywords': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'facebook_app_id': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '40', 'null': 'True', 'blank': 'True'}),
             'facebook_button': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -564,6 +577,13 @@ class Migration(SchemaMigration):
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
             'username': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '254', 'unique': 'True'})
+        },
+        'rsr.userprofile': {
+            'Meta': {'ordering': "['user__username']", 'object_name': 'UserProfile'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
+            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'userprofile'", 'unique': 'True', 'to': "orm['rsr.User']"})
         }
     }
 
