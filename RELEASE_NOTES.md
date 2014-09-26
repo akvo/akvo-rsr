@@ -33,6 +33,12 @@ This feature will intially be available at http://rsr.akvo.org/rest/docs/ but we
 
 Github issue: [#632](https://github.com/akvo/akvo-rsr/issues/632)
 
+### API Permissions
+
+We've also made some additions to the permissions when using the API to ensure that we can provide the right access to those that need it when making queries on the new Django REST Framework API.
+
+Github issue: [#632](https://github.com/akvo/akvo-rsr/issues/632)
+
 
 --------
 
