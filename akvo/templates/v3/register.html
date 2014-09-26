@@ -1,8 +1,14 @@
-{% extends "v3/base_header_footer.html" %}
+{% extends "v3/base.html" %}
 
 {% load i18n bootstrap3 %}
 
 {% block title %}{% trans 'Register your Akvo RSR account' %}{% endblock %}
+
+{% block custom_page_css %}
+      <style type="text/css">
+        form { padding-bottom: 55px; }
+      </style>
+{% endblock %}
 
 {% block maincontent %}
 <div class="col-md-6 col-md-offset-3">

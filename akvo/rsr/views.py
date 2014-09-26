@@ -55,7 +55,9 @@ def activate(request, activation_key, extra_context=None):
             if not registration_profile.activation_key_expired():
                 registration_profile.activation_key = RegistrationProfile.ACTIVATED
                 registration_profile.save()
-                user_activated.send(sender=RegistrationProfile, user=user)
+                user.is_active = True
+                user.save()
+                # user_activated.send(sender=RegistrationProfile, user=user)
     if extra_context is None:
         extra_context = {}
     context = RequestContext(request)
@@ -86,3 +88,8 @@ def sign_in(request):
 def sign_out(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+
+def myrsr(request):
+    context = RequestContext(request)
+    return render_to_response('v3/myrsr.html', context_instance=context)

@@ -1,0 +1,14 @@
+{% extends "v3/base.html" %}
+
+{% load i18n humanize %}
+
+{% block title %}{% trans 'MyRSR' %}{% endblock title %}
+
+{% block maincontent %}
+    <h1>User details:</h1>
+    <ul>
+        <li>{{ user.email }}</li>
+        <li>{{ user.first_name }}</li>
+        <li>{{ user.last_name }}</li>
+    </ul>
+{% endblock %}
