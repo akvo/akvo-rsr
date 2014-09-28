@@ -8,63 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'User'
-        db.create_table(u'rsr_user', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('username', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=254, unique=True)),
-            ('password', self.gf('django.db.models.fields.CharField')(max_length=128)),
-            ('last_login', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('email', self.gf('django.db.models.fields.EmailField')(unique=True, max_length=254)),
-            ('first_name', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=30, blank=True)),
-            ('last_name', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=30, blank=True)),
-            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('is_staff', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('date_joined', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('notes', self.gf('akvo.rsr.fields.ValidXMLTextField')(default='', blank=True)),
-            ('is_superuser', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('rsr', ['User'])
-
-        # Adding M2M table for field organisation on 'User'
-        m2m_table_name = db.shorten_name(u'rsr_user_organisations')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('user', models.ForeignKey(orm['rsr.user'], null=False)),
-            ('organisation', models.ForeignKey(orm['rsr.organisation'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['user_id', 'organisation_id'])
-
-        # Adding M2M table for field groups on 'User'
-        m2m_table_name = db.shorten_name(u'rsr_user_groups')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('user', models.ForeignKey(orm['rsr.user'], null=False)),
-            ('group', models.ForeignKey(orm[u'auth.group'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['user_id', 'group_id'])
-
-        # Adding M2M table for field user_permissions on 'User'
-        m2m_table_name = db.shorten_name(u'rsr_user_user_permissions')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('user', models.ForeignKey(orm['rsr.user'], null=False)),
-            ('permission', models.ForeignKey(orm[u'auth.permission'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['user_id', 'permission_id'])
+        # Adding field 'PartnerSite.exclude_keywords'
+        db.add_column(u'rsr_partnersite', 'exclude_keywords',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'User'
-        db.delete_table(u'rsr_user')
-
-        # Removing M2M table for field organisation on 'User'
-        db.delete_table(db.shorten_name(u'rsr_user_organisations'))
-
-        # Removing M2M table for field groups on 'User'
-        db.delete_table(db.shorten_name(u'rsr_user_groups'))
-
-        # Removing M2M table for field user_permissions on 'User'
-        db.delete_table(db.shorten_name(u'rsr_user_user_permissions'))
+        # Deleting field 'PartnerSite.exclude_keywords'
+        db.delete_column(u'rsr_partnersite', 'exclude_keywords')
 
 
     models = {
@@ -343,6 +295,7 @@ class Migration(SchemaMigration):
             'custom_return_url_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '50', 'blank': 'True'}),
             'default_language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '5'}),
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'exclude_keywords': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'facebook_app_id': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '40', 'null': 'True', 'blank': 'True'}),
             'facebook_button': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -606,24 +559,6 @@ class Migration(SchemaMigration):
             'transaction_type_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'value': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '11', 'decimal_places': '1', 'blank': 'True'}),
             'value_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'rsr.user': {
-            'Meta': {'ordering': "['email']", 'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '254'}),
-            'first_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'}),
-            'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
-            'organisations': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': "orm['rsr.Organisation']"}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '254', 'unique': 'True'})
         },
         'rsr.userprofile': {
             'Meta': {'ordering': "['user__username']", 'object_name': 'UserProfile'},
