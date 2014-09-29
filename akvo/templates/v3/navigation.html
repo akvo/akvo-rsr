@@ -1,3 +1,5 @@
+{% load bootstrap3 %}
+
 <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -19,7 +21,13 @@
         <li><a href="#">Organisations</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Add an update</a></li>
+        <li>
+          <form>
+            <a href="/#" class="btn btn-primary btn-sm navbar-btn">
+              {% bootstrap_icon "bullhorn" %} Add an update
+            </a>
+          </form>
+        </li>
         {% if not user.username %}
         <li><a href="/register">Register</a></li>
         <li><a href="/sign_in">Sign in</a></li>

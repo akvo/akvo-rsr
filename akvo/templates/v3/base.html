@@ -69,23 +69,15 @@
 
     <!-- Piwik -->
     {% tracking_code %}
-
-    {% block custom_page_css %}{% endblock %}
   </head>
 
   <body>
 
-    <!-- Part 1: Wrap all page content here -->
+    {% include 'v3/navigation.html' %}
 
-
-      {% include 'v3/navigation.html' %}
-
-      <!-- Begin page content -->
-      <div class="container">
-        {% block maincontent %}{% endblock %}
-      </div>
-
-
+    <div class="container">
+      {% block maincontent %}{% endblock %}
+    </div>
 
     {% include 'v3/footer.html' %}
 
