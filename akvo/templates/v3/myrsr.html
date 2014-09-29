@@ -1,14 +1,69 @@
 {% extends "v3/base.html" %}
 
-{% load i18n humanize %}
+{% load i18n bootstrap3 %}
 
-{% block title %}{% trans 'MyRSR' %}{% endblock title %}
+{% block title %}{% trans 'MyRSR' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 
 {% block maincontent %}
-    <h1>User details:</h1>
-    <ul>
-        <li>{{ user.email }}</li>
-        <li>{{ user.first_name }}</li>
-        <li>{{ user.last_name }}</li>
-    </ul>
+{% if message %}
+        <div class="alert alert-success" role="alert">{{ message }}</div>
+{% elif error_message %}
+        <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+{% endif %}
+
+<div class="col-md-4">
+<h2>My details</h2>
+<form method="post" action="" name="profileForm">
+    {% csrf_token %}
+    {% for field in profileform %}
+        {% bootstrap_field field %}
+    {% endfor %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% trans 'Update details' %}
+        </button>
+    {% endbuttons %}
+</form>
+</div>
+
+<div class="col-md-4">
+<h2>Change password</h2>
+<form method="post" action="" name="passwordForm">
+    {% csrf_token %}
+    {% for field in passwordform %}
+        {% bootstrap_field field %}
+    {% endfor %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% trans 'Update password' %}
+        </button>
+    {% endbuttons %}
+</form>
+</div>
+
+<div class="col-md-4">
+<h2>My organisations</h2>
+{% if user.organisations.all %}
+<ul>
+    {% for org in user.organisations.all %}
+    <li>{{ org.name }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<h2><small>Not affiliated with an organisation.</small></h2>
+{% endif %}
+
+<h3>Connect with an organisation</h3>
+<form method="post" action="" name="organisationForm">
+    {% csrf_token %}
+    {% for field in organisationform %}
+        {% bootstrap_field field %}
+    {% endfor %}
+    {% buttons %}
+        <button type="submit" class="btn btn-success">
+            {% trans 'Request to join' %}
+        </button>
+    {% endbuttons %}
+</form>
+</div>
 {% endblock %}

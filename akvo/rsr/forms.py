@@ -15,6 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from registration.models import RegistrationProfile
 
+from .models import Organisation
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(
@@ -95,3 +96,122 @@ class RegisterForm(forms.Form):
         new_user.is_active = False
         new_user.save()
         return new_user
+
+
+class ProfileForm(forms.Form):
+    email = forms.EmailField(
+        label='',
+        max_length=254,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Email',
+                'readonly': True}
+        ),
+    )
+    first_name = forms.CharField(
+        label='',
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'First name'}
+        ),
+    )
+    last_name = forms.CharField(
+        label='',
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Last name'}
+        ),
+    )
+
+    def save(self, request):
+        """
+        Update the User profile.
+        """
+        user = request.user
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save()
+
+
+class PasswordForm(forms.Form):
+    old_password = forms.CharField(
+        label='',
+        widget=forms.PasswordInput(
+            attrs={'placeholder': 'Current password'},
+            render_value=False
+        )
+    )
+    new_password1 = forms.CharField(
+        label='',
+        widget=forms.PasswordInput(
+            attrs={'placeholder': 'New password'},
+            render_value=False
+        )
+    )
+    new_password2 = forms.CharField(
+        label='',
+        widget=forms.PasswordInput(
+            attrs={'placeholder': 'Repeat new password'},
+            render_value=False
+        )
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(PasswordForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        """
+        Verify that the current password is correct and that the values entered into the two new password fields match.
+        """
+        user = self.request.user
+        if 'old_password' in self.cleaned_data:
+            if not user.check_password(self.cleaned_data['old_password']):
+                raise forms.ValidationError(
+                    _(u'Invalid current password.')
+                )
+        if 'new_password1' in self.cleaned_data and 'new_password2' in self.cleaned_data:
+            if self.cleaned_data['new_password1'] != self.cleaned_data['new_password2']:
+                raise forms.ValidationError(
+                    _(u'Passwords do not match. Please enter the same password in both fields.')
+                )
+        return self.cleaned_data
+
+    def save(self, request):
+        """
+        Update the User password.
+        """
+        user = request.user
+        user.set_password(self.cleaned_data['new_password1'])
+        user.save()
+
+
+class UserOrganisationForm(forms.Form):
+    organisation = forms.ModelChoiceField(
+        queryset=Organisation.objects.all(),
+        label='',
+        initial='Organisation'
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(UserOrganisationForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        """
+        Check that there is no link between user and organisation yet.
+        """
+        user = self.request.user
+        if 'organisation' in self.cleaned_data:
+            if self.cleaned_data['organisation'] in user.organisations.all():
+                raise forms.ValidationError(
+                    _(u'User already linked to organisation.')
+                )
+        return self.cleaned_data
+
+    def save(self, request):
+        """
+        Link user to organisation.
+        """
+        # TODO: The approval process of users
+        request.user.organisations.add(self.cleaned_data['organisation'])
