@@ -1,58 +1,27 @@
 # -*- coding: utf-8 -*-
 from south.utils import datetime_utils as datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
 
-class Migration(DataMigration):
+
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        for user in orm['auth.User'].objects.all():
-            new_user, created = orm['rsr.User'].objects.get_or_create(pk=user.pk)
-            new_user.username = user.username
-            new_user.password = user.password
-            if not orm['rsr.User'].objects.filter(email=user.email).exclude(pk=user.pk).exists():
-                new_user.email = user.email if user.email else user.username + "@fake.mail"
-            else:
-                # Duplicate email; putting username behind email
-                new_user.email = user.email + "." + user.username
-            new_user.first_name = user.first_name
-            new_user.last_name = user.last_name
-            new_user.is_active = user.is_active
-            new_user.is_staff = user.is_staff
-            new_user.is_superuser = user.is_superuser
-            new_user.last_login = user.last_login
-            new_user.date_joined = user.date_joined
-            if orm['rsr.UserProfile'].objects.filter(user=user).exists():
-                user_profile = orm['rsr.UserProfile'].objects.get(user=user)
-                new_user.notes = user_profile.notes
-                new_user.organisations.add(user_profile.organisation)
-            new_user.groups = user.groups.all()
-            new_user.user_permissions = user.user_permissions.all()
-            new_user.save()
+        # Deleting model 'UserProfile'
+        db.delete_table(u'rsr_userprofile')
+
 
     def backwards(self, orm):
-        # Reverting all rsr.Users back to auth.Users
-        for user in orm['rsr.User'].objects.all():
-            new_user, created = orm['auth.User'].objects.get_or_create(pk=user.pk)
-            new_user.username = user.username
-            new_user.password = user.password
-            # Email might be altered after the forwards migration
-            new_user.email = user.email
-            new_user.first_name = user.first_name
-            new_user.last_name = user.last_name
-            new_user.is_active = user.is_active
-            new_user.is_staff = user.is_staff
-            new_user.is_superuser = user.is_superuser
-            new_user.last_login = user.last_login
-            new_user.date_joined = user.date_joined
-            new_user.groups = user.groups.all()
-            new_user.user_permissions = user.user_permissions.all()
-            new_user.save()
-            if user.organisations.all().count() > 0:
-                new_user_profile, created = orm['rsr.UserProfile'].objects.get_or_create(user=new_user, organisation=user.organisations.all()[0])
-                new_user_profile.notes = user.notes
-                new_user_profile.save()
+        # Adding model 'UserProfile'
+        db.create_table(u'rsr_userprofile', (
+            ('notes', self.gf('akvo.rsr.fields.ValidXMLTextField')(default='', blank=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('organisation', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Organisation'])),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='userprofile', unique=True, to=orm['rsr.User'])),
+        ))
+        db.send_create_signal('rsr', ['UserProfile'])
+
 
     models = {
         u'auth.group': {
@@ -67,22 +36,6 @@ class Migration(DataMigration):
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -214,7 +167,7 @@ class Migration(DataMigration):
             'test': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'transaction_id': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.User']", 'null': 'True', 'blank': 'True'})
         },
         'rsr.keyword': {
             'Meta': {'ordering': "('label',)", 'object_name': 'Keyword'},
@@ -330,6 +283,7 @@ class Migration(DataMigration):
             'custom_return_url_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '50', 'blank': 'True'}),
             'default_language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '5'}),
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'exclude_keywords': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'facebook_app_id': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '40', 'null': 'True', 'blank': 'True'}),
             'facebook_button': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'google_translation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -437,7 +391,7 @@ class Migration(DataMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comments'", 'to': "orm['rsr.Project']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.User']"})
         },
         'rsr.projectcondition': {
             'Meta': {'object_name': 'ProjectCondition'},
@@ -503,7 +457,7 @@ class Migration(DataMigration):
             'text': ('akvo.rsr.fields.ValidXMLTextField', [], {'blank': 'True'}),
             'title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'db_index': 'True'}),
             'update_method': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'W'", 'max_length': '1', 'db_index': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.User']"}),
             'user_agent': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '200', 'blank': 'True'}),
             'uuid': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '40', 'db_index': 'True', 'blank': 'True'}),
             'video': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
@@ -611,15 +565,7 @@ class Migration(DataMigration):
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'users'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
             'username': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '254', 'unique': 'True'})
-        },
-        'rsr.userprofile': {
-            'Meta': {'ordering': "['user__username']", 'object_name': 'UserProfile'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
-            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'userprofile'", 'unique': 'True', 'to': u"orm['auth.User']"})
         }
     }
 
     complete_apps = ['rsr']
-    symmetrical = True
