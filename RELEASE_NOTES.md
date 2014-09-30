@@ -7,6 +7,28 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2/4/2 Astana Hotfix II
+---
+
+Tuesday 30th September 2014, zzgvh
+
+Included changes
+---
+
+### Import RAIN IATI Data
+
+Update the import scripts with better logging, use of online source files for the import adn a bugfix for an API call needed by the RAIN import.
+
+### Project exclusion for Pages
+
+Using keywords introduced in 2.3.9 Yam it is now possible to exclude projects for an Akvo Pages website.
+
+### Bugfix for RSR country list
+
+The country list used in RSR also contains a mapping between countires and continents. The mapping for  Bonaire, Sint Eustatius and Saba was missing.
+
+--------
+
 Akvo RSR ver 2/4/1 Astana Hotfix
 ---
 
