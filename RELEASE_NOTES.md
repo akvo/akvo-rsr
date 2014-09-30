@@ -7,6 +7,34 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2/4/2 Astana Hotfix II
+---
+
+Tuesday 30th September 2014, zzgvh
+
+Included changes
+---
+
+### Import RAIN IATI Data
+
+Update the import scripts with better logging, use of online source files for the import adn a bugfix for an API call needed by the RAIN import.
+
+Github issue: [#710](https://github.com/akvo/akvo-rsr/issues/710)
+
+### Project exclusion for Pages
+
+Using keywords introduced in 2.3.9 Yam it is now possible to exclude projects for an Akvo Pages website.
+
+Github issue: [#745](https://github.com/akvo/akvo-rsr/issues/745)
+
+### Bugfix for RSR country list
+
+The country list used in RSR also contains a mapping between countires and continents. The mapping for Bonaire, Sint Eustatius and Saba was missing.
+
+Github issue: [#748](https://github.com/akvo/akvo-rsr/issues/748)
+
+--------
+
 Akvo RSR ver 2/4/1 Astana Hotfix
 ---
 
@@ -30,6 +58,12 @@ We have recently added the Django REST Framework to RSR to provide us with a new
 Within this area we are looking a lot at the documentation surrounding the API and have installed a library called Swagger that generates some documentation on the resources automatically.
 
 This feature will intially be available at http://rsr.akvo.org/rest/docs/ but we will continue to work on more structured documentation going forwards.
+
+Github issue: [#632](https://github.com/akvo/akvo-rsr/issues/632)
+
+### API Permissions
+
+We've also made some additions to the permissions when using the API to ensure that we can provide the right access to those that need it when making queries on the new Django REST Framework API.
 
 Github issue: [#632](https://github.com/akvo/akvo-rsr/issues/632)
 
