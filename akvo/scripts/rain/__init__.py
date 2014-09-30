@@ -3,7 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from rest_framework.status import HTTP_200_OK
 
 from akvo import settings
 
@@ -13,6 +13,7 @@ import sys
 import tablib
 
 from django.utils.encoding import smart_str, smart_unicode
+from akvo.api_utils import Requester
 
 
 API_VERSION = 'v1'
@@ -79,6 +80,14 @@ def outsys(txt):
     sys.stdout.write(txt)
     sys.stdout.flush()
 
+def save_xml(xml, xml_filename):
+    xml_filename = xml_filename.format(
+        datetime=datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    )
+    xml_filename = os.path.join(me.RAIN_ROOT_DIR, xml_filename)
+    with open(xml_filename, "w") as f:
+        f.write(xml)
+
 #base_log = dict(msg=[], error=[])
 log_bits = []
 
@@ -114,6 +123,29 @@ def print_log(log_file, column_names, to_console=False):
             print bit['text'].format(**bit['data'])
 
     log_to_file(dataset.csv, log_file)
+
+def load_xml(location):
+    "Load XMl either from file or from a URL"
+    xml = ''
+    if location[:4] == 'http':
+        try:
+            xml = Requester(
+                url_template=location,
+                headers={
+                    'content-type': 'application/xml',
+                    'encoding': 'utf-8',
+                },
+                accept_codes=[HTTP_200_OK],
+            )
+        except Exception, e:
+            return ''
+        if xml.response.status_code is HTTP_200_OK:
+            return xml.response.text.encode('utf-8')
+
+    else:
+        with open(location, 'r') as f:
+            xml = f.read()
+    return xml
 
 # Activities
 # ==========
