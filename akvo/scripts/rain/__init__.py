@@ -178,7 +178,7 @@ class RainActivity():
         """ Look for the RSR Id of the project, search for a tag similar to:
             <other-identifier owner-name="akvorsr" owner-ref="29"/>
         """
-        tags = self.tree.xpath("//other-identifier[@owner-name='akvorsr']")
+        tags = self.tree.xpath("other-identifier[@owner-name='akvorsr']")
         if len(tags) == 1:
             return tags[0].get('owner-ref')
 
@@ -186,7 +186,7 @@ class RainActivity():
         """ Look for the internal Id of the project, search for a tag similar to:
             <other-identifier owner-name="rainpms" rain:type="id" owner-ref="520"/>
         """
-        tags =  self.tree.xpath("//other-identifier[@owner-name='rainpms' and @rain:type='id']", namespaces=self.ns_map)
+        tags =  self.tree.xpath("other-identifier[@owner-name='rainpms' and @rain:type='id']", namespaces=self.ns_map)
         if len(tags) == 1:
             return tags[0].get('owner-ref')
 
