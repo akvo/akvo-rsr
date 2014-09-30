@@ -7,7 +7,7 @@
 
 from decimal import Decimal
 
-from django.contrib.auth import get_permission_codename
+from django.contrib.auth import get_permission_codename, get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import ModelForm
 
@@ -16,6 +16,7 @@ from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import NotFound
+from tastypie.http import HttpUnauthorized
 from tastypie.resources import ModelResource
 
 from akvo import settings
@@ -316,7 +317,12 @@ class ProjectResource(ConditionalFullResource):
                 regardless of publishing status
         """
         object_list = super(ProjectResource, self).get_object_list(request)
-        if self._meta.authentication.is_authenticated(request):
+        # The whole point of ConditionalApiKeyAuthentication is to allow some access even for unauthorised requests,
+        # but here we need to figure out if the request contains a name/key pair and if so allow access to unpublished
+        # projects. So we call ApiKeyAuthentication.is_authenticated() (using super() which returns True if there is an
+        # identified user holding an api key, AND is_authenticated() also sets request.user to the User object which we
+        # need to be able to call request.user.has_perm() correctly.
+        if super(ConditionalApiKeyAuthentication, self.Meta.authentication).is_authenticated(request) is True:
             opts = Project._meta
             if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
                 return object_list
@@ -326,7 +332,6 @@ class ProjectResource(ConditionalFullResource):
                 )
                 return object_list.distinct()
         return object_list.published()
-
 
     def dehydrate(self, bundle):
         """ add thumbnails inline info for Project.current_image
