@@ -70,7 +70,10 @@ class PartnerSitesMixin(object):
 
         # Check if keywords have been specified for the partner site and filter projects based on keywords if so
         if partner_site.keywords.all():
-            projects = projects.filter(keywords__in=partner_site.keywords.all())
+            if partner_site.exclude_keywords:
+                projects = projects.exclude(keywords__in=partner_site.keywords.all())
+            else:
+                projects = projects.filter(keywords__in=partner_site.keywords.all())
 
         return projects.latest_update_fields().order_by('-id')
 
