@@ -141,10 +141,28 @@ class ProjectSaver():
     def _current_image_credit(self):
         self.project.current_image_credit = self.activity.current_image_credit()
 
+    def _category(self):
+        watsan_cat = Category.objects.get(name='Water, Sanitation and Hygiene')
+        try:
+            self.project.categories.add(watsan_cat)
+        except:
+            print "Cat is not in the bag!"
+
+    def _sync_owner(self):
+        rain = Organisation.objects.get(id=RAIN_ORG_ID)
+        self.project.sync_owner = rain
+
+    def _publish(self):
+        self.project.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
+        self.project.publishingstatus.save()
+
     def process(self):
         self._current_image()
         self._current_image_caption()
         self._current_image_credit()
+        self._category()
+        self._sync_owner()
+        self._publish()
         try:
             self.project.full_clean()
         except ValidationError, e:
@@ -182,19 +200,6 @@ class ProjectSaver():
                )
             )
             return
-
-
-# class PublishingSaver():
-#     """ Perform the post import saving steps for (Cordaid) publishing status
-#     """
-#     def __init__(self, activity, project):
-#         self.activity = activity
-#         self.project = project
-#
-#     def save(self):
-#         status = PublishingStatus.objects.get(project=self.project)
-#         status.status = 'published' if self.activity.publishing_status() else 'unpublished'
-#         status.save()
 
 
 class PostImporter():
