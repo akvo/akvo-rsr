@@ -22,8 +22,8 @@ from akvo.utils import model_and_instance_based_filename, who_am_i
 from akvo.scripts.rain import (
     RAIN_ORG_ID, print_log, log, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE, init_log, outsys, RainActivity, RAIN_ACTIVITY_NS,
     AKVO_NS, RAIN_POST_PROCESS_CSV_FILE,ERROR_PROJECT_NOT_FOUND, ERROR_PROJECT_DATA_INVALID, ERROR_PROJECT_NOT_SAVED,
-    ERROR_IMAGE_NOT_FOUND, ACTION_PROJECT_POST_PROCESS_DONE, load_xml, RAIN_IATI_ACTIVITES_URL
-)
+    ERROR_IMAGE_NOT_FOUND, ACTION_PROJECT_POST_PROCESS_DONE, load_xml, RAIN_IATI_ACTIVITES_URL,
+    ACTION_PROJECT_PUBLISHED, ACTION_PROJECT_NOT_PUBLISHED)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -153,7 +153,30 @@ class ProjectSaver():
         self.project.sync_owner = rain
 
     def _publish(self):
-        self.project.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
+        has_image = self.project.current_image != ''
+        has_lat_long = self.project.primary_location.latitude != 0 or self.project.primary_location.longitude != 0
+        if has_image and has_lat_long:
+            self.project.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
+            log(
+               "Project ID: {rsr_id} published",
+               dict(
+                   rsr_id=self.project.pk,
+                   internal_id=self.activity.internal_id(),
+                   iati_id=self.activity.iati_id(),
+                   event=ACTION_PROJECT_PUBLISHED,
+               )
+            )
+        else:
+            self.project.publishingstatus.status = PublishingStatus.STATUS_UNPUBLISHED
+            log(
+               "Project ID: {rsr_id} not published",
+               dict(
+                   rsr_id=self.project.pk,
+                   internal_id=self.activity.internal_id(),
+                   iati_id=self.activity.iati_id(),
+                   event=ACTION_PROJECT_NOT_PUBLISHED,
+               )
+            )
         self.project.publishingstatus.save()
 
     def process(self):
