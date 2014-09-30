@@ -7,6 +7,41 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2/4/1 Astana Hotfix
+---
+
+Tuesday 16th September 2014, adriancollier
+
+Included changes
+---
+
+### Import RAIN IATI Data
+
+We have been working with our second partner RAIN Foundation to implement an import function that will allow us to take a copy of their published IATI file in order to create RSR projects to reflect their working portfolio.
+
+The scripts have been created and tested as part of the workflow and now need to be pushed into the live environment for final publication.
+
+Github issue: [#710](https://github.com/akvo/akvo-rsr/issues/710)
+
+### Swagger Documentation - Django REST Framework
+
+We have recently added the Django REST Framework to RSR to provide us with a newer API for both Read and Write functionality that we will continue to build out on.
+
+Within this area we are looking a lot at the documentation surrounding the API and have installed a library called Swagger that generates some documentation on the resources automatically.
+
+This feature will intially be available at http://rsr.akvo.org/rest/docs/ but we will continue to work on more structured documentation going forwards.
+
+Github issue: [#632](https://github.com/akvo/akvo-rsr/issues/632)
+
+### API Permissions
+
+We've also made some additions to the permissions when using the API to ensure that we can provide the right access to those that need it when making queries on the new Django REST Framework API.
+
+Github issue: [#632](https://github.com/akvo/akvo-rsr/issues/632)
+
+
+--------
+
 Akvo RSR ver 2.4 Astana
 ---
 
