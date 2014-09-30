@@ -3,6 +3,8 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+
 from django.core.exceptions import ValidationError
 
 import os
@@ -14,13 +16,14 @@ from django.core.files.temp import NamedTemporaryFile
 from lxml import etree
 
 from akvo.api_utils import ImageImporter
-from akvo.rsr.models import Project, Organisation
+from akvo.rsr.models import Project, Organisation, Category, PublishingStatus
 from akvo.utils import model_and_instance_based_filename, who_am_i
 
 from akvo.scripts.rain import (
-    RAIN_IATI_ACTIVITIES_XML, RAIN_ORG_ID, print_log, log, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE, init_log, outsys,
-    RainActivity, RAIN_ACTIVITY_NS, AKVO_NS, RAIN_POST_PROCESS_CSV_FILE,
-    ERROR_PROJECT_NOT_FOUND, ERROR_PROJECT_DATA_INVALID, ERROR_PROJECT_NOT_SAVED)
+    RAIN_ORG_ID, print_log, log, ERROR_IMAGE_UPLOAD, ACTION_SET_IMAGE, init_log, outsys, RainActivity, RAIN_ACTIVITY_NS,
+    AKVO_NS, RAIN_POST_PROCESS_CSV_FILE,ERROR_PROJECT_NOT_FOUND, ERROR_PROJECT_DATA_INVALID, ERROR_PROJECT_NOT_SAVED,
+    ERROR_IMAGE_NOT_FOUND, ACTION_PROJECT_POST_PROCESS_DONE, load_xml, RAIN_IATI_ACTIVITES_URL
+)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -41,6 +44,8 @@ class ProjectSaver():
                     msg,
                     dict(
                         rsr_id=activity.rsr_id(),
+                        internal_id=activity.internal_id(),
+                        iati_id=activity.iati_id(),
                         event=ERROR_IMAGE_UPLOAD,
                         extra=msg.format(rsr_id=activity.rsr_id())
                     )
@@ -56,7 +61,9 @@ class ProjectSaver():
                 log(
                     msg,
                     dict(
-                        internal_id=activity.internal_id(),
+                        rsr_id=self.activity.rsr_id(),
+                        internal_id=self.activity.internal_id(),
+                        iati_id=self.activity.iati_id(),
                         event=ERROR_IMAGE_UPLOAD,
                         extra=msg.format(internal_id=activity.internal_id())
                     )
@@ -72,7 +79,9 @@ class ProjectSaver():
                 log(
                     msg,
                     dict(
-                        iati_id=activity.iati_id(),
+                        rsr_id=self.activity.rsr_id(),
+                        internal_id=self.activity.internal_id(),
+                        iati_id=self.activity.iati_id(),
                         event=ERROR_IMAGE_UPLOAD,
                         extra=msg.format(iati_id=activity.iati_id())
                     )
@@ -107,12 +116,22 @@ class ProjectSaver():
             log(
                "Save project image: {extra}",
                dict(
-                   internal_id=self.activity.internal_id(),
                    rsr_id=self.activity.rsr_id(),
+                   internal_id=self.activity.internal_id(),
                    iati_id=self.activity.iati_id(),
                    event=ACTION_SET_IMAGE,
                    extra=filename
                )
+            )
+        else:
+            log(
+                "No image found for project: {rsr_id}",
+                dict(
+                    rsr_id=self.activity.rsr_id(),
+                    internal_id=self.activity.internal_id(),
+                    iati_id=self.activity.iati_id(),
+                    event=ERROR_IMAGE_NOT_FOUND,
+                )
             )
 
 
@@ -130,21 +149,34 @@ class ProjectSaver():
             self.project.full_clean()
         except ValidationError, e:
             log(
-               "Data validation error when saving project ID: {rsr_id}:\n{extra}",
+               "Warning: data validation error when saving project ID: {rsr_id}:\n{extra}",
                dict(
                    rsr_id=self.project.pk,
+                   internal_id=self.activity.internal_id(),
+                   iati_id=self.activity.iati_id(),
                    event=ERROR_PROJECT_DATA_INVALID,
                    extra=e,
                )
             )
-            return
+            # return
         try:
             self.project.save()
+            log(
+               "Saved project ID: {rsr_id}:\n{extra}",
+               dict(
+                   rsr_id=self.project.pk,
+                   internal_id=self.activity.internal_id(),
+                   iati_id=self.activity.iati_id(),
+                   event=ACTION_PROJECT_POST_PROCESS_DONE,
+               )
+            )
         except Exception, e:
             log(
                "Couldn't save project ID: {rsr_id}:\n{extra}",
                dict(
                    rsr_id=self.project.pk,
+                   internal_id=self.activity.internal_id(),
+                   iati_id=self.activity.iati_id(),
                    event=ERROR_PROJECT_NOT_SAVED,
                    extra=e,
                )
