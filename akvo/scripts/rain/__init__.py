@@ -23,16 +23,16 @@ me = sys.modules[__name__]
 rain_settings = dict(
     AKVO_NS='http://akvo.org/iati-activities',
     RAIN_ORGANISATION_NS="http://data.rainfoundation.org/rsr-organisations",
-    RAIN_ACTIVITY_NS="http://data.rainfoundation.org/rsr-organisations",
+    RAIN_ACTIVITY_NS="http://data.rainfoundation.org",
 
     RAIN_ROOT_DIR = '/var/tmp/rain',
-    # RAIN_ROOT_DIR = '/Users/gabriel/git/akvo-rsr/akvo/rain',
     RAIN_PROJECT_IMAGES_SUBDIR = 'project_images',
     RAIN_LOGOS_SUBDIR = 'logos',
 
-    # RAIN_IATI_ACTIVITES_FILENAME = 'rain_one_activities_v20.xml',
-    RAIN_IATI_ACTIVITES_FILENAME = 'rain_activities_v20.xml',
+    RAIN_IATI_ACTIVITES_FILENAME = 'rain_activities.xml',
+    RAIN_IATI_ACTIVITES_URL='https://data.rainfoundation.org/iati/',
     RAIN_ORGANISATIONS_FILENAME = 'rain_organisations_v03.xml',
+    RAIN_ORGANISATIONS_URL='https://data.rainfoundation.org/iati/rsrorg/',
 
     RAIN_ORG_CSV_FILENAME = 'rain_organisations_upload_{datetime}.csv',
     RAIN_ACTIVITIES_CSV_FILENAME = 'rain_activities_upload_{datetime}.csv',
@@ -57,7 +57,6 @@ RAIN_POST_PROCESS_CSV_FILE = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_POST_PROCESS
 
 RAIN_PROJECT_IMAGES_DIR =  os.path.join(me.RAIN_ROOT_DIR, me.RAIN_PROJECT_IMAGES_SUBDIR)
 RAIN_LOGOS_DIR =  os.path.join(me.RAIN_ROOT_DIR, me.RAIN_LOGOS_SUBDIR)
-
 
 # class ImportAdapter(logging.LoggerAdapter):
 #     def process(self, msg, kwargs):
@@ -143,10 +142,12 @@ ACTION_CREATE_IOI = 'internal org id created'
 ACTION_CREATE_ORG = 'organisation created'
 ACTION_UPDATE_ORG = 'organisation updated'
 ACTION_PUBLISHING_SET = 'set publishing status'
+ACTION_PROJECT_POST_PROCESS_DONE = 'project saved'
 
 ERROR_COUNTRY_CODE = 'invalid country code'
 ERROR_MULTIPLE_OBJECTS = 'multiple objects'
 ERROR_IMAGE_UPLOAD = 'image upload exception'
+ERROR_IMAGE_NOT_FOUND = 'no image found'
 ERROR_EXCEPTION = 'general exception'
 ERROR_CREATE_ACTIVITY = 'activity create error'
 ERROR_UPDATE_ACTIVITY = 'activity update error'
