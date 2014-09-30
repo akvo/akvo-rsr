@@ -212,20 +212,21 @@ class PostImporter():
         """ Create a list where each list item is one Activity object
         """
         self.activities = []
-        # rain_orgs = CordaidOrgs()
         outsys("\nRunning {}() ".format(who_am_i()))
-        with open(RAIN_IATI_ACTIVITIES_XML, 'r') as f:
-            iati_activities = etree.fromstring(f.read())
+        xml = load_xml(RAIN_IATI_ACTIVITES_URL)
+        if xml:
+            parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
+            iati_activities = etree.fromstring(xml, parser=parser)
             iati_activity_list = iati_activities.xpath('//iati-activity')
             for iati_activity in iati_activity_list:
                 outsys(".")
                 self.activities.append(RainActivity(iati_activity, RAIN_ACTIVITY_NS, AKVO_NS))
 
     def run(self):
+        outsys("\nProcessing projects")
         for activity in self.activities:
+            outsys(".")
             project = self._process_project(activity)
-            # if project:
-            #     self._process_publishing_status(activity, project)
 
     def _process_project(self, activity):
         try:
@@ -256,4 +257,5 @@ if __name__ == '__main__':
     importer.run()
     #logging.debug("Post import done.")
     names = (u'internal_id', u'rsr_id', u'iati_id', u'event', u'extra')
+    print
     print_log(log_file, names)
