@@ -102,13 +102,6 @@ def myrsr(request):
                 message = "Updated your profile information"
             elif profileForm.errors:
                 error_message = profileForm.errors
-        elif 'old_password' in request.POST:
-            passwordForm = PasswordForm(data=request.POST, request=request)
-            if passwordForm.is_valid():
-                passwordForm.save(request)
-                message = "Updated your password"
-            elif passwordForm.errors:
-                error_message = passwordForm.errors
         elif 'organisation' in request.POST:
             organisationForm = UserOrganisationForm(data=request.POST, request=request)
             if organisationForm.is_valid():
@@ -124,17 +117,25 @@ def myrsr(request):
             'last_name': request.user.last_name
         }
     )
-    passwordForm = PasswordForm()
     organisationForm = UserOrganisationForm()
 
     return render_to_response(
         'myrsr/myrsr.html',
         {
             'profileform': profileForm,
-            'passwordform': passwordForm,
             'organisationform': organisationForm,
             'message': message,
             'error_message': error_message
         },
         context_instance=context
     )
+
+def password_change(request):
+    context = RequestContext(request)
+    if request.method == 'POST':
+        form = PasswordForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = PasswordForm(user=request.user)
+    return render_to_response('myrsr/password_change.html', {'form': form}, context_instance=context)

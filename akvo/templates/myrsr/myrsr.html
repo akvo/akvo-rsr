@@ -27,21 +27,6 @@
 </div>
 
 <div class="col-md-4">
-<h2>Change password</h2>
-<form method="post" action="" name="passwordForm">
-    {% csrf_token %}
-    {% for field in passwordform %}
-        {% bootstrap_field field %}
-    {% endfor %}
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">
-            {% trans 'Update password' %}
-        </button>
-    {% endbuttons %}
-</form>
-</div>
-
-<div class="col-md-4">
 <h2>My organisations</h2>
 {% if user.organisations.all %}
 <ul>
