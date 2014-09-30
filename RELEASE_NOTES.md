@@ -19,13 +19,19 @@ Included changes
 
 Update the import scripts with better logging, use of online source files for the import adn a bugfix for an API call needed by the RAIN import.
 
+Github issue: [#710](https://github.com/akvo/akvo-rsr/issues/710)
+
 ### Project exclusion for Pages
 
 Using keywords introduced in 2.3.9 Yam it is now possible to exclude projects for an Akvo Pages website.
 
+Github issue: [#745](https://github.com/akvo/akvo-rsr/issues/745)
+
 ### Bugfix for RSR country list
 
-The country list used in RSR also contains a mapping between countires and continents. The mapping for  Bonaire, Sint Eustatius and Saba was missing.
+The country list used in RSR also contains a mapping between countires and continents. The mapping for Bonaire, Sint Eustatius and Saba was missing.
+
+Github issue: [#748](https://github.com/akvo/akvo-rsr/issues/748)
 
 --------
 
