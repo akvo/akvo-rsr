@@ -391,11 +391,15 @@ def python_organisation(tree):
         org_dict['logo'] = logo
     return org_dict
 
+
 def upload_organisations(argv):
     user_cred = credentials_from_args(argv)
     if user_cred:
-        with open(RAIN_ORGANISATIONS_XML, 'r') as f:
-            root = etree.fromstring(f.read())
+        xml = load_xml(RAIN_ORGANISATIONS_URL)
+        if xml:
+            save_xml(xml, "rain_organisations_{datetime}.xml")
+            parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
+            root = etree.fromstring(xml, parser=parser)
             organisations = root.findall('organisation')
             for i, org_as_etree in enumerate(organisations):
                 org_id = find_text(org_as_etree, 'internal_org_id@{{{}}}akvo_identifier'.format(RAIN_ORGANISATION_NS))
