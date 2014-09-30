@@ -73,13 +73,13 @@
 
   <body>
 
-    {% include 'v3/navigation.html' %}
+    {% include 'navigation/header.html' %}
 
     <div class="container">
       {% block maincontent %}{% endblock %}
     </div>
 
-    {% include 'v3/footer.html' %}
+    {% include 'navigation/footer.html' %}
 
     <!-- jQuery and Bootstrap JS, placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>

@@ -29,10 +29,10 @@ def register(request):
         form = RegisterForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             user = form.save(request)
-            return render_to_response('v3/register_complete.html', {'new_user': user}, context_instance=context)
+            return render_to_response('registration/register_complete.html', {'new_user': user}, context_instance=context)
     else:
         form = RegisterForm()
-    return render_to_response('v3/register.html', {'form': form}, context_instance=context)
+    return render_to_response('registration/register.html', {'form': form}, context_instance=context)
 
 
 def activate(request, activation_key, extra_context=None):
@@ -64,7 +64,7 @@ def activate(request, activation_key, extra_context=None):
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
     return render_to_response(
-        'v3/activate.html',
+        'registration/activate.html',
         {
             'new_user': user,
             'expiration_days': getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
@@ -82,7 +82,7 @@ def sign_in(request):
             return HttpResponseRedirect('/')
     else:
         form = AuthenticationForm()
-    return render_to_response('v3/sign_in.html', {'form': form}, context_instance=context)
+    return render_to_response('sign_in.html', {'form': form}, context_instance=context)
 
 
 def sign_out(request):
@@ -128,7 +128,7 @@ def myrsr(request):
     organisationForm = UserOrganisationForm()
 
     return render_to_response(
-        'v3/myrsr.html',
+        'myrsr/myrsr.html',
         {
             'profileform': profileForm,
             'passwordform': passwordForm,
