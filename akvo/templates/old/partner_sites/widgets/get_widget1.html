@@ -34,7 +34,7 @@
       
       {# Project widget with Donation link (170 pixels wide by 840 pixels high) #}
       <div class="pad20 whitebox marg_bottom40">
-        <form name="projectNarrowForm" action="." method="post">
+        <form name="projectNarrowForm" action="" method="post">
           <h3>{% trans 'Project widget with Donation link (170 pixels wide by 840 pixels high)' %}</h3>
           <div style="width: 250px; float:left; margin-top:20px;">
             <script type="text/javascript">
@@ -66,7 +66,7 @@
 
       {# Cobranded banner widget (468 pixels wide by 234 pixels high) #}
       <div class="pad20 whitebox marg_bottom40">
-        <form name="cobrandedBannerForm" action="." method="post">
+        <form name="cobrandedBannerForm" action="" method="post">
           <h3>{% trans 'Cobranded banner widget (468 pixels wide by 234 pixels high)' %}</h3>
           <script type="text/javascript">
             document.write('<iframe src="{% url 'widget_cobranded_banner' project.id %}" width="468" height="234" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
@@ -93,7 +93,7 @@
 
       {# Small project (170 pixels wide by 312 pixels high) #}
       <div class="pad20 whitebox marg_bottom40">
-        <form name="projectSmallForm" action="." method="post">
+        <form name="projectSmallForm" action="" method="post">
           <h3>{% trans 'Small project (170 pixels wide by 312 pixels high)' %}</h3>
           <div style="width: 250px; float:left; margin-top:20px;">
             <script type="text/javascript">
@@ -125,7 +125,7 @@
 
       {# Map widget #}
       <div class="pad20 whitebox marg_bottom40">
-        <form name="projectMapForm" action="." method="post">{% csrf_token %}
+        <form name="projectMapForm" action="" method="post">{% csrf_token %}
           <h3>{% trans "Project map widget" %}</h3>
           <p class="small grey">
             {% blocktrans with partner_site_url=request.META.HTTP_HOST %}Shows a map of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}
@@ -145,7 +145,7 @@
 
       {# Project list widget #}
       <div class="pad20 whitebox marg_bottom40">
-        <form name="projectListForm" action="." method="post">{% csrf_token %}
+        <form name="projectListForm" action="" method="post">{% csrf_token %}
           <h3>{% trans "Project list widget" %}</h3>
           <p class="small grey">
             {% blocktrans with partner_site_url=request.META.HTTP_HOST %}Shows a list of projects from your organisation. Users who click on this widget will see the projects on {{ partner_site_url }}.{% endblocktrans %}

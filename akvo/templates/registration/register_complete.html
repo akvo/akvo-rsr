@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% load i18n bootstrap3 %}
+
+{% block title %}{% trans 'Registration complete' %}{% endblock %}
+
+{% block maincontent %}
+<div class="col-md-6 col-md-offset-3">
+<h1>Welcome, {{ new_user.first_name }}!</h1>
+<h2><small>Registration is complete, you will receive an email.</small></h2>
+</div>
+{% endblock %}

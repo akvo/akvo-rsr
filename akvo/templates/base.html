@@ -1,0 +1,89 @@
+{% load i18n rsr_tags webdesign piwik_tags %}
+{% load url from future %}
+{% load compressed %}
+
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta property="og:type" content="website"/>
+	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}" />
+
+	<title>Akvo RSR - {% block title %}{% trans 'Home' %}{% endblock %}</title>
+
+    <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/site/img/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+      <style type="text/css">
+
+      /* Sticky footer styles
+      -------------------------------------------------- */
+
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+      }
+
+      /* Set the fixed height of the footer here */
+      #push,
+      #footer {
+        height: 60px;
+      }
+      #footer {
+        background-color: #000000;
+        color: #FFFFFF
+      }
+
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      .container .credit {
+        margin: 20px 0;
+      }
+
+    </style>
+
+    <!-- Piwik -->
+    {% tracking_code %}
+  </head>
+
+  <body>
+
+    {% include 'navigation/header.html' %}
+
+    <div class="container">
+      {% block maincontent %}{% endblock %}
+    </div>
+
+    {% include 'navigation/footer.html' %}
+
+    <!-- jQuery and Bootstrap JS, placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

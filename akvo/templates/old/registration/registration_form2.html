@@ -21,8 +21,7 @@
 	{% endif %}
 
 	<form method="post" action="" name="registrationForm">{% csrf_token %}
-		{{ form.org_id }}
-        {{ form.username }}
+
 	
 		{% if form.email.errors %}
 	    <div class="error">
