@@ -291,6 +291,7 @@ COUNTRY_CONTINENTS = {
     u'bm': u'na',
     u'bn': u'as',
     u'bo': u'sa',
+    u'bq': u'na',
     u'br': u'sa',
     u'bs': u'na',
     u'bt': u'as',
