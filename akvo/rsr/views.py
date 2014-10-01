@@ -17,7 +17,7 @@ from django.template import RequestContext
 from registration.models import RegistrationProfile
 from registration.signals import user_activated
 
-from .forms import AjaxTestForm, PasswordForm, ProfileForm, RegisterForm, UserOrganisationForm
+from .forms import PasswordForm, ProfileForm, RegisterForm, UserOrganisationForm
 
 
 def index(request):
@@ -139,15 +139,3 @@ def myrsr(request):
         },
         context_instance=context
     )
-
-def ajax_test(request):
-    if request.is_ajax() and request.method == 'POST':
-        form = AjaxTestForm(request.POST)
-        if form.is_valid():
-            return HttpResponse('Your AJAX form test was successful!')
-        else:
-            return HttpResponse('Your AJAX form test failed miserably!')
-    else:
-        form = AjaxTestForm()
-
-    return render(request, 'ajaxtest.html', {'form': form})
