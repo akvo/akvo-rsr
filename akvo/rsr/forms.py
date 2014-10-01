@@ -215,3 +215,4 @@ class UserOrganisationForm(forms.Form):
         """
         # TODO: The approval process of users
         request.user.organisations.add(self.cleaned_data['organisation'])
+
