@@ -43,4 +43,7 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         uuid = self.request.QUERY_PARAMS.get('uuid', None)
         if uuid is not None:
             queryset = self.queryset.filter(uuid=uuid)
+        created_at = self.request.QUERY_PARAMS.get('created_at__gt', None)
+        if created_at is not None:
+            queryset = self.queryset.filter(created_at__gt=created_at)
         return queryset
