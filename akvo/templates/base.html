@@ -11,7 +11,8 @@
 
 	<title>Akvo RSR - {% block title %}{% trans 'Home' %}{% endblock %}</title>
 
-    <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/site/img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -67,6 +68,20 @@
 
       .container .credit {
         margin: 20px 0;
+      }
+
+      .navbar {
+        background-color: #ccc;
+        border-radius: 0;
+        border: none;
+      }
+
+      .navbar .btn {
+        padding: 0;
+      }
+
+      footer .navbar {
+        margin-bottom: 0;
       }
 
     </style>
