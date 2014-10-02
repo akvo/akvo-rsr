@@ -4,16 +4,59 @@
 
 {% block title %}{% trans 'MyRSR' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 
-{% block maincontent %}
-{% if message %}
-        <div class="alert alert-success" role="alert">{{ message }}</div>
-{% elif error_message %}
-        <div class="alert alert-danger" role="alert">{{ error_message }}</div>
-{% endif %}
+{% block head_js %}
+    <script>
+        $(document).ready(function() {
 
-<div class="col-md-4">
+            $('#profileForm').submit(function(event) {
+
+                var $form = $(this);
+                var serializedData = $form.serialize();
+
+                $.post('/myrsr/', serializedData, function(response) {
+                    response = JSON.parse(response);
+                    $( "#profile" ).prepend('<div class="alert alert-' + response["status"] + '" role="alert">' + response["message"] + '</div>');
+                });
+
+                event.preventDefault();
+
+            });
+
+            $('#passwordForm').submit(function(event) {
+
+                var $form = $(this);
+                var serializedData = $form.serialize();
+
+                $.post('/myrsr/', serializedData, function(response) {
+                    response = JSON.parse(response);
+                    $( "#password" ).prepend('<div class="alert alert-' + response["status"] + '" role="alert">' + response["message"] + '</div>');
+                });
+
+                event.preventDefault();
+
+            });
+
+            $('#organisationForm').submit(function(event) {
+
+                var $form = $(this);
+                var serializedData = $form.serialize();
+
+                $.post('/myrsr/', serializedData, function(response) {
+                    response = JSON.parse(response);
+                    $( "#organisations" ).prepend('<div class="alert alert-' + response["status"] + '" role="alert">' + response["message"] + '</div>');
+                });
+
+                event.preventDefault();
+
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block maincontent %}
+<div class="col-md-4" id="profile">
 <h2>My details</h2>
-<form method="post" action="" name="profileForm">
+<form method="post" action="" id="profileForm">
     {% csrf_token %}
     {% for field in profileform %}
         {% bootstrap_field field %}
@@ -26,7 +69,7 @@
 </form>
 </div>
 
-<div class="col-md-4">
+<div class="col-md-4" id="organisations">
 <h2>My organisations</h2>
 {% if user.organisations.all %}
 <ul>
@@ -39,7 +82,7 @@
 {% endif %}
 
 <h3>Connect with an organisation</h3>
-<form method="post" action="" name="organisationForm">
+<form method="post" action="" id="organisationForm">
     {% csrf_token %}
     {% for field in organisationform %}
         {% bootstrap_field field %}
