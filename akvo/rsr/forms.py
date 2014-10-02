@@ -10,6 +10,7 @@ Forms and validation code for user registration and updating.
 from django import forms
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.sites.models import get_current_site
 from django.utils.translation import ugettext_lazy as _
 
@@ -133,7 +134,10 @@ class ProfileForm(forms.Form):
         user.save()
 
 
-class PasswordForm(forms.Form):
+class PasswordForm(PasswordChangeForm):
+    """
+    Custom password form to remove the labels of the form fields.
+    """
     old_password = forms.CharField(
         label='',
         widget=forms.PasswordInput(
@@ -155,35 +159,6 @@ class PasswordForm(forms.Form):
             render_value=False
         )
     )
-
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        super(PasswordForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        """
-        Verify that the current password is correct and that the values entered into the two new password fields match.
-        """
-        user = self.request.user
-        if 'old_password' in self.cleaned_data:
-            if not user.check_password(self.cleaned_data['old_password']):
-                raise forms.ValidationError(
-                    _(u'Invalid current password.')
-                )
-        if 'new_password1' in self.cleaned_data and 'new_password2' in self.cleaned_data:
-            if self.cleaned_data['new_password1'] != self.cleaned_data['new_password2']:
-                raise forms.ValidationError(
-                    _(u'Passwords do not match. Please enter the same password in both fields.')
-                )
-        return self.cleaned_data
-
-    def save(self, request):
-        """
-        Update the User password.
-        """
-        user = request.user
-        user.set_password(self.cleaned_data['new_password1'])
-        user.save()
 
 
 class UserOrganisationForm(forms.Form):
@@ -215,3 +190,4 @@ class UserOrganisationForm(forms.Form):
         """
         # TODO: The approval process of users
         request.user.organisations.add(self.cleaned_data['organisation'])
+

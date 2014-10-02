@@ -35,7 +35,10 @@ urlpatterns = patterns(
     url(r'^sign_out/$', 'akvo.rsr.views.sign_out', name='sign_out'),
 
     # MyRSR view
-    url(r'^myrsr/$', 'akvo.rsr.views.myrsr', name='myrsr')
+    url(r'^myrsr/$', 'akvo.rsr.views.myrsr', name='myrsr'),
+
+    # Change password view
+    url(r'^myrsr/password_change/$', 'akvo.rsr.views.password_change', name='password_change')
 )
 
 handler403 = 'akvo.rsr.views.forbidden'

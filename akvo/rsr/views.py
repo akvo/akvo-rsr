@@ -5,12 +5,13 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import re
+import json
 
 from django.contrib.auth import login, logout
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
 from registration.models import RegistrationProfile
@@ -79,7 +80,7 @@ def sign_in(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/myrsr')
     else:
         form = AuthenticationForm()
     return render_to_response('sign_in.html', {'form': form}, context_instance=context)
@@ -92,30 +93,30 @@ def sign_out(request):
 
 def myrsr(request):
     context = RequestContext(request)
-    message = None
-    error_message = None
-    if request.method == "POST":
+    if request.is_ajax() and request.method == "POST":
         if 'email' in request.POST:
             profileForm = ProfileForm(data=request.POST)
             if profileForm.is_valid():
                 profileForm.save(request)
-                message = "Updated your profile information"
+                message = {'status': "success", 'message': "Your profile is updated"}
             elif profileForm.errors:
-                error_message = profileForm.errors
+                message = {'status': "danger", 'message': [v for k, v in profileForm.errors.items()]}
         elif 'old_password' in request.POST:
             passwordForm = PasswordForm(data=request.POST, request=request)
             if passwordForm.is_valid():
                 passwordForm.save(request)
-                message = "Updated your password"
+                message = {'status': "success", 'message': "Updated your password"}
             elif passwordForm.errors:
-                error_message = passwordForm.errors
+                message = {'status': "danger", 'message': [v for k, v in passwordForm.errors.items()]}
         elif 'organisation' in request.POST:
             organisationForm = UserOrganisationForm(data=request.POST, request=request)
             if organisationForm.is_valid():
                 organisationForm.save(request)
-                message = "You are now linked to organisation"
+                message = {'status': "success", 'message': "You are now linked to organisation"}
             elif organisationForm.errors:
-                error_message = organisationForm.errors
+                message = {'status': "danger", 'message': [v for k, v in organisationForm.errors.items()]}
+
+        return HttpResponse(json.dumps(message))
 
     profileForm = ProfileForm(
         initial={
@@ -124,17 +125,29 @@ def myrsr(request):
             'last_name': request.user.last_name
         }
     )
-    passwordForm = PasswordForm()
     organisationForm = UserOrganisationForm()
 
     return render_to_response(
         'myrsr/myrsr.html',
         {
             'profileform': profileForm,
-            'passwordform': passwordForm,
             'organisationform': organisationForm,
-            'message': message,
-            'error_message': error_message
+            # 'message': message,
+            # 'error_message': error_message
         },
         context_instance=context
     )
+
+def password_change(request):
+    context = RequestContext(request)
+    if request.is_ajax() and request.method == "POST":
+        form = PasswordForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            message = {'status': "success", 'message': ["Your password is updated."]}
+        elif form.errors:
+            message = {'status': "danger", 'message': [v for k, v in form.errors.items()]}
+        return HttpResponse(json.dumps(message))
+    else:
+        form = PasswordForm(user=request.user)
+    return render_to_response('myrsr/password_change.html', {'form': form}, context_instance=context)
