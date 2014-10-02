@@ -100,6 +100,14 @@
         font-size: 14px;
       }
 
+      /* Hack for full-width columns below 570px */
+      @media (max-width: 570px) { 
+        .col-ts-12 { 
+          float: none;
+          width: 100%;
+        }
+      }
+
     </style>
 
     <!-- Piwik -->
