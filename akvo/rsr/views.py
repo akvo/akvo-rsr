@@ -125,17 +125,29 @@ def myrsr(request):
             'last_name': request.user.last_name
         }
     )
-    passwordForm = PasswordForm()
     organisationForm = UserOrganisationForm()
 
     return render_to_response(
         'myrsr/myrsr.html',
         {
             'profileform': profileForm,
-            'passwordform': passwordForm,
             'organisationform': organisationForm,
             # 'message': message,
             # 'error_message': error_message
         },
         context_instance=context
     )
+
+def password_change(request):
+    context = RequestContext(request)
+    if request.is_ajax() and request.method == "POST":
+        form = PasswordForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            message = {'status': "success", 'message': ["Your password is updated."]}
+        elif form.errors:
+            message = {'status': "danger", 'message': [v for k, v in form.errors.items()]}
+        return HttpResponse(json.dumps(message))
+    else:
+        form = PasswordForm(user=request.user)
+    return render_to_response('myrsr/password_change.html', {'form': form}, context_instance=context)
