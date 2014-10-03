@@ -46,4 +46,7 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         created_at = self.request.QUERY_PARAMS.get('created_at__gt', None)
         if created_at is not None:
             queryset = self.queryset.filter(created_at__gt=created_at)
+        last_modified_at = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
+        if last_modified_at is not None:
+            queryset = self.queryset.filter(last_modified_at__gt=last_modified_at)
         return queryset
