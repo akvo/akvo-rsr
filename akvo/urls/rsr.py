@@ -37,11 +37,14 @@ urlpatterns = patterns(
     # MyRSR view
     url(r'^myrsr/$', 'akvo.rsr.views.myrsr', name='myrsr'),
 
-    # My updates view
+    # MyRSR updates view
     url(r'^myrsr/updates/$', 'akvo.rsr.views.my_updates', name='my_updates'),
 
     # MyRSR projects view
     url(r'^myrsr/projects/$', 'akvo.rsr.views.my_projects', name='my_projects'),
+
+    # MyRSR user management view
+    url(r'^myrsr/user_management/$', 'akvo.rsr.views.user_management', name='user_management'),
 
     # Change password view
     url(r'^myrsr/password_change/$', 'akvo.rsr.views.password_change', name='password_change')
