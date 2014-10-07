@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "myrsr/myrsr_base.html" %}
 
 {% load i18n bootstrap3 %}
 
@@ -53,19 +53,7 @@
     </script>
 {% endblock %}
 
-{% block maincontent %}
-<div class="row">
-    <div class="col-md-3">
-        <h4>MyRSR</h4>
-        <ul class="list-unstyled">
-            <li><a href="#">My details</a></li>
-            <li><a href="#">My updates</a></li>
-            <li><a href="#">My projects</a></li>
-        </ul>
-        <ul class="list-unstyled">
-            <li><a href="#">Change password</a></li>
-        </ul>
-    </div>
+{% block myrsr_main %}
     <div class="col-md-4 col-xs-6 col-ts-12" id="profile">
         <h2>My details</h2>
         <form method="post" action="" id="profileForm">
@@ -106,5 +94,4 @@
             {% endbuttons %}
         </form>
     </div>
-</div>
 {% endblock %}
