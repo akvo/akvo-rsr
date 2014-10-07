@@ -5,10 +5,21 @@
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
 {% block myrsr_main %}
-    <div class="col-md-2" id="updates">
+    {% if user.updates %}
+        <div class="col-md-9 table-responsive" id="updates">
+            <h2>My updates</h2>
+            <table class="table table-striped">
+                <tr><th>Media</th><th>Title</th><th>Date</th><th>Project</th><th>Options</th></tr>
+                {% for update in user.updates %}
+                    <tr><td>Media</td><td>{{ update.title }}<br>{{ update.text }}</td><td>{{ update.created_at }}</td><td>{{ update.project }}</td><td><i>Links to options...</i></td></tr>
+                    <tr><td>Media</td><td>{{ update.title }}<br>{{ update.text }}</td><td>{{ update.created_at }}</td><td>{{ update.project }}</td><td><i>Links to options...</i></td></tr>
+                    <tr><td>Media</td><td>{{ update.title }}<br>{{ update.text }}</td><td>{{ update.created_at }}</td><td>{{ update.project }}</td><td><i>Links to options...</i></td></tr>
+                    <tr><td>Media</td><td>{{ update.title }}<br>{{ update.text }}</td><td>{{ update.created_at }}</td><td>{{ update.project }}</td><td><i>Links to options...</i></td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
         <h2>My updates</h2>
-        <table class="table table-striped">
-            <tr><td>Media</td><td>Type</td><td>Date</td><td>Project</td><td>Options</td></tr>
-        </table>
-    </div>
+        <h2><small>You have not placed any updates yet.</small></h2>
+    {% endif %}
 {% endblock %}
