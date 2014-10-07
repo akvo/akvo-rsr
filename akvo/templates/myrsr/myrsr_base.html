@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load i18n bootstrap3 %}
+
+{% block maincontent %}
+<div class="row">
+    {% block myrsr_menu %}
+    <div class="col-md-3">
+        <h4>MyRSR</h4>
+        <ul class="list-unstyled">
+            <li><a href="#">My details</a></li>
+            <li><a href="/myrsr/my_updates">My updates</a></li>
+            <li><a href="#">My projects</a></li>
+        </ul>
+        <ul class="list-unstyled">
+            <li><a href="#">Change password</a></li>
+        </ul>
+    </div>
+    {% endblock %}
+
+    {% block myrsr_main %}{% endblock %}
+
+</div>
+{% endblock %}
