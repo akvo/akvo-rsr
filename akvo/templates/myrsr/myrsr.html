@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "myrsr/myrsr_base.html" %}
 
 {% load i18n bootstrap3 %}
 
@@ -53,45 +53,45 @@
     </script>
 {% endblock %}
 
-{% block maincontent %}
-<div class="col-md-4" id="profile">
-<h2>My details</h2>
-<form method="post" action="" id="profileForm">
-    {% csrf_token %}
-    {% for field in profileform %}
-        {% bootstrap_field field %}
-    {% endfor %}
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">
-            {% trans 'Update details' %}
-        </button>
-    {% endbuttons %}
-</form>
-</div>
+{% block myrsr_main %}
+    <div class="col-md-4 col-xs-6 col-ts-12" id="profile">
+        <h2>My details</h2>
+        <form method="post" action="" id="profileForm">
+            {% csrf_token %}
+            {% for field in profileform %}
+                {% bootstrap_field field %}
+            {% endfor %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% trans 'Update details' %}
+                </button>
+            {% endbuttons %}
+        </form>
+    </div>
 
-<div class="col-md-4" id="organisations">
-<h2>My organisations</h2>
-{% if user.organisations.all %}
-<ul>
-    {% for org in user.organisations.all %}
-    <li>{{ org.name }}</li>
-    {% endfor %}
-</ul>
-{% else %}
-<h2><small>Not affiliated with an organisation.</small></h2>
-{% endif %}
+    <div class="col-md-4 col-md-offset-1 col-xs-6 col-ts-12" id="organisations">
+        <h2>My organisations</h2>
+        {% if user.organisations.all %}
+        <ul>
+            {% for org in user.organisations.all %}
+            <li>{{ org.name }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <h2><small>Not affiliated with an organisation.</small></h2>
+        {% endif %}
 
-<h3>Connect with an organisation</h3>
-<form method="post" action="" id="organisationForm">
-    {% csrf_token %}
-    {% for field in organisationform %}
-        {% bootstrap_field field %}
-    {% endfor %}
-    {% buttons %}
-        <button type="submit" class="btn btn-success">
-            {% trans 'Request to join' %}
-        </button>
-    {% endbuttons %}
-</form>
-</div>
+        <h3>Connect with an organisation</h3>
+        <form method="post" action="" id="organisationForm">
+            {% csrf_token %}
+            {% for field in organisationform %}
+                {% bootstrap_field field %}
+            {% endfor %}
+            {% buttons %}
+                <button type="submit" class="btn btn-success">
+                    {% trans 'Request to join' %}
+                </button>
+            {% endbuttons %}
+        </form>
+    </div>
 {% endblock %}
