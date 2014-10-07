@@ -12,9 +12,6 @@
                 <tr><th>Media</th><th>Title</th><th>Date</th><th>Project</th><th>Options</th></tr>
                 {% for update in user.updates %}
                     <tr><td>Media</td><td>{{ update.title }}<br>{{ update.text }}</td><td>{{ update.created_at }}</td><td>{{ update.project }}</td><td><i>Links to options...</i></td></tr>
-                    <tr><td>Media</td><td>{{ update.title }}<br>{{ update.text }}</td><td>{{ update.created_at }}</td><td>{{ update.project }}</td><td><i>Links to options...</i></td></tr>
-                    <tr><td>Media</td><td>{{ update.title }}<br>{{ update.text }}</td><td>{{ update.created_at }}</td><td>{{ update.project }}</td><td><i>Links to options...</i></td></tr>
-                    <tr><td>Media</td><td>{{ update.title }}<br>{{ update.text }}</td><td>{{ update.created_at }}</td><td>{{ update.project }}</td><td><i>Links to options...</i></td></tr>
                 {% endfor %}
             </table>
         </div>
