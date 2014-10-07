@@ -41,26 +41,28 @@ urlpatterns = patterns(
     # Registration view
     url(r'^register/$', 'akvo.rsr.views.account.register', name='register'),
 
-    # # Activation view
-    # url(r'^activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='activate'),
+    # Activation view
+    url(r'^activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.account.activate',
+        name='activate'),
 
     # # Sign in view
-    # url(r'^sign_in/$', 'akvo.rsr.views.sign_in', name='sign_in'),
+    url(r'^sign_in/$', 'akvo.rsr.views.account.sign_in', name='sign_in'),
 
     # # Sign out view
-    # url(r'^sign_out/$', 'akvo.rsr.views.sign_out', name='sign_out'),
+    url(r'^sign_out/$', 'akvo.rsr.views.account.sign_out', name='sign_out'),
 
     # # MyRSR view
-    # url(r'^myrsr/$', 'akvo.rsr.views.myrsr', name='myrsr'),
+    url(r'^myrsr/$', 'akvo.rsr.views.my_rsr.myrsr', name='myrsr'),
 
     # My updates view
-    url(r'^myrsr/updates/$', 'akvo.rsr.views.my_updates', name='my_updates'),
+    url(r'^myrsr/updates/$', 'akvo.rsr.views.my_rsr.my_updates', name='my_updates'),
 
     # MyRSR projects view
-    url(r'^myrsr/projects/$', 'akvo.rsr.views.my_projects', name='my_projects'),
+    url(r'^myrsr/projects/$', 'akvo.rsr.views.my_rsr.my_projects', name='my_projects'),
 
     # Change password view
-    url(r'^myrsr/password_change/$', 'akvo.rsr.views.password_change', name='password_change')
+    url(r'^myrsr/password_change/$', 'akvo.rsr.views.my_rsr.password_change',
+        name='password_change')
 )
 
 # handler403 = 'akvo.rsr.views.forbidden'

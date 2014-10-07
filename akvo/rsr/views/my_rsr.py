@@ -6,8 +6,12 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
-from ..forms import PasswordForm
+from django.shortcuts import render, render_to_response
+from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
+from akvo.rsr.models import Project
+
 
 def myrsr(request):
     context = RequestContext(request)
@@ -55,3 +59,27 @@ def myrsr(request):
         },
         context_instance=context
     )
+
+def password_change(request):
+    context = RequestContext(request)
+    if request.is_ajax() and request.method == "POST":
+        form = PasswordForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            message = {'status': "success", 'message': ["Your password is updated."]}
+        elif form.errors:
+            message = {'status': "danger", 'message': [v for k, v in form.errors.items()]}
+        return HttpResponse(json.dumps(message))
+    else:
+        form = PasswordForm(user=request.user)
+    return render_to_response('myrsr/password_change.html', {'form': form}, context_instance=context)
+
+@login_required
+def my_updates(request):
+    context = RequestContext(request)
+    return render_to_response('myrsr/my_updates.html', context_instance=context)
+
+@login_required
+def my_projects(request):
+    context = {'projects': Project.objects.published()}
+    return render(request, 'myrsr/my_projects.html', context)
