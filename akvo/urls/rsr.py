@@ -26,7 +26,8 @@ urlpatterns = patterns(
     url(r'^register/$', 'akvo.rsr.views.register', name='register'),
 
     # Activation view
-    url(r'^activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate', name='activate'),
+    url(r'^activate/(?P<activation_key>\w+)/$', 'akvo.rsr.views.activate',
+        name='activate'),
 
     # Sign in view
     url(r'^sign_in/$', 'akvo.rsr.views.sign_in', name='sign_in'),
@@ -44,7 +45,8 @@ urlpatterns = patterns(
     url(r'^myrsr/projects/$', 'akvo.rsr.views.my_projects', name='my_projects'),
 
     # Change password view
-    url(r'^myrsr/password_change/$', 'akvo.rsr.views.password_change', name='password_change')
+    url(r'^myrsr/password_change/$', 'akvo.rsr.views.password_change',
+        name='password_change')
 )
 
 handler403 = 'akvo.rsr.views.forbidden'
