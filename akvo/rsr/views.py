@@ -20,6 +20,8 @@ from registration.signals import user_activated
 
 from .forms import PasswordForm, ProfileForm, RegisterForm, UserOrganisationForm
 
+from akvo.rsr.models import Project
+
 
 def index(request):
     return HttpResponseRedirect('register')
@@ -145,6 +147,10 @@ def my_updates(request):
     return render_to_response('myrsr/my_updates.html', context_instance=context)
 
 @login_required
+def my_projects(request):
+    context = {'projects': Project.objects.published()}
+    return render(request, 'myrsr/my_projects.html', context)
+
 def password_change(request):
     context = RequestContext(request)
     if request.is_ajax() and request.method == "POST":
@@ -158,3 +164,7 @@ def password_change(request):
     else:
         form = PasswordForm(user=request.user)
     return render_to_response('myrsr/password_change.html', {'form': form}, context_instance=context)
+
+
+def server_error(request, template_name='500.html'):
+    HttpResponse("Server Error - 500")
