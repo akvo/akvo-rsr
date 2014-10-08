@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Akvo.org' %}{% endblock %}
+
+{% block maincontent %}
+
+<div class="row" style="background-color: #abd4ff; height: 100px;">
+
+</div>
+
+<div class="row" style="background-color: #241F20; padding: 20px;">
+  <form class="form" role="form">
+    <div class="input-group ">
+      <span class="input-group-addon">{% trans "Search" %}</span>
+      <input type="text" class="form-control">
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-search"> </span>
+      </span>
+    </div>
+  </form>
+</div>
+
+<div class="row" style="background-color: #383334; padding: 20px;">
+  <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
+    continents</span><br />
+  <!-- Split button -->
+  <div class="btn-group">
+    <button type="button" class="btn">All</button>
+    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+      <span class="caret"></span>
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><a href="#">All</a></li>
+      <li class="divider"></li>
+      <li><a href="#">Africa</a></li>
+      <li><a href="#">Antartica</a></li>
+      <li><a href="#">Asia</a></li>
+      <li><a href="#">Australia</a></li>
+      <li><a href="#">Europe</a></li>
+      <li><a href="#">North America</a></li>
+      <li><a href="#">South America</a></li>
+    </ul>
+  </div>
+</div>
+
+<h1>{% trans "We currently have n projects online" %}</h1>
+
+<div class="row" style="text-align: center">
+  <ul class="pagination">
+    <li class="disabled"><a href="#">&laquo;</a></li>
+    <li class="active"><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#">&raquo;</a></li>
+  </ul>
+</div>
+<div class="row">
+  <ul class="list-group">
+    {% for p in projects %}
+    <li class="list-group-item">
+      <a href="{% url 'project-main' p.id %}">{{p.title}}</a>
+      <p class="small">
+        {{p.primary_location.country}}
+        {{p.primary_location.country.continent}}
+      </p>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<div class="row" style="text-align: center">
+  <ul class="pagination">
+    <li class="disabled"><a href="#">&laquo;</a></li>
+    <li class="active"><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#">&raquo;</a></li>
+  </ul>
+</div>
+<div class="row" style="height: 100px;">
+</div>
+{% endblock %}
