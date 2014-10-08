@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import json
 
 from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
@@ -99,3 +99,9 @@ def my_updates(request):
 def my_projects(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'myrsr/my_projects.html', context)
+
+
+@login_required
+def user_management(request):
+    context = {'users': User.objects.all()}
+    return render(request, 'myrsr/user_management.html', context)

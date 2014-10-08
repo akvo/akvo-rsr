@@ -1,0 +1,22 @@
+{% extends "myrsr/myrsr_base.html" %}
+
+{% load i18n bootstrap3 %}
+
+{% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
+
+{% block myrsr_main %}
+    {% if users %}
+        <div class="col-md-10 table-responsive" id="updates">
+            <h2>User management</h2>
+            <table class="table table-striped">
+                <tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisation</th><th>Permissions</th><th></th></tr>
+                {% for user in users %}
+                    <tr><td>{{ user.email }}</td><td>{{ user.first_name }}</td><td>{{ user.last_name }}</td><td><ul>{% for employment in user.employments.all %}<li>{{ employment.organisation }}</li>{% endfor %}</ul></td><td><i>Permission settings</i></td><td><i>Delete button</i></td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <h2>User management</h2>
+        <h2><small>No users.</small></h2>
+    {% endif %}
+{% endblock %}
