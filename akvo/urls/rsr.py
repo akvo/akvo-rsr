@@ -47,9 +47,13 @@ urlpatterns = patterns(
     url(r'^sign_out/$',
         'akvo.rsr.views.account.sign_out', name='sign_out'),
 
-    # # MyRSR view
+    # My details view (MyRSR base)
     url(r'^myrsr/$',
-        'akvo.rsr.views.my_rsr.myrsr', name='myrsr'),
+        'akvo.rsr.views.my_rsr.my_details', name='my_details'),
+
+    # Update details view (API)
+    url(r'^update_details/(?P<user_id>\d+)/$',
+        'akvo.rsr.views.my_rsr.update_details', name='update_details'),
 
     # My updates view
     url(r'^myrsr/updates/$',
@@ -65,7 +69,11 @@ urlpatterns = patterns(
 
     # Change password view
     url(r'^myrsr/password_change/$',
-        'akvo.rsr.views.my_rsr.password_change', name='password_change')
+        'akvo.rsr.views.my_rsr.password_change', name='password_change'),
+
+    # Django Rest Framework urls
+    (r'^rest/v1/', include('akvo.rest.urls')),
+    url(r'^rest/docs/', include('rest_framework_swagger.urls')),
 )
 
 # handler403 = 'akvo.rsr.views.forbidden'

@@ -10,45 +10,28 @@ import json
 
 from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
 from akvo.rsr.models import Project, User
+from akvo.rest.serializers import UserSerializer
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
-def myrsr(request):
+# @api_view(['PATCH'])
+# def update_details(request, user_id):
+#     serialized = UserSerializer(user_id, data=request.DATA)
+#     if serialized.is_valid():
+#         serialized.save()
+#         return Response(status=status.HTTP_205_RESET_CONTENT)
+#     else:
+#         return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def my_details(request):
     context = RequestContext(request)
-    if request.is_ajax() and request.method == "POST":
-        if 'email' in request.POST:
-            profileForm = ProfileForm(data=request.POST)
-            if profileForm.is_valid():
-                profileForm.save(request)
-                message = {'status': "success",
-                           'message': "Your profile is updated"}
-            elif profileForm.errors:
-                message = {'status': "danger",
-                           'message': [v for k, v in profileForm.errors.items()]}
-        elif 'old_password' in request.POST:
-            passwordForm = PasswordForm(data=request.POST, request=request)
-            if passwordForm.is_valid():
-                passwordForm.save(request)
-                message = {'status': "success",
-                           'message': "Updated your password"}
-            elif passwordForm.errors:
-                message = {'status': "danger",
-                           'message': [v for k, v in passwordForm.errors.items()]}
-        elif 'organisation' in request.POST:
-            organisationForm = UserOrganisationForm(data=request.POST,
-                                                    request=request)
-            if organisationForm.is_valid():
-                organisationForm.save(request)
-                message = {'status': "success",
-                           'message': "You are now linked to organisation"}
-            elif organisationForm.errors:
-                message = {'status': "danger",
-                           'message': [v for k, v in organisationForm.errors.items()]}
-
-        return HttpResponse(json.dumps(message))
 
     profileForm = ProfileForm(
         initial={
@@ -60,12 +43,10 @@ def myrsr(request):
     organisationForm = UserOrganisationForm()
 
     return render_to_response(
-        'myrsr/myrsr.html',
+        'myrsr/my_details.html',
         {
             'profileform': profileForm,
-            'organisationform': organisationForm,
-            # 'message': message,
-            # 'error_message': error_message
+            'organisationform': organisationForm
         },
         context_instance=context
     )
