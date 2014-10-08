@@ -7,22 +7,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta property="og:type" content="website"/>
-	<meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}" />
+    <meta name="description" content="{% trans 'We help donors and doers reach out to fund many thousands of new water and sanitation projects.' %}" />
 
-	<title>Akvo RSR - {% block title %}{% trans 'Home' %}{% endblock %}</title>
+    <title>Akvo RSR - {% block title %}{% trans 'Home' %}{% endblock %}</title>
 
     <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <!-- Bootstrap CSS -->
+    {# Bootstrap CSS #}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
-    <!-- jQuery and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-      <style type="text/css">
+    <style type="text/css">
 
       /* Sticky footer styles
       -------------------------------------------------- */
@@ -126,5 +123,8 @@
 
     {% include 'navigation/footer.html' %}
 
+    {# jQuery and Bootstrap JS #}
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   </body>
 </html>
