@@ -30,7 +30,6 @@
         <li><a href="{% url 'register' %}">Register</a></li>
         <li><a href="{% url 'sign_in' %}">Sign in</a></li>
         {% else %}
-        <li><span class="badge">5</span></li>
         <li><a href="{% url 'myrsr' %}">MyRSR</a></li>
         <li><a href="{% url 'sign_out' %}">Sign out</a></li>
         {% endif %}
