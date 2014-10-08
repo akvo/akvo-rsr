@@ -1,85 +1,51 @@
-/* Sticky footer styles
-      -------------------------------------------------- */
+/* Hack for full-width columns below 570px */
+@media (max-width: 570px) { 
+	.col-ts-12 { 
+		float: none;
+		width: 100%;
+	}
+}
 
-      html,
-      body {
-        height: 100%;
-        /* The html and body elements cannot have any padding or margin. */
-      }
 
-      /* Wrapper for page content to push down footer */
-      #wrap {
-        min-height: 100%;
-        height: auto !important;
-        height: 100%;
-        /* Negative indent footer by it's height */
-        margin: 0 auto -60px;
-      }
+.navbar {
+	border-radius: 0;
+	border: none;
+}
 
-      /* Set the fixed height of the footer here */
-      #push,
-      #footer {
-        height: 60px;
-      }
-      #footer {
-        background-color: #000000;
-        color: #FFFFFF
-      }
+/* HEADER */
+body > .navbar {
+	background-color: #eee;
+}
+.navbar.a-main {
+	text-transform: uppercase;
+}
+.navbar .btn {
+	padding: 4px 9px;
+}
+.navbar-brand {
+	width: 150px;
+	background-image: url(../../img/logo.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	text-indent: -999px;
+	margin-top: 7px;
+	height: 33px;
+	margin-left: 0;
+}
 
-      /* Lastly, apply responsive CSS fixes as necessary */
-      @media (max-width: 767px) {
-        #footer {
-          margin-left: -20px;
-          margin-right: -20px;
-          padding-left: 20px;
-          padding-right: 20px;
-        }
-      }
-
-      /* Custom page CSS
-      -------------------------------------------------- */
-      /* Not required for template or sticky footer method. */
-
-      .container .credit {
-        margin: 20px 0;
-      }
-
-      .navbar {
-        border-radius: 0;
-        border: none;
-      }
-      body > .navbar {
-        background-color: #eee;
-	  }
-
-      .navbar.a-main {
-        text-transform: uppercase;
-      }
-
-      .navbar .btn {
-        padding: 4px 9px;
-      }
-
-      body > footer {
-        margin-top: 1em;
-      }
-      footer .navbar {
-        margin-bottom: 0;
-      }
-      #footer-body {
-        text-align: center;
-        font-size: 0;
-      }
-      #footer-body .navbar-nav {
-        display: inline-block;
-        float: none;
-        font-size: 14px;
-      }
-
-      /* Hack for full-width columns below 570px */
-      @media (max-width: 570px) { 
-        .col-ts-12 { 
-          float: none;
-          width: 100%;
-        }
-      }
+/* FOOTER */
+body > footer {
+	margin-top: 1em;
+}
+footer .navbar {
+	margin-bottom: 0;
+}
+#footer-body {
+	text-align: center;
+	font-size: 0;
+}
+#footer-body .navbar-nav {
+	display: inline-block;
+	float: none;
+	font-size: 14px;
+}
