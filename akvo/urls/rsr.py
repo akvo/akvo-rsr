@@ -39,15 +39,15 @@ urlpatterns = patterns(
     url(r'^activate/(?P<activation_key>\w+)/$',
         'akvo.rsr.views.account.activate', name='activate'),
 
-    # # Sign in view
+    # Sign in view
     url(r'^sign_in/$',
         'akvo.rsr.views.account.sign_in', name='sign_in'),
 
-    # # Sign out view
+    # Sign out view
     url(r'^sign_out/$',
         'akvo.rsr.views.account.sign_out', name='sign_out'),
 
-    # # MyRSR view
+    # MyRSR view
     url(r'^myrsr/$',
         'akvo.rsr.views.my_rsr.myrsr', name='myrsr'),
 

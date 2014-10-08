@@ -21,6 +21,7 @@ scripts/dev-vm/
 dev-env
 venv
 scripts/dev-vm
+vagrant/vagrant-ssh-conf.*
 
 
 ## Deployment
