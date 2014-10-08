@@ -6,11 +6,14 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
-from django.shortcuts import render, render_to_response
+import json
+
 from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
 from akvo.rsr.models import Project
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import render, render_to_response
+from django.template import RequestContext
 
 
 def myrsr(request):
@@ -20,23 +23,30 @@ def myrsr(request):
             profileForm = ProfileForm(data=request.POST)
             if profileForm.is_valid():
                 profileForm.save(request)
-                message = {'status': "success", 'message': "Your profile is updated"}
+                message = {'status': "success",
+                           'message': "Your profile is updated"}
             elif profileForm.errors:
-                message = {'status': "danger", 'message': [v for k, v in profileForm.errors.items()]}
+                message = {'status': "danger",
+                           'message': [v for k, v in profileForm.errors.items()]}
         elif 'old_password' in request.POST:
             passwordForm = PasswordForm(data=request.POST, request=request)
             if passwordForm.is_valid():
                 passwordForm.save(request)
-                message = {'status': "success", 'message': "Updated your password"}
+                message = {'status': "success",
+                           'message': "Updated your password"}
             elif passwordForm.errors:
-                message = {'status': "danger", 'message': [v for k, v in passwordForm.errors.items()]}
+                message = {'status': "danger",
+                           'message': [v for k, v in passwordForm.errors.items()]}
         elif 'organisation' in request.POST:
-            organisationForm = UserOrganisationForm(data=request.POST, request=request)
+            organisationForm = UserOrganisationForm(data=request.POST,
+                                                    request=request)
             if organisationForm.is_valid():
                 organisationForm.save(request)
-                message = {'status': "success", 'message': "You are now linked to organisation"}
+                message = {'status': "success",
+                           'message': "You are now linked to organisation"}
             elif organisationForm.errors:
-                message = {'status': "danger", 'message': [v for k, v in organisationForm.errors.items()]}
+                message = {'status': "danger",
+                           'message': [v for k, v in organisationForm.errors.items()]}
 
         return HttpResponse(json.dumps(message))
 
@@ -60,24 +70,30 @@ def myrsr(request):
         context_instance=context
     )
 
+
 def password_change(request):
     context = RequestContext(request)
     if request.is_ajax() and request.method == "POST":
         form = PasswordForm(user=request.user, data=request.POST)
         if form.is_valid():
             form.save()
-            message = {'status': "success", 'message': ["Your password is updated."]}
+            message = {'status': "success",
+                       'message': ["Your password is updated."]}
         elif form.errors:
-            message = {'status': "danger", 'message': [v for k, v in form.errors.items()]}
+            message = {'status': "danger",
+                       'message': [v for k, v in form.errors.items()]}
         return HttpResponse(json.dumps(message))
     else:
         form = PasswordForm(user=request.user)
-    return render_to_response('myrsr/password_change.html', {'form': form}, context_instance=context)
+    return render_to_response('myrsr/password_change.html', {'form': form},
+                              context_instance=context)
+
 
 @login_required
 def my_updates(request):
     context = RequestContext(request)
     return render_to_response('myrsr/my_updates.html', context_instance=context)
+
 
 @login_required
 def my_projects(request):

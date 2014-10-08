@@ -6,12 +6,16 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import re
+
+from akvo.rsr.forms import RegisterForm
+from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from akvo.rsr.forms import RegisterForm
+from registration.models import RegistrationProfile
 
 def register(request):
     context = RequestContext(request)
@@ -19,18 +23,22 @@ def register(request):
         form = RegisterForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             user = form.save(request)
-            return render_to_response('registration/register_complete.html', {'new_user': user}, context_instance=context)
+            return render_to_response('registration/register_complete.html',
+                                      {'new_user': user},
+                                      context_instance=context)
     else:
         form = RegisterForm()
-    return render_to_response('registration/register.html', {'form': form}, context_instance=context)
+    return render_to_response('registration/register.html', {'form': form},
+                              context_instance=context)
 
 
 def activate(request, activation_key, extra_context=None):
     """
     Activate a User's account, if their key is valid and hasn't expired.
-
-    Any values passed in the keyword argument "extra_context" (which must be a dictionary) will be added to the context.
-    Any values in "extra_context" which are callable will be called prior to being added to the context.
+    Any values passed in the keyword argument "extra_context"
+    (which must be a dictionary) will be added to the context.
+    Any values in "extra_context" which are callable will be called prior to
+    being added to the context.
     """
     sha = re.compile('^[a-f0-9]{40}$')
     activation_key = activation_key.lower()
@@ -72,7 +80,8 @@ def sign_in(request):
             return HttpResponseRedirect('/myrsr')
     else:
         form = AuthenticationForm()
-    return render_to_response('sign_in.html', {'form': form}, context_instance=context)
+    return render_to_response('sign_in.html', {'form': form},
+                              context_instance=context)
 
 
 def sign_out(request):

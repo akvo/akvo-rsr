@@ -9,5 +9,5 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 
-def home(request):
+def index(request):
     return HttpResponseRedirect(reverse('project-directory', args=[]))

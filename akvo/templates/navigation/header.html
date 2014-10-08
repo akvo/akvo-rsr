@@ -10,7 +10,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{% url 'home' %}">Akvo RSR</a>
+      <a class="navbar-brand" href="{% url 'index' %}">Akvo RSR</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -27,12 +27,12 @@
             </a>
         </li>
         {% if not user.username %}
-        <li><a href="/register">Register</a></li>
-        <li><a href="/sign_in">Sign in</a></li>
+        <li><a href="{% url 'register' %}">Register</a></li>
+        <li><a href="{% url 'sign_in' %}">Sign in</a></li>
         {% else %}
         <li><span class="badge">5</span></li>
-        <li><a href="/myrsr">MyRSR</a></li>
-        <li><a href="/sign_out">Sign out</a></li>
+        <li><a href="{% url 'myrsr' %}">MyRSR</a></li>
+        <li><a href="{% url 'sign_out' %}">Sign out</a></li>
         {% endif %}
       </ul>
     </div>
