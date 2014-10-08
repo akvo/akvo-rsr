@@ -11,11 +11,14 @@ from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 
+from sorl.thumbnail.fields import ImageWithThumbnailsField
+
 from tastypie.models import ApiKey
 
 from akvo.utils import GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
-from akvo.utils import groups_from_user
+from akvo.utils import groups_from_user, rsr_image_path
 
+from .employment import Employment
 from .project_update import ProjectUpdate
 
 from ..fields import ValidXMLCharField, ValidXMLTextField
@@ -66,9 +69,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     organisations = models.ManyToManyField(
-        'Organisation', verbose_name=_(u'organisations'), related_name='users', blank=True
+        'Organisation', verbose_name=_(u'organisations'), through=Employment, related_name='users', blank=True
     )
     notes = ValidXMLTextField(verbose_name=_('Notes and comments'), blank=True, default='')
+
+    def image_path(instance, file_name):
+        return rsr_image_path(instance, file_name, 'db/user/%(instance_pk)s/%(file_name)s')
+
+    avatar = ImageWithThumbnailsField(
+        _(u'avatar'), null=True, upload_to=image_path,
+        thumbnail={'size': (200, 200), 'options': ('pad', )},
+        help_text=_(
+            u'The avatar should be less than 3.5 mb in size.'
+        ),
+    )
 
     objects = CustomUserManager()
 

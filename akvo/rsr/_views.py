@@ -22,7 +22,7 @@ from registration.signals import user_activated
 
 from .forms import PasswordForm, ProfileForm, RegisterForm, UserOrganisationForm
 
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, User
 
 
 def index(request):
@@ -153,6 +153,12 @@ def my_projects(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'myrsr/my_projects.html', context)
 
+@login_required
+def user_management(request):
+    context = {'users': User.objects.all()}
+    return render(request, 'myrsr/user_management.html', context)
+
+@login_required
 def password_change(request):
     context = RequestContext(request)
     if request.is_ajax() and request.method == "POST":
