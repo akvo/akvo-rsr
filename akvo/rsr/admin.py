@@ -779,7 +779,7 @@ class UserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
-        (_('Organisations'), {'fields': ('organisations',)}),
+        #(_('Organisations'), {'fields': ('organisations',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
@@ -817,7 +817,7 @@ class UserAdmin(UserAdmin):
             else:
                 # all fields are read-only if user does not have permissions to change
                 return [
-                    'username', 'email', 'password', 'first_name', 'last_name', 'organisations', 'organisation',
+                    'username', 'email', 'password', 'first_name', 'last_name', #'organisations', 'organisation',
                     'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions', 'last_login', 'date_joined'
                 ]
         else:
