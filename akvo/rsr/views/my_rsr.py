@@ -10,26 +10,13 @@ import json
 
 from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
 from akvo.rsr.models import Project, User
-from akvo.rest.serializers import UserSerializer
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 
 
-# @api_view(['PATCH'])
-# def update_details(request, user_id):
-#     serialized = UserSerializer(user_id, data=request.DATA)
-#     if serialized.is_valid():
-#         serialized.save()
-#         return Response(status=status.HTTP_205_RESET_CONTENT)
-#     else:
-#         return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+@login_required
 def my_details(request):
     context = RequestContext(request)
 
@@ -52,6 +39,7 @@ def my_details(request):
     )
 
 
+@login_required
 def password_change(request):
     context = RequestContext(request)
     if request.is_ajax() and request.method == "POST":

@@ -33,17 +33,17 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Renaming old table to 'rsr_user_organisation'
-        db.rename_table(u'rsr_employment', u'rsr_user_organisations')
-
         # Deleting field Employment.is_approved
         db.delete_column(u'rsr_employment', 'is_approved')
 
         # Deleting field Employment.country
-        db.delete_column(u'rsr_employment', 'country')
+        db.delete_column(u'rsr_employment', 'country_id')
 
         # Deleting field Employment.job_title
         db.delete_column(u'rsr_employment', 'job_title')
+
+        # Renaming old table to 'rsr_user_organisation'
+        db.rename_table(u'rsr_employment', u'rsr_user_organisations')
 
         # Deleting field 'User.avatar'
         db.delete_column(u'rsr_user', 'avatar')

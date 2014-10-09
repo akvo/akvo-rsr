@@ -14,106 +14,16 @@
     <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    {# Bootstrap CSS #}
+    {# CSS #}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
-    {# jQuery and Bootstrap JS #}
+    {# jQuery #}
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-
-    <style type="text/css">
-
-      /* Sticky footer styles
-      -------------------------------------------------- */
-
-      html,
-      body {
-        height: 100%;
-        /* The html and body elements cannot have any padding or margin. */
-      }
-
-      /* Wrapper for page content to push down footer */
-      #wrap {
-        min-height: 100%;
-        height: auto !important;
-        height: 100%;
-        /* Negative indent footer by it's height */
-        margin: 0 auto -60px;
-      }
-
-      /* Set the fixed height of the footer here */
-      #push,
-      #footer {
-        height: 60px;
-      }
-      #footer {
-        background-color: #000000;
-        color: #FFFFFF
-      }
-
-      /* Lastly, apply responsive CSS fixes as necessary */
-      @media (max-width: 767px) {
-        #footer {
-          margin-left: -20px;
-          margin-right: -20px;
-          padding-left: 20px;
-          padding-right: 20px;
-        }
-      }
-
-      /* Custom page CSS
-      -------------------------------------------------- */
-      /* Not required for template or sticky footer method. */
-
-      .container .credit {
-        margin: 20px 0;
-      }
-
-      .navbar {
-        background-color: #eee;
-        border-radius: 0;
-        border: none;
-      }
-
-      .navbar.a-main {
-        text-transform: uppercase;
-      }
-
-      .navbar .btn {
-        padding: 4px 9px;
-      }
-
-      body > footer {
-        margin-top: 1em;
-      }
-      footer .navbar {
-        margin-bottom: 0;
-      }
-      #footer-body {
-        text-align: center;
-        font-size: 0;
-      }
-      #footer-body .navbar-nav {
-        display: inline-block;
-        float: none;
-        font-size: 14px;
-      }
-
-      /* Hack for full-width columns below 570px */
-      @media (max-width: 570px) { 
-        .col-ts-12 { 
-          float: none;
-          width: 100%;
-        }
-      }
-
-    </style>
+    {% compressed_css 'rsr_v3_style' %}
 
     <!-- Piwik -->
     {% tracking_code %}
-
     {% block head_js %}{% endblock %}
   </head>
 
@@ -126,6 +36,10 @@
     </div>
 
     {% include 'navigation/footer.html' %}
+
+    {# JS #}
+    <script src="http://fb.me/react-0.10.0.js"></script>
+    {% compressed_js 'rsr_v3_libraries' %}
 
   </body>
 </html>
