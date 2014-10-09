@@ -1,6 +1,6 @@
 /* Hack for full-width columns below 570px */
-@media (max-width: 570px) { 
-	.col-ts-12 { 
+@media (max-width: 570px) {
+	.col-ts-12 {
 		float: none;
 		width: 100%;
 	}
@@ -23,14 +23,20 @@ body > .navbar {
 	padding: 4px 9px;
 }
 .navbar-brand {
-	width: 150px;
+	width: 122px;
 	background-image: url(../../img/logo.png);
 	background-size: contain;
 	background-repeat: no-repeat;
 	text-indent: -999px;
-	margin-top: 7px;
-	height: 33px;
-	margin-left: 0;
+	margin-top: 11px;
+	margin-left: 15px;
+	height: 27px;
+	padding: 0;
+}
+@media (min-width: 768px) {
+	body > .navbar >.container .navbar-brand {
+		margin-left: 0;
+	}
 }
 
 /* FOOTER */

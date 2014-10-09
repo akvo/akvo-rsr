@@ -5,9 +5,9 @@
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
 {% block myrsr_main %}
+    <h1>User management</h1>
     {% if users %}
-        <div class="col-md-10 table-responsive" id="updates">
-            <h2>User management</h2>
+        <div class="table-responsive" id="updates">
             <table class="table table-striped">
                 <tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisation</th><th>Permissions</th><th></th></tr>
                 {% for user in users %}
@@ -16,7 +16,6 @@
             </table>
         </div>
     {% else %}
-        <h2>User management</h2>
         <h2><small>No users.</small></h2>
     {% endif %}
 {% endblock %}
