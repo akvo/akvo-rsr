@@ -52,8 +52,8 @@ urlpatterns = patterns(
         'akvo.rsr.views.my_rsr.my_details', name='my_details'),
 
     # Update details view (API)
-    url(r'^update_details/(?P<user_id>\d+)/$',
-        'akvo.rsr.views.my_rsr.update_details', name='update_details'),
+    # url(r'^update_details/(?P<user_id>\d+)/$',
+    #     'akvo.rsr.views.my_rsr.update_details', name='update_details'),
 
     # My updates view
     url(r'^myrsr/updates/$',

@@ -45,13 +45,21 @@
 
                 $.ajax({
                     type:"PATCH",
-                    url: "/rest/v1/user/22/",
+                    url: "/rest/v1/user/{{ user.pk }}/?format=json",
                     data : JSON.stringify(serializedData),
                     contentType : 'application/json; charset=UTF-8',
-                    success: function(data){alert(data);}
-                });
+                    success: function(response){
+                        $( "#profile" ).prepend('<div class="alert alert-success" role="alert">Your details have been updated.</div>');
+                    },
+                    error: function(response)
+                    {
+                        jsonValue = $.parseJSON( response['responseText'] );
 
-//              $( "#profile" ).prepend('<div class="alert alert-' + response["status"] + '" role="alert">' + response["message"] + '</div>');
+                        $.each(jsonValue, function(key, value){
+                            $( "#profile" ).prepend('<div class="alert alert-danger" role="alert">' + value + '</div>');
+                        });
+                    }
+                });
 
                 event.preventDefault();
 
