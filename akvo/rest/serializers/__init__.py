@@ -10,6 +10,7 @@ from .budget_item import BudgetItemSerializer
 from .budget_item_label import BudgetItemLabelSerializer
 from .category import CategorySerializer
 from .country import CountrySerializer
+from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
 from .goal import GoalSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
@@ -35,6 +36,7 @@ __all__ = [
     'BudgetItemLabelSerializer',
     'CategorySerializer',
     'CountrySerializer',
+    'EmploymentSerializer',
     'FocusAreaSerializer',
     'GoalSerializer',
     'InternalOrganisationIDSerializer',

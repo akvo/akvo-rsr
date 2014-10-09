@@ -16,39 +16,9 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
 
-def myrsr(request):
+@login_required
+def my_details(request):
     context = RequestContext(request)
-    if request.is_ajax() and request.method == "POST":
-        if 'email' in request.POST:
-            profileForm = ProfileForm(data=request.POST)
-            if profileForm.is_valid():
-                profileForm.save(request)
-                message = {'status': "success",
-                           'message': "Your profile is updated"}
-            elif profileForm.errors:
-                message = {'status': "danger",
-                           'message': [v for k, v in profileForm.errors.items()]}
-        elif 'old_password' in request.POST:
-            passwordForm = PasswordForm(data=request.POST, request=request)
-            if passwordForm.is_valid():
-                passwordForm.save(request)
-                message = {'status': "success",
-                           'message': "Updated your password"}
-            elif passwordForm.errors:
-                message = {'status': "danger",
-                           'message': [v for k, v in passwordForm.errors.items()]}
-        elif 'organisation' in request.POST:
-            organisationForm = UserOrganisationForm(data=request.POST,
-                                                    request=request)
-            if organisationForm.is_valid():
-                organisationForm.save(request)
-                message = {'status': "success",
-                           'message': "You are now linked to organisation"}
-            elif organisationForm.errors:
-                message = {'status': "danger",
-                           'message': [v for k, v in organisationForm.errors.items()]}
-
-        return HttpResponse(json.dumps(message))
 
     profileForm = ProfileForm(
         initial={
@@ -60,17 +30,16 @@ def myrsr(request):
     organisationForm = UserOrganisationForm()
 
     return render_to_response(
-        'myrsr/myrsr.html',
+        'myrsr/my_details.html',
         {
             'profileform': profileForm,
-            'organisationform': organisationForm,
-            # 'message': message,
-            # 'error_message': error_message
+            'organisationform': organisationForm
         },
         context_instance=context
     )
 
 
+@login_required
 def password_change(request):
     context = RequestContext(request)
     if request.is_ajax() and request.method == "POST":

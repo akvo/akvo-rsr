@@ -3,7 +3,7 @@
 {% url 'project-directory' as project_url %}
 {% url 'update-directory' as update_url %}
 {% url 'organisation-directory' as organisation_url %}
-{% url 'myrsr' as myrsr_url %}
+{% url 'my_details' as myrsr_url %}
 
 {% with current_path=request.path|slice:":6" project_path=project_url|slice:":6" organisation_path=organisation_url|slice:":6" update_path=update_url|slice:":6" myrsr_path=myrsr_url|slice:":6" %}
 
@@ -60,7 +60,7 @@
         {% else %}
         <li>
           <a class="{% if current_path == myrsr_path %}active{% endif %}"
-             href="{% url 'myrsr' %}">MyRSR</a>
+             href="{% url 'my_details' %}">MyRSR</a>
         </li>
         <li><a href="{% url 'sign_out' %}">Sign out</a></li>
         {% endif %}

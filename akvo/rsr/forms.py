@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from registration.models import RegistrationProfile
 
-from .models import Organisation
+from .models import Country, Organisation
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(
@@ -165,7 +165,21 @@ class UserOrganisationForm(forms.Form):
     organisation = forms.ModelChoiceField(
         queryset=Organisation.objects.all(),
         label='',
-        initial='Organisation'
+        empty_label='Organisation'
+    )
+    job_title = forms.CharField(
+        label='',
+        required=False,
+        max_length=50,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Job title (optional)'}
+        ),
+    )
+    country = forms.ModelChoiceField(
+        queryset=Country.objects.all(),
+        label='',
+        required=False,
+        empty_label='Country (optional)'
     )
 
     def __init__(self, *args, **kwargs):
