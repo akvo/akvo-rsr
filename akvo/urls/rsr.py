@@ -74,8 +74,12 @@ urlpatterns = patterns(
 
     # Change password view
     url(r'^myrsr/password_change/$',
-        'akvo.rsr.views.my_rsr.password_change', name='password_change')
+        'akvo.rsr.views.my_rsr.password_change', name='password_change'),
+
+    # Admin
+    (r'^admin/', include(admin.site.urls)),
 )
+
 
 # handler403 = 'akvo.rsr.views.forbidden'
 handler500 = 'akvo.rsr.views.error.server_error'
