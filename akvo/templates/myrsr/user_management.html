@@ -4,6 +4,60 @@
 
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
+{% block head_js %}
+    <script>
+        $(document).ready(function() {
+
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            var csrftoken = getCookie('csrftoken');
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            $('table').on('click', '.delete-button', function(event) {
+                var userId = $(this).attr("user_id");
+                $.ajax({
+                    type: "DELETE",
+                    url: $(this).attr("action"),
+                    success: function (response) {
+                        $('#' + userId ).remove();
+                    },
+                    error: function (response) {
+                        $("#updates").prepend('<div class="alert alert-danger" role="alert">Something went wrong while deleting the user.</div>');
+                    }
+                });
+
+                event.preventDefault();
+
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block myrsr_main %}
     <h1>User management</h1>
     {% if users %}
@@ -11,7 +65,19 @@
             <table class="table table-striped">
                 <tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisation</th><th>Permissions</th><th></th></tr>
                 {% for user in users %}
-                    <tr><td>{{ user.email }}</td><td>{{ user.first_name }}</td><td>{{ user.last_name }}</td><td><ul>{% for employment in user.employments.all %}<li>{{ employment.organisation }}</li>{% endfor %}</ul></td><td><i>Permission settings</i></td><td><i>Delete button</i></td></tr>
+                    <tr id="{{user.pk}}">
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>
+                            <ul>
+                                {% for employment in user.employments.all %}
+                                <li>{{ employment.organisation }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td><i>Permission settings</i></td>
+                        <td><button type="button" action="/rest/v1/user/{{ user.pk }}/?format=json" class="btn btn-danger delete-button" user_id="{{ user.pk }}">X</button></td></tr>
                 {% endfor %}
             </table>
         </div>
