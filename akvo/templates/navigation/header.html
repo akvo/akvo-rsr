@@ -1,4 +1,11 @@
-{% load bootstrap3 %}
+{% load i18n bootstrap3 %}
+
+{% url 'project-directory' as project_url %}
+{% url 'update-directory' as update_url %}
+{% url 'organisation-directory' as organisation_url %}
+{% url 'my_details' as myrsr_url %}
+
+{% with current_path=request.path|slice:":6" project_path=project_url|slice:":6" organisation_path=organisation_url|slice:":6" update_path=update_url|slice:":6" myrsr_path=myrsr_url|slice:":6" %}
 
 <nav class="navbar" role="navigation">
   <div class="container">
@@ -13,12 +20,33 @@
       <a class="navbar-brand" href="{% url 'index' %}">Akvo RSR</a>
     </div>
 
+    <style>
+     .active {color: #3D328B;}
+     .nav a {text-transform: uppercase;}
+    </style>
+
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
       <ul class="nav navbar-nav a-main">
-        <li><a href="{% url 'project-directory' %}">Projects</a></li>
-        <li><a href="{% url 'update-directory' %}">Updates</a></li>
-        <li><a href="{% url 'organisation-directory' %}">Organisations</a></li>
+        <li>
+          <a class="{% if current_path == project_path %}
+             active{% endif %}"
+             href="{% url 'project-directory' %}">
+            {% trans "Projects" %}
+          </a>
+        </li>
+        <li>
+          <a class="{% if current_path == update_path %}active{% endif %}"
+             href="{% url 'update-directory' %}">
+            {% trans "Updates" %}
+          </a>
+        </li>
+        <li>
+          <a class="{% if current_path  == organisation_path %}active{% endif %}"
+             href="{% url 'organisation-directory' %}">
+            {% trans "Organisations" %}
+          </a>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -30,10 +58,14 @@
         <li><a href="{% url 'register' %}">Register</a></li>
         <li><a href="{% url 'sign_in' %}">Sign in</a></li>
         {% else %}
-        <li><a href="{% url 'myrsr' %}">MyRSR</a></li>
+        <li>
+          <a class="{% if current_path == myrsr_path %}active{% endif %}"
+             href="{% url 'my_details' %}">MyRSR</a>
+        </li>
         <li><a href="{% url 'sign_out' %}">Sign out</a></li>
         {% endif %}
       </ul>
     </div>
   </div>
 </nav>
+{% endwith %}

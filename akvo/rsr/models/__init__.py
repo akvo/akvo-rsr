@@ -28,6 +28,7 @@ from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
 from .category import Category
+from .employment import Employment
 from .focus_area import FocusArea
 from .goal import Goal
 from .indicator import Indicator, IndicatorPeriod
@@ -57,7 +58,6 @@ from .result import Result
 from .sector import Sector
 from .transaction import Transaction
 from .user import User
-# from .user_profile import UserProfile
 
 __all__ = [
     'Benchmark',
@@ -68,6 +68,7 @@ __all__ = [
     'Country',
     'RecipientCountry',
     'Category',
+    'Employment',
     'FocusArea',
     'Goal',
     'Indicator',
@@ -102,7 +103,6 @@ __all__ = [
     'Sector',
     'Transaction',
     'User',
-    # 'UserProfile',
 ]
 
 # signals!

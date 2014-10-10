@@ -60,7 +60,7 @@ urlpatterns = patterns(
 
     # MyRSR
     url(r'^myrsr/$',
-        'akvo.rsr.views.my_rsr.myrsr', name='myrsr'),
+        'akvo.rsr.views.my_rsr.my_details', name='my_details'),
 
     url(r'^myrsr/updates/$',
         'akvo.rsr.views.my_rsr.my_updates', name='my_updates'),
@@ -68,16 +68,18 @@ urlpatterns = patterns(
     url(r'^myrsr/projects/$',
         'akvo.rsr.views.my_rsr.my_projects', name='my_projects'),
 
-    # MyRSR user management view
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
 
-    # Change password view
     url(r'^myrsr/password_change/$',
         'akvo.rsr.views.my_rsr.password_change', name='password_change'),
 
     # Admin
     (r'^admin/', include(admin.site.urls)),
+
+    # Django Rest Framework urls
+    (r'^rest/v1/', include('akvo.rest.urls')),
+    url(r'^rest/docs/', include('rest_framework_swagger.urls')),
 )
 
 

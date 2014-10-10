@@ -13,7 +13,7 @@ from .organisation import OrganisationExtraSerializer
 
 class UserSerializer(BaseRSRSerializer):
     # Needed to show only the first organisation of the user
-    organisation = OrganisationExtraSerializer(source='first_organisation')
+    organisation = OrganisationExtraSerializer(source='first_organisation', required=False)
 
     class Meta:
         model = get_user_model()
@@ -21,8 +21,8 @@ class UserSerializer(BaseRSRSerializer):
             'first_name',
             'last_name',
             'email',
-            'organisation',
-            'organisations',
+            # 'organisation',
+            # 'organisations',
         )
         exclude = ('absolute_url',)
 
