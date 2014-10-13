@@ -76,7 +76,16 @@
                                 {% endfor %}
                             </ul>
                         </td>
-                        <td><i>Permission settings</i></td>
+                        <td><form method="" action="" id="permissionsForm">{% csrf_token %}
+                            {% for field in permissionsForm %}
+                                {% bootstrap_field field %}
+                            {% endfor %}
+                            {% buttons %}
+                                <button type="submit" class="btn btn-primary">
+                                    {% trans 'Save' %}
+                                </button>
+                            {% endbuttons %}
+                        </form></td>
                         <td><button type="button" action="/rest/v1/user/{{ user.pk }}/?format=json" class="btn btn-danger delete-button" user_id="{{ user.pk }}">X</button></td></tr>
                 {% endfor %}
             </table>
