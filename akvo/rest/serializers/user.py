@@ -29,6 +29,7 @@ class UserExtraSerializer(BaseRSRSerializer):
     class Meta:
         model = User
         fields = (
+            'id',
             'first_name',
             'last_name',
             'organisation',
