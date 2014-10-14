@@ -74,10 +74,14 @@ urlpatterns = patterns(
     url(r'^myrsr/password_change/$',
         'akvo.rsr.views.my_rsr.password_change', name='password_change'),
 
+    # Admin
+    (r'^admin/', include(admin.site.urls)),
+
     # Django Rest Framework urls
     (r'^rest/v1/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
 )
+
 
 # handler403 = 'akvo.rsr.views.forbidden'
 handler500 = 'akvo.rsr.views.error.server_error'
