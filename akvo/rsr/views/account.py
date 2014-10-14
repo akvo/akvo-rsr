@@ -10,7 +10,7 @@ import re
 
 from akvo.rsr.forms import RegisterForm
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
