@@ -7,6 +7,8 @@
 
 from django.contrib.auth import get_user_model
 
+from rest_framework import serializers
+
 from .rsr_serializer import BaseRSRSerializer
 from .organisation import OrganisationExtraSerializer
 
@@ -20,9 +22,7 @@ class UserSerializer(BaseRSRSerializer):
         fields = (
             'first_name',
             'last_name',
-            'email',
-            # 'organisation',
-            # 'organisations',
+            'email'
         )
         exclude = ('absolute_url',)
 
@@ -32,3 +32,41 @@ class UserSerializer(BaseRSRSerializer):
         """
         super(UserSerializer, self).__init__(*args, **kwargs)
         del self.fields['absolute_url']
+
+
+class UserPasswordSerializer(serializers.Serializer):
+    """Change password serializer"""
+
+    old_password = serializers.CharField(
+        help_text='Current Password',
+        max_length=100
+    )
+    new_password1 = serializers.CharField(
+        help_text='New Password',
+        max_length=100
+    )
+    new_password2 = serializers.CharField(
+        help_text='New Password (confirmation)',
+        max_length=100
+    )
+
+    def validate_old_password(self, attrs, source):
+        """Check for current password"""
+        if not self.object.check_password(attrs.get("old_password")):
+            raise serializers.ValidationError('Old password is not correct.')
+
+        return attrs
+
+    def validate_new_password2(self, attrs, source):
+        """Check if password1 and password2 match"""
+        password_confirmation = attrs[source]
+        password = attrs['new_password1']
+
+        if password_confirmation != password:
+            raise serializers.ValidationError('Passwords do not match.')
+
+        return attrs
+
+    def restore_object(self, attrs, instance=None):
+        """Not needed, changing passwords happens in UserViewSet."""
+        return attrs

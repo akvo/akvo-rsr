@@ -27,7 +27,7 @@ from .project_location import ProjectLocationSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
 from .project_update_location import ProjectUpdateLocationSerializer
 from .publishing_status import PublishingStatusSerializer
-from .user import UserSerializer
+from .user import UserSerializer, UserPasswordSerializer
 
 __all__ = [
     'BenchmarkSerializer',
@@ -54,5 +54,6 @@ __all__ = [
     'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',
     'PublishingStatusSerializer',
-    'UserSerializer,',
+    'UserSerializer',
+    'UserPasswordSerializer'
 ]
