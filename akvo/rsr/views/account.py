@@ -55,7 +55,13 @@ def activate(request, activation_key, extra_context=None):
                 registration_profile.save()
                 user.is_active = True
                 user.save()
+
+                # TODO: send activation mail (check to whom)
                 # user_activated.send(sender=RegistrationProfile, user=user)
+
+                # Log in user without password, using custom backend
+                user.backend = settings.AUTHENTICATION_BACKENDS[0]
+                login(request, user)
     if extra_context is None:
         extra_context = {}
     context = RequestContext(request)
@@ -64,7 +70,6 @@ def activate(request, activation_key, extra_context=None):
     return render_to_response(
         'registration/activate.html',
         {
-            'new_user': user,
             'expiration_days': getattr(settings, 'ACCOUNT_ACTIVATION_DAYS', 7)
         },
         context_instance=context
