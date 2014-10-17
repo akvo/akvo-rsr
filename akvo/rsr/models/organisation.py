@@ -137,7 +137,7 @@ class Organisation(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('organisation_main', (), {'org_id': self.pk})
+        return ('organisation-main', (), {'organisation_id': self.pk})
 
 
     class QuerySet(QuerySet):
