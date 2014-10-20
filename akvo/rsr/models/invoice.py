@@ -14,6 +14,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from mollie.ideal.utils import get_mollie_banklist
 
+from paypal.standard.ipn.signals import payment_was_flagged
+
 from ..fields import ValidXMLCharField, ValidXMLTextField
 
 
@@ -149,3 +151,14 @@ class Invoice(models.Model):
         app_label = 'rsr'
         verbose_name = u'invoice'
         ordering = ['-id', ]
+
+# PayPal IPN listener
+def process_paypal_ipn(sender, **kwargs):
+    ipn = sender
+    if ipn.payment_status == 'Completed':
+        invoice = Invoice.objects.get(pk=int(ipn.invoice))
+        invoice.amount_received = invoice.amount - ipn.mc_fee
+        invoice.ipn = ipn.txn_id
+        invoice.status = 3
+        invoice.save()
+payment_was_flagged.connect(process_paypal_ipn)
