@@ -76,7 +76,10 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
         def primary_location_data_for_update(obj):
             """ We need similar data for both the project and the organisation associated with the update
             """
-            primary_location = dict(obj.primary_location.__dict__)
+            try:
+                primary_location = dict(obj.primary_location.__dict__)
+            except:
+                return None
             # remove Django internal field
             primary_location.pop('_state', None)
             country_id = primary_location.pop('country_id', None)
@@ -93,7 +96,6 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
                 # remove Django internal field
                 country_dict.pop('_state', None)
                 primary_location['country'].update(country_dict)
-
             return primary_location
 
         def org_data_for_update(organisation):
