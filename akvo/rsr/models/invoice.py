@@ -152,6 +152,7 @@ class Invoice(models.Model):
         verbose_name = u'invoice'
         ordering = ['-id', ]
 
+
 # PayPal IPN listener
 def process_paypal_ipn(sender, **kwargs):
     ipn = sender
