@@ -6,7 +6,7 @@ var Button = ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
 
 var ConfirmModal = React.createClass({
-  deleteUser: function() {
+  deleteEmployment: function() {
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie != '') {
@@ -39,7 +39,7 @@ var ConfirmModal = React.createClass({
 
     $.ajax({
         type: "DELETE",
-        url: "/rest/v1/user/" + this.props.user.id + '/?format=json',
+        url: "/rest/v1/employment/" + this.props.employment.id + '/?format=json',
         success: function(data) {
             this.handleDelete();
         }.bind(this),
@@ -55,13 +55,13 @@ var ConfirmModal = React.createClass({
 
   render: function() {
     return this.transferPropsTo(
-        <Modal title="Delete user">
+        <Modal title="Remove link to organisation">
           <div className="modal-body">
-            {'Are you sure you want to delete user: ' + this.props.user.first_name + ' ' + this.props.user.last_name + '?'}
+            {'Are you sure you want to remove the link to this organisation: ' + this.props.employment.organisation_name + '?'}
           </div>
           <div className="modal-footer">
             <Button onClick={this.props.onRequestHide}>Close</Button>
-            <Button onClick={this.deleteUser} bsStyle="danger">Delete user</Button>
+            <Button onClick={this.deleteEmployment} bsStyle="danger">Remove</Button>
           </div>
         </Modal>
       );
@@ -71,27 +71,14 @@ var ConfirmModal = React.createClass({
 var TriggerConfirmModal = React.createClass({
     render: function () {
         return (
-            <ModalTrigger modal={<ConfirmModal user={this.props.user} onDeleteToggle={this.props.onDeleteToggle} />}>
-                <Button bsStyle="danger">X</Button>
+            <ModalTrigger modal={<ConfirmModal employment={this.props.employment} onDeleteToggle={this.props.onDeleteToggle} />}>
+                <Button bsStyle="danger" bsSize="xsmall">X</Button>
             </ModalTrigger>
             );
     }
 });
 
-var OrganisationList = React.createClass({
-    render: function () {
-        var organisations = this.props.organisations.map(function(org) {
-            return (
-                <li>{org.name}</li>
-                )
-        });
-        return (
-            <ul>{organisations}</ul>
-            );
-    }
-});
-
-var UserRow = React.createClass({
+var Employment = React.createClass({
     getInitialState: function() {
         return {visible: true};
     },
@@ -102,15 +89,50 @@ var UserRow = React.createClass({
 
     render: function() {
         return this.state.visible
-           ? <tr>
+            ? <li>{this.props.employment.organisation_name} <TriggerConfirmModal employment={this.props.employment} onDeleteToggle={this.onDelete} /></li>
+            : <span/>;
+    }
+});
+
+var EmploymentList = React.createClass({
+    getInitialState: function() {
+        return { employments: [] };
+    },
+
+    componentDidMount: function() {
+        $.get(this.props.source, function(result) {
+            var employments = result.results;
+            if (this.isMounted()) {
+                this.setState({
+                    employments: employments
+                });
+            }
+        }.bind(this));
+    },
+
+    render: function () {
+        var employments = this.state.employments.map(function(employment) {
+            return (
+                <Employment employment={employment}/>
+                )
+        });
+        return (
+            <ul>{employments}</ul>
+            );
+    }
+});
+
+var UserRow = React.createClass({
+    render: function() {
+        return (
+            <tr>
               <td>{this.props.user.email}</td>
               <td>{this.props.user.first_name}</td>
               <td>{this.props.user.last_name}</td>
-              <td><OrganisationList organisations={this.props.user.organisations} /></td>
-              <td><i>To do</i></td>
-              <td><TriggerConfirmModal user={this.props.user} onDeleteToggle={this.onDelete} /></td>
-             </tr>
-            : <tr><td><i>User Deleted</i></td><td></td><td></td><td></td><td></td><td></td></tr>;
+              <td><EmploymentList source={"/rest/v1/employment/?format=json&user=" + this.props.user.id} /></td>
+              <td><i>to do</i></td>
+            </tr>
+            );
     }
 });
 
@@ -138,7 +160,7 @@ var UserTable = React.createClass({
         });
         return (
             <Table striped>
-                <thead><tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisation</th><th>Permissions</th><th>Delete</th></tr></thead>
+                <thead><tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisations</th><th>Permissions</th></tr></thead>
                 <tbody>{users}</tbody>
             </Table>
             );

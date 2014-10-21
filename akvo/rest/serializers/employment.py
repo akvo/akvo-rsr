@@ -16,5 +16,6 @@ class EmploymentSerializer(BaseRSRSerializer):
     organisation_name = serializers.Field(source='organisation.name')
     country_name = serializers.Field(source='country.name')
 
+
     class Meta:
         model = Employment
