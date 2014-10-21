@@ -105,3 +105,4 @@ tramp
 # SASS
 **/.sass-cache
 **/.sass-cache/*
+**/.sass-cache/**/*
