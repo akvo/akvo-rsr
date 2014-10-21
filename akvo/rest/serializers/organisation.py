@@ -28,6 +28,7 @@ class OrganisationExtraSerializer(OrganisationSerializer):
 
     class Meta(OrganisationSerializer.Meta):
         fields = (
+            'id',
             'logo',
             'long_name',
             'name',
