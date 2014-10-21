@@ -50,6 +50,9 @@
 body > .navbar {
   background-color: #eee; }
 
+nav a {
+  text-transform: none; }
+
 .navbar.a-main {
   text-transform: uppercase; }
 
@@ -85,5 +88,16 @@ footer .navbar {
   display: inline-block;
   float: none;
   font-size: 14px; }
+
+/* LISTING GENERIC */
+#map {
+  height: 100px; }
+  @media only screen and (min-width: 768px) {
+    #map {
+      height: 200px; } }
+
+#search_filter .input-group {
+  margin: auto;
+  max-width: 400px; }
 
 /*# sourceMappingURL=main.css.map */
