@@ -56,7 +56,7 @@ The virtual machine is provisioned with the same [Puppet](http://puppetlabs.com/
        192.168.50.101 cordaid.localakvoapp.org
        
 ##### Q: How do I update the Python package dependencies?
-**A**: The virtualenv on the virtual machine will be updated to match the `2_rsr.txt` file in your checkout when it is provisioned. This happens when the machine is booted (`vagrant up`) or you can make it happen manually by running `vagrant provision`. If you change it, for example to add a new dependency or bump a dependency version, `vagrant provision` will bring the virtualenv up to date.
+**A**: The virtualenv on the virtual machine will be updated to match the `requirements.txt` file in your checkout when it is provisioned. This happens when the machine is booted (`vagrant up`) or you can make it happen manually by running `vagrant provision`. If you change it, for example to add a new dependency or bump a dependency version, `vagrant provision` will bring the virtualenv up to date.
 
 ##### Q: I get a 502! Why?
 **A**: Ensure that RSR is running. You should either be using gunicorn or the Django development server. To see if gunicorn is running, run `scripts/devhelpers/supervisorctl.sh`. You will see `rsr      RUNNING` or similar if everythig is fine. Chances are, a 502 means that no RSR app is running.

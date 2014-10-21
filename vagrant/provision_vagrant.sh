@@ -20,7 +20,7 @@ then
     sudo -u rsr virtualenv --quiet /var/akvo/rsr/venv
 fi
 
-sudo -u rsr /var/akvo/rsr/venv/bin/pip install -r /var/akvo/rsr/code/scripts/deployment/pip/requirements/2_rsr.txt
+sudo -u rsr /var/akvo/rsr/venv/bin/pip install -r /var/akvo/rsr/code/requirements.txt
 
 manage='sudo -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/manage.py'
 
