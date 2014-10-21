@@ -1,57 +1,89 @@
+/*---------------------------------------------------------------------------------
+
+		Title:          RSR v3 styles
+		Author:         Dan Rowden, dan@akvo.org
+
+/*---------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------
+
+        Title:          RSR v3 functions and library
+        Author:         Dan Rowden, dan@akvo.org
+
+/*---------------------------------------------------------------------------------*/
+                        /* Colours
+---------------------------------------------------------------------------------*/
+/* Akvo Primary Colours:    */
+/* Akvo Purplish Blue */
+/* Akvo very light blue */
+/* Akvo Orange / light Brown */
+/* Akvo Yellow */
+/* Akvo Pink*/
+/* Akvo Red*/
+/* Akvo Mid grey */
+/* Akvo Darker shade Blue from light blue */
+/* Akvo link blue */
+/* Akvo black */
+/* Akvo Secondary Colours:    */
+/* Akvo very Light green */
+/* Akvo red */
+/* Akvo Pink */
+/* Akvo Darker Grey */
+/* Akvo Very dark Green (Military) */
+/* Akvo Kaki (Greenish Brown) */
+/* Akvo Off White */
+/* Akvo darkish blue / Water Point */
+/* Media Queries
+  ========================================================================== */
+/* custom mid-point break */
+/* Placeholder
+  ========================================================================== */
 /* Hack for full-width columns below 570px */
-@media (max-width: 570px) {
-	.col-ts-12 {
-		float: none;
-		width: 100%;
-	}
-}
-
-
+@media only screen and (max-width: 570px) {
+  .col-ty-12 {
+    float: none;
+    width: 100%; } }
 .navbar {
-	border-radius: 0;
-	border: none;
-}
+  border-radius: 0;
+  border: none; }
 
 /* HEADER */
 body > .navbar {
-	background-color: #eee;
-}
-.navbar.a-main {
-	text-transform: uppercase;
-}
-.navbar .btn {
-	padding: 4px 9px;
-}
-.navbar-brand {
-	width: 122px;
-	background-image: url(../../img/logo.png);
-	background-size: contain;
-	background-repeat: no-repeat;
-	text-indent: -999px;
-	margin-top: 11px;
-	margin-left: 15px;
-	height: 27px;
-	padding: 0;
-}
-@media (min-width: 768px) {
-	body > .navbar >.container .navbar-brand {
-		margin-left: 0;
-	}
-}
+  background-color: #eee; }
 
+.navbar.a-main {
+  text-transform: uppercase; }
+
+.navbar .btn {
+  padding: 4px 9px; }
+
+.navbar-brand {
+  width: 122px;
+  background-image: url(../../img/logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  text-indent: -999px;
+  margin-top: 11px;
+  margin-left: 15px;
+  height: 27px;
+  padding: 0; }
+
+@media only screen and (min-width: 768px) {
+  body > .navbar > .container .navbar-brand {
+    margin-left: 0; } }
 /* FOOTER */
 body > footer {
-	margin-top: 1em;
-}
+  margin-top: 1em; }
+
 footer .navbar {
-	margin-bottom: 0;
-}
+  margin-bottom: 0; }
+
 #footer-body {
-	text-align: center;
-	font-size: 0;
-}
+  text-align: center;
+  font-size: 0; }
+
 #footer-body .navbar-nav {
-	display: inline-block;
-	float: none;
-	font-size: 14px;
-}
+  display: inline-block;
+  float: none;
+  font-size: 14px; }
+
+/*# sourceMappingURL=main.css.map */

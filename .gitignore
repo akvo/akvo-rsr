@@ -101,3 +101,7 @@ tramp
 .vagrant
 
 *.hp6rKR
+
+# SASS
+**/.sass-cache
+**/.sass-cache/*
