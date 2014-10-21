@@ -103,6 +103,4 @@ tramp
 *.hp6rKR
 
 # SASS
-**/.sass-cache
-**/.sass-cache/*
-**/.sass-cache/**/*
+akvo/rsr/static/rsr/v3/css/src/.sass-cache
