@@ -74,10 +74,21 @@ footer .navbar {
 	text-align: center;
 }
 h4.section {
-	margin-bottom: 0.5em;
+	margin-bottom: 0.25em;
 	font-size: 0.875em;
 	text-transform: uppercase;
 	font-weight: bold;
+}
+.progress-label-current {
+	position: relative;
+}
+.progress-label-start {
+	float: left;
+	margin-top: -16px;
+}
+.progress-label-end {
+	float: right;
+	margin-top: -16px;
 }
 
 /* LISTINGS */
@@ -88,6 +99,10 @@ h4.section {
 	@include responsive(sm) {
 		height: 450px;
 	}
+}
+
+#search-filter {
+	margin-bottom: 20px;
 }
 
 #search {
@@ -113,6 +128,9 @@ h4.section {
 		}
 	 	img {
 			width: 100%;
+		}
+		div h4:first-of-type {
+			margin-top: 0;
 		}
 	}
 }
