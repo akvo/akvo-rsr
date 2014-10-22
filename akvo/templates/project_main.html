@@ -2,14 +2,89 @@
 
 {% load i18n %}
 
-{% block title %}{% trans 'Akvo.org' %}{% endblock %}
+{% block title %}{{project.title}}{% endblock %}
 
 {% block maincontent %}
 
-<div class="row">
+<article class="touch-navbar">
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h1>{{project.title}}</h1>
+                    <p>{{project.subtitle}}</p>
+                </div>
+                <div class="col-sm-4">
+                    Share <a href="#" class="btn btn-primary">Follow project</a>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<h1>{{project.title}}</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                GALLERY
+            </div>
+            <div class="col-sm-4">
+                <p>Description</p>
+                <p>IATI ID:</p>
+                <p><a href="#">View project's full data report</a></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 col-xs-6 col-ty-12">
+                <h4 class="section">Focus Areas</h4>
+                <p><a href="#">Water and sanitation</a></p>
 
-</div>
+
+                <h4 class="section">Status</h4>
+                <p>Active</p>
+            </div>
+            <div class="col-sm-3 col-xs-6 col-ty-12">
+                <h4 class="section">Sectors</h4>
+                <p>Education <a href="#" class="small">+4 more</a></p>
+            </div>
+            <div class="col-sm-3 col-xs-6 col-ty-12">
+                <h4 class="section">Partners</h4>
+                <p><a href="#">{{project.partners.all.0}}</a> <a href="#" class="small">+{{project.partners.count|add:"-1"}} more</a></p>
+            </div>
+            <div class="col-sm-3 col-xs-6 col-ty-12">
+                <h4 class="section">Finance</h4>
+                {% include "_project_budget.html" %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                TIMELINE
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                ACCORDION
+            </div>
+            <div class="col-sm-4">
+                <h4 class="section">Latest project updates</h4>
+                <p>Updates</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                COMMENTS
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 col-xs-4 col-ty-12">
+                FOOTER SECTION
+            </div>
+            <div class="col-sm-4 col-xs-4 col-ty-12">
+                FOOTER SECTION
+            </div>
+            <div class="col-sm-4 col-xs-4 col-ty-12">
+                FOOTER SECTION
+            </div>
+        </div>
+    </div>
+</article>
 
 {% endblock %}
