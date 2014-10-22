@@ -57,7 +57,7 @@ var ConfirmModal = React.createClass({displayName: 'ConfirmModal',
     return this.transferPropsTo(
         Modal({title: "Remove link to organisation"}, 
           React.DOM.div({className: "modal-body"}, 
-            'Are you sure you want to remove the link to this organisation: ' + this.props.employment.organisation_name + '?'
+            'Are you sure you want to remove ' + this.props.employment.user.first_name + ' ' + this.props.employment.user.last_name + ' from ' + this.props.employment.organisation.name + '?'
           ), 
           React.DOM.div({className: "modal-footer"}, 
             Button({onClick: this.props.onRequestHide}, "Close"), 
@@ -89,7 +89,7 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         return this.state.visible
-            ? React.DOM.li(null, this.props.employment.organisation_name, " ", TriggerConfirmModal({employment: this.props.employment, onDeleteToggle: this.onDelete}))
+            ? React.DOM.li(null, this.props.employment.organisation.name, " ", TriggerConfirmModal({employment: this.props.employment, onDeleteToggle: this.onDelete}))
             : React.DOM.span(null);
     }
 });
@@ -100,14 +100,12 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
     },
 
     componentDidMount: function() {
-        $.get(this.props.source, function(result) {
-            var employments = result.results;
-            if (this.isMounted()) {
-                this.setState({
-                    employments: employments
-                });
-            }
-        }.bind(this));
+        var employments = this.props.user.employments;
+        if (this.isMounted()) {
+            this.setState({
+                employments: employments
+            });
+        }
     },
 
     render: function () {
@@ -129,7 +127,7 @@ var UserRow = React.createClass({displayName: 'UserRow',
               React.DOM.td(null, this.props.user.email), 
               React.DOM.td(null, this.props.user.first_name), 
               React.DOM.td(null, this.props.user.last_name), 
-              React.DOM.td(null, EmploymentList({source: "/rest/v1/employment/?format=json&user=" + this.props.user.id})), 
+              React.DOM.td(null, EmploymentList({user: this.props.user})), 
               React.DOM.td(null, React.DOM.i(null, "to do"))
             )
             );
@@ -142,14 +140,12 @@ var UserTable = React.createClass({displayName: 'UserTable',
     },
 
     componentDidMount: function() {
-        $.get(this.props.source, function(result) {
-            var users = result.results;
-            if (this.isMounted()) {
-                this.setState({
-                    users: users
-                });
-            }
-        }.bind(this));
+        var users = this.props.source.users;
+        if (this.isMounted()) {
+            this.setState({
+                users: users
+            });
+        }
       },
 
     render: function() {
@@ -167,4 +163,6 @@ var UserTable = React.createClass({displayName: 'UserTable',
     }
 });
 
-React.renderComponent(UserTable({source: "/rest/v1/user/?format=json"}), document.getElementById('user_table'));
+var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
+
+React.renderComponent(UserTable({source: initial_data}), document.getElementById('user_table'));
