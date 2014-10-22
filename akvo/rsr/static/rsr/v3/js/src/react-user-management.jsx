@@ -57,7 +57,7 @@ var ConfirmModal = React.createClass({
     return this.transferPropsTo(
         <Modal title="Remove link to organisation">
           <div className="modal-body">
-            {'Are you sure you want to remove the link to this organisation: ' + this.props.employment.organisation_name + '?'}
+            {'Are you sure you want to remove ' + this.props.employment.user.first_name + ' ' + this.props.employment.user.last_name + ' from ' + this.props.employment.organisation.name + '?'}
           </div>
           <div className="modal-footer">
             <Button onClick={this.props.onRequestHide}>Close</Button>
@@ -89,7 +89,7 @@ var Employment = React.createClass({
 
     render: function() {
         return this.state.visible
-            ? <li>{this.props.employment.organisation_name} <TriggerConfirmModal employment={this.props.employment} onDeleteToggle={this.onDelete} /></li>
+            ? <li>{this.props.employment.organisation.name} <TriggerConfirmModal employment={this.props.employment} onDeleteToggle={this.onDelete} /></li>
             : <span/>;
     }
 });
@@ -100,14 +100,12 @@ var EmploymentList = React.createClass({
     },
 
     componentDidMount: function() {
-        $.get(this.props.source, function(result) {
-            var employments = result.results;
-            if (this.isMounted()) {
-                this.setState({
-                    employments: employments
-                });
-            }
-        }.bind(this));
+        var employments = this.props.user.employments;
+        if (this.isMounted()) {
+            this.setState({
+                employments: employments
+            });
+        }
     },
 
     render: function () {
@@ -129,7 +127,7 @@ var UserRow = React.createClass({
               <td>{this.props.user.email}</td>
               <td>{this.props.user.first_name}</td>
               <td>{this.props.user.last_name}</td>
-              <td><EmploymentList source={"/rest/v1/employment/?format=json&user=" + this.props.user.id} /></td>
+              <td><EmploymentList user={this.props.user} /></td>
               <td><i>to do</i></td>
             </tr>
             );
@@ -142,14 +140,12 @@ var UserTable = React.createClass({
     },
 
     componentDidMount: function() {
-        $.get(this.props.source, function(result) {
-            var users = result.results;
-            if (this.isMounted()) {
-                this.setState({
-                    users: users
-                });
-            }
-        }.bind(this));
+        var users = this.props.source.users;
+        if (this.isMounted()) {
+            this.setState({
+                users: users
+            });
+        }
       },
 
     render: function() {
@@ -167,4 +163,6 @@ var UserTable = React.createClass({
     }
 });
 
-React.renderComponent(<UserTable source="/rest/v1/user/?format=json" />, document.getElementById('user_table'));
+var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
+
+React.renderComponent(<UserTable source={initial_data} />, document.getElementById('user_table'));

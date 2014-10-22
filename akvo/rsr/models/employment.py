@@ -6,6 +6,7 @@
 
 
 from django.db import models
+from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -27,3 +28,12 @@ class Employment(models.Model):
 
     def __unicode__(self):
         return self.user.first_name, self.user.last_name, ":", self.organisation.name
+
+    def to_dict(self):
+        return dict(
+            id=self.pk,
+            organisation=model_to_dict(self.organisation, fields=['id', 'name', 'long_name',]),
+            user=model_to_dict(self.user, fields=['id', 'first_name', 'last_name', 'email',]),
+            is_approved=self.is_approved,
+            job_title=self.job_title,
+        )
