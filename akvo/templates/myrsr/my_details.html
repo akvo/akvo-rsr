@@ -113,7 +113,7 @@
 {% endblock %}
 
 {% block myrsr_main %}
-    <div class="col-md-5 col-xs-6 col-ts-12" id="profile">
+    <div class="col-md-5 col-xs-6 col-ty-12" id="profile">
         <h2>My details</h2>
         <form method="" action="" id="profileForm">
             {% csrf_token %}
@@ -128,7 +128,7 @@
         </form>
     </div>
 
-    <div class="col-md-5 col-xs-6 col-ts-12" id="organisations">
+    <div class="col-md-5 col-xs-6 col-ty-12" id="organisations">
         <h2>My organisations</h2>
         {% if user.employments.all %}
         <ul id="organisationsList">

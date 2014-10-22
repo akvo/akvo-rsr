@@ -6,93 +6,110 @@
 
 {% block maincontent %}
 
-<div id="map">
+<section id="map" class="touch-navbar">
 map
-</div>
+</section>
 
-<div id="search">
-  <form class="form-inline" role="form">
-      <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
-    <div class="input-group"\>
-      <input type="text" class="form-control" placeholder="{% trans "Search" %}">
-      <span class="input-group-btn">
-        <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
-      </span>
+<section id="search-filter">
+    <div id="search">
+      <form class="form-inline" role="form">
+          <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
+        <div class="input-group"\>
+          <input type="text" class="form-control" placeholder="{% trans "Search" %}">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
+          </span>
+        </div>
+      </form>
     </div>
-  </form>
-</div>
 
-<div id="filter" style="background-color: #383334; padding: 20px;">
-  <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
-    continents</span><br />
-  <!-- Split button -->
-  <div class="btn-group">
-    <button type="button" class="btn">All</button>
-    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-      <span class="caret"></span>
-      <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li><a href="#">All</a></li>
-      <li class="divider"></li>
-      <li><a href="#">Africa</a></li>
-      <li><a href="#">Antartica</a></li>
-      <li><a href="#">Asia</a></li>
-      <li><a href="#">Australia</a></li>
-      <li><a href="#">Europe</a></li>
-      <li><a href="#">North America</a></li>
-      <li><a href="#">South America</a></li>
-    </ul>
-  </div>
-</div>
+    <div id="filter" style="background-color: #383334; padding: 20px;">
+      <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
+        continents</span><br />
+      <!-- Split button -->
+      <div class="btn-group">
+        <button type="button" class="btn">All</button>
+        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+          <span class="caret"></span>
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">All</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Africa</a></li>
+          <li><a href="#">Antartica</a></li>
+          <li><a href="#">Asia</a></li>
+          <li><a href="#">Australia</a></li>
+          <li><a href="#">Europe</a></li>
+          <li><a href="#">North America</a></li>
+          <li><a href="#">South America</a></li>
+        </ul>
+      </div>
+    </div>
+</section>
 
 <div class="container">
 
-    <p>{% blocktrans %}Viewing n of n projects{% endblocktrans %}</p>
+    <div class="row center-text">
+        <p>{% blocktrans %}Viewing n of n projects{% endblocktrans %}</p>
 
-    <div class="row" style="text-align: center">
-      <ul class="pagination">
-        <li class="disabled"><a href="#">&laquo;</a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#">&raquo;</a></li>
-      </ul>
+        <ul class="pagination">
+            <li class="disabled"><a href="#">&laquo;</a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">&raquo;</a></li>
+        </ul>
     </div>
 
-    <div class="row">
-      <ul class="list-group">
+    <section class="main-list">
         {% for p in projects %}
-        <li class="list-group-item media">
-          <a class="pull-left" href="{% url 'project-main' p.id %}">
-            <img class="media-object"
-                 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+"
-                 alt="...">
-          </a>
-          <div class="media-body">
-            <h4><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h4>
-            <p class="small">
-              {{p.primary_location.country}}
-              {{p.primary_location.country.continent}}
-            </p>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
+        <article class="row">
+            <div class="col-sm-2 col-xs-6">
+                <a href="{% url 'project-main' p.id %}">
+                    <img src="http://placehold.it/200x200" alt="{{p.title}}">
+                </a>
+            </div>
+            <div class="col-sm-4 col-xs-6">
+                <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
+                <p>{{p.subtitle}}</p>
+                <p class="small">{{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
+                <p><a href="#">{{p.partners.all.0}}</a> <a href="#">+{{p.partners.count|add:"-1"}} more</a></p>
+            </div>
+            <div class="col-sm-3">
+                <h4 class="section">Focus Areas</h4>
+                <p>Water and sanitation</p>
 
-    <div class="row" style="text-align: center">
-      <ul class="pagination">
-        <li class="disabled"><a href="#">&laquo;</a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#">&raquo;</a></li>
-      </ul>
+                <h4 class="section">Sectors</h4>
+                <p>Education <a href="#">+4 more</a></p>
+
+                <h4 class="section">Status</h4>
+                <p>Active</p>
+            </div>
+            <div class="col-sm-3">
+                <h4 class="section">Financials</h4>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                        <span class="sr-only">20% Complete</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </ul>
+
+    <div class="row center-text">
+        <ul class="pagination">
+            <li class="disabled"><a href="#">&laquo;</a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">&raquo;</a></li>
+        </ul>
     </div>
 </div>
 {% endblock %}
