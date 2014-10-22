@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Akvo.org' %}{% endblock %}
+
+{% block head_js %}
+<style>
+.tt-dropdown-menu {
+    background-color: white;
+    padding: 3px 20px;
+    font-size: 14px;
+    line-height: 24px;
+}
+.dd-category {
+  margin: 0 20px 5px 20px;
+  padding: 3px 0;
+  border-bottom: 1px solid #ccc;
+}
+.twitter-typeahead {
+  width: 100%;
+}
+</style>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+var countries = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '{{ STATIC_URL }}rsr/v3/json/countries.json'
+});
+
+var continents = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '{{ STATIC_URL }}rsr/v3/json/continents.json'
+});
+
+var projects = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/project/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+var organisations = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/organisation/?format=json',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+countries.initialize();
+continents.initialize();
+projects.initialize();
+organisations.initialize()
+
+$('#query').typeahead({
+  highlight: true
+},
+{
+  name: 'projects',
+  displayKey: 'title',
+  source: projects.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Projects</h3>'
+  }
+},
+{
+  name: 'organisations',
+  displayKey: 'long_name',
+  source: organisations.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Organisations</h3>'
+  }
+},
+{
+  name: 'countries',
+  displayKey: 'name',
+  source: countries.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Countries</h3>'
+  }
+},
+{
+  name: 'continents',
+  displayKey: 'name',
+  source: continents.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Continents</h3>'
+  }
+});
+});
+</script>
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="row" style="background-color: #abd4ff; height: 100px;">
+
+</div>
+
+<div class="row" style="background-color: #241F20; padding: 20px;">
+    <span style="color: #00AD9F; display: inline; text-transform: uppercase;">search for anything:</span>
+    <form>
+        <fieldset>
+            <div class="form-group">
+                <input class="form-control" name="query" id="query" type="text">
+            </div>
+            <button type="submit" class="btn btn-primary">Update project list</button>
+        </fieldset>
+    </form>
+</div>
+
+<div class="row" style="background-color: #383334; padding: 20px;">
+  <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
+    continents</span><br />
+  <!-- Split button -->
+  <div class="btn-group">
+    <button type="button" class="btn">All</button>
+    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+      <span class="caret"></span>
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><a href="#">All</a></li>
+      <li class="divider"></li>
+      <li><a href="#">Africa</a></li>
+      <li><a href="#">Antartica</a></li>
+      <li><a href="#">Asia</a></li>
+      <li><a href="#">Australia</a></li>
+      <li><a href="#">Europe</a></li>
+      <li><a href="#">North America</a></li>
+      <li><a href="#">South America</a></li>
+    </ul>
+  </div>
+</div>
+
+<h1>{% trans "We currently have n projects online" %}</h1>
+
+<div class="row" style="text-align: center">
+  <ul class="pagination">
+    <li class="disabled"><a href="#">&laquo;</a></li>
+    <li class="active"><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#">&raquo;</a></li>
+  </ul>
+</div>
+<div class="row">
+  <ul class="list-group">
+    {% for p in projects %}
+    <li class="list-group-item media">
+      <a class="pull-left" href="{% url 'project-main' p.id %}">
+        <img class="media-object"
+             src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+"
+             alt="...">
+      </a>
+      <div class="media-body">
+        <h4><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h4>
+        <p class="small">
+          {{p.primary_location.country}}
+          {{p.primary_location.country.continent}}
+        </p>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<div class="row" style="text-align: center">
+  <ul class="pagination">
+    <li class="disabled"><a href="#">&laquo;</a></li>
+    <li class="active"><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li><a href="#">&raquo;</a></li>
+  </ul>
+</div>
+<div class="row" style="height: 100px;">
+</div>
+{% endblock %}
