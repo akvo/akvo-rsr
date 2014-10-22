@@ -26,9 +26,6 @@
 body > .navbar {
 	background-color: #eee;
 }
-nav a {
-	text-transform: none;
-}
 .navbar.a-main {
 	text-transform: uppercase;
 }
@@ -72,14 +69,22 @@ footer .navbar {
 
 /* LISTING GENERIC */
 #map {
-	height: 100px;
+	height: 300px;
+	background: #428bca;
 
 	@include responsive(sm) {
-		height: 200px;
+		height: 500px;
 	}
 }
 
-#search_filter .input-group {
-	margin: auto;
-	max-width: 400px;
+#search {
+	padding: 20px;
+	color: #fff;
+	text-align: center;
+	background-color: #241F20;
+
+	.input-group {
+		margin: auto;
+		max-width: 400px;
+	}
 }

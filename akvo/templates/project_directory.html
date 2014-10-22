@@ -10,44 +10,45 @@
 map
 </div>
 
+<div id="search">
+  <form class="form-inline" role="form">
+      <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
+    <div class="input-group"\>
+      <input type="text" class="form-control" placeholder="{% trans "Search" %}">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
+      </span>
+    </div>
+  </form>
+</div>
+
+<div id="filter" style="background-color: #383334; padding: 20px;">
+  <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
+    continents</span><br />
+  <!-- Split button -->
+  <div class="btn-group">
+    <button type="button" class="btn">All</button>
+    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+      <span class="caret"></span>
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><a href="#">All</a></li>
+      <li class="divider"></li>
+      <li><a href="#">Africa</a></li>
+      <li><a href="#">Antartica</a></li>
+      <li><a href="#">Asia</a></li>
+      <li><a href="#">Australia</a></li>
+      <li><a href="#">Europe</a></li>
+      <li><a href="#">North America</a></li>
+      <li><a href="#">South America</a></li>
+    </ul>
+  </div>
+</div>
+
 <div class="container">
-    <div id="search_filter" class="row" style="background-color: #241F20; padding: 20px;">
-      <form class="form" role="form">
-        <div class="input-group">
-          <span class="input-group-addon">{% trans "Search" %}</span>
-          <input type="text" class="form-control">
-          <span class="input-group-addon">
-            <span class="glyphicon glyphicon-search"> </span>
-          </span>
-        </div>
-      </form>
-    </div>
 
-    <div class="row" style="background-color: #383334; padding: 20px;">
-      <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
-        continents</span><br />
-      <!-- Split button -->
-      <div class="btn-group">
-        <button type="button" class="btn">All</button>
-        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-          <span class="caret"></span>
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          <li><a href="#">All</a></li>
-          <li class="divider"></li>
-          <li><a href="#">Africa</a></li>
-          <li><a href="#">Antartica</a></li>
-          <li><a href="#">Asia</a></li>
-          <li><a href="#">Australia</a></li>
-          <li><a href="#">Europe</a></li>
-          <li><a href="#">North America</a></li>
-          <li><a href="#">South America</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <h1>{% trans "We currently have n projects online" %}</h1>
+    <p>{% blocktrans %}Viewing n of n projects{% endblocktrans %}</p>
 
     <div class="row" style="text-align: center">
       <ul class="pagination">
