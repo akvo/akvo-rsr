@@ -1,150 +1,54 @@
-/*---------------------------------------------------------------------------------
+/*
+Error: Invalid CSS after "	padding": expected ";", was ": 6px;"
+        on line 144 of main.scss
 
-		Title:          RSR v3 styles
-		Author:         Dan Rowden, dan@akvo.org
+139: 
+140: 
+141: /* PROJECT *\/
+142: header {
+143: 	margin-bottom: 20px
+144: 	padding: 6px;
+145: 	background: #ccc;
+146: 
+147: 	h1 {
+148: 		margin-top: 10px;
+149: 		margin-bottom: 0;
 
-/*---------------------------------------------------------------------------------*/
-/*---------------------------------------------------------------------------------
-
-        Title:          RSR v3 functions and library
-        Author:         Dan Rowden, dan@akvo.org
-
-/*---------------------------------------------------------------------------------*/
-                        /* Colours
----------------------------------------------------------------------------------*/
-/* Akvo Primary Colours:    */
-/* Akvo Purplish Blue */
-/* Akvo very light blue */
-/* Akvo Orange / light Brown */
-/* Akvo Yellow */
-/* Akvo Pink*/
-/* Akvo Red*/
-/* Akvo Mid grey */
-/* Akvo Darker shade Blue from light blue */
-/* Akvo link blue */
-/* Akvo black */
-/* Akvo Secondary Colours:    */
-/* Akvo very Light green */
-/* Akvo red */
-/* Akvo Pink */
-/* Akvo Darker Grey */
-/* Akvo Very dark Green (Military) */
-/* Akvo Kaki (Greenish Brown) */
-/* Akvo Off White */
-/* Akvo darkish blue / Water Point */
-/* Media Queries
-  ========================================================================== */
-/* custom mid-point break */
-/* Placeholder
-  ========================================================================== */
-/* Force full-width columns below 570px (when using col-xs-N) */
-@media only screen and (max-width: 768px) and (min-width: 570px) {
-  .col-ty-12 {
-    float: none;
-    width: 100%; } }
-.navbar {
-  border-radius: 0;
-  border: none; }
-
-/* HEADER */
-body > .navbar {
-  background-color: #eee; }
-
-.navbar.a-main {
-  text-transform: uppercase; }
-
-.navbar .btn {
-  padding: 4px 9px; }
-
-.navbar-brand {
-  width: 122px;
-  background-image: url(../../img/logo.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  text-indent: -999px;
-  margin-top: 11px;
-  margin-left: 15px;
-  height: 27px;
-  padding: 0; }
-
-@media only screen and (min-width: 768px) {
-  body > .navbar > .container .navbar-brand {
-    margin-left: 0; } }
-/* FOOTER */
-body > footer {
-  margin-top: 1em; }
-
-footer .navbar {
-  margin-bottom: 0; }
-
-#footer-body {
-  text-align: center;
-  font-size: 0; }
-
-#footer-body .navbar-nav {
-  display: inline-block;
-  float: none;
-  font-size: 14px; }
-
-/* GENERIC STRUCTURE and TEXT STYLES */
-.touch-navbar {
-  margin-top: -20px; }
-
-.center-text {
-  text-align: center; }
-
-h4.section {
-  margin-bottom: 0.25em;
-  font-size: 0.875em;
-  text-transform: uppercase;
-  font-weight: bold; }
-
-.progress-label-current {
-  position: relative; }
-
-.progress-label-start {
-  float: left;
-  margin-top: -16px; }
-
-.progress-label-end {
-  float: right;
-  margin-top: -16px; }
-
-/* LISTINGS */
-#map {
-  height: 300px;
-  background: #428bca; }
-  @media only screen and (min-width: 768px) {
-    #map {
-      height: 450px; } }
-
-#search-filter {
-  margin-bottom: 20px; }
-
-#search {
-  padding: 20px;
-  color: #fff;
-  text-align: center;
-  background-color: #241F20; }
-  #search .input-group {
-    margin: auto;
-    max-width: 400px; }
-
-.main-list article {
-  margin-bottom: 20px; }
-  .main-list article h1 {
-    margin-top: 0;
-    font-size: 1.2em; }
-  .main-list article img {
-    width: 100%; }
-  .main-list article div h4:first-of-type {
-    margin-top: 0; }
-
-/* PROJECT */
-header {
-  background: #ccc; }
-  header h1 {
-    margin-top: 10px;
-    font-size: 1.5em; }
-
-/*# sourceMappingURL=main.css.map */
+Backtrace:
+main.scss:144
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:1163:in `expected'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:1099:in `expected'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:1094:in `tok!'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:761:in `block in try_declaration'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:1139:in `call'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:1139:in `rethrow'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:766:in `try_declaration'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:696:in `declaration_or_ruleset'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:661:in `block_child'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:650:in `block_contents'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:642:in `block'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:635:in `ruleset'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:660:in `block_child'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:653:in `block_contents'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:117:in `stylesheet'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/scss/parser.rb:42:in `parse'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/engine.rb:393:in `_to_tree'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/engine.rb:368:in `_render_with_sourcemap'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/engine.rb:285:in `render_with_sourcemap'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/plugin/compiler.rb:489:in `update_stylesheet'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/plugin/compiler.rb:209:in `each'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/plugin/compiler.rb:469:in `on_file_changed'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/sass-3.4.5/lib/sass/plugin/compiler.rb:328:in `block in watch'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/listen-2.7.9/lib/listen/listener.rb:276:in `call'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/listen-2.7.9/lib/listen/listener.rb:276:in `_process_changes'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/listen-2.7.9/lib/listen/listener.rb:233:in `block in _wait_for_changes'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/listen-2.7.9/lib/listen/listener.rb:216:in `loop'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/listen-2.7.9/lib/listen/listener.rb:216:in `_wait_for_changes'
+/Users/Dan/.rvm/gems/ruby-2.1.2/gems/listen-2.7.9/lib/listen/listener.rb:312:in `block in _start_wait_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Invalid CSS after \"	padding\": expected \";\", was \": 6px;\"\A         on line 144 of main.scss\A \A 139: \A 140: \A 141: /* PROJECT */\A 142: header {\A 143: 	margin-bottom: 20px\A 144: 	padding: 6px;\A 145: 	background: #ccc;\A 146: \A 147: 	h1 {\A 148: 		margin-top: 10px;\A 149: 		margin-bottom: 0;"; }

@@ -73,11 +73,13 @@ footer .navbar {
 .center-text {
 	text-align: center;
 }
-h4.section {
-	margin-bottom: 0.25em;
+.section {
 	font-size: 0.875em;
 	text-transform: uppercase;
 	font-weight: bold;
+}
+h4.section {
+	margin-bottom: 0.25em;
 }
 .progress-label-current {
 	position: relative;
@@ -138,10 +140,25 @@ h4.section {
 
 /* PROJECT */
 header {
+	margin-bottom: 20px;
+	padding: 6px;
 	background: #ccc;
 
 	h1 {
 		margin-top: 10px;
+		margin-bottom: 0;
 		font-size: 1.5em;
 	}
+}
+.map-toggle {
+	text-transform: uppercase;
+	font-size: 0.875em;
+}
+#gallery {
+	height: 300px;
+	background: #ccc;
+}
+#timeline {
+	height: 200px;
+	background: #ccc;
 }

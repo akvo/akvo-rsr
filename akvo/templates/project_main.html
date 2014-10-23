@@ -6,29 +6,20 @@
 
 {% block maincontent %}
 
-<article class="touch-navbar">
-    <header>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-8">
-                    <h1>{{project.title}}</h1>
-                    <p>{{project.subtitle}}</p>
-                </div>
-                <div class="col-sm-4">
-                    Share <a href="#" class="btn btn-primary">Follow project</a>
-                </div>
-            </div>
-        </div>
-    </header>
+<article class="touch-navbar project-container">
+    {% include "partials/project_header.html" %}
 
     <div class="container">
         <div class="row">
             <div class="col-sm-8">
-                GALLERY
+                <div id="gallery">
+                    GALLERY
+                </div>
             </div>
             <div class="col-sm-4">
-                <p>Description</p>
-                <p>IATI ID:</p>
+                <p>{{project.project_plan_summary}}</p>
+                <p><span class="section">IATI ID</span> 12345</p>
+                <p><span class="section">Status</span> {{project.status}}</p>
                 <p><a href="#">View project's full data report</a></p>
             </div>
         </div>
@@ -36,10 +27,6 @@
             <div class="col-sm-3 col-xs-6 col-ty-12">
                 <h4 class="section">Focus Areas</h4>
                 <p><a href="#">Water and sanitation</a></p>
-
-
-                <h4 class="section">Status</h4>
-                <p>Active</p>
             </div>
             <div class="col-sm-3 col-xs-6 col-ty-12">
                 <h4 class="section">Sectors</h4>
@@ -47,16 +34,27 @@
             </div>
             <div class="col-sm-3 col-xs-6 col-ty-12">
                 <h4 class="section">Partners</h4>
-                <p><a href="#">{{project.partners.all.0}}</a> <a href="#" class="small">+{{project.partners.count|add:"-1"}} more</a></p>
+                <div class="media">
+                    <a href="#" class="pull-left">
+                        <img src="http://placehold.it/80x60">
+                    </a>
+                    <div class="media-body">
+                        <p><a href="#">{{project.partners.all.0}}</a></p>
+                    </div>
+                </div>
+                <p class="center-text"><a href="#">+{{project.partners.count|add:"-1"}} more</a></p>
             </div>
             <div class="col-sm-3 col-xs-6 col-ty-12">
                 <h4 class="section">Finance</h4>
-                {% include "_project_budget.html" %}
+                {% include "partials/project_budget.html" %}
+                <p class="center-text"><a href="#">See all financial info</a></p>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12">
-                TIMELINE
+                <div id="timeline">
+                    TIMELINE
+                </div>
             </div>
         </div>
         <div class="row">
