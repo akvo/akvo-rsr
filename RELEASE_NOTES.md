@@ -7,6 +7,45 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.5 Bujumbura
+---
+
+Wednesday 21st October 2014, adriancollier
+
+Improvements
+---
+
+### Filtering of Updates
+
+The API has been modfied to allow the list of updates to be filtered on timestamp. This was to ensure that the RSR API is fully compatible with the upcoming release of RSR Up.
+
+Github issue:  [#769](https://github.com/akvo/akvo-rsr/issues/769)
+
+Bug Fixes
+---
+
+### Finalisation of PayPal Donations
+
+We noticed a bug that was preventing PayPal donations from being completed as the callback from the PayPal service was not being correctly read. This has been fixed and we will apply this to all affected donations.
+
+Github issue: [#796](https://github.com/akvo/akvo-rsr/issues/796)
+
+
+### IATI Export Activity ID
+
+There was a mistake in the IATI export that resulted in an incorrect IATI ID being applied to activities that has now been rectified.
+
+Github issue: [#799](https://github.com/akvo/akvo-rsr/issues/799)
+
+### Project Update Extra API Resource
+
+An issue was discovered that when an organisation has no location, the API resource was returning an error value. While not common, this needed to be resolved for the few instances where this is the case.
+
+Github issue: [#820](https://github.com/akvo/akvo-rsr/issues/820)
+
+
+--------
+
 Akvo RSR ver 2/4/2 Astana Hotfix II
 ---
 
