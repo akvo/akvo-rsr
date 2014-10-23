@@ -1,10 +1,12 @@
-<span class="progress-label-current" style="left:{% widthratio 7900 30000 100 %}%">$7,900</span>
+{% load i18n %}
+
+<span class="progress-label-current" style="left:{% widthratio 7900 30000 100 %}%">{{project.get_currency_display}}7,900</span>
 <div class="progress">
     <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {% widthratio 7900 30000 100 %}%">
         <span class="sr-only">{% widthratio 7900 30000 100 %}% Complete</span>
     </div>
 </div>
-<span class="progress-label-start">$0</span>
-<span class="progress-label-end">$30,000</span>
+<span class="progress-label-start">{{project.get_currency_display}}0</span>
+<span class="progress-label-end">{{project.get_currency_display}}{{project.budget}}</span>
 
-<p><a href="#" class="btn btn-primary">Donate</a></p>
+<p class="center-text clearfix"><a href="#" class="btn btn-primary">{% trans "Donate" %}</a></p>

@@ -86,11 +86,11 @@
                 <p>Education <a href="#" class="small">+4 more</a></p>
 
                 <h4 class="section">Status</h4>
-                <p>Active</p>
+                <p>{{p.get_status_display}}</p>
             </div>
             <div class="col-sm-3 hidden-xs">
                 <h4 class="section">Finance</h4>
-                {% include "partials/project_budget.html" %}
+                {% include "partials/project_budget.html" with project=p %}
             </div>
             <div class="col-xs-9 col-xs-offset-3 visible-xs-block">
                 <p><span class="glyphicon glyphicon-star"></span> Active</p>
