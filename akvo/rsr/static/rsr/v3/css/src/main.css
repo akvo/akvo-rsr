@@ -39,7 +39,7 @@
 /* Placeholder
   ========================================================================== */
 /* Force full-width columns below 570px (when using col-xs-N) */
-@media only screen and (max-width: 768px) and (min-width: 570px) {
+@media only screen and (max-width: 570px) {
   .col-ty-12 {
     float: none;
     width: 100%; } }
@@ -113,6 +113,9 @@ h4.section {
   float: right;
   margin-top: -16px; }
 
+img {
+  max-width: 100%; }
+
 /* LISTINGS */
 #map {
   height: 300px;
@@ -138,8 +141,6 @@ h4.section {
   .main-list article h1 {
     margin-top: 0;
     font-size: 1.2em; }
-  .main-list article img {
-    width: 100%; }
   .main-list article div h4:first-of-type {
     margin-top: 0; }
 

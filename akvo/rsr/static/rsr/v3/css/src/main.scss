@@ -92,6 +92,9 @@ h4.section {
 	float: right;
 	margin-top: -16px;
 }
+img {
+	max-width: 100%;
+}
 
 /* LISTINGS */
 #map {
@@ -127,9 +130,6 @@ h4.section {
 		h1 {
 			margin-top: 0;
 			font-size: 1.2em;
-		}
-	 	img {
-			width: 100%;
 		}
 		div h4:first-of-type {
 			margin-top: 0;
