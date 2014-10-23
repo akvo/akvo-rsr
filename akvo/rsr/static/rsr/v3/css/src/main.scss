@@ -134,6 +134,9 @@ img {
 		div h4:first-of-type {
 			margin-top: 0;
 		}
+		img {
+			width: 100%;
+		}
 	}
 }
 
@@ -165,9 +168,8 @@ header {
 
 /* UPDATE */
 .main-list .excerpt {
-	height: 3em;
-	white-space: nowrap;
-    overflow: hidden;
+	height: 51px;
+	overflow: hidden;
 	text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;

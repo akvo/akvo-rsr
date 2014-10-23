@@ -67,12 +67,13 @@
     <section class="main-list">
         <div class="row">
             {% for u in updates %}
-            <article class="col-md-3 col-sm-4 col-xs-6">
-                <a href="{% url 'update-main' u.id %}"><img src="http://placehold.it/400x300"></a>
-                <h1><a href="{% url 'update-main' u.id %}">{{u.title}}</a></h1>
-                <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="#">Project name</a><br>
+            <article class="col-md-3 col-sm-4 col-xs-6 col-ty-12">
+                <a href="{% url 'update-main' u.project.id u.id %}"><img src="http://placehold.it/400x300"></a>
+                <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
+                <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'project-main' u.project.pk %}">Project name</a><br>
                 <span class="glyphicon glyphicon-user"></span> Person (Partner)<br>
-                <span class="glyphicon glyphicon-map-marker"></span> Location</p>
+                <span class="glyphicon glyphicon-map-marker"></span> Location<br>
+                1 October 2014</p>
                 <div class="excerpt small">
                 {% autoescape off %}
                   {{ u.text|force_escape|urlize|apply_markup:"markdown" }}

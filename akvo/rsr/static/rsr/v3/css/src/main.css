@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /*---------------------------------------------------------------------------------
 
 		Title:          RSR v3 styles
@@ -143,6 +142,8 @@ img {
     font-size: 1.2em; }
   .main-list article div h4:first-of-type {
     margin-top: 0; }
+  .main-list article img {
+    width: 100%; }
 
 /* PROJECT */
 header {
@@ -168,9 +169,8 @@ header {
 
 /* UPDATE */
 .main-list .excerpt {
-  height: 3em;
-  white-space: nowrap;
-      overflow: hidden;
+  height: 51px;
+  overflow: hidden;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   -ms-text-overflow: ellipsis; }
