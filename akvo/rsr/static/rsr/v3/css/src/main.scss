@@ -162,3 +162,13 @@ header {
 	height: 200px;
 	background: #ccc;
 }
+
+/* UPDATE */
+.main-list .excerpt {
+	height: 3em;
+	white-space: nowrap;
+    overflow: hidden;
+	text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+}

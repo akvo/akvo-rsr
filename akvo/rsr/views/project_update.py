@@ -11,9 +11,9 @@ from django.shortcuts import get_object_or_404, render
 
 def directory(request):
     context = {'updates': ProjectUpdate.objects.all()}
-    return render(request, 'project_update_directory.html', context)
+    return render(request, 'update_directory.html', context)
 
 
 def main(request, update_id):
     context = {'update': get_object_or_404(ProjectUpdate, pk=update_id)}
-    return render(request, 'project_update_main.html', context)
+    return render(request, 'update_main.html', context)

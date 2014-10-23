@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% load i18n markup_tags %}
+
+{% block title %}{% trans 'Updates' %}{% endblock %}
+
+{% block maincontent %}
+
+<section id="map" class="touch-navbar">
+
+</section>
+
+<section id="search-filter">
+    <div id="search">
+        <form class="form-inline" role="form">
+            <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
+            <div class="input-group"\>
+                <input type="text" class="form-control" placeholder="{% trans "Search" %}">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
+                </span>
+            </div>
+        </form>
+    </div>
+
+    <div id="filter" style="background-color: #383334; padding: 20px;">
+        <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
+        continents</span><br />
+        <!-- Split button -->
+        <div class="btn-group">
+            <button type="button" class="btn">All</button>
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">All</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Africa</a></li>
+                <li><a href="#">Antartica</a></li>
+                <li><a href="#">Asia</a></li>
+                <li><a href="#">Australia</a></li>
+                <li><a href="#">Europe</a></li>
+                <li><a href="#">North America</a></li>
+                <li><a href="#">South America</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+
+    <div class="row center-text">
+        <p>{% blocktrans %}Viewing n of n projects{% endblocktrans %}</p>
+
+        <ul class="pagination">
+            <li class="disabled"><a href="#">&laquo;</a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">&raquo;</a></li>
+        </ul>
+    </div>
+
+    <section class="main-list">
+        <div class="row">
+            {% for u in updates %}
+            <article class="col-md-3 col-sm-4 col-xs-6">
+                <a href="{% url 'update-main' u.id %}"><img src="http://placehold.it/400x300"></a>
+                <h1><a href="{% url 'update-main' u.id %}">{{u.title}}</a></h1>
+                <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="#">Project name</a><br>
+                <span class="glyphicon glyphicon-user"></span> Person (Partner)<br>
+                <span class="glyphicon glyphicon-map-marker"></span> Location</p>
+                <div class="excerpt small">
+                {% autoescape off %}
+                  {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+                {% endautoescape %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="row center-text">
+        <ul class="pagination">
+            <li class="disabled"><a href="#">&laquo;</a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">&raquo;</a></li>
+        </ul>
+    </div>
+
+</div>
+{% endblock %}
