@@ -7,37 +7,6 @@
 {% block head_js %}
     <script>
         $(document).ready(function() {
-
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie != '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = jQuery.trim(cookies[i]);
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-
-            function csrfSafeMethod(method) {
-                // these HTTP methods do not require CSRF protection
-                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            }
-
-            var csrftoken = getCookie('csrftoken');
-            $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                }
-            });
-
             $('#profileForm').submit(function(event) {
 
                 serializedData = {};
@@ -64,53 +33,105 @@
                 event.preventDefault();
 
             });
-
-            $('#organisationForm').submit(function(event) {
-
-                serializedData = {'user': '{{ user.pk }}'};
-                $.each($(this).serializeArray(), function(i, obj) { serializedData[obj.name] = obj.value });
-
-                $.ajax({
-                    type:"POST",
-                    url: "/rest/v1/employment/?format=json",
-                    data : JSON.stringify(serializedData),
-                    contentType : 'application/json; charset=UTF-8',
-                    success: function(response){
-                        org_entry = '<li>' + response.organisation_name;
-                        if (response.job_title != "") {
-                            org_entry += ' ( ' + response.job_title;
-                            if (response.country_name != null) {
-                                org_entry += ' , ' + response.country_name;
-                            }
-                            org_entry += ' )';
-                        } else if (response.country_name != null) {
-                            org_entry += ' ( ' + response.country_name + ' )';
-                        }
-                        org_entry += ' <i>Pending approval</i></li>';
-                        $( "#organisations" ).prepend('<div class="alert alert-success" role="alert">Request has been sent.</div>');
-                        $( "#noOrganisation").remove();
-                        $( "#organisationsList").append(org_entry);
-                    },
-                    error: function(response)
-                    {
-                        if (response['status'] == 500) {
-                            $("#organisations").prepend('<div class="alert alert-danger" role="alert">You are already linked to this organisation.</div>');
-                        } else {
-                            jsonValue = $.parseJSON(response['responseText']);
-
-                            $.each(jsonValue, function (key, value) {
-                                $("#organisations").prepend('<div class="alert alert-danger" role="alert">' + key + ': ' + value + '</div>');
-                            });
-                        }
-                    }
-                });
-
-                event.preventDefault();
-
-            });
         });
     </script>
+
+    <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
+
+
+<style>
+.tt-hint {
+    color: #999;
+}
+
+.tt-dropdown-menu {
+    /*width: 422px;*/
+    margin-top: 12px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+    padding: 3px 20px;
+    line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+    margin: 0;
+}
+.twitter-typeahead {
+  width: 100%;
+}
+</style>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+
+    var organisations = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      prefetch: {
+          url: '/rest/v1/organisation/?format=json',
+          filter: function(response) {
+              return response.results;
+          }
+      }
+    });
+
+    var countries = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      prefetch: {
+          url: '/rest/v1/country/?format=json&limit=150',
+          filter: function(response) {
+              return response.results;
+          }
+      }
+    });
+
+    organisations.initialize()
+    countries.initialize()
+
+    $('#organisationInput').typeahead({
+      highlight: true
+    },
+    {
+      name: 'organisations',
+      displayKey: 'long_name',
+      source: organisations.ttAdapter()
+    }).on('typeahead:selected typeahead:autocompleted', function(event, data) {
+        $('#organisationInput').attr("value_id", data.id);
+    }).change(function() {
+        $('#organisationInput').attr("value_id", null);
+    });
+
+    $('#countriesInput').typeahead({
+      highlight: true
+    },
+    {
+      name: 'countries',
+      displayKey: 'name',
+      source: countries.ttAdapter()
+    }).on('typeahead:selected typeahead:autocompleted', function(event, data){
+        $('#countriesInput').attr("value_id", data.id);
+    }).change(function() {
+        $('#countriesInput').attr("value_id", null);
+    });
+ });
+</script>
+
 {% endblock %}
+
 
 {% block myrsr_main %}
     <div class="col-md-5 col-xs-6 col-ts-12" id="profile">
@@ -128,38 +149,6 @@
         </form>
     </div>
 
-    <div class="col-md-5 col-xs-6 col-ts-12" id="organisations">
-        <h2>My organisations</h2>
-        {% if user.employments.all %}
-        <ul id="organisationsList">
-            {% for empl in user.employments.all %}
-            <li>
-                {{ empl.organisation.name }}
-                {% if empl.job_title or empl.country %} (
-                {% if empl.job_title %}{{ empl.job_title }}{% endif %}
-                {% if empl.job_title and empl.country %}, {% endif %}
-                {% if empl.country %}{{ empl.country.name }}{% endif %}
-                ){% endif %}
-                {% if not empl.is_approved %} <i>Pending approval</i>{% endif %}
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <h2 id="noOrganisation"><small>Not affiliated with an organisation.</small></h2>
-        <ul id="organisationsList"></ul>
-        {% endif %}
-
-        <h3>Connect with an organisation</h3>
-        <form method="" action="" id="organisationForm">
-            {% csrf_token %}
-            {% for field in organisationform %}
-                {% bootstrap_field field %}
-            {% endfor %}
-            {% buttons %}
-                <button type="submit" class="btn btn-success">
-                    {% trans 'Request to join' %}
-                </button>
-            {% endbuttons %}
-        </form>
-    </div>
+    <div class="col-md-5 col-xs-6 col-ts-12" id="organisations"></div>
+    <script type="application/javascript" src="/static/rsr/v3/js/build/rsr_v3_my_details.min.js" charset="utf-8"></script>
 {% endblock %}

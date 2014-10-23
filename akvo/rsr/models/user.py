@@ -256,6 +256,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             employments_array.append(employment_obj)
 
         return dict(
+            id=self.pk,
             email=self.email,
             first_name=self.first_name,
             last_name=self.last_name,

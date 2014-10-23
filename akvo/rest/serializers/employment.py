@@ -8,14 +8,15 @@ from rest_framework import serializers
 
 from akvo.rsr.models import Employment
 
+from .organisation import OrganisationSerializer
 from .rsr_serializer import BaseRSRSerializer
+from .user import UserSerializer
 
 
 class EmploymentSerializer(BaseRSRSerializer):
 
-    organisation_name = serializers.Field(source='organisation.name')
+    organisation_name = serializers.Field(source='organisation.long_name')
     country_name = serializers.Field(source='country.name')
-
 
     class Meta:
         model = Employment
