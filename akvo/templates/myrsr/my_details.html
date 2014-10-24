@@ -5,41 +5,95 @@
 {% block title %}{% trans 'MyRSR' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 
 {% block head_js %}
-    <script>
-        $(document).ready(function() {
-            $('#profileForm').submit(function(event) {
+<script>
+    $(document).ready(function() {
+        // Form for updating details
+        $('#profileForm').submit(function(event) {
 
-                serializedData = {};
-                $.each($(this).serializeArray(), function(i, obj) { serializedData[obj.name] = obj.value });
+            serializedData = {};
+            $.each($(this).serializeArray(), function(i, obj) { serializedData[obj.name] = obj.value });
 
-                $.ajax({
-                    type:"PATCH",
-                    url: "/rest/v1/user/{{ user.pk }}/?format=json",
-                    data : JSON.stringify(serializedData),
-                    contentType : 'application/json; charset=UTF-8',
-                    success: function(response){
-                        $( "#profile" ).prepend('<div class="alert alert-success" role="alert">Your details have been updated.</div>');
-                    },
-                    error: function(response)
-                    {
-                        jsonValue = $.parseJSON( response['responseText'] );
+            $.ajax({
+                type:"PATCH",
+                url: "/rest/v1/user/{{ user.pk }}/?format=json",
+                data : JSON.stringify(serializedData),
+                contentType : 'application/json; charset=UTF-8',
+                success: function(response){
+                    $( "#profile" ).prepend('<div class="alert alert-success" role="alert">Your details have been updated.</div>');
+                },
+                error: function(response)
+                {
+                    jsonValue = $.parseJSON( response['responseText'] );
 
-                        $.each(jsonValue, function(key, value){
-                            $( "#profile" ).prepend('<div class="alert alert-danger" role="alert">' + value + '</div>');
-                        });
-                    }
-                });
-
-                event.preventDefault();
-
+                    $.each(jsonValue, function(key, value){
+                        $( "#profile" ).prepend('<div class="alert alert-danger" role="alert">' + value + '</div>');
+                    });
+                }
             });
+
+            event.preventDefault();
+
         });
-    </script>
 
-    <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
+        // Typeahead for organisation and country input
+        var organisations = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: {
+                url: '/rest/v1/organisation/?format=json',
+                filter: function(response) {
+                    return response.results;
+                }
+            }
+        });
 
+        var countries = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: {
+                url: '/rest/v1/country/?format=json&limit=150',
+                filter: function(response) {
+                    return response.results;
+                }
+            }
+        });
+
+        organisations.initialize()
+        countries.initialize()
+
+        $('#organisationInput').typeahead({
+            highlight: true
+        },
+        {
+            name: 'organisations',
+            displayKey: 'long_name',
+            source: organisations.ttAdapter()
+        }).on('typeahead:selected typeahead:autocompleted', function(event, data) {
+            $('#organisationInput').attr("value_id", data.id);
+        }).change(function() {
+            $('#organisationInput').attr("value_id", null);
+        });
+
+        $('#countriesInput').typeahead({
+            highlight: true
+        },
+        {
+            name: 'countries',
+            displayKey: 'name',
+            source: countries.ttAdapter()
+        }).on('typeahead:selected typeahead:autocompleted', function(event, data){
+            $('#countriesInput').attr("value_id", data.id);
+        }).change(function() {
+            $('#countriesInput').attr("value_id", null);
+        });
+    });
+</script>
+
+<script type="application/json" id="initial-data">{{ user_data|safe }}</script>
 
 <style>
+/* Style for typeahead dropdown, to be included in CSS file */
+
 .tt-hint {
     color: #999;
 }
@@ -73,63 +127,6 @@
   width: 100%;
 }
 </style>
-
-<script type="text/javascript">
- $(document).ready(function() {
-
-    var organisations = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      prefetch: {
-          url: '/rest/v1/organisation/?format=json',
-          filter: function(response) {
-              return response.results;
-          }
-      }
-    });
-
-    var countries = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      prefetch: {
-          url: '/rest/v1/country/?format=json&limit=150',
-          filter: function(response) {
-              return response.results;
-          }
-      }
-    });
-
-    organisations.initialize()
-    countries.initialize()
-
-    $('#organisationInput').typeahead({
-      highlight: true
-    },
-    {
-      name: 'organisations',
-      displayKey: 'long_name',
-      source: organisations.ttAdapter()
-    }).on('typeahead:selected typeahead:autocompleted', function(event, data) {
-        $('#organisationInput').attr("value_id", data.id);
-    }).change(function() {
-        $('#organisationInput').attr("value_id", null);
-    });
-
-    $('#countriesInput').typeahead({
-      highlight: true
-    },
-    {
-      name: 'countries',
-      displayKey: 'name',
-      source: countries.ttAdapter()
-    }).on('typeahead:selected typeahead:autocompleted', function(event, data){
-        $('#countriesInput').attr("value_id", data.id);
-    }).change(function() {
-        $('#countriesInput').attr("value_id", null);
-    });
- });
-</script>
-
 {% endblock %}
 
 

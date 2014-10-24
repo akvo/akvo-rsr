@@ -28,7 +28,7 @@ var Employment = React.createClass({
 
     render: function() {
         return this.state.visible
-            ? <li>{this.props.employment.organisation.long_name}</li>
+            ? <li>{this.props.employment.organisation_full.long_name} - <i>{this.props.employment.job_title} {this.props.employment.country_full.name}</i></li>
             : <span/>;
     }
 });
@@ -161,7 +161,7 @@ var EmploymentApp = React.createClass({
 
     addEmployment: function(employment) {
         this.setState({
-            employments: this.state.employments.concat([JSON.parse('{"is_approved": false, "organisation": {"long_name": "'+ employment.organisation_name +'"}}')])
+            employments: this.state.employments.concat([employment])
         })
     },
 
