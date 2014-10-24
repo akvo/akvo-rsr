@@ -56,7 +56,7 @@ class FocusArea(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('project_list', (), {'slug': self.slug})
+        return ('project-directory', ())
 
     def projects(self):
         'return all projects that "belong" to the FA through the Categories it links to'

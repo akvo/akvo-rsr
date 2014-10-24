@@ -25,6 +25,7 @@
     <script src="http://fb.me/react-0.10.0.js"></script>
 
     {% compressed_css 'rsr_v3_style' %}
+    {% compressed_js 'rsr_v3_script' %}
     {% compressed_js 'rsr_v3_libraries' %}
 
     <!-- Piwik -->
@@ -36,9 +37,7 @@
 
     {% include 'navigation/header.html' %}
 
-    <div class="container">
-      {% block maincontent %}{% endblock %}
-    </div>
+    {% block maincontent %}{% endblock %}
 
     {% include 'navigation/footer.html' %}
 

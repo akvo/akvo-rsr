@@ -8,10 +8,9 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
-from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm, UserPermissionsForm
+from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
 from akvo.rsr.models import Project
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
@@ -19,8 +18,6 @@ from django.template import RequestContext
 
 @login_required
 def my_details(request):
-    context = RequestContext(request)
-
     profileForm = ProfileForm(
         initial={
             'email': request.user.email,
@@ -30,14 +27,15 @@ def my_details(request):
     )
     organisationForm = UserOrganisationForm()
 
-    return render_to_response(
-        'myrsr/my_details.html',
-        {
-            'profileform': profileForm,
-            'organisationform': organisationForm
-        },
-        context_instance=context
-    )
+    json_data = json.dumps({'user': request.user.employments_dict()})
+
+    context = {
+        'user_data': json_data,
+        'profileform': profileForm,
+        'organisationform': organisationForm,
+    }
+
+    return render(request, 'myrsr/my_details.html', context)
 
 
 @login_required
@@ -73,10 +71,15 @@ def my_projects(request):
 @permission_required('rsr.delete_user', raise_exception=True)
 @login_required
 def user_management(request):
-    # organisations = request.user.organisations.all()
-    permissionsForm = UserPermissionsForm()
+    users = request.user.organisations.all().users()
+
+    users_array = []
+    for user in users:
+        user_obj = user.employments_dict()
+        users_array.append(user_obj)
+    json_data = json.dumps({'users': users_array})
+
     context = {
-        # 'users': organisations.users(),
-        'permissionsForm': permissionsForm
+        'user_data': json_data,
     }
     return render(request, 'myrsr/user_management.html', context)

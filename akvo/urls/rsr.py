@@ -30,9 +30,8 @@ urlpatterns = patterns(
     url(r'^projects/(?P<project_id>\d+)/$',
         'akvo.rsr.views.project.main', name='project-main'),
 
-    # Temp projects with search
-    url(r'^projectsearch/$',
-        'akvo.rsr.views.project.search', name='project-search'),
+    url(r'^projects/(?P<project_id>\d+)/updates/$',
+        'akvo.rsr.views.project_update.project_updates', name='project-updates'),
 
     # Organisations
     url(r'^organisations/$',
@@ -46,7 +45,7 @@ urlpatterns = patterns(
     url(r'^updates/$',
         'akvo.rsr.views.project_update.directory', name='update-directory'),
 
-    url(r'^updates/(?P<update_id>\d+)/$',
+    url(r'^projects/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
         'akvo.rsr.views.project_update.main', name='update-main'),
 
     # Account

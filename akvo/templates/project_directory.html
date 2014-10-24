@@ -2,94 +2,250 @@
 
 {% load i18n %}
 
-{% block title %}{% trans 'Akvo.org' %}{% endblock %}
+{% block title %}{% trans 'Projects' %}{% endblock %}
+
+{% block head_js %}
+<style>
+/* Style for typeahead dropdown, to be included in CSS file */
+
+.tt-hint {
+    color: #999;
+}
+
+.tt-dropdown-menu {
+    text-align: left;
+    width: 500px;
+    margin-top: 12px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    color: #000000;
+}
+
+.tt-suggestion {
+    padding: 3px 20px;
+    line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+    margin: 0;
+}
+.twitter-typeahead {
+  width: 100%;
+}
+</style>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+
+var projects = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/project/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+var organisations = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/organisation/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+var countries = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/country/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+var focus_area = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/focus_area/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+projects.initialize();
+organisations.initialize();
+countries.initialize();
+focus_area.initialize();
+
+$('#query').typeahead({
+  highlight: true
+},
+{
+  name: 'projects',
+  displayKey: 'title',
+  source: projects.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Projects</h3>',
+    suggestion: Handlebars.compile('<a href="/projects/\{\{id\}\}/"><p><u>\{\{title\}\}</u></p><p>\{\{subtitle\}\}</p></a>')
+  }
+},
+{
+  name: 'organisations',
+  displayKey: 'long_name',
+  source: organisations.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Organisations</h3>'
+  }
+},
+{
+  name: 'countries',
+  displayKey: 'name',
+  source: countries.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Countries</h3>'
+  }
+},
+{
+  name: 'focus_area',
+  displayKey: 'name',
+  source: focus_area.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Focus area</h3>'
+  }
+});
+});
+</script>
+{% endblock %}
 
 {% block maincontent %}
 
-<div class="row" style="background-color: #abd4ff; height: 100px;">
+<section id="map" class="touch-navbar">
 
-</div>
+</section>
 
-<div class="row" style="background-color: #241F20; padding: 20px;">
-  <form class="form" role="form">
-    <div class="input-group ">
-      <span class="input-group-addon">{% trans "Search" %}</span>
-      <input type="text" class="form-control">
-      <span class="input-group-addon">
-        <span class="glyphicon glyphicon-search"> </span>
-      </span>
+<section id="search-filter">
+    <div id="search">
+      <form class="form-inline" role="form">
+          <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
+        <div class="input-group">
+          <input type="text" id="query" class="form-control" placeholder="{% trans 'Search' %}">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
+          </span>
+        </div>
+      </form>
     </div>
-  </form>
-</div>
 
-<div class="row" style="background-color: #383334; padding: 20px;">
-  <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
-    continents</span><br />
-  <!-- Split button -->
-  <div class="btn-group">
-    <button type="button" class="btn">All</button>
-    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-      <span class="caret"></span>
-      <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li><a href="#">All</a></li>
-      <li class="divider"></li>
-      <li><a href="#">Africa</a></li>
-      <li><a href="#">Antartica</a></li>
-      <li><a href="#">Asia</a></li>
-      <li><a href="#">Australia</a></li>
-      <li><a href="#">Europe</a></li>
-      <li><a href="#">North America</a></li>
-      <li><a href="#">South America</a></li>
-    </ul>
-  </div>
-</div>
-
-<h1>{% trans "We currently have n projects online" %}</h1>
-
-<div class="row" style="text-align: center">
-  <ul class="pagination">
-    <li class="disabled"><a href="#">&laquo;</a></li>
-    <li class="active"><a href="#">1</a></li>
-    <li><a href="#">2</a></li>
-    <li><a href="#">3</a></li>
-    <li><a href="#">4</a></li>
-    <li><a href="#">5</a></li>
-    <li><a href="#">&raquo;</a></li>
-  </ul>
-</div>
-<div class="row">
-  <ul class="list-group">
-    {% for p in projects %}
-    <li class="list-group-item media">
-      <a class="pull-left" href="{% url 'project-main' p.id %}">
-        <img class="media-object"
-             src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+"
-             alt="...">
-      </a>
-      <div class="media-body">
-        <h4><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h4>
-        <p class="small">
-          {{p.primary_location.country}}
-          {{p.primary_location.country.continent}}
-        </p>
+    <div id="filter" style="background-color: #383334; padding: 20px;">
+      <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
+        continents</span><br />
+      <!-- Split button -->
+      <div class="btn-group">
+        <button type="button" class="btn">All</button>
+        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+          <span class="caret"></span>
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">All</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Africa</a></li>
+          <li><a href="#">Antartica</a></li>
+          <li><a href="#">Asia</a></li>
+          <li><a href="#">Australia</a></li>
+          <li><a href="#">Europe</a></li>
+          <li><a href="#">North America</a></li>
+          <li><a href="#">South America</a></li>
+        </ul>
       </div>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
-<div class="row" style="text-align: center">
-  <ul class="pagination">
-    <li class="disabled"><a href="#">&laquo;</a></li>
-    <li class="active"><a href="#">1</a></li>
-    <li><a href="#">2</a></li>
-    <li><a href="#">3</a></li>
-    <li><a href="#">4</a></li>
-    <li><a href="#">5</a></li>
-    <li><a href="#">&raquo;</a></li>
-  </ul>
-</div>
-<div class="row" style="height: 100px;">
+    </div>
+</section>
+
+<div class="container">
+
+    <div class="row center-text">
+        <p>{% blocktrans %}Viewing n of n projects{% endblocktrans %}</p>
+
+        <ul class="pagination">
+            <li class="disabled"><a href="#">&laquo;</a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">&raquo;</a></li>
+        </ul>
+    </div>
+
+    <section class="main-list">
+        {% for p in projects %}
+        <article class="row">
+            <div class="col-sm-2 col-xs-3">
+                <a href="{% url 'project-main' p.id %}">
+                    <img src="http://placehold.it/200x200" alt="{{p.title}}">
+                </a>
+            </div>
+            <div class="col-sm-4 col-xs-9">
+                <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
+                <p>{{p.subtitle}}</p>
+                <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
+                <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.partners.all.0.id %}">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
+            </div>
+            <div class="col-sm-3 hidden-xs">
+                <h4 class="section">Focus Areas</h4>
+                <p><a href="#">Water and sanitation</a></p>
+
+                <h4 class="section">Sectors</h4>
+                <p>Education <a href="#" class="small">+4 more</a></p>
+
+                <h4 class="section">Status</h4>
+                <p>{{p.get_status_display}}</p>
+            </div>
+            <div class="col-sm-3 hidden-xs">
+                <h4 class="section">Finance</h4>
+                {% include "partials/project_budget.html" with project=p %}
+            </div>
+            <div class="col-xs-9 visible-xs-block">
+                <p class="small">
+                    <span class="section">Focus Areas</span> <a href="#">Water and sanitation</a><br>
+                    <span class="section">Sectors</span> Education <a href="#" class="small">+4 more</a><br>
+                    <span class="section">Status</span> {{p.get_status_display}}<br>
+                    <span class="section">Finance</span> 26% of $30,000 raised
+                </p>
+            </div>
+        </article>
+        {% endfor %}
+    </section>
+
+    <div class="row center-text">
+        <ul class="pagination">
+            <li class="disabled"><a href="#">&laquo;</a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">&raquo;</a></li>
+        </ul>
+    </div>
 </div>
 {% endblock %}

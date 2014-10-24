@@ -204,15 +204,3 @@ class UserOrganisationForm(forms.Form):
         """
         # TODO: The approval process of users
         request.user.organisations.add(self.cleaned_data['organisation'])
-
-
-class UserPermissionsForm(forms.Form):
-    permission = forms.ChoiceField(
-        choices=(
-            ('', 'Pending'),
-            ('2', 'User'),
-            ('4', 'Editor'),
-            ('3', 'Admin')
-        ),
-        label=''
-    )
