@@ -30,10 +30,13 @@ class Employment(models.Model):
         return self.user.first_name, self.user.last_name, ":", self.organisation.name
 
     def to_dict(self):
+        country = '' if not self.country else model_to_dict(self.country)
+
         return dict(
             id=self.pk,
-            organisation=model_to_dict(self.organisation, fields=['id', 'name', 'long_name',]),
-            user=model_to_dict(self.user, fields=['id', 'first_name', 'last_name', 'email',]),
+            organisation_full=model_to_dict(self.organisation, fields=['id', 'name', 'long_name',]),
+            user_full=model_to_dict(self.user, fields=['id', 'first_name', 'last_name', 'email',]),
             is_approved=self.is_approved,
             job_title=self.job_title,
+            country_full=country,
         )
