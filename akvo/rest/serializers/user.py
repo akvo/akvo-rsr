@@ -25,7 +25,7 @@ class UserSerializer(BaseRSRSerializer):
             'first_name',
             'last_name',
             'email',
-            #'organisation',
+            'organisation',
             'organisations',
         )
         exclude = ('absolute_url',)
@@ -43,15 +43,12 @@ class UserPasswordSerializer(serializers.Serializer):
 
     old_password = serializers.CharField(
         help_text='Current Password',
-        max_length=100,
     )
     new_password1 = serializers.CharField(
         help_text='New Password',
-        max_length=100,
     )
     new_password2 = serializers.CharField(
         help_text='New Password (confirmation)',
-        max_length=100,
     )
 
     def validate_old_password(self, attrs, source):

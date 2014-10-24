@@ -8,7 +8,9 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..serializers import UserPasswordSerializer, UserSerializer
@@ -22,8 +24,12 @@ class UserViewSet(BaseRSRViewSet):
     serializer_class = UserSerializer
 
     @action()
+    @permission_classes((IsAuthenticated, ))
     def change_password(self, request, pk=None):
         user = self.get_object()
+        # Users are only allowed to change their own password
+        if not user == request.user:
+            raise PermissionDenied()
         serializer = UserPasswordSerializer(data=request.DATA, instance=user)
         if serializer.is_valid():
             user.set_password(serializer.data['new_password2'])
