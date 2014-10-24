@@ -18,8 +18,6 @@ from django.template import RequestContext
 
 @login_required
 def my_details(request):
-    context = RequestContext(request)
-
     profileForm = ProfileForm(
         initial={
             'email': request.user.email,
@@ -29,14 +27,15 @@ def my_details(request):
     )
     organisationForm = UserOrganisationForm()
 
-    return render_to_response(
-        'myrsr/my_details.html',
-        {
-            'profileform': profileForm,
-            'organisationform': organisationForm
-        },
-        context_instance=context
-    )
+    json_data = json.dumps({'user': request.user.employments_dict()})
+
+    context = {
+        'user_data': json_data,
+        'profileform': profileForm,
+        'organisationform': organisationForm,
+    }
+
+    return render(request, 'myrsr/my_details.html', context)
 
 
 @login_required
