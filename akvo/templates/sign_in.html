@@ -5,18 +5,22 @@
 {% block title %}{% trans 'Sign in to your Akvo RSR account' %}{% endblock %}
 
 {% block maincontent %}
-<div class="col-md-6 col-md-offset-3">
-<form method="post" action="" name="registrationForm">
-    {% csrf_token %}
-    {% bootstrap_form_errors form type='non_fields' %}
-    {% for field in form %}
-        {% bootstrap_field field %}
-    {% endfor %}
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">
-            {% bootstrap_icon "ok-sign" %} {% trans 'Login' %}
-        </button>
-    {% endbuttons %}
-</form>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form method="post" action="" name="registrationForm">
+                {% csrf_token %}
+                {% bootstrap_form_errors form type='non_fields' %}
+                {% for field in form %}
+                    {% bootstrap_field field %}
+                {% endfor %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "ok-sign" %} {% trans 'Login' %}
+                    </button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
