@@ -15,5 +15,5 @@ def directory(request):
 
 
 def main(request, organisation_id):
-    context = {'o': get_object_or_404(Organisation, pk=organisation_id)}
+    context = {'organisation': get_object_or_404(Organisation, pk=organisation_id)}
     return render(request, 'organisation_main.html', context)

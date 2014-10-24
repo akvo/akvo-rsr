@@ -13,7 +13,7 @@
 <section id="search-filter">
     <div id="search">
         <form class="form-inline" role="form">
-            <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
+            <p>{% trans "Refine the update list below by searcing by project, name or organisation" %}</p>
             <div class="input-group"\>
                 <input type="text" class="form-control" placeholder="{% trans "Search" %}">
                 <span class="input-group-btn">
@@ -51,7 +51,7 @@
 <div class="container">
 
     <div class="row center-text">
-        <p>{% blocktrans %}Viewing n of n projects{% endblocktrans %}</p>
+        <p>{% blocktrans %}Viewing n of n updates{% endblocktrans %}</p>
 
         <ul class="pagination">
             <li class="disabled"><a href="#">&laquo;</a></li>
@@ -68,7 +68,9 @@
         <div class="row">
             {% for u in updates %}
             <article class="col-md-3 col-sm-4 col-xs-6 col-ty-12">
-                <a href="{% url 'update-main' u.project.id u.id %}"><img src="http://placehold.it/400x300"></a>
+                <a href="{% url 'update-main' u.project.id u.id %}">
+                    <img src="http://placehold.it/400x300">
+                </a>
                 <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
                 <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'project-main' u.project.pk %}">Project name</a><br>
                 <span class="glyphicon glyphicon-user"></span> Person (Partner)<br>

@@ -75,8 +75,8 @@
             <div class="col-sm-4 col-xs-9">
                 <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
                 <p>{{p.subtitle}}</p>
-                <p><span class="glyphicon glyphicon-map-marker"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
-                <p><span class="glyphicon glyphicon-folder-closed"></span> <a href="#">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
+                <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
+                <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.partners.all.0.id %}">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
             </div>
             <div class="col-sm-3 hidden-xs">
                 <h4 class="section">Focus Areas</h4>
@@ -92,10 +92,13 @@
                 <h4 class="section">Finance</h4>
                 {% include "partials/project_budget.html" with project=p %}
             </div>
-            <div class="col-xs-9 col-xs-offset-3 visible-xs-block">
-                <p><span class="glyphicon glyphicon-star"></span> Active</p>
-                <p><span class="glyphicon glyphicon-folder-open"></span> <a href="#">Water and sanitation</a></p>
-                <p><span class="glyphicon glyphicon-credit-card"></span> 26% of $30,000 raised</p>
+            <div class="col-xs-9 visible-xs-block">
+                <p class="small">
+                    <span class="section">Focus Areas</span> <a href="#">Water and sanitation</a><br>
+                    <span class="section">Sectors</span> Education <a href="#" class="small">+4 more</a><br>
+                    <span class="section">Status</span> {{p.get_status_display}}<br>
+                    <span class="section">Finance</span> 26% of $30,000 raised
+                </p>
             </div>
         </article>
         {% endfor %}
