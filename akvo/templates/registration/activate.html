@@ -3,7 +3,7 @@
 {% load i18n humanize %}
 
 {% block title %}
-	{% if new_user %}
+	{% if user.username %}
         {% trans 'RSR account activated' %}
     {% else %}
         {% trans 'RSR account activation failed' %}
@@ -11,10 +11,9 @@
 {% endblock title %}
 
 {% block maincontent %}
-	{% if new_user %}
+	{% if user.username %}
 		<h1>{% trans 'Welcome to Akvo RSR!' %}</h1>
-		<h2><small>{% trans 'Your account has been activated, please visit the MyRSR page .' %}
-		</p>
+		<h2><small>{% trans 'Your account has been activated, please visit the MyRSR page.' %}</small></h2>
 	{% else %}
 		<h1>{% trans "We're sorry, the account activation failed" %}</h1>
 		<h2><small>{% blocktrans with expiration_days as exp_days %}Either your activation link was incorrect, or the activation key for your account has expired. Activation keys are only valid for {{ exp_days }} days after registration.{% endblocktrans %}</small></h2>

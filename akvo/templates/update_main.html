@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% load i18n markup_tags %}
+
+{% block title %}{{update.title}}{% endblock %}
+
+{% block maincontent %}
+
+<div class="touch-navbar">
+    {% include "partials/project_header.html" with project=update.project %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <p><a href="{% url 'project-updates' update.project.pk %}">View all project's updates</a></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <article class="col-md-12">
+                <hgroup>
+                    <h1>{{update.title}}</h1>
+                    <h4>14 October 2014</h4>
+                </hgroup>
+
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="post-info media">
+                            <a class="pull-left">
+                                <img src="http://placehold.it/30x30">
+                            </a>
+                            <div class="media-body">
+                                <p>by First Last (<a href="#">Partner</a>) via mobile</p>
+                                <p class="small">Benin, Africa &nbsp; <a href="#" class="map-toggle">View map</a></p>
+                            </div>
+
+                            <img src="http://placehold.it/800x600">
+
+                            {% autoescape off %}
+                              {{ update.text|force_escape|urlize|apply_markup:"markdown" }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+
+                    <aside class="col-md-4 col-md-offset-1">
+                        <h2>More updates from this project</h2>
+                        <div class="row">
+                            {% for u in update.project.project_updates.all %}
+                            <article class="col-md-12 col-xs-6 col-ty-12">
+                                <a href="{% url 'update-main' u.project.id u.id %}"><img src="http://placehold.it/400x300"></a>
+                                <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
+                                <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="#">Project name</a><br>
+                                <span class="glyphicon glyphicon-user"></span> Person (Partner)<br>
+                                <span class="glyphicon glyphicon-map-marker"></span> Location</p>
+                                <div class="excerpt small">
+                                {% autoescape off %}
+                                  {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+                                {% endautoescape %}
+                                </div>
+                            </article>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <p class="center-text"><a href="#">View all project's updates</a></p>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </article>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

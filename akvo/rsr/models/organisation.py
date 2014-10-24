@@ -137,7 +137,7 @@ class Organisation(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('organisation_main', (), {'org_id': self.pk})
+        return ('organisation-main', (), {'organisation_id': self.pk})
 
 
     class QuerySet(QuerySet):
@@ -194,6 +194,11 @@ class Organisation(TimestampsMixin, models.Model):
             "returns a queryset with all projects that has self as any kind of partner"
             from .project import Project
             return Project.objects.filter(partnerships__organisation__in=self)
+
+        def users(self):
+            "returns a queryset of all users belonging to the organisation(s)"
+            from .user import User
+            return User.objects.filter(employments__organisation__in=self).distinct()
 
     def __unicode__(self):
         return self.name
@@ -290,8 +295,6 @@ class Organisation(TimestampsMixin, models.Model):
         "How much is still needed to fully fund all projects with $ budget that the organiastion is a partner to"
         # the ORM aggregate() doesn't work here since we may have multiple partnership relations to the same project
         return self._aggregate_funds_needed(self.published_projects().dollars().distinct())
-
-    # New API end
 
     class Meta:
         app_label = 'rsr'

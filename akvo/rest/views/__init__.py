@@ -55,5 +55,5 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpdateExtraViewSet',
     'PublishingStatusViewSet',
-    'UserViewSet'
+    'UserViewSet',
 ]

@@ -232,7 +232,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Sends an email to this User.
         """
-        #send_mail(subject, message, from_email, [self.email])
+        send_mail(subject, message, from_email, [self.email])
         pass
 
     def get_profile(self):
@@ -245,3 +245,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     def user(self):
         # Support for self as profile. Use of this is deprecated
         return self
+
+    def employments_dict(self):
+        """Represent User as dict with employments"""
+        employments = Employment.objects.filter(user=self)
+
+        employments_array = []
+        for employment in employments:
+            employment_obj = employment.to_dict()
+            employments_array.append(employment_obj)
+
+        return dict(
+            email=self.email,
+            first_name=self.first_name,
+            last_name=self.last_name,
+            employments=employments_array,
+        )

@@ -21,8 +21,17 @@
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
+    {# React #}
+    <script src="http://fb.me/react-0.10.0.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.11.2.js"></script>
+
+    {% comment %}
     {% compressed_css 'rsr_v3_style' %}
     {% compressed_js 'rsr_v3_libraries' %}
+    {% endcomment %}
+
+    <script src="{{STATIC_URL}}rsr/v3/js/build/rsr_v3_libraries.min.js"></script>
+    <link href="{{STATIC_URL}}rsr/v3/css/src/main.css" rel="stylesheet" type="text/css" media="screen,projection">
 
     <!-- Piwik -->
     {% tracking_code %}
@@ -33,9 +42,7 @@
 
     {% include 'navigation/header.html' %}
 
-    <div class="container">
-      {% block maincontent %}{% endblock %}
-    </div>
+    {% block maincontent %}{% endblock %}
 
     {% include 'navigation/footer.html' %}
 

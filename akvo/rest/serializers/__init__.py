@@ -55,5 +55,5 @@ __all__ = [
     'ProjectUpdateLocationSerializer',
     'PublishingStatusSerializer',
     'UserSerializer',
-    'UserPasswordSerializer'
+    'UserPasswordSerializer',
 ]

@@ -4,18 +4,12 @@
 
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
+{% block head_js %}
+    <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
+{% endblock %}
+
 {% block myrsr_main %}
     <h1>User management</h1>
-    {% if users %}
-        <div class="table-responsive" id="updates">
-            <table class="table table-striped">
-                <tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisation</th><th>Permissions</th><th></th></tr>
-                {% for user in users %}
-                    <tr><td>{{ user.email }}</td><td>{{ user.first_name }}</td><td>{{ user.last_name }}</td><td><ul>{% for employment in user.employments.all %}<li>{{ employment.organisation }}</li>{% endfor %}</ul></td><td><i>Permission settings</i></td><td><i>Delete button</i></td></tr>
-                {% endfor %}
-            </table>
-        </div>
-    {% else %}
-        <h2><small>No users.</small></h2>
-    {% endif %}
+    <div id="user_table"></div>
+    <script type="application/javascript" src="/static/rsr/v3/js/build/rsr_v3_user_management.min.js" charset="utf-8"></script>
 {% endblock %}

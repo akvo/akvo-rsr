@@ -30,6 +30,9 @@ urlpatterns = patterns(
     url(r'^projects/(?P<project_id>\d+)/$',
         'akvo.rsr.views.project.main', name='project-main'),
 
+    url(r'^projects/(?P<project_id>\d+)/updates/$',
+        'akvo.rsr.views.project_update.project_updates', name='project-updates'),
+
     # Organisations
     url(r'^organisations/$',
         'akvo.rsr.views.organisation.directory',
@@ -42,7 +45,7 @@ urlpatterns = patterns(
     url(r'^updates/$',
         'akvo.rsr.views.project_update.directory', name='update-directory'),
 
-    url(r'^updates/(?P<update_id>\d+)/$',
+    url(r'^projects/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
         'akvo.rsr.views.project_update.main', name='update-main'),
 
     # Account
@@ -74,10 +77,14 @@ urlpatterns = patterns(
     url(r'^myrsr/password_change/$',
         'akvo.rsr.views.my_rsr.password_change', name='password_change'),
 
+    # Admin
+    (r'^admin/', include(admin.site.urls)),
+
     # Django Rest Framework urls
     (r'^rest/v1/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
 )
+
 
 # handler403 = 'akvo.rsr.views.forbidden'
 handler500 = 'akvo.rsr.views.error.server_error'

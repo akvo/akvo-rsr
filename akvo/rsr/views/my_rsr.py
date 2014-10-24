@@ -9,8 +9,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import json
 
 from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
-from akvo.rsr.models import Project, User
-from django.contrib.auth.decorators import login_required
+from akvo.rsr.models import Project
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
@@ -57,8 +57,18 @@ def my_projects(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'myrsr/my_projects.html', context)
 
-
+@permission_required('rsr.delete_user', raise_exception=True)
 @login_required
 def user_management(request):
-    context = {'users': User.objects.all()}
+    users = request.user.organisations.all().users()
+
+    users_array = []
+    for user in users:
+        user_obj = user.employments_dict()
+        users_array.append(user_obj)
+    json_data = json.dumps({'users': users_array})
+
+    context = {
+        'user_data': json_data,
+    }
     return render(request, 'myrsr/user_management.html', context)
