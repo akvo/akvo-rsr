@@ -23,6 +23,7 @@ from workflows.utils import get_state
 
 from django.conf import settings
 from django.core.mail import send_mail, EmailMessage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.http import HttpResponse
@@ -470,3 +471,30 @@ def rsr_show_keywords(instance):
         return keyword_str
     else:
         return 'None'
+
+
+def pagination(page, object_list, objects_per_page):
+    paginator = Paginator(object_list, objects_per_page)
+
+    try:
+        page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
+
+    page_range = paginator.page_range
+    active = page.number
+
+    if not len(page_range) < 10:
+        if active > 4:
+            page_range[1] = '...'
+            del page_range[2:active-2]
+        if (page_range[-1] - active) > 3:
+            page_range[-2] = '...'
+            active_index = page_range.index(active)
+            del page_range[active_index+2:-2]
+
+    return page, paginator, page_range
