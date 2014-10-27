@@ -4,6 +4,162 @@
 
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
+{% block head_js %}
+<style>
+/* Bootstrap style for typeahead dropdown, to be included in CSS file */
+
+span.twitter-typeahead .tt-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  text-align: left;
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+}
+span.twitter-typeahead .tt-suggestion > p {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.42857143;
+  color: #333333;
+  white-space: nowrap;
+}
+span.twitter-typeahead .tt-suggestion > p:hover,
+span.twitter-typeahead .tt-suggestion > p:focus {
+  color: #ffffff;
+  text-decoration: none;
+  outline: 0;
+  background-color: #428bca;
+}
+span.twitter-typeahead .tt-suggestion.tt-cursor {
+  color: #ffffff;
+  background-color: #428bca;
+}
+span.twitter-typeahead {
+  width: 100%;
+}
+.input-group span.twitter-typeahead {
+  display: block !important;
+}
+.input-group span.twitter-typeahead .tt-dropdown-menu {
+  top: 32px !important;
+}
+.input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
+  top: 44px !important;
+}
+.input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
+  top: 28px !important;
+}
+
+</style>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+
+var projects = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/project/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+var organisations = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/organisation/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+var countries = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/country/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+var focus_area = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+      url: '/rest/v1/focus_area/?format=json&limit=10000',
+      filter: function(response) {
+          return response.results;
+      }
+  }
+});
+
+projects.initialize();
+organisations.initialize();
+countries.initialize();
+focus_area.initialize();
+
+$('#query').typeahead({
+  highlight: true
+},
+{
+  name: 'projects',
+  displayKey: 'title',
+  source: projects.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Projects</h3>',
+    suggestion: Handlebars.compile('<a href="/projects/\{\{id\}\}/"><p><u>\{\{title\}\}</u></p><p>\{\{subtitle\}\}</p></a>')
+  }
+},
+{
+  name: 'organisations',
+  displayKey: 'long_name',
+  source: organisations.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Organisations</h3>'
+  }
+},
+{
+  name: 'countries',
+  displayKey: 'name',
+  source: countries.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Countries</h3>'
+  }
+},
+{
+  name: 'focus_area',
+  displayKey: 'name',
+  source: focus_area.ttAdapter(),
+  templates: {
+    header: '<h3 class="dd-category">Focus area</h3>'
+  }
+});
+});
+</script>
+{% endblock %}
+
 {% block maincontent %}
 
 <section id="map" class="touch-navbar">
@@ -13,9 +169,9 @@
 <section id="search-filter">
     <div id="search">
       <form class="form-inline" role="form">
-          <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
-        <div class="input-group"\>
-          <input type="text" class="form-control" placeholder="{% trans "Search" %}">
+          <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
+        <div class="input-group">
+          <input type="text" id="query" class="form-control" placeholder="{% trans 'Search' %}">
           <span class="input-group-btn">
             <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
           </span>
