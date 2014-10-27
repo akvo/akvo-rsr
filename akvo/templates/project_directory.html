@@ -6,42 +6,66 @@
 
 {% block head_js %}
 <style>
-/* Style for typeahead dropdown, to be included in CSS file */
+/* Bootstrap style for typeahead dropdown, to be included in CSS file */
 
-.tt-hint {
-    color: #999;
+span.twitter-typeahead .tt-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  text-align: left;
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
 }
-
-.tt-dropdown-menu {
-    text-align: left;
-    width: 500px;
-    margin-top: 12px;
-    padding: 8px 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    color: #000000;
+span.twitter-typeahead .tt-suggestion > p {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.42857143;
+  color: #333333;
+  white-space: nowrap;
 }
-
-.tt-suggestion {
-    padding: 3px 20px;
-    line-height: 24px;
+span.twitter-typeahead .tt-suggestion > p:hover,
+span.twitter-typeahead .tt-suggestion > p:focus {
+  color: #ffffff;
+  text-decoration: none;
+  outline: 0;
+  background-color: #428bca;
 }
-
-.tt-suggestion.tt-cursor {
-    color: #fff;
-    background-color: #0097cf;
-
+span.twitter-typeahead .tt-suggestion.tt-cursor {
+  color: #ffffff;
+  background-color: #428bca;
 }
-
-.tt-suggestion p {
-    margin: 0;
-}
-.twitter-typeahead {
+span.twitter-typeahead {
   width: 100%;
 }
+.input-group span.twitter-typeahead {
+  display: block !important;
+}
+.input-group span.twitter-typeahead .tt-dropdown-menu {
+  top: 32px !important;
+}
+.input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
+  top: 44px !important;
+}
+.input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
+  top: 28px !important;
+}
+
 </style>
 
 <script type="text/javascript">
@@ -145,7 +169,7 @@ $('#query').typeahead({
 <section id="search-filter">
     <div id="search">
       <form class="form-inline" role="form">
-          <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
+          <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
         <div class="input-group">
           <input type="text" id="query" class="form-control" placeholder="{% trans 'Search' %}">
           <span class="input-group-btn">
