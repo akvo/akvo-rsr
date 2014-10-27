@@ -222,7 +222,7 @@ class Project(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('project_main', (), {'project_id': self.pk})
+        return ('project-main', (), {'project_id': self.pk})
 
     def all_donations(self):
         return Invoice.objects.filter(

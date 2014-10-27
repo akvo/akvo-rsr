@@ -29,3 +29,8 @@ def directory(request):
 def main(request, project_id):
     context = {'project': get_object_or_404(Project, pk=project_id)}
     return render(request, 'project_main.html', context)
+
+
+def search(request):
+    context = {'projects': Project.objects.published()}
+    return render(request, 'project_search.html', context)
