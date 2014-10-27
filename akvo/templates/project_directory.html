@@ -13,7 +13,7 @@
 <section id="search-filter">
     <div id="search">
       <form class="form-inline" role="form">
-          <p>{% trans "Refine the project list below by searcing by name, organisation or sector" %}</p>
+          <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
         <div class="input-group"\>
           <input type="text" class="form-control" placeholder="{% trans "Search" %}">
           <span class="input-group-btn">
@@ -51,21 +51,12 @@
 <div class="container">
 
     <div class="row center-text">
-        <p>{% blocktrans %}Viewing n of n projects{% endblocktrans %}</p>
-
-        <ul class="pagination">
-            <li class="disabled"><a href="#">&laquo;</a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
+        <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
+        {% include 'navigation/pagination.html' %}
     </div>
 
     <section class="main-list">
-        {% for p in projects %}
+        {% for p in page %}
         <article class="row">
             <div class="col-sm-2 col-xs-3">
                 <a href="{% url 'project-main' p.id %}">
@@ -105,15 +96,7 @@
     </section>
 
     <div class="row center-text">
-        <ul class="pagination">
-            <li class="disabled"><a href="#">&laquo;</a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
+        {% include 'navigation/pagination.html' %}
     </div>
 </div>
 {% endblock %}
