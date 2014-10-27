@@ -40,7 +40,7 @@
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             prefetch: {
-                url: '/rest/v1/organisation/?format=json',
+                url: '/rest/v1/organisation/?format=json&limit=3000',
                 filter: function(response) {
                     return response.results;
                 }
