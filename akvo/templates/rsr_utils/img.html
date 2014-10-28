@@ -1,0 +1,13 @@
+{% load thumbnail %}
+
+{% thumbnail img geometry options=options as im %}
+
+{% if im %}
+<div style="min-height: {{height}}px; min-width: {{width}}px;">
+  <img src="{{ im.url }}" />
+  {# <img src="{{ im.url }}" width="{{im.width}}" height="{{im.height}}" /> #}
+</div>
+{% else %}
+  <img src=​"http:​/​/​placehold.it/​{{geometry}}">
+{% endif %}​
+{% endthumbnail %}

@@ -19,7 +19,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 
 from akvo.utils import rsr_image_path, rsr_show_keywords, RSR_LIMITED_CHANGE
 
@@ -98,18 +98,27 @@ class Project(TimestampsMixin, models.Model):
         help_text=_(u'Briefly summarize the project (400 characters).')
     )
 
-    current_image = ImageWithThumbnailsField(
-        _(u'project photo'), blank=True, upload_to=image_path,
-        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-        extra_thumbnails={
-            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-        },
-        help_text=_(
-            u'The project image looks best in landscape format (4:3 width:height ratio), '
-            u'and should be less than 3.5 mb in size.'
-        ),
+    current_image = ImageField(_('project photo'),
+                               blank=True,
+                               upload_to=image_path,
+                               help_text=_(
+                                   u'The project image looks best in landscape format (4:3 width:height ratio), '
+                                   u'and should be less than 3.5 mb in size.'
+                               ),
     )
+
+    # current_image = ImageField(
+    #     _(u'project photo'), blank=True, upload_to=image_path,
+    #     thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+    #     extra_thumbnails={
+    #         'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
+    #         'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
+    #     },
+    #     help_text=_(
+    #         u'The project image looks best in landscape format (4:3 width:height ratio), '
+    #         u'and should be less than 3.5 mb in size.'
+    #     ),
+    # )
     current_image_caption = ValidXMLCharField(
         _(u'photo caption'), blank=True, max_length=50,
         help_text=_(u'Enter a caption for your project picture (50 characters).')

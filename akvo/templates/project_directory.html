@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n rsr_utils thumbnail %}
 
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
@@ -223,11 +223,27 @@ $('#query').typeahead({
     <section class="main-list">
         {% for p in projects %}
         <article class="row">
-            <div class="col-sm-2 col-xs-3">
+          <div class="col-sm-2 col-xs-3">
+            {% comment %}
                 <a href="{% url 'project-main' p.id %}">
                   {# <img src="http://placehold.it/200x200" alt="{{p.title}}"> #}
-                  <img src="/media/{{p.current_image}}" alt="{{p.title}}" />
-                 </a>
+                  {# <img src="/media/{{p.current_image}}" alt="{{p.title}}" /> #}
+                  {% thumbnail p.current_image 200x200 upscale autocrop sharpen as project_image %}
+                  {# <img src="{{project_image}}" alt="{{p.title" />
+                  {% include "partials/img.html" with img=p.current_image size=200x200 title=p.title %}
+                </a>
+                {# include "partials/img.html" with img=p.current_image size=200x200 title=p.title #}
+                {% img p 200 200 p.title %}
+                <img src="/media/{{p.current_image}}" alt="" />
+                            {% thumbnail p.current_image "200x200" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{img.width}}" height="{{im.height}}" />
+            {% endthumbnail %}
+            {% endcomment %}
+            <a href="{% url 'project-main' p.id %}">
+              {% img p 200 200 p.title %}
+            </a>
+
+
             </div>
             <div class="col-sm-4 col-xs-9">
                 <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>

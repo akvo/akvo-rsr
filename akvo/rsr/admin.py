@@ -20,7 +20,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.utils.encoding import force_text
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 import os.path
 
 # from akvo.rsr.forms import PartnerSiteAdminForm, RSR_UserChangeForm, RSR_UserCreationForm
@@ -120,9 +120,9 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     def __init__(self, model, admin_site):
         """
         Override to add self.formfield_overrides.
-        Needed to get the ImageWithThumbnailsField working in the admin.
+        Needed to get the ImageField working in the admin.
         """
-        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
+        self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
 
     def allowed_partner_types(self, obj):
@@ -613,9 +613,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     def __init__(self, model, admin_site):
         """
         Override to add self.formfield_overrides.
-        Needed to get the ImageWithThumbnailsField working in the admin.
+        Needed to get the ImageField working in the admin.
         """
-        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
+        self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectAdmin, self).__init__(model, admin_site)
 
     def get_queryset(self, request):
@@ -912,9 +912,9 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     def __init__(self, model, admin_site):
         """
         Override to add self.formfield_overrides.
-        Needed to get the ImageWithThumbnailsField working in the admin.
+        Needed to get the ImageField working in the admin.
         """
-        self.formfield_overrides = {ImageWithThumbnailsField: {'widget': widgets.AdminFileWidget}, }
+        self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
 
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)

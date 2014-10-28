@@ -11,7 +11,7 @@ from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 
 from tastypie.models import ApiKey
 
@@ -76,13 +76,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     def image_path(instance, file_name):
         return rsr_image_path(instance, file_name, 'db/user/%(instance_pk)s/%(file_name)s')
 
-    avatar = ImageWithThumbnailsField(
-        _(u'avatar'), null=True, upload_to=image_path,
-        thumbnail={'size': (200, 200), 'options': ('pad', )},
-        help_text=_(
-            u'The avatar should be less than 3.5 mb in size.'
-        ),
+    avatar = ImageField(_(u'avatar'),
+                        null=True,
+                        upload_to=image_path,
+                        help_text=_(u'The avatar should be less than 3.5 mb in size.'),
     )
+
+    # avatar = ImageField(
+    #     _(u'avatar'), null=True, upload_to=image_path,
+    #     thumbnail={'size': (200, 200), 'options': ('pad', )},
+    #     help_text=_(
+    #         u'The avatar should be less than 3.5 mb in size.'
+    #     ),
+    # )
 
     objects = CustomUserManager()
 

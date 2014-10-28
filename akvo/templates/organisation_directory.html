@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n rsr_utils %}
 
 {% block title %}{% trans 'Organisations' %}{% endblock %}
 
@@ -66,9 +66,10 @@
     <section class="main-list">
         <div class="row">
             {% for o in organisations %}
-            <article class="col-md-3 col-sm-4 col-xs-6">
+            <article class="col-md-3 col-sm-4 col-xs-6" >
                 <a href="{% url 'organisation-main' o.id %}">
-                    <img src="http://placehold.it/400x300">
+                  {# <img src="http://placehold.it/400x300"> #}
+                  {% img o 250 250 o.title %}
                 </a>
                 <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
                 <p class="small">
