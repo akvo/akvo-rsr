@@ -127,7 +127,7 @@ class IATIProjectResource(ModelResource):
         reporting_iati_org_id = data['partnerships'][0]['reporting_org']
         # Cordaid custom code
         if reporting_iati_org_id == getattr(settings, 'CORDAID_IATI_ID', 'NL-KVK-41160054'):
-            data['sync_owner'] = Organisation.objects.get(iati_org_id_exact='NL-KVK-41160054')
+            data['sync_owner'] = Organisation.objects.get(iati_org_id__exact='NL-KVK-41160054')
             # Figure out the category for the project from the business unit
             business_unit_categories = {
                 "K6020": dict(cat_name="Children & Education", fa="Education"),
