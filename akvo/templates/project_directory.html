@@ -225,8 +225,9 @@ $('#query').typeahead({
         <article class="row">
             <div class="col-sm-2 col-xs-3">
                 <a href="{% url 'project-main' p.id %}">
-                    <img src="http://placehold.it/200x200" alt="{{p.title}}">
-                </a>
+                  {# <img src="http://placehold.it/200x200" alt="{{p.title}}"> #}
+                  <img src="/media/{{p.current_image}}" alt="{{p.title}}" />
+                 </a>
             </div>
             <div class="col-sm-4 col-xs-9">
                 <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
