@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n maps %}
 
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
@@ -163,7 +163,7 @@ $('#query').typeahead({
 {% block maincontent %}
 
 <section id="map" class="touch-navbar">
-
+    {% global_project_map '100%' '100%' %}
 </section>
 
 <section id="search-filter">

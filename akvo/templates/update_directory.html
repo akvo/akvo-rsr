@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% load i18n markup_tags %}
+{% load i18n markup_tags maps %}
 
 {% block title %}{% trans 'Updates' %}{% endblock %}
 
 {% block maincontent %}
 
 <section id="map" class="touch-navbar">
-
+    {% global_update_map '100%' '100%' %}
 </section>
 
 <section id="search-filter">
