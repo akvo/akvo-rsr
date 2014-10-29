@@ -117,9 +117,8 @@ def global_project_map(width, height, dynamic='dynamic'):
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
 
     locations = []
-    update_locations = []
 
-    for project in Project.objects.all().active():
+    for project in Project.objects.published():
         try:
             location = project.primary_location
             try:
@@ -132,19 +131,6 @@ def global_project_map(width, height, dynamic='dynamic'):
         except:
             pass
 
-        for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
-            project_update = update_location.location_target
-
-            try:
-                thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url
-            except:
-                thumbnail = ""
-
-            update_locations.append([update_location.latitude,
-                                     update_location.longitude,
-                                     [str(project_update.pk), project_update.title.encode('utf8'), thumbnail, 'project',
-                                      str(project.pk)]])
-
     template_context = {
         'map_id': map_id,
         'width': width,
@@ -152,7 +138,6 @@ def global_project_map(width, height, dynamic='dynamic'):
         'marker_icon': PROJECT_MARKER_ICON,
         'update_marker_icon': PROJECT_UPDATE_MARKER_ICON,
         'locations': locations,
-        'update_locations': update_locations,
         'dynamic': dynamic,
         'infowindows': True,
         'partnersite_widget': False
@@ -191,6 +176,51 @@ def global_organisation_map(width, height, dynamic='dynamic'):
         'width': width,
         'height': height,
         'marker_icon': ORGANISATION_MARKER_ICON,
+        'locations': locations,
+        'dynamic': dynamic,
+        'infowindows': True,
+        'partnersite_widget': False
+    }
+
+    return template_context
+
+
+@register.inclusion_tag('inclusion_tags/maps.html')
+def global_update_map(width, height, dynamic='dynamic'):
+    """
+    params:
+        width, height: the dimensions of the map.
+        dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
+    """
+
+    if dynamic != 'dynamic':
+        dynamic = False
+
+    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+
+    locations = []
+
+    for update in ProjectUpdateLocation.objects.all():
+        if not (update.latitude == 0 and update.longitude == 0):
+            try:
+                thumbnail = ""
+                locations.append([update.latitude,
+                                  update.longitude,
+                                  [
+                                      str(update.location_target.pk),
+                                      update.location_target.title.encode('utf8'),
+                                      thumbnail,
+                                      'project',
+                                      str(update.location_target.project.pk),
+                                  ]])
+            except:
+                pass
+
+    template_context = {
+        'map_id': map_id,
+        'width': width,
+        'height': height,
+        'marker_icon': PROJECT_UPDATE_MARKER_ICON,
         'locations': locations,
         'dynamic': dynamic,
         'infowindows': True,

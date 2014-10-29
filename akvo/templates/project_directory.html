@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n rsr_utils thumbnail humanize %}
+{% load i18n maps rsr_utils thumbnail humanize %}
 
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
@@ -163,7 +163,7 @@ $('#query').typeahead({
 {% block maincontent %}
 
 <section id="map" class="touch-navbar">
-
+    {% global_project_map '100%' '100%' %}
 </section>
 
 <section id="search-filter">
@@ -207,21 +207,12 @@ $('#query').typeahead({
 <div class="container">
 
     <div class="row center-text">
-        <p>{% blocktrans %}Viewing n of n projects{% endblocktrans %}</p>
-
-        <ul class="pagination">
-            <li class="disabled"><a href="#">&laquo;</a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
+        <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
+        {% include 'navigation/pagination.html' %}
     </div>
 
     <section class="main-list">
-        {% for p in projects %}
+        {% for p in page %}
         <article class="row">
           <div class="col-sm-2 col-xs-3">
             {% comment %}
@@ -285,15 +276,7 @@ $('#query').typeahead({
     </section>
 
     <div class="row center-text">
-        <ul class="pagination">
-            <li class="disabled"><a href="#">&laquo;</a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
+        {% include 'navigation/pagination.html' %}
     </div>
 </div>
 {% endblock %}
