@@ -5,7 +5,7 @@
     Akvo RSR module. For additional details on the GNU license please
     see < http://www.gnu.org/licenses/agpl.html >.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 from django import template
 from akvo.rsr.models import Project, ProjectUpdate, Organisation
@@ -65,13 +65,10 @@ def img(context, obj, width, height, alt):
     elif isinstance(obj, Organisation):
         img = obj.logo
 
-    options = {'crop': True}
-
     height = '{}.px'.format(height)
 
     return {'alt': alt,
             'height': height,
-            'options': options,
             'img': img,
             'geometry': geometry,
             'width': width}
