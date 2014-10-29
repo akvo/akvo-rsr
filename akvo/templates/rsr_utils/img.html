@@ -5,7 +5,7 @@
 <img src="{{im.url}}" style="margin:{{im|margin:geometry}}" />
 {% endthumbnail %}
 {% else %}
-{% with url='http://placehold.it/'|add:geometry %}
+{% with url='//placehold.it/'|add:geometry %}
 <img src="{{url}}" alt="" />
 {% endwith %}
 {% endif %}
