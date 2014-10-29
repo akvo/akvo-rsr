@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n maps %}
 
 {% block title %}{% trans 'Organisations' %}{% endblock %}
 
 {% block maincontent %}
 
 <section id="map" class="touch-navbar">
-
+    {% global_organisation_map '100%' '100%' %}
 </section>
 
 <section id="search-filter">
