@@ -1,20 +1,11 @@
-{% load i18n %}
+{% load i18n humanize %}
 
-{% comment %}
-<span class="progress-label-current" style="left:{% widthratio project.funds project.budget 100 %}%">
-  {{project.get_currency_display}}{{project.funds}}
-</span>
-{% endcomment %}
 <div class="progress">
     <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {% widthratio project.funds project.budget 100 %}%">
         <span class="sr-only">{% widthratio project.funds project.budget 100 %}% {% trans 'Complete' %}</span>
     </div>
 </div>
-<span class="progress-label-start">{{project.get_currency_display}}{{project.funds}}</span>
-<span class="progress-label-end">{{project.get_currency_display}}{{project.budget}}</span>
+<span class="progress-label-start">{{project.get_currency_display}}{{project.funds|floatformat|intcomma}}</span>
+<span class="progress-label-end">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</span>
 
 <p class="center-text clearfix"><a href="#" class="btn btn-primary">{% trans "Donate" %}</a></p>
-
-{% comment %}
-Get a ""% of budget" variable, to help with positioning of current amount above the progress bar
-{% endcomment %}
