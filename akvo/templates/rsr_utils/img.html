@@ -1,7 +1,7 @@
 {% load thumbnail %}
 
 {% if img %}
-{% thumbnail img geometry crop='center' as im %}
+{% thumbnail img geometry crop='center' upscale=True as im %}
 <img src="{{im.url}}" style="margin:{{im|margin:geometry}}" />
 {% endthumbnail %}
 {% else %}

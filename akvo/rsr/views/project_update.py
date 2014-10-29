@@ -15,7 +15,8 @@ def directory(request):
 
 
 def main(request, project_id, update_id):
-    context = {'update': get_object_or_404(ProjectUpdate, pk=update_id, project=project_id)}
+    context = {'update': get_object_or_404(ProjectUpdate, pk=update_id,
+                                           project=project_id)}
     return render(request, 'update_main.html', context)
 
 

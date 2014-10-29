@@ -15,7 +15,11 @@ def directory(request):
 
 
 def main(request, project_id):
-    context = {'project': get_object_or_404(Project, pk=project_id)}
+    project = get_object_or_404(Project, pk=project_id)
+    updates = project.project_updates.all().order_by('-created_at')
+
+    context = {'project': project,
+               'updates': updates}
     return render(request, 'project_main.html', context)
 
 

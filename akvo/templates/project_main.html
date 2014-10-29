@@ -62,8 +62,14 @@
                 ACCORDION
             </div>
             <div class="col-sm-4">
-                <h4 class="section">Latest project updates</h4>
-                <p>Updates</p>
+              <h4 class="section">Latest project updates</h4>
+              {% for update in updates%}
+              <a href="{{update.get_absolute_url}}">{{update.title}}</a>
+              {% endfor %}
+
+              <p>Updates</p>
+
+
             </div>
         </div>
         <div class="row">

@@ -74,9 +74,10 @@
                 <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
                 <p class="small"><span class="glyphicon glyphicon-folder-close"></span>
                   <a href="{% url 'project-main' u.project.pk %}">{{u.project.title}}</a><br>
-                <span class="glyphicon glyphicon-user"></span> Person (Partner)<br>
-                <span class="glyphicon glyphicon-map-marker"></span> Location<br>
-                1 October 2014</p>
+                <span class="glyphicon glyphicon-user"></span> {% trans "Person" %} (Partner)<br>
+                <span class="glyphicon glyphicon-map-marker"></span> {% trans "Location" %}
+                {{u.primary_location.country.continent}}, {{u.primary_location.country}} <br>
+                {{u.created_at|date:"d-M-Y"}}</p>
                 <div class="excerpt small">
                 {% autoescape off %}
                   {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
