@@ -45,6 +45,10 @@ def project_map(id, width, height, dynamic='dynamic'):
 
     for update_location in ProjectUpdateLocation.objects.filter(location_target__project=id):
         project_update = update_location.location_target
+        
+        # Do not show placeholder locations
+        if update_location.latitude == 0 and update_location.longitude == 0:
+            continue
 
         # Small map, so don't show thumbnail of updates
         thumbnail = ""
@@ -134,6 +138,10 @@ def global_project_map(width, height, dynamic='dynamic'):
 
         for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
             project_update = update_location.location_target
+
+            # Do not show placeholder locations
+            if update_location.latitude == 0 and update_location.longitude == 0:
+                continue
 
             try:
                 thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url
@@ -230,6 +238,10 @@ def projects_map(projects, width, height, dynamic='dynamic'):
 
         for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
             project_update = update_location.location_target
+
+            # Do not show placeholder locations
+            if update_location.latitude == 0 and update_location.longitude == 0:
+                continue
 
             try:
                 thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url
