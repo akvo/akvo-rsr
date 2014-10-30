@@ -6,6 +6,8 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import json
+
 from akvo.rsr.models import Project
 from akvo.utils import pagination
 
@@ -27,7 +29,20 @@ def directory(request):
 
 
 def main(request, project_id):
-    context = {'project': get_object_or_404(Project, pk=project_id)}
+    project = get_object_or_404(Project, pk=project_id)
+
+    accordion_data = dict()
+    accordion_data['background'] = project.background
+    accordion_data['current_status'] = project.current_status
+    accordion_data['project_plan'] = project.project_plan
+    accordion_data['target_group'] = project.target_group
+    accordion_data['sustainability'] = project.sustainability
+
+
+    context = {
+        'project': project,
+        'accordion_data': json.dumps(accordion_data),
+    }
     return render(request, 'project_main.html', context)
 
 
