@@ -66,10 +66,14 @@ class IATIProjectResource(ModelResource):
         'partnerships', full=True, related_name='project'
     )
 
-    sync_owner = fields.ToOneField(
-        'akvo.api.resources.OrganisationResource',
-        'sync_owner', full=True, related_name='project'
-    )
+    # This field makes the Cordaid import dismally slow, and isn't used for anything else,
+    # so rather than trying to fix it by re-writing the OrganisationResource, we set the sync_owner
+    # to Cordaid in the post_import.py script
+    # This commented code remains as a reminder NOT to add the field as currently defined ;-)
+    # sync_owner = fields.ToOneField(
+    #     'akvo.api.resources.OrganisationResource',
+    #     'sync_owner', full=True, related_name='project'
+    # )
 
     class Meta:
         allowed_methods = ['post', 'put']
@@ -127,7 +131,6 @@ class IATIProjectResource(ModelResource):
         reporting_iati_org_id = data['partnerships'][0]['reporting_org']
         # Cordaid custom code
         if reporting_iati_org_id == getattr(settings, 'CORDAID_IATI_ID', 'NL-KVK-41160054'):
-            data['sync_owner'] = Organisation.objects.get(iati_org_id__exact='NL-KVK-41160054')
             # Figure out the category for the project from the business unit
             business_unit_categories = {
                 "K6020": dict(cat_name="Children & Education", fa="Education"),
@@ -158,7 +161,6 @@ class IATIProjectResource(ModelResource):
                     benchmarks.append(new_benchmark)
             data['benchmarks'] = benchmarks
         if reporting_iati_org_id == getattr(settings, 'RAIN_IATI_ID', 'NL-KVK-34200988'):
-            data['sync_owner'] = Organisation.objects.get(iati_org_id__exact='NL-KVK-34200988')
             # remove benchmarks, as they currently have no category
             data['benchmarks'] = []
 
