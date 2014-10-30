@@ -66,7 +66,7 @@
                 <p class="small">
                     <span class="glyphicon glyphicon-globe"></span> {{o.primary_location.country}}, {{o.primary_location.country.continent}}<br>
                     <span class="glyphicon glyphicon-tag"></span> {{o.get_new_organisation_type_display}}<br>
-                    <span class="glyphicon glyphicon-folder-open"></span> {w{o.published_projects.count}} projects
+                    <span class="glyphicon glyphicon-folder-open"></span> {{o.published_projects.count}} {% trans "projects" %}
                 </p>
             </article>
             {% endfor %}

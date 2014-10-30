@@ -39,22 +39,24 @@
                     <aside class="col-md-4 col-md-offset-1">
                         <h2>More updates from this project</h2>
                         <div class="row">
-                            {% for u in update.project.project_updates.all %}
-                            <article class="col-md-12 col-xs-6 col-ty-12">
-                              <a href="{% url 'update-main' u.project.id u.id %}">
-                                {% img u 400 300 u.title %}
-                              </a>
-                                <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
-                                <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="#">Project name</a><br>
-                                <span class="glyphicon glyphicon-user"></span> Person (Partner)<br>
-                                <span class="glyphicon glyphicon-map-marker"></span> Location</p>
-                                <div class="excerpt small">
-                                {% autoescape off %}
-                                  {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
-                                {% endautoescape %}
-                                </div>
-                            </article>
-                            {% endfor %}
+                          {% for u in update.project.project_updates.all %}
+                          {% if u.id != update.id%}
+                          <article class="col-md-12 col-xs-6 col-ty-12">
+                            <a href="{% url 'update-main' u.project.id u.id %}">
+                              {% img u 400 300 u.title %}
+                            </a>
+                            <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
+                            <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="#">Project name</a><br>
+                              <span class="glyphicon glyphicon-user"></span> Person (Partner)<br>
+                              <span class="glyphicon glyphicon-map-marker"></span> Location</p>
+                            <div class="excerpt small">
+                              {% autoescape off %}
+                              {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+                              {% endautoescape %}
+                            </div>
+                          </article>
+                          {% endif %}
+                          {% endfor %}
                         </div>
                     </aside>
                 </div>
