@@ -16,7 +16,9 @@
       
       <xsl:apply-templates select="activity-date[@type='start-actual']" />
       <xsl:apply-templates select="activity-date[@type='end-actual']" />
-      
+      <xsl:apply-templates select="activity-date[@type='start-planned']" />
+      <xsl:apply-templates select="activity-date[@type='end-planned']" />
+
       <xsl:apply-templates select="description[@type='1']" /><!-- General -->
       <xsl:apply-templates select="description[@type='2']"/><!-- Objectives -->
       <xsl:apply-templates select="description[@type='3' and @akvo:type='3']"/><!-- Traget groups -->
