@@ -67,8 +67,14 @@
                 <script type="application/javascript" src="/static/rsr/v3/js/build/rsr_v3_project_main.min.js" charset="utf-8"></script>
             </div>
             <div class="col-sm-4">
-                <h4 class="section">Latest project updates</h4>
-                <p>Updates</p>
+              <h4 class="section">Latest project updates</h4>
+              {% for update in updates%}
+              <a href="{{update.get_absolute_url}}">{{update.title}}</a>
+              {% endfor %}
+
+              <p>Updates</p>
+
+
             </div>
         </div>
         <div class="row">

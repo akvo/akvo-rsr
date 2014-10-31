@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n maps %}
+{% load i18n maps rsr_utils thumbnail humanize %}
 
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
@@ -214,10 +214,27 @@ $('#query').typeahead({
     <section class="main-list">
         {% for p in page %}
         <article class="row">
-            <div class="col-sm-2 col-xs-3">
+          <div class="col-sm-2 col-xs-3">
+            {% comment %}
                 <a href="{% url 'project-main' p.id %}">
-                    <img src="http://placehold.it/200x200" alt="{{p.title}}">
+                  {# <img src="http://placehold.it/200x200" alt="{{p.title}}"> #}
+                  {# <img src="/media/{{p.current_image}}" alt="{{p.title}}" /> #}
+                  {% thumbnail p.current_image 200x200 upscale autocrop sharpen as project_image %}
+                  {# <img src="{{project_image}}" alt="{{p.title" />
+                  {% include "partials/img.html" with img=p.current_image size=200x200 title=p.title %}
                 </a>
+                {# include "partials/img.html" with img=p.current_image size=200x200 title=p.title #}
+                {% img p 200 200 p.title %}
+                <img src="/media/{{p.current_image}}" alt="" />
+                            {% thumbnail p.current_image "200x200" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{img.width}}" height="{{im.height}}" />
+            {% endthumbnail %}
+            {% endcomment %}
+            <a href="{% url 'project-main' p.id %}">
+              {% img p 200 200 p.title %}
+            </a>
+
+
             </div>
             <div class="col-sm-4 col-xs-9">
                 <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
@@ -226,25 +243,32 @@ $('#query').typeahead({
                 <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.partners.all.0.id %}">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
             </div>
             <div class="col-sm-3 hidden-xs">
-                <h4 class="section">Focus Areas</h4>
-                <p><a href="#">Water and sanitation</a></p>
+              <h4 class="section">{% trans "Focus Areas" %}</h4>
+              <p>
+                {% for area in p.focus_areas %}
+                <a href="#">{{area.name}}</a><br/>
+                {% endfor %}
+              </p>
 
-                <h4 class="section">Sectors</h4>
-                <p>Education <a href="#" class="small">+4 more</a></p>
+              <h4 class="section">{% trans "Sectors" %}</h4>
+              <p>?</p>
 
-                <h4 class="section">Status</h4>
-                <p>{{p.get_status_display}}</p>
+              <h4 class="section">{% trans "Status" %}</h4>
+              <p>{{p.get_status_display}}</p>
             </div>
             <div class="col-sm-3 hidden-xs">
-                <h4 class="section">Finance</h4>
+                <h4 class="section">{% trans "Finance" %}</h4>
                 {% include "partials/project_budget.html" with project=p %}
             </div>
             <div class="col-xs-9 visible-xs-block">
                 <p class="small">
-                    <span class="section">Focus Areas</span> <a href="#">Water and sanitation</a><br>
-                    <span class="section">Sectors</span> Education <a href="#" class="small">+4 more</a><br>
-                    <span class="section">Status</span> {{p.get_status_display}}<br>
-                    <span class="section">Finance</span> 26% of $30,000 raised
+                  <span class="section">{% trans "Focus Areas" %}</span>
+                  {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>
+                  <span class="section">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
+                  <span class="section">{% trans "Status" %}</span> {{p.get_status_display}}<br>
+                  <span class="section">{% trans "Finance" %}</span>
+                  {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+
                 </p>
             </div>
         </article>

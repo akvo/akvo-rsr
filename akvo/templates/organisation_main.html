@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n thumbnail rsr_filters humanize %}
+{% load i18n thumbnail rsr_filters humanize rsr_utils %}
 
 {% block title %}{{organisation.name}}{% endblock %}
 
@@ -9,10 +9,10 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-sm-12">
-            <img src="{% thumbnail organisation.logo wxh upscale sharpen %}">
-            <h1>{{organisation.name}}</h1>
-        </div>
+      <div class="col-sm-12">
+        {% img organisation 80 80 organisation.name %}
+        <h1>{{organisation.name}}</h1>
+      </div>
     </div>
 
     <div class="row">

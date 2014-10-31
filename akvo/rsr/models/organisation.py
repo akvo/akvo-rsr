@@ -11,7 +11,7 @@ from django.db.models import Sum
 from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 
 from akvo.utils import rsr_image_path
 from akvo.utils import RSR_LIMITED_CHANGE
@@ -86,14 +86,19 @@ class Organisation(TimestampsMixin, models.Model):
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
     )
-    logo = ImageWithThumbnailsField(
-        _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
-        extra_thumbnails={
-            'map_thumb': {'size': (160, 120), 'options': ('autocrop',)},
-            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-        },
-        help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
+    logo = ImageField(_(u'logo'),
+                      blank=True,
+                      upload_to=image_path,
+                      help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
+    # logo = ImageField(
+    #     _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
+    #     extra_thumbnails={
+    #         'map_thumb': {'size': (160, 120), 'options': ('autocrop',)},
+    #         'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
+    #     },
+    #     help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
+    # )
 
     url = models.URLField(
         blank=True,

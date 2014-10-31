@@ -1,0 +1,11 @@
+{% load thumbnail %}
+
+{% if img %}
+{% thumbnail img geometry crop='center' upscale=True as im %}
+<img src="{{im.url}}" style="margin:{{im|margin:geometry}}" />
+{% endthumbnail %}
+{% else %}
+{% with url='//placehold.it/'|add:geometry %}
+<img src="{{url}}" alt="" />
+{% endwith %}
+{% endif %}

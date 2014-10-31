@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 
 from akvo.utils import rsr_image_path, to_gmt
 
@@ -45,17 +45,22 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update'
     )
     primary_location = models.ForeignKey('ProjectUpdateLocation', null=True, blank=True, on_delete=models.SET_NULL)
-    photo = ImageWithThumbnailsField(
-        _(u'photo'),
-        blank=True,
-        upload_to=image_path,
-        thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
-        extra_thumbnails = {
-            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},
-            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-        },
-        help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
+    photo = ImageField(_(u'photo'),
+                       blank=True,
+                       upload_to=image_path,
+                       help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
     )
+    # photo = ImageField(
+    #     _(u'photo'),
+    #     blank=True,
+    #     upload_to=image_path,
+    #     thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
+    #     extra_thumbnails = {
+    #         'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},
+    #         'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
+    #     },
+    #     help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
+    # )
     photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     photo_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'))
@@ -67,7 +72,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     user_agent = ValidXMLCharField(_(u'user agent'), blank=True, max_length=200, default='')
     uuid = ValidXMLCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
         help_text=_(u'Universally unique ID set by creating user agent'))
-    
+
     notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:
@@ -143,7 +148,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('update_main', (), {'project_id': self.project.pk, 'update_id': self.pk})
+        return ('update-main', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
         return u'Project update for %(project_name)s' % {'project_name': self.project.title}

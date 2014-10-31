@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module. 
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
@@ -20,7 +20,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
 from django.conf import settings
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail import ImageField
 
 from akvo.utils import send_donation_confirmation_emails, rsr_send_mail_to_users
 from akvo.utils import (
@@ -42,7 +42,7 @@ def create_publishing_status(sender, **kwargs):
         ps = get_model('rsr', 'publishingstatus')(status=PublishingStatus.STATUS_UNPUBLISHED)
         ps.project = new_project
         ps.save()
-        
+
 def create_organisation_account(sender, **kwargs):
     """
     called when a new organisation is saved so an associated org account is
@@ -73,7 +73,7 @@ def change_name_of_file_on_create(sender, **kwargs):
         opts = instance._meta
         for f in opts.fields:
             # extend this list of fields if needed to catch other uploads
-            if isinstance(f, (ImageField, ImageWithThumbnailsField)):
+            if isinstance(f, (ImageField, )):
                 # the actual image sits directly on the instance of the model
                 img = getattr(instance, f.name)
                 if img:
@@ -98,7 +98,7 @@ def change_name_of_file_on_change(sender, **kwargs):
         opts = instance._meta
         for f in opts.fields:
             # extend this list of fields if needed to catch other uploads
-            if isinstance(f, (ImageField, ImageWithThumbnailsField)):
+            if isinstance(f, (ImageField, )):
                 img = getattr(instance, f.name)
                 #if a new image is uploaded it resides in a InMemoryUploadedFile
                 if img:

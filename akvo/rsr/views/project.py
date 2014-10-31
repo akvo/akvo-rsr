@@ -38,11 +38,14 @@ def main(request, project_id):
     accordion_data['target_group'] = project.target_group
     accordion_data['sustainability'] = project.sustainability
 
+    updates = project.project_updates.all().order_by('-created_at')
 
     context = {
-        'project': project,
         'accordion_data': json.dumps(accordion_data),
+        'project': project,
+        'updates': updates,
     }
+
     return render(request, 'project_main.html', context)
 
 
