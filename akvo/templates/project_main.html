@@ -4,6 +4,10 @@
 
 {% block title %}{{project.title}}{% endblock %}
 
+{% block head_js %}
+    <script type="application/json" id="accordion-data">{{ accordion_data|safe }}</script>
+{% endblock %}
+
 {% block maincontent %}
 
 <article class="touch-navbar project-container">
@@ -59,7 +63,8 @@
         </div>
         <div class="row">
             <div class="col-sm-8">
-                ACCORDION
+                <div id="accordion"></div>
+                <script type="application/javascript" src="/static/rsr/v3/js/build/rsr_v3_project_main.min.js" charset="utf-8"></script>
             </div>
             <div class="col-sm-4">
               <h4 class="section">Latest project updates</h4>
