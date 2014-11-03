@@ -28,7 +28,7 @@ from .project_location import ProjectLocationViewSet
 from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
 from .project_update_location import ProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
-from .user import UserViewSet
+from .user import UserViewSet, change_password, update_details, request_organisation
 
 __all__ = [
     'BenchmarkViewSet',
@@ -56,4 +56,7 @@ __all__ = [
     'ProjectUpdateExtraViewSet',
     'PublishingStatusViewSet',
     'UserViewSet',
+    'change_password',
+    'update_details',
+    'request_organisation',
 ]
