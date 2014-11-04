@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n maps %}
 
 <header>
     <div class="container">
@@ -6,14 +6,14 @@
             <div class="col-sm-8 col-xs-8">
                 <h1>{{project.title}}</h1>
                 <p>{{project.subtitle}}</p>
-                <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" class="map-toggle">View map</a></p>
+                <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">Show map +</a></p>
             </div>
             <div class="col-sm-4 col-xs-4">
                 Share <a href="#" class="btn btn-primary">Follow project</a>
             </div>
         </div>
-        <div class="row hidden">
-            MAP HERE WITH PROJECT PIN and UPDATE PINS
+        <div style="display: None" id="project-map" class="row initial">
+            {% project_map project.id '100%' '300px' %}
         </div>
     </div>
 </header>
