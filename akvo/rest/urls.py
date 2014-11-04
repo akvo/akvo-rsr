@@ -38,11 +38,11 @@ router.register(r'publishing_status', views.PublishingStatusViewSet)
 router.register(r'user', views.UserViewSet)
 
 # Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browseable API.
-urlpatterns = patterns('',
+# Additionally, we include URLs for non-viewsets (functional views).
+urlpatterns = patterns(
+    '',
     url(r'^', include(router.urls)),
-    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^user/(?P<pk>[0-9]+)/change_password/$', views.change_password, name='user_change_password'),
+    url(r'^user/(?P<pk>[0-9]+)/update_details/$', views.update_details, name='user_update_details'),
+    url(r'^user/(?P<pk>[0-9]+)/request_organisation/$', views.request_organisation, name='user_request_organisation'),
 )
-
-
-

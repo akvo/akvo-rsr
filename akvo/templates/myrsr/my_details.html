@@ -14,8 +14,8 @@
             $.each($(this).serializeArray(), function(i, obj) { serializedData[obj.name] = obj.value });
 
             $.ajax({
-                type:"PATCH",
-                url: "/rest/v1/user/{{ user.pk }}/?format=json",
+                type:"POST",
+                url: "{% url 'user_update_details' user.id %}" + "?format=json",
                 data : JSON.stringify(serializedData),
                 contentType : 'application/json; charset=UTF-8',
                 success: function(response){
@@ -90,6 +90,7 @@
 </script>
 
 <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
+<script type="application/json" id="user-request-link">{"link": "{% url 'user_request_organisation' user.id %}"}</script>
 
 <style>
 /* Style for typeahead dropdown, to be included in CSS file */

@@ -28,7 +28,12 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         return this.state.visible
-            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " - ", React.DOM.i(null, this.props.employment.job_title, " ", this.props.employment.country_full.name))
+            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, 
+              " - ", 
+              React.DOM.i(null, this.props.employment.job_title, 
+              " ", this.props.employment.country_full.name
+              )
+              )
             : React.DOM.span(null);
     }
 });
@@ -85,11 +90,10 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
         });
 
         serializedData = this.getFormData();
-        serializedData['user'] = this.props.user_id;
 
         $.ajax({
             type: "POST",
-            url: "/rest/v1/employment/?format=json",
+            url: this.props.link + "?format=json",
             data : JSON.stringify(serializedData),
             contentType : 'application/json; charset=UTF-8',
             success: function(response) {
@@ -100,17 +104,10 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
                 this.handleAddEmployment(response);
             }.bind(this),
             error: function(response) {
-                if (response['status'] == 500) {
-                    this.setState({
-                        title: "Request failed",
-                        response: "You're already connected to this organisation, only one link is possible."
-                    })
-                } else {
-                    this.setState({
-                        title: "Request failed",
-                        response: "Something went wrong..."
-                    })
-                }
+                this.setState({
+                    title: "Request failed",
+                    response: "Your request failed."
+                })
             }.bind(this)
         });
     },
@@ -170,12 +167,16 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
             React.DOM.span(null, 
                 React.DOM.h2(null, "My organisations"), 
                 EmploymentList({employments: this.state.employments}), 
-                AddEmploymentForm({user_id: this.props.source.user.id, addEmployment: this.addEmployment})
+                AddEmploymentForm({link: this.props.link, addEmployment: this.addEmployment})
             )
             );
     }
 });
 
 var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
+var request_link = JSON.parse(document.getElementById("user-request-link").innerHTML);
 
-React.renderComponent(EmploymentApp({source: initial_data}), document.getElementById('organisations'));
+React.renderComponent(
+    EmploymentApp({source: initial_data, link: request_link.link}),
+    document.getElementById('organisations')
+);
