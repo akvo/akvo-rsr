@@ -28,7 +28,12 @@ var Employment = React.createClass({
 
     render: function() {
         return this.state.visible
-            ? <li>{this.props.employment.organisation_full.long_name} - <i>{this.props.employment.job_title} {this.props.employment.country_full.name}</i></li>
+            ? <li>{this.props.employment.organisation_full.long_name}
+              &nbsp;-&nbsp;
+              <i>{this.props.employment.job_title}
+              &nbsp;{this.props.employment.country_full.name}
+              </i>
+              </li>
             : <span/>;
     }
 });
@@ -171,4 +176,7 @@ var EmploymentApp = React.createClass({
 var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
 var request_link = JSON.parse(document.getElementById("user-request-link").innerHTML);
 
-React.renderComponent(<EmploymentApp source={initial_data} link={request_link.link} />, document.getElementById('organisations'));
+React.renderComponent(
+    <EmploymentApp source={initial_data} link={request_link.link} />,
+    document.getElementById('organisations')
+);
