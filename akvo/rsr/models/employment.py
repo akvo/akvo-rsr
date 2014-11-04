@@ -13,8 +13,8 @@ from ..fields import ValidXMLCharField
 
 
 class Employment(models.Model):
-    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='employments')
-    user = models.ForeignKey('User', verbose_name=_(u'user'), related_name='employments')
+    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='employees')
+    user = models.ForeignKey('User', verbose_name=_(u'user'), related_name='employers')
     is_approved = models.BooleanField(
         _('approved'), default=False, help_text=_('Designates whether this employment is approved by an administrator.')
     )

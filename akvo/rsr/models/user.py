@@ -79,7 +79,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = ImageField(_(u'avatar'),
                         null=True,
                         upload_to=image_path,
-                        help_text=_(u'The avatar should be less than 3.5 mb in size.'),
+                        help_text=_(u'The avatar should be less than 500 kb in size.'),
     )
 
     # avatar = ImageField(
@@ -105,7 +105,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     def get_absolute_url(self):
-        return "/users/%s/" % urlquote(self.email)
+        return "/user/{}/".format(self.pk)
 
     def get_full_name(self):
         """
@@ -114,10 +114,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         full_name = '%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
     get_full_name.short_description = _(u'full name')
-
-    def get_short_name(self):
-        "Returns the short name for the user."
-        return self.first_name
 
     def user_name(self):
         return self.__unicode__()
@@ -135,7 +131,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def latest_update_date(self):
         updates = self.updates()
         if updates:
-            return updates[0].created_at
+            return updates[0].last_modified_at
         else:
             return None
 

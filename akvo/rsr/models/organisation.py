@@ -203,7 +203,7 @@ class Organisation(TimestampsMixin, models.Model):
         def users(self):
             "returns a queryset of all users belonging to the organisation(s)"
             from .user import User
-            return User.objects.filter(employments__organisation__in=self).distinct()
+            return User.objects.filter(employers__organisation__in=self).distinct()
 
     def __unicode__(self):
         return self.name

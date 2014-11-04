@@ -12,16 +12,12 @@ from django.conf import settings
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.admin.models import LogEntry
 
-from registration.signals import user_activated
-
 from akvo.api.models import create_api_key
 
 from ..signals import (
-    change_name_of_file_on_change, change_name_of_file_on_create,
-    create_publishing_status, create_organisation_account,
-    create_payment_gateway_selector, donation_completed,
-    act_on_log_entry, user_activated_callback, update_project_budget,
-    update_project_funding
+    change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status, create_organisation_account,
+    create_payment_gateway_selector, donation_completed, act_on_log_entry, user_organisation_request,
+    update_project_budget, update_project_funding
 )
 
 from .benchmark import Benchmark, Benchmarkname
@@ -106,7 +102,7 @@ __all__ = [
 ]
 
 # signals!
-user_activated.connect(user_activated_callback)
+post_save.connect(user_organisation_request, sender=Employment)
 
 post_save.connect(create_organisation_account, sender=Organisation)
 
