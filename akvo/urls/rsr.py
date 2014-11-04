@@ -6,14 +6,16 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from akvo.api.urls import named_api
+
 from django.conf import settings
 from django.conf.urls import (include, patterns, url)
+from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from django.contrib import admin
-admin.autodiscover()
-
 import oembed
+
+admin.autodiscover()
 oembed.autodiscover()
 
 urlpatterns = patterns(
@@ -27,10 +29,10 @@ urlpatterns = patterns(
     url(r'^projects/$',
         'akvo.rsr.views.project.directory', name='project-directory'),
 
-    url(r'^projects/(?P<project_id>\d+)/$',
+    url(r'^project/(?P<project_id>\d+)/$',
         'akvo.rsr.views.project.main', name='project-main'),
 
-    url(r'^projects/(?P<project_id>\d+)/updates/$',
+    url(r'^project/(?P<project_id>\d+)/updates/$',
         'akvo.rsr.views.project_update.project_updates', name='project-updates'),
 
     # Organisations
@@ -38,14 +40,14 @@ urlpatterns = patterns(
         'akvo.rsr.views.organisation.directory',
         name='organisation-directory'),
 
-    url(r'^organisations/(?P<organisation_id>\d+)/$',
+    url(r'^organisation/(?P<organisation_id>\d+)/$',
         'akvo.rsr.views.organisation.main', name='organisation-main'),
 
     # Updates
     url(r'^updates/$',
         'akvo.rsr.views.project_update.directory', name='update-directory'),
 
-    url(r'^projects/(?P<project_id>\d+)/updates/(?P<update_id>\d+)/$',
+    url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$',
         'akvo.rsr.views.project_update.main', name='update-main'),
 
     # Account
@@ -83,6 +85,12 @@ urlpatterns = patterns(
     # Django Rest Framework urls
     (r'^rest/v1/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
+)
+
+# TastyPie API
+urlpatterns += patterns(
+    '',
+    (r'^api/', include(named_api('v1').urls)),
 )
 
 
