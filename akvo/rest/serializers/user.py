@@ -71,3 +71,20 @@ class UserPasswordSerializer(serializers.Serializer):
     def restore_object(self, attrs, instance=None):
         """Not needed, changing passwords happens in UserViewSet."""
         return attrs
+
+
+class UserDetailsSerializer(BaseRSRSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = (
+            'first_name',
+            'last_name',
+        )
+        exclude = ('absolute_url',)
+
+    def __init__(self, *args, **kwargs):
+        """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
+        It's neither correct nor do we want this data to be visible.
+        """
+        super(UserDetailsSerializer, self).__init__(*args, **kwargs)
+        del self.fields['absolute_url']
