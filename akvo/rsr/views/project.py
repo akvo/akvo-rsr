@@ -14,6 +14,24 @@ from akvo.utils import pagination
 from django.shortcuts import get_object_or_404, render
 
 
+def _get_carousel_data(project):
+    photos = []
+    if project.current_image:
+        photos.append({
+            "url": project.current_image.url,
+            "caption": project.current_image_caption,
+            "credit": project.current_image_credit,
+        })
+    for update in project.updates_desc():
+        if update.photo:
+            photos.append({
+                "url": update.photo.url,
+                "caption": update.photo_caption,
+                "credit": update.photo_credit,
+            })
+    return {"photos": photos}
+
+
 def directory(request):
     projects_list = Project.objects.published()
     page = request.GET.get('page')
@@ -30,6 +48,7 @@ def directory(request):
 
 def main(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+    carousel_data = _get_carousel_data(project)
 
     accordion_data = dict()
     accordion_data['background'] = project.background
@@ -42,6 +61,7 @@ def main(request, project_id):
 
     context = {
         'accordion_data': json.dumps(accordion_data),
+        'carousel_data': json.dumps(carousel_data),
         'project': project,
         'updates': updates,
     }
