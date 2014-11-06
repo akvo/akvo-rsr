@@ -3,7 +3,7 @@
 var Accordion = ReactBootstrap.Accordion;
 var Panel = ReactBootstrap.Panel;
 
-var accordionInstance = React.createClass({
+var AccordionInstance = React.createClass({
     render: function() {
         var background, current_status, project_plan, target_group, sustainability;
         if (this.props.source.background != "") {
@@ -46,4 +46,4 @@ var accordionInstance = React.createClass({
 
 var accordion_data = JSON.parse(document.getElementById("accordion-data").innerHTML);
 
-React.renderComponent(<accordionInstance source={accordion_data} />, document.getElementById('accordion'));
+React.renderComponent(<AccordionInstance source={accordion_data} />, document.getElementById('accordion'));
