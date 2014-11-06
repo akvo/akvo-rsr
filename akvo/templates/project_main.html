@@ -6,6 +6,13 @@
 
 {% block head_js %}
     <script type="application/json" id="accordion-data">{{ accordion_data|safe }}</script>
+    <script type="application/json" id="carousel-data">{{ carousel_data|safe }}</script>
+
+    <style>
+        .carousel-inner>.item>img {
+            max-height: 400px;
+        }
+    </style>
 
     <script type="text/javascript">
         function maptoggle() {
@@ -50,9 +57,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-8">
-                <div id="gallery">
-                    GALLERY
-                </div>
+                <div id="carousel"></div>
             </div>
             <div class="col-sm-4">
                 <p>{{project.project_plan_summary}}</p>
