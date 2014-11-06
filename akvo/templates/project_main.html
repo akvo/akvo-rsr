@@ -29,6 +29,24 @@
             }
         };
     </script>
+
+    <!-- Timeline -->
+    <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
+    <script type="text/javascript" src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var timeline_data = {{ timeline_data|safe }}
+
+            createStoryJS({
+                type:       'timeline',
+                width:      '100%',
+                height:     '400',
+                source:     timeline_data,
+                embed_id:   'timeline'
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block maincontent %}
@@ -77,9 +95,7 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <div id="timeline">
-                    TIMELINE
-                </div>
+                <div id="timeline"></div>
             </div>
         </div>
         <div class="row">
