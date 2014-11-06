@@ -8,19 +8,24 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
+from akvo.rsr.filters import remove_empty_querydict_items, ProjectFilterSet
 from akvo.rsr.models import Project
 from akvo.utils import pagination
+
 
 from django.shortcuts import get_object_or_404, render
 
 
 def directory(request):
-    projects_list = Project.objects.published()
+    f = ProjectFilterSet(remove_empty_querydict_items(request.GET) or None,
+                         queryset = Project.objects.published())
+
     page = request.GET.get('page')
 
-    page, paginator, page_range = pagination(page, projects_list, 10)
+    page, paginator, page_range = pagination(page, f.qs, 10)
 
     context = {
+        'filter': f,
         'page': page,
         'paginator': paginator,
         'page_range': page_range,

@@ -20,6 +20,17 @@ class CheckboxMultipleChoiceField(MultipleChoiceField):
     widget = widgets.CheckboxSelectMultiple
 
 
+class ProjectFilter(django_filters.FilterSet):
+    class Meta:
+        model = Project
+        fields = ['primary_location__country__continent']
+
+    def __init__(self, *args, **kwargs):
+        super(ProjectFilter, self).__init__(*args, **kwargs)
+        # self.filters['primary_location__country__continent'].extra.update(
+        #     {'empty_label': 'All Continents'})
+
+
 class ProjectFilterSet(django_filters.FilterSet):
     def filter_by_org(qs, org):
         if org:
@@ -79,7 +90,7 @@ class ProjectFilterSet(django_filters.FilterSet):
 
         self.filters['title'].field.widget.input_type = 'search'
         self.filters['title'].field.widget.attrs = {'results': '5', 'autosave': 'project_search', 'placeholder': _(u'Project title or subtitle')}
-        
+
         choices = [('', _(u'All continents'))]
         choices.extend(list(CONTINENTS))
         self.filters['continent'].extra.update({'choices': choices})
@@ -115,7 +126,7 @@ class ProjectFilterSet(django_filters.FilterSet):
             # else:
             #     organisations = Organisation.objects.all()
             #     self.filters['organisation'].extra.update({'empty_label': _(u'All partners')})
-            
+
         # No request (no partner site)
         else:
             organisations = Organisation.objects.all()
