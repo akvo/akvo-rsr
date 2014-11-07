@@ -12,9 +12,6 @@ django-vanilla-views==1.0.3
 # Bootstrap
 django-bootstrap3==4.11.0
 
-# React requirements
-PyReact==0.4.1
-
 sorl-thumbnail==11.12
 
 # API framework
