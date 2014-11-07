@@ -9,9 +9,9 @@ var Input = ReactBootstrap.Input;
 var ResponseModal = React.createClass({displayName: 'ResponseModal',
     render: function () {
         return this.transferPropsTo(
-        Modal({title: this.props.title}, 
-          React.DOM.div({className: "modal-body"}, this.props.response), 
-          React.DOM.div({className: "modal-footer"}, Button({onClick: this.props.onRequestHide}, "Close"))
+        React.createElement(Modal, {title: this.props.title}, 
+          React.createElement("div", {className: "modal-body"}, this.props.response), 
+          React.createElement("div", {className: "modal-footer"}, React.createElement(Button, {onClick: this.props.onRequestHide}, "Close"))
         )
             );
     }
@@ -28,13 +28,13 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         return this.state.visible
-            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, 
+            ? React.createElement("li", null, this.props.employment.organisation_full.long_name, 
               " - ", 
-              React.DOM.i(null, this.props.employment.job_title, 
+              React.createElement("i", null, this.props.employment.job_title, 
               " ", this.props.employment.country_full.name
               )
               )
-            : React.DOM.span(null);
+            : React.createElement("span", null);
     }
 });
 
@@ -42,11 +42,11 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
     render: function () {
         var employments = this.props.employments.map(function(employment) {
             return (
-                Employment({employment: employment})
+                React.createElement(Employment, {employment: employment})
                 )
         });
         return (
-            React.DOM.ul(null, employments)
+            React.createElement("ul", null, employments)
             );
     }
 });
@@ -54,7 +54,7 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
 var OrganisationInput = React.createClass({displayName: 'OrganisationInput',
     render: function() {
         return (
-                Input({type: "text", placeholder: "Organisation", id: "organisationInput"})
+                React.createElement(Input, {type: "text", placeholder: "Organisation", id: "organisationInput"})
             );
     }
 });
@@ -62,7 +62,7 @@ var OrganisationInput = React.createClass({displayName: 'OrganisationInput',
 var CountryInput = React.createClass({displayName: 'CountryInput',
     render: function() {
         return (
-                Input({type: "text", placeholder: "Country (optional)", id: "countriesInput"})
+                React.createElement(Input, {type: "text", placeholder: "Country (optional)", id: "countriesInput"})
             );
     }
 });
@@ -70,7 +70,7 @@ var CountryInput = React.createClass({displayName: 'CountryInput',
 var JobTitleInput = React.createClass({displayName: 'JobTitleInput',
     render: function() {
         return (
-                Input({type: "text", placeholder: "Job title (optional)", id: "jobtitleInput"})
+                React.createElement(Input, {type: "text", placeholder: "Job title (optional)", id: "jobtitleInput"})
             );
     }
 });
@@ -127,14 +127,14 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
 
     render: function() {
         return (
-            React.DOM.span(null, 
-                React.DOM.h3(null, "Connect with an organisation"), 
-                React.DOM.form(null, 
-                    OrganisationInput({ref: "organisationInput"}), 
-                    CountryInput({ref: "countryInput"}), 
-                    JobTitleInput({ref: "jobtitleInput"}), 
-                    ModalTrigger({modal: ResponseModal({title: this.state.title, response: this.state.response})}, 
-                        Button({onClick: this.addEmployment, bsStyle: "success"}, "Request to join")
+            React.createElement("span", null, 
+                React.createElement("h3", null, "Connect with an organisation"), 
+                React.createElement("form", null, 
+                    React.createElement(OrganisationInput, {ref: "organisationInput"}), 
+                    React.createElement(CountryInput, {ref: "countryInput"}), 
+                    React.createElement(JobTitleInput, {ref: "jobtitleInput"}), 
+                    React.createElement(ModalTrigger, {modal: React.createElement(ResponseModal, {title: this.state.title, response: this.state.response})}, 
+                        React.createElement(Button, {onClick: this.addEmployment, bsStyle: "success"}, "Request to join")
                     )
                 )
             )
@@ -164,10 +164,10 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
 
     render: function() {
         return (
-            React.DOM.span(null, 
-                React.DOM.h2(null, "My organisations"), 
-                EmploymentList({employments: this.state.employments}), 
-                AddEmploymentForm({link: this.props.link, addEmployment: this.addEmployment})
+            React.createElement("span", null, 
+                React.createElement("h2", null, "My organisations"), 
+                React.createElement(EmploymentList, {employments: this.state.employments}), 
+                React.createElement(AddEmploymentForm, {link: this.props.link, addEmployment: this.addEmployment})
             )
             );
     }
@@ -177,6 +177,6 @@ var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML)
 var request_link = JSON.parse(document.getElementById("user-request-link").innerHTML);
 
 React.renderComponent(
-    EmploymentApp({source: initial_data, link: request_link.link}),
+    React.createElement(EmploymentApp, {source: initial_data, link: request_link.link}),
     document.getElementById('organisations')
 );

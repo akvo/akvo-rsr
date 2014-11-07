@@ -25,13 +25,13 @@ var ConfirmModal = React.createClass({displayName: 'ConfirmModal',
 
     render: function() {
         return this.transferPropsTo(
-            Modal({title: "Remove link to organisation"}, 
-              React.DOM.div({className: "modal-body"}, 
+            React.createElement(Modal, {title: "Remove link to organisation"}, 
+              React.createElement("div", {className: "modal-body"}, 
                 'Are you sure you want to remove ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' from ' + this.props.employment.organisation_full.name + '?'
               ), 
-              React.DOM.div({className: "modal-footer"}, 
-                Button({onClick: this.props.onRequestHide}, "Close"), 
-                Button({onClick: this.deleteEmployment, bsStyle: "danger"}, "Remove")
+              React.createElement("div", {className: "modal-footer"}, 
+                React.createElement(Button, {onClick: this.props.onRequestHide}, "Close"), 
+                React.createElement(Button, {onClick: this.deleteEmployment, bsStyle: "danger"}, "Remove")
               )
             )
           );
@@ -41,8 +41,8 @@ var ConfirmModal = React.createClass({displayName: 'ConfirmModal',
 var TriggerConfirmModal = React.createClass({displayName: 'TriggerConfirmModal',
     render: function () {
         return (
-            ModalTrigger({modal: ConfirmModal({employment: this.props.employment, onDeleteToggle: this.props.onDeleteToggle})}, 
-                Button({bsStyle: "danger", bsSize: "xsmall"}, "X")
+            React.createElement(ModalTrigger, {modal: React.createElement(ConfirmModal, {employment: this.props.employment, onDeleteToggle: this.props.onDeleteToggle})}, 
+                React.createElement(Button, {bsStyle: "danger", bsSize: "xsmall"}, "X")
             )
             );
     }
@@ -59,8 +59,8 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         return this.state.visible
-            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", TriggerConfirmModal({employment: this.props.employment, onDeleteToggle: this.onDelete}))
-            : React.DOM.span(null);
+            ? React.createElement("li", null, this.props.employment.organisation_full.long_name, " ", React.createElement(TriggerConfirmModal, {employment: this.props.employment, onDeleteToggle: this.onDelete}))
+            : React.createElement("span", null);
     }
 });
 
@@ -81,11 +81,11 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
     render: function () {
         var employments = this.state.employments.map(function(employment) {
             return (
-                Employment({employment: employment})
+                React.createElement(Employment, {employment: employment})
                 )
         });
         return (
-            React.DOM.ul(null, employments)
+            React.createElement("ul", null, employments)
             );
     }
 });
@@ -93,12 +93,12 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
 var UserRow = React.createClass({displayName: 'UserRow',
     render: function() {
         return (
-            React.DOM.tr(null, 
-              React.DOM.td(null, this.props.user.email), 
-              React.DOM.td(null, this.props.user.first_name), 
-              React.DOM.td(null, this.props.user.last_name), 
-              React.DOM.td(null, EmploymentList({user: this.props.user})), 
-              React.DOM.td(null, React.DOM.i(null, "to do"))
+            React.createElement("tr", null, 
+              React.createElement("td", null, this.props.user.email), 
+              React.createElement("td", null, this.props.user.first_name), 
+              React.createElement("td", null, this.props.user.last_name), 
+              React.createElement("td", null, React.createElement(EmploymentList, {user: this.props.user})), 
+              React.createElement("td", null, React.createElement("i", null, "to do"))
             )
             );
     }
@@ -121,13 +121,13 @@ var UserTable = React.createClass({displayName: 'UserTable',
     render: function() {
         var users = this.state.users.map(function(user) {
           return (
-            UserRow({user: user})
+            React.createElement(UserRow, {user: user})
           )
         });
         return (
-            Table({striped: true}, 
-                React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Email"), React.DOM.th(null, "First name"), React.DOM.th(null, "Last name"), React.DOM.th(null, "Organisations"), React.DOM.th(null, "Permissions"))), 
-                React.DOM.tbody(null, users)
+            React.createElement(Table, {striped: true}, 
+                React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, "Email"), React.createElement("th", null, "First name"), React.createElement("th", null, "Last name"), React.createElement("th", null, "Organisations"), React.createElement("th", null, "Permissions"))), 
+                React.createElement("tbody", null, users)
             )
             );
     }
@@ -135,4 +135,4 @@ var UserTable = React.createClass({displayName: 'UserTable',
 
 var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
 
-React.renderComponent(UserTable({source: initial_data}), document.getElementById('user_table'));
+React.renderComponent(React.createElement(UserTable, {source: initial_data}), document.getElementById('user_table'));
