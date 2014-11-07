@@ -11,6 +11,12 @@ $ brew install node
 $ node -v
 $ npm -v
 ```
+?
+
+```shell
+$ npm install
+```
+
 
 Install Gulp
 ```shell

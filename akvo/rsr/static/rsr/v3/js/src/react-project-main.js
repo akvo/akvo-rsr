@@ -3,8 +3,6 @@
 var Accordion = ReactBootstrap.Accordion;
 var Panel = ReactBootstrap.Panel;
 
-alert('Got news');
-
 var AccordionInstance = React.createClass({displayName: 'AccordionInstance',
     render: function() {
         var background, current_status, project_plan, target_group, sustainability;
