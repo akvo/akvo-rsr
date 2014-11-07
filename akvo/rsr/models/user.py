@@ -115,6 +115,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         return full_name.strip()
     get_full_name.short_description = _(u'full name')
 
+    def get_short_name(self):
+        """
+        Returns only the first_name, but is needed because the default admin templates use this method.
+        """
+        return self.first_name
+
     def user_name(self):
         return self.__unicode__()
 
