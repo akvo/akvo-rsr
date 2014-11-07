@@ -5,7 +5,7 @@ var Carousel = ReactBootstrap.Carousel;
 var CarouselItem = ReactBootstrap.CarouselItem;
 var Panel = ReactBootstrap.Panel;
 
-var accordionInstance = React.createClass({
+var AccordionInstance = React.createClass({
     render: function() {
         var background, current_status, project_plan, target_group, sustainability;
         if (this.props.source.background != "") {
@@ -46,7 +46,7 @@ var accordionInstance = React.createClass({
     }
 });
 
-var carouselInstance = React.createClass({
+var CarouselInstance = React.createClass({
     render: function() {
         var photos = this.props.source.photos.map(function(photo) {
           return (
@@ -70,5 +70,5 @@ var carouselInstance = React.createClass({
 var accordion_data = JSON.parse(document.getElementById("accordion-data").innerHTML);
 var carousel_data = JSON.parse(document.getElementById("carousel-data").innerHTML);
 
-React.renderComponent(<accordionInstance source={accordion_data} />, document.getElementById('accordion'));
-React.renderComponent(<carouselInstance source={carousel_data} />, document.getElementById('carousel'));
+React.renderComponent(<AccordionInstance source={accordion_data} />, document.getElementById('accordion'));
+React.renderComponent(<CarouselInstance source={carousel_data} />, document.getElementById('carousel'));

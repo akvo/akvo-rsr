@@ -10,7 +10,7 @@
         Author:         Dan Rowden, dan@akvo.org
 
 /*---------------------------------------------------------------------------------*/
-                        /* Colours
+/* Colours
 ---------------------------------------------------------------------------------*/
 /* Akvo Primary Colours:    */
 /* Akvo Purplish Blue */
@@ -42,6 +42,7 @@
   .col-ty-12 {
     float: none;
     width: 100%; } }
+
 .navbar {
   border-radius: 0;
   border: none; }
@@ -70,6 +71,7 @@ body > .navbar {
 @media only screen and (min-width: 768px) {
   body > .navbar > .container .navbar-brand {
     margin-left: 0; } }
+
 /* FOOTER */
 body > footer {
   margin-top: 1em; }
@@ -111,9 +113,6 @@ h4.section {
 .progress-label-end {
   float: right;
   margin-top: -16px; }
-
-/*img {*/
-  /*max-width: 100%; }*/
 
 /* LISTINGS */
 #map {
@@ -174,5 +173,3 @@ header {
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   -ms-text-overflow: ellipsis; }
-
-/*# sourceMappingURL=main.css.map */

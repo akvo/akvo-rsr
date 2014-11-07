@@ -25,13 +25,13 @@ var ConfirmModal = React.createClass({displayName: 'ConfirmModal',
 
     render: function() {
         return this.transferPropsTo(
-            Modal({title: "Remove link to organisation"}, 
-              React.DOM.div({className: "modal-body"}, 
+            Modal( {title:"Remove link to organisation"}, 
+              React.DOM.div( {className:"modal-body"}, 
                 'Are you sure you want to remove ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' from ' + this.props.employment.organisation_full.name + '?'
-              ), 
-              React.DOM.div({className: "modal-footer"}, 
-                Button({onClick: this.props.onRequestHide}, "Close"), 
-                Button({onClick: this.deleteEmployment, bsStyle: "danger"}, "Remove")
+              ),
+              React.DOM.div( {className:"modal-footer"}, 
+                Button( {onClick:this.props.onRequestHide}, "Close"),
+                Button( {onClick:this.deleteEmployment, bsStyle:"danger"}, "Remove")
               )
             )
           );
@@ -41,8 +41,8 @@ var ConfirmModal = React.createClass({displayName: 'ConfirmModal',
 var TriggerConfirmModal = React.createClass({displayName: 'TriggerConfirmModal',
     render: function () {
         return (
-            ModalTrigger({modal: ConfirmModal({employment: this.props.employment, onDeleteToggle: this.props.onDeleteToggle})}, 
-                Button({bsStyle: "danger", bsSize: "xsmall"}, "X")
+            ModalTrigger( {modal:ConfirmModal( {employment:this.props.employment, onDeleteToggle:this.props.onDeleteToggle} )}, 
+                Button( {bsStyle:"danger", bsSize:"xsmall"}, "X")
             )
             );
     }
@@ -59,7 +59,7 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         return this.state.visible
-            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", TriggerConfirmModal({employment: this.props.employment, onDeleteToggle: this.onDelete}))
+            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", TriggerConfirmModal( {employment:this.props.employment, onDeleteToggle:this.onDelete} ))
             : React.DOM.span(null);
     }
 });
@@ -81,7 +81,7 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
     render: function () {
         var employments = this.state.employments.map(function(employment) {
             return (
-                Employment({employment: employment})
+                Employment( {employment:employment})
                 )
         });
         return (
@@ -94,10 +94,10 @@ var UserRow = React.createClass({displayName: 'UserRow',
     render: function() {
         return (
             React.DOM.tr(null, 
-              React.DOM.td(null, this.props.user.email), 
-              React.DOM.td(null, this.props.user.first_name), 
-              React.DOM.td(null, this.props.user.last_name), 
-              React.DOM.td(null, EmploymentList({user: this.props.user})), 
+              React.DOM.td(null, this.props.user.email),
+              React.DOM.td(null, this.props.user.first_name),
+              React.DOM.td(null, this.props.user.last_name),
+              React.DOM.td(null, EmploymentList( {user:this.props.user} )),
               React.DOM.td(null, React.DOM.i(null, "to do"))
             )
             );
@@ -121,12 +121,12 @@ var UserTable = React.createClass({displayName: 'UserTable',
     render: function() {
         var users = this.state.users.map(function(user) {
           return (
-            UserRow({user: user})
+            UserRow( {user:user} )
           )
         });
         return (
-            Table({striped: true}, 
-                React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Email"), React.DOM.th(null, "First name"), React.DOM.th(null, "Last name"), React.DOM.th(null, "Organisations"), React.DOM.th(null, "Permissions"))), 
+            Table( {striped:true}, 
+                React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Email"),React.DOM.th(null, "First name"),React.DOM.th(null, "Last name"),React.DOM.th(null, "Organisations"),React.DOM.th(null, "Permissions"))),
                 React.DOM.tbody(null, users)
             )
             );
@@ -135,4 +135,4 @@ var UserTable = React.createClass({displayName: 'UserTable',
 
 var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
 
-React.renderComponent(UserTable({source: initial_data}), document.getElementById('user_table'));
+React.renderComponent(UserTable( {source:initial_data} ), document.getElementById('user_table'));

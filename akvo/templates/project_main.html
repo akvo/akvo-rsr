@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load compressed i18n %}
 
 {% block title %}{{project.title}}{% endblock %}
 
@@ -100,8 +100,11 @@
         </div>
         <div class="row">
             <div class="col-sm-8">
-                <div id="accordion"></div>
-                <script type="application/javascript" src="/static/rsr/v3/js/build/rsr_v3_project_main.min.js" charset="utf-8"></script>
+              <div id="accordion"></div>
+              {% compressed_js 'rsr_v3_react_project_main' %}
+              {% comment %}
+              <script type="application/javascript" src="/static/rsr/v3/js/build/rsr_v3_project_main.min.js" charset="utf-8"></script>
+              {% endcomment %}
             </div>
             <div class="col-sm-4">
               <h4 class="section">Latest project updates</h4>
