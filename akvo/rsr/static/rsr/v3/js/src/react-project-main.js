@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 
 var Accordion = ReactBootstrap.Accordion;
+var Carousel = ReactBootstrap.Carousel;
+var CarouselItem = ReactBootstrap.CarouselItem;
 var Panel = ReactBootstrap.Panel;
 
 var AccordionInstance = React.createClass({displayName: 'AccordionInstance',
@@ -44,6 +46,29 @@ var AccordionInstance = React.createClass({displayName: 'AccordionInstance',
     }
 });
 
+var CarouselInstance = React.createClass({displayName: 'CarouselInstance',
+    render: function() {
+        var photos = this.props.source.photos.map(function(photo) {
+          return (
+            React.createElement(CarouselItem, null, 
+                React.createElement("img", {width: "100%", height: 400, src: photo.url}), 
+                React.createElement("div", {className: "carousel-caption"}, 
+                    React.createElement("h3", null, photo.caption), 
+                    React.createElement("p", null, photo.credit)
+                )
+            )
+          );
+        });
+        return (
+            React.createElement(Carousel, null, 
+                photos
+            )
+            );
+    }
+});
+
 var accordion_data = JSON.parse(document.getElementById("accordion-data").innerHTML);
+var carousel_data = JSON.parse(document.getElementById("carousel-data").innerHTML);
 
 React.renderComponent(React.createElement(AccordionInstance, {source: accordion_data}), document.getElementById('accordion'));
+React.renderComponent(React.createElement(CarouselInstance, {source: carousel_data}), document.getElementById('carousel'));
