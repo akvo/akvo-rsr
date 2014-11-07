@@ -23,12 +23,6 @@ class ProjectViewSet(BaseRSRViewSet):
         """ Allow simple filtering on selected fields
         """
         queryset = self.queryset
-
-        ### DEBUG ###
-        import pdb
-        pdb.set_trace()
-        ### DEBUG ###
-
         organisation = self.request.QUERY_PARAMS.get('partnerships__organisation', None)
         if organisation is not None:
             queryset = queryset.filter(partnerships__organisation=organisation).distinct()
