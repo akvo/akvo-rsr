@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load i18n bootstrap3 %}
+{% load i18n bootstrap3 rsr_utils thumbnail %}
 
 {% block title %}{% trans "MyRSR - my proejcts" %}{% endblock %}
 
@@ -8,50 +8,31 @@
 <div class="table-responsive">
   <h1>{% trans "My project" %}s</h1>
   <table class="table table-striped">
-    <tr>
-      <td>Image</td>
-      <td>Location</td>
-      <td>Status</td>
-      <td>.</td>
-    </tr>
-    <tr>
-      <td class="media">
-           <a class="pull-left" href="#">
-            <img class="media-object"
-                 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+"
-                 alt="...">
-          </a>
-          <div class="media-body">
-            <h4 class="media-heading">Title</h4>
-            <p class="small">Subtitle</p>
-          </div>
-      </td>
-      <td>...</td>
-      <td>...</td>
-      <td>
-        <a href="#">View</a>, <a href="#">Edit</a>, <a href="#">Publish</a>
-      </td>
-    </tr>
-    <tr>
-      <td class="media">
-          <a class="pull-left" href="#">
-            <img class="media-object"
-                 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+"
-                 alt="...">
-          </a>
-          <div class="media-body">
-            <h4 class="media-heading">Title</h4>
-            <p class="small">Subtitle</p>
-          </div>
-      </td>
-      <td>...</td>
-      <td>...</td>
-      <td>
-        <a href="#">View</a>, <a href="#">Edit</a>, <a href="#">Publish</a>
-      </td>
-    </tr>
+    <thead>
+      <tr>
+          <th>Project</th><th>Location</th><th>Status</th><th>Actions</th></tr>
+      <tr>
+    </thead>
+    {% for project in projects %}
+      <tr>
+          <td class="media">
+            <a class="pull-left" href="{% url 'project-main' project.id %}">
+              <img src="{{MEDIA_URL}}{{project.current_image}}" height="64" width="64"/>
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">{{ project.title }}</h4>
+                <p class="small">{{ project.subtitle }}</p>
+            </div>
+          </td>
+          <td>{{ project.primary_location.country }}</td>
+          <td>{{ project.show_status }}</td>
+          <td>
+              <a href="{% url 'project-main' project.id %}">View</a>
+              {% if user.is_staff %}, <a href="/admin/rsr/project/{{project.pk}}/">Edit</a>, <a href="#">Publish</a>{% endif %}
+          </td>
+      </tr>
+    {% endfor %}
   </table>
-
 </div>
 
 {% endblock %}

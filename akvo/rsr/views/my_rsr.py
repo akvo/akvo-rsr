@@ -53,7 +53,8 @@ def my_updates(request):
 
 @login_required
 def my_projects(request):
-    context = {'projects': Project.objects.published()}
+    projects = request.user.organisations.all_projects().published().distinct()
+    context = {'projects': projects}
     return render(request, 'myrsr/my_projects.html', context)
 
 @permission_required('rsr.delete_user', raise_exception=True)
