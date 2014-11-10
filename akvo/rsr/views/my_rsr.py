@@ -12,6 +12,7 @@ from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
 from akvo.rsr.models import Project
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
@@ -56,10 +57,13 @@ def my_projects(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'myrsr/my_projects.html', context)
 
-@permission_required('rsr.delete_user', raise_exception=True)
 @login_required
 def user_management(request):
-    users = request.user.organisations.all().users()
+    user = request.user
+    if not (user.is_superuser or user.is_staff or user.get_is_rsr_admin() or user.get_is_org_admin()):
+        raise PermissionDenied
+
+    users = user.organisations.all().users()
 
     users_array = []
     for user in users:
