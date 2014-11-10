@@ -26,7 +26,7 @@ class ProjectViewSet(BaseRSRViewSet):
         organisation = self.request.QUERY_PARAMS.get('partnerships__organisation', None)
         if organisation is not None:
             queryset = queryset.filter(partnerships__organisation=organisation).distinct()
-            published = self.request.QUERY_PARAMS.get('publishingstatus__status', None)
+        published = self.request.QUERY_PARAMS.get('publishingstatus__status', None)
         if published in [PublishingStatus.STATUS_PUBLISHED, PublishingStatus.STATUS_UNPUBLISHED]:
             queryset = queryset.filter(publishingstatus__status=published)
         return queryset
