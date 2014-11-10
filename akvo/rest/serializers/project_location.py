@@ -14,3 +14,10 @@ class ProjectLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectLocation
+        exclude = ('location_target',)
+
+
+class ProjectLocationExtraSerializer(ProjectLocationSerializer):
+
+    class Meta(ProjectLocationSerializer.Meta):
+        depth = 2

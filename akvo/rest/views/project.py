@@ -7,7 +7,7 @@
 
 from akvo.rsr.models import Project, PublishingStatus
 
-from ..serializers import ProjectSerializer
+from ..serializers import ProjectSerializer, ProjectExtraSerializer
 from ..viewsets import BaseRSRViewSet
 
 
@@ -16,11 +16,20 @@ class ProjectViewSet(BaseRSRViewSet):
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+
+class ProjectExtraViewSet(ProjectViewSet):
+    """ Viewset providing extra data and limited filtering for Up in one go
+    """
+    serializer_class = ProjectExtraSerializer
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 
     def get_queryset(self):
         """ Allow simple filtering on selected fields
+            Note that the query string keys "mimic" the django ORM filtering syntax,
+            but in reality are totally arbitrary. Some day we might get full filtering
+            using the Django ORM and then it'd nice if those custom filters continue to work.
         """
         queryset = self.queryset
         organisation = self.request.QUERY_PARAMS.get('partnerships__organisation', None)
