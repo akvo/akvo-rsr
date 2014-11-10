@@ -185,14 +185,11 @@ def act_on_log_entry(sender, **kwargs):
 
 
 def user_organisation_request(sender, **kwargs):
-    if not getattr(settings, 'REGISTRATION_NOTIFICATION_EMAILS', True):
-        return
-
-    # Check if a new Employment is created
     if kwargs['created']:
-        user = kwargs.get("user", False)
-        organisation = kwargs.get("organisation", False)
-        if user and organisation:
+        employment = kwargs.get("instance", False)
+        if employment:
+            user = employment.user
+            organisation = employment.organisation
             users = get_user_model().objects.all()
             # find all users that are:
             # 1) Superusers
