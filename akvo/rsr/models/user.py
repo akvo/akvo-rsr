@@ -248,13 +248,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Support for self as profile. Use of this is deprecated
         return self
 
-    def employments_dict(self):
-        """Represent User as dict with employments"""
+    def employments_dict(self, org_list):
+        """
+        Represent User as dict with employments.
+        The org_list is a list of organisations of the original user. Based on this, the original user will have
+        the option to approve / delete the employment.
+        """
         employments = Employment.objects.filter(user=self)
 
         employments_array = []
         for employment in employments:
-            employment_obj = employment.to_dict()
+            employment_obj = employment.to_dict(org_list)
             employments_array.append(employment_obj)
 
         return dict(

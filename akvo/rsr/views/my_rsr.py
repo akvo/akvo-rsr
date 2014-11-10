@@ -28,7 +28,7 @@ def my_details(request):
     )
     organisation_form = UserOrganisationForm()
 
-    json_data = json.dumps({'user': request.user.employments_dict()})
+    json_data = json.dumps({'user': request.user.employments_dict([])})
 
     context = {
         'user_data': json_data,
@@ -63,11 +63,12 @@ def user_management(request):
     if not (user.is_superuser or user.is_staff or user.get_is_rsr_admin() or user.get_is_org_admin()):
         raise PermissionDenied
 
-    users = user.organisations.all().users()
+    organisations = user.organisations.all()
+    users = organisations.users()
 
     users_array = []
     for user in users:
-        user_obj = user.employments_dict()
+        user_obj = user.employments_dict(organisations)
         users_array.append(user_obj)
     json_data = json.dumps({'users': users_array})
 

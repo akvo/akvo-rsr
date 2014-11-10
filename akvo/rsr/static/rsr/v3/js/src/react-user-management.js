@@ -5,7 +5,7 @@ var ModalTrigger = ReactBootstrap.ModalTrigger;
 var Button = ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
 
-var ConfirmModal = React.createClass({displayName: 'ConfirmModal',
+var DeleteModal = React.createClass({displayName: 'DeleteModal',
     deleteEmployment: function() {
         $.ajax({
             type: "DELETE",
@@ -38,13 +38,77 @@ var ConfirmModal = React.createClass({displayName: 'ConfirmModal',
     }
 });
 
-var TriggerConfirmModal = React.createClass({displayName: 'TriggerConfirmModal',
-    render: function () {
-        return (
-            ModalTrigger( {modal:ConfirmModal( {employment:this.props.employment, onDeleteToggle:this.props.onDeleteToggle} )}, 
-                Button( {bsStyle:"danger", bsSize:"xsmall"}, "X")
+var ApproveModal = React.createClass({displayName: 'ApproveModal',
+    approveEmployment: function() {
+        $.ajax({
+            type: "POST",
+            url: "/rest/v1/employment/" + this.props.employment.id + '/approve/',
+            success: function(data) {
+                this.handleApprove();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+
+    handleApprove: function() {
+        this.props.onRequestHide();
+        this.props.onApproveToggle();
+    },
+
+    render: function() {
+        return this.transferPropsTo(
+            Modal( {title:"Remove link to organisation"}, 
+              React.DOM.div( {className:"modal-body"}, 
+                'Are you sure you want to approve ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' at ' + this.props.employment.organisation_full.long_name + '?'
+              ),
+              React.DOM.div( {className:"modal-footer"}, 
+                Button( {onClick:this.props.onRequestHide}, "Close"),
+                Button( {onClick:this.approveEmployment, bsStyle:"success"}, "Approve")
+              )
             )
-            );
+          );
+    }
+});
+
+var TriggerModal = React.createClass({displayName: 'TriggerModal',
+    getInitialState: function() {
+        return {
+            visible: false,
+            approved: false
+        };
+    },
+
+    componentDidMount: function() {
+        var visible = this.props.employment.actions;
+        var approved = this.props.employment.is_approved;
+        if (this.isMounted()) {
+            this.setState({
+                visible: visible,
+                approved: approved
+            });
+        }
+    },
+
+    onApprove: function() {
+        this.setState({approved: true});
+    },
+
+    render: function () {
+        if (this.state.visible) {
+            return this.state.approved
+                ? ModalTrigger( {modal:DeleteModal( {employment:this.props.employment, onDeleteToggle:this.props.onDeleteToggle} )}, 
+                    Button( {bsStyle:"danger", bsSize:"xsmall"}, "X")
+                  )
+                : ModalTrigger( {modal:ApproveModal( {employment:this.props.employment, onApproveToggle:this.onApprove} )}, 
+                    Button( {bsStyle:"success", bsSize:"xsmall"}, "√")
+                  );
+        } else {
+            return React.DOM.span(null);
+        }
+
+
     }
 });
 
@@ -59,7 +123,7 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         return this.state.visible
-            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", TriggerConfirmModal( {employment:this.props.employment, onDeleteToggle:this.onDelete} ))
+            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete} ))
             : React.DOM.span(null);
     }
 });
