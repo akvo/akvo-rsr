@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n maps rsr_utils thumbnail humanize %}
+{% load i18n maps rsr_utils thumbnail humanize bootstrap3 %}
 
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
@@ -215,32 +215,15 @@ $('#query').typeahead({
         {% for p in page %}
         <article class="row">
           <div class="col-sm-2 col-xs-3">
-            {% comment %}
-                <a href="{% url 'project-main' p.id %}">
-                  {# <img src="http://placehold.it/200x200" alt="{{p.title}}"> #}
-                  {# <img src="/media/{{p.current_image}}" alt="{{p.title}}" /> #}
-                  {% thumbnail p.current_image 200x200 upscale autocrop sharpen as project_image %}
-                  {# <img src="{{project_image}}" alt="{{p.title" />
-                  {% include "partials/img.html" with img=p.current_image size=200x200 title=p.title %}
-                </a>
-                {# include "partials/img.html" with img=p.current_image size=200x200 title=p.title #}
-                {% img p 200 200 p.title %}
-                <img src="/media/{{p.current_image}}" alt="" />
-                            {% thumbnail p.current_image "200x200" crop="center" as im %}
-                <img src="{{ im.url }}" width="{{img.width}}" height="{{im.height}}" />
-            {% endthumbnail %}
-            {% endcomment %}
             <a href="{% url 'project-main' p.id %}">
               {% img p 200 200 p.title %}
             </a>
-
-
             </div>
             <div class="col-sm-4 col-xs-9">
                 <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
                 <p>{{p.subtitle}}</p>
-                <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
-                <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.partners.all.0.id %}">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
+                <p>{% bootstrap_icon "globe" %} {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
+                <p>{% bootstrap_icon "folder-close" %} <a href="{% url 'organisation-main' p.partners.all.0.id %}">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
             </div>
             <div class="col-sm-3 hidden-xs">
               <h4 class="section">{% trans "Focus Areas" %}</h4>

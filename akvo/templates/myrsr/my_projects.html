@@ -1,8 +1,8 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load i18n bootstrap3 rsr_utils thumbnail %}
+{% load i18n bootstrap3 rsr_utils %}
 
-{% block title %}{% trans "MyRSR - my proejcts" %}{% endblock %}
+{% block title %}{% trans "MyRSR - my projects" %}{% endblock %}
 
 {% block myrsr_main %}
 <div class="table-responsive">
@@ -13,26 +13,45 @@
           <th>Project</th><th>Location</th><th>Status</th><th>Actions</th></tr>
       <tr>
     </thead>
-    {% for project in projects %}
+    {% for project in page %}
       <tr>
           <td class="media">
+              {% comment %}
             <a class="pull-left" href="{% url 'project-main' project.id %}">
               <img src="{{MEDIA_URL}}{{project.current_image}}" height="64" width="64"/>
+            </a>
+              {% endcomment %}
+            <a class="pull-left" href="{% url 'project-main' project.id %}">
+              {% img project 64 64 project.title %}
             </a>
             <div class="media-body">
                 <h4 class="media-heading">{{ project.title }}</h4>
                 <p class="small">{{ project.subtitle }}</p>
             </div>
           </td>
-          <td>{{ project.primary_location.country }}</td>
+          <td>{% bootstrap_icon "globe" %} {{project.primary_location.country}}, {{project.primary_location.country.continent}}</td>
           <td>{{ project.show_status }}</td>
           <td>
               <a href="{% url 'project-main' project.id %}">View</a>
-              {% if user.is_staff %}, <a href="/admin/rsr/project/{{project.pk}}/">Edit</a>, <a href="#">Publish</a>{% endif %}
+              {% if user.is_staff or user.is_superuser or user.get_is_rsr_admin or user.get_is_org_admin %}
+              <a href="/admin/rsr/project/{{project.pk}}/">Edit</a>
+              <a href="/admin/rsr/publishingstatus/?project={{project.pk}}">
+                {% if project.is_published %}
+                    Unpublish
+                {% else %}
+                    Publish
+                {% endif %}
+              </a>
+              {% endif %}
           </td>
       </tr>
     {% endfor %}
   </table>
+  <div class="row center-text">
+      <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
+      {% include 'navigation/pagination.html' %}
+  </div>
+
 </div>
 
 {% endblock %}
