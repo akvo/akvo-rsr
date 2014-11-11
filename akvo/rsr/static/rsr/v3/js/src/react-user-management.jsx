@@ -83,21 +83,29 @@ var TriggerModal = React.createClass({
     componentDidMount: function() {
         var visible = this.props.employment.actions;
         var approved = this.props.employment.is_approved;
-        if (this.isMounted()) {
+        if (this.isMounted() && this.props.delete) {
             this.setState({
                 visible: visible,
+                approved: approved
+            });
+        } else if (this.isMounted() && !this.props.delete) {
+            this.setState({
+                visible: !approved,
                 approved: approved
             });
         }
     },
 
     onApprove: function() {
-        this.setState({approved: true});
+        this.setState({
+            visible: false,
+            approved: true
+        });
     },
 
     render: function () {
         if (this.state.visible) {
-            return this.state.approved
+            return this.props.delete
                 ? <ModalTrigger modal={<DeleteModal employment={this.props.employment} onDeleteToggle={this.props.onDeleteToggle} />}>
                     <Button bsStyle="danger" bsSize="xsmall">X</Button>
                   </ModalTrigger>
@@ -123,8 +131,12 @@ var Employment = React.createClass({
 
     render: function() {
         return this.state.visible
-            ? <li>{this.props.employment.organisation_full.long_name} <TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} /></li>
-            : <span/>;
+            ? <tr>
+                <td>{this.props.employment.organisation_full.long_name}</td>
+                <td><TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={true} /></td>
+                <td><TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={false} /></td>
+              </tr>
+            : <tr></tr>;
     }
 });
 
@@ -149,7 +161,7 @@ var EmploymentList = React.createClass({
                 )
         });
         return (
-            <ul>{employments}</ul>
+            <table><tbody>{employments}</tbody></table>
             );
     }
 });
@@ -162,7 +174,6 @@ var UserRow = React.createClass({
               <td>{this.props.user.first_name}</td>
               <td>{this.props.user.last_name}</td>
               <td><EmploymentList user={this.props.user} /></td>
-              <td><i>to do</i></td>
             </tr>
             );
     }
@@ -190,7 +201,7 @@ var UserTable = React.createClass({
         });
         return (
             <Table striped>
-                <thead><tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisations</th><th>Permissions</th></tr></thead>
+                <thead><tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisations</th></tr></thead>
                 <tbody>{users}</tbody>
             </Table>
             );

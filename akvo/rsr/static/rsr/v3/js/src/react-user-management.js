@@ -83,21 +83,29 @@ var TriggerModal = React.createClass({displayName: 'TriggerModal',
     componentDidMount: function() {
         var visible = this.props.employment.actions;
         var approved = this.props.employment.is_approved;
-        if (this.isMounted()) {
+        if (this.isMounted() && this.props.delete) {
             this.setState({
                 visible: visible,
+                approved: approved
+            });
+        } else if (this.isMounted() && !this.props.delete) {
+            this.setState({
+                visible: !approved,
                 approved: approved
             });
         }
     },
 
     onApprove: function() {
-        this.setState({approved: true});
+        this.setState({
+            visible: false,
+            approved: true
+        });
     },
 
     render: function () {
         if (this.state.visible) {
-            return this.state.approved
+            return this.props.delete
                 ? ModalTrigger( {modal:DeleteModal( {employment:this.props.employment, onDeleteToggle:this.props.onDeleteToggle} )}, 
                     Button( {bsStyle:"danger", bsSize:"xsmall"}, "X")
                   )
@@ -123,8 +131,12 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         return this.state.visible
-            ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete} ))
-            : React.DOM.span(null);
+            ? React.DOM.tr(null, 
+                React.DOM.td(null, this.props.employment.organisation_full.long_name),
+                React.DOM.td(null, TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:true} )),
+                React.DOM.td(null, TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:false} ))
+              )
+            : React.DOM.tr(null);
     }
 });
 
@@ -149,7 +161,7 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
                 )
         });
         return (
-            React.DOM.ul(null, employments)
+            React.DOM.table(null, React.DOM.tbody(null, employments))
             );
     }
 });
@@ -161,8 +173,7 @@ var UserRow = React.createClass({displayName: 'UserRow',
               React.DOM.td(null, this.props.user.email),
               React.DOM.td(null, this.props.user.first_name),
               React.DOM.td(null, this.props.user.last_name),
-              React.DOM.td(null, EmploymentList( {user:this.props.user} )),
-              React.DOM.td(null, React.DOM.i(null, "to do"))
+              React.DOM.td(null, EmploymentList( {user:this.props.user} ))
             )
             );
     }
@@ -190,7 +201,7 @@ var UserTable = React.createClass({displayName: 'UserTable',
         });
         return (
             Table( {striped:true}, 
-                React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Email"),React.DOM.th(null, "First name"),React.DOM.th(null, "Last name"),React.DOM.th(null, "Organisations"),React.DOM.th(null, "Permissions"))),
+                React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Email"),React.DOM.th(null, "First name"),React.DOM.th(null, "Last name"),React.DOM.th(null, "Organisations"))),
                 React.DOM.tbody(null, users)
             )
             );

@@ -27,14 +27,15 @@ var Employment = React.createClass({
     },
 
     render: function() {
-        return this.state.visible
-            ? <li>{this.props.employment.organisation_full.long_name}
-              &nbsp;-&nbsp;
-              <i>{this.props.employment.job_title}
-              &nbsp;{this.props.employment.country_full.name}
-              </i>
-              </li>
-            : <span/>;
+        if (this.props.employment.is_approved) {
+            return this.state.visible
+                ? <li>{this.props.employment.organisation_full.long_name}</li>
+                : <span/>;
+        } else {
+            return this.state.visible
+                ? <li>{this.props.employment.organisation_full.long_name} <i>(Not approved)</i></li>
+                : <span/>;
+        }
     }
 });
 

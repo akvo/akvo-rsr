@@ -63,8 +63,8 @@ def user_management(request):
     if not (user.is_superuser or user.is_staff or user.get_is_rsr_admin() or user.get_is_org_admin()):
         raise PermissionDenied
 
-    organisations = user.organisations.all()
-    users = organisations.users()
+    organisations = user.approved_organisations()
+    users = organisations.users().exclude(pk=user.pk)
 
     users_array = []
     for user in users:

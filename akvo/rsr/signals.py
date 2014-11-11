@@ -202,8 +202,8 @@ def user_organisation_request(sender, **kwargs):
             ).distinct()
             rsr_send_mail_to_users(
                 notify,
-                subject='email/user_organisation_request_subject.txt',
-                message='email/user_organisation_request_message.txt',
+                subject='registration/user_organisation_request_subject.txt',
+                message='registration/user_organisation_request_message.txt',
                 subject_context={'organisation': organisation},
                 msg_context={'user': user, 'organisation': organisation},
             )

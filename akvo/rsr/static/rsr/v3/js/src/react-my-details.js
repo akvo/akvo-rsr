@@ -27,14 +27,15 @@ var Employment = React.createClass({displayName: 'Employment',
     },
 
     render: function() {
-        return this.state.visible
-            ? React.DOM.li(null, this.props.employment.organisation_full.long_name,
-              " - ",
-              React.DOM.i(null, this.props.employment.job_title,
-              " ",this.props.employment.country_full.name
-              )
-              )
-            : React.DOM.span(null);
+        if (this.props.employment.is_approved) {
+            return this.state.visible
+                ? React.DOM.li(null, this.props.employment.organisation_full.long_name)
+                : React.DOM.span(null);
+        } else {
+            return this.state.visible
+                ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", React.DOM.i(null, "(Not approved)"))
+                : React.DOM.span(null);
+        }
     }
 });
 

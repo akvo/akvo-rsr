@@ -122,6 +122,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         return "\n".join([o.name for o in self.organisations.all()])
     get_organisation_names.short_description = _(u'organisations')
 
+    def approved_organisations(self):
+        """
+        return all approved organisations of the user
+        """
+        from .organisation import Organisation
+        return Organisation.objects.filter(employees__user=self, employees__is_approved=True)
+
     def updates(self):
         """
         return all updates created by the user
