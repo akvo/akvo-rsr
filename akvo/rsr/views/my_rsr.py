@@ -8,8 +8,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
-from akvo.rsr.forms import PasswordForm, ProfileForm, UserOrganisationForm
-from akvo.rsr.models import Project
+from ..forms import PasswordForm, ProfileForm, UserOrganisationForm
+from ...utils import pagination
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, render_to_response
@@ -53,7 +53,17 @@ def my_updates(request):
 
 @login_required
 def my_projects(request):
-    context = {'projects': Project.objects.published()}
+    projects = request.user.organisations.all_projects().distinct()
+    page = request.GET.get('page')
+
+    page, paginator, page_range = pagination(page, projects, 10)
+
+    context = {
+        'page': page,
+        'paginator': paginator,
+        'page_range': page_range,
+    }
+
     return render(request, 'myrsr/my_projects.html', context)
 
 @permission_required('rsr.delete_user', raise_exception=True)
