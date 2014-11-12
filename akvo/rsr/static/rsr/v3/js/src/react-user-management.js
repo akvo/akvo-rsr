@@ -25,7 +25,7 @@ var DeleteModal = React.createClass({displayName: 'DeleteModal',
 
     render: function() {
         return this.transferPropsTo(
-            Modal( {title:"Remove link to organisation"}, 
+            Modal( {title:"Remove user from organisation"}, 
               React.DOM.div( {className:"modal-body"}, 
                 'Are you sure you want to remove ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' from ' + this.props.employment.organisation_full.name + '?'
               ),
@@ -42,7 +42,7 @@ var ApproveModal = React.createClass({displayName: 'ApproveModal',
     approveEmployment: function() {
         $.ajax({
             type: "POST",
-            url: "/rest/v1/employment/" + this.props.employment.id + '/approve/',
+            url: "/rest/v1/employment/" + this.props.employment.id + '/approve/?format=json',
             success: function(data) {
                 this.handleApprove();
             }.bind(this),
@@ -59,7 +59,7 @@ var ApproveModal = React.createClass({displayName: 'ApproveModal',
 
     render: function() {
         return this.transferPropsTo(
-            Modal( {title:"Remove link to organisation"}, 
+            Modal( {title:"Approve user"}, 
               React.DOM.div( {className:"modal-body"}, 
                 'Are you sure you want to approve ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' at ' + this.props.employment.organisation_full.long_name + '?'
               ),

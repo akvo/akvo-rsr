@@ -34,7 +34,7 @@ def approve_employment(request, pk=None):
     # Only superusers, staff members, editors and Organisation admins are allowed to approve a user
     if not (user.is_superuser or user.is_staff or user.get_is_rsr_admin() or user.get_is_org_admin()):
         raise PermissionDenied
-    if user.get_is_org_admin() and not employment.organisation in user.organisations:
+    if user.get_is_org_admin() and not employment.organisation in user.organisations.all():
         raise PermissionDenied
 
     employment.is_approved = True
