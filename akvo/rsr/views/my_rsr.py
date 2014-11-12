@@ -47,8 +47,18 @@ def password_change(request):
 
 @login_required
 def my_updates(request):
-    context = RequestContext(request)
-    return render_to_response('myrsr/my_updates.html', context_instance=context)
+    updates = request.user.updates()
+    page = request.GET.get('page')
+
+    page, paginator, page_range = pagination(page, updates, 10)
+
+    context = {
+        'page': page,
+        'paginator': paginator,
+        'page_range': page_range,
+    }
+
+    return render_to_response('myrsr/my_updates.html', context)
 
 
 @login_required
