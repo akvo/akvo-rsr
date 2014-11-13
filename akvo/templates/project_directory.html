@@ -212,8 +212,10 @@ $('#query').typeahead({
     </div>
 
     <section class="main-list">
+      <ul>
         {% for p in page %}
-        <article class="row">
+        
+        <li class="row">
           <div class="col-sm-2 col-xs-3">
             <a href="{% url 'project-main' p.id %}">
               {% img p 200 200 p.title %}
@@ -254,8 +256,9 @@ $('#query').typeahead({
 
                 </p>
             </div>
-        </article>
+        </li>
         {% endfor %}
+     </ul>
     </section>
 
     <div class="row center-text">

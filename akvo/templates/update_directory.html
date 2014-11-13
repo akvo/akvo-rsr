@@ -56,9 +56,9 @@
     </div>
 
     <section class="main-list">
-        <div class="row">
+        <ul class="row">
             {% for u in page %}
-            <article class="col-md-3 col-sm-4 col-xs-6 col-ty-12">
+            <li class="col-md-3 col-sm-4 col-xs-6 col-ty-12">
                 <a href="{% url 'update-main' u.project.id u.id %}">
                   {% img u 220 220 u.title %}
                 </a>
@@ -74,9 +74,9 @@
                   {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
                 {% endautoescape %}
                 </div>
-            </article>
+            </li>
             {% endfor %}
-        </div>
+        </ul>
     </section>
 
     <div class="row center-text">
