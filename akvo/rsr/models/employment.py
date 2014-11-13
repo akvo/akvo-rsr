@@ -29,7 +29,7 @@ class Employment(models.Model):
     def __unicode__(self):
         return self.user.first_name, self.user.last_name, ":", self.organisation.name
 
-    def to_dict(self):
+    def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)
 
         return dict(
@@ -39,4 +39,5 @@ class Employment(models.Model):
             is_approved=self.is_approved,
             job_title=self.job_title,
             country_full=country,
+            actions=True if self.organisation in org_list else False,
         )

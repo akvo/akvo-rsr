@@ -12,6 +12,7 @@ from ..forms import PasswordForm, ProfileForm, UserOrganisationForm
 from ...utils import pagination
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
@@ -27,7 +28,7 @@ def my_details(request):
     )
     organisation_form = UserOrganisationForm()
 
-    json_data = json.dumps({'user': request.user.employments_dict()})
+    json_data = json.dumps({'user': request.user.employments_dict([])})
 
     context = {
         'user_data': json_data,
@@ -76,14 +77,18 @@ def my_projects(request):
 
     return render(request, 'myrsr/my_projects.html', context)
 
-@permission_required('rsr.delete_user', raise_exception=True)
 @login_required
 def user_management(request):
-    users = request.user.organisations.all().users()
+    user = request.user
+    if not (user.is_superuser or user.is_staff or user.get_is_rsr_admin() or user.get_is_org_admin()):
+        raise PermissionDenied
+
+    organisations = user.approved_organisations()
+    users = organisations.users().exclude(pk=user.pk)
 
     users_array = []
     for user in users:
-        user_obj = user.employments_dict()
+        user_obj = user.employments_dict(organisations)
         users_array.append(user_obj)
     json_data = json.dumps({'users': users_array})
 
