@@ -26,7 +26,7 @@ gulp.task('sass', function() {
 
 gulp.task('watch', function() {
     gulp.watch('../../akvo/rsr/static/rsr/v3/js/**/*.jsx', ['jsx']);
-    gulp.watch('../../akvo/rsr/static/rsr/v3/css/**s/*.scss', ['sass']);
+    gulp.watch('../../akvo/rsr/static/rsr/v3/css/**/*.scss', ['sass']);
 });
 
 // Default Task

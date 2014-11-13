@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------
 
 		Title:          RSR v3 styles
-		Author:         Dan Rowden, dan@akvo.org
+		Author:         Loïc Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------
 
         Title:          RSR v3 functions and library
-        Author:         Dan Rowden, dan@akvo.org
+        Author:         Loïc Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
 /* Colours
@@ -134,14 +134,14 @@ h4.section {
     margin: auto;
     max-width: 400px; }
 
-.main-list article {
+.main-list li {
   margin-bottom: 20px; }
-  .main-list article h1 {
+  .main-list li h1 {
     margin-top: 0;
     font-size: 1.2em; }
-  .main-list article div h4:first-of-type {
+  .main-list li div h4:first-of-type {
     margin-top: 0; }
-  .main-list article img {
+  .main-list li img {
     width: 100%; }
 
 /* PROJECT */
