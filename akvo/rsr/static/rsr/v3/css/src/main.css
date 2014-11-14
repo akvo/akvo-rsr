@@ -68,40 +68,68 @@ a, a:link, a:visited {
   color: #fff;
   text-shadow: none; }
 
+.topMargin {
+  margin-top: 15px; }
+
 /* Force full-width columns below 570px (when using col-xs-N) */
 @media only screen and (min-width: 768px) {
   .col-ty-12 {
     float: none;
     width: 100%; } }
 
-.navbar {
+a.btn {
+  border: none;
+  color: white;
+  background: #4ec1ea; }
+  a.btn:hover {
+    border: none;
+    color: white;
+    background: #4ec1ea; }
+
+/****************************************************************************
+								HEADER + NAVIGATION
+****************************************************************************/
+nav[role=navigation] {
+  background-color: #f4f4f4;
+  border: none;
+  border-top: 1px solid rgba(132, 132, 136, 0.1);
+  padding: 5px 0;
+  box-shadow: 0 1px 1px rgba(132, 132, 136, 0.1);
   border-radius: 0;
   border-bottom: 1px solid #e4e4e4; }
-  .navbar .container {
+  nav[role=navigation] .container {
     border-bottom: 1px solid white; }
-  .navbar li a.active {
-    color: #2c2a74; }
-
-/* HEADER */
-body > .navbar {
-  background-color: #f4f4f4; }
-
-.navbar.a-main {
-  text-transform: uppercase; }
+  nav[role=navigation] .navbar-brand {
+    float: left;
+    font-size: 18px;
+    line-height: 20px;
+    padding: 0 15px 0 0; }
+    nav[role=navigation] .navbar-brand h1 {
+      width: 125px;
+      top: 2px;
+      height: inherit;
+      background: url(../../img/logo.png) no-repeat center center;
+      -webkit-background-size: 125px auto;
+      background-size: 125px auto;
+      text-indent: -9999px;
+      margin-top: 0; }
+  nav[role=navigation] .navbar-nav li {
+    padding-top: 3px; }
+    nav[role=navigation] .navbar-nav li a {
+      color: #4ab1cf; }
+      nav[role=navigation] .navbar-nav li a:hover {
+        color: #f6a01a; }
+      nav[role=navigation] .navbar-nav li a.active {
+        color: #2c2a74;
+        font-weight: bold; }
+      nav[role=navigation] .navbar-nav li a.addUpdateBtn {
+        margin-top: 10px;
+        color: white; }
+        nav[role=navigation] .navbar-nav li a.addUpdateBtn:hover {
+          background-color: #f6a01a; }
 
 .navbar .btn {
   padding: 4px 9px; }
-
-.navbar-brand {
-  width: 122px;
-  background-image: url(../../img/logo.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  text-indent: -999px;
-  margin-top: 11px;
-  margin-left: 15px;
-  height: 27px;
-  padding: 0; }
 
 @media only screen and (min-width: 768px) {
   body > .navbar > .container .navbar-brand {
@@ -130,24 +158,27 @@ footer .navbar {
 .center-text {
   text-align: center; }
 
-.section {
+.detailedInfo {
   font-size: 0.875em;
   text-transform: uppercase;
   font-weight: bold; }
 
-h4.section {
+h4.detailedInfo {
   margin-bottom: 0.25em; }
 
-.progress-label-current {
-  position: relative; }
+.progress-bar-info {
+  background-color: #e1edc3; }
 
-.progress-label-start {
-  float: left;
-  margin-top: -16px; }
-
-.progress-label-end {
-  float: right;
-  margin-top: -16px; }
+.labelWrap {
+  margin-bottom: 20px; }
+  .labelWrap .progress-label-current {
+    position: relative; }
+  .labelWrap .progress-label-start {
+    float: left;
+    margin-top: -16px; }
+  .labelWrap .progress-label-end {
+    float: right;
+    margin-top: -16px; }
 
 /* LISTINGS */
 #map {
@@ -167,7 +198,12 @@ h4.section {
     max-width: 400px; }
 
 .main-list li {
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+  list-style-type: none;
+  padding: 15px 0;
+  border-radius: 3px; }
+  .main-list li:nth-child(2n+1) {
+    background: #eeeeee; }
   .main-list li h1 {
     margin-top: 0;
     font-size: 1.2em; }
