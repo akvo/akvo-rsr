@@ -97,8 +97,6 @@ nav[role=navigation] {
   box-shadow: 0 1px 1px rgba(132, 132, 136, 0.1);
   border-radius: 0;
   border-bottom: 1px solid #e4e4e4; }
-  nav[role=navigation] .container {
-    border-bottom: 1px solid white; }
   nav[role=navigation] .navbar-brand {
     float: left;
     font-size: 18px;
@@ -197,6 +195,9 @@ h4.detailedInfo {
     margin: auto;
     max-width: 400px; }
 
+/************************************************************************
+		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
+************************************************************************/
 .main-list li {
   margin-bottom: 20px;
   list-style-type: none;
@@ -206,7 +207,7 @@ h4.detailedInfo {
     background: #eeeeee; }
   .main-list li h1 {
     margin-top: 0;
-    font-size: 1.2em; }
+    font-size: 1.3em; }
   .main-list li div h4:first-of-type {
     margin-top: 0; }
   .main-list li img {
