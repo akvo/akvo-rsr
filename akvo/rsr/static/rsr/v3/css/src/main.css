@@ -40,7 +40,8 @@ body {
   color: #243032;
   line-height: 1.42857;
   text-rendering: optimizelegibility;
-  font-family: 'Raleway', 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  font-family: 'Raleway', 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding-top: 100px; }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Raleway', 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
