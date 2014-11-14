@@ -12,7 +12,9 @@
                 <li><a href="{% url 'my_details' %}">My details</a></li>
                 <li><a href="{% url 'my_updates' %}">My updates</a></li>
                 <li><a href="{% url 'my_projects' %}">My projects</a></li>
+                {% if user.is_superuser or user.is_staff or user.get_is_rsr_admin or user.get_is_org_admin %}
                 <li><a href="{% url 'user_management' %}">User management</a></li>
+                {% endif %}
             </ul>
             <ul class="list-unstyled">
                 <li><a href="/myrsr/password_change">Change password</a></li>

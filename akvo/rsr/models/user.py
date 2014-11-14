@@ -115,12 +115,25 @@ class User(AbstractBaseUser, PermissionsMixin):
         return full_name.strip()
     get_full_name.short_description = _(u'full name')
 
+    def get_short_name(self):
+        """
+        Returns only the first_name, but is needed because the default admin templates use this method.
+        """
+        return self.first_name
+
     def user_name(self):
         return self.__unicode__()
 
     def get_organisation_names(self):
         return "\n".join([o.name for o in self.organisations.all()])
     get_organisation_names.short_description = _(u'organisations')
+
+    def approved_organisations(self):
+        """
+        return all approved organisations of the user
+        """
+        from .organisation import Organisation
+        return Organisation.objects.filter(employees__user=self, employees__is_approved=True)
 
     def updates(self):
         """
@@ -248,13 +261,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Support for self as profile. Use of this is deprecated
         return self
 
-    def employments_dict(self):
-        """Represent User as dict with employments"""
+    def employments_dict(self, org_list):
+        """
+        Represent User as dict with employments.
+        The org_list is a list of organisations of the original user. Based on this, the original user will have
+        the option to approve / delete the employment.
+        """
         employments = Employment.objects.filter(user=self)
 
         employments_array = []
         for employment in employments:
-            employment_obj = employment.to_dict()
+            employment_obj = employment.to_dict(org_list)
             employments_array.append(employment_obj)
 
         return dict(
