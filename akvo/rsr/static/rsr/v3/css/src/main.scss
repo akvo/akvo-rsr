@@ -11,6 +11,7 @@ body {
     line-height: 1.42857;
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
+    padding-top:80px;
 }
 
 h1,
@@ -48,6 +49,10 @@ a, a:link, a:visited {
     text-shadow: none;
 }
 
+.topMargin {
+	margin-top:15px;
+}
+
 /* Force full-width columns below 570px (when using col-xs-N) */
 @include responsive(small-screens) {
 	.col-ty-12 {
@@ -56,42 +61,73 @@ a, a:link, a:visited {
 	}
 }
 
-.navbar {
+a.btn {
+	border:none;
+	color:white;
+	background:$btnColor;
+	&:hover {
+		border:none;
+		color:white;
+		background:$btnColor;
+	}
+}
+/****************************************************************************
+								HEADER + NAVIGATION
+****************************************************************************/
+nav[role=navigation]{
+	background-color: rgb(244,244,244);
+	border:none;
+	border-top:1px solid rgba(132,132,136,0.1);
+	padding:5px 0;
+	box-shadow:0 1px 1px rgba(132,132,136,0.1);
 	border-radius: 0;
 	border-bottom:1px solid rgb(228,228,228);
-	.container {
-		border-bottom:1px solid white;
-	}
-	li {
-		a {
-			&.active{
-				color:$akvoPurple;
+	.navbar-brand {
+		float: left;
+		font-size: 18px;
+		line-height: 20px;
+		padding:0 15px 0 0;
+		h1 {
+		    width: 125px;
+		    top:2px;
+		    height: inherit;
+		    background: url(../../img/logo.png) no-repeat center center; 
+		    -webkit-background-size: 125px auto;
+		    background-size: 125px auto;
+		    text-indent:-9999px;
+		    margin-top:0;
+		    }	
+		}
+	.navbar-nav {
+		li{
+			padding-top:3px;
+			&:first-child {
+			}
+			a {	
+				color:$anchorLink;
+				&:hover{
+					color:$anchorLinkHover;
+				}
+				&.active{
+					color:$akvoPurple;
+					font-weight:bold;
+				}
+				&.addUpdateBtn {
+					margin-top:10px;
+					color:white;
+					&:hover {
+						background-color:$anchorLinkHover;
+					}					
+				}
 			}
 		}
 	}
 }
 
-/* HEADER */
-body > .navbar {
-	background-color: rgb(244,244,244);
-}
-.navbar.a-main {
-	text-transform: uppercase;
-}
 .navbar .btn {
 	padding: 4px 9px;
 }
-.navbar-brand {
-	width: 122px;
-	background-image: url(../../img/logo.png);
-	background-size: contain;
-	background-repeat: no-repeat;
-	text-indent: -999px;
-	margin-top: 11px;
-	margin-left: 15px;
-	height: 27px;
-	padding: 0;
-}
+
 @include responsive(small-screens) {
 	body > .navbar >.container .navbar-brand {
 		margin-left: 0;
@@ -122,28 +158,33 @@ footer .navbar {
 .center-text {
 	text-align: center;
 }
-.section {
+.detailedInfo {
 	font-size: 0.875em;
 	text-transform: uppercase;
 	font-weight: bold;
 }
-h4.section {
+h4.detailedInfo {
 	margin-bottom: 0.25em;
 }
-.progress-label-current {
-	position: relative;
+
+
+.progress-bar-info {
+	background-color:$secondary1;
 }
-.progress-label-start {
-	float: left;
-	margin-top: -16px;
+.labelWrap {
+	margin-bottom:20px;
+	.progress-label-current {
+		position: relative;
+	}
+	.progress-label-start {
+		float: left;
+		margin-top: -16px;
+	}
+	.progress-label-end {
+		float: right;
+		margin-top: -16px;
+	}
 }
-.progress-label-end {
-	float: right;
-	margin-top: -16px;
-}
-//img {
-//	max-width: 100%;
-//}
 
 /* LISTINGS */
 #map {
@@ -171,20 +212,28 @@ h4.section {
 	}
 }
 
-.main-list {
+/************************************************************************
+		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
+************************************************************************/
 
+.main-list {
 	li {
 		margin-bottom: 20px;
-
+		list-style-type: none;
+		padding:15px 0;
+		border-radius:3px;
+		&:nth-child(2n+1) {
+			background:rgb(238,238,238);
+		}
 		h1 {
 			margin-top: 0;
-			font-size: 1.2em;
+			font-size: 1.3em;
 		}
 		div h4:first-of-type {
 			margin-top: 0;
 		}
 		img {
-			width: 100%;
+			width:100%;
 		}
 	}
 }
@@ -223,3 +272,7 @@ header {
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
 }
+
+
+
+

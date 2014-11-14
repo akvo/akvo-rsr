@@ -61,22 +61,22 @@
             </div>
             <div class="col-sm-4">
                 <p>{{project.project_plan_summary}}</p>
-                <p><span class="section">IATI ID</span> 12345</p>
-                <p><span class="section">Status</span> {{project.get_status_display}}</p>
+                <p><span class="detailedInfo">IATI ID</span> 12345</p>
+                <p><span class="detailedInfo">Status</span> {{project.get_status_display}}</p>
                 <p><a href="#">View project's full data report</a></p>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-3 col-xs-6 col-ty-12">
-                <h4 class="section">Focus Areas</h4>
+                <h4 class="detailedInfo">Focus Areas</h4>
                 <p><a href="#">Water and sanitation</a></p>
             </div>
             <div class="col-sm-3 col-xs-6 col-ty-12">
-                <h4 class="section">Sectors</h4>
+                <h4 class="detailedInfo">Sectors</h4>
                 <p>Education <a href="#" class="small">+4 more</a></p>
             </div>
             <div class="col-sm-3 col-xs-6 col-ty-12">
-                <h4 class="section">Partners</h4>
+                <h4 class="detailedInfo">Partners</h4>
                 <div class="media">
                     <a href="#" class="pull-left">
                         <img src="http://placehold.it/80x60">
@@ -88,7 +88,7 @@
                 <p class="center-text"><a href="#">+{{project.partners.count|add:"-1"}} more</a></p>
             </div>
             <div class="col-sm-3 col-xs-6 col-ty-12">
-                <h4 class="section">Finance</h4>
+                <h4 class="detailedInfo">Finance</h4>
                 {% include "partials/project_budget.html" %}
                 <p class="center-text"><a href="#">See all financial info</a></p>
             </div>
@@ -107,7 +107,7 @@
               {% endcomment %}
             </div>
             <div class="col-sm-4">
-              <h4 class="section">Latest project updates</h4>
+              <h4 class="detailedInfo">Latest project updates</h4>
               {% for update in updates%}
               <a href="{{update.get_absolute_url}}">{{update.title}}</a>
               {% endfor %}
