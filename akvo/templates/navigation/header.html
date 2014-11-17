@@ -8,7 +8,7 @@
 {% with current_path=request.path|slice:":6" project_path=project_url|slice:":6" organisation_path=organisation_url|slice:":6" update_path=update_url|slice:":6" myrsr_path=myrsr_url|slice:":6" %}
 <style>.navbar .active {color: #2A6297;}</style>
 
-<nav class="navbar" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -18,12 +18,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{% url 'index' %}">Akvo RSR</a>
+      <a class="navbar-brand" href="{% url 'index' %}"><h1>Akvo RSR</h1></a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
-      <ul class="nav navbar-nav a-main">
+      <ul class="nav navbar-nav">
         <li>
           <a class="{% if current_path == project_path %}
              active{% endif %}"
@@ -46,7 +46,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-            <a href="/#" class="btn btn-primary btn-sm navbar-btn">
+            <a href="/#" class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
               {% bootstrap_icon "bullhorn" %} Add an update
             </a>
         </li>

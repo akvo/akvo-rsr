@@ -126,8 +126,8 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_approved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'job_title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
-            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'employments'", 'to': "orm['rsr.Organisation']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'employments'", 'to': "orm['rsr.User']"})
+            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'employees'", 'to': "orm['rsr.Organisation']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'employers'", 'to': "orm['rsr.User']"})
         },
         'rsr.focusarea': {
             'Meta': {'ordering': "['name']", 'object_name': 'FocusArea'},

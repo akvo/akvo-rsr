@@ -13,7 +13,6 @@ from datetime import datetime
 
 from django.contrib.admin.models import ADDITION, CHANGE
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -23,10 +22,7 @@ from django.conf import settings
 from sorl.thumbnail import ImageField
 
 from akvo.utils import send_donation_confirmation_emails, rsr_send_mail_to_users
-from akvo.utils import (
-    GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS
-)
-
+from akvo.utils import GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS
 
 
 def create_publishing_status(sender, **kwargs):
@@ -42,6 +38,7 @@ def create_publishing_status(sender, **kwargs):
         ps = get_model('rsr', 'publishingstatus')(status=PublishingStatus.STATUS_UNPUBLISHED)
         ps.project = new_project
         ps.save()
+
 
 def create_organisation_account(sender, **kwargs):
     """
@@ -59,6 +56,7 @@ def create_organisation_account(sender, **kwargs):
             #and when it doesn't we do this
             new_acc = OrganisationAccount(organisation=new_org, account_level=OrganisationAccount.ACCOUNT_FREE)
             new_acc.save()
+
 
 def change_name_of_file_on_create(sender, **kwargs):
     """
@@ -131,20 +129,24 @@ def donation_completed(instance, created, **kwargs):
     if not created and invoice.status == 3:
         send_donation_confirmation_emails(invoice.id)
 
+
 def set_active_cms(instance, created, **kwargs):
     MiniCMS = get_model('rsr', 'MiniCMS')
     if instance.active:
         MiniCMS.objects.exclude(pk=instance.pk).update(active=False)
+
 
 def set_showcase_project(instance, created, **kwargs):
     Project = get_model('rsr', 'Project')
     if instance.showcase:
         Project.objects.exclude(pk=instance.pk).update(showcase=False)
 
+
 def set_focus_org(instance, created, **kwargs):
     Organisation = get_model('rsr', 'Organisation')
     if instance.focus_org:
         Organisation.objects.exclude(pk=instance.pk).update(focus_org=False)
+
 
 def create_benchmark_objects(project):
     """
@@ -155,6 +157,7 @@ def create_benchmark_objects(project):
     for category in project.categories.all():
         for benchmarkname in category.benchmarknames.all():
             benchmark, created = Benchmark.objects.get_or_create(project=project, category=category, name=benchmarkname, defaults={'value': 0})
+
 
 def act_on_log_entry(sender, **kwargs):
     """
@@ -180,24 +183,31 @@ def act_on_log_entry(sender, **kwargs):
                 object = content_type.get_object_for_this_type(pk=log_entry.object_id)
                 criterion['call'](object)
 
-def user_activated_callback(sender, **kwargs):
-    if not getattr(settings, 'REGISTRATION_NOTIFICATION_EMAILS', True):
-        return
 
-    user = kwargs.get("user", False)
-    if user:
-        org = user.organisations.all()[0]
-        users = get_user_model().objects.all()
-        #find all users that are 1) superusers 2) RSR editors
-        #3) org admins for the same org as the just activated user
-        notify = (users.filter(is_superuser=True) | users.filter(groups__name__in=[GROUP_RSR_EDITORS]) | \
-            users.filter(organisations__in=[org], groups__name__in=[GROUP_RSR_PARTNER_ADMINS])).distinct()
-        rsr_send_mail_to_users(notify,
-                               subject='email/new_user_registered_subject.txt',
-                               message='email/new_user_registered_message.txt',
-                               subject_context={'organisation': org},
-                               msg_context={'user': user, 'organisation': org}
-                              )
+def user_organisation_request(sender, **kwargs):
+    if kwargs['created']:
+        employment = kwargs.get("instance", False)
+        if employment:
+            user = employment.user
+            organisation = employment.organisation
+            users = get_user_model().objects.all()
+            # find all users that are:
+            # 1) Superusers
+            # 2) RSR editors
+            # 3) Admins of organisation
+            notify = (
+                users.filter(is_superuser=True) |
+                users.filter(groups__name__in=[GROUP_RSR_EDITORS]) |
+                users.filter(organisations__in=[organisation], groups__name__in=[GROUP_RSR_PARTNER_ADMINS])
+            ).distinct()
+            rsr_send_mail_to_users(
+                notify,
+                subject='registration/user_organisation_request_subject.txt',
+                message='registration/user_organisation_request_message.txt',
+                subject_context={'organisation': organisation},
+                msg_context={'user': user, 'organisation': organisation},
+            )
+
 
 def update_project_budget(sender, **kwargs):
     """
@@ -212,6 +222,7 @@ def update_project_budget(sender, **kwargs):
         except ObjectDoesNotExist:
             # this happens when a project is deleted, and thus any invoices linked to it go the same way.
             pass
+
 
 def update_project_funding(sender, **kwargs):
     """

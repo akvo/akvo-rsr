@@ -5,7 +5,10 @@
         <span class="sr-only">{% widthratio project.funds project.budget 100 %}% {% trans 'Complete' %}</span>
     </div>
 </div>
-<span class="progress-label-start">{{project.get_currency_display}}{{project.funds|floatformat|intcomma}}</span>
-<span class="progress-label-end">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</span>
-
-<p class="center-text clearfix"><a href="#" class="btn btn-primary">{% trans "Donate" %}</a></p>
+<section class="labelWrap">
+	<span class="progress-label-start">{{project.get_currency_display}}{{project.funds|floatformat|intcomma}}</span>
+	<span class="progress-label-end">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</span>
+</section>
+<div class="text-center">
+	<a href="#" class="btn btn-primary">{% trans "Donate" %}</a>
+</div>

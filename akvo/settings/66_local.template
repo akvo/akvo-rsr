@@ -9,7 +9,7 @@
 DEBUG = TEMPLATE_DEBUG = True
 PIPELINE_ENABLED = False
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 # DATABASES = {
 #     'default': {

@@ -5,7 +5,7 @@ var ModalTrigger = ReactBootstrap.ModalTrigger;
 var Button = ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
 
-var ConfirmModal = React.createClass({
+var DeleteModal = React.createClass({
     deleteEmployment: function() {
         $.ajax({
             type: "DELETE",
@@ -25,7 +25,7 @@ var ConfirmModal = React.createClass({
 
     render: function() {
         return this.transferPropsTo(
-            <Modal title="Remove link to organisation">
+            <Modal title="Remove user from organisation">
               <div className="modal-body">
                 {'Are you sure you want to remove ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' from ' + this.props.employment.organisation_full.name + '?'}
               </div>
@@ -38,13 +38,85 @@ var ConfirmModal = React.createClass({
     }
 });
 
-var TriggerConfirmModal = React.createClass({
+var ApproveModal = React.createClass({
+    approveEmployment: function() {
+        $.ajax({
+            type: "POST",
+            url: "/rest/v1/employment/" + this.props.employment.id + '/approve/?format=json',
+            success: function(data) {
+                this.handleApprove();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+
+    handleApprove: function() {
+        this.props.onRequestHide();
+        this.props.onApproveToggle();
+    },
+
+    render: function() {
+        return this.transferPropsTo(
+            <Modal title="Approve user">
+              <div className="modal-body">
+                {'Are you sure you want to approve ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' at ' + this.props.employment.organisation_full.long_name + '?'}
+              </div>
+              <div className="modal-footer">
+                <Button onClick={this.props.onRequestHide}>Close</Button>
+                <Button onClick={this.approveEmployment} bsStyle="success">Approve</Button>
+              </div>
+            </Modal>
+          );
+    }
+});
+
+var TriggerModal = React.createClass({
+    getInitialState: function() {
+        return {
+            visible: false,
+            approved: false
+        };
+    },
+
+    componentDidMount: function() {
+        var visible = this.props.employment.actions;
+        var approved = this.props.employment.is_approved;
+        if (this.isMounted() && this.props.delete) {
+            this.setState({
+                visible: visible,
+                approved: approved
+            });
+        } else if (this.isMounted() && !this.props.delete) {
+            this.setState({
+                visible: !approved,
+                approved: approved
+            });
+        }
+    },
+
+    onApprove: function() {
+        this.setState({
+            visible: false,
+            approved: true
+        });
+    },
+
     render: function () {
-        return (
-            <ModalTrigger modal={<ConfirmModal employment={this.props.employment} onDeleteToggle={this.props.onDeleteToggle} />}>
-                <Button bsStyle="danger" bsSize="xsmall">X</Button>
-            </ModalTrigger>
-            );
+        if (this.state.visible) {
+            return this.props.delete
+                ? <ModalTrigger modal={<DeleteModal employment={this.props.employment} onDeleteToggle={this.props.onDeleteToggle} />}>
+                    <Button bsStyle="danger" bsSize="xsmall">X</Button>
+                  </ModalTrigger>
+                : <ModalTrigger modal={<ApproveModal employment={this.props.employment} onApproveToggle={this.onApprove} />}>
+                    <Button bsStyle="success" bsSize="xsmall">&radic;</Button>
+                  </ModalTrigger>;
+        } else {
+            return <span/>;
+        }
+
+
     }
 });
 
@@ -59,8 +131,12 @@ var Employment = React.createClass({
 
     render: function() {
         return this.state.visible
-            ? <li>{this.props.employment.organisation_full.long_name} <TriggerConfirmModal employment={this.props.employment} onDeleteToggle={this.onDelete} /></li>
-            : <span/>;
+            ? <tr>
+                <td>{this.props.employment.organisation_full.long_name}</td>
+                <td><TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={true} /></td>
+                <td><TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={false} /></td>
+              </tr>
+            : <tr></tr>;
     }
 });
 
@@ -85,7 +161,7 @@ var EmploymentList = React.createClass({
                 )
         });
         return (
-            <ul>{employments}</ul>
+            <table><tbody>{employments}</tbody></table>
             );
     }
 });
@@ -98,7 +174,6 @@ var UserRow = React.createClass({
               <td>{this.props.user.first_name}</td>
               <td>{this.props.user.last_name}</td>
               <td><EmploymentList user={this.props.user} /></td>
-              <td><i>to do</i></td>
             </tr>
             );
     }
@@ -126,7 +201,7 @@ var UserTable = React.createClass({
         });
         return (
             <Table striped>
-                <thead><tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisations</th><th>Permissions</th></tr></thead>
+                <thead><tr><th>Email</th><th>First name</th><th>Last name</th><th>Organisations</th></tr></thead>
                 <tbody>{users}</tbody>
             </Table>
             );

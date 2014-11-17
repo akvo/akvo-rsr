@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------
 
         Title:          RSR v3 functions and library
-        Author:         Dan Rowden, dan@akvo.org
+        Author:         Loïc Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
 
@@ -31,6 +31,12 @@ $akvoLink: rgb(55, 146, 179);
 /* Akvo black */
 $akvoBlack: rgb(32, 32, 36);
 
+$anchorLink: rgb(74, 177, 207);
+$anchorLinkHeader: rgb(102, 204, 255);
+$anchorLinkHover: rgb(246, 160, 26);
+$btnColor :rgb(78, 193, 234);
+
+
 /* Akvo Secondary Colours:    */
 $secondary1: rgb(225, 237, 195);
 /* Akvo very Light green */
@@ -49,9 +55,9 @@ $secondary8: rgb(242, 240, 230);
 $secondary9: rgb(74, 177, 207);
 /* Akvo darkish blue / Water Point */
 
-$bodyFont: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$scriptFont:  "Palatino", "Book Antiqua", Georgia, serif;
-$titleFont: 'Questrial', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$bodyFont: 'Raleway', 'Open Sans',  "Helvetica Neue", Helvetica, Arial, sans-serif;
+$scriptFont: 'Dancing Script', Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+$titleFont:  'Raleway','Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 @mixin border-radius($property) {
     -moz-border-radius: $property;
@@ -100,37 +106,30 @@ $titleFont: 'Questrial', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 /* Media Queries
   ========================================================================== */
-$width-tiny:  570px; /* custom mid-point break */
+
 $width-small:  768px;
 $width-medium: 992px;
 $width-large:  1200px;
-
+ 
 @mixin responsive($width) {
-    @if $width == lg {
-        @media only screen and (min-width: $width-large) {
-            @content;
-        }
-    }
-    @else if $width == md {
-        @media only screen and (min-width: $width-medium) {
-            @content;
-        }
-    }
-    @else if $width == sm {
-        @media only screen and (min-width: $width-small) {
-            @content;
-        }
-    }
-    @else if $width == ty {
-        @media only screen and (max-width: $width-tiny) {
-            @content;
-        }
-    }
-    @else if $width == xs {
-        @media only screen and (max-width: $width-small) {
-            @content;
-        }
-    }
+  @if $width == wide-screens {
+    @media only screen and (min-width: $width-large) { @content; }
+  }
+  @else if $width == medium-screens {
+    @media only screen and (min-width: $width-medium) {@content; }
+  }
+  @else if $width == small-screens {
+    @media only screen and (min-width: $width-small) { @content; }
+  }
+  @else if $width == wide-max-screens {
+    @media only screen and (max-width: $width-large) { @content; }
+  }
+  @else if $width == medium-max-screens {
+    @media only screen and (max-width: $width-medium) { @content; }
+  }
+  @else if $width == small-max-screens {
+    @media only screen and (max-width: $width-small) { @content; }
+  }
 }
 
 /* Placeholder

@@ -55,28 +55,32 @@
         {% include 'navigation/pagination.html' %}
     </div>
 
-    <section class="main-list">
-        <div class="row">
+    <section class="main-list updates">
+        <ul>
             {% for u in page %}
-            <article class="col-md-3 col-sm-4 col-xs-6 col-ty-12">
-                <a href="{% url 'update-main' u.project.id u.id %}">
-                  {% img u 220 220 u.title %}
-                </a>
-                <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
-                <p class="small"><span class="glyphicon glyphicon-folder-close"></span>
-                  <a href="{% url 'project-main' u.project.pk %}">{{u.project.title}}</a><br>
-                <span class="glyphicon glyphicon-user"></span> {% trans "Person" %} (Partner)<br>
-                <span class="glyphicon glyphicon-map-marker"></span> {% trans "Location" %}
-                {{u.primary_location.country.continent}}, {{u.primary_location.country}} <br>
-                {{u.created_at|date:"d-M-Y"}}</p>
-                <div class="excerpt small">
-                {% autoescape off %}
-                  {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
-                {% endautoescape %}
+            <li class="row updateAsset">
+                <div class="col-sm-4 col-xs-3 col-lg-3">
+                    <a href="{% url 'update-main' u.project.id u.id %}">
+                      {% img u 220 220 u.title %}
+                    </a>
                 </div>
-            </article>
+                <div class="col-sm-4 col-xs-6  col-lg-4">
+                    <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
+                    <p class="small"><span class="glyphicon glyphicon-folder-close"></span>
+                      <a href="{% url 'project-main' u.project.pk %}">{{u.project.title}}</a><br>
+                    <span class="glyphicon glyphicon-user"></span> {% trans "Person" %} (Partner)<br>
+                    <span class="glyphicon glyphicon-map-marker"></span> {% trans "Location" %}
+                    {{u.primary_location.country.continent}}, {{u.primary_location.country}} <br>
+                    {{u.created_at|date:"d-M-Y"}}</p>
+                </div>   
+                <div class="excerpt small col-sm-4 col-xs-3  col-lg-3">
+                    {% autoescape off %}
+                      {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+                    {% endautoescape %}
+                </div>            
+            </li>
             {% endfor %}
-        </div>
+        </ul>
     </section>
 
     <div class="row center-text">

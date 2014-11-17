@@ -79,7 +79,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = ImageField(_(u'avatar'),
                         null=True,
                         upload_to=image_path,
-                        help_text=_(u'The avatar should be less than 3.5 mb in size.'),
+                        help_text=_(u'The avatar should be less than 500 kb in size.'),
     )
 
     # avatar = ImageField(
@@ -105,7 +105,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     def get_absolute_url(self):
-        return "/users/%s/" % urlquote(self.email)
+        return "/user/{}/".format(self.pk)
 
     def get_full_name(self):
         """
@@ -116,7 +116,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     get_full_name.short_description = _(u'full name')
 
     def get_short_name(self):
-        "Returns the short name for the user."
+        """
+        Returns only the first_name, but is needed because the default admin templates use this method.
+        """
         return self.first_name
 
     def user_name(self):
@@ -125,6 +127,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_organisation_names(self):
         return "\n".join([o.name for o in self.organisations.all()])
     get_organisation_names.short_description = _(u'organisations')
+
+    def approved_organisations(self):
+        """
+        return all approved organisations of the user
+        """
+        from .organisation import Organisation
+        return Organisation.objects.filter(employees__user=self, employees__is_approved=True)
 
     def updates(self):
         """
@@ -135,7 +144,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def latest_update_date(self):
         updates = self.updates()
         if updates:
-            return updates[0].created_at
+            return updates[0].last_modified_at
         else:
             return None
 
@@ -252,13 +261,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Support for self as profile. Use of this is deprecated
         return self
 
-    def employments_dict(self):
-        """Represent User as dict with employments"""
+    def employments_dict(self, org_list):
+        """
+        Represent User as dict with employments.
+        The org_list is a list of organisations of the original user. Based on this, the original user will have
+        the option to approve / delete the employment.
+        """
         employments = Employment.objects.filter(user=self)
 
         employments_array = []
         for employment in employments:
-            employment_obj = employment.to_dict()
+            employment_obj = employment.to_dict(org_list)
             employments_array.append(employment_obj)
 
         return dict(

@@ -41,9 +41,19 @@ def project_map(id, width, height, dynamic='dynamic'):
     update_locations = []
 
     for location in ProjectLocation.objects.filter(location_target=id):
+        if location.latitude == 0 and location.longitude == 0:
+            continue
+        if location.latitude > 80 or location.latitude < -80:
+            continue
+
         locations.append([location.latitude, location.longitude])
 
     for update_location in ProjectUpdateLocation.objects.filter(location_target__project=id):
+        if update_location.latitude == 0 and update_location.longitude == 0:
+            continue
+        if update_location.latitude > 80 or update_location.latitude < -80:
+            continue
+
         project_update = update_location.location_target
 
         # Small map, so don't show thumbnail of updates
@@ -87,6 +97,11 @@ def organisation_map(id, width, height, dynamic='dynamic'):
     locations = []
 
     for location in OrganisationLocation.objects.filter(location_target_id=id):
+        if location.latitude == 0 and location.longitude == 0:
+            continue
+        if location.latitude > 80 or location.latitude < -80:
+            continue
+
         locations.append([location.latitude, location.longitude])
 
     template_context = {
@@ -121,6 +136,12 @@ def global_project_map(width, height, dynamic='dynamic'):
     for project in Project.objects.published():
         try:
             location = project.primary_location
+
+            if location.latitude == 0 and location.longitude == 0:
+                continue
+            if location.latitude > 80 or location.latitude < -80:
+                continue
+
             try:
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
             except:
@@ -136,7 +157,6 @@ def global_project_map(width, height, dynamic='dynamic'):
         'width': width,
         'height': height,
         'marker_icon': PROJECT_MARKER_ICON,
-        'update_marker_icon': PROJECT_UPDATE_MARKER_ICON,
         'locations': locations,
         'dynamic': dynamic,
         'infowindows': True,
@@ -164,7 +184,13 @@ def global_organisation_map(width, height, dynamic='dynamic'):
     for organisation in Organisation.objects.all():
         try:
             location = organisation.primary_location
-            thumbnail = organisation.logo.extra_thumbnails['map_thumb'].absolute_url
+
+            if location.latitude == 0 and location.longitude == 0:
+                continue
+            if location.latitude > 80 or location.latitude < -80:
+                continue
+
+            thumbnail = organisation.logo.url
             locations.append([location.latitude,
                               location.longitude,
                               [str(organisation.pk),organisation.name.encode('utf8'), thumbnail, 'organisation']])
@@ -201,20 +227,24 @@ def global_update_map(width, height, dynamic='dynamic'):
     locations = []
 
     for update in ProjectUpdateLocation.objects.all():
-        if not (update.latitude == 0 and update.longitude == 0):
-            try:
-                thumbnail = ""
-                locations.append([update.latitude,
-                                  update.longitude,
-                                  [
-                                      str(update.location_target.pk),
-                                      update.location_target.title.encode('utf8'),
-                                      thumbnail,
-                                      'project',
-                                      str(update.location_target.project.pk),
-                                  ]])
-            except:
-                pass
+        if update.latitude == 0 and update.longitude == 0:
+            continue
+        if update.latitude > 80 or update.latitude < -80:
+            continue
+
+        try:
+            thumbnail = ""
+            locations.append([update.latitude,
+                              update.longitude,
+                              [
+                                  str(update.location_target.pk),
+                                  update.location_target.title.encode('utf8'),
+                                  thumbnail,
+                                  'project',
+                                  str(update.location_target.project.pk),
+                              ]])
+        except:
+            pass
 
     template_context = {
         'map_id': map_id,
@@ -250,6 +280,10 @@ def projects_map(projects, width, height, dynamic='dynamic'):
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
         for location in proj_locations:
+            if location.latitude == 0 and location.longitude == 0:
+                continue
+            if location.latitude > 80 or location.latitude < -80:
+                continue
             try:
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
             except:
@@ -259,6 +293,11 @@ def projects_map(projects, width, height, dynamic='dynamic'):
                               [str(project.pk), project.title.encode('utf8'), thumbnail, 'project']])
 
         for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
+            if update_location.latitude == 0 and update_location.longitude == 0:
+                continue
+            if update_location.latitude > 80 or update_location.latitude < -80:
+                continue
+
             project_update = update_location.location_target
 
             try:
