@@ -48,6 +48,8 @@ django-pipeline
 # Database requirements
 MySQL-python==1.2.5
 South==0.8.4
+psycopg2
+py-mysql2pgsql
 
 # App container
 gunicorn==18.0
