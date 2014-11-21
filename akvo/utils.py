@@ -12,10 +12,6 @@ from datetime import datetime
 
 logger = logging.getLogger('akvo.rsr')
 
-import sys
-
-# embedly imports json directly
-import json
 import pytz
 
 from workflows.models import State
@@ -40,97 +36,18 @@ from notification.models import (
 )
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
-#from akvo.rsr.models import Country
 
-RSR_LIMITED_CHANGE          = u'rsr_limited_change'
+
+RSR_LIMITED_CHANGE = u'rsr_limited_change'
 RSR_REST = u'rsr_rest'
-GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
-GROUP_RSR_PARTNER_EDITORS   = u'RSR partner editors' #can edit an org's projects
-GROUP_RSR_EDITORS           = u'RSR editors'
-GROUP_RSR_USERS             = u'RSR users'
+GROUP_ADMINS = u'Admins'
+GROUP_USER_MANAGERS = u'User Managers'
+GROUP_PROJECT_EDITORS = u'Project Editors'
+GROUP_USERS = u'Users'
+
 
 class HttpResponseNoContent(HttpResponse):
     status_code = 204
-
-def permissions(self):
-    """
-    Function that displays the permissions for all RSR models for a given Group. Used in the admin list view for Group
-    """
-    NO_PERMS = dict(
-        add='no',
-        change='no',
-        delete='no',
-        rsr_limited_change='no',
-        admin_media=settings.STATIC_URL+'admin/'
-    )
-
-    def table_row(row):
-        """
-        row is a dict that looks something like:
-        {
-            'delete': 'no',
-            'add': 'yes',
-            'rsr_limited_change': 'no',
-            'change': 'yes',
-            'admin_media': '/media/admin/'
-        }
-        resulting the src paths pointing to icon-yes.gif and icon-no.gif images
-        """
-        return '''
-            <tr>
-                <td style="border:none;">%(model)s</td>
-                <td style="border:none;"><img src="%(admin_media)simg/icon-%(add)s.gif"></td>
-                <td style="border:none;"><img src="%(admin_media)simg/icon-%(change)s.gif"></td>
-                <td style="border:none;"><img src="%(admin_media)simg/icon-%(delete)s.gif"></td>
-                <td style="border:none;"><img src="%(admin_media)simg/icon-%(rsr_limited_change)s.gif"></td>
-            <tr>
-        ''' % row
-
-    perms = self.permissions.all().order_by('content_type__name')
-    perms_data = []
-    old_model_name = ''
-    model_perms = NO_PERMS.copy()
-    for perm in perms:
-        model_name = perm.content_type.__unicode__()
-        # have we changed to a new model?
-        if model_name != old_model_name:
-            # append previous model's perms to list, but only if any perms were actually added
-            if model_perms.get('model', False):
-                perms_data.append(model_perms)
-                # reset to no perms
-            model_perms = NO_PERMS.copy()
-            model_perms['model'] = model_name.capitalize()
-            old_model_name = model_name
-            # generate key for model_perms by removing the model name from the codename
-        # and set the value to 'yes'
-        model_perms['_'.join(perm.codename.split('_')[:-1])] = 'yes'
-        # append last model's perms to list
-    if model_perms.get('model', False):
-        perms_data.append(model_perms)
-    if perms_data:
-        return '''
-        <table style="border:none; width:600px;">
-            <tr>
-                <th style="border:none; width:180px;">RSR Model</th>
-                <th style="border:none; width:50px;">Add</th>
-                <th style="border:none; width:50px;">Change</th>
-                <th style="border:none; width:50px;">Delete</th>
-                <th style="border:none; width:150px;">RSR limited change</th>
-            </tr>
-            %s
-        </table>''' % ''.join([table_row(row) for row in perms_data])
-    else:
-        return 'No permissions'
-
-permissions.short_description = 'permissions'
-permissions.allow_tags = True
-
-
-def groups_from_user(user):
-    """
-    Return a list with the groups the current user belongs to.
-    """
-    return [group.name for group in user.groups.all()]
 
 
 def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
@@ -186,6 +103,7 @@ def qs_column_sum(qs, col):
     #when you have multiple rows with the exact same amount. They only get counted once
     #Workoaround:
     return sum([row[col] for row in qs.values()])
+
 
 def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     """ Create a file name for an image based on the model name, the current object's pk,
@@ -283,15 +201,18 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
 
     return posts
 
+
 def get_random_from_qs(qs, count):
     "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
     qs_list = list(qs.values_list('pk', flat=True))
     random.shuffle(qs_list)
     return qs.filter(pk__in=qs_list[:count])
 
+
 def who_am_i():
     "introspecting function returning the name of the function where who_am_i is called"
     return inspect.stack()[1][3]
+
 
 def who_is_parent():
     """

@@ -28,7 +28,7 @@ if "akvo.rsr" in settings.INSTALLED_APPS:
             else:
                 print 'RSR limited change %s Permission already exists in the database' % model_name
 
-    post_syncdb.connect(create_limited_change_permissions, sender=rsr)
+    # post_syncdb.connect(create_limited_change_permissions, sender=rsr)
 
     def create_rest_api_permissions(sender, **kwargs):
         """ Permissions for each "unsafe" method: POST, PUT, PATCH, DELETE
@@ -53,4 +53,4 @@ if "akvo.rsr" in settings.INSTALLED_APPS:
                     print 'RSR rest API {} permission for {} already exists'.format(method, model_name)
 
 
-    post_syncdb.connect(create_rest_api_permissions, sender=rsr)
+    # post_syncdb.connect(create_rest_api_permissions, sender=rsr)

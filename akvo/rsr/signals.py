@@ -17,12 +17,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
-from django.conf import settings
 
 from sorl.thumbnail import ImageField
 
 from akvo.utils import send_donation_confirmation_emails, rsr_send_mail_to_users
-from akvo.utils import GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS
 
 
 def create_publishing_status(sender, **kwargs):
@@ -196,9 +194,9 @@ def user_organisation_request(sender, **kwargs):
             # 2) RSR editors
             # 3) Admins of organisation
             notify = (
-                users.filter(is_superuser=True) |
-                users.filter(groups__name__in=[GROUP_RSR_EDITORS]) |
-                users.filter(organisations__in=[organisation], groups__name__in=[GROUP_RSR_PARTNER_ADMINS])
+                users.filter(is_superuser=True) #|
+                # users.filter(groups__name__in=[GROUP_RSR_ADMINS]) |
+                # users.filter(organisations__in=[organisation], groups__name__in=[GROUP_ORGANISATION_ADMINS])
             ).distinct()
             rsr_send_mail_to_users(
                 notify,

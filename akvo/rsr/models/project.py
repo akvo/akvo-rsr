@@ -662,9 +662,9 @@ class Project(TimestampsMixin, models.Model):
 
     class Meta:
         app_label = 'rsr'
-        permissions = (
-            ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
-        )
         verbose_name = _(u'project')
         verbose_name_plural = _(u'projects')
         ordering = ['-id', ]
+        permissions = (
+            ('post_updates', u'Can post updates'),
+        )
