@@ -22,6 +22,9 @@ dev-env
 venv
 scripts/dev-vm
 
+# PG migration
+pg_tests.log
+
 
 ## Deployment
 scripts/deployment/builders/osx/config/python_system.config
