@@ -139,6 +139,7 @@ var DropDownItem = React.createClass({
         $("div.btn-group").removeClass("open");
 
         this.props.loading(true);
+        this.props.onSetGroup(<i>Loading...</i>);
         this.setGroup();
         this.props.loading(false);
     },
