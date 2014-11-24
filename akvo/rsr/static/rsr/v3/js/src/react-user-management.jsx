@@ -4,6 +4,8 @@ var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 var Button = ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
+var DropdownButton = ReactBootstrap.DropdownButton;
+var MenuItem = ReactBootstrap.MenuItem;
 
 var DeleteModal = React.createClass({
     deleteEmployment: function() {
@@ -115,28 +117,89 @@ var TriggerModal = React.createClass({
         } else {
             return <span/>;
         }
+    }
+});
 
+var DropDownItem = React.createClass({
+    setGroup: function() {
+        $.ajax({
+            type: "POST",
+            url: "/rest/v1/employment/" + this.props.employment_id + '/set_group/' + this.props.group.id + '/?format=json',
+            success: function(data) {
+                this.props.onSetGroup(this.props.group.name);
+            }.bind(this),
+            error: function(xhr, status, err) {
+                this.props.onSetGroup(this.props.old_group);
+            }.bind(this)
+        });
+    },
 
+    handleSetGroup: function() {
+        // Ugly jQuery hack to close dropdown
+        $("div.btn-group").removeClass("open");
+
+        this.props.loading(true);
+        this.setGroup();
+        this.props.loading(false);
+    },
+
+    render: function() {
+        return (
+            <MenuItem eventKey={this.props.group.id} onClick={this.handleSetGroup}>{this.props.group.name}</MenuItem>
+            );
     }
 });
 
 var Employment = React.createClass({
     getInitialState: function() {
-        return {visible: true};
+        return {
+            visible: true,
+            button_title: '(None)',
+            loading: !this.props.employment.actions
+        };
+    },
+
+    componentDidMount: function() {
+        var group = this.props.employment.group;
+        if (this.isMounted() && group != null) {
+            this.setState({
+                button_title: group.name
+            });
+        }
+    },
+
+    isLoading: function(boolean) {
+        this.setState({
+            loading: boolean
+        });
     },
 
     onDelete: function() {
         this.setState({visible: false});
     },
 
+    setGroupName: function(group) {
+        this.setState({
+            button_title: group
+        });
+    },
+
     render: function() {
+        var employment_id = this.props.employment.id;
+        var setGroupName = this.setGroupName;
+        var old_title = this.state.button_title;
+        var loading = this.isLoading;
+        var other_groups = this.props.employment.other_groups.map(function(group) {
+          return (
+            <DropDownItem group={group} employment_id={employment_id} onSetGroup={setGroupName} old_group={old_title} loading={loading} />
+          )
+        });
         return this.state.visible
-            ? <tr>
-                <td>{this.props.employment.organisation_full.long_name}</td>
-                <td><TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={true} /></td>
-                <td><TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={false} /></td>
-              </tr>
-            : <tr></tr>;
+            ? <span>{this.props.employment.organisation_full.long_name} &nbsp; &nbsp;
+              <DropdownButton title={this.state.button_title} disabled={this.state.loading}>{other_groups}</DropdownButton> &nbsp; &nbsp;
+              <TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={true} /> &nbsp;
+              <TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={false} /><br /><br /></span>
+            : <span />;
     }
 });
 
@@ -157,11 +220,11 @@ var EmploymentList = React.createClass({
     render: function () {
         var employments = this.state.employments.map(function(employment) {
             return (
-                <Employment employment={employment}/>
+                <Employment employment={employment} />
                 )
         });
         return (
-            <table><tbody>{employments}</tbody></table>
+                <span>{employments}</span>
             );
     }
 });
@@ -181,7 +244,9 @@ var UserRow = React.createClass({
 
 var UserTable = React.createClass({
     getInitialState: function() {
-        return { users: [] };
+        return {
+            users: []
+        };
     },
 
     componentDidMount: function() {

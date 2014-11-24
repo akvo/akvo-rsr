@@ -329,11 +329,17 @@ class User(AbstractBaseUser, PermissionsMixin):
                 return True
         return False
 
+    def approved_employments(self):
+        """
+        Return
+        """
+        return self.employers.all().exclude(is_approved=False)
+
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.
-        The org_list is a list of organisations of the original user. Based on this, the original user will have
-        the option to approve / delete the employment.
+        The org_list is a list of approved organisations of the original user. Based on this, the original user will
+        have the option to approve / delete the employment.
         """
         employments = Employment.objects.filter(user=self)
 

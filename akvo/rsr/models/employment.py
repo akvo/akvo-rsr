@@ -47,7 +47,7 @@ class Employment(models.Model):
 
         def approved(self):
             """
-            Return an Employment QuerySet containing the approved Emloyments
+            Return an Employment QuerySet containing the approved Employments
             """
             return self.filter(is_approved=True)
 
@@ -61,6 +61,13 @@ class Employment(models.Model):
 
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)
+        all_groups = Group.objects.all()
+        if self.group:
+            user_group = model_to_dict(self.group, fields=['id', 'name'])
+            other_groups = [model_to_dict(group, fields=['id', 'name']) for group in all_groups.exclude(pk=self.group.pk)]
+        else:
+            user_group = None
+            other_groups = [model_to_dict(group, fields=['id', 'name']) for group in all_groups]
 
         return dict(
             id=self.pk,
@@ -69,5 +76,7 @@ class Employment(models.Model):
             is_approved=self.is_approved,
             job_title=self.job_title,
             country_full=country,
+            group=user_group,
+            other_groups=other_groups,
             actions=True if self.organisation in org_list else False,
         )

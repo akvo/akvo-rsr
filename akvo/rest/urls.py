@@ -43,6 +43,7 @@ urlpatterns = patterns(
     '',
     url(r'^', include(router.urls)),
     url(r'^employment/(?P<pk>[0-9]+)/approve/$', views.approve_employment, name='approve_employment'),
+    url(r'^employment/(?P<pk>[0-9]+)/set_group/(?P<group_id>[0-9]+)/$', views.set_group, name='set_group'),
     url(r'^user/(?P<pk>[0-9]+)/change_password/$', views.change_password, name='user_change_password'),
     url(r'^user/(?P<pk>[0-9]+)/update_details/$', views.update_details, name='user_update_details'),
     url(r'^user/(?P<pk>[0-9]+)/request_organisation/$', views.request_organisation, name='user_request_organisation'),
