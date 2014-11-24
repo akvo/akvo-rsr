@@ -89,6 +89,11 @@ $titleFont:  'Raleway','Montserrat', "Helvetica Neue", Helvetica, Arial, sans-se
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+@mixin noWrapBlockTxt {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:normal;
+}
 @mixin opacity($opacity) {
     opacity: $opacity;
     $opacity-ie: $opacity * 100;
