@@ -10,44 +10,46 @@
     {% global_update_map '100%' '100%' %}
 </section>
 
-<section id="search-filter">
-    <div id="search" class="verticalPadding">
-        <form class="form-inline" role="form">
+<section id="search-filter" class="container-fluid">
+    <div class="row">
+        <div id="search" class="verticalPadding">
             <p>{% trans "Refine the update list below by searching by project, name or organisation" %}</p>
-            <div class="form-group">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="{% trans "Search" %}">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
-                    </span>
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="{% trans "Search" %}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
+                        </span>
+                    </div>
                 </div>
-            </div>
-        </form>
-    </div>
-
-    <div id="filter" style="background-color: #383334; padding: 20px;">
-        <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
-        continents</span><br />
-        <!-- Split button -->
-        <div class="btn-group">
-            <button type="button" class="btn">All</button>
-            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">All</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Africa</a></li>
-                <li><a href="#">Antartica</a></li>
-                <li><a href="#">Asia</a></li>
-                <li><a href="#">Australia</a></li>
-                <li><a href="#">Europe</a></li>
-                <li><a href="#">North America</a></li>
-                <li><a href="#">South America</a></li>
-            </ul>
+            </form>
         </div>
-    </div>
+
+        <div id="filter" style="background-color: #383334; padding: 20px;">
+            <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
+            continents</span><br />
+            <!-- Split button -->
+            <div class="btn-group">
+                <button type="button" class="btn">All</button>
+                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">All</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Africa</a></li>
+                    <li><a href="#">Antartica</a></li>
+                    <li><a href="#">Asia</a></li>
+                    <li><a href="#">Australia</a></li>
+                    <li><a href="#">Europe</a></li>
+                    <li><a href="#">North America</a></li>
+                    <li><a href="#">South America</a></li>
+                </ul>
+            </div>
+        </div>
+     </div>
 </section>
 
 <div class="container">
