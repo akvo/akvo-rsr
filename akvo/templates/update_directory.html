@@ -11,14 +11,16 @@
 </section>
 
 <section id="search-filter">
-    <div id="search">
+    <div id="search" class="verticalPadding">
         <form class="form-inline" role="form">
             <p>{% trans "Refine the update list below by searching by project, name or organisation" %}</p>
-            <div class="input-group"\>
-                <input type="text" class="form-control" placeholder="{% trans "Search" %}">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
-                </span>
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="{% trans "Search" %}">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
+                    </span>
+                </div>
             </div>
         </form>
     </div>
@@ -59,12 +61,12 @@
         <ul>
             {% for u in page %}
             <li class="row updateAsset">
-                <div class="col-sm-4 col-xs-3 col-lg-3">
+                <div class="col-sm-3 col-md-2 col-xs-4 col-lg-2 thumbImg">
                     <a href="{% url 'update-main' u.project.id u.id %}">
                       {% img u 220 220 u.title %}
                     </a>
                 </div>
-                <div class="col-sm-4 col-xs-6  col-lg-4">
+                <div class="col-sm-4 col-xs-8 col-md-5 col-lg-5">
                     <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
                     <p class="small"><span class="glyphicon glyphicon-folder-close"></span>
                       <a href="{% url 'project-main' u.project.pk %}">{{u.project.title}}</a><br>
@@ -73,7 +75,7 @@
                     {{u.primary_location.country.continent}}, {{u.primary_location.country}} <br>
                     {{u.created_at|date:"d-M-Y"}}</p>
                 </div>   
-                <div class="excerpt small col-sm-4 col-xs-3  col-lg-3">
+                <div class="excerpt small col-sm-5 col-xs-12  col-md-5 col-lg-5 hidden-xs">
                     {% autoescape off %}
                       {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
                     {% endautoescape %}
