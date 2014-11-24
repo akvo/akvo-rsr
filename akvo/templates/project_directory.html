@@ -66,8 +66,8 @@ span.twitter-typeahead {
   top: 28px !important;
 }
 
-</style>
 
+</style>
 <script type="text/javascript">
  $(document).ready(function() {
 
@@ -163,20 +163,22 @@ $('#query').typeahead({
 <section id="map" class="touch-navbar">
   {% global_project_map '100%' '100%' %}
 </section>
-<section id="search-filter">
-  <div id="search">
+<section id="search-filter" class="row">
+  <div id="search" class="verticalPadding col-md-4 col-md-offset-4">
+        <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
     <form class="form-inline" role="form">
-      <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
-      <div class="input-group">
-        <input type="text" id="query" class="form-control" placeholder="{% trans 'Search' %}">
-        <span class="input-group-btn">
-        <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
-        </span>
+      <div class="form-group">
+        <div class="input-group">
+          <input type="search" class="form-control search-query" id="query" placeholder="{% trans 'Search' %}" />
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">{% trans "Update list" %} &#8250;</button>
+          </span>
+        </div>
       </div>
     </form>
   </div>
-  <div id="filter" style="background-color: #383334; padding: 20px;">
-    <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
+  <div id="filter" class="verticalPadding col-md-4">
+    <span>
     continents</span><br />
     <!-- Split button -->
     <div class="btn-group">
@@ -208,7 +210,7 @@ $('#query').typeahead({
     <ul>
       {% for p in page %}
         <li class="row">
-          <div class="col-sm-3 col-xs-3">
+          <div class="col-lg-2 col-sm-3 col-xs-5 thumbImg">
             {% comment %}
             <a href="{% url 'project-main' p.id %}">
               {# <img src="http://placehold.it/200x200" alt="{{p.title}}"> #}
@@ -228,13 +230,13 @@ $('#query').typeahead({
           {% img p 200 200 p.title %}
         </a>
       </div>
-      <div class="col-sm-3 col-xs-9">
+      <div class="col-lg-4 col-sm-3 col-xs-7">
           <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
           <p>{{p.subtitle}}</p>
           <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
           <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.partners.all.0.id %}">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
       </div>
-      <div class="col-sm-3 hidden-xs">
+      <div class="col-sm-3 hidden-xs hidden-sm">
         <h4 class="detailedInfo">{% trans "Focus Areas" %}</h4>
           <p>
           {% for area in p.focus_areas %}
@@ -246,11 +248,11 @@ $('#query').typeahead({
           <h4 class="detailedInfo">{% trans "Status" %}</h4>
           <p>{{p.get_status_display}}</p>
       </div>
-      <div class="col-sm-3 hidden-xs">
+      <div class="col-md-3 hidden-xs hidden-sm">
         <h4 class="detailedInfo">{% trans "Finance" %}</h4>
         {% include "partials/project_budget.html" with project=p %}
       </div>
-      <div class="col-xs-9 visible-xs-block">
+      <div class="col-xs-7 col-xs-offset-5 col-sm-6 col-sm-offset-0 visible-xs-block visible-sm">
         <p class="small">
           <span class="detailedInfo">{% trans "Focus Areas" %}</span>
           {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>

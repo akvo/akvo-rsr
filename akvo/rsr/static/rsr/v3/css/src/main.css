@@ -72,6 +72,9 @@ a, a:link, a:visited {
 .topMargin {
   margin-top: 15px; }
 
+.verticalPadding {
+  padding: 20px 0; }
+
 /* Force full-width columns below 570px (when using col-xs-N) */
 @media only screen and (min-width: 768px) {
   .col-ty-12 {
@@ -168,33 +171,19 @@ h4.detailedInfo {
 .progress-bar-info {
   background-color: #e1edc3; }
 
-.labelWrap {
-  margin-bottom: 20px; }
-  .labelWrap .progress-label-current {
-    position: relative; }
-  .labelWrap .progress-label-start {
-    float: left;
-    margin-top: -16px; }
-  .labelWrap .progress-label-end {
-    float: right;
-    margin-top: -16px; }
-
 /* LISTINGS */
 #map {
-  height: 300px;
+  height: 400px;
   background: #428bca; }
 
 #search-filter {
-  margin-bottom: 20px; }
-
-#search {
-  padding: 20px;
-  color: #fff;
-  text-align: center;
   background-color: #241F20; }
-  #search .input-group {
-    margin: auto;
-    max-width: 400px; }
+  #search-filter #search {
+    color: #fff;
+    text-align: center; }
+  #search-filter #search-filter {
+    color: #fff;
+    text-align: center; }
 
 /************************************************************************
 		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
@@ -211,8 +200,15 @@ h4.detailedInfo {
     font-size: 1.3em; }
   .main-list li div h4:first-of-type {
     margin-top: 0; }
-  .main-list li img {
-    width: 100%; }
+  .main-list li .thumbImg {
+    height: 100%; }
+    .main-list li .thumbImg img {
+      width: 100%; }
+.main-list .excerpt {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis; }
 
 /* PROJECT */
 header {
@@ -238,7 +234,6 @@ header {
 
 /* UPDATE */
 .main-list .excerpt {
-  height: 51px;
   overflow: hidden;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
