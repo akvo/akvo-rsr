@@ -159,55 +159,186 @@ $('#query').typeahead({
 });
 </script>
 {% endblock %}
+
 {% block maincontent %}
+
 <section id="map" class="touch-navbar">
-  {% global_project_map '100%' '100%' %}
+    {% global_project_map '100%' '100%' %}
 </section>
-<section id="search-filter" class="row">
-  <div id="search" class="verticalPadding col-md-4 col-md-offset-4">
+
+<section id="search-filter">
+  <div class="container-fluid">
+    <div class="row">
+      <div id="search" class="verticalPadding">
         <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
-    <form class="form-inline" role="form">
-      <div class="form-group">
-        <div class="input-group">
-          <input type="search" class="form-control search-query" id="query" placeholder="{% trans 'Search' %}" />
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button">{% trans "Update list" %} &#8250;</button>
-          </span>
-        </div>
+        <form class="form-inline" role="form">
+          <div class="form-group">
+            <div class="input-group">
+              <input type="search" class="form-control search-query" id="query" placeholder="{% trans 'Search' %}" />
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="button">{% trans "Update list" %} &#8250;</button>
+              </span>
+            </div>
+          </div>
+          <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
+        </form>
       </div>
-    </form>
-  </div>
-  <div id="filter" class="verticalPadding col-md-4">
-    <span>
-    continents</span><br />
-    <!-- Split button -->
-    <div class="btn-group">
-      <button type="button" class="btn">All</button>
-      <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-      <span class="caret"></span>
-      <span class="sr-only">Toggle Dropdown</span>
-      </button>
-      <ul class="dropdown-menu" role="menu">
-        <li><a href="#">All</a></li>
-        <li class="divider"></li>
-        <li><a href="#">Africa</a></li>
-        <li><a href="#">Antartica</a></li>
-        <li><a href="#">Asia</a></li>
-        <li><a href="#">Australia</a></li>
-        <li><a href="#">Europe</a></li>
-        <li><a href="#">North America</a></li>
-        <li><a href="#">South America</a></li>
-      </ul>
+    </div>
+  <div id="collapseOne" class="panel-collapse collapse">
+    <div id="filter" class="verticalPadding row">
+          <div class="btn-group">
+            <span class="dropdown-label">Location</span>
+            <button type="button" class="btn btn-default">All</button>
+            <button type="button" class="btn  btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">All</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Africa</a></li>
+              <li><a href="#">Antartica</a></li>
+              <li><a href="#">Asia</a></li>
+              <li><a href="#">Australia</a></li>
+              <li><a href="#">Europe</a></li>
+              <li><a href="#">North America</a></li>
+              <li><a href="#">South America</a></li>
+            </ul>
+          </div>
+          
+          <div class="btn-group">
+            <span class="dropdown-label">Status</span>
+            <button type="button" class="btn btn-default">Status</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">All</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </div>
+
+          <div class="btn-group">
+            <span class="dropdown-label">Partners</span>
+            <button type="button" class="btn btn-default">Partners</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">All</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </div>
+
+          <div class="btn-group">
+            <span class="dropdown-label">Policy marker</span>
+            <button type="button" class="btn btn-default">Policy marker</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">All</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </div>
+
+          <div class="btn-group">
+            <span class="dropdown-label">Sector code</span>
+            <button type="button" class="btn btn-default">Sector code</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">All</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </div>
+          <div class="btn-group">
+            <span class="dropdown-label">Total budget</span>
+            <button type="button" class="btn btn-default">Total budget</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">All</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </div>
+
+          <div class="btn-group">
+            <div class="btn-group">
+              <span class="dropdown-label">From</span>
+              <button type="button" class="btn btn-default">Date</button>
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">All</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li><a href="#">Separated link</a></li>
+              </ul>
+            </div>            
+
+            <div class="btn-group">
+              <span class="dropdown-label">To</span>
+              <button type="button" class="btn btn-default">Date</button>
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">All</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li><a href="#">Separated link</a></li>
+              </ul>
+            </div>
+          </div>
+
+      </div>
     </div>
   </div>
 </section>
-<div class="container">
+
+<div class="container-fluid">
   <div class="row center-text">
     <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
     {% include 'navigation/pagination.html' %}
   </div>
+</div>
   <section class="main-list projects">
-    <ul>
+    <ul class="container">
       {% for p in page %}
         <li class="row">
           <div class="col-lg-2 col-sm-3 col-xs-5 thumbImg">
@@ -266,8 +397,9 @@ $('#query').typeahead({
   {% endfor %}
 </ul>
 </section>
-<div class="row center-text">
-{% include 'navigation/pagination.html' %}
-</div>
+<div class="container-fluid">
+  <div class="row center-text">
+  {% include 'navigation/pagination.html' %}
+  </div>
 </div>
 {% endblock %}
