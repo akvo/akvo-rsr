@@ -5,7 +5,7 @@ feature/813_postgres_v2 branch:
 $ cd vagrant
 $ vagrant destroy
 $ git checkout -b feature/813_postgres_v2 origin/feature/813_postgres_v2
-$ vagrant up
+$ vagrant up --provider=virtualbox
 ```
 
 We need to configure the Django database settings to have both the old 
