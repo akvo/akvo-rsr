@@ -16,8 +16,6 @@ mysql --user=rsr --password=$1 rsr -e "Truncate table django_session;"
 # Create rsr user and database
 sudo su postgres <<'EOF'
 PASSWORD=`cat /var/akvo/rsr/code/pg_db_password.tmp`
-# echo "password:"
-# echo $PASSWORD
 psql -c "CREATE USER rsr WITH PASSWORD '$PASSWORD';"
 psql -c "CREATE DATABASE rsr OWNER rsr TEMPLATE template0 ENCODING 'UTF8';"
 EOF
@@ -35,6 +33,6 @@ if ! [ -f  /var/akvo/rsr/code/pg_migrate_conf.yml ]; then
    exit 2
 fi
 py-mysql2pgsql -v -f pg_migrate_conf.yml
-python pg_alts.py
+python pg_alts.py > pg_tests.log
 python pg_tests.py > pg_tests.log
 EOF
