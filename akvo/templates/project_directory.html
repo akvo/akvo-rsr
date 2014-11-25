@@ -5,69 +5,7 @@
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
 {% block head_js %}
-<style>
-/* Bootstrap style for typeahead dropdown, to be included in CSS file */
 
-span.twitter-typeahead .tt-dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1000;
-  display: none;
-  float: left;
-  min-width: 160px;
-  padding: 5px 0;
-  margin: 2px 0 0;
-  list-style: none;
-  font-size: 14px;
-  text-align: left;
-  color: #000000;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-  background-clip: padding-box;
-}
-span.twitter-typeahead .tt-suggestion > p {
-  display: block;
-  padding: 3px 20px;
-  clear: both;
-  font-weight: normal;
-  line-height: 1.42857143;
-  color: #333333;
-  white-space: nowrap;
-}
-span.twitter-typeahead .tt-suggestion > p:hover,
-span.twitter-typeahead .tt-suggestion > p:focus {
-  color: #ffffff;
-  text-decoration: none;
-  outline: 0;
-  background-color: #428bca;
-}
-span.twitter-typeahead .tt-suggestion.tt-cursor {
-  color: #ffffff;
-  background-color: #428bca;
-}
-span.twitter-typeahead {
-  width: 100%;
-}
-.input-group span.twitter-typeahead {
-  display: block !important;
-}
-.input-group span.twitter-typeahead .tt-dropdown-menu {
-  top: 32px !important;
-}
-.input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
-  top: 44px !important;
-}
-.input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
-  top: 28px !important;
-}
-
-
-</style>
 <script type="text/javascript">
  $(document).ready(function() {
 
@@ -168,27 +106,26 @@ $('#query').typeahead({
 
 <section id="search-filter">
   <div class="container-fluid">
-    <div class="row">
-      <div id="search" class="verticalPadding">
+        <div id="search" class="verticalPadding">
         <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
         <form class="form-inline" role="form">
-          <div class="form-group">
-            <div class="input-group">
-              <input type="search" class="form-control search-query" id="query" placeholder="{% trans 'Search' %}" />
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="button">{% trans "Update list" %} &#8250;</button>
-              </span>
+            <div class="form-group">
+                <div class="input-group">
+                  <input type="search" class="form-control search-query" id="query" placeholder="{% trans 'Search' %}" />
+                  <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button">{% trans "Update list" %} &#8250;</button>
+                  </span>
+                </div>
+                <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
             </div>
-          </div>
-          <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
         </form>
       </div>
-    </div>
+  </div>
+
   <div id="collapseOne" class="panel-collapse collapse">
     <div id="filter" class="verticalPadding row">
           <div class="btn-group">
-            <span class="dropdown-label">Location</span>
-            <button type="button" class="btn btn-default">All</button>
+            <button type="button" class="btn btn-default">Location</button>
             <button type="button" class="btn  btn-default dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
             <span class="sr-only">Toggle Dropdown</span>
@@ -207,7 +144,6 @@ $('#query').typeahead({
           </div>
           
           <div class="btn-group">
-            <span class="dropdown-label">Status</span>
             <button type="button" class="btn btn-default">Status</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <span class="caret"></span>
@@ -224,7 +160,6 @@ $('#query').typeahead({
           </div>
 
           <div class="btn-group">
-            <span class="dropdown-label">Partners</span>
             <button type="button" class="btn btn-default">Partners</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <span class="caret"></span>
@@ -241,7 +176,6 @@ $('#query').typeahead({
           </div>
 
           <div class="btn-group">
-            <span class="dropdown-label">Policy marker</span>
             <button type="button" class="btn btn-default">Policy marker</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <span class="caret"></span>
@@ -258,7 +192,6 @@ $('#query').typeahead({
           </div>
 
           <div class="btn-group">
-            <span class="dropdown-label">Sector code</span>
             <button type="button" class="btn btn-default">Sector code</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <span class="caret"></span>
@@ -273,8 +206,8 @@ $('#query').typeahead({
               <li><a href="#">Separated link</a></li>
             </ul>
           </div>
+
           <div class="btn-group">
-            <span class="dropdown-label">Total budget</span>
             <button type="button" class="btn btn-default">Total budget</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <span class="caret"></span>
@@ -292,8 +225,7 @@ $('#query').typeahead({
 
           <div class="btn-group">
             <div class="btn-group">
-              <span class="dropdown-label">From</span>
-              <button type="button" class="btn btn-default">Date</button>
+              <button type="button" class="btn btn-default">Date from</button>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                 <span class="caret"></span>
                 <span class="sr-only">Toggle Dropdown</span>
@@ -309,8 +241,7 @@ $('#query').typeahead({
             </div>            
 
             <div class="btn-group">
-              <span class="dropdown-label">To</span>
-              <button type="button" class="btn btn-default">Date</button>
+              <button type="button" class="btn btn-default">To</button>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                 <span class="caret"></span>
                 <span class="sr-only">Toggle Dropdown</span>
@@ -328,15 +259,15 @@ $('#query').typeahead({
 
       </div>
     </div>
-  </div>
 </section>
 
 <div class="container-fluid">
-  <div class="row center-text">
+  <div class="row center-text verticalPadding">
     <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
     {% include 'navigation/pagination.html' %}
   </div>
 </div>
+
   <section class="main-list projects">
     <ul class="container">
       {% for p in page %}
