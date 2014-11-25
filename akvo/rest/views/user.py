@@ -81,7 +81,7 @@ def request_organisation(request, pk=None):
             )
             employment.save()
         except IntegrityError:
-            return Response({'detail': 'User already linked to this organisation'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'User already linked to this organisation'}, status=status.HTTP_409_CONFLICT)
 
         serializer.data['country_full'] = CountrySerializer(country).data
         serializer.data['organisation_full'] = OrganisationSerializer(organisation).data
