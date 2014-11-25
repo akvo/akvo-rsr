@@ -60,10 +60,11 @@ class Migration(DataMigration):
             for group in user.groups.all():
                 user.groups.remove(group)
 
-        # Remove all existing Permissions from the Groups
+        # Remove all existing Permissions from the Groups (except limited change; still needed for TastyPie)
         for group in orm['auth.Group'].objects.all():
             for permission in group.permissions.all():
-                group.permissions.remove(permission)
+                if not 'rsr_limited_change' in permission.codename:
+                    group.permissions.remove(permission)
 
     def backwards(self, orm):
         orm['auth.Group'].objects.create(name='RSR manager')

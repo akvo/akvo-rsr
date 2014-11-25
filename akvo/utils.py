@@ -38,6 +38,9 @@ from notification.models import (
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
 
 
+RSR_LIMITED_CHANGE = u'rsr_limited_change'
+
+
 class HttpResponseNoContent(HttpResponse):
     status_code = 204
 
