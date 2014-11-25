@@ -146,7 +146,7 @@ class TestSchema(unittest.TestCase):
         print('Testing schema')
         world = dbColumns(modelFields())
         for model in world:
-            print('{}'.format(model))
+            print('\t{}'.format(model))
             for field in world[model]['model_fields']:
                 if not field['type'] in ['ForeignKey', 'OneToOneField']:
                     field_name = unicode(field['name'])
