@@ -42,17 +42,17 @@ class Migration(DataMigration):
         # Approve all Employments and set their Group
         for employment in orm['rsr.Employment'].objects.all():
             employment.is_approved = True
-            if not employment.user.is_admin or not employment.user.is_superuser:
-                if admins_group in employment.user.groups.all():
-                    employment.group = admins_group
-                    employment.user.is_staff = True
-                    employment.user.save()
-                elif project_editors_group in employment.user.groups.all():
-                    employment.group = project_editors_group
-                    employment.user.is_staff = True
-                    employment.user.save()
-                else:
-                    employment.group = users_group
+            user = employment.user
+            if admins_group in user.groups.all() or user.is_superuser or user.is_admin:
+                employment.group = admins_group
+                employment.user.is_staff = True
+                employment.user.save()
+            elif project_editors_group in employment.user.groups.all():
+                employment.group = project_editors_group
+                employment.user.is_staff = True
+                employment.user.save()
+            else:
+                employment.group = users_group
             employment.save()
 
         # Remove all existing Groups from Users

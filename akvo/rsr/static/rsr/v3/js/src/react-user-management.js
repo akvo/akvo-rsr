@@ -77,8 +77,7 @@ var ApproveModal = React.createClass({displayName: 'ApproveModal',
 var TriggerModal = React.createClass({displayName: 'TriggerModal',
     getInitialState: function() {
         return {
-            visible: false,
-            approved: false
+            visible: false
         };
     },
 
@@ -87,21 +86,18 @@ var TriggerModal = React.createClass({displayName: 'TriggerModal',
         var approved = this.props.employment.is_approved;
         if (this.isMounted() && this.props.delete) {
             this.setState({
-                visible: visible,
-                approved: approved
+                visible: visible
             });
         } else if (this.isMounted() && !this.props.delete) {
             this.setState({
-                visible: !approved,
-                approved: approved
+                visible: visible && !approved
             });
         }
     },
 
     onApprove: function() {
         this.setState({
-            visible: false,
-            approved: true
+            visible: false
         });
     },
 

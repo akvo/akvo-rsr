@@ -61,13 +61,13 @@ class Employment(models.Model):
 
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)
-        all_groups = Group.objects.all()
-        if self.group:
-            user_group = model_to_dict(self.group, fields=['id', 'name'])
-            other_groups = [model_to_dict(group, fields=['id', 'name']) for group in all_groups.exclude(pk=self.group.pk)]
-        else:
-            user_group = None
-            other_groups = [model_to_dict(group, fields=['id', 'name']) for group in all_groups]
+        # Set groups in right order
+        all_groups = [
+            Group.objects.get(name='Users'), Group.objects.get(name='User managers'),
+            Group.objects.get(name='Project editors'), Group.objects.get(name='Admins')
+        ]
+        user_group = model_to_dict(self.group, fields=['id', 'name']) if self.group else None
+        other_groups = [model_to_dict(group, fields=['id', 'name']) for group in all_groups]
 
         return dict(
             id=self.pk,

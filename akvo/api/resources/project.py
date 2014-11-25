@@ -26,7 +26,6 @@ from akvo.api.serializers import IATISerializer
 from akvo.rsr.models import (
     Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark, Organisation
 )
-from akvo.utils import RSR_LIMITED_CHANGE
 
 from .resources import ConditionalFullResource, get_extra_thumbnails
 from .partnership import FIELD_NAME, FIELD_LONG_NAME
@@ -220,46 +219,6 @@ class IATIProjectResource(ModelResource):
             bundle.data['date_request_posted'] = bundle.data.pop('date_start_planned')
         return bundle
 
-    # def hydrate_categories(self, bundle):
-    #     if bundle.data['categories']:
-    #         bundle.data['categories'] = [
-    #             reverse('api_dispatch_detail', kwargs={
-    #                 'resource_name': 'category',
-    #                 'api_name': 'v1',
-    #                 'pk': bundle.data['categories'][0]
-    #             })
-    #         ]
-    #     return bundle
-
-
-    # def hydrate_partnerships(self, bundle):
-    #     import pdb
-    #     pdb.set_trace()
-    #     return bundle
-
-    # def hydrate_current_image(self, bundle):
-    #     import requests
-    #
-    #     from django.core.files import File
-    #     from django.core.files.temp import NamedTemporaryFile
-    #     return bundle
-    #
-    #     def save_image_from_url(model, url):
-    #         r = requests.get(url)
-    #
-    #         img_temp = NamedTemporaryFile(delete=True)
-    #         img_temp.write(r.content)
-    #         img_temp.flush()
-    #
-    #         img_name = "%s_%s_%s_%s%s" % (
-    #             bundle.obj._meta.object_name,
-    #             bundle.obj.pk or '',
-    #             'current_image',
-    #             datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
-    #             os.path.splitext(img_temp.name)[1],
-    #         )
-    #         Project.current_image.save("image.jpg", File(img_temp), save=True)
-
 
 class ProjectResource(ConditionalFullResource):
     benchmarks = ConditionalFullToManyField('akvo.api.resources.BenchmarkResource', 'benchmarks',)
@@ -312,7 +271,6 @@ class ProjectResource(ConditionalFullResource):
             admin:
                 Superusers get access to ALL projects
                 Users with "change_project" perm (currently Akvo staff users) also get access to ALL projects
-                Users with "rsr_limited_change_project" perm get access to all projects linked to their organisation
                 regardless of publishing status
         """
         object_list = super(ProjectResource, self).get_object_list(request)
@@ -320,11 +278,7 @@ class ProjectResource(ConditionalFullResource):
             opts = Project._meta
             if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
                 return object_list
-            elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
-                object_list = object_list.published() | object_list.of_partners(request.user.organisations.all())
-                return object_list.distinct()
         return object_list.published()
-
 
     def dehydrate(self, bundle):
         """ add thumbnails inline info for Project.current_image

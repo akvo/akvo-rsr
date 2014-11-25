@@ -21,7 +21,7 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.utils import rsr_image_path, rsr_show_keywords, RSR_LIMITED_CHANGE
+from akvo.utils import rsr_image_path, rsr_show_keywords
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..iati.codelists import codelists_v104 as codelists
@@ -35,7 +35,6 @@ from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
-from .user import User
 
 
 class Project(TimestampsMixin, models.Model):

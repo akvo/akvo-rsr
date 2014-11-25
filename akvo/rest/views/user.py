@@ -63,7 +63,7 @@ def update_details(request, pk=None):
 @permission_classes((IsAuthenticated, ))
 def request_organisation(request, pk=None):
     user = get_user_model().objects.get(pk=pk)
-    # Users are only allowed to edit their own details
+    # Users themselves are only allowed to request to join an organisation
     if not user == request.user:
         raise PermissionDenied()
     request.DATA['user'] = pk

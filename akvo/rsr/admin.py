@@ -23,7 +23,7 @@ from sorl.thumbnail.fields import ImageField
 import os.path
 
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
-from akvo.utils import custom_get_or_create_country, RSR_LIMITED_CHANGE
+from akvo.utils import custom_get_or_create_country
 from akvo.rsr.fields import ValidXMLCharField
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin
