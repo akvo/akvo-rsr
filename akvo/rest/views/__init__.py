@@ -11,7 +11,7 @@ from .budget_item import BudgetItemViewSet
 from .budget_item_label import BudgetItemLabelViewSet
 from .category import CategoryViewSet
 from .country import CountryViewSet
-from .employment import EmploymentViewSet, approve_employment
+from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
 from .internal_organisation_id import InternalOrganisationIDViewSet
@@ -39,6 +39,7 @@ __all__ = [
     'CountryViewSet',
     'EmploymentViewSet',
     'approve_employment',
+    'set_group',
     'FocusAreaViewSet',
     'GoalViewSet',
     'InternalOrganisationIDViewSet',

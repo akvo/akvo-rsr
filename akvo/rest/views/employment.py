@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from django.contrib.auth.models import Group
+
 from rest_framework import filters
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -31,13 +33,25 @@ def approve_employment(request, pk=None):
     employment = Employment.objects.get(pk=pk)
     user = request.user
 
-    # Only superusers, staff members, editors and Organisation admins are allowed to approve a user
-    if not (user.is_superuser or user.is_staff or user.get_is_rsr_admin() or user.get_is_org_admin()):
-        raise PermissionDenied
-    if user.get_is_org_admin() and not employment.organisation in user.organisations.all():
+    if not user.has_perm('rsr.change_employment', employment):
         raise PermissionDenied
 
     employment.is_approved = True
     employment.save()
 
     return Response({'status': 'employment approved'})
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def set_group(request, pk=None, group_id=None):
+    employment = Employment.objects.get(pk=pk)
+    group = Group.objects.get(pk=group_id)
+    user = request.user
+
+    if not user.has_perm('rsr.change_employment', employment):
+        raise PermissionDenied
+
+    employment.group = group
+    employment.save()
+
+    return Response({'status': 'group set'})

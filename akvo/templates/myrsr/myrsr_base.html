@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n bootstrap3 %}
+{% load i18n bootstrap3 rules %}
 
 {% block maincontent %}
 <div class="container">
@@ -12,7 +12,8 @@
                 <li><a href="{% url 'my_details' %}">My details</a></li>
                 <li><a href="{% url 'my_updates' %}">My updates</a></li>
                 <li><a href="{% url 'my_projects' %}">My projects</a></li>
-                {% if user.is_superuser or user.is_staff or user.get_is_rsr_admin or user.get_is_org_admin %}
+                {% has_perm 'rsr.change_employment' user as can_change_employments %}
+                {% if can_change_employments %}
                 <li><a href="{% url 'user_management' %}">User management</a></li>
                 {% endif %}
             </ul>

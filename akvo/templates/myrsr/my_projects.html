@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load i18n bootstrap3 rsr_utils %}
+{% load i18n bootstrap3 rsr_utils rules %}
 
 {% block title %}{% trans "MyRSR - my projects" %}{% endblock %}
 
@@ -33,7 +33,8 @@
           <td>{{ project.show_status }}</td>
           <td>
               <a href="{% url 'project-main' project.id %}">View</a>
-              {% if user.is_staff or user.is_superuser or user.get_is_rsr_admin or user.get_is_org_admin %}
+              {% has_perm 'rsr.change_project' user project as can_edit_project %}
+              {% if can_edit_project %}
               <a href="/admin/rsr/project/{{project.pk}}/">Edit</a>
               <a href="/admin/rsr/publishingstatus/?project={{project.pk}}">
                 {% if project.is_published %}
