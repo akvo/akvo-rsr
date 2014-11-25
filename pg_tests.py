@@ -272,6 +272,7 @@ if __name__ == '__main__':
     from django.db.models import get_models
     from django.db.models.related import RelatedObject
 
+    print('\nAbout to validate\n')
     # Kick of test suite
     unittest.TextTestRunner().run(
         unittest.defaultTestLoader.loadTestsFromTestCase(TestSchema))
