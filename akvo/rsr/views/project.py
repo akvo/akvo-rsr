@@ -11,6 +11,7 @@ import json
 from ..models import Invoice, Project
 from ...utils import pagination
 
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 
 
@@ -104,6 +105,11 @@ def directory(request):
 
 def main(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+
+    # Non-editors are not allowed to view unpublished projects
+    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+        raise PermissionDenied
+
     carousel_data = _get_carousel_data(project)
     updates = project.project_updates.all().order_by('-created_at')
     accordion_data = _get_accordion_data(project)
