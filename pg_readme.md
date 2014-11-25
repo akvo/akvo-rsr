@@ -41,7 +41,7 @@ as a base.
 ```shell
 $ cd ..
 $ cp pg_migrate_conf.yml.template pg_migrate_conf.yml
-$ vi pg_migrate_conf.yml # edit if not using the vagrant settings
+$ vi pg_migrate_conf.yml # already setup for vagrant
 ```
 
 Now we created a template. If we are on a vagrant box the db password is 
