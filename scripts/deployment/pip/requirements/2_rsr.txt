@@ -69,3 +69,6 @@ statsd==3.0
 
 # Sentry integration
 raven==4.2.3
+
+# Permission rules
+rules==0.3

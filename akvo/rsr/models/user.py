@@ -4,19 +4,17 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
-from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 
 from sorl.thumbnail.fields import ImageField
 
 from tastypie.models import ApiKey
 
-from akvo.utils import GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS, GROUP_RSR_PARTNER_EDITORS
-from akvo.utils import groups_from_user, rsr_image_path
+from akvo.utils import rsr_image_path
 
 from .employment import Employment
 from .project_update import ProjectUpdate
@@ -65,7 +63,11 @@ class User(AbstractBaseUser, PermissionsMixin):
                                                 'Unselect this instead of deleting accounts.')
     )
     is_staff = models.BooleanField(
-        _('staff status'), default=False, help_text=_('Designates whether the user can log into this admin site.')
+        _('staff'), default=False, help_text=_('Designates whether the user can log into this admin site.')
+    )
+    is_admin = models.BooleanField(
+        _('admin'), default=False, help_text=_('Designates whether the user is a general RSR admin. '
+                                               'To be used only for Akvo employees.')
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     organisations = models.ManyToManyField(
@@ -81,14 +83,6 @@ class User(AbstractBaseUser, PermissionsMixin):
                         upload_to=image_path,
                         help_text=_(u'The avatar should be less than 500 kb in size.'),
     )
-
-    # avatar = ImageField(
-    #     _(u'avatar'), null=True, upload_to=image_path,
-    #     thumbnail={'size': (200, 200), 'options': ('pad', )},
-    #     help_text=_(
-    #         u'The avatar should be less than 3.5 mb in size.'
-    #     ),
-    # )
 
     objects = CustomUserManager()
 
@@ -166,42 +160,101 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.is_staff = set_it
         self.save()
 
-    def get_is_rsr_admin(self):
-        return GROUP_RSR_EDITORS in groups_from_user(self)
+    def get_is_admin(self):
+        return self.is_admin
+    get_is_admin.boolean = True  # make pretty icons in the admin list view
 
-    def get_is_org_admin(self):
-        return GROUP_RSR_PARTNER_ADMINS in groups_from_user(self)
+    def set_is_admin(self, set_it):
+        self.is_admin = set_it
+        self.save()
+
+    def get_is_org_admin(self, org):
+        from .employment import Employment
+        try:
+            employment = Employment.objects.get(user=self, organisation=org)
+        except:
+            return False
+        return employment.group == Group.objects.get(name='Admins') if employment.is_approved else False
     get_is_org_admin.boolean = True  # make pretty icons in the admin list view
     get_is_org_admin.short_description = _(u'organisation admin')
 
-    def set_is_org_admin(self, set_it):
+    def set_is_org_admin(self, org, set_it):
+        from .employment import Employment
+        try:
+            employment = Employment.objects.get(user=self, organisation=org)
+        except:
+            pass
         if set_it:
-            self._add_user_to_group(GROUP_RSR_PARTNER_ADMINS)
+            employment.group = Group.objects.get(name='Admins')
+            employment.save()
         else:
-            self._remove_user_from_group(GROUP_RSR_PARTNER_ADMINS)
+            employment.group.delete()
 
-    def get_is_org_editor(self):
-        return GROUP_RSR_PARTNER_EDITORS in groups_from_user(self)
-    get_is_org_editor.boolean = True  # make pretty icons in the admin list view
-    get_is_org_editor.short_description = _(u'project editor')
+    def get_is_user_manager(self, org):
+        from .employment import Employment
+        try:
+            employment = Employment.objects.get(user=self, organisation=org)
+        except:
+            return False
+        return employment.group == Group.objects.get(name='User manager') if employment.is_approved else False
+    get_is_user_manager.boolean = True  # make pretty icons in the admin list view
+    get_is_user_manager.short_description = _(u'organisation admin')
 
-    def set_is_org_editor(self, set_it):
+    def set_is_user_manager(self, org, set_it):
+        from .employment import Employment
+        try:
+            employment = Employment.objects.get(user=self, organisation=org)
+        except:
+            pass
         if set_it:
-            self._add_user_to_group(GROUP_RSR_PARTNER_EDITORS)
+            employment.group = Group.objects.get(name='User manager')
+            employment.save()
         else:
-            self._remove_user_from_group(GROUP_RSR_PARTNER_EDITORS)
+            employment.group.delete()
 
-    def _add_user_to_group(self, group_name):
-        group = Group.objects.get(name=group_name)
-        if not group in self.groups.all():
-            self.groups.add(group)
-            self.save()
+    def get_is_project_editor(self, org):
+        from .employment import Employment
+        try:
+            employment = Employment.objects.get(user=self, organisation=org)
+        except:
+            return False
+        return employment.group == Group.objects.get(name='Project editors') if employment.is_approved else False
+    get_is_project_editor.boolean = True  # make pretty icons in the admin list view
+    get_is_project_editor.short_description = _(u'organisation admin')
 
-    def _remove_user_from_group(self, group_name):
-        group = Group.objects.get(name=group_name)
-        if group in self.groups.all():
-            self.groups.remove(group)
-            self.save()
+    def set_is_project_editor(self, org, set_it):
+        from .employment import Employment
+        try:
+            employment = Employment.objects.get(user=self, organisation=org)
+        except:
+            pass
+        if set_it:
+            employment.group = Group.objects.get(name='Project editors')
+            employment.save()
+        else:
+            employment.group.delete()
+
+    def get_is_user(self, org):
+        from .employment import Employment
+        try:
+            employment = Employment.objects.get(user=self, organisation=org)
+        except:
+            return False
+        return employment.group == Group.objects.get(name='Users') if employment.is_approved else False
+    get_is_user.boolean = True  # make pretty icons in the admin list view
+    get_is_user.short_description = _(u'organisation admin')
+
+    def set_is_user(self, org, set_it):
+        from .employment import Employment
+        try:
+            employment = Employment.objects.get(user=self, organisation=org)
+        except:
+            pass
+        if set_it:
+            employment.group = Group.objects.get(name='Users')
+            employment.save()
+        else:
+            employment.group.delete()
 
     def my_projects(self):
         return self.organisations.all().all_projects()
@@ -258,14 +311,35 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def user(self):
-        # Support for self as profile. Use of this is deprecated
+        """
+        Support for self as profile. Use of this is deprecated
+        """
         return self
+
+    def in_group(self, group, organisation=None):
+        """
+        Returns whether a user is part of a group. Optionally an organisation can be added to check if a user is part
+        of a group for the organisation.
+        """
+        for employment in self.employers.approved():
+            if organisation:
+                if employment.group == group and employment.organisation == organisation:
+                    return True
+            elif employment.group == group:
+                return True
+        return False
+
+    def approved_employments(self):
+        """
+        Return
+        """
+        return self.employers.all().exclude(is_approved=False)
 
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.
-        The org_list is a list of organisations of the original user. Based on this, the original user will have
-        the option to approve / delete the employment.
+        The org_list is a list of approved organisations of the original user. Based on this, the original user will
+        have the option to approve / delete the employment.
         """
         employments = Employment.objects.filter(user=self)
 
