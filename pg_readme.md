@@ -52,7 +52,7 @@ run the migration!
 $ cd vagrant
 $ vagrant ssh
 vagrant@rsr1:~$ cd /var/akvo/rsr/code
-vagrant@rsr1:/var/akvo/rsr/code$ ./pg_migrate.sh password
+vagrant@rsr1:/var/akvo/rsr/code$ sudo ./pg_migrate.sh password
 ```
 
 The script should end with OK if things were OK! The log can be found in 
