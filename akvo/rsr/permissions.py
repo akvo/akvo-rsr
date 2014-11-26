@@ -100,3 +100,4 @@ def is_self(user, obj):
         return True
     if type(obj) == get_user_model() and obj == user:
         return True
+    return False
