@@ -8,9 +8,12 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         # Delete unused Groups
-        orm['auth.Group'].objects.get(name='RSR manager').delete()
-        orm['auth.Group'].objects.get(name='SMS manager').delete()
-        orm['auth.Group'].objects.get(name='SMS updater').delete()
+        try:
+            orm['auth.Group'].objects.get(name='RSR managers').delete()
+            orm['auth.Group'].objects.get(name='SMS manager').delete()
+            orm['auth.Group'].objects.get(name='SMS updater').delete()
+        except:
+            pass
 
         # Set all RSR editors to 'is_admin' and 'is_staff' on User level
         group = orm['auth.Group'].objects.get(name='RSR editors')
