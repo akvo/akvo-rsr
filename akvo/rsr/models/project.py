@@ -21,7 +21,7 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.utils import rsr_image_path, rsr_show_keywords, RSR_LIMITED_CHANGE
+from akvo.utils import rsr_image_path, rsr_show_keywords
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..iati.codelists import codelists_v104 as codelists
@@ -35,7 +35,6 @@ from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
-from .user import User
 
 
 class Project(TimestampsMixin, models.Model):
@@ -662,9 +661,9 @@ class Project(TimestampsMixin, models.Model):
 
     class Meta:
         app_label = 'rsr'
-        permissions = (
-            ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
-        )
         verbose_name = _(u'project')
         verbose_name_plural = _(u'projects')
         ordering = ['-id', ]
+        permissions = (
+            ('post_updates', u'Can post updates'),
+        )

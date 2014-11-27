@@ -11,59 +11,66 @@
 </section>
 
 <section id="search-filter">
-    <div id="search">
-        <form class="form-inline" role="form">
+    <div class="container-fluid">
+            <div id="search" class="verticalPadding">
             <p>{% trans "Refine the organisation list below by searching by name, country or type" %}</p>
-            <div class="input-group"\>
-                <input type="text" class="form-control" placeholder="{% trans "Search" %}">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
-                </span>
-            </div>
-        </form>
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <div class="input-group"\>
+                        <input type="text" class="form-control" placeholder="{% trans "Search" %}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">{% trans "Update list" %}</button>
+                        </span>
+                    </div>
+                    <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div id="filter" style="background-color: #383334; padding: 20px;">
-        <span style="color: #00AD9F; display: inline; text-transform: uppercase;">
-        continents</span><br />
-        <!-- Split button -->
-        <div class="btn-group">
-            <button type="button" class="btn">All</button>
-            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">All</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Africa</a></li>
-                <li><a href="#">Antartica</a></li>
-                <li><a href="#">Asia</a></li>
-                <li><a href="#">Australia</a></li>
-                <li><a href="#">Europe</a></li>
-                <li><a href="#">North America</a></li>
-                <li><a href="#">South America</a></li>
-            </ul>
+    <div id="collapseOne" class="panel-collapse collapse">
+        <div id="filter" class="verticalPadding row">
+            <div class="btn-group">
+                <button type="button" class="btn">Continents</button>
+                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">All</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Africa</a></li>
+                    <li><a href="#">Antartica</a></li>
+                    <li><a href="#">Asia</a></li>
+                    <li><a href="#">Australia</a></li>
+                    <li><a href="#">Europe</a></li>
+                    <li><a href="#">North America</a></li>
+                    <li><a href="#">South America</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>
 
-<div class="container">
-    <div class="row center-text">
+
+<div class="container-fluid">
+  <div class="row center-text verticalPadding">
         <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} organisations</p>
         {% include 'navigation/pagination.html' %}
     </div>
+</div>
 
     <section class="main-list organisations">
-        <ul>
+        <ul class="container">
             {% for o in page %}
             <li class="row">
-                <a href="{% url 'organisation-main' o.id %}" class="col-lg-3">
-                  {# <img src="http://placehold.it/400x300"> #}
-                  {% img o 250 250 o.title %}
-                </a>
+                <div class="col-sm-3 col-md-2 col-xs-4 col-lg-2 thumbImg">
+                    <a href="{% url 'organisation-main' o.id %}">
+                      {# <img src="http://placehold.it/400x300"> #}
+                      {% img o 250 250 o.title %}
+                    </a>
+                </div>
                 <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
-                <p class="small">
+                <p>
                     <span class="glyphicon glyphicon-globe"></span> {{o.primary_location.country}}, {{o.primary_location.country.continent}}<br>
                     <span class="glyphicon glyphicon-tag"></span> {{o.get_new_organisation_type_display}}<br>
                     <span class="glyphicon glyphicon-folder-open"></span> {{o.published_projects.count}} {% trans "projects" %}
@@ -73,5 +80,9 @@
         </ul>
     </section>
 </div>
-
+<div class="container-fluid">
+    <div class="row center-text">
+            {% include 'navigation/pagination.html' %}
+    </div>
+</div>
 {% endblock %}

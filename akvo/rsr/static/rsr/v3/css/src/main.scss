@@ -1,4 +1,4 @@
-@import 'library';
+@import 'library.scss';
 
 html {
     width: 100%;
@@ -52,7 +52,9 @@ a, a:link, a:visited {
 .topMargin {
 	margin-top:15px;
 }
-
+.verticalPadding {
+	padding:20px 0;
+}
 /* Force full-width columns below 570px (when using col-xs-N) */
 @include responsive(small-screens) {
 	.col-ty-12 {
@@ -61,16 +63,88 @@ a, a:link, a:visited {
 	}
 }
 
-a.btn {
-	border:none;
+a.btn-primary, button.btn-primary {
+	border:1px solid $btnColor;
 	color:white;
 	background:$btnColor;
 	&:hover {
-		border:none;
 		color:white;
-		background:$btnColor;
+		background:$anchorLinkHover;
+		border:1px solid $anchorLinkHover;
 	}
 }
+.dropdown-label {
+	display:block;
+	color:rgba($rsrGreen,0.7);
+	text-align:left;
+}
+.btn-group, .form-group {
+	button {
+		@include border-radius(3px);
+	}
+}
+
+/* Bootstrap style for typeahead dropdown, to be included in CSS file */
+.tt-input, .tt-hint {
+	border-radius:initial;
+}
+span.twitter-typeahead .tt-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  text-align: left;
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+}
+span.twitter-typeahead .tt-suggestion > p {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.42857143;
+  color: #333333;
+  white-space: nowrap;
+}
+span.twitter-typeahead .tt-suggestion > p:hover,
+span.twitter-typeahead .tt-suggestion > p:focus {
+  color: #ffffff;
+  text-decoration: none;
+  outline: 0;
+  background-color: #428bca;
+}
+span.twitter-typeahead .tt-suggestion.tt-cursor {
+  color: #ffffff;
+  background-color: #428bca;
+}
+span.twitter-typeahead {
+  width: 100%;
+}
+.input-group span.twitter-typeahead {
+  display: block !important;
+}
+.input-group span.twitter-typeahead .tt-dropdown-menu {
+  top: 32px !important;
+}
+.input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
+  top: 44px !important;
+}
+.input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
+  top: 28px !important;
+}
+
 /****************************************************************************
 								HEADER + NAVIGATION
 ****************************************************************************/
@@ -82,6 +156,21 @@ nav[role=navigation]{
 	box-shadow:0 1px 1px rgba(132,132,136,0.1);
 	border-radius: 0;
 	border-bottom:1px solid rgb(228,228,228);
+	button.navbar-toggle {
+		background:$rsrBlue;
+		border:1px solid $rsrBlue;
+		&:hover {
+			background:white;
+			border:1px solid $rsrBlue;
+			.icon-bar {
+				background:$rsrBlue;
+			}	
+		}
+	}
+	.navbar-collapse {
+		/*background:white;
+		border-top:1px solid rgb(228,228,228);*/
+		}
 	.navbar-brand {
 		float: left;
 		font-size: 18px;
@@ -104,6 +193,7 @@ nav[role=navigation]{
 			&:first-child {
 			}
 			a {	
+				font-weight:bold;
 				color:$anchorLink;
 				&:hover{
 					color:$anchorLinkHover;
@@ -171,46 +261,44 @@ h4.detailedInfo {
 .progress-bar-info {
 	background-color:$secondary1;
 }
-.labelWrap {
-	margin-bottom:20px;
-	.progress-label-current {
-		position: relative;
-	}
-	.progress-label-start {
-		float: left;
-		margin-top: -16px;
-	}
-	.progress-label-end {
-		float: right;
-		margin-top: -16px;
-	}
-}
+
 
 /* LISTINGS */
 #map {
-	height: 300px;
+	height: 400px;
 	background: #428bca;
-
 	@include responsive(sm) {
 		height: 450px;
-	}
+		}
 }
 
 #search-filter {
-	margin-bottom: 20px;
-}
-
-#search {
-	padding: 20px;
-	color: #fff;
-	text-align: center;
 	background-color: #241F20;
-
-	.input-group {
-		margin: auto;
-		max-width: 400px;
+	p {
+		color: rgba($rsrGreen,0.5);
+	}
+	div#search {
+		color: #fff;
+		text-align: center;
+		.showFilters {
+			margin-left:15px;
+			background:rgba($rsrGreen,0);
+			border:1px solid rgba($rsrGreen,0);							
+			color:$anchorLink;
+			transition: all 0.4s ease-in;
+			&:hover {
+				background:rgba($rsrGreen,0.5);
+				border:1px solid rgba($rsrGreen,0.7);							
+				color:white;				
+			}
+		}
+	}
+	div#filter {
+		background: darken(rgba(#383334,1), 0% );
+		text-align: center;
 	}
 }
+
 
 /************************************************************************
 		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
@@ -232,10 +320,17 @@ h4.detailedInfo {
 		div h4:first-of-type {
 			margin-top: 0;
 		}
+		.thumbImg{
+			height: 100%;
 		img {
 			width:100%;
+			}
 		}
 	}
+	.excerpt {
+		@include noWrapBlockTxt;
+	}
+
 }
 
 
@@ -244,7 +339,6 @@ header {
 	margin-bottom: 20px;
 	padding: 6px;
 	background: #ccc;
-
 	h1 {
 		margin-top: 10px;
 		margin-bottom: 0;
@@ -262,15 +356,6 @@ header {
 #timeline {
 	height: 400px;
 	background: #FFFFFF;
-}
-
-/* UPDATE */
-.main-list .excerpt {
-	height: 51px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    -ms-text-overflow: ellipsis;
 }
 
 

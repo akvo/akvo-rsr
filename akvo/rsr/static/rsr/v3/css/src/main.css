@@ -72,20 +72,93 @@ a, a:link, a:visited {
 .topMargin {
   margin-top: 15px; }
 
+.verticalPadding {
+  padding: 20px 0; }
+
 /* Force full-width columns below 570px (when using col-xs-N) */
 @media only screen and (min-width: 768px) {
   .col-ty-12 {
     float: none;
     width: 100%; } }
 
-a.btn {
-  border: none;
+a.btn-primary, button.btn-primary {
+  border: 1px solid #4ec1ea;
   color: white;
   background: #4ec1ea; }
-  a.btn:hover {
-    border: none;
+  a.btn-primary:hover, button.btn-primary:hover {
     color: white;
-    background: #4ec1ea; }
+    background: #f6a01a;
+    border: 1px solid #f6a01a; }
+
+.dropdown-label {
+  display: block;
+  color: rgba(0, 167, 157, 0.7);
+  text-align: left; }
+
+.btn-group button, .form-group button {
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px; }
+
+/* Bootstrap style for typeahead dropdown, to be included in CSS file */
+.tt-input, .tt-hint {
+  border-radius: initial; }
+
+span.twitter-typeahead .tt-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  text-align: left;
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box; }
+
+span.twitter-typeahead .tt-suggestion > p {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.42857;
+  color: #333333;
+  white-space: nowrap; }
+
+span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
+  color: #ffffff;
+  text-decoration: none;
+  outline: 0;
+  background-color: #428bca; }
+
+span.twitter-typeahead .tt-suggestion.tt-cursor {
+  color: #ffffff;
+  background-color: #428bca; }
+
+span.twitter-typeahead {
+  width: 100%; }
+
+.input-group span.twitter-typeahead {
+  display: block !important; }
+
+.input-group span.twitter-typeahead .tt-dropdown-menu {
+  top: 32px !important; }
+
+.input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
+  top: 44px !important; }
+
+.input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
+  top: 28px !important; }
 
 /****************************************************************************
 								HEADER + NAVIGATION
@@ -98,6 +171,14 @@ nav[role=navigation] {
   box-shadow: 0 1px 1px rgba(132, 132, 136, 0.1);
   border-radius: 0;
   border-bottom: 1px solid #e4e4e4; }
+  nav[role=navigation] button.navbar-toggle {
+    background: #72cdff;
+    border: 1px solid #72cdff; }
+    nav[role=navigation] button.navbar-toggle:hover {
+      background: white;
+      border: 1px solid #72cdff; }
+      nav[role=navigation] button.navbar-toggle:hover .icon-bar {
+        background: #72cdff; }
   nav[role=navigation] .navbar-brand {
     float: left;
     font-size: 18px;
@@ -115,6 +196,7 @@ nav[role=navigation] {
   nav[role=navigation] .navbar-nav li {
     padding-top: 3px; }
     nav[role=navigation] .navbar-nav li a {
+      font-weight: bold;
       color: #4ab1cf; }
       nav[role=navigation] .navbar-nav li a:hover {
         color: #f6a01a; }
@@ -168,33 +250,31 @@ h4.detailedInfo {
 .progress-bar-info {
   background-color: #e1edc3; }
 
-.labelWrap {
-  margin-bottom: 20px; }
-  .labelWrap .progress-label-current {
-    position: relative; }
-  .labelWrap .progress-label-start {
-    float: left;
-    margin-top: -16px; }
-  .labelWrap .progress-label-end {
-    float: right;
-    margin-top: -16px; }
-
 /* LISTINGS */
 #map {
-  height: 300px;
+  height: 400px;
   background: #428bca; }
 
 #search-filter {
-  margin-bottom: 20px; }
-
-#search {
-  padding: 20px;
-  color: #fff;
-  text-align: center;
   background-color: #241F20; }
-  #search .input-group {
-    margin: auto;
-    max-width: 400px; }
+  #search-filter p {
+    color: rgba(0, 167, 157, 0.5); }
+  #search-filter div#search {
+    color: #fff;
+    text-align: center; }
+    #search-filter div#search .showFilters {
+      margin-left: 15px;
+      background: rgba(0, 167, 157, 0);
+      border: 1px solid rgba(0, 167, 157, 0);
+      color: #4ab1cf;
+      transition: all 0.4s ease-in; }
+      #search-filter div#search .showFilters:hover {
+        background: rgba(0, 167, 157, 0.5);
+        border: 1px solid rgba(0, 167, 157, 0.7);
+        color: white; }
+  #search-filter div#filter {
+    background: #383334;
+    text-align: center; }
 
 /************************************************************************
 		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
@@ -211,8 +291,14 @@ h4.detailedInfo {
     font-size: 1.3em; }
   .main-list li div h4:first-of-type {
     margin-top: 0; }
-  .main-list li img {
-    width: 100%; }
+  .main-list li .thumbImg {
+    height: 100%; }
+    .main-list li .thumbImg img {
+      width: 100%; }
+.main-list .excerpt {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; }
 
 /* PROJECT */
 header {
@@ -235,11 +321,3 @@ header {
 #timeline {
   height: 400px;
   background: #FFFFFF; }
-
-/* UPDATE */
-.main-list .excerpt {
-  height: 51px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  -ms-text-overflow: ellipsis; }

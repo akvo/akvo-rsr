@@ -98,17 +98,24 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
             data : JSON.stringify(serializedData),
             contentType : 'application/json; charset=UTF-8',
             success: function(response) {
+                this.handleAddEmployment(response);
                 this.setState({
                     title: "Request successful",
                     response: "Your request is now pending and will have to be approved."
                 });
-                this.handleAddEmployment(response);
             }.bind(this),
-            error: function(response) {
-                this.setState({
-                    title: "Request failed",
-                    response: "Your request failed."
-                })
+            error: function(xhr, status, err) {
+                if (xhr.status == 409) {
+                    this.setState({
+                        title: "Request failed",
+                        response: "You are already connected to this organisation. Only one connection per organisation is allowed."
+                    })
+                } else {
+                    this.setState({
+                        title: "Request failed",
+                        response: "Request failed, check if the organisation field is filled in correctly."
+                    })
+                }
             }.bind(this)
         });
     },

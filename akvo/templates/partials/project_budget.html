@@ -1,14 +1,16 @@
 {% load i18n humanize %}
-
 <div class="progress">
     <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {% widthratio project.funds project.budget 100 %}%">
         <span class="sr-only">{% widthratio project.funds project.budget 100 %}% {% trans 'Complete' %}</span>
     </div>
 </div>
-<section class="labelWrap">
-	<span class="progress-label-start">{{project.get_currency_display}}{{project.funds|floatformat|intcomma}}</span>
-	<span class="progress-label-end">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</span>
-</section>
+<div class="row">
+		<div class="col-xs-3 text-left">
+			<span class="progress-label-start">{{project.get_currency_display}}{{project.funds|floatformat|intcomma}}</span></div>
+		<div class="col-xs-3 col-xs-offset-5 text-right">
+			<span class="progress-label-end">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</span>
+		</div>
+</div>
 <div class="text-center">
 	<a href="#" class="btn btn-primary">{% trans "Donate" %}</a>
 </div>
