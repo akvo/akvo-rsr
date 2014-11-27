@@ -61,40 +61,38 @@
 </div>
 
     <section class="main-list updates">
-        <ul class="container">
-            {% for u in page %}
-            <li class="row updateAsset">
-                <div class="col-sm-3 col-md-2 col-xs-4 col-lg-2 thumbImg">
-                    <a href="{% url 'update-main' u.project.id u.id %}">
-                      {% img u 220 220 u.title %}
-                    </a>
-                </div>
-                <div class="col-sm-4 col-xs-8 col-md-5 col-lg-5">
-                    <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
-                    <p class="small"><span class="glyphicon glyphicon-folder-close"></span>
-                      <a href="{% url 'project-main' u.project.pk %}">{{u.project.title}}</a><br>
-                    <span class="glyphicon glyphicon-user"></span> {{u.user.first_name}} {{u.user.last_name}}
-                        {% if u.user.approved_organisations %}
-                            {% with org=u.user.approved_organisations.0 %}
-                                (<a href="{% url 'organisation-main' org.pk %}">{{org.long_name}}</a>)
-                            {% endwith %}
-                        {% endif %}
-                    <br>
-                    {% if u.primary_location.country %}
-                    <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}},
-                        {{u.primary_location.country.continent}}<br>
-                    {% endif %}
-                    <span class="glyphicon glyphicon-calendar"></span> {{u.created_at|date:"d-M-Y"}}
-                    </p>
-                </div>   
-                <div class="excerpt small col-sm-5 col-xs-12  col-md-5 col-lg-5 hidden-xs">
-                    {% autoescape off %}
-                      {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
-                    {% endautoescape %}
-                </div>            
-            </li>
-            {% endfor %}
-        </ul>
+      <ul class="container">
+        {% for u in page %}
+        <li class="row updateAsset">
+          <div class="col-sm-3 col-md-2 col-xs-4 col-lg-2 thumbImg">
+            <a href="{% url 'update-main' u.project.id u.id %}">
+              {% img u 220 220 u.title %}
+            </a>
+          </div>
+          <div class="col-sm-4 col-xs-8 col-md-5 col-lg-5">
+            <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
+            <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'project-main' u.project.pk %}">{{u.project.title}}</a><br>
+              <span class="glyphicon glyphicon-user"></span> {{u.user.first_name}} {{u.user.last_name}}
+                {% if u.user.approved_organisations %}
+                  {% with org=u.user.approved_organisations.0 %}
+                    (<a href="{% url 'organisation-main' org.pk %}">{{org.long_name}}</a>)
+                  {% endwith %}
+                {% endif %}
+              <br>
+              {% if u.primary_location.country %}
+              <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}}, {{u.primary_location.country.continent}}<br>
+              {% endif %}
+              <span class="glyphicon glyphicon-calendar"></span> {{u.created_at|date:"d-M-Y"}}
+            </p>
+          </div>
+          <div class="excerpt small col-sm-5 col-xs-12  col-md-5 col-lg-5 hidden-xs">
+            {% autoescape off %}
+              {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+            {% endautoescape %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
     </section>
 
 <div class="container-fluid">
