@@ -60,23 +60,37 @@
 </div>
 
     <section class="main-list organisations">
-        <ul class="container">
-            {% for o in page %}
-            <li class="row">
-                <div class="col-sm-3 col-md-2 col-xs-4 col-lg-2 thumbImg">
-                    <a href="{% url 'organisation-main' o.id %}">
-                      {# <img src="http://placehold.it/400x300"> #}
-                      {% img o 250 250 o.title %}
-                    </a>
-                </div>
-                <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
-                <p>
-                    <span class="glyphicon glyphicon-globe"></span> {{o.primary_location.country}}, {{o.primary_location.country.continent}}<br>
-                    <span class="glyphicon glyphicon-tag"></span> {{o.get_new_organisation_type_display}}<br>
-                    <span class="glyphicon glyphicon-folder-open"></span> {{o.published_projects.count}} {% trans "projects" %}
-                </p>
-            </li>
-            {% endfor %}
+      <ul class="container">
+        {% for o in page %}
+        <li class="row">
+          <div class="col-lg-2 col-sm-3 col-xs-5 thumbImg">
+            <a href="{% url 'organisation-main' o.id %}">
+              {% img o 200 200 o.title %}
+            </a>
+          </div>
+          <div class="col-lg-4 col-sm-3 col-xs-7">
+            <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
+            {% if o.iati_org_id %}<p>{{o.iati_org_id}}<p>{% endif %}
+            <p><span class="glyphicon glyphicon-tag"></span> {{o.get_new_organisation_type_display}}</p>
+            {% if o.primary_location.country %}<p><span class="glyphicon glyphicon-globe"></span> {{o.primary_location.country}}, {{o.primary_location.country.continent}}</p>{% endif %}
+
+          </div>
+          <div class="col-sm-3 hidden-xs hidden-sm">
+            <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
+              <p><span class="glyphicon glyphicon-folder-open"></span> {{o.published_projects.count}} {% trans "projects" %}</p>
+              <p><span class="glyphicon glyphicon-user"></span> {{o.all_users.count}} {% trans "users" %}</p>
+              <p><span class="glyphicon glyphicon-list"></span> {{o.all_projects.all_updates.count}} {% trans "updates" %}</p>
+          </div>
+          {% if o.facebook or o.twitter or o.linkedin %}
+          <div class="col-md-3 hidden-xs hidden-sm">
+            <h4 class="detailedInfo">{% trans "Social Media" %}</h4>
+              {% if o.facebook %}<p><img src="http://www.lindersoft.com/images/Common/files/social-icon-sm-facebook.png"> <a href="{{o.facebook}}">Facebook</a></p>{% endif %}
+              {% if o.twitter %}<p><img src="http://www.cyfe.com/images/icon-twitter.png"> <a href="{{o.twitter}}">Twitter</a></p>{% endif %}
+              {% if o.linkedin %}<p><img src="http://www.bvgh.org/Portals/_default/Skins/_common/images/Linked-In-icon.png"> <a href="{{o.linkedin}}">LinkedIn</a></p>{% endif %}
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
         </ul>
     </section>
 </div>

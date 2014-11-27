@@ -75,8 +75,9 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     # If the fieldsets are changed, the template may need fixing too
     fieldsets = (
         (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
-                                                'new_organisation_type', 'logo', 'url', 'iati_org_id', 'language',
-                                                'content_owner', 'allow_edit',)}),
+                                                'new_organisation_type', 'logo', 'url', 'facebook', 'twitter',
+                                                'linkedin', 'iati_org_id', 'language', 'content_owner',
+                                                'allow_edit',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )

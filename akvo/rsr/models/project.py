@@ -465,6 +465,11 @@ class Project(TimestampsMixin, models.Model):
                 latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at')
             )
 
+        def all_updates(self):
+            "return ProjectUpdates for self, newest first"
+            from .project_update import ProjectUpdate
+            return ProjectUpdate.objects.filter(project__in=self)
+
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
             orgs = Organisation.objects.filter(partnerships__project__in=self)

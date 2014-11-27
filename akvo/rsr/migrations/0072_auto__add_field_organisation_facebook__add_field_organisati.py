@@ -1,104 +1,41 @@
 # -*- coding: utf-8 -*-
 from south.utils import datetime_utils as datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
 
-class Migration(DataMigration):
+
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Delete unused Groups
-        try:
-            orm['auth.Group'].objects.get(name='RSR managers').delete()
-            orm['auth.Group'].objects.get(name='SMS manager').delete()
-            orm['auth.Group'].objects.get(name='SMS updater').delete()
-        except:
-            pass
+        # Adding field 'Organisation.facebook'
+        db.add_column(u'rsr_organisation', 'facebook',
+                      self.gf('django.db.models.fields.URLField')(default='', max_length=200, blank=True),
+                      keep_default=False)
 
-        # Set all RSR editors to 'is_admin' and 'is_staff' on User level
-        group = orm['auth.Group'].objects.get(name='RSR editors')
-        for user in orm['rsr.User'].objects.all():
-            if group in user.groups.all():
-                user.is_admin = True
-                user.is_staff = True
-                user.save()
-        group.delete()
+        # Adding field 'Organisation.twitter'
+        db.add_column(u'rsr_organisation', 'twitter',
+                      self.gf('django.db.models.fields.URLField')(default='', max_length=200, blank=True),
+                      keep_default=False)
 
-        # Rename the 'Admin' Group
-        admins_group = orm['auth.Group'].objects.get(name='RSR partner admins')
-        admins_group.name = 'Admins'
-        admins_group.save()
+        # Adding field 'Organisation.linkedin'
+        db.add_column(u'rsr_organisation', 'linkedin',
+                      self.gf('django.db.models.fields.URLField')(default='', max_length=200, blank=True),
+                      keep_default=False)
 
-        # Rename the 'Project Editors' Group
-        project_editors_group = orm['auth.Group'].objects.get(name='RSR partner editors')
-        project_editors_group.name = 'Project Editors'
-        project_editors_group.save()
-
-        # Rename the 'Users' Group
-        users_group = orm['auth.Group'].objects.get(name='RSR users')
-        users_group.name = 'Users'
-        users_group.save()
-
-        # Create the new 'User Managers' Group
-        orm['auth.Group'].objects.create(name='User Managers')
-
-        # Approve all Employments and set their Group
-        for employment in orm['rsr.Employment'].objects.all():
-            employment.is_approved = True
-            user = employment.user
-            if admins_group in user.groups.all() or user.is_superuser or user.is_admin:
-                employment.group = admins_group
-                employment.user.is_staff = True
-                employment.user.save()
-            elif project_editors_group in employment.user.groups.all():
-                employment.group = project_editors_group
-                employment.user.is_staff = True
-                employment.user.save()
-            else:
-                employment.group = users_group
-            employment.save()
-
-        # Remove all existing Groups from Users
-        for user in orm['rsr.User'].objects.all():
-            for group in user.groups.all():
-                user.groups.remove(group)
-
-        # Remove all existing Permissions from the Groups (except limited change; still needed for TastyPie)
-        for group in orm['auth.Group'].objects.all():
-            for permission in group.permissions.all():
-                if not 'rsr_limited_change' in permission.codename:
-                    group.permissions.remove(permission)
 
     def backwards(self, orm):
-        orm['auth.Group'].objects.create(name='RSR manager')
-        orm['auth.Group'].objects.create(name='SMS manager')
-        orm['auth.Group'].objects.create(name='SMS updater')
-        editor_group = orm['auth.Group'].objects.create(name='RSR editors')
+        db.send_create_signal('rsr', ['Group'])
 
-        admin_group = orm['auth.Group'].objects.get(name='Admins')
-        admin_group.name = 'RSR partner admins'
-        admin_group.save()
+        # Deleting field 'Organisation.facebook'
+        db.delete_column(u'rsr_organisation', 'facebook')
 
-        orm['auth.Group'].objects.get(name='User Managers').delete()
+        # Deleting field 'Organisation.twitter'
+        db.delete_column(u'rsr_organisation', 'twitter')
 
-        project_editors_group = orm['auth.Group'].objects.get(name='Project Editors')
-        project_editors_group.name = 'RSR partner editors'
-        project_editors_group.save()
+        # Deleting field 'Organisation.linkedin'
+        db.delete_column(u'rsr_organisation', 'linkedin')
 
-        users_group = orm['auth.Group'].objects.get(name='Users')
-        users_group.name = 'RSR users'
-        users_group.save()
-
-        for employment in orm['rsr.Employment'].objects.all():
-            if employment.user.is_admin:
-                employment.user.groups.add(editor_group)
-            elif employment.is_approved:
-                if employment.group == admin_group:
-                    employment.user.groups.add(admin_group)
-                elif employment.group == project_editors_group:
-                    employment.user.groups.add(project_editors_group)
-                elif employment.group == users_group:
-                    employment.user.groups.add(users_group)
 
     models = {
         u'auth.group': {
@@ -181,7 +118,7 @@ class Migration(DataMigration):
         },
         'rsr.employment': {
             'Meta': {'object_name': 'Employment'},
-            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Country']", 'null': 'True'}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Country']", 'null': 'True', 'blank': 'True'}),
             'group': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'employments'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['auth.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_approved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -308,12 +245,14 @@ class Migration(DataMigration):
             'content_owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'description': ('akvo.rsr.fields.ValidXMLTextField', [], {'blank': 'True'}),
+            'facebook': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'fax': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '20', 'blank': 'True'}),
             'iati_org_id': ('akvo.rsr.fields.ValidXMLCharField', [], {'db_index': 'True', 'max_length': '75', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'internal_org_ids': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'recording_organisation'", 'symmetrical': 'False', 'through': "orm['rsr.InternalOrganisationID']", 'to': "orm['rsr.Organisation']"}),
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '2'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'linkedin': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'logo': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'long_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75', 'blank': 'True'}),
             'mobile': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '20', 'blank': 'True'}),
@@ -324,6 +263,7 @@ class Migration(DataMigration):
             'partner_types': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['rsr.PartnerType']", 'symmetrical': 'False'}),
             'phone': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '20', 'blank': 'True'}),
             'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.OrganisationLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
+            'twitter': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
         'rsr.organisationaccount': {
@@ -658,4 +598,3 @@ class Migration(DataMigration):
     }
 
     complete_apps = ['rsr']
-    symmetrical = True
