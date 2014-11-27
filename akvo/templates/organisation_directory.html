@@ -70,23 +70,28 @@
           </div>
           <div class="col-lg-4 col-sm-3 col-xs-7">
             <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
-            {% if o.iati_org_id %}<p>{{o.iati_org_id}}<p>{% endif %}
-            <p><span class="glyphicon glyphicon-tag"></span> {{o.get_new_organisation_type_display}}</p>
-            {% if o.primary_location.country %}<p><span class="glyphicon glyphicon-globe"></span> {{o.primary_location.country}}, {{o.primary_location.country.continent}}</p>{% endif %}
-
+            <p class="small">
+              {% if o.iati_org_id %}{{o.iati_org_id}}<br>{% endif %}
+              <span class="glyphicon glyphicon-tag"></span> {{o.get_new_organisation_type_display}}<br>
+              {% if o.primary_location.country %}<span class="glyphicon glyphicon-globe"></span> {{o.primary_location.country}}, {{o.primary_location.country.continent}}{% endif %}
+            </p>
           </div>
           <div class="col-sm-3 hidden-xs hidden-sm">
             <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
-              <p><span class="glyphicon glyphicon-folder-open"></span> {{o.published_projects.count}} {% trans "projects" %}</p>
-              <p><span class="glyphicon glyphicon-user"></span> {{o.all_users.count}} {% trans "users" %}</p>
-              <p><span class="glyphicon glyphicon-list"></span> {{o.all_projects.all_updates.count}} {% trans "updates" %}</p>
+            <p class="small">
+              <span class="glyphicon glyphicon-folder-open"></span> {{o.published_projects.count}} {% trans "projects" %}<br>
+              <span class="glyphicon glyphicon-user"></span> {{o.all_users.count}} {% trans "users" %}<br>
+              <span class="glyphicon glyphicon-list"></span> {{o.all_projects.all_updates.count}} {% trans "updates" %}
+            </p>
           </div>
           {% if o.facebook or o.twitter or o.linkedin %}
           <div class="col-md-3 hidden-xs hidden-sm">
             <h4 class="detailedInfo">{% trans "Social Media" %}</h4>
-              {% if o.facebook %}<p><img src="http://www.lindersoft.com/images/Common/files/social-icon-sm-facebook.png"> <a href="{{o.facebook}}">Facebook</a></p>{% endif %}
-              {% if o.twitter %}<p><img src="http://www.cyfe.com/images/icon-twitter.png"> <a href="{{o.twitter}}">Twitter</a></p>{% endif %}
-              {% if o.linkedin %}<p><img src="http://www.bvgh.org/Portals/_default/Skins/_common/images/Linked-In-icon.png"> <a href="{{o.linkedin}}">LinkedIn</a></p>{% endif %}
+            <p class="small">
+              {% if o.facebook %}<img src="http://www.lindersoft.com/images/Common/files/social-icon-sm-facebook.png"> <a href="{{o.facebook}}">Facebook</a><br>{% endif %}
+              {% if o.twitter %}<img src="http://www.cyfe.com/images/icon-twitter.png"> <a href="{{o.twitter}}">Twitter</a><br>{% endif %}
+              {% if o.linkedin %}<img src="http://www.bvgh.org/Portals/_default/Skins/_common/images/Linked-In-icon.png"> <a href="{{o.linkedin}}">LinkedIn</a>{% endif %}
+            </p>
           </div>
           {% endif %}
         </li>
