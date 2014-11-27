@@ -8,7 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
-from ..filters import remove_empty_querydict_items, ProjectFilterSet
+from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project
 from ...utils import pagination
 
@@ -89,20 +89,20 @@ def _get_carousel_data(project):
     return {"photos": photos}
 
 
-
 def directory(request):
-    f = ProjectFilterSet(remove_empty_querydict_items(request.GET) or None,
-                         queryset = Project.objects.published())
+    qs = remove_empty_querydict_items(request.GET)
+    f = ProjectFilter(qs, queryset=Project.objects.published())
+    show_filters = "in" if qs else ""
 
     page = request.GET.get('page')
-
     page, paginator, page_range = pagination(page, f.qs, 10)
 
     context = {
         'filter': f,
         'page': page,
-        'paginator': paginator,
         'page_range': page_range,
+        'paginator': paginator,
+        'show_filters': show_filters,
         }
     return render(request, 'project_directory.html', context)
 

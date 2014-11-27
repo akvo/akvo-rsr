@@ -5,96 +5,135 @@
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
 {% block head_js %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.compat.min.js"></script>
 
 <script type="text/javascript">
- $(document).ready(function() {
+    $(document).ready(function() {
 
-var projects = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: {
-      url: '/rest/v1/project/?format=json&limit=10000',
-      filter: function(response) {
-          return response.results;
-      }
-  }
-});
+        var projects = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('background',
+                                                                 'current_image_credit',
+                                                                 'current_status',
+                                                                 'project_plan',
+                                                                 'project_plan_summary',
+                                                                 'subtitle',
+                                                                 'title'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: {
+                url: '/rest/v1/project/?format=json&limit=10000',
+                filter: function(response) {
+                    f = [
+                        'id',
+                        'background',
+                        'current_image_credit',
+                        'current_status',
+                        'project_plan',
+                        'project_plan_summary',
+                        'subtitle',
+                        'title'
+                    ];
+                    return _.map(response.results, _.partialRight(_.pick, f));
+                }
+            }
+        });
 
-var organisations = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: {
-      url: '/rest/v1/organisation/?format=json&limit=10000',
-      filter: function(response) {
-          return response.results;
-      }
-  }
-});
+   {% comment %}
+   var organisations = new Bloodhound({
+     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
+     queryTokenizer: Bloodhound.tokenizers.whitespace,
+     prefetch: {
+       url: '/rest/v1/organisation/?format=json&limit=10000',
+       filter: function(response) {
+         return response.results;
+       }
+     }
+   });
 
-var countries = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: {
-      url: '/rest/v1/country/?format=json&limit=10000',
-      filter: function(response) {
-          return response.results;
-      }
-  }
-});
 
-var focus_area = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: {
-      url: '/rest/v1/focus_area/?format=json&limit=10000',
-      filter: function(response) {
-          return response.results;
-      }
-  }
-});
+   var countries = new Bloodhound({
+     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+     queryTokenizer: Bloodhound.tokenizers.whitespace,
+     prefetch: {
+       url: '/rest/v1/country/?format=json&limit=10000',
+       filter: function(response) {
+         return response.results;
+       }
+     }
+   });
 
-projects.initialize();
-organisations.initialize();
-countries.initialize();
-focus_area.initialize();
+   var focus_area = new Bloodhound({
+     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+     queryTokenizer: Bloodhound.tokenizers.whitespace,
+     prefetch: {
+       url: '/rest/v1/focus_area/?format=json&limit=10000',
+       filter: function(response) {
+         return response.results;
+       }
+     }
+   });
+        {% endcomment %}
 
-$('#query').typeahead({
-  highlight: true
-},
-{
-  name: 'projects',
-  displayKey: 'title',
-  source: projects.ttAdapter(),
-  templates: {
-    header: '<h3 class="dd-category">Projects</h3>',
-    suggestion: Handlebars.compile('<a href="/projects/\{\{id\}\}/"><p><u>\{\{title\}\}</u></p><p>\{\{subtitle\}\}</p></a>')
-  }
-},
-{
-  name: 'organisations',
-  displayKey: 'long_name',
-  source: organisations.ttAdapter(),
-  templates: {
-    header: '<h3 class="dd-category">Organisations</h3>'
-  }
-},
-{
-  name: 'countries',
-  displayKey: 'name',
-  source: countries.ttAdapter(),
-  templates: {
-    header: '<h3 class="dd-category">Countries</h3>'
-  }
-},
-{
-  name: 'focus_area',
-  displayKey: 'name',
-  source: focus_area.ttAdapter(),
-  templates: {
-    header: '<h3 class="dd-category">Focus area</h3>'
-  }
-});
-});
+   projects.initialize();
+   // organisations.initialize();
+   // countries.initialize();
+   // focus_area.initialize();
+
+   $('#id_title').typeahead(
+     {
+       highlight: true
+     },
+     {
+       name: 'projects',
+       displayKey: 'title',
+       source: projects.ttAdapter(),
+       templates: {
+           header: '<h3 class="dd-category">Projects</h3>',
+           suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %>!</p><p><%= subtitle %></p></a>')
+        // suggestion: Handlebars.compile('<a href="/project/\{\{id\}\}/"><p><u>\{\{title\}\}</u></p><p>\{\{subtitle\}\}</p></a>')
+       }
+     }
+
+       {% comment %}
+     {
+       name: 'projects',
+       displayKey: 'title',
+       source: projects.ttAdapter(),
+       templates: {
+         header: '<h3 class="dd-category">Projects</h3>',
+         suggestion: Handlebars.compile('<a href="/project/\{\{id\}\}/"><p><u>\{\{title\}\}</u></p><p>\{\{subtitle\}\}</p></a>')
+       }
+     }
+       {% endcomment %}
+       {% comment %}
+       ,
+     {
+       name: 'organisations',
+       displayKey: 'long_name',
+       source: organisations.ttAdapter(),
+       templates: {
+         header: '<h3 class="dd-category">Partners</h3>'
+       }
+     },
+     {
+       name: 'countries',
+       displayKey: 'name',
+       source: countries.ttAdapter(),
+       templates: {
+         header: '<h3 class="dd-category">Countries</h3>'
+       }
+     },
+     {
+       name: 'focus_area',
+       displayKey: 'name',
+       source: focus_area.ttAdapter(),
+       templates: {
+         header: '<h3 class="dd-category">Focus area</h3>'
+       }
+     }
+       {% endcomment %}
+   );
+
+ });
 </script>
 {% endblock %}
 
@@ -105,160 +144,144 @@ $('#query').typeahead({
 </section>
 
 <section id="search-filter">
-  <div class="container-fluid">
-        <div id="search" class="verticalPadding">
+<form id="filterForm" action="" method="get" accept-charset="uft-8">
+    <div class="container-fluid">
+      <div id="search" class="verticalPadding">
         <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
-        <form class="form-inline" role="form">
-            <div class="form-group">
-                <div class="input-group">
-                  <input type="search" class="form-control search-query" id="query" placeholder="{% trans 'Search' %}" />
-                  <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button">{% trans "Update list" %} &#8250;</button>
-                  </span>
-                </div>
-                <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
+        <div class="form-inline" role="form">
+          {#<form class="form-inline" role="form">#}
+          <div class="form-group">
+            <div class="input-group">
+              {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
+              </span>
             </div>
-        </form>
-      </div>
-  </div>
-
-  <div id="collapseOne" class="panel-collapse collapse">
-    <div id="filter" class="verticalPadding row">
-          <div class="btn-group">
-            <button type="button" class="btn btn-default">Location</button>
-            <button type="button" class="btn  btn-default dropdown-toggle" data-toggle="dropdown">
-            <span class="caret"></span>
-            <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">All</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Africa</a></li>
-              <li><a href="#">Antartica</a></li>
-              <li><a href="#">Asia</a></li>
-              <li><a href="#">Australia</a></li>
-              <li><a href="#">Europe</a></li>
-              <li><a href="#">North America</a></li>
-              <li><a href="#">South America</a></li>
-            </ul>
+            <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
           </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-default">Status</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">All</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li><a href="#">Separated link</a></li>
-            </ul>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-default">Partners</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">All</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li><a href="#">Separated link</a></li>
-            </ul>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-default">Policy marker</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">All</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li><a href="#">Separated link</a></li>
-            </ul>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-default">Sector code</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">All</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li><a href="#">Separated link</a></li>
-            </ul>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-default">Total budget</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">All</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li><a href="#">Separated link</a></li>
-            </ul>
-          </div>
-
-          <div class="btn-group">
-            <div class="btn-group">
-              <button type="button" class="btn btn-default">Date from</button>
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-              </button>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">All</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li><a href="#">Separated link</a></li>
-              </ul>
-            </div>
-
-            <div class="btn-group">
-              <button type="button" class="btn btn-default">To</button>
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-              </button>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">All</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li><a href="#">Separated link</a></li>
-              </ul>
-            </div>
-          </div>
-
+          {#</form>#}
+        </div>
       </div>
     </div>
+
+    <style>
+     .form-group label {color: #1B635E}
+    </style>
+
+    <div id="collapseOne" class="panel-collapse collapse {{ show_filters }}">
+      <div id="filter" class="verticalPadding row">
+
+        <div class="btn-group">
+          {% bootstrap_field filter.form.continent %}
+        </div>
+
+        <div class="btn-group">
+          {% bootstrap_field filter.form.status %}
+        </div>
+
+        <div class="btn-group">
+          {% bootstrap_field filter.form.organisation %}
+        </div>
+        {% comment %}
+        <div class="btn-group">
+          {% bootstrap_field filter.form.category %}
+        </div>
+        {% endcomment %}
+
+        <div class="btn-group">
+          {% bootstrap_field filter.form.focus_area %}
+        </div>
+
+        <div class="btn-group">
+          {# bootstrap_field filter.form.title #}
+        </div>
+
+        {% comment %}
+        <div class="btn-group">
+          <button type="button" class="btn btn-default">Policy marker</button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">All</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-default">Sector code</button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">All</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-default">Total budget</button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">All</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </div>
+
+        <div class="btn-group">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default">Date from</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">All</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" class="btn btn-default">To</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">All</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </div>
+        </div>
+        {% endcomment %}
+    </div>
+  </div>
+  </form>
 </section>
 
 <div class="container-fluid">
@@ -268,7 +291,7 @@ $('#query').typeahead({
   </div>
 </div>
 
-  <section class="main-list projects">
+<section class="main-list projects">
     <ul class="container">
       {% for p in page %}
         <li class="row">
@@ -327,10 +350,16 @@ $('#query').typeahead({
     </li>
   {% endfor %}
 </ul>
-</section>
+  </section>
 <div class="container-fluid">
   <div class="row center-text">
-  {% include 'navigation/pagination.html' %}
-  </div>
-</div>
+     {% include 'navigation/pagination.html' %}
+   </div>
+ </div>
+
+<script> {# crude js :-( #}
+ $('select').change(function() {
+   $('#filterForm').submit();
+ });
+</script>
 {% endblock %}

@@ -5,23 +5,29 @@ See more details in the license.txt file located at the root folder of the
 Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
-
-from akvo.rsr.models import ProjectUpdate, Project
-from akvo.utils import pagination
+from ..filters import remove_empty_querydict_items, ProjectUpdateFilter
+from ..models import ProjectUpdate, Project
+from ...utils import pagination
 
 from django.shortcuts import get_object_or_404, render
 
 
 def directory(request):
-    updates_list = ProjectUpdate.objects.all()
-    page = request.GET.get('page')
+    qs = remove_empty_querydict_items(request.GET)
+    f = ProjectUpdateFilter(qs, queryset=ProjectUpdate.objects.all())
+    show_filters = "in" if qs else ""
 
-    page, paginator, page_range = pagination(page, updates_list, 10)
+    # updates_list = ProjectUpdate.objects.all()
+
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, f.qs, 10)
 
     context = {
+        'filter': f,
         'page': page,
-        'paginator': paginator,
         'page_range': page_range,
+        'paginator': paginator,
+        'show_filters': show_filters,
         }
     return render(request, 'update_directory.html', context)
 
