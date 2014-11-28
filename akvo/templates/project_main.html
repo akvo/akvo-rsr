@@ -55,6 +55,9 @@
     {% include "partials/project_header.html" %}
 
     <div class="container">
+        {% if not project.is_published %}
+            <div id="draft" class="row">This is a draft view of the project. It can only be seen by Administrators and Project editors.</div>
+        {% endif %}
         <div class="row">
             <div class="col-sm-8">
                 <div id="carousel"></div>
