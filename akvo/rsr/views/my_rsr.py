@@ -61,7 +61,7 @@ def my_updates(request):
         'page_range': page_range,
     }
 
-    return render_to_response('myrsr/my_updates.html', context)
+    return render(request, 'myrsr/my_updates.html', context)
 
 
 @login_required

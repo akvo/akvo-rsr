@@ -20,9 +20,6 @@ from ..signals import (
     update_project_budget, update_project_funding
 )
 
-import rules
-from ..permissions import is_rsr_admin, is_org_admin, is_org_user_manager, is_org_project_editor, is_org_user, is_self
-
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
@@ -105,6 +102,9 @@ __all__ = [
 ]
 
 # Permission rules
+import rules
+from ..permissions import is_rsr_admin, is_org_admin, is_org_user_manager, is_org_project_editor, is_org_user, is_self
+
 rules.add_perm('rsr', rules.always_allow)
 
 rules.add_perm('rsr.add_benchmarkname', is_rsr_admin)
