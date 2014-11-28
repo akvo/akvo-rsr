@@ -273,58 +273,43 @@ $('#query').typeahead({
       {% for p in page %}
         <li class="row">
           <div class="col-lg-2 col-sm-3 col-xs-5 thumbImg">
-            {% comment %}
             <a href="{% url 'project-main' p.id %}">
-              {# <img src="http://placehold.it/200x200" alt="{{p.title}}"> #}
-              {# <img src="/media/{{p.current_image}}" alt="{{p.title}}" /> #}
-              {% thumbnail p.current_image 200x200 upscale autocrop sharpen as project_image %}
-              {# <img src="{{project_image}}" alt="{{p.title" />
-              {% include "partials/img.html" with img=p.current_image size=200x200 title=p.title %}
+                {% img p 200 200 p.title %}
             </a>
-            {# include "partials/img.html" with img=p.current_image size=200x200 title=p.title #}
-            {% img p 200 200 p.title %}
-            <img src="/media/{{p.current_image}}" alt="" />
-            {% thumbnail p.current_image "200x200" crop="center" as im %}
-            <img src="{{ im.url }}" width="{{img.width}}" height="{{im.height}}" />
-          {% endthumbnail %}
-        {% endcomment %}
-        <a href="{% url 'project-main' p.id %}">
-          {% img p 200 200 p.title %}
-        </a>
-      </div>
-      <div class="col-lg-4 col-sm-3 col-xs-7">
-          <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
-          <p>{{p.subtitle}}</p>
-          <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
-          <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.partners.all.0.id %}">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
-      </div>
-      <div class="col-sm-3 hidden-xs hidden-sm">
-        <h4 class="detailedInfo">{% trans "Focus Areas" %}</h4>
-          <p>
-          {% for area in p.focus_areas %}
-            <a href="#">{{area.name}}</a><br/>
-          {% endfor %}
-          </p>
-          <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
-          <p>?</p>
-          <h4 class="detailedInfo">{% trans "Status" %}</h4>
-          <p>{{p.get_status_display}}</p>
-      </div>
-      <div class="col-md-3 hidden-xs hidden-sm">
-        <h4 class="detailedInfo">{% trans "Finance" %}</h4>
-        {% include "partials/project_budget.html" with project=p %}
-      </div>
-      <div class="col-xs-7 col-xs-offset-5 col-sm-6 col-sm-offset-0 visible-xs-block visible-sm">
-        <p class="small">
-          <span class="detailedInfo">{% trans "Focus Areas" %}</span>
-          {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>
-          <span class="detailedInfo">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
-          <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
-          <span class="detailedInfo">{% trans "Finance" %}</span>
-          {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
-        </p>
-      </div>
-    </li>
+          </div>
+          <div class="col-lg-4 col-sm-3 col-xs-7">
+              <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
+              <p>{{p.subtitle}}</p>
+              <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
+              <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.partners.all.0.id %}">{{p.partners.all.0}}</a> <a href="#" class="small">+{{p.partners.count|add:"-1"}} more</a></p>
+          </div>
+          <div class="col-sm-3 hidden-xs hidden-sm">
+            <h4 class="detailedInfo">{% trans "Focus Areas" %}</h4>
+              <p>
+              {% for area in p.focus_areas %}
+                <a href="#">{{area.name}}</a><br/>
+              {% endfor %}
+              </p>
+              <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
+              <p>?</p>
+              <h4 class="detailedInfo">{% trans "Status" %}</h4>
+              <p>{{p.get_status_display}}</p>
+          </div>
+          <div class="col-md-3 hidden-xs hidden-sm">
+            <h4 class="detailedInfo">{% trans "Finance" %}</h4>
+            {% include "partials/project_budget.html" with project=p %}
+          </div>
+          <div class="col-xs-7 col-xs-offset-5 col-sm-6 col-sm-offset-0 visible-xs-block visible-sm">
+            <p class="small">
+              <span class="detailedInfo">{% trans "Focus Areas" %}</span>
+              {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>
+              <span class="detailedInfo">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
+              <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
+              <span class="detailedInfo">{% trans "Finance" %}</span>
+              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+            </p>
+          </div>
+        </li>
   {% endfor %}
 </ul>
 </section>
