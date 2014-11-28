@@ -8,10 +8,12 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
+from ..forms import ProjectUpdateForm
 from ..models import Invoice, Project
 from ...utils import pagination
 
-from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
 
 
 def _get_accordion_data(project):
@@ -118,6 +120,64 @@ def main(request, project_id):
     }
 
     return render(request, 'project_main.html', context)
+
+
+@login_required
+def add_update_old(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    updates = project.updates_desc()[:5]
+    updateform = ProjectUpdateForm()
+
+    context = {
+        'project': project,
+        'updates': updates,
+        'updateform': updateform,
+    }
+
+    return render(request, 'update_add.html', context)
+
+@login_required()
+def add_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
+    project = get_object_or_404(Project, id=project_id)
+    updates = project.updates_desc()[:5]
+    update = None
+
+    # if update_id is not None:
+    #     edit_mode = True
+    #     update = get_object_or_404(ProjectUpdate, id=update_id)
+    #     if not request.user == update.user:
+    #         request.error_message = u'You can only edit your own updates.'
+    #         raise PermissionDenied
+    #
+    #     if update.edit_window_has_expired():
+    #         return render_to_response('rsr/project/update_form_timeout.html',
+    #             dict(
+    #                 project=project,
+    #                 update=update,
+    #                 site_section='projects',
+    #                 ),
+    #             RequestContext(request))
+
+    if request.method == 'POST':
+        updateform = form_class(request.POST, request.FILES, instance=update)
+        if updateform.is_valid():
+            update = updateform.save(commit=False)
+            update.project = project
+            update.user = request.user
+            update.update_method = 'W'
+            update.save()
+            return redirect(update.get_absolute_url())
+    else:
+        updateform = form_class(instance=update)
+
+    context = {
+        'project': project,
+        'updates': updates,
+        'update': update,
+        'updateform': updateform,
+    }
+
+    return render(request, 'update_add.html', context)
 
 
 def search(request):

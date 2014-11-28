@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% load i18n markup_tags rsr_utils bootstrap3 %}
+
+{% block title %}{{project.title}}{% endblock %}
+
+{% block head_js %}
+<script>
+    $(document).ready(function() {
+        var lat = document.getElementById("latitude_id");
+        var long = document.getElementById("latitude_id");
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(storePosition);
+        }
+        function storePosition(position) {
+            x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+        }
+
+//        // Auto dismiss alerts
+//        $(".alert").alert();
+//        window.setTimeout(function() { $(".alert").alert('close'); }, 2000);
+//
+//        // Form for updating details
+//        $('#updateForm').submit(function(event) {
+//
+//            serializedData = {};
+//            $.each($(this).serializeArray(), function(i, obj) { serializedData[obj.name] = obj.value });
+//
+//            $.ajax({
+//                type:"POST",
+//                url: "{% url 'add_update' project.pk %}",
+//                data : $(this),
+//                contentType : 'multipart/form-data',
+//                success: function(response){
+//                    window.location.replace(response['absolute_url']);
+//                },
+//                error: function(response)
+//                {
+//                    jsonValue = $.parseJSON( response['responseText'] );
+//
+//                    $.each(jsonValue, function(key, value){
+//                        $( "#update" ).prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>' + value + '</div>');
+//                    });
+//
+//                    window.setTimeout(function() {
+//                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+//                            $(this).remove();
+//                        });
+//                    }, 2000);
+//                }
+//            });
+//
+//            event.preventDefault();
+//
+//        });
+    });
+</script>
+{% endblock %}
+
+{% block maincontent %}
+
+<article class="touch-navbar">
+    {% include "partials/project_header.html" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{% trans "Add an update" %}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12" id="update">
+                <form method="post" action="" id="updateForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in updateform %}
+                        {% bootstrap_field field %}
+                    {% endfor %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">
+                            {% trans 'Add update' %}
+                        </button>
+                    {% endbuttons %}
+                </form>
+            </div>
+            {% if updates %}
+            <div class="col-lg-5 col-md-5 hidden-sm hidden-xs">
+                <h2>Previous updates of this project</h2>
+                {% for u in updates %}
+                <div class="row">
+                    <div class="col-lg-5 col-md-5 thumbImg">
+                        <a href="{% url 'update-main' u.project.id u.id %}">
+                          {% img u 160 160 u.title %}
+                        </a>
+                    </div>
+                    <div class="col-lg-7 col-md-7">
+                        <h4><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h4>
+                        <p class="small">
+                            <span class="glyphicon glyphicon-user"></span> {{u.user.first_name}} {{u.user.last_name}}<br>
+                            {% if u.primary_location %}
+                            <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}}, {{u.primary_location.country.continent}} <br>
+                            {% endif %}
+                            <span class="glyphicon glyphicon-calendar"></span> {{u.created_at|date:"d-M-Y"}}<br>
+                        </p>
+                    </div>
+                </div>
+                <br>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</article>
+
+{% endblock %}

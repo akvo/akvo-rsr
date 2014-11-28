@@ -5,9 +5,20 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import ProjectUpdate
+import cStringIO
 
-from ..serializers import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
+from django.shortcuts import get_object_or_404
+
+from rest_framework import status
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from akvo.rsr.models import Project, ProjectUpdate
+
+from ..serializers import BaseProjectUpdateSerializer, ProjectUpdateSerializer, ProjectUpdateExtraSerializer
 from ..viewsets import BaseRSRViewSet
 
 
@@ -44,3 +55,25 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         if uuid is not None:
             queryset = self.queryset.filter(uuid=uuid)
         return queryset
+
+
+@api_view(['POST'])
+@parser_classes((MultiPartParser, FormParser,))
+@permission_classes((IsAuthenticated, ))
+def add_update(request, pk=None):
+    project = get_object_or_404(Project, pk=pk)
+
+    # Check if user is allowed to post updates to this project
+    if not request.user.has_perm('rsr.post_updates', project):
+        raise PermissionDenied()
+
+    request.DATA['project'] = pk
+    request.DATA['user'] = request.user.pk
+
+    serializer = BaseProjectUpdateSerializer(data=request.DATA, files=request.FILES)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

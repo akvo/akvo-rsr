@@ -2,6 +2,7 @@
 
 {% url 'project-directory' as project_url %}
 {% url 'update-directory' as update_url %}
+{% url 'update-directory' as update_url %}
 {% url 'organisation-directory' as organisation_url %}
 {% url 'my_details' as myrsr_url %}
 
@@ -25,8 +26,7 @@
     <div class="collapse navbar-collapse" id="navbar-collapsed">
       <ul class="nav navbar-nav">
         <li>
-          <a class="{% if current_path == project_path %}
-             active{% endif %}"
+          <a class="{% if current_path == project_path %}active{% endif %}"
              href="{% url 'project-directory' %}">
             {% trans "Projects" %}
           </a>
@@ -46,7 +46,8 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-            <a href="/#" class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
+            <a href="{% if project %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
+               class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
               {% bootstrap_icon "bullhorn" %} Add an update
             </a>
         </li>

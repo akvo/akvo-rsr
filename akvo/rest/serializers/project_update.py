@@ -16,6 +16,15 @@ from .project_update_location import ProjectUpdateLocationSerializer, ProjectUpd
 from .user import UserSerializer
 
 
+class BaseProjectUpdateSerializer(BaseRSRSerializer):
+    """Used to post an update without location."""
+
+    #photo = Base64ImageField(required=False, allow_empty_file=True)
+
+    class Meta:
+        model = ProjectUpdate
+
+
 class ProjectUpdateSerializer(BaseRSRSerializer):
 
     locations = ProjectUpdateLocationSerializer(source='locations', many=True)
