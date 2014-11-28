@@ -94,6 +94,18 @@ class Organisation(TimestampsMixin, models.Model):
         blank=True,
         help_text=_(u'Enter the full address of your web site, beginning with http://.'),
     )
+    facebook = models.URLField(
+        blank=True,
+        help_text=_(u'Enter the full address of your Facebook page, beginning with http://.'),
+    )
+    twitter = models.URLField(
+        blank=True,
+        help_text=_(u'Enter the full address of your Twitter feed, beginning with http://.'),
+    )
+    linkedin = models.URLField(
+        blank=True,
+        help_text=_(u'Enter the full address of your LinkedIn page, beginning with http://.'),
+    )
     phone = ValidXMLCharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     mobile = ValidXMLCharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     fax = ValidXMLCharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
