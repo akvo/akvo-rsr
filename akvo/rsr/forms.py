@@ -18,7 +18,7 @@ from registration.models import RegistrationProfile
 
 from urlparse import urlsplit, urlunsplit
 
-from .models import Country, Organisation, ProjectUpdate
+from .models import Country, Organisation, ProjectUpdate, ProjectUpdateLocation
 
 from akvo import settings
 
@@ -283,3 +283,25 @@ class ProjectUpdateForm(forms.ModelForm):
                 path = '/watch?v=%s' % path.lstrip('/')
                 data = urlunsplit((scheme, netloc, path, query, fragment))
         return data
+
+    def save(self, project=None, user=None):
+        if project and user:
+            # Save update
+            update = super(ProjectUpdateForm, self).save(commit=False)
+            update.project = project
+            update.user = user
+            update.update_method = 'W'
+            update.save()
+
+            # Save update location
+            latitude_data = self.cleaned_data['latitude']
+            longitude_data = self.cleaned_data['longitude']
+            ProjectUpdateLocation.objects.create(
+                latitude=latitude_data,
+                longitude=longitude_data,
+                location_target=update,
+            )
+
+            return update
+        else:
+            raise forms.ValidationError('Project or user not found.')

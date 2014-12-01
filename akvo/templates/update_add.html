@@ -7,53 +7,15 @@
 {% block head_js %}
 <script>
     $(document).ready(function() {
-        var lat = document.getElementById("latitude_id");
-        var long = document.getElementById("latitude_id");
+        $( "#id_latitude").val(0);
+        $( "#id_longitude").val(0);
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(storePosition);
         }
         function storePosition(position) {
-            x.innerHTML = "Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude;
+            $( "#id_latitude").val(position.coords.latitude);
+            $( "#id_longitude").val(position.coords.longitude);
         }
-
-//        // Auto dismiss alerts
-//        $(".alert").alert();
-//        window.setTimeout(function() { $(".alert").alert('close'); }, 2000);
-//
-//        // Form for updating details
-//        $('#updateForm').submit(function(event) {
-//
-//            serializedData = {};
-//            $.each($(this).serializeArray(), function(i, obj) { serializedData[obj.name] = obj.value });
-//
-//            $.ajax({
-//                type:"POST",
-//                url: "{% url 'add_update' project.pk %}",
-//                data : $(this),
-//                contentType : 'multipart/form-data',
-//                success: function(response){
-//                    window.location.replace(response['absolute_url']);
-//                },
-//                error: function(response)
-//                {
-//                    jsonValue = $.parseJSON( response['responseText'] );
-//
-//                    $.each(jsonValue, function(key, value){
-//                        $( "#update" ).prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>' + value + '</div>');
-//                    });
-//
-//                    window.setTimeout(function() {
-//                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
-//                            $(this).remove();
-//                        });
-//                    }, 2000);
-//                }
-//            });
-//
-//            event.preventDefault();
-//
-//        });
     });
 </script>
 {% endblock %}

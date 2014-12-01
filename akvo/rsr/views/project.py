@@ -161,11 +161,7 @@ def add_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     if request.method == 'POST':
         updateform = form_class(request.POST, request.FILES, instance=update)
         if updateform.is_valid():
-            update = updateform.save(commit=False)
-            update.project = project
-            update.user = request.user
-            update.update_method = 'W'
-            update.save()
+            update = updateform.save(project=project, user=request.user)
             return redirect(update.get_absolute_url())
     else:
         updateform = form_class(instance=update)
