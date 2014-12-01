@@ -86,3 +86,20 @@ class ProjectUpdateFilter(django_filters.FilterSet):
     class Meta:
         model = ProjectUpdate
         fields = ['continent', 'title', ]
+
+
+class OrganisationFilter(django_filters.FilterSet):
+
+    continent = django_filters.ChoiceFilter(
+        choices=ANY_CHOICE + CONTINENTS,
+        label='location',
+        name='primary_location__country__continent_code')
+
+    name = django_filters.CharFilter(
+        lookup_type='icontains',
+        label='Search',
+        name='name')
+
+    class Meta:
+        model = ProjectUpdate
+        fields = ['continent', 'name', ]

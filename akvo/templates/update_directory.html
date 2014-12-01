@@ -1,49 +1,9 @@
 {% extends "base.html" %}
 
-{% load i18n maps markup_tags rsr_utils bootstrap3 %}
+{% load i18n maps markup_tags rsr_utils bootstrap3 compressed  %}
 
 {% block title %}{% trans 'Updates' %}{% endblock %}
 
-{% block head_js %}
-    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.compat.min.js"></script>
-
-    <script type="text/javascript">
-     $(document).ready(function() {
-       var updates = new Bloodhound({
-         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text', 'title'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: {
-                url: '/rest/v1/project_update/?format=json&limit=10000',
-                filter: function(response) {
-                    f = [
-                        'id',
-                        'text',
-                        'title'
-                    ];
-                    return _.map(response.results, _.partialRight(_.pick, f));
-                }
-            }
-       });
-       updates.initialize();
-
-       $('#id_title').typeahead(
-         {
-           highlight: true
-         },
-         {
-           name: 'updates',
-           displayKey: 'title',
-           source: updates.ttAdapter(),
-           templates: {
-             header: '<h3 class="dd-category">Updates</h3>',
-             suggestion: _.template('<a href="/project_updates/<%= id %>"><p><%= title %>!</p></a>')
-           }
-         }
-       );
-     });
-
-    </script>
-{% endblock %}
 {% block maincontent %}
 
 <section id="map" class="touch-navbar">
@@ -79,26 +39,6 @@
           {% bootstrap_field filter.form.continent %}
         </div>
 
-        {% comment %}
-        <div class="btn-group">
-          <button type="button" class="btn">Continents</button>
-          <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-            <span class="caret"></span>
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">All</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Africa</a></li>
-            <li><a href="#">Antartica</a></li>
-            <li><a href="#">Asia</a></li>
-            <li><a href="#">Australia</a></li>
-            <li><a href="#">Europe</a></li>
-            <li><a href="#">North America</a></li>
-            <li><a href="#">South America</a></li>
-          </ul>
-        </div>
-        {% endcomment %}
       </div>
     </div>
   </form>
@@ -152,3 +92,7 @@
     </div>
 </div>
 {% endblock %}
+
+{% block js %}
+  {% compressed_js 'rsr_v3_update_directory' %}
+{% endblock js %}

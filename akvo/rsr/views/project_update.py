@@ -15,9 +15,11 @@ from django.shortcuts import get_object_or_404, render
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
     f = ProjectUpdateFilter(qs, queryset=ProjectUpdate.objects.all())
-    show_filters = "in" if qs else ""
 
-    # updates_list = ProjectUpdate.objects.all()
+    show_filters = "in"
+    available_filters = ['continent', 'status', 'organisation', 'focus_area', ]
+    if frozenset(qs.keys()).isdisjoint(available_filters):
+        show_filters = ""
 
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, f.qs, 10)

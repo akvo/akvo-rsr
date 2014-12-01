@@ -1,155 +1,25 @@
 {% extends "base.html" %}
 
-{% load i18n maps rsr_utils thumbnail humanize bootstrap3 %}
+{% load i18n maps rsr_utils thumbnail humanize bootstrap3 compressed %}
 
 {% block title %}{% trans 'Projects' %}{% endblock %}
 
-{% block head_js %}
-    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.compat.min.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        var projects = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('background',
-                                                                 'current_image_credit',
-                                                                 'current_status',
-                                                                 'project_plan',
-                                                                 'project_plan_summary',
-                                                                 'subtitle',
-                                                                 'title'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: {
-                url: '/rest/v1/project/?format=json&limit=10000',
-                filter: function(response) {
-                    f = [
-                        'id',
-                        'background',
-                        'current_image_credit',
-                        'current_status',
-                        'project_plan',
-                        'project_plan_summary',
-                        'subtitle',
-                        'title'
-                    ];
-                    return _.map(response.results, _.partialRight(_.pick, f));
-                }
-            }
-        });
-
-   {% comment %}
-   var organisations = new Bloodhound({
-     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
-     queryTokenizer: Bloodhound.tokenizers.whitespace,
-     prefetch: {
-       url: '/rest/v1/organisation/?format=json&limit=10000',
-       filter: function(response) {
-         return response.results;
-       }
-     }
-   });
-
-
-   var countries = new Bloodhound({
-     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-     queryTokenizer: Bloodhound.tokenizers.whitespace,
-     prefetch: {
-       url: '/rest/v1/country/?format=json&limit=10000',
-       filter: function(response) {
-         return response.results;
-       }
-     }
-   });
-
-   var focus_area = new Bloodhound({
-     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-     queryTokenizer: Bloodhound.tokenizers.whitespace,
-     prefetch: {
-       url: '/rest/v1/focus_area/?format=json&limit=10000',
-       filter: function(response) {
-         return response.results;
-       }
-     }
-   });
-        {% endcomment %}
-
-   projects.initialize();
-   // organisations.initialize();
-   // countries.initialize();
-   // focus_area.initialize();
-
-   $('#id_title').typeahead(
-     {
-       highlight: true
-     },
-     {
-       name: 'projects',
-       displayKey: 'title',
-       source: projects.ttAdapter(),
-       templates: {
-           header: '<h3 class="dd-category">Projects</h3>',
-           suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %>!</p><p><%= subtitle %></p></a>')
-        // suggestion: Handlebars.compile('<a href="/project/\{\{id\}\}/"><p><u>\{\{title\}\}</u></p><p>\{\{subtitle\}\}</p></a>')
-       }
-     }
-
-       {% comment %}
-     {
-       name: 'projects',
-       displayKey: 'title',
-       source: projects.ttAdapter(),
-       templates: {
-         header: '<h3 class="dd-category">Projects</h3>',
-         suggestion: Handlebars.compile('<a href="/project/\{\{id\}\}/"><p><u>\{\{title\}\}</u></p><p>\{\{subtitle\}\}</p></a>')
-       }
-     }
-       {% endcomment %}
-       {% comment %}
-       ,
-     {
-       name: 'organisations',
-       displayKey: 'long_name',
-       source: organisations.ttAdapter(),
-       templates: {
-         header: '<h3 class="dd-category">Partners</h3>'
-       }
-     },
-     {
-       name: 'countries',
-       displayKey: 'name',
-       source: countries.ttAdapter(),
-       templates: {
-         header: '<h3 class="dd-category">Countries</h3>'
-       }
-     },
-     {
-       name: 'focus_area',
-       displayKey: 'name',
-       source: focus_area.ttAdapter(),
-       templates: {
-         header: '<h3 class="dd-category">Focus area</h3>'
-       }
-     }
-       {% endcomment %}
-   );
-
- });
-</script>
-{% endblock %}
-
 {% block maincontent %}
+
+<style> {# TMP #}
+ .form-group label {color: #1B635E}
+</style>
 
 <section id="map" class="touch-navbar">
     {% global_project_map '100%' '100%' %}
 </section>
 
 <section id="search-filter">
-<form id="filterForm" action="" method="get" accept-charset="uft-8">
+  <form id="filterForm" action="" method="get" accept-charset="uft-8">
     <div class="container-fluid">
       <div id="search" class="verticalPadding">
         <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
         <div class="form-inline" role="form">
-          {#<form class="form-inline" role="form">#}
           <div class="form-group">
             <div class="input-group">
               {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
@@ -159,14 +29,9 @@
             </div>
             <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
           </div>
-          {#</form>#}
         </div>
       </div>
     </div>
-
-    <style>
-     .form-group label {color: #1B635E}
-    </style>
 
     <div id="collapseOne" class="panel-collapse collapse {{ show_filters }}">
       <div id="filter" class="verticalPadding row">
@@ -182,105 +47,13 @@
         <div class="btn-group">
           {% bootstrap_field filter.form.organisation %}
         </div>
-        {% comment %}
-        <div class="btn-group">
-          {% bootstrap_field filter.form.category %}
-        </div>
-        {% endcomment %}
 
         <div class="btn-group">
           {% bootstrap_field filter.form.focus_area %}
         </div>
+      </div>
 
-        <div class="btn-group">
-          {# bootstrap_field filter.form.title #}
-        </div>
-
-        {% comment %}
-        <div class="btn-group">
-          <button type="button" class="btn btn-default">Policy marker</button>
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            <span class="caret"></span>
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">All</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </div>
-
-        <div class="btn-group">
-          <button type="button" class="btn btn-default">Sector code</button>
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            <span class="caret"></span>
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">All</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </div>
-
-        <div class="btn-group">
-          <button type="button" class="btn btn-default">Total budget</button>
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            <span class="caret"></span>
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">All</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </div>
-
-        <div class="btn-group">
-          <div class="btn-group">
-            <button type="button" class="btn btn-default">Date from</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">All</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li><a href="#">Separated link</a></li>
-            </ul>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-default">To</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#">All</a></li>
-              <li class="divider"></li>
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li><a href="#">Separated link</a></li>
-            </ul>
-          </div>
-        </div>
-        {% endcomment %}
     </div>
-  </div>
   </form>
 </section>
 
@@ -340,11 +113,11 @@
   <div class="row center-text">
      {% include 'navigation/pagination.html' %}
    </div>
- </div>
+  </div>
 
-<script> {# crude js :-( #}
- $('select').change(function() {
-   $('#filterForm').submit();
- });
-</script>
 {% endblock %}
+
+
+{% block js %}
+  {% compressed_js 'rsr_v3_project_directory' %}
+{% endblock js %}

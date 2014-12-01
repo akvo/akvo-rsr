@@ -92,7 +92,12 @@ def _get_carousel_data(project):
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
     f = ProjectFilter(qs, queryset=Project.objects.published())
-    show_filters = "in" if qs else ""
+
+    # Instead of true or false, adhere to bootstrap3 class names to simplify
+    show_filters = "in"
+    available_filters = ['continent', 'status', 'organisation', 'focus_area', ]
+    if frozenset(qs.keys()).isdisjoint(available_filters):
+        show_filters = ""
 
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, f.qs, 10)

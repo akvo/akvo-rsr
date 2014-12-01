@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n maps rsr_utils %}
+{% load i18n maps rsr_utils bootstrap3 compressed %}
 
 {% block title %}{% trans 'Organisations' %}{% endblock %}
 
@@ -10,6 +10,41 @@
     {% global_organisation_map '100%' '100%' %}
 </section>
 
+<section id="search-filter">
+  <form id="filterForm" action="" method="get" accept-charset="uft-8">
+
+    <div class="container-fluid">
+      <div id="search" class="verticalPadding">
+        <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
+        <div class="form-inline" role="form">
+          {#<form class="form-inline" role="form">#}
+          <div class="form-group">
+            <div class="input-group">
+              {% bootstrap_field filter.form.name field_class='search-query' show_label=False %}
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
+              </span>
+            </div>
+            <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
+          </div>
+          {#</form>#}
+        </div>
+      </div>
+    </div>
+
+    <div id="collapseOne" class="panel-collapse collapse {{ show_filters }}">
+      <div id="filter" class="verticalPadding row">
+
+        <div class="btn-group">
+          {% bootstrap_field filter.form.continent %}
+        </div>
+
+      </div>
+    </div>
+  </form>
+</section>
+
+{% comment %}
 <section id="search-filter">
     <div class="container-fluid">
             <div id="search" class="verticalPadding">
@@ -50,7 +85,7 @@
         </div>
     </div>
 </section>
-
+{% endcomment %}
 
 <div class="container-fluid">
   <div class="row center-text verticalPadding">
@@ -105,3 +140,7 @@
     </div>
 </div>
 {% endblock %}
+
+{% block js %}
+  {% compressed_js 'rsr_v3_organisation_directory' %}
+{% endblock js %}
