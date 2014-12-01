@@ -123,20 +123,6 @@ def main(request, project_id):
     return render(request, 'project_main.html', context)
 
 
-@login_required
-def add_update_old(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    updates = project.updates_desc()[:5]
-    updateform = ProjectUpdateForm()
-
-    context = {
-        'project': project,
-        'updates': updates,
-        'updateform': updateform,
-    }
-
-    return render(request, 'update_add.html', context)
-
 @login_required()
 def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
     project = get_object_or_404(Project, id=project_id)
