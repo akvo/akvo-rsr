@@ -17,7 +17,6 @@
     {# CSS #}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
 
-
     {# jQuery #}
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
@@ -28,7 +27,6 @@
     {# Fonts #}
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,400italic,600italic,300italic%7CMontserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700" rel="stylesheet" type="text/css">
-
 
     {% compressed_css 'rsr_v3_style' %}
     {% compressed_js 'rsr_v3_script' %}
@@ -47,5 +45,12 @@
 
     {% include 'navigation/footer.html' %}
 
+    {% block js %}{% endblock %}
+
+    <script>
+     $(document).ready(function() {
+       {% block jq %}{% endblock %}
+     });
+    </script>
   </body>
 </html>

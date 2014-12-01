@@ -2,7 +2,7 @@
 Django==1.6.5
 
 # Django apps
-django-filter==0.7
+django-filter==0.8
 django-markup==0.4
 django-pagination==1.0.7
 django-paypal==0.1.3
