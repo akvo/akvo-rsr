@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n maps markup_tags rsr_utils %}
+{% load i18n maps markup_tags rsr_utils bootstrap3 compressed  %}
 
 {% block title %}{% trans 'Updates' %}{% endblock %}
 
@@ -11,46 +11,37 @@
 </section>
 
 <section id="search-filter">
-  <div class="container-fluid">
-        <div id="search" class="verticalPadding">
-            <p>{% trans "Refine the update list below by searching by project, name or organisation" %}</p>
-            <form class="form-inline" role="form">
-                <div class="form-group">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="{% trans "Search" %}">
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary" type="button">{% trans "Update list" %}</button>
-                        </span>
-                    </div>
-                    <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
-                </div>
-            </form>
-        </div>
-    </div>
-    
+  <form id="filterForm" action="" method="get" accept-charset="uft-8">
 
-    <div id="collapseOne" class="panel-collapse collapse">
-        <div id="filter" class="verticalPadding row">
-            <div class="btn-group">
-                <button type="button" class="btn">Continents</button>
-                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">All</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Africa</a></li>
-                    <li><a href="#">Antartica</a></li>
-                    <li><a href="#">Asia</a></li>
-                    <li><a href="#">Australia</a></li>
-                    <li><a href="#">Europe</a></li>
-                    <li><a href="#">North America</a></li>
-                    <li><a href="#">South America</a></li>
-                </ul>
+    <div class="container-fluid">
+      <div id="search" class="verticalPadding">
+        <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
+        <div class="form-inline" role="form">
+          {#<form class="form-inline" role="form">#}
+          <div class="form-group">
+            <div class="input-group">
+              {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
+              </span>
             </div>
+            <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
+          </div>
+          {#</form>#}
         </div>
+      </div>
     </div>
+
+    <div id="collapseOne" class="panel-collapse collapse {{ show_filters }}">
+      <div id="filter" class="verticalPadding row">
+
+        <div class="btn-group">
+          {% bootstrap_field filter.form.continent %}
+        </div>
+
+      </div>
+    </div>
+  </form>
 </section>
 
 <div class="container-fluid">
@@ -101,3 +92,7 @@
     </div>
 </div>
 {% endblock %}
+
+{% block js %}
+  {% compressed_js 'rsr_v3_update_directory' %}
+{% endblock js %}

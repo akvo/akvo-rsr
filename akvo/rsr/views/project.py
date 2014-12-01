@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
+from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project
 from ...utils import pagination
 
@@ -88,17 +89,25 @@ def _get_carousel_data(project):
     return {"photos": photos}
 
 
-
 def directory(request):
-    projects_list = Project.objects.published()
-    page = request.GET.get('page')
+    qs = remove_empty_querydict_items(request.GET)
+    f = ProjectFilter(qs, queryset=Project.objects.published())
 
-    page, paginator, page_range = pagination(page, projects_list, 10)
+    # Instead of true or false, adhere to bootstrap3 class names to simplify
+    show_filters = "in"
+    available_filters = ['continent', 'status', 'organisation', 'focus_area', ]
+    if frozenset(qs.keys()).isdisjoint(available_filters):
+        show_filters = ""
+
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, f.qs, 10)
 
     context = {
+        'filter': f,
         'page': page,
-        'paginator': paginator,
         'page_range': page_range,
+        'paginator': paginator,
+        'show_filters': show_filters,
         }
     return render(request, 'project_directory.html', context)
 

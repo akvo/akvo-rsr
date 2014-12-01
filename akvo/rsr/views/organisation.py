@@ -6,22 +6,35 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Organisation
-from akvo.utils import pagination
+from ..filters import remove_empty_querydict_items, OrganisationFilter
+from ..models import Organisation
+from ...utils import pagination
 
 from django.shortcuts import get_object_or_404, render
 
 
 def directory(request):
-    organisations_list = Organisation.objects.all()
-    page = request.GET.get('page')
+    qs = remove_empty_querydict_items(request.GET)
+    f = OrganisationFilter(qs, queryset=Organisation.objects.all())
 
-    page, paginator, page_range = pagination(page, organisations_list, 10)
+    # organisations_list = Organisation.objects.all()
+    # page = request.GET.get('page')
+
+    # Instead of true or false, adhere to bootstrap3 class names to simplify
+    show_filters = "in"
+    available_filters = ['continent', ]
+    if frozenset(qs.keys()).isdisjoint(available_filters):
+        show_filters = ""
+
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, f.qs, 10)
 
     context = {
+        'filter': f,
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
+        'show_filters': show_filters,
         }
     return render(request, 'organisation_directory.html', context)
 
