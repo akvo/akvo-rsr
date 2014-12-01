@@ -9,10 +9,11 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import json
 
 from ..forms import ProjectUpdateForm
-from ..models import Invoice, Project
+from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 
 
@@ -137,26 +138,21 @@ def add_update_old(request, project_id):
     return render(request, 'update_add.html', context)
 
 @login_required()
-def add_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
+def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
     project = get_object_or_404(Project, id=project_id)
     updates = project.updates_desc()[:5]
     update = None
 
-    # if update_id is not None:
-    #     edit_mode = True
-    #     update = get_object_or_404(ProjectUpdate, id=update_id)
-    #     if not request.user == update.user:
-    #         request.error_message = u'You can only edit your own updates.'
-    #         raise PermissionDenied
-    #
-    #     if update.edit_window_has_expired():
-    #         return render_to_response('rsr/project/update_form_timeout.html',
-    #             dict(
-    #                 project=project,
-    #                 update=update,
-    #                 site_section='projects',
-    #                 ),
-    #             RequestContext(request))
+    if update_id is not None:
+        edit_mode = True
+        update = get_object_or_404(ProjectUpdate, id=update_id)
+        if not request.user == update.user:
+            request.error_message = u'You can only edit your own updates.'
+            raise PermissionDenied
+
+        if update.edit_window_has_expired():
+            request.error_message = u'You cannot edit this update anymore, the 30 minutes time limit has passed.'
+            raise PermissionDenied
 
     if request.method == 'POST':
         updateform = form_class(request.POST, request.FILES, instance=update)
@@ -171,6 +167,7 @@ def add_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         'updates': updates,
         'update': update,
         'updateform': updateform,
+        'edit_mode': edit_mode,
     }
 
     return render(request, 'update_add.html', context)

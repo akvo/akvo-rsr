@@ -294,13 +294,15 @@ class ProjectUpdateForm(forms.ModelForm):
             update.save()
 
             # Save update location
-            latitude_data = self.cleaned_data['latitude']
-            longitude_data = self.cleaned_data['longitude']
-            ProjectUpdateLocation.objects.create(
-                latitude=latitude_data,
-                longitude=longitude_data,
-                location_target=update,
-            )
+            # Only when adding an update. When editing an update, the initial location is maintained.
+            if not update.primary_location:
+                latitude_data = self.cleaned_data['latitude']
+                longitude_data = self.cleaned_data['longitude']
+                ProjectUpdateLocation.objects.create(
+                    latitude=latitude_data,
+                    longitude=longitude_data,
+                    location_target=update,
+                )
 
             return update
         else:
