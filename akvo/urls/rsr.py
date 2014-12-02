@@ -50,6 +50,14 @@ urlpatterns = patterns(
     url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$',
         'akvo.rsr.views.project_update.main', name='update-main'),
 
+    # Add an update
+    url(r'^project/(?P<project_id>\d+)/add_update/$',
+        'akvo.rsr.views.project.set_update', name='add-update'),
+
+    # Edit an update
+    url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/edit/$',
+        'akvo.rsr.views.project.set_update', name='edit-update'),
+
     # Account
     url(r'^register/$',
         'akvo.rsr.views.account.register', name='register'),

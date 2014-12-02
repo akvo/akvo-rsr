@@ -8,12 +8,14 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
+from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
-from ..models import Invoice, Project
+from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination
 
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 
 def _get_accordion_data(project):
@@ -133,6 +135,42 @@ def main(request, project_id):
     }
 
     return render(request, 'project_main.html', context)
+
+
+@login_required()
+def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
+    project = get_object_or_404(Project, id=project_id)
+    updates = project.updates_desc()[:5]
+    update = None
+
+    if update_id is not None:
+        edit_mode = True
+        update = get_object_or_404(ProjectUpdate, id=update_id)
+        if not request.user == update.user:
+            request.error_message = u'You can only edit your own updates.'
+            raise PermissionDenied
+
+        if update.edit_window_has_expired():
+            request.error_message = u'You cannot edit this update anymore, the 30 minutes time limit has passed.'
+            raise PermissionDenied
+
+    if request.method == 'POST':
+        updateform = form_class(request.POST, request.FILES, instance=update)
+        if updateform.is_valid():
+            update = updateform.save(project=project, user=request.user)
+            return redirect(update.get_absolute_url())
+    else:
+        updateform = form_class(instance=update)
+
+    context = {
+        'project': project,
+        'updates': updates,
+        'update': update,
+        'updateform': updateform,
+        'edit_mode': edit_mode,
+    }
+
+    return render(request, 'update_add.html', context)
 
 
 def search(request):

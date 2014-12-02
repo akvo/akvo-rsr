@@ -7,6 +7,7 @@
 {% block myrsr_main %}
 <div class="table-responsive">
   <h1>{% trans "My project" %}s</h1>
+  {% if page %}
   <table class="table table-striped">
     <thead>
       <tr>
@@ -44,6 +45,9 @@
                 {% endif %}
               </a>
               {% endif %}
+              {% has_perm 'rsr.post_updates' project as can_add_update %}
+              <br>
+              <a href="{% url 'add-update' project.pk %}">Add an update</a>
           </td>
       </tr>
     {% endfor %}
@@ -52,7 +56,12 @@
       <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
       {% include 'navigation/pagination.html' %}
   </div>
-
+  {% else %}
+  <h2><small>You can't see any projects yet.</small></h2>
+  <p>
+    Go to the <a href="{% url 'my_details' %}">My details</a> page to request to join an organisation.
+    Once your request is approved, you will see the projects of this organisation on this page.
+  </p>
+  {% endif %}
 </div>
-
 {% endblock %}

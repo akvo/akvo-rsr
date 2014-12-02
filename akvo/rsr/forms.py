@@ -16,7 +16,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from registration.models import RegistrationProfile
 
-from .models import Country, Organisation
+from urlparse import urlsplit, urlunsplit
+
+from .models import Country, Organisation, ProjectUpdate, ProjectUpdateLocation
+
+from akvo import settings
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(
@@ -204,3 +208,102 @@ class UserOrganisationForm(forms.Form):
         """
         # TODO: The approval process of users
         request.user.organisations.add(self.cleaned_data['organisation'])
+
+
+class ProjectUpdateForm(forms.ModelForm):
+    """Form representing a ProjectUpdate."""
+
+    title = forms.CharField(label='', widget=forms.TextInput(attrs={
+        'class': 'input',
+        'size': '42',
+        'maxlength': '50',
+        'placeholder': 'Title',
+        }))
+    text = forms.CharField(label='', required=False, widget=forms.Textarea(attrs={
+        'class': 'textarea',
+        'placeholder': 'Description',
+        }))
+    language = forms.ChoiceField(choices=settings.LANGUAGES, initial='en')
+    photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={
+        'class': 'input',
+        'size': '15',
+        }))
+    photo_caption = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
+        'class': 'input',
+        'size': '25',
+        'maxlength': '75',
+        'placeholder': 'Photo caption',
+        }))
+    photo_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
+        'class': 'input',
+        'size': '25',
+        'maxlength': '25',
+        'placeholder': 'Photo credit',
+        }))
+    video = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'input',
+        'size': '42',
+        'maxlength': '255',
+        'placeholder': 'Video link',
+        }))
+    video_caption = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
+        'class': 'input',
+        'size': '25',
+        'maxlength': '75',
+        'placeholder': 'Video caption',
+        }))
+    video_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
+        'class': 'input',
+        'size': '25',
+        'maxlength': '25',
+        'placeholder': 'Video credit',
+        }))
+    latitude = forms.FloatField(widget=forms.HiddenInput())
+    longitude = forms.FloatField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = ProjectUpdate
+        fields = ('title', 'text', 'language', 'photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
+        'video_credit')
+
+    def clean_video(self):
+        data = self.cleaned_data['video']
+        if data:
+            scheme, netloc, path, query, fragment = urlsplit(data)
+            netloc = netloc.lower()
+            valid_url = (netloc == 'blip.tv' or
+                         netloc == 'vimeo.com' or
+                         netloc == 'www.youtube.com' and path == '/watch' or
+                         netloc == 'youtu.be')
+            if not valid_url:
+                raise forms.ValidationError(_('Invalid video URL. Currently '
+                    'Blip.TV, Vimeo and YouTube are supported.'))
+            if netloc == 'youtu.be':
+                netloc = 'www.youtube.com'
+                path = '/watch?v=%s' % path.lstrip('/')
+                data = urlunsplit((scheme, netloc, path, query, fragment))
+        return data
+
+    def save(self, project=None, user=None):
+        if project and user:
+            # Save update
+            update = super(ProjectUpdateForm, self).save(commit=False)
+            update.project = project
+            update.user = user
+            update.update_method = 'W'
+            update.save()
+
+            # Save update location
+            # Only when adding an update. When editing an update, the initial location is maintained.
+            if not update.primary_location:
+                latitude_data = self.cleaned_data['latitude']
+                longitude_data = self.cleaned_data['longitude']
+                ProjectUpdateLocation.objects.create(
+                    latitude=latitude_data,
+                    longitude=longitude_data,
+                    location_target=update,
+                )
+
+            return update
+        else:
+            raise forms.ValidationError('Project or user not found.')
