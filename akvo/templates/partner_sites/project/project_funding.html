@@ -17,7 +17,10 @@
       </span>
       <h2 style="padding-top:20px;">{% trans 'Funding details' %}</h2>
       <p class="grey small">
-        {% trans 'Request posted' %} {{project.date_start_actual|date:"d-M-Y"}}
+		{% trans 'Planned Start Date:' %} {{project.date_start_planned|date:"d-M-Y"}}<br />
+		{% trans 'Actual Start Date:' %} {{project.date_start_actual|date:"d-M-Y"}}<br />
+		{% trans 'Planned End Date:' %} {{project.date_end_planned|date:"d-M-Y"}}<br />
+		{% trans 'Actual End Date:' %} {{project.date_end_actual|date:"d-M-Y"}}<br />
       </p>
     </div>
     {% counter_badge project %}
