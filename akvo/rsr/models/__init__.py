@@ -50,6 +50,7 @@ from .project_contact import ProjectContact
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 from .region import RecipientRegion
+from .related_project import RelatedProject
 from .result import Result
 from .sector import Sector
 from .transaction import Transaction
@@ -95,6 +96,7 @@ __all__ = [
     'ProjectUpdate',
     'PublishingStatus',
     'RecipientRegion',
+    'RelatedProject',
     'Result',
     'Sector',
     'Transaction',
@@ -142,6 +144,10 @@ rules.add_perm('rsr.change_projectupdate', is_rsr_admin)
 rules.add_perm('rsr.add_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.change_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.delete_projectupdatelocation', is_rsr_admin)
+
+rules.add_perm('rsr.add_relatedproject', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_relatedproject', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_relatedproject', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.add_projectcomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_projectcomment', is_rsr_admin | is_org_admin | is_org_project_editor)
