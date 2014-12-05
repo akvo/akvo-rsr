@@ -672,6 +672,12 @@ class Project(TimestampsMixin, models.Model):
             )
         )
 
+    def sector_names(self):
+        from .sector import Sector
+        sector_codes = [sector.sector_code for sector in Sector.objects.filter(project=self)]
+        sector_codelist = [code[:2] for code in codelists.SECTOR]
+        return [name for code, name in sector_codelist if code in sector_codes]
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project')
