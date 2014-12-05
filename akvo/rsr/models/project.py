@@ -678,6 +678,21 @@ class Project(TimestampsMixin, models.Model):
         sector_codelist = [code[:2] for code in codelists.SECTOR]
         return [name for code, name in sector_codelist if code in sector_codes]
 
+    def has_relations(self):
+        return self.parents() or self.children() or self.siblings()
+
+    def parents(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=1) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=2)).distinct()
+
+    def children(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=2) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=1)).distinct()
+
+    def siblings(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=3)).distinct()
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project')

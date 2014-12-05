@@ -14,10 +14,13 @@ import sys
 from xml.etree import ElementTree
 
 # Modify this list to add new versions
-VERSIONS = {"1.01": "http://codelists102.archive.iatistandard.org/data/",
-            "1.02": "http://codelists102.archive.iatistandard.org/data/",
-            "1.03": "http://codelists103.archive.iatistandard.org/data/",
-            "1.04": "http://iatistandard.org/codelists/downloads/clv2/"}
+VERSIONS = {
+    "1.01": "http://codelists102.archive.iatistandard.org/data/",
+    "1.02": "http://codelists102.archive.iatistandard.org/data/",
+    "1.03": "http://codelists103.archive.iatistandard.org/data/",
+    "1.04": "http://iatistandard.org/104/codelists/downloads/clv2/",
+    "1.05": "http://iatistandard.org/105/codelists/downloads/clv2/",
+}
 
 
 def pythonify_codelist_name(codelist_name):
@@ -58,7 +61,7 @@ def codelist_to_tuples(xml_string, codelist, version):
     "Takes XML codelist string and converts it to tuples"
     tree = ElementTree.fromstring(xml_string)
 
-    if not version == "1.04":
+    if version in ["1.01", "1.02", "1.03"]:
         codelist_lookup = '*'
         codelist_tree = tree
     else:
@@ -96,7 +99,7 @@ def codelist_to_tuples(xml_string, codelist, version):
 
 def get_codelists(version, url):
     "Depending on the codelist version, retrieves the codelists"
-    if not version == "1.04":
+    if version in ["1.01", "1.02", "1.03"]:
         codelists_url = url + "codelist.xml"
         codelist_url = url + "codelist/%s.xml"
     else:
@@ -107,7 +110,7 @@ def get_codelists(version, url):
     codelists = []
     if result.status_code == 200 and len(result.text) > 0:
         tree = ElementTree.fromstring(result.text)
-        if not version == "1.04":
+        if version in ["1.01", "1.02", "1.03"]:
             for codelist in tree.iter('name'):
                 codelists.append(codelist.text)
         else:
@@ -129,11 +132,13 @@ def generate_code_lists(version):
     for codelist in codelists:
         result = requests.get(codelist_url % codelist)
         if result.status_code == 200 and len(result.text) > 0:
-            python_code.append('# From %s' % codelist_url % codelist)
-            python_code.append('\n')
-            python_code.append(codelist_to_tuples(result.text.encode('utf-8'), codelist, version))
-            python_code.append('\n\n')
-            print "Generate python for %s" % codelist
+            print "Generating python for %s..." % codelist
+            if not codelist in ["IATIOrganisationIdentifier", ]:
+                # IATIOrganisationIdentifier is not a codelist
+                python_code.append('# From %s' % codelist_url % codelist)
+                python_code.append('\n')
+                python_code.append(codelist_to_tuples(result.text.encode('utf-8'), codelist, version))
+                python_code.append('\n\n')
         else:
             print "ERROR: Could not generate python for %s" % codelist
     print

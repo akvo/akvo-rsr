@@ -915,6 +915,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
 admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
 
+
 class KeywordAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Keyword')
     list_display = ('label',)
@@ -946,3 +947,10 @@ class EmploymentAdmin(admin.ModelAdmin):
         return super(EmploymentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(get_model('rsr', 'Employment'), EmploymentAdmin)
+
+
+class RelatedProjectAdmin(admin.ModelAdmin):
+    model = get_model('rsr', 'RelatedProject')
+    list_display = ('project', 'related_project', 'relation')
+
+admin.site.register(get_model('rsr', 'RelatedProject'), RelatedProjectAdmin)
