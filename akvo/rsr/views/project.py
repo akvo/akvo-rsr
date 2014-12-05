@@ -180,7 +180,7 @@ def main(request, project_id):
     timeline_data = _get_timeline_data(project)
 
     first_partner = project.first_partner()
-    first_partner = (first_partner, first_partner.partner_types(project))
+    first_partner_info = (first_partner, first_partner.partner_types(project))
     partners = _get_project_partners(project)
 
     context = {
@@ -189,7 +189,7 @@ def main(request, project_id):
         'project': project,
         'timeline_data': json.dumps(timeline_data),
         'updates': updates,
-        'first_partner': first_partner,
+        'first_partner': first_partner_info,
         'partners': partners,
     }
 
