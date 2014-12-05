@@ -637,6 +637,14 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
+    def first_partner(self):
+        if self.support_partners():
+            return self.support_partners()[0]
+        elif self.all_partners():
+            return self.all_partners()[0]
+        else:
+            return None
+
     def field_partners(self):
         return self._partners(Partnership.FIELD_PARTNER)
 
