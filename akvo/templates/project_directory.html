@@ -76,7 +76,9 @@
           <div class="col-lg-4 col-sm-3 col-xs-7">
               <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
               <p>{{p.subtitle}}</p>
+              {% if p.primary_location.country %}
               <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
+              {% endif %}
               {% if p.first_partner %}
               <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.first_partner.id %}">{{p.first_partner}}</a>
                   {% if p.partners.distinct.count > 1 %}
@@ -92,12 +94,20 @@
               {% endif %}
           </div>
           <div class="col-sm-3 hidden-xs hidden-sm">
-            <h4 class="detailedInfo">{% trans "Focus Areas" %}</h4>
-              <p>
-              {% for area in p.focus_areas %}
-                <a href="#">{{area.name}}</a><br/>
-              {% endfor %}
+              {% if p.focus_areas %}
+              <h4 class="detailedInfo">{% trans "Focus Areas" %}</h4>
+              <p><a href="{% url 'project-directory' %}?focus_area={{p.focus_areas.0.id}}">{{p.focus_areas.0.name}}</a>
+                  {% if p.focus_areas.distinct.count > 1 %}
+                  <a href="javascript:;" class="small" data-toggle="tooltip"
+                     title="{% for area in p.focus_areas.all.distinct %}
+                                {% ifnotequal area.id p.focus_areas.0.id %}
+                                    <a href='{% url 'project-directory' %}?focus_area={{area.id}}'>{{area.name}}</a><br>
+                                {% endifnotequal %}
+                            {% endfor %}"
+                     data-placement="right">+{{p.focus_areas.distinct.count|add:"-1"}} more</a>
+                  {% endif %}
               </p>
+              {% endif %}
               <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
               <p>?</p>
               <h4 class="detailedInfo">{% trans "Status" %}</h4>
