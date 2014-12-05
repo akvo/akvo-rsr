@@ -15,6 +15,7 @@ from ...utils import pagination
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
 
@@ -90,6 +91,51 @@ def _get_carousel_data(project):
             })
     return {"photos": photos}
 
+def _get_hierarchy_row(max_rows, projects):
+    """Returns a column for the project hierarchy with a division.
+    E.g. with a max_rows of 4 and one project, it will return [False, <Project>, False, False]."""
+    project_count = projects.count()
+    if max_rows == project_count:
+        return [project for project in projects]
+    empty_begin = (max_rows - project_count) / 2
+    empty_end = (max_rows - project_count) / 2 + ((max_rows - project_count) % 2)
+    rows = []
+    for row in range(empty_begin):
+        rows.append(False)
+    for project in projects:
+        rows.append(project)
+    for row in range(empty_end):
+        rows.append(False)
+    return rows
+
+
+def _get_hierarchy_grid(project):
+    parents = project.parents()
+    siblings = project.siblings()
+    children = project.children()
+
+    # Create the lay-out of the grid
+    max_rows = max(parents.count(), siblings.count() + 1, children.count())
+    parent_rows = _get_hierarchy_row(max_rows, parents)
+    siblings_rows = _get_hierarchy_row(max_rows - 1, siblings)
+    siblings_rows.insert((max_rows - 1) / 2, 'project')
+    children_rows = _get_hierarchy_row(max_rows, children)
+
+    grid = []
+    project_added = False
+    for row in range(max_rows):
+        grid.append([])
+        grid[row].append([parent_rows[row], 'parent']) if parent_rows[row] else grid[row].append(None)
+        if siblings_rows[row] == 'project':
+            grid[row].append([project, 'project'])
+            project_added = True
+        elif not project_added:
+            grid[row].append([siblings_rows[row], 'sibling-top']) if siblings_rows[row] else grid[row].append(None)
+        else:
+            grid[row].append([siblings_rows[row], 'sibling-bottom']) if siblings_rows[row] else grid[row].append(None)
+        grid[row].append([children_rows[row], 'child']) if children_rows[row] else grid[row].append(None)
+
+    return grid
 
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
@@ -135,6 +181,22 @@ def main(request, project_id):
     }
 
     return render(request, 'project_main.html', context)
+
+
+def hierarchy(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    if not project.has_relations():
+        raise Http404
+
+    hierarchy_grid = _get_hierarchy_grid(project)
+
+    context = {
+        'project': project,
+        'hierarchy_grid': hierarchy_grid,
+    }
+
+    return render(request, 'project_hierarchy.html', context)
 
 
 @login_required()

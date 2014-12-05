@@ -17,3 +17,19 @@
         </div>
     </div>
 </header>
+
+<script type="text/javascript">
+    function maptoggle() {
+        if ($( "#project-map" ).css('display') == 'none') {
+            $( "#project-map" ).slideToggle('slow');
+            if ($('#project-map').hasClass('initial')) {
+                googleMap.load();
+                $( "#project-map" ).removeClass('initial');
+            }
+            $('.map-toggle').html('HIDE MAP -');
+        } else {
+            $( "#project-map" ).slideToggle('slow');
+            $('.map-toggle').html('SHOW MAP +');
+        }
+    };
+</script>

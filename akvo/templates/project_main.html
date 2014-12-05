@@ -8,28 +8,6 @@
     <script type="application/json" id="accordion-data">{{ accordion_data|safe }}</script>
     <script type="application/json" id="carousel-data">{{ carousel_data|safe }}</script>
 
-    <style>
-        .carousel-inner>.item>img {
-            max-height: 400px;
-        }
-    </style>
-
-    <script type="text/javascript">
-        function maptoggle() {
-            if ($( "#project-map" ).css('display') == 'none') {
-                $( "#project-map" ).slideToggle('slow');
-                if ($('#project-map').hasClass('initial')) {
-                    googleMap.load();
-                    $( "#project-map" ).removeClass('initial');
-                }
-                $('.map-toggle').html('HIDE MAP -');
-            } else {
-                $( "#project-map" ).slideToggle('slow');
-                $('.map-toggle').html('SHOW MAP +');
-            }
-        };
-    </script>
-
     <!-- Timeline -->
     <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
     <script type="text/javascript" src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
@@ -66,6 +44,13 @@
                 <p>{{project.project_plan_summary}}</p>
                 <p><span class="detailedInfo">IATI ID</span> 12345</p>
                 <p><span class="detailedInfo">Status</span> {{project.get_status_display}}</p>
+                {% if project.has_relations %}
+                <p><span class="detailedInfo">Hierarchy</span>
+                    This project has {{project.parents.count}} parent project{{project.parents.count|pluralize}},
+                    {{project.children.count}} child project{{project.children.count|pluralize}} and
+                    {{project.siblings.count}} sibling project{{project.siblings.count|pluralize}}
+                    <a href="{% url 'project-hierarchy' project.pk %}">View full hierarchy</a></p>
+                {% endif %}
                 <p><a href="#">View project's full data report</a></p>
             </div>
         </div>
