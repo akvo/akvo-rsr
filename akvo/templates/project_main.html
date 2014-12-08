@@ -42,7 +42,9 @@
             </div>
             <div class="col-sm-4">
                 <p>{{project.project_plan_summary}}</p>
-                <p><span class="detailedInfo">IATI ID</span> 12345</p>
+                {% if project.iati_activity_id %}
+                <p><span class="detailedInfo">IATI ID</span> {{project.iati_activity_id}}</p>
+                {% endif %}
                 <p><span class="detailedInfo">Status</span> {{project.get_status_display}}</p>
                 {% if project.has_relations %}
                 <p><span class="detailedInfo">Hierarchy</span>

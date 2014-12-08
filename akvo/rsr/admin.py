@@ -311,6 +311,7 @@ class RSR_PartnershipInlineForm(forms.ModelForm):
 
 class PartnershipInline(admin.TabularInline):
     model = get_model('rsr', 'Partnership')
+    exclude = ('iati_activity_id',)
     extra = 1
     form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
@@ -484,8 +485,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin):
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'status', 'language', 'date_start_planned', 'date_start_actual',
-                       'date_end_planned', 'date_end_actual', 'donate_button', 'hierarchy'),
+            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'language', 'date_start_planned',
+                       'date_start_actual', 'date_end_planned', 'date_end_actual', 'donate_button', 'hierarchy'),
             }),
         (_(u'Description'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
