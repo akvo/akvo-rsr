@@ -140,7 +140,7 @@ def _get_hierarchy_grid(project):
 def _get_project_partners(project):
     partners = {}
     for partner in project.all_partners():
-        partners[partner] = partner.partner_types(project)
+        partners[partner] = partner.has_partner_types(project)
     return partners
 
 
@@ -180,7 +180,7 @@ def main(request, project_id):
     timeline_data = _get_timeline_data(project)
 
     first_partner = project.first_partner()
-    first_partner_info = (first_partner, first_partner.partner_types(project))
+    first_partner_info = (first_partner, first_partner.has_partner_types(project))
     partners = _get_project_partners(project)
 
     context = {
