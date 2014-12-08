@@ -260,6 +260,11 @@ class Organisation(TimestampsMixin, models.Model):
         "returns a queryset of support partners that self has at least one project in common with, excluding self"
         return self.published_projects().support_partners().exclude(id__exact=self.id)
 
+    def has_partner_types(self, project):
+        """Return a list of partner types of this organisation to the project"""
+        from .partnership import Partnership
+        return [ps.partner_type for ps in Partnership.objects.filter(project=project, organisation=self)]
+
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has published projects."""
         return Country.objects.filter(

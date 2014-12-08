@@ -638,6 +638,14 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
+    def first_partner(self):
+        if self.support_partners():
+            return self.support_partners()[0]
+        elif self.all_partners():
+            return self.all_partners()[0]
+        else:
+            return None
+
     def field_partners(self):
         return self._partners(Partnership.FIELD_PARTNER)
 
@@ -664,6 +672,12 @@ class Project(TimestampsMixin, models.Model):
                 self.STATUSES_COLORS[self.status], self.get_status_display()
             )
         )
+
+    def sector_names(self):
+        from .sector import Sector
+        sector_codes = [sector.sector_code for sector in Sector.objects.filter(project=self)]
+        sector_codelist = [code[:2] for code in codelists.SECTOR]
+        return [name for code, name in sector_codelist if code in sector_codes]
 
     def has_relations(self):
         return self.parents() or self.children() or self.siblings()

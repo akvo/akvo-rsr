@@ -137,6 +137,13 @@ def _get_hierarchy_grid(project):
 
     return grid
 
+def _get_project_partners(project):
+    partners = {}
+    for partner in project.all_partners():
+        partners[partner] = partner.has_partner_types(project)
+    return partners
+
+
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
     f = ProjectFilter(qs, queryset=Project.objects.published())
@@ -172,12 +179,18 @@ def main(request, project_id):
     accordion_data = _get_accordion_data(project)
     timeline_data = _get_timeline_data(project)
 
+    first_partner = project.first_partner()
+    first_partner_info = (first_partner, first_partner.has_partner_types(project))
+    partners = _get_project_partners(project)
+
     context = {
         'accordion_data': json.dumps(accordion_data),
         'carousel_data': json.dumps(carousel_data),
         'project': project,
         'timeline_data': json.dumps(timeline_data),
         'updates': updates,
+        'first_partner': first_partner_info,
+        'partners': partners,
     }
 
     return render(request, 'project_main.html', context)
