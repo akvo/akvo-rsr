@@ -14,10 +14,14 @@ from .models import Employment, Organisation, Project
 
 @rules.predicate
 def is_rsr_admin(user):
-    return True if user.get_is_admin() else False
+    if user.is_authenticated() and user.get_is_admin():
+        return True
+    return False
 
 @rules.predicate
 def is_org_admin(user, obj):
+    if not user.is_authenticated():
+        return False
     for employment in user.employers.approved():
         if employment.group == Group.objects.get(name='Admins'):
             if not obj:
@@ -52,6 +56,8 @@ def is_org_admin(user, obj):
 
 @rules.predicate
 def is_org_user_manager(user, obj):
+    if not user.is_authenticated():
+        return False
     for employment in user.employers.approved():
         if employment.group == Group.objects.get(name='User managers'):
             if not obj:
@@ -66,6 +72,8 @@ def is_org_user_manager(user, obj):
 
 @rules.predicate
 def is_org_project_editor(user, obj):
+    if not user.is_authenticated():
+        return False
     for employment in user.employers.approved():
         if employment.group == Group.objects.get(name='Project editors'):
             if not obj:
@@ -88,6 +96,8 @@ def is_org_project_editor(user, obj):
 
 @rules.predicate
 def is_org_user(user, obj):
+    if not user.is_authenticated():
+        return False
     for employment in user.employers.approved():
         if employment.group == Group.objects.get(name='Users'):
             if type(obj) == Project.Project and obj in employment.organisation.all_projects():
