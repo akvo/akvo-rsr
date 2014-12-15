@@ -1,0 +1,3 @@
+# Requirements for continuous integration
+teamcity-messages==1.6
+teamcity-nose==1.2
