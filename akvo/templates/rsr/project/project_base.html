@@ -238,7 +238,12 @@
   {% endif %}
 		
   <div class="two_column_right_inner">
-    <p class="grey tiny text_right">{% trans 'Akvo Ref' %}: {{project.id}}</p>
+    <p class="grey tiny text_right">{% trans 'Akvo Ref' %}: {{project.id}}
+    {% for partnership in project.partnerships.all %}
+      {% if partnership.iati_activity_id %}<br>{% trans 'IATI ID' %}: {{partnership.iati_activity_id}}{% endif %}
+      {% if partnership.internal_id %}<br>{{partnership.organisation}}'s project ID: {{partnership.internal_id}}{% endif %}
+    {% endfor %}
+    </p>
   </div>
 </div>
 {% endblock maincontent %}
