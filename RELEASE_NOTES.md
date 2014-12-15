@@ -7,6 +7,51 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.6 Conakry
+---
+
+Wednesday 17th December 2014, adriancollier
+
+New & Noteworthy
+---
+
+### PostgreSQL as the Database Engine
+
+In this release we are migrating our underlying database engine from MySQL to PostgreSQL. Following on from this change, we will begin to be able to take advantage of many of the additional pieces of functionality that PostgreSQL offers us including Materialised Views.
+
+Github issue: [#813](https://github.com/akvo/akvo-rsr/issues/813) & [#753](https://github.com/akvo/akvo-rsr/issues/753)
+
+### Minor Visual Updates
+
+We have made some minor changes to the data visualisation within RSR. Nothing large, but these should meet some of the demands we've been receiving.
+
+#### Visualise Identifiers on Project Pages
+
+If a project has additional identifiers, including an IATI ID or an Internal ID obtained from an external system, then these are now displayed on the Project page alongside the RSR ID.
+
+Github issue: [#946](https://github.com/akvo/akvo-rsr/issues/946)
+
+#### Start and End dates
+
+We are accepting 4 types of dates on a project now, start and end with both planned and actual values. We have now implemented a change to show all of these dates within the Funding page for the project.
+
+Github issue: [#936](https://github.com/akvo/akvo-rsr/issues/936)
+
+#### IATI Activity Link in Akvo Pages
+
+This is a minor fix to enhance the IATI Identifier (if existing) on the Funding page to direct a user towards an external source of further information (such as Openaid.nl) to match the functionality within RSR.
+
+Github issue: [#868](https://github.com/akvo/akvo-rsr/issues/868)
+
+#### Partner Name on Akvo Pages
+
+The Partner Name on Akvo Pages was previously only displaying the short name. We have updated this to match the layout and display of both the name and country as displayed in RSR.
+
+Github issue: [#729](https://github.com/akvo/akvo-rsr/issues/729)
+
+
+--------
+
 Akvo RSR ver 2.5.1 Bujumbura Hotfix
 ---
 
