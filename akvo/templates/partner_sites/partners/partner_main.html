@@ -39,6 +39,7 @@
       <h1 style="margin-bottom:4px">
         {{partner}}
       </h1>
+	  <p class="grey">{% if partner.long_name %}{{partner.long_name}}{% else %}{{partner}}{% endif %}{% if partner.primary_location.country %}, {{partner.primary_location.country}}{% endif %}</p>
       <div class="pad20 whitebox">
         <div class="content_three_col cut_flow">
           {% org_logo partner 100 75 'margin-bottom: 1.5em;' %}
