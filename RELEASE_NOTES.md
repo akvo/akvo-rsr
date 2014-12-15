@@ -7,6 +7,28 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.5.1 Bujumbura Hotfix
+---
+
+Sunday 2nd November 2014, kasperbrandt
+
+Bug Fixes
+---
+
+### Update locations on maps
+
+We noticed a bug that showed project update locations with (0, 0) as longitude and latitude on the maps, these are now not shown anymore.
+
+Github issue: [#837](https://github.com/akvo/akvo-rsr/issues/837)
+
+### Cordaid import
+
+Two bugs in the Cordaid import have been fixed. One causing the import to run slowly due to the 'sync_owner' field, and another that did not import the 'date_start_planned' and 'date_end_planned' fields correctly.
+
+Github issue: [#865](https://github.com/akvo/akvo-rsr/issues/865)
+
+--------
+
 Akvo RSR ver 2.5 Bujumbura
 ---
 
@@ -17,7 +39,7 @@ Improvements
 
 ### Filtering of Updates
 
-The API has been modfied to allow the list of updates to be filtered on timestamp. This was to ensure that the RSR API is fully compatible with the upcoming release of RSR Up.
+The API has been modified to allow the list of updates to be filtered on timestamp. This was to ensure that the RSR API is fully compatible with the upcoming release of RSR Up.
 
 Github issue:  [#769](https://github.com/akvo/akvo-rsr/issues/769)
 
@@ -30,7 +52,6 @@ We noticed a bug that was preventing PayPal donations from being completed as th
 
 Github issue: [#796](https://github.com/akvo/akvo-rsr/issues/796)
 
-
 ### IATI Export Activity ID
 
 There was a mistake in the IATI export that resulted in an incorrect IATI ID being applied to activities that has now been rectified.
@@ -42,7 +63,6 @@ Github issue: [#799](https://github.com/akvo/akvo-rsr/issues/799)
 An issue was discovered that when an organisation has no location, the API resource was returning an error value. While not common, this needed to be resolved for the few instances where this is the case.
 
 Github issue: [#820](https://github.com/akvo/akvo-rsr/issues/820)
-
 
 --------
 
