@@ -9,12 +9,20 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import re
 
 from akvo.rsr.forms import RegisterForm
+
 from django.conf import settings
-from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.tokens import default_token_generator
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, resolve_url
 from django.template import RequestContext
+from django.template.response import TemplateResponse
+from django.utils.http import urlsafe_base64_decode
+from django.views.decorators.cache import never_cache
+from django.views.decorators.debug import sensitive_post_parameters
+
 from registration.models import RegistrationProfile
 
 def register(request):
