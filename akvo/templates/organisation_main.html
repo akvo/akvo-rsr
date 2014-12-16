@@ -1,108 +1,65 @@
 {% extends "base.html" %}
 
-{% load i18n thumbnail rsr_filters humanize rsr_utils %}
+{% load i18n rsr_filters humanize rsr_utils maps %}
 
 {% block title %}{{organisation.name}}{% endblock %}
 
 {% block maincontent %}
 
 <div class="container">
-
     <div class="row">
-      <div class="col-sm-12">
-        {% img organisation 80 80 organisation.name %}
-        <h1>{{organisation.name}}</h1>
-      </div>
+        <div class="col-sm-5">
+            <h1>{{organisation.name}}</h1>
+            {% if organisation.url %}<a href="{{organisation.url}}">{{organisation.url}}</a>{% endif %}
+            <br><br>
+            {% if organisation.primary_location.address_1 %}{{organisation.primary_location.address_1}}<br>{% endif %}
+            {% if organisation.primary_location.address_2 %}{{organisation.primary_location.address_2}}<br>{% endif %}
+            {% if organisation.primary_location.postcode %}{{organisation.primary_location.postcode}}<br>{% endif %}
+            {% if organisation.primary_location.city %}{{organisation.primary_location.city}}<br>{% endif %}
+            {% if organisation.primary_location.state %}{{organisation.primary_location.state}}<br>{% endif %}
+            {% if organisation.primary_location.country %}{{organisation.primary_location.country}}{% endif %}
+            {% if organisation.contact_email or organisation.phone %}
+            <h4>Contact information</h4>
+            {% if organisation.contact_email %}
+            <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
+            {% endif %}
+            {% if organisation.phone %}
+            <p>{{organisation.phone}}<br /></p>
+            {% endif %}
+            {% endif %}
+        </div>
+        <div class="col-sm-7">
+            {% img organisation 350 250 organisation.name %}
+        </div>
     </div>
-
     <div class="row">
         <div class="col-sm-6">
-            <p><strong>{{organisation.name}}</strong>
-            {% if organisation.url %}
-            <br><a href="{{organisation.url}}">{{organisation.url}}</a>
-            {% endif %}
-            </p>
-
             {{organisation.description|linebreaks}}
-
-            {% if organisation.iati_org_id %}
-            <p><span class="section">{% trans "IATI ID" %}</span> {{organisation.iati_org_id}}</p>
-            {% endif %}
-            {% if organisation.get_new_organisation_type_display %}
-            <p><span class="section">{% trans "Type" %}</span> {{organisation.get_new_organisation_type_display}}</p>
-            {% endif %}
-            <p><span class="section">{% trans "Activities" %}</span> Field partner, Support partner, Funding partner</p>
         </div>
-
-        <div class="col-sm-6 col-lg-5 col-lg-offset-1">
-            <div class="row">
-                <div class="col-xs-6">
-                    <img src="http://maps.googleapis.com/maps/api/staticmap?center=Helsinki&zoom=12&scale=1&size=300x200&maptype=roadmap&sensor=false&format=png&visual_refresh=true">
-                </div>
-                <div class="col-xs-6">
-                    <p>
-                    {% if organisation.primary_location.address_1 %}{{organisation.primary_location.address_1}}<br />{% endif %}
-                    {% if organisation.primary_location.address_2 %}{{organisation.primary_location.address_2}}<br />{% endif %}
-                    {% if organisation.primary_location.postcode %}{{organisation.primary_location.postcode}}<br />{% endif %}
-                    {% if organisation.primary_location.city %}{{organisation.primary_location.city}}<br />{% endif %}
-                    {% if organisation.primary_location.state %}{{organisation.primary_location.state}}<br />{% endif %}
-                    {% if organisation.primary_location.country %}{{organisation.primary_location.country}}{% endif %}
-                    </p>
-                    {% if organisation.contact_email %}
-                    <p><a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a></p>
-                    {% endif %}
-                    {% if organisation.phone %}
-                    <p>{{organisation.phone}}<br /></p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
     </div>
-
     <div class="row">
         <div class="col-xs-6">
             <h2>{% trans 'Projects in RSR' %}</h2>
             <table>
               <tr>
-                <td>
-                  {% trans 'Active' %}
-                </td>
-                <td>
-                  {{organisation.published_projects.status_active.count}}
-                </td>
+                <td>{% trans 'Active' %}</td>
+                <td>{{organisation.published_projects.status_active.count}}</td>
               </tr>
               <tr>
-                <td>
-                  {% trans 'Need funding' %}
-                </td>
-                <td>
-                  {{organisation.published_projects.status_onhold.count}}
-                </td>
+                <td>{% trans 'Need funding' %}</td>
+                <td>{{organisation.published_projects.status_onhold.count}}</td>
               </tr>
               <tr>
-                <td>
-                  {% trans 'Complete' %}
-                </td>
-                <td>
-                  {{organisation.published_projects.status_complete.count}}
-                </td>
+                <td>{% trans 'Complete' %}</td>
+                <td>{{organisation.published_projects.status_complete.count}}</td>
               </tr>
               <tr>
-                <td>
-                  {% trans 'Cancelled' %}
-                </td>
-                <td>
-                  {{organisation.published_projects.status_cancelled.count}}
-                </td>
+                <td>{% trans 'Cancelled' %}</td>
+                <td>{{organisation.published_projects.status_cancelled.count}}</td>
               </tr>
               <tr>
-                <td>
-                  {% trans 'Total projects' %}
-                </td>
-                <td>
-                  {{organisation.published_projects.count}}
-                </td>
+                <td>{% trans 'Total projects' %}</td>
+                <td>{{organisation.published_projects.count}}</td>
               </tr>
             </table>
         </div>
@@ -160,7 +117,13 @@
             </table>
         </div>
     </div>
-
+    <div class="row">
+        <div class="col-sm-12">
+            <p>
+                {% organisation_map organisation.id '100%' '300px' %}
+            </p>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
