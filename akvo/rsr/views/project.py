@@ -155,7 +155,7 @@ def directory(request):
         show_filters = ""
 
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, f.qs, 4)
+    page, paginator, page_range = pagination(page, f.qs, 10)
 
     context = {
         'filter': f,
