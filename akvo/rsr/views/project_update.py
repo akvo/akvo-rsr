@@ -36,9 +36,13 @@ def directory(request):
 
 
 def main(request, project_id, update_id):
+    project = get_object_or_404(Project, pk=project_id)
+    update = get_object_or_404(ProjectUpdate, pk=update_id, project=project_id)
+    other_updates = project.updates_desc().exclude(pk=update_id)[:5]
     context = {
-        'update': get_object_or_404(ProjectUpdate, pk=update_id, project=project_id),
-        'project': get_object_or_404(Project, pk=project_id)
+        'update': update,
+        'other_updates': other_updates,
+        'project': project,
     }
     return render(request, 'update_main.html', context)
 

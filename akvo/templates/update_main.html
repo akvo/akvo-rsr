@@ -11,18 +11,17 @@
     <div class="container">
         <div class="row">
             <article class="col-md-12">
-                <hgroup>
-                  <h1>{{update.title}}
-                      {% if user == update.user and not update.edit_window_has_expired %}
-                      <a href="{% url 'edit-update' project.pk update.pk %}" class="btn btn-primary">
-                          {% bootstrap_icon "pencil" %} Edit</a>
-                      {% endif %}
-                  </h1>
-                  <h4> {{update.created_at|date:"d-M-Y"}}</h4>
-                </hgroup>
-
                 <div class="row">
                     <div class="col-md-7 col-sm-12 col-xs-12">
+                        <hgroup>
+                          <h1>{{update.title}}
+                              {% if user == update.user and not update.edit_window_has_expired %}
+                              <a href="{% url 'edit-update' project.pk update.pk %}" class="btn btn-primary">
+                                  {% bootstrap_icon "pencil" %} Edit</a>
+                              {% endif %}
+                          </h1>
+                          <h4> {{update.created_at|date:"d-M-Y"}}</h4>
+                        </hgroup>
                         <div class="post-info media">
                             <div class="media-body">
                                 <p>by {{update.user.first_name}} {{update.user.last_name}} via {{update.get_update_method_display}}</p>
@@ -34,15 +33,15 @@
                         </div>
                     </div>
 
+                    {% if other_updates %}
                     <aside class="col-md-4 col-md-offset-1 hidden-sm hidden-xs">
-                        <h2>More updates from this project</h2>
+                        <h3>{% trans "Latest updates from this project" %}</h3>
                         <div class="row">
-                            {% for u in update.project.project_updates.all %}
-                            {% if u.id != update.id %}
+                            {% for u in other_updates %}
                             <div class="row">
-                                <div class="col-lg-5 col-md-5 thumbImg">
+                                <div class="col-lg-5 col-md-5">
                                     <a href="{% url 'update-main' u.project.id u.id %}">
-                                      {% img u 160 160 u.title %}
+                                      {% img u 120 120 u.title %}
                                     </a>
                                 </div>
                                 <div class="col-lg-7 col-md-7">
@@ -57,10 +56,10 @@
                                 </div>
                             </div>
                             <br>
-                            {% endif %}
                             {% endfor %}
                         </div>
                     </aside>
+                    {% endif %}
                 </div>
             </article>
         </div>
