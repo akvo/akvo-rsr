@@ -13,7 +13,7 @@ from akvo.rsr.forms import RegisterForm
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -89,11 +89,11 @@ def sign_in(request):
     # Password reset on sign in page
     elif request.method == "POST" and 'email' in request.POST:
         PasswordResetForm(data=request.POST)
-        return None
+        return HttpResponse()
     else:
         form = AuthenticationForm()
         reset_form = PasswordResetForm()
-    return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form, }, context_instance=context)
+    return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form}, context_instance=context)
 
 
 def sign_out(request):

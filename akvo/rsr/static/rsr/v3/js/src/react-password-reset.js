@@ -9,7 +9,7 @@ var ResetModal = React.createClass({displayName: 'ResetModal',
     resetPassword: function() {
         form_data = this.getFormData();
         $.ajax({
-            type: "PUT",
+            type: "POST",
             url: "/sign_in/",
             data : form_data,
             success: function(data) {
