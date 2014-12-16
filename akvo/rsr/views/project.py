@@ -83,6 +83,8 @@ def _get_carousel_data(project):
             "credit": project.current_image_credit,
         })
     for update in project.updates_desc():
+        if len(photos) > 9:
+            break
         if update.photo:
             photos.append({
                 "url": update.photo.url,
