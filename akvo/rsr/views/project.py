@@ -11,7 +11,7 @@ import json
 from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
-from ...utils import pagination
+from ...utils import pagination, filter_query_string
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -163,6 +163,7 @@ def directory(request):
         'page_range': page_range,
         'paginator': paginator,
         'show_filters': show_filters,
+        'q': filter_query_string(qs)
         }
     return render(request, 'project_directory.html', context)
 

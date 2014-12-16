@@ -8,7 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from ..filters import remove_empty_querydict_items, OrganisationFilter
 from ..models import Organisation
-from ...utils import pagination
+from ...utils import pagination, filter_query_string
 
 from django.shortcuts import get_object_or_404, render
 
@@ -16,9 +16,6 @@ from django.shortcuts import get_object_or_404, render
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
     f = OrganisationFilter(qs, queryset=Organisation.objects.all())
-
-    # organisations_list = Organisation.objects.all()
-    # page = request.GET.get('page')
 
     # Instead of true or false, adhere to bootstrap3 class names to simplify
     show_filters = "in"
@@ -35,6 +32,7 @@ def directory(request):
         'paginator': paginator,
         'page_range': page_range,
         'show_filters': show_filters,
+        'q': filter_query_string(qs)
         }
     return render(request, 'organisation_directory.html', context)
 

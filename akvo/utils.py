@@ -133,7 +133,7 @@ def send_donation_confirmation_emails(invoice_id):
         msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
         msg.content_subtype = "html"
         msg.send(fail_silently=True)
-    
+
 
 def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
     """get a number of blog posts from wordpress
@@ -414,3 +414,19 @@ def pagination(page, object_list, objects_per_page):
             del page_range[active_index+2:-2]
 
     return page, paginator, page_range
+
+
+def filter_query_string(qs):
+    """
+    Takes a QueryDict and returns a string that can be prepended to paginated
+    links. Since pagination is handled outside of this function we pop the page
+    item.
+    """
+    q = dict(qs.iterlists())  # to Python dict
+    q.pop('page', None)
+
+    if not bool(q):
+        return ''
+
+    return '&{}'.format(
+        '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))

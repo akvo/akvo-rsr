@@ -7,7 +7,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 from ..filters import remove_empty_querydict_items, ProjectUpdateFilter
 from ..models import ProjectUpdate, Project
-from ...utils import pagination
+from ...utils import pagination, filter_query_string
 
 from django.shortcuts import get_object_or_404, render
 
@@ -30,6 +30,7 @@ def directory(request):
         'page_range': page_range,
         'paginator': paginator,
         'show_filters': show_filters,
+        'q': filter_query_string(qs)
         }
     return render(request, 'update_directory.html', context)
 
