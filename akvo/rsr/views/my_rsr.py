@@ -13,6 +13,7 @@ from ...utils import pagination
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
@@ -24,7 +25,7 @@ def my_details(request):
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
         if avatar_form.is_valid():
             avatar_form.save()
-        return HttpResponseRedirect('/myrsr/')
+        return HttpResponseRedirect(reverse('my_details'))
 
     profile_form = ProfileForm(
         initial={

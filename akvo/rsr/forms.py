@@ -211,7 +211,6 @@ class UserOrganisationForm(forms.Form):
         request.user.organisations.add(self.cleaned_data['organisation'])
 
 
-
 class ProjectUpdateForm(forms.ModelForm):
     """Form representing a ProjectUpdate."""
 
