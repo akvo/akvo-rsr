@@ -14,7 +14,7 @@ echo $1 > $PASSWORD_FILE
 mysql --user=rsr --password=$1 rsr -e "Truncate table django_session;"
 
 # Create rsr user and database
-sudo su postgres <<'EOF'
+sudo -u postgres bash <<'EOF'
 PASSWORD=`cat /var/akvo/rsr/code/pg_db_password.tmp`
 psql -c "CREATE USER rsr WITH PASSWORD '$PASSWORD';"
 psql -c "CREATE DATABASE rsr OWNER rsr TEMPLATE template0 ENCODING 'UTF8';"
@@ -24,7 +24,7 @@ EOF
 rm -f $PASSWORD_FILE
 
 # Do migration
-sudo su rsr <<'EOF'
+sudo -u rsr bash <<'EOF'
 cd /var/akvo/rsr
 . venv/bin/activate
 cd code
