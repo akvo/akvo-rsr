@@ -9,13 +9,16 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import re
 
 from akvo.rsr.forms import RegisterForm
+
 from django.conf import settings
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponseRedirect
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
 from registration.models import RegistrationProfile
+
 
 def register(request):
     context = RequestContext(request)
@@ -78,15 +81,21 @@ def activate(request, activation_key, extra_context=None):
 
 def sign_in(request):
     context = RequestContext(request)
-    if request.method == "POST":
+    if request.method == "POST" and 'username' in request.POST:
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
             return HttpResponseRedirect('/myrsr')
+    # Password reset on sign in page
+    elif request.method == "POST" and 'email' in request.POST:
+        reset_form = PasswordResetForm(data=request.POST)
+        if reset_form.is_valid():
+            reset_form.save()
+        return HttpResponse()
     else:
         form = AuthenticationForm()
-    return render_to_response('sign_in.html', {'form': form},
-                              context_instance=context)
+        reset_form = PasswordResetForm()
+    return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form}, context_instance=context)
 
 
 def sign_out(request):

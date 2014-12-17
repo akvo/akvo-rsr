@@ -74,6 +74,12 @@ urlpatterns = patterns(
     url(r'^sign_out/$',
         'akvo.rsr.views.account.sign_out', name='sign_out'),
 
+    url(r'^reset_password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        'django.contrib.auth.views.password_reset_confirm', name='password_reset_confirm'),
+
+    url(r'^reset_password/complete/$',
+        'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'),
+
     # MyRSR
     url(r'^myrsr/$',
         'akvo.rsr.views.my_rsr.my_details', name='my_details'),
