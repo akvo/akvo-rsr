@@ -8,19 +8,24 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
-from ..forms import PasswordForm, ProfileForm, UserOrganisationForm
+from ..forms import PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm
 from ...utils import pagination
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
-from django.forms.models import model_to_dict
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
 
 @login_required
 def my_details(request):
+    if request.method == "POST" and 'avatar' in request.FILES:
+        avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
+        if avatar_form.is_valid():
+            avatar_form.save()
+        return HttpResponseRedirect('/myrsr/')
+
     profile_form = ProfileForm(
         initial={
             'email': request.user.email,
@@ -29,6 +34,7 @@ def my_details(request):
         }
     )
     organisation_form = UserOrganisationForm()
+    avatar_form = UserAvatarForm()
 
     json_data = json.dumps({'user': request.user.employments_dict([])})
 
@@ -36,6 +42,7 @@ def my_details(request):
         'user_data': json_data,
         'profileform': profile_form,
         'organisationform': organisation_form,
+        'avatarform': avatar_form,
     }
 
     return render(request, 'myrsr/my_details.html', context)

@@ -22,6 +22,7 @@ from .models import Country, Organisation, ProjectUpdate, ProjectUpdateLocation
 
 from akvo import settings
 
+
 class RegisterForm(forms.Form):
     email = forms.EmailField(
         label='',
@@ -210,6 +211,7 @@ class UserOrganisationForm(forms.Form):
         request.user.organisations.add(self.cleaned_data['organisation'])
 
 
+
 class ProjectUpdateForm(forms.ModelForm):
     """Form representing a ProjectUpdate."""
 
@@ -307,3 +309,15 @@ class ProjectUpdateForm(forms.ModelForm):
             return update
         else:
             raise forms.ValidationError('Project or user not found.')
+
+
+class UserAvatarForm(forms.ModelForm):
+    """Form for updating the avatar of a user."""
+    avatar = forms.ImageField(widget=forms.FileInput(attrs={
+        'class': 'input',
+        'size': '15',
+    }))
+
+    class Meta:
+        model = get_user_model()
+        fields = ('avatar',)

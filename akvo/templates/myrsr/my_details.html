@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load bootstrap3 compressed i18n %}
+{% load bootstrap3 compressed i18n rsr_utils %}
 
 {% block title %}{% trans 'MyRSR' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 
@@ -104,6 +104,15 @@
     });
 </script>
 
+<script>
+    $(function () {
+        $( "#id_avatar" ).change(function () {
+            $( ".btn" ).prop('disabled', true);
+            $( "#avatarForm" ).submit();
+        });
+    });
+</script>
+
 <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
 <script type="application/json" id="user-request-link">{"link": "{% url 'user_request_organisation' user.id %}"}</script>
 
@@ -147,8 +156,17 @@
 
 
 {% block myrsr_main %}
-    <div class="col-md-5 col-xs-6 col-ty-12" id="profile">
+    <div class="col-sm-7 col-xs-12" id="profile">
         <h2>My details</h2>
+        {% img user 100 100 user.get_full_name %}
+        <p>
+            <form method="POST" action="" id="avatarForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in avatarform %}
+                    {% bootstrap_field field layout='inline' %}
+                {% endfor %}
+            </form>
+        </p>
         <form method="" action="" id="profileForm">
             {% csrf_token %}
             {% for field in profileform %}
@@ -162,7 +180,7 @@
         </form>
     </div>
 
-    <div class="col-md-5 col-xs-6 col-ts-12" id="organisations"></div>
+    <div class="col-sm-5 col-xs-12" id="organisations"></div>
     {% compressed_js 'rsr_v3_react_my_details' %}
     {% comment %}
     <script type="application/javascript" src="/static/rsr/v3/js/build/rsr_v3_my_details.min.js" charset="utf-8"></script>
