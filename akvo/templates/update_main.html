@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n markup_tags rsr_utils bootstrap3 embed_video_tags %}
+{% load i18n markup_tags rsr_utils bootstrap3 embed_video_tags thumbnail %}
 
 {% block title %}{{update.title}}{% endblock %}
 
@@ -58,7 +58,17 @@
                             <div class="row">
                                 <div class="col-lg-5 col-md-5">
                                     <a href="{% url 'update-main' u.project.id u.id %}">
-                                      {% img u 120 120 u.title %}
+                                        {% if u.video %}
+                                            {% video u.video as update_video %}
+                                              {% with update_video_thumbnail=update_video.thumbnail %}
+                                                {% thumbnail update_video_thumbnail "120x120" format="PNG" upscale=True as im %}
+                                                  <img src="{{im.url}}" style="margin:{{im|margin:'120x120'}}" />
+                                                {% endthumbnail %}
+                                              {% endwith %}
+                                            {% endvideo %}
+                                        {% else %}
+                                            {% img u 120 120 u.title %}
+                                        {% endif %}
                                     </a>
                                 </div>
                                 <div class="col-lg-7 col-md-7">
