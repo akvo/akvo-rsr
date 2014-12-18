@@ -271,13 +271,11 @@ class ProjectUpdateForm(forms.ModelForm):
         if data:
             scheme, netloc, path, query, fragment = urlsplit(data)
             netloc = netloc.lower()
-            valid_url = (netloc == 'blip.tv' or
-                         netloc == 'vimeo.com' or
+            valid_url = (netloc == 'vimeo.com' or
                          netloc == 'www.youtube.com' and path == '/watch' or
                          netloc == 'youtu.be')
             if not valid_url:
-                raise forms.ValidationError(_('Invalid video URL. Currently '
-                    'Blip.TV, Vimeo and YouTube are supported.'))
+                raise forms.ValidationError(_('Invalid video URL. Currently only YouTube and Vimeo are supported.'))
             if netloc == 'youtu.be':
                 netloc = 'www.youtube.com'
                 path = '/watch?v=%s' % path.lstrip('/')
