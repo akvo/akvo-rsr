@@ -108,6 +108,7 @@
     $(function () {
         $( "#id_avatar" ).change(function () {
             $( ".btn" ).prop('disabled', true);
+            $( ".btn" ).attr('disabled', true);
             $( "#avatarForm" ).submit();
         });
     });
