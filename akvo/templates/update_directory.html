@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n maps markup_tags rsr_utils bootstrap3 compressed embed_video_tags thumbnail %}
+{% load i18n maps markup_tags rsr_utils bootstrap3 compressed %}
 
 {% block title %}{% trans 'Updates' %}{% endblock %}
 
@@ -58,13 +58,7 @@
           <div class="col-sm-3 col-md-2 col-xs-4 col-lg-2">
             <a href="{% url 'update-main' u.project.id u.id %}">
               {% if u.video %}
-                {% video u.video as update_video %}
-                  {% with update_video_thumbnail=update_video.thumbnail %}
-                    {% thumbnail update_video_thumbnail "160x160" format="PNG" upscale=True as im %}
-                      <img src="{{im.url}}" style="margin:{{im|margin:'160x160'}}" />
-                    {% endthumbnail %}
-                  {% endwith %}
-                {% endvideo %}
+                {% vid_img u 160 160 u.title %}
               {% else %}
                 {% img u 160 160 u.title %}
               {% endif %}

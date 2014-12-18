@@ -34,3 +34,22 @@ def img(context, obj, width, height, alt):
             'img': img,
             'geometry': geometry,
             'width': width}
+
+@register.inclusion_tag('rsr_utils/vid_img.html', takes_context=True)
+def vid_img(context, obj, width, height, alt):
+    """Standard way to show video thumbnail"""
+
+    geometry = '{}x{}'.format(width, height)
+
+    # Based on type get video
+    vid = obj
+    if isinstance(obj, ProjectUpdate):
+        vid = obj.video
+
+    height = '{}.px'.format(height)
+
+    return {'alt': alt,
+            'height': height,
+            'vid': vid,
+            'geometry': geometry,
+            'width': width}
