@@ -47,6 +47,7 @@ from .project import Project
 from .project_comment import ProjectComment
 from .project_condition import ProjectCondition
 from .project_contact import ProjectContact
+from .project_document import ProjectDocument
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 from .region import RecipientRegion
@@ -93,6 +94,7 @@ __all__ = [
     'ProjectComment',
     'ProjectCondition',
     'ProjectContact',
+    'ProjectDocument',
     'ProjectUpdate',
     'PublishingStatus',
     'RecipientRegion',
