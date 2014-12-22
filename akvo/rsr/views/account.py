@@ -81,6 +81,8 @@ def activate(request, activation_key, extra_context=None):
 
 def sign_in(request):
     context = RequestContext(request)
+    form = AuthenticationForm()
+    reset_form = PasswordResetForm()
     if request.method == "POST" and 'username' in request.POST:
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -92,9 +94,6 @@ def sign_in(request):
         if reset_form.is_valid():
             reset_form.save()
         return HttpResponse()
-    else:
-        form = AuthenticationForm()
-        reset_form = PasswordResetForm()
     return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form}, context_instance=context)
 
 
