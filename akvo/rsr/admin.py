@@ -135,10 +135,6 @@ class LinkInline(admin.StackedInline):
         (None, {
             'fields': ('kind', 'url', 'caption')
         }),
-        ('IATI fields (advanced)', {
-            'classes': ('collapse',),
-            'fields': ('format', 'category', 'language')
-        })
     )
 
 
