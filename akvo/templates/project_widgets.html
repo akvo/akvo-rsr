@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% load compressed i18n rsr_utils %}
+
+{% block title %}{{project.title}} - {% trans "widget selection" %}{% endblock %}
+
+{% block maincontent %}
+
+<article class="touch-navbar project-container">
+    {% include "partials/project_header.html" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-5">
+                <h1>{% trans "Widget selection" %}</h1>
+                <p>
+                    {% trans "The following steps will produce a snippet of Akvo widget code you can copy and paste into your own web site's code." %}
+                </p>
+                <p>
+                    {% trans "Step 1: Select and preview the widget you wish to use." %}<br>
+                    {% trans "Step 2: Select colours and additional settings for your widget." %}<br>
+                    {% trans "Step 3: Copy the HTML code to your web site." %}
+                </p>
+                <h2><small>{% trans "Step 1 of 3" %}</small></h2>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optradio">
+                        {% trans "Project widget with donation link" %}<br>
+                        <span class="small">({% trans "170 pixels wide by 840 pixels high" %})</span>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optradio">
+                        {% trans "Project widget with cobranded banner" %}<br>
+                        <span class="small">({% trans "468 pixels wide by 234 pixels high" %})</span>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optradio">
+                        {% trans "Small project widget" %}<br>
+                        <span class="small">({% trans "170 pixels wide by 312 pixels high" %})</span>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optradio">
+                        {% trans "Project map widget" %}<br>
+                        <span class="small">({% trans "Custom size, shows a map of projects from your organisation" %})</span><br>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optradio">
+                        {% trans "Project list widget" %}<br>
+                        <span class="small">({% trans "730 pixels wide by 745 pixels high, shows a list of projects from your organisation" %})</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <h3>{% trans "Preview" %}</h3>
+                <script type="text/javascript">
+                    document.write('<iframe src="{% url 'widget_project_list' %}?organisation_id=5" width="730px" height="745px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
+                </script>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

@@ -215,6 +215,19 @@ def hierarchy(request, project_id):
     return render(request, 'project_hierarchy.html', context)
 
 
+def widgets(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    context = {
+        'project': project,
+        'akvoapp_root_url': 'http://rsr.redesign.akvo-ops.org/',
+        'domain_url': 'http://rsr.redesign.akvo-ops.org/',
+        'style': 'darkBG',
+    }
+
+    return render(request, 'project_widgets.html', context)
+
+
 @login_required()
 def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
     project = get_object_or_404(Project, id=project_id)

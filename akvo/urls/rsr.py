@@ -7,6 +7,7 @@
 """
 
 from akvo.api.urls import named_api
+from ..rsr.views import widgets as widget_views
 
 from django.conf import settings
 from django.conf.urls import (include, patterns, url)
@@ -34,6 +35,9 @@ urlpatterns = patterns(
 
     url(r'^project/(?P<project_id>\d+)/hierarchy/$',
         'akvo.rsr.views.project.hierarchy', name='project-hierarchy'),
+
+    url(r'^project/(?P<project_id>\d+)/widgets/$',
+        'akvo.rsr.views.project.widgets', name='project-widgets'),
 
     url(r'^project/(?P<project_id>\d+)/updates/$',
         'akvo.rsr.views.project_update.project_updates', name='project-updates'),
@@ -102,6 +106,39 @@ urlpatterns = patterns(
     # Django Rest Framework urls
     (r'^rest/v1/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
+
+    # Widgets
+    url(r'^widgets/projects/map/$',
+        widget_views.ProjectMapView.as_view(),
+        name="widget_org_map"),
+
+    url(r'^widgets/projects/list/$',
+        widget_views.ProjectListView.as_view(),
+        name="widget_project_list"),
+
+    url(r'^widgets/cobranded-banner/(?P<project_id>\d+)/$',
+        widget_views.CobrandedBannerView.as_view(),
+        name="widget_cobranded_banner"),
+
+    url(r'^widgets/cobranded-banner/random/$',
+        widget_views.RandomCobrandedBannerView.as_view(),
+        name="widget_random_cobranded_banner"),
+
+    url(r'^widgets/project-narrow/(?P<project_id>\d+)/$',
+        widget_views.ProjectNarrowView.as_view(),
+        name="widget_project_narrow"),
+
+    url(r'^widgets/project-narrow/random/$',
+        widget_views.RandomProjectNarrowView.as_view(),
+        name="widget_random_project_narrow"),
+
+    url(r'^widgets/project-small/(?P<project_id>\d+)/$',
+        widget_views.ProjectSmallView.as_view(),
+        name="widget_project_small"),
+
+    url(r'^widgets/project-small/random/$',
+        widget_views.RandomProjectSmallView.as_view(),
+        name="widget_random_project_small"),
 )
 
 # TastyPie API

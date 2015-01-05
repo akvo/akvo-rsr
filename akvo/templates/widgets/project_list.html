@@ -1,5 +1,5 @@
-{% extends "partner_sites/widgets/base.html" %}
-{% load i18n rsr_filters rsr_tags rsr_widgets addparam %}
+{% extends "widgets/base.html" %}
+{% load i18n rsr_filters rsr_tags rsr_widgets addparam rsr_utils %}
 
 {% load compressed %}
 
@@ -44,17 +44,17 @@
       <tbody>
         {% for project in projects  %}
         <tr class="projectListTitle"> <td colspan="4"><h2 id="project_title">
-                  <a href="{% url 'project_main' project.id %}">
+                  <a href="{% url 'project-main' project.id %}">
                     {{project.title|smart_truncate:60}}
                   </a>
                 </h2></td></tr>
           <tr class="projectListDescr">
             <td class="projectDescrTd">
             <div class="projectDescr">
-               
-                {% rsr_widget_project_photo project 120 90 %}
+
+                {% img project 120 90 project.title %}
                 <p id="project_subtitle">{{project.project_plan_summary|smart_truncate:50}}</p>
-                <a href="{% url 'project_main' project.id %}">{% trans "See full description" %}</a>
+                <a href="{% url 'project-main' project.id %}">{% trans "See full description" %}</a>
             </div>
             </td>
             <td class="projectLocTd">
@@ -65,7 +65,7 @@
               {% if project.status == 'H' %}<span class="projectStatus notComplete">{% trans "Needs funding" %}</span>
               {% elif project.status == 'A' %}<span class="projectStatus notComplete">{% trans "Active" %}</span>
               {% elif project.status == 'C' %}<span class="projectStatus complete">{% trans "Complete" %}</span>
-              {% elif project.status == 'L' %}<span class="projectStatus complete">{% trans "Canelled" %}</span>
+              {% elif project.status == 'L' %}<span class="projectStatus complete">{% trans "Cancelled" %}</span>
               {% elif project.status == 'R' %}<span class="projectStatus complete">{% trans "Archived" %}</span>
               {% else %} {# None (N) #} <span class="projectStatus notComplete">{% trans "None" %}</span>
               {% endif %}
@@ -75,7 +75,7 @@
                   {% if not last_update %}
                     {% trans 'Not yet' %}
                   {% else %}
-                    <a href="{% url 'update_main' project.id project.project_updates.latest.id %}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
+                    <a href="{% url 'update-main' project.id project.project_updates.latest.id %}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
                   {% endif %}
                 {% endwith %}
               </span>
@@ -83,7 +83,7 @@
             
             <td class="projectPartnerTd"><ul>
               {% for partner in project.partners.all.distinct|slice:":5" %}
-                {#<li><a href="{% url 'organisation_main' partner.id %}">{{partner.name}}</a></li>#}
+                {#<li><a href="{% url 'organisation-main' partner.id %}">{{partner.name}}</a></li>#}
                 <li>{{partner.name}}</li>
                 {% if forloop.last and project.partners.all.distinct.count > 5 %}
                   ...
