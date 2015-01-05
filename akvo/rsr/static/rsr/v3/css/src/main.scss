@@ -230,6 +230,7 @@ body > footer {
 }
 footer .navbar {
 	margin-bottom: 0;
+    border-radius: 0px;
 }
 #footer-body {
 	text-align: center;
@@ -239,6 +240,16 @@ footer .navbar {
 	display: inline-block;
 	float: none;
 	font-size: 14px;
+}
+#project-footer {
+    margin-bottom: -1em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    background: rgb(244,244,244);
+}
+#project-footer-right {
+    background: #ccc;
+    padding: 1.5em;
 }
 
 /* GENERIC STRUCTURE and TEXT STYLES */

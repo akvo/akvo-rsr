@@ -111,8 +111,6 @@
                             </div>
                         {% endifnotequal %}
                     {% endfor %}
-                </div>
-                </p>
             </div>
         </div>
         <div class="row">
@@ -142,23 +140,9 @@
               {% endfor %}
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                COMMENTS
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4 col-xs-4 col-ty-12">
-                FOOTER SECTION
-            </div>
-            <div class="col-sm-4 col-xs-4 col-ty-12">
-                FOOTER SECTION
-            </div>
-            <div class="col-sm-4 col-xs-4 col-ty-12">
-                FOOTER SECTION
-            </div>
-        </div>
     </div>
+
+    {% include "partials/project_footer.html" %}
 </article>
 {% endblock %}
 
