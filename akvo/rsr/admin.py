@@ -20,6 +20,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.encoding import force_text
 
 from sorl.thumbnail.fields import ImageField
+from embed_video.admin import AdminVideoMixin
 import os.path
 
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
@@ -762,7 +763,7 @@ class ProjectUpdateLocationInline(admin.StackedInline):
     extra = 0
 
 
-class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
+class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.ModelAdmin):
 
     list_display = ('id', 'project', 'user', 'text', 'language', 'created_at', 'img',)
     list_filter = ('created_at', 'project', )

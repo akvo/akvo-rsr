@@ -137,13 +137,9 @@
             </div>
             <div class="col-sm-4">
               <h4 class="detailedInfo">Latest project updates</h4>
-              {% for update in updates%}
-              <a href="{{update.get_absolute_url}}">{{update.title}}</a>
+              {% for update in updates %}
+              <a href="{{update.get_absolute_url}}">{{update.title}}</a><br>
               {% endfor %}
-
-              <p>Updates</p>
-
-
             </div>
         </div>
         <div class="row">
