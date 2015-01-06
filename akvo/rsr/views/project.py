@@ -217,15 +217,20 @@ def hierarchy(request, project_id):
 
 def widgets(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+    selected_widget = request.GET.get('widget', None)
 
     context = {
         'project': project,
-        'akvoapp_root_url': 'http://rsr.redesign.akvo-ops.org/',
-        'domain_url': 'http://rsr.redesign.akvo-ops.org/',
         'style': 'darkBG',
     }
 
-    return render(request, 'project_widgets.html', context)
+    if selected_widget in ['narrow', 'cobranded', 'small', 'map', 'list']:
+        context['widget'] = selected_widget
+        context['domain_url'] = 'http://' + request.META['HTTP_HOST']
+        return render(request, 'project_widgets2.html', context)
+
+    else:
+        return render(request, 'project_widgets.html', context)
 
 
 @login_required()

@@ -21,11 +21,11 @@
                     {% trans "Step 2: Select colours and additional settings for your widget." %}<br>
                     {% trans "Step 3: Copy the HTML code to your web site." %}
                 </p>
-                <h2><small>{% trans "Step 1 of 3" %}</small></h2>
+                <h2><small>{% trans "Step 1 of 3: Widget selection" %}</small></h2>
                 <form>
                 <div class="radio">
                     <label>
-                        <input type="radio" name="widget" value="donation">
+                        <input type="radio" name="widget" value="narrow">
                         {% trans "Project widget with donation link" %}<br>
                         <span class="small">({% trans "170 pixels wide by 840 pixels high" %})</span>
                     </label>
@@ -73,7 +73,7 @@
 {% block jq %}
 $( ".radio" ).change(function() {
     var widget = $('input[name=widget]:radio:checked').val();
-    if (widget == 'donation') {
+    if (widget == 'narrow') {
         $( ".preview" ).html('<iframe src="{% url 'widget_project_narrow' project.pk %}" width="170px" height="840px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
     }
     else if (widget == 'cobranded') {
