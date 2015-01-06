@@ -121,19 +121,11 @@ class ProjectMapView(BaseWidgetView):
         context = super(ProjectMapView, self).get_context_data(**kwargs)
         context['height'] = self.request.GET.get('height', '300')
         context['width'] = self.request.GET.get('width', '600')
+        context['style'] = self.request.GET.get('style', 'dark')
         context['state'] = self.request.GET.get('state', 'dynamic')
         org_id = self.request.GET.get('organisation_id', '0')
         org = get_object_or_404(Organisation, pk=org_id)
         context['projects'] = org.published_projects()
-
-        # To handle old free form coloring via the bgcolor query parameter
-        # the new way should be to use the "style" parameter with
-        # dark(default) or light.
-        context['bgcolor'] = self.request.GET.get('bgcolor')
-        if not context['bgcolor']:
-            context['bgcolor'] = '303030'
-            if self.request.GET.get('style') == 'light':
-                context['bgcolor'] = 'fff'
         return context
 
 

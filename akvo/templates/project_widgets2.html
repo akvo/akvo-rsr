@@ -35,8 +35,13 @@
                         </label>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" id="widget-random-organisation">
+                        <select class="form-control" id="widget-random-organisation" disabled>
                         <option value="{{project.first_partner.pk}}">{{project.first_partner.name}}</option>
+                        {% for partner in project.all_partners.distinct %}
+                            {% if not partner == project.first_partner %}
+                                <option value="{{partner.pk}}">{{partner.name}}</option>
+                            {% endif %}
+                        {% endfor %}
                       </select>
                     </div>
                 {% elif widget == 'map' or widget == 'list' %}
@@ -44,12 +49,17 @@
                     <div class="form-group">
                         <select class="form-control" id="widget-organisation">
                         <option value="{{project.first_partner.pk}}">{{project.first_partner.name}}</option>
+                        {% for partner in project.all_partners.distinct %}
+                            {% if not partner == project.first_partner %}
+                                <option value="{{partner.pk}}">{{partner.name}}</option>
+                            {% endif %}
+                        {% endfor %}
                       </select>
                     </div>
                     {% if widget == 'map' %}
                         <h3><small>{% trans "Size" %}</small></h3>
-                        {% trans "Height" %}: <input type="text" class="form-control" id="widget-height" value="300" size="5">
-                        {% trans "Width" %}: <input type="text" class="form-control" id="widget-width" value="600" size="5">
+                        {% trans "Height" %}: <input class="form-control" type="text" id="widget-height" value="300">
+                        {% trans "Width" %}: <input class="form-control" type="text" id="widget-width" value="600">
                         <h3><small>{% trans "State" %}</small></h3>
                         <div class="radio">
                             <label>
@@ -74,34 +84,92 @@
                         <input type="radio" name="widget-style" value="light">{% trans "Light" %}
                     </label>
                 </div>
-                <h3><small>{% trans "Where will you embed this widget?" %}</small></h3>
-                <input type="text" class="form-control" id="widget-site" value="" size="51" placeholder="Example: akvo.org">
                 <h2><small>{% trans "Step 3 of 3: Copy the HTML" %}</small></h2>
                 <p>
                     {% trans "Copy the HTML code below for use on your web site." %}
                     {% trans "You may repeat the steps above until you are satisfied with the appearance of your widget." %}
                 </p>
                 <p>
-                    <textarea class="form-control" name="code" id="code" rows="4"><iframe src="{{domain_url}}{% url 'widget_project_narrow' project.pk %}" width="170px" height="840px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
+                    {% if widget == 'narrow' %}
+                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_project_narrow' project.pk %}?style=dark" width="170px" height="840px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
+                    {% elif widget == 'cobranded' %}
+                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_cobranded_banner' project.pk %}?style=dark" width="468px" height="234px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
+                    {% elif widget == 'small' %}
+                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_project_small' project.pk %}?style=dark" width="170px" height="312px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
+                    {% elif widget == 'map' %}
+                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_org_map' %}?organisation_id={{project.first_partner.pk}}&width=600&height=300&style=dark&state=dynamic" width="600px" height="300px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
+                    {% elif widget == 'list' %}
+                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_project_list' %}?organisation_id={{project.first_partner.pk}}&style=dark" width="730px" height="745px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
+                    {% endif %}
                 </p>
             </div>
             <div class="col-sm-7">
                 <h3>{% trans "Preview" %}</h3>
-                <div class="preview">
-                    {% if widget == 'narrow' %}
-                        <script>document.write('<iframe src="{% url 'widget_project_narrow' project.pk %}" width="170px" height="840px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');</script>
-                    {% elif widget == 'cobranded' %}
-                        <script>document.write('<iframe src="{% url 'widget_cobranded_banner' project.pk %}" width="468px" height="234px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');</script>
-                    {% elif widget == 'small' %}
-                        <script>document.write('<iframe src="{% url 'widget_project_small' project.pk %}" width="170px" height="312px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');</script>
-                    {% elif widget == 'map' %}
-                        <script>document.write('<iframe src="{% url 'widget_org_map' %}?organisation_id={{project.first_partner.pk}}&width=600&height=300" width="600px" height="300px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');</script>
-                    {% elif widget == 'list' %}
-                        <script>document.write('<iframe src="{% url 'widget_project_list' %}?organisation_id={{project.first_partner.pk}}" width="730px" height="745px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');</script>
-                    {% endif %}
-                </div>
+                <div class="preview"></div>
             </div>
         </div>
     </div>
 </article>
+{% endblock %}
+
+{% block jq %}
+// initial display of preview
+$( ".preview" ).html($( "#code" ).val());
+
+{% if widget == 'map' or widget == 'list' %}
+    var org_id = {{project.first_partner.pk}}
+    {% if widget == 'map' %}
+        var height = 300
+        var width = 600
+    {% endif %}
+{% endif %}
+
+$( "input[name=widget-style]" ).change(function() {
+    var style = $( "input[name=widget-style]:radio:checked" ).val();
+    var code = $( "#code" ).val();
+    if (style == 'dark') {
+        code = code.replace('style=light', 'style=dark');
+    } else if (style == 'light' ) {
+        code = code.replace('style=dark', 'style=light');
+    }
+    $( "#code" ).html(code);
+    $( ".preview" ).html(code);
+});
+$( "input[name=widget-state]" ).change(function() {
+    var state = $( "input[name=widget-state]:radio:checked" ).val();
+    var code = $( "#code" ).val();
+    if (state == 'static') {
+        code = code.replace('state=dynamic', 'state=static');
+    } else if (state == 'dynamic' ) {
+        code = code.replace('state=static', 'state=dynamic');
+    }
+    $( "#code" ).html(code);
+    $( ".preview" ).html(code);
+});
+$( "#widget-organisation" ).change(function() {
+    var new_org_id = $( "#widget-organisation" ).val();
+    var code = $( "#code" ).val();
+    code = code.replace('organisation_id='+org_id, 'organisation_id='+new_org_id);
+    $( "#code" ).html(code);
+    $( ".preview" ).html(code);
+    org_id = new_org_id;
+});
+$( "#widget-height" ).keyup(function() {
+    var new_height = $( "#widget-height" ).val();
+    var code = $( "#code" ).val();
+    code = code.replace('height='+height, 'height='+new_height);
+    code = code.replace('height="'+height, 'height="'+new_height);
+    $( "#code" ).html(code);
+    $( ".preview" ).html(code);
+    height = new_height;
+});
+$( "#widget-width" ).keyup(function() {
+    var new_width = $( "#widget-width" ).val();
+    var code = $( "#code" ).val();
+    code = code.replace('width='+width, 'width='+new_width);
+    code = code.replace('width="'+width, 'width="'+new_width);
+    $( "#code" ).html(code);
+    $( ".preview" ).html(code);
+    width = new_width;
+});
 {% endblock %}

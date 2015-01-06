@@ -14,11 +14,7 @@
     #footer {
       width: {{width}}px;
       max-width: {{width}}px;
-      background-color: #{{bgcolor}};
-      /*
-      background-color: #303030;
-      background-color: #fff;
-      */
+      background-color: {% if style == 'light' %}#FFFFFF{% else %}#000000{% endif %};
       color: #fff;
       text-align:right;
       max-height:24px;
