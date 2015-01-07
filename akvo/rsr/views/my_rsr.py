@@ -29,7 +29,7 @@ def my_details(request):
 
     profile_form = ProfileForm(
         initial={
-            'email': request.user.email,
+            'emailform': request.user.email,
             'first_name': request.user.first_name,
             'last_name': request.user.last_name
         }

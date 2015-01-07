@@ -67,8 +67,6 @@ var CarouselInstance = React.createClass({displayName: 'CarouselInstance',
     }
 });
 
-var accordion_data = JSON.parse(document.getElementById("accordion-data").innerHTML);
-var carousel_data = JSON.parse(document.getElementById("carousel-data").innerHTML);
 
-React.renderComponent(AccordionInstance( {source:accordion_data} ), document.getElementById('accordion'));
-React.renderComponent(CarouselInstance( {source:carousel_data} ), document.getElementById('carousel'));
+React.renderComponent(AccordionInstance( {source:AKVO_RSR['accordion_data']} ), document.getElementById('accordion'));
+React.renderComponent(CarouselInstance( {source:AKVO_RSR['carousel_data']} ), document.getElementById('carousel'));
