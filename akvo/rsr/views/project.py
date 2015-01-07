@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template import RequestContext
 
 
 def _get_accordion_data(project):
@@ -139,6 +140,7 @@ def _get_hierarchy_grid(project):
 
     return grid
 
+
 def _get_project_partners(project):
     partners = {}
     for partner in project.all_partners():
@@ -148,7 +150,8 @@ def _get_project_partners(project):
 
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
-    f = ProjectFilter(qs, queryset=Project.objects.published())
+    projects = RequestContext(request)['projects_qs'] if request.rsr_page else Project.objects.published()
+    f = ProjectFilter(qs, queryset=projects)
 
     # Instead of true or false, adhere to bootstrap3 class names to simplify
     show_filters = "in"
@@ -166,7 +169,7 @@ def directory(request):
         'paginator': paginator,
         'show_filters': show_filters,
         'q': filter_query_string(qs)
-        }
+    }
     return render(request, 'project_directory.html', context)
 
 
