@@ -35,7 +35,7 @@
                         </label>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" id="widget-random-organisation" disabled>
+                        <select class="form-control" id="widget-organisation" disabled>
                         <option value="{{project.first_partner.pk}}">{{project.first_partner.name}}</option>
                         {% for partner in project.all_partners.distinct %}
                             {% if not partner == project.first_partner %}
@@ -102,6 +102,9 @@
                         <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_project_list' %}?organisation_id={{project.first_partner.pk}}&style=dark" width="730px" height="745px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
                     {% endif %}
                 </p>
+                <p class="small">
+                    <a href="{% url 'project-widgets' project.pk %}">< Back to widget selection</a>
+                </p>
             </div>
             <div class="col-sm-7">
                 <h3>{% trans "Preview" %}</h3>
@@ -113,17 +116,54 @@
 {% endblock %}
 
 {% block jq %}
-// initial display of preview
+// Initial display of preview
 $( ".preview" ).html($( "#code" ).val());
 
-{% if widget == 'map' or widget == 'list' %}
-    var org_id = {{project.first_partner.pk}}
-    {% if widget == 'map' %}
-        var height = 300
-        var width = 600
-    {% endif %}
+// Initials var(s) for text replacements
+var org_id = {{project.first_partner.pk}}
+{% if widget == 'map' %}
+    var height = 300
+    var width = 600
 {% endif %}
 
+// Change of the project type (current project or random from organisation)
+$( "input[name=widget-project]" ).change(function() {
+    var type = $( "input[name=widget-project]:radio:checked" ).val();
+    var code = $( "#code" ).val();
+    if (type == 'project') {
+        {% if widget == 'narrow' %}
+        code = code.replace('{% url 'widget_random_project_narrow' %}?organisation_id='+org_id+'&', '{% url 'widget_project_narrow' project.pk %}?');
+        {% elif widget == 'cobranded' %}
+        code = code.replace('{% url 'widget_random_cobranded_banner' %}?organisation_id='+org_id+'&', '{% url 'widget_cobranded_banner' project.pk %}?');
+        {% elif widget == 'small' %}
+        code = code.replace('{% url 'widget_random_project_small' %}?organisation_id='+org_id+'&', '{% url 'widget_project_small' project.pk %}?');
+        {% endif %}
+        $( "#widget-organisation" ).prop('disabled', 'disabled');
+    } else if (type == 'random' ) {
+        {% if widget == 'narrow' %}
+        code = code.replace('{% url 'widget_project_narrow' project.pk %}?', '{% url 'widget_random_project_narrow' %}?organisation_id='+org_id+'&');
+        {% elif widget == 'cobranded' %}
+        code = code.replace('{% url 'widget_cobranded_banner' project.pk %}?', '{% url 'widget_random_cobranded_banner' %}?organisation_id='+org_id+'&');
+        {% elif widget == 'small' %}
+        code = code.replace('{% url 'widget_project_small' project.pk %}?', '{% url 'widget_random_project_small' %}?organisation_id='+org_id+'&');
+        {% endif %}
+        $( "#widget-organisation" ).prop('disabled', false);
+    }
+    $( "#code" ).html(code);
+    $( ".preview" ).html(code);
+});
+
+// Change of organisation
+$( "#widget-organisation" ).change(function() {
+    var new_org_id = $( "#widget-organisation" ).val();
+    var code = $( "#code" ).val();
+    code = code.replace('organisation_id='+org_id, 'organisation_id='+new_org_id);
+    $( "#code" ).html(code);
+    $( ".preview" ).html(code);
+    org_id = new_org_id;
+});
+
+// Change of style, light or dark
 $( "input[name=widget-style]" ).change(function() {
     var style = $( "input[name=widget-style]:radio:checked" ).val();
     var code = $( "#code" ).val();
@@ -135,6 +175,8 @@ $( "input[name=widget-style]" ).change(function() {
     $( "#code" ).html(code);
     $( ".preview" ).html(code);
 });
+
+// Change of state (only for map widget), dynamic or static
 $( "input[name=widget-state]" ).change(function() {
     var state = $( "input[name=widget-state]:radio:checked" ).val();
     var code = $( "#code" ).val();
@@ -146,14 +188,8 @@ $( "input[name=widget-state]" ).change(function() {
     $( "#code" ).html(code);
     $( ".preview" ).html(code);
 });
-$( "#widget-organisation" ).change(function() {
-    var new_org_id = $( "#widget-organisation" ).val();
-    var code = $( "#code" ).val();
-    code = code.replace('organisation_id='+org_id, 'organisation_id='+new_org_id);
-    $( "#code" ).html(code);
-    $( ".preview" ).html(code);
-    org_id = new_org_id;
-});
+
+// Change of widget height (only for map widget)
 $( "#widget-height" ).keyup(function() {
     var new_height = $( "#widget-height" ).val();
     var code = $( "#code" ).val();
@@ -163,6 +199,8 @@ $( "#widget-height" ).keyup(function() {
     $( ".preview" ).html(code);
     height = new_height;
 });
+
+// Change of widget width (only for map widget)
 $( "#widget-width" ).keyup(function() {
     var new_width = $( "#widget-width" ).val();
     var code = $( "#code" ).val();

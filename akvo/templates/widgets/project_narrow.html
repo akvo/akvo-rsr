@@ -17,7 +17,7 @@
         <a href="{{project.get_absolute_url}}">{{project.title|smart_truncate:60}}</a>
       </h2>
       <p id="project_subtitle">{{project.subtitle}}</p>
-      <a href="{{project.get_absolute_url}}" class="photo_frame">{% img project 145 109 project.title %}</a>
+      <a href="{{project.get_absolute_url}}">{% img project 145 109 project.title %}</a>
       <p id="project_plan_summary">
         {{project.project_plan_summary|safe|smart_truncate:100}}...
         <a href="{{project.get_absolute_url}}">{% trans "More" %} &#8250;</a>

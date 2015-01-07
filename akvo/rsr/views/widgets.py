@@ -7,14 +7,10 @@
 """
 from __future__ import absolute_import
 
-import json
 import random
 
-from django.conf import settings
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
-from django.core.urlresolvers import reverse
 
 from akvo.rsr.models import Organisation, Project
 
@@ -24,7 +20,6 @@ __all__ = [
     'ProjectMapView',
     'CobrandedBannerView',
     'ProjectNarrowView',
-    'ProjectCordinates',
 ]
 
 
@@ -32,8 +27,6 @@ class BaseWidgetView(TemplateView):
     """Setup a common base widget"""
     def get_context_data(self, **kwargs):
         context = super(BaseWidgetView, self).get_context_data(**kwargs)
-        # context['akvoapp_root_url'] = 'http://rsr.redesign.akvo-ops.org' # self.request.akvoapp_root_url
-        # context['domain_url'] = 'http://rsr.redesign.akvo-ops.org' # self.request.domain_url
         context['style'] = 'darkBG'
         if self.request.GET.get('style') == 'light':
             context['style'] = 'lightBG'
@@ -53,9 +46,9 @@ class RandomBaseWidgetView(BaseWidgetView):
     """Extends the base widget with random project"""
     def get_context_data(self, **kwargs):
         context = super(RandomBaseWidgetView, self).get_context_data(**kwargs)
-        partner = get_object_or_404(
-            Organisation, pk=self.request.organisation_id)
-        context['project'] = random.choice(partner.active_projects())
+        org_id = self.request.GET.get('organisation_id', '0')
+        organisation = get_object_or_404(Organisation, pk=org_id)
+        context['project'] = random.choice(organisation.active_projects())
         return context
 
 
@@ -127,53 +120,3 @@ class ProjectMapView(BaseWidgetView):
         org = get_object_or_404(Organisation, pk=org_id)
         context['projects'] = org.published_projects()
         return context
-
-
-class ProjectCordinates(TemplateView):
-
-    def get_queryset(self):
-        projects = (
-            get_object_or_404(Organisation,
-                              pk=self.request.organisation_id)
-            .published_projects().latest_update_fields().order_by('-id')
-        )
-        return projects
-
-    def render_to_response(self, context, **kwargs):
-        return HttpResponse(context, content_type='application/json', **kwargs)
-
-    def get_context_data(self, **kwargs):
-        if getattr(settings, 'HTTPS_SUPPORT', True):
-            protocol = 'https://'
-        else:
-            protocol = 'http://'
-        akvoapp_root_url = '%s%s.%s' % (protocol, self.request.partner_site.hostname,
-                               getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org'))
-        projects = self.get_queryset()
-        content = {'projects': []}
-
-        for project in projects:
-            project_url = reverse('project_main',
-                                  kwargs={'project_id': project.id})
-
-            info_window = '''
-                            <div class="mapInfoWindow">
-                                <a href="%s%s">%s</a><br>
-                                <p class="small grey">
-                                    %s: %s, %s
-                                </p>
-                            </div>
-                        ''' % (akvoapp_root_url, project_url, project.title, 'Location',
-                               project.primary_location.country.continent,
-                               project.primary_location.city)
-
-            content['projects'] \
-                .append(dict(title=project.title,
-                             latitude=project.primary_location.latitude,
-                             longitude=project.primary_location.longitude,
-                             content=info_window,
-                             ))
-
-        # Build jsonp with callback
-        callback = self.request.GET.get('callback', '')
-        return callback + '(' + json.dumps(content) + ');'
