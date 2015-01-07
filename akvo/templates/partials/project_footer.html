@@ -1,0 +1,37 @@
+{% load i18n %}
+
+<footer id="project-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-2 col-sm-offset-1">
+                <p><span class="detailedInfo">{% trans "Related documents" %}:</span></p>
+                <p>
+                    {% for doc in project.documents.all %}
+                        {{doc.show_link|safe}}<br>
+                    {% empty %}
+                        <i>{% trans "No related documents" %}</i>
+                    {% endfor %}
+                </p>
+            </div>
+            <div class="col-sm-2 col-sm-offset-1">
+                <p><span class="detailedInfo">{% trans "Related links" %}:</span></p>
+                <p>
+                    {% for link in project.links.all %}
+                        {{link.show_link|safe}}<br>
+                    {% empty %}
+                        <i>{% trans "No related documents" %}</i>
+                    {% endfor %}
+                </p>
+            </div>
+            <div class="col-sm-2 col-sm-offset-1">
+                <p><span class="detailedInfo">{% trans "Grab a widget" %}:</span></p>
+                <p>Widget page</p>
+            </div>
+            <div class="col-sm-2" id="project-footer-right">
+                <p>
+                    <img src="{{STATIC_URL}}common/img/icon_rss.gif"> {% trans "Subscribe to RSS feed" %}
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>

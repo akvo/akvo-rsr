@@ -178,7 +178,7 @@ def main(request, project_id):
         raise PermissionDenied
 
     carousel_data = _get_carousel_data(project)
-    updates = project.project_updates.all().order_by('-created_at')
+    updates = project.project_updates.all().order_by('-created_at')[:5]
     accordion_data = _get_accordion_data(project)
     timeline_data = _get_timeline_data(project)
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n markup_tags rsr_utils bootstrap3 %}
+{% load i18n markup_tags rsr_utils bootstrap3 embed_video_tags %}
 
 {% block title %}{{update.title}}{% endblock %}
 
@@ -31,9 +31,26 @@
                                     by {{update.user.first_name}} {{update.user.last_name}} via {{update.get_update_method_display}}
                                 </p>
                             </div>
-                            {% img update 500 350 update.title %}
+                            {% if update.video %}
+                            <p>{% video update.video '600x450' %}</p>
+                            <p class="small">
+                                {% if update.video_caption %}
+                                "{{ update.video_caption }}"{% if update.video_credit %}<br>{% endif %}
+                                {% endif %}
+                                {% if update.video_credit %}{% trans 'Video credit' %}: {{ update.video_credit }}{% endif %}
+                            </p>
+                            {% endif %}
+                            {% if update.photo %}
+                            <p>{% img update 600 450 update.title %}</p>
+                            <p class="small">
+                                {% if update.photo_caption %}
+                                "{{ update.photo_caption }}"{% if update.photo_credit %}<br>{% endif %}
+                                {% endif %}
+                                {% if update.photo_credit %}{% trans 'Photo credit' %}: {{ update.photo_credit }}{% endif %}
+                            </p>
+                            {% endif %}
                             {% autoescape off %}
-                              <p>{{ update.text|force_escape|urlize|apply_markup:"markdown" }}</p>
+                                <p>{{ update.text|force_escape|urlize|apply_markup:"markdown" }}</p>
                             {% endautoescape %}
                         </div>
                     </div>
@@ -46,7 +63,11 @@
                             <div class="row">
                                 <div class="col-lg-5 col-md-5">
                                     <a href="{% url 'update-main' u.project.id u.id %}">
-                                      {% img u 120 120 u.title %}
+                                        {% if u.video %}
+                                            {% vid_img u 120 120 u.title %}
+                                        {% else %}
+                                            {% img u 120 120 u.title %}
+                                        {% endif %}
                                     </a>
                                 </div>
                                 <div class="col-lg-7 col-md-7">

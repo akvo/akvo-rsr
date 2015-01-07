@@ -111,8 +111,6 @@
                             </div>
                         {% endifnotequal %}
                     {% endfor %}
-                </div>
-                </p>
             </div>
         </div>
         <div class="row">
@@ -137,32 +135,14 @@
             </div>
             <div class="col-sm-4">
               <h4 class="detailedInfo">Latest project updates</h4>
-              {% for update in updates%}
-              <a href="{{update.get_absolute_url}}">{{update.title}}</a>
+              {% for update in updates %}
+              <a href="{{update.get_absolute_url}}">{{update.title}}</a><br>
               {% endfor %}
-
-              <p>Updates</p>
-
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                COMMENTS
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4 col-xs-4 col-ty-12">
-                FOOTER SECTION
-            </div>
-            <div class="col-sm-4 col-xs-4 col-ty-12">
-                FOOTER SECTION
-            </div>
-            <div class="col-sm-4 col-xs-4 col-ty-12">
-                FOOTER SECTION
             </div>
         </div>
     </div>
+
+    {% include "partials/project_footer.html" %}
 </article>
 {% endblock %}
 
