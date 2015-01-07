@@ -113,7 +113,9 @@ class ProjectMapView(BaseWidgetView):
     def get_context_data(self, **kwargs):
         context = super(ProjectMapView, self).get_context_data(**kwargs)
         context['height'] = self.request.GET.get('height', '300')
+        context['heightpx'] = str(int(context['height']) - 30) + 'px'
         context['width'] = self.request.GET.get('width', '600')
+        context['widthpx'] = str(context['width']) + 'px'
         context['style'] = self.request.GET.get('style', 'dark')
         context['state'] = self.request.GET.get('state', 'dynamic')
         org_id = self.request.GET.get('organisation_id', '0')

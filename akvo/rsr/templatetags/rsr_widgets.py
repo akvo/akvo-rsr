@@ -14,7 +14,6 @@ register = template.Library()
 @register.inclusion_tag('partials/widgets/header.html', takes_context=True)
 def rsr_widget_header(context):
     """..."""
-    # return {'domain_url': context['domain_url']}
     return {}
 
 
@@ -46,8 +45,6 @@ def rsr_widget_project_funding(context, project):
 def rsr_widget_project_donate_button(context, project):
     """..."""
     return {
-        # 'akvoapp_root_url': context['akvoapp_root_url'],
-        # 'domain_url': context['domain_url'],
         'request': context['request'],
         'project': context['project'],
     }
@@ -63,8 +60,6 @@ def rsr_widget_project_progress_bar(context, project):
 def rsr_widget_project_budget(context, project):
     """..."""
     return {
-        # 'akvoapp_root_url': context['akvoapp_root_url'],
-        # 'domain_url': context['domain_url'],
         'request': context['request'],
         'project': context['project'],
     }
