@@ -9,7 +9,7 @@ from __future__ import absolute_import, print_function
 
 from django import template
 from django.contrib.auth import get_user_model
-from akvo.rsr.models import Project, ProjectUpdate, Organisation
+from akvo.rsr.models import PartnerSite, Project, ProjectUpdate, Organisation
 register = template.Library()
 
 
@@ -29,6 +29,8 @@ def img(context, obj, width, height, alt):
         img = obj.logo
     elif isinstance(obj, get_user_model()):
         img = obj.avatar
+    elif isinstance(obj, PartnerSite):
+        img = obj.logo
 
     height = '{}.px'.format(height)
 
