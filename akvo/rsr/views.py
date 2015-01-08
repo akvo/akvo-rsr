@@ -989,12 +989,6 @@ def project_list_widget(request, template='project-list', org_id=0):
             .status_not_cancelled()
 
     order_by = request.GET.get('order_by', 'title')
-    sql = (
-        'SELECT MAX(created_at) '
-        'FROM rsr_projectupdate '
-        'WHERE project_id = rsr_project.id'
-    )
-    p = p.extra(select={'last_update': sql})
 
     if order_by == 'country__continent':
         p = p.order_by(order_by, 'primary_location__country__name', 'title')
