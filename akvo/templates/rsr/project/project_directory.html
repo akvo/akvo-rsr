@@ -129,7 +129,7 @@
                 <span class="small">Partners</span>
               </th>
               <th>
-                {% translated_anchor latest_update_date Updated %}
+                {% translated_anchor last_update__created_at Updated asc %}
               </th>
               <th>
                 <span class="small">Focus area</span>
@@ -185,8 +185,10 @@
                 </td>
                 <td>
                   <p class="td-text">
-                    {% if project.latest_update_id %}
-                      <a href="{% url 'update_main' project.pk project.latest_update_id %}">{{project.latest_update_date|string_to_date|date:"d M Y"}}</a>
+                    {% if project.last_update %}
+                      <a href="{% url 'update_main' project.pk project.last_update.id %}">
+                        {{ project.last_update.created_at|string_to_date|date:"d M Y" }}
+                      </a>
                     {% else %}
                       {% trans 'Not yet' %}
                     {% endif %}
@@ -252,7 +254,7 @@
 
 	var qDefaultValue = jQ('#q').val();
 	jQ('#organisation').val({{org.id}});
-		
+
 	jQ('#continent').change(function() {
 
 		function Country(countryName, countryId) {
@@ -274,8 +276,8 @@
 		function add_countires(countries) {
 			jQ('#country >option').remove();
 			jQ('#country').append('<option value="all">{% trans 'All countries' %}</option>');
-			for (var i=0; i < countries.length; i++) {				
-				jQ('#country').append('<option value="' + countries[i].getId() + '">' 
+			for (var i=0; i < countries.length; i++) {
+				jQ('#country').append('<option value="' + countries[i].getId() + '">'
 					+ countries[i].getName() + '</option>');
 			};
 		}
@@ -316,12 +318,12 @@
 			countries_in_south_america[countries_in_south_america.length] = new Country('{{country.name}}',{{country.id}});
 		{% endfor %}
 
-		var selected_continent = jQ('#continent').val();		
-		
-		if (selected_continent == 1 ) {		
+		var selected_continent = jQ('#continent').val();
+
+		if (selected_continent == 1 ) {
 			add_countires(countries_in_africa);
-		} 
-		else if (selected_continent == 2 ) {		
+		}
+		else if (selected_continent == 2 ) {
 			add_countires(countries_in_asia);
 		}
 		else if (selected_continent == 3) {
@@ -337,7 +339,7 @@
 			add_countires(countries_in_south_america);
 		}
 		else {
-			add_countires(all_countries);	
+			add_countires(all_countries);
 		}
 
 	});
