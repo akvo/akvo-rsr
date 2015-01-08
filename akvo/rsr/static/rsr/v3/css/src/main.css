@@ -336,12 +336,24 @@ header {
   height: 300px;
   background: #ccc; }
 
-.carousel-inner > .item > img {
-  max-height: 400px; }
-
+/* Project timeline */
 #timeline {
   height: 400px;
   background: #FFFFFF; }
+
+/* Project carousel */
+.carousel-inner > .item > img {
+  max-height: 400px;
+  margin: auto; }
+
+.carousel-inner > .item {
+  text-align: center; }
+
+.carousel-control.right {
+  background-image: none; }
+
+.carousel-control.left {
+  background-image: none; }
 
 /* Project hierarchy */
 .project-hierarchy-window {
