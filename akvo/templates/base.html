@@ -12,9 +12,9 @@
     <title>Akvo RSR - {% block title %}{% trans 'Home' %}{% endblock %}</title>
 
     {% if favicon %}
-      <link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">
     {% else %}
-      <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -33,6 +33,7 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,400italic,600italic,300italic%7CMontserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700" rel="stylesheet" type="text/css">
 
     {% compressed_css 'rsr_v3_style' %}
+    {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
     {% compressed_js 'rsr_v3_script' %}
     {% compressed_js 'rsr_v3_libraries' %}
 
@@ -53,7 +54,7 @@
 
     <script>
      $(document).ready(function() {
-       {% block jq %}{% endblock %}
+        {% block jq %}{% endblock %}
      });
     </script>
   </body>
