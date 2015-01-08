@@ -215,6 +215,24 @@ def hierarchy(request, project_id):
     return render(request, 'project_hierarchy.html', context)
 
 
+def widgets(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    selected_widget = request.GET.get('widget', None)
+
+    context = {
+        'project': project,
+        'style': 'darkBG',
+    }
+
+    if selected_widget in ['narrow', 'cobranded', 'small', 'map', 'list']:
+        context['widget'] = selected_widget
+        context['domain_url'] = 'http://' + request.META['HTTP_HOST']
+        return render(request, 'project_widgets2.html', context)
+
+    else:
+        return render(request, 'project_widgets.html', context)
+
+
 @login_required()
 def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
     project = get_object_or_404(Project, id=project_id)

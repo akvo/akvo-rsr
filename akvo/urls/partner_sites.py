@@ -137,15 +137,6 @@ urlpatterns = i18n_patterns(
         name='global_organisation_projects_map_json'),
 )
 
-# Non i18n
-urlpatterns += patterns(
-    '',
-    # Custom JSON-emitting views
-    url(r'^json/projects_coordinates.json$',
-        widget_views.ProjectCordinates.as_view(),
-        name="projects_coordinates_json"),
-)
-
 urlpatterns += counter_urls
 
 urlpatterns += patterns(
