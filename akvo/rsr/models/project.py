@@ -13,7 +13,9 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max, Sum
+from django.db.models.signals import post_save
 from django.db.models.query import QuerySet
+from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
 
@@ -34,6 +36,7 @@ from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
+from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 from .user_profile import UserProfile
 
@@ -213,6 +216,8 @@ class Project(TimestampsMixin, models.Model):
     )
     funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
     funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
+    last_update = models.ForeignKey(ProjectUpdate, related_name='the_project',
+                                    null=True, on_delete=models.SET_NULL)
 
     # Custom manager
     # based on http://www.djangosnippets.org/snippets/562/ and
@@ -654,3 +659,12 @@ class Project(TimestampsMixin, models.Model):
         verbose_name = _(u'project')
         verbose_name_plural = _(u'projects')
         ordering = ['-id', ]
+
+
+@receiver(post_save, sender=ProjectUpdate)
+def update_denormalized_project(sender, **kwargs):
+    "Updates the denormalized project.last_update on related project."
+    project_update = kwargs['instance']
+    project = project_update.project
+    project.last_update = project_update
+    project.save()

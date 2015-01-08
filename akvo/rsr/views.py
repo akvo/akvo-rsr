@@ -208,8 +208,7 @@ def project_list(request, slug='all'):
         else:
             queryset = Project.objects.published().filter(categories__focus_area=focus_area)
 
-    # not sure prefetch_related helps since the filtering is applied afterwards. Profiling needed.
-    queryset = queryset.latest_update_fields().distinct().order_by('-pk')  # .prefetch_related('locations')
+    queryset = queryset.order_by('-pk')  # Default ordering
     filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
 
     return {
