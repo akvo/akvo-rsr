@@ -1,4 +1,4 @@
-{% load i18n bootstrap3 %}
+{% load i18n bootstrap3 rsr_utils %}
 
 {% url 'project-directory' as project_url %}
 {% url 'update-directory' as update_url %}
@@ -19,7 +19,13 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{% url 'index' %}"><h1>Akvo RSR</h1></a>
+      <a class="navbar-brand" href="{% url 'index' %}">
+        {% if rsr_page and logo %}
+          {% img rsr_page 125 60 rsr_page.organisation.name %}
+        {% else %}
+          <h1>Akvo RSR</h1>
+        {% endif %}
+      </a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->

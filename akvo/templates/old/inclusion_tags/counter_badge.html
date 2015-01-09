@@ -1,8 +1,0 @@
-{% load i18n counter_tags humanize %}
-
-<div class="counter_badge">
-  <span style="display:none;">{% counter object %}</span>
-  {{ object.view_count|intcomma }}
-  <br />
-  <span>{% trans 'views' %}</span>
-</div>
