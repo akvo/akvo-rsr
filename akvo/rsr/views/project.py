@@ -84,6 +84,7 @@ def _get_carousel_data(project):
             "url": im.url,
             "caption": project.current_image_caption,
             "credit": project.current_image_credit,
+            "original_url": project.current_image.url,
         })
     for update in project.updates_desc():
         if len(photos) > 9:
@@ -94,6 +95,7 @@ def _get_carousel_data(project):
                 "url": im.url,
                 "caption": update.photo_caption,
                 "credit": update.photo_credit,
+                "original_url": update.photo.url,
             })
     return {"photos": photos}
 

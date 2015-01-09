@@ -342,11 +342,11 @@ header {
   background: #FFFFFF; }
 
 /* Project carousel */
-.carousel-inner > .item > img {
+.carousel-inner > .item > a > img {
   max-height: 400px;
   margin: auto; }
 
-.carousel-inner > .item {
+.carousel-inner > .item > a {
   text-align: center; }
 
 .carousel-control.right {
