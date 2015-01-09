@@ -1,0 +1,23 @@
+{% extends "widgets/base.html" %}
+{% load i18n rsr_filters rsr_tags rsr_widgets rsr_utils %}
+{% load compressed %}
+
+{% block style %}
+{{block.super}}
+{% compressed_css 'sites_widget_project_small' %}
+{% endblock style %}
+
+{% block body %}
+<section id="container" class="w170pxSmall {{style}} rsrWidget floats-in">
+  {% rsr_widget_header %}
+  <div id="content" class="floats-in">
+    <div class="projectDescr">
+      {% rsr_widget_project_status_location project %}
+      <h2 id="project_title"><a href="{{project.get_absolute_url}}">
+        {{project.title|smart_truncate:60}}
+      </a></h2>
+      <a href="{{project.get_absolute_url}}">{% img project 145 109 project.title %}</a>
+    </div>
+  </div>
+</section>
+{% endblock body %}
