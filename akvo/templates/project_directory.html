@@ -51,7 +51,7 @@
               </div>
             </div>
             <div>
-              <a class="btn showFilters btn-default menu-toggle"><i class="fa fa-angle-double-left"></i> Advanced filters</a>
+              <a class="btn showFilters btn-default menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
             </div>
         </div>
     </aside>
@@ -168,6 +168,6 @@ $(function () {
     $(".menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
-        $("i").toggleClass("fa-toggle-off fa-toggle-on");
+        $("a.showFilters > i").toggleClass("fa-toggle-off fa-toggle-on");
     });
 {% endblock %}
