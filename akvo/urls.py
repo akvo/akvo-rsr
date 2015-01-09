@@ -7,7 +7,7 @@
 """
 
 from akvo.api.urls import named_api
-from ..rsr.views import widgets as widget_views
+from .rsr.views import widgets as widget_views
 
 from django.conf import settings
 from django.conf.urls import (include, patterns, url)
