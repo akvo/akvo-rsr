@@ -93,17 +93,10 @@ class ProjectListView(BaseWidgetView):
         organisation = get_object_or_404(Organisation, pk=self.request.organisation_id)
         projects = context['projects']
 
-        sql = (
-            'SELECT MAX(created_at) '
-            'FROM rsr_projectupdate '
-            'WHERE project_id = rsr_project.id'
-        )
-        projects = projects.extra(select={'last_update': sql})
-
         if order_by == 'status':
             projects = projects.order_by('status', 'title')
         elif order_by == 'last_update':
-            projects = projects.order_by('-last_update', 'title')
+            projects = projects.order_by('last_update__created_at', 'title')
         elif order_by in ['budget', 'funds_needed']:
             projects = projects.extra(order_by=['-%s' % order_by, 'title'])
         else:

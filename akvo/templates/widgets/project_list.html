@@ -117,13 +117,13 @@
           {{project.show_status}}
         </p>
         <p class="topmargin">{% trans 'Last Update' %}<br />
-          {% with project.last_update as last_update %}
-            {% if not last_update %}
-              <span style="color:#000;">{% trans 'Not yet' %}</span>
-            {% else %}
-              <a href="{% url 'project_updates' project.id %}#{{project.project_updates.latest.id}}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
-            {% endif %}
-          {% endwith %}
+          {% if not project.last_update %}
+            <span style="color:#000;">{% trans 'Not yet' %}</span>
+          {% else %}
+            <a href="{% url 'update_main' project.id project.last_update.id %}">
+              {{ project.last_update.created_at|string_to_date|date:"Y-m-d  H:i" }}
+            </a>
+          {% endif %}
         </p>
       </td>
       <td class="tableRow partnerCell">

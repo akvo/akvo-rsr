@@ -53,7 +53,7 @@
       <div class="clear"></div>
       <div style="width:45%; float:left;">
         <span class="tiny grey marg_left20">
-          {% trans 'Filter on project title or subtitle' %} 
+          {% trans 'Filter on project title or subtitle' %}
         </span>
       </div>
       <div style="width:45%; float:right; text-align:right;">
@@ -66,7 +66,7 @@
 
     <div class="table_top">
       {% blocktrans count sorted_projects.count as project_count %}{{ project_count }} project{% plural %}{{ project_count }} projects{% endblocktrans %}
-      
+
       {# TODO: this bock may need revisiting to support different languages ways of ordering stuff #}
       {% if search_country %}
         {% blocktrans %}in {{ search_country }}{% endblocktrans %}
@@ -101,7 +101,7 @@
         </th>
         <th class="normal">{% trans "Partners" %}</th>
         <th class="normal">
-          {% translated_anchor latest_update_date Updated %}
+          {% translated_anchor last_update__created_at Updated asc %}
           <span style="display: none;">{% trans "Updated" %}</span>
         </th>
         <th class="normal">
@@ -121,7 +121,7 @@
               </a>
               <p class="tiny grey">
                 {{project.project_plan_summary|capfirst|smart_truncate:250}}
-              </p> 
+              </p>
             </div>
           </td>
           <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Location column #}
@@ -140,9 +140,9 @@
           </td>
           <td {% if forloop.last %}class="no_bottom_border"{% endif %}> {# Updates column #}
             <p class="small">
-              {% if project.latest_update_id %}
-                <a href="{% url 'update_main' project.id project.latest_update_id %}">
-                  {{project.latest_update_date|string_to_date|date:"d M Y"}}
+              {% if project.last_update %}
+                <a href="{% url 'update_main' project.id project.last_update.id %}">
+                  {{ project.last_update.created_at|string_to_date|date:"d M Y" }}
                 </a>
               {% else %}
                 {% trans 'Not yet' %}
