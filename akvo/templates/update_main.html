@@ -41,7 +41,7 @@
                             </p>
                             {% endif %}
                             {% if update.photo %}
-                            <p>{% img update 600 450 update.title %}</p>
+                            <p><a href="{{update.photo.url}}" target="_blank">{% img update 600 450 update.title %}</a></p>
                             <p class="small">
                                 {% if update.photo_caption %}
                                 "{{ update.photo_caption }}"{% if update.photo_credit %}<br>{% endif %}
