@@ -1,143 +1,144 @@
 {% extends "base.html" %}
-
 {% load i18n maps rsr_utils thumbnail humanize bootstrap3 compressed %}
-
 {% block title %}{% trans 'Projects' %}{% endblock %}
-
 {% block maincontent %}
-
-<style> {# TMP #}
- .form-group label {color: #1B635E}
-</style>
-
-<section id="map" class="touch-navbar">
-  {% coll_map page '100%' '100%'  %}
-</section>
-
-<section id="search-filter">
-  <form id="filterForm" action="" method="get" accept-charset="uft-8">
-    <div class="container-fluid">
-      <div id="search" class="verticalPadding">
-        <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
-        <div class="form-inline" role="form">
-          <div class="form-group">
-            <div class="input-group">
-              {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
-              </span>
+  <style> {# TMP #}
+  .form-group label {color: #1B635E}
+  </style>
+  <section id="map" class="touch-navbar">
+    {% coll_map page '100%' '100%'  %}
+  </section>
+  <section id="search-filter">
+    <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
+      <div class="container-fluid">
+        <div id="search" class="verticalPadding">
+          <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
+          <div class="form-inline" role="form">
+            <div class="form-group">
+              <div class="input-group">
+                {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
+                <span class="input-group-btn">
+                   <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
+                </span>
+              </div>
+              <a class="btn showFilters btn-default menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
             </div>
-            <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
           </div>
         </div>
       </div>
-    </div>
-
-    <div id="collapseOne" class="panel-collapse collapse {{ show_filters }}">
-      <div id="filter" class="verticalPadding row">
-
-        <div class="btn-group">
-          {% bootstrap_field filter.form.continent %}
+  </section>
+  <div id="wrapper">
+    <aside  id="sidebar-wrapper" class="{ show_filters }}">
+        <div id="filter" class="">
+            <div>
+                  <div class="btn-group">
+                    {% bootstrap_field filter.form.continent %}
+                  </div>
+            </div>
+            <div>
+                  <div class="btn-group">
+                    {% bootstrap_field filter.form.status %}
+                  </div>
+                </div>      
+            <div>
+                <div class="btn-group">
+                  {% bootstrap_field filter.form.organisation %}
+                </div>
+            </div>      
+            <div>
+              <div class="btn-group">
+                {% bootstrap_field filter.form.focus_area %}
+              </div>
+            </div>
+            <div>
+              <a class="btn showFilters btn-default menu-toggle"><i class="fa fa-angle-double-left"></i> Advanced filters</a>
+            </div>
         </div>
-
-        <div class="btn-group">
-          {% bootstrap_field filter.form.status %}
-        </div>
-
-        <div class="btn-group">
-          {% bootstrap_field filter.form.organisation %}
-        </div>
-
-        <div class="btn-group">
-          {% bootstrap_field filter.form.focus_area %}
-        </div>
-      </div>
-
-    </div>
-  </form>
-</section>
-
-<div class="container-fluid">
-  <div class="row center-text verticalPadding">
-    <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
-    {% include 'navigation/pagination.html' %}
+    </aside>
   </div>
-</div>
+ </form>
 
-<section class="main-list projects">
+  <div class="container-fluid">
+    <div class="row center-text verticalPadding">
+      <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
+      {% include 'navigation/pagination.html' %}
+    </div>
+  </div>
+
+  <section class="main-list projects">
     <ul class="container">
       {% for p in page %}
         <li class="row">
           <div class="col-lg-2 col-sm-3 col-xs-5 thumbImg">
             <a href="{% url 'project-main' p.id %}">
-                {% img p 200 200 p.title %}
+              {% img p 200 200 p.title %}
             </a>
           </div>
           <div class="col-lg-4 col-sm-3 col-xs-7">
-              <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
-              <p>{{p.subtitle}}</p>
-              {% if p.primary_location.country %}
+            <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
+            <p>{{p.subtitle}}</p>
+            {% if p.primary_location.country %}
               <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
-              {% endif %}
-              {% if p.first_partner %}
+            {% endif %}
+            {% if p.first_partner %}
               <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.first_partner.id %}">{{p.first_partner}}</a>
-                  {% if p.partners.distinct.count > 1 %}
-                  <a href="javascript:;" class="small" data-toggle="tooltip"
-                     title="{% for partner in p.partners.all.distinct %}
-                                {% ifnotequal partner.id p.first_partner.id %}
-                                    <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a><br>
-                                {% endifnotequal %}
-                            {% endfor %}"
-                     data-placement="right">+{{p.partners.distinct.count|add:"-1"}} more</a>
-                  {% endif %}
-              </p>
+              {% if p.partners.distinct.count > 1 %}
+                <a href="javascript:;" class="small" data-toggle="tooltip"
+                  title="{% for partner in p.partners.all.distinct %}
+                    {% ifnotequal partner.id p.first_partner.id %}
+                      <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a><br>
+                    {% endifnotequal %}
+                  {% endfor %}"
+                data-placement="right">+{{p.partners.distinct.count|add:"-1"}} more</a>
               {% endif %}
+              </p>
+            {% endif %}
           </div>
           <div class="col-sm-3 hidden-xs hidden-sm">
-              {% if p.focus_areas %}
+            {% if p.focus_areas %}
               <h4 class="detailedInfo">{% trans "Focus Areas" %}</h4>
               <p><a href="{% url 'project-directory' %}?focus_area={{p.focus_areas.0.id}}">{{p.focus_areas.0.name}}</a>
-                  {% if p.focus_areas.distinct.count > 1 %}
-                  <a href="javascript:;" class="small" data-toggle="tooltip"
-                     title="{% for area in p.focus_areas.all.distinct %}
-                                {% ifnotequal area.id p.focus_areas.0.id %}
-                                    <a href='{% url 'project-directory' %}?focus_area={{area.id}}'>{{area.name}}</a><br>
-                                {% endifnotequal %}
-                            {% endfor %}"
-                     data-placement="right">+{{p.focus_areas.distinct.count|add:"-1"}} more</a>
-                  {% endif %}
-              </p>
+              {% if p.focus_areas.distinct.count > 1 %}
+                <a href="javascript:;" class="small" data-toggle="tooltip"
+                  title="{% for area in p.focus_areas.all.distinct %}
+                    {% ifnotequal area.id p.focus_areas.0.id %}
+                      <a href='{% url 'project-directory' %}?focus_area={{area.id}}'>{{area.name}}</a><br>
+                    {% endifnotequal %}
+                  {% endfor %}"
+                data-placement="right">+{{p.focus_areas.distinct.count|add:"-1"}} more</a>
               {% endif %}
-              {% if p.sector_names %}
+              </p>
+            {% endif %}
+            {% if p.sector_names %}
               <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
               <p>{{p.sector_names.0}}
-                  {% if p.sector_names|length > 1 %}
-                  <a href="javascript:;" class="small" data-toggle="tooltip"
-                     title="{% for name in p.sector_names %}
-                                {% ifnotequal name p.sector_names.0 %}{{name}}<br>{% endifnotequal %}
-                            {% endfor %}"
-                     data-placement="right" data-container="body">+{{p.sector_names|length|add:"-1"}} more</a>
-                  {% endif %}
-              </p>
-              {% endif %}
-              <h4 class="detailedInfo">{% trans "Status" %}</h4>
-              <p>{{p.get_status_display}}</p>
-          </div>
-          <div class="col-md-3 hidden-xs hidden-sm">
-            <h4 class="detailedInfo">{% trans "Finance" %}</h4>
-            {% include "partials/project_budget.html" with project=p %}
-          </div>
-          <div class="col-xs-7 col-xs-offset-5 col-sm-6 col-sm-offset-0 visible-xs-block visible-sm">
-            <p class="small">
-              <span class="detailedInfo">{% trans "Focus Areas" %}</span>
-              {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>
-              <span class="detailedInfo">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
-              <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
-              <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% if p.sector_names|length > 1 %}
+                <a href="javascript:;" class="small" data-toggle="tooltip"
+                  title="{% for name in p.sector_names %}
+                  {% ifnotequal name p.sector_names.0 %}{{name}}<br>{% endifnotequal %}
+                {% endfor %}"
+              data-placement="right" data-container="body">+{{p.sector_names|length|add:"-1"}} more</a>
+            {% endif %}
             </p>
-          </div>
-        </li>
+          {% endif %}
+          <h4 class="detailedInfo">{% trans "Status" %}</h4>
+          <p>{{p.get_status_display}}</p>
+        </div>
+        <div class="col-md-3 hidden-xs hidden-sm">
+          <h4 class="detailedInfo">{% trans "Finance" %}</h4>
+          {% include "partials/project_budget.html" with project=p %}
+        </div>
+        <div class="col-xs-7 col-xs-offset-5 col-sm-6 col-sm-offset-0 visible-xs-block visible-sm">
+          <p class="small">
+          <span class="detailedInfo">{% trans "Focus Areas" %}</span>
+          {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>
+          <span class="detailedInfo">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
+          <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
+          <span class="detailedInfo">{% trans "Finance" %}</span>
+          {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+          </p>
+        </div>
+      </li>
   {% endfor %}
 </ul>
   </section>
@@ -148,7 +149,6 @@
   </div>
 
 {% endblock %}
-
 {% block js %}
   {{ block.super }}
   <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -165,4 +165,9 @@ $(function () {
     }
   })
 })
+    $(".menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+        $("i").toggleClass("fa-toggle-off fa-toggle-on");
+    });
 {% endblock %}

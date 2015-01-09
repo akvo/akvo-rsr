@@ -1,6 +1,20 @@
+# -*- coding: utf-8 -*-
+
+"""
+    Akvo RSR is covered by the GNU Affero General Public License.
+    See more details in the license.txt file located at the root folder of the
+    Akvo RSR module. For additional details on the GNU license please
+    see < http://www.gnu.org/licenses/agpl.html >.
+
+"""
+
 import django
-from django.contrib.sites.models import get_current_site
+
 from django.conf import settings
+from django.contrib.sites.models import get_current_site
+
+from akvo.rsr.models import Project
+
 
 def extra_context(request, protocol="http"):
     current_site = get_current_site(request)
@@ -13,11 +27,14 @@ def extra_context(request, protocol="http"):
     template_context = dict(
         current_site=current_site,
         django_version=django_version,
-        deploy_tag = deploy_tag,
-        deploy_branch = deploy_branch,
-        deploy_commit_id = deploy_commit_id,
-        deploy_commit_full_id = deploy_commit_full_id)
+        deploy_tag=deploy_tag,
+        deploy_branch=deploy_branch,
+        deploy_commit_id=deploy_commit_id,
+        deploy_commit_full_id=deploy_commit_full_id
+    )
+
     return template_context
+
 
 def get_current_path_without_lang(request):
     path = request.get_full_path()
@@ -25,3 +42,36 @@ def get_current_path_without_lang(request):
     path = '/'.join(path_bits[2:])
     return {'current_path_without_lang': path}
 
+
+def extra_pages_context(request):
+    """Add context information of an RSR Page"""
+    if request.rsr_page:
+        page = request.rsr_page
+
+        # Check if only projects of the partner should be shown or all projects
+        if page.partner_projects:
+            projects = page.organisation.published_projects().prefetch_related('locations')
+        else:
+            projects = Project.objects.all().published().prefetch_related('locations')
+
+        # Check if keywords have been specified for the partner site and filter projects based on keywords if so
+        if page.keywords.all():
+            if page.exclude_keywords:
+                projects = projects.exclude(keywords__in=page.keywords.all())
+            else:
+                projects = projects.filter(keywords__in=page.keywords.all())
+
+        return {
+            'rsr_page': page,
+            'favicon': page.favicon,
+            'logo': page.logo,
+            'organisation': page.organisation,
+            'return_url': page.return_url,
+            'return_url_text': page.custom_return_url_text,
+            'stylesheet': page.stylesheet,
+            'akvoapp_root_url': request.akvoapp_root_url,
+            'domain_url': request.domain_url,
+            'projects_qs': projects.latest_update_fields().order_by('-id'),
+        }
+
+    return {}

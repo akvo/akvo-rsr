@@ -24,8 +24,8 @@ import logging
 import re
 
 
-__all__ = ["PartnerSitesLocaleMiddleware",
-           "PartnerSitesRouterMiddleware",
+__all__ = ["PagesLocaleMiddleware",
+           "PagesRouterMiddleware",
            "get_domain",
            "get_or_create_site",
            "is_partner_site_instance",
@@ -86,12 +86,6 @@ DEFAULT_PARTNER_SITE = getattr(settings, "PARTNER_SITE", None)
 settings.__class__.SITE_ID = make_tls_property(DEFAULT_SITE_ID)
 settings.__class__.PARTNER_SITE = make_tls_property(DEFAULT_PARTNER_SITE)
 
-PARTNER_SITES_MARKETING_SITE = getattr(
-    settings,
-    "PARTNER_SITES_MARKETING_SITE",
-    "http://www.akvoapp.org/"
-)
-
 RSR_SITE_REGEXPS = map(re.compile, settings.RSR_SITE_REGEXPS)
 PARTNER_SITE_REGEXPS = map(re.compile, settings.PARTNER_SITE_REGEXPS)
 
@@ -110,7 +104,7 @@ def is_rsr_instance(hostname):
     return any([site.search(hostname) for site in RSR_SITE_REGEXPS])
 
 
-def is_partner_site_instance(hostname):
+def is_rsr_page_instance(hostname):
     return any([site.search(hostname) for site in PARTNER_SITE_REGEXPS])
 
 
@@ -137,53 +131,48 @@ def get_or_create_site(domain):
     return site
 
 
-class PartnerSitesRouterMiddleware(object):
+class PagesRouterMiddleware(object):
 
-    def process_request(self, request, cname_domain=False, partner_site=None):
+    def process_request(self, request, cname_domain=False, rsr_page=None):
 
         domain = get_domain(request)
 
         if is_rsr_instance(domain):
-            urlconf = "akvo.urls.rsr"
+            request.rsr_page = None
 
-        elif is_partner_site_instance(domain):
-            urlconf = "akvo.urls.partner_sites"
+        elif is_rsr_page_instance(domain):
             try:
                 domain_parts = domain.split(".")
                 hostname = domain_parts[0]
                 if hostname == 'www':
                     hostname = domain_parts[1]
 
-                partner_site = PartnerSite.objects.get(hostname=hostname)
+                rsr_page = PartnerSite.objects.get(hostname=hostname)
             except:
                 pass
-            if partner_site is None or not partner_site.enabled:
-                return redirect(PARTNER_SITES_MARKETING_SITE)
+            if rsr_page is None or not rsr_page.enabled:
+                return redirect("http://rsr.akvo.org")
 
-        else:  # Probably a partner site instance on partner-nominated domain
+        else:  # Probably an RSR Page instance on partner-nominated domain
             cname_domain = True
-            urlconf = "akvo.urls.partner_sites"
             try:
-                partner_site = PartnerSite.objects.get(cname=domain)
+                rsr_page = PartnerSite.objects.get(cname=domain)
             except:
-                return redirect(PARTNER_SITES_MARKETING_SITE)
+                return redirect("http://rsr.akvo.org")
 
-        request.urlconf = urlconf
-        set_urlconf(urlconf)
-
-        if partner_site is not None and partner_site.enabled:
+        if rsr_page is not None and rsr_page.enabled:
             if cname_domain:
-                partner_site_domain = getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org')
+                rsr_page_domain = getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org')
             else:
-                partner_site_domain = ".".join(domain.split(".")[1:])
-            request.partner_site = settings.PARTNER_SITE = partner_site
+                rsr_page_domain = ".".join(domain.split(".")[1:])
+            request.rsr_page = settings.RSR_PAGE = rsr_page
             request.app_domain = ".".join(
-                (partner_site.hostname, partner_site_domain)
+                (rsr_page.hostname, rsr_page_domain)
             )
             request.akvoapp_root_url = "http://%s" % request.app_domain
-            request.organisation_id = partner_site.organisation.id
-            request.partner_site = partner_site
-            request.default_language = partner_site.default_language
+            request.organisation_id = rsr_page.organisation.id
+            request.rsr_page = rsr_page
+            request.default_language = rsr_page.default_language
 
         request.domain_url = "http://%s" % settings.RSR_DOMAIN
         site = get_or_create_site(domain)
@@ -191,7 +180,7 @@ class PartnerSitesRouterMiddleware(object):
         return
 
 
-class PartnerSitesLocaleMiddleware(LocaleMiddleware):
+class PagesLocaleMiddleware(LocaleMiddleware):
     """
     Partner sites aware version of Django's LocaleMiddleware. Since we
     swap out the root urlconf for a partner sites specific one, and the
@@ -217,12 +206,11 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
         if (response.status_code == 404 and
                 not translation.get_language_from_path(request.path_info) and
                 self.is_language_prefix_patterns_used(request)):
-            urlconf = getattr(request, 'urlconf', None)
             language_path = '/%s%s' % (language, request.path_info)
             if settings.APPEND_SLASH and not language_path.endswith('/'):
                 language_path += '/'
 
-            if is_valid_path(language_path, urlconf):
+            if is_valid_path(language_path, settings.ROOT_URLCONF):
                 language_url = "%s://%s/%s%s" % (
                     request.is_secure() and 'https' or 'http',
                     request.get_host(), language, request.get_full_path())
@@ -237,7 +225,8 @@ class PartnerSitesLocaleMiddleware(LocaleMiddleware):
     def is_language_prefix_patterns_used(self, request):
         """Returns `True` if the `LocaleRegexURLResolver` is used
         at root level of the urlpatterns, else it returns `False`."""
-        for url_pattern in get_resolver(request.urlconf).url_patterns:
+        urlconf = getattr(request, 'urlconf', None)
+        for url_pattern in get_resolver(urlconf).url_patterns:
             if isinstance(url_pattern, LocaleRegexURLResolver):
                 return True
         return False
