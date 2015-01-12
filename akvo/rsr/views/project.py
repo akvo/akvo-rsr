@@ -17,6 +17,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template import RequestContext
+
+from sorl.thumbnail import get_thumbnail
 
 
 def _get_accordion_data(project):
@@ -77,19 +80,23 @@ def _get_timeline_data(project):
 def _get_carousel_data(project):
     photos = []
     if project.current_image:
+        im = get_thumbnail(project.current_image, '750x400', quality=99)
         photos.append({
-            "url": project.current_image.url,
+            "url": im.url,
             "caption": project.current_image_caption,
             "credit": project.current_image_credit,
+            "original_url": project.current_image.url,
         })
     for update in project.updates_desc():
         if len(photos) > 9:
             break
         if update.photo:
+            im = get_thumbnail(update.photo, '750x400', quality=99)
             photos.append({
-                "url": update.photo.url,
+                "url": im.url,
                 "caption": update.photo_caption,
                 "credit": update.photo_credit,
+                "original_url": update.photo.url,
             })
     return {"photos": photos}
 
@@ -139,6 +146,7 @@ def _get_hierarchy_grid(project):
 
     return grid
 
+
 def _get_project_partners(project):
     partners = {}
     for partner in project.all_partners():
@@ -148,7 +156,8 @@ def _get_project_partners(project):
 
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
-    f = ProjectFilter(qs, queryset=Project.objects.published())
+    projects = RequestContext(request)['projects_qs'] if request.rsr_page else Project.objects.published()
+    f = ProjectFilter(qs, queryset=projects)
 
     # Instead of true or false, adhere to bootstrap3 class names to simplify
     show_filters = "in"
@@ -166,7 +175,7 @@ def directory(request):
         'paginator': paginator,
         'show_filters': show_filters,
         'q': filter_query_string(qs)
-        }
+    }
     return render(request, 'project_directory.html', context)
 
 
@@ -213,6 +222,24 @@ def hierarchy(request, project_id):
     }
 
     return render(request, 'project_hierarchy.html', context)
+
+
+def widgets(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    selected_widget = request.GET.get('widget', None)
+
+    context = {
+        'project': project,
+        'style': 'darkBG',
+    }
+
+    if selected_widget in ['narrow', 'cobranded', 'small', 'map', 'list']:
+        context['widget'] = selected_widget
+        context['domain_url'] = 'http://' + request.META['HTTP_HOST']
+        return render(request, 'project_widgets2.html', context)
+
+    else:
+        return render(request, 'project_widgets.html', context)
 
 
 @login_required()

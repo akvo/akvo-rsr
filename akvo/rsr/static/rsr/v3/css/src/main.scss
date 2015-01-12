@@ -278,9 +278,83 @@ h4.detailedInfo {
 #map {
 	height: 400px;
 	background: #428bca;
-	@include responsive(sm) {
+	padding-top:9px;
+	@include responsive(small-max-screens) {
 		height: 450px;
+		padding-top:0px;
+	}
+}
+#search-filter {
+	@include responsive (small-max-screens) {
+		padding-bottom: 0;
+	}
+	#search {
+		@include responsive (small-max-screens) {
+			padding-bottom: 0;
 		}
+	}
+}
+.searchContainer {
+	position:relative;
+		.showFilters {
+			background:rgba($rsrGreen,1);
+			border:1px solid rgba($rsrGreen,0);							
+			color: white;
+			transition: all 0.4s ease-in;
+			&:hover {
+				background:rgba($rsrGreen,0.5);
+				border:1px solid rgba($rsrGreen,0.7);							
+				color:white;				
+			}
+			@include responsive (small-max-screens) {
+				display: table;
+				top: inherit;
+				left: inherit;
+				margin:10px auto 0;
+			 }
+		}
+		aside#sidebar-wrapper {
+			.showFilters {
+				position:relative;
+			}
+		} 
+}
+
+
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: absolute;
+    left: 200px;
+    width: 0;
+    margin-left: -200px;
+    overflow-y: auto;
+    background:rgba($rsrGreen,1);
+    @include border-radius (0 0 5px 0);
+    @include transition (all 0.5s ease);
+    box-shadow:2px 2px 5px rgba(0,0,0,0.5);
+    div#filter {
+    	padding:5px 15px 15px 15px;
+    	label {
+    		color:white;
+    	}
+    }
+}
+
+#page-content-wrapper {
+    width: 100%;
+    padding: 15px;
+}
+
+#wrapper.toggled {
+    padding-left: 200px;
+    #sidebar-wrapper {
+	    width: 200px;
+	}
+	#page-content-wrapper {
+	    position: absolute;
+	    margin-right: -200px;
+	}
 }
 
 #search-filter {
@@ -291,18 +365,6 @@ h4.detailedInfo {
 	div#search {
 		color: #fff;
 		text-align: center;
-		.showFilters {
-			margin-left:15px;
-			background:rgba($rsrGreen,0);
-			border:1px solid rgba($rsrGreen,0);							
-			color:$anchorLink;
-			transition: all 0.4s ease-in;
-			&:hover {
-				background:rgba($rsrGreen,0.5);
-				border:1px solid rgba($rsrGreen,0.7);							
-				color:white;				
-			}
-		}
 	}
 	div#filter {
 		background: darken(rgba(#383334,1), 0% );
@@ -371,14 +433,27 @@ header {
 	height: 300px;
 	background: #ccc;
 }
-.carousel-inner > .item > img {
-    max-height: 400px;
-}
+
+/* Project timeline */
 #timeline {
 	height: 400px;
 	background: #FFFFFF;
 }
 
+/* Project carousel */
+.carousel-inner > .item > a > img {
+    max-height: 400px;
+    margin: auto;
+}
+.carousel-inner > .item > a {
+    text-align: center;
+}
+.carousel-control.right {
+    background-image: none;
+}
+.carousel-control.left {
+    background-image: none;
+}
 
 /* Project hierarchy */
 .project-hierarchy-window {

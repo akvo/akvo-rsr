@@ -125,9 +125,13 @@
 
 {% block js %}
   {{ block.super }}
-  <script>
-   AKVO_RSR['accordion_data'] = {{ accordion_data|safe }};
-   AKVO_RSR['carousel_data'] = {{ carousel_data|safe }};
+
+  {# App data #}
+  <script type="application/json" id="akvo-rsr-accordion">
+    {{ accordion_data|safe }}
+  </script>
+  <script type="application/json" id="akvo-rsr-carousel">
+    {{ carousel_data|safe }}
   </script>
 
   <script src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>

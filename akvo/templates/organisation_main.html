@@ -29,7 +29,9 @@
             {% endif %}
         </div>
         <div class="col-sm-7">
-            {% img organisation 350 250 organisation.name %}
+            {% if organisation.logo %}
+                <a href="{{organisation.logo.url}}" target="_blank">{% img organisation 350 250 organisation.name %}</a>
+            {% endif %}
         </div>
     </div>
     <div class="row">

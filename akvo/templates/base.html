@@ -11,7 +11,11 @@
 
     <title>Akvo RSR - {% block title %}{% trans 'Home' %}{% endblock %}</title>
 
-    <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
+    {% if favicon %}
+        <link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">
+    {% else %}
+        <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
+    {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     {# Fonts #}
@@ -21,6 +25,7 @@
     {# CSS #}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
     {% compressed_css 'rsr_v3_style' %}
+    {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
 
     {# Piwik #}
     {% tracking_code %}
@@ -51,7 +56,7 @@
 
     <script>
      $(document).ready(function() {
-       {% block jq %}{% endblock %}
+        {% block jq %}{% endblock %}
      });
     </script>
   </body>
