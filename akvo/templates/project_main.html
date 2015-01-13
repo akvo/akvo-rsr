@@ -74,7 +74,7 @@
                     {{project.siblings.count}} sibling project{{project.siblings.count|pluralize}}
                     <a href="{% url 'project-hierarchy' project.pk %}">View full hierarchy</a></p>
                 {% endif %}
-                <p><a href="#">View project's full data report</a></p>
+                <p><a href="{% url 'project-report' project.pk %}">View project's full data report</a></p>
                 {% if project.focus_areas %}
                 <p><span class="detailedInfo">{% trans "Focus Areas" %}</span>
                 <a href="{% url 'project-directory' %}?focus_area={{project.focus_areas.0.id}}">{{project.focus_areas.0.name}}</a>

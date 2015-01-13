@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load compressed i18n rsr_utils %}
+
+{% block title %}{{project.title}} - Report{% endblock %}
+
+{% block maincontent %}
+<article class="touch-navbar project-container">
+    {% include "partials/project_header.html" %}
+
+    <div class="container">
+        <h1>Project report</h1>
+    </div>
+
+</article>
+{% endblock %}
