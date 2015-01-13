@@ -48,6 +48,9 @@ class RecipientCountry(models.Model):
     )
     text = ValidXMLCharField(_(u'country description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
 
+    def iati_country(self):
+        return dict(codelists.COUNTRY)[self.country] if self.country else None
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'recipient country')

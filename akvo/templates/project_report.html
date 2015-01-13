@@ -1,15 +1,193 @@
 {% extends "base.html" %}
 
-{% load compressed i18n rsr_utils %}
+{% load i18n %}
 
-{% block title %}{{project.title}} - Report{% endblock %}
+{% block title %}{{project.title}} - {% trans "Report" %}{% endblock %}
 
 {% block maincontent %}
 <article class="touch-navbar project-container">
     {% include "partials/project_header.html" %}
 
     <div class="container">
-        <h1>Project report</h1>
+        <div class="col-sm-8">
+            <div class="col-sm-6">
+                <h4>{% trans "Identifiers" %}</h4>
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <th scope="row">{% trans "IATI Activity ID" %}</th>
+                            <td>{% if project.iati_activity_id %}{{project.iati_activity_id}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        </tr>
+                        {% for partnership in project.partnerships.all %}
+                        {% if partnership.internal_id %}
+                        <tr>
+                            <th scope="row">{{partnership.organisation.name}} {% trans "ID" %}</th>
+                            <td>{{partnership.internal_id}}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        <tr>
+                            <th scope="row">{% trans "RSR ID" %}</th>
+                            <td>{{project.pk}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if project.has_relations %}
+                <h4>{% trans "Related activities" %}</h4>
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                        {% for parent in project.parents.all %}
+                        <tr>
+                            <th scope="row">{% trans "Parent" %}</th>
+                            <td>{% if parent.iati_activity_id %}{{parent.iati_activity_id}}{% else %}{% trans "RSR ID" %}: {{parent.pk}}{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                        {% for child in project.children.all %}
+                        <tr>
+                            <th scope="row">{% trans "Child" %}</th>
+                            <td>{% if child.iati_activity_id %}{{child.iati_activity_id}}{% else %}{% trans "RSR ID" %}: {{child.pk}}{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                        {% for sibling in project.siblings.all %}
+                        <tr>
+                            <th scope="row">{% trans "Sibling" %}</th>
+                            <td>{% if sibling.iati_activity_id %}{{sibling.iati_activity_id}}{% else %}{% trans "RSR ID" %}: {{sibling.pk}}{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+            <div class="col-sm-6">
+                <h4>{% trans "Activity Dates" %}</h4>
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <th scope="row">{% trans "Planned Start Date" %}</th>
+                            <td>{% if project.date_start_planned %}{{project.date_start_planned}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{% trans "Planned End Date" %}</th>
+                            <td>{% if project.date_end_planned %}{{project.date_end_planned}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{% trans "Actual Start Date" %}</th>
+                            <td>{% if project.date_start_actual %}{{project.date_start_actual}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{% trans "Actual End Date" %}</th>
+                            <td>{% if project.date_end_planned %}{{project.date_end_planned}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>{% trans "Descriptions" %}</h4>
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr>
+                        <th scope="row">{% trans "Project Plan" %}</th>
+                        <td>{% if project.project_plan %}{{project.project_plan}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Goals Overview" %}</th>
+                        <td>{% if project.goals_overview %}{{project.goals_overview}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Target Group" %}</th>
+                        <td>{% if project.target_group %}{{project.target_group}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Summary of Project Plan" %}</th>
+                        <td>{% if project.project_plan_summary %}{{project.project_plan_summary}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Background" %}</th>
+                        <td>{% if project.background %}{{project.background}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Current Situation" %}</th>
+                        <td>{% if project.current_status %}{{project.current_status}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Sustainability" %}</th>
+                        <td>{% if project.sustainability %}{{project.sustainability}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    {% if project.keywords.all %}
+                    <tr>
+                        <th scope="row">{% trans "Keywords" %}</th>
+                        <td>{% for keyword in project.keywords.all %}{% if not forloop.first %}, {% endif %}{{keyword}}{% endfor %}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            {% if project.recipient_countries.all %}
+            <h4>{% trans "Recipient Countries" %}</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Country" %}</th>
+                        <th>{% trans "Percentage" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for country in project.recipient_countries.all %}
+                    <tr>
+                        <td>{{country.iati_country}}</td>
+                        <td>{% if country.percentage %}{{country.percentage}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            {% if project.recipient_regions.all %}
+            <h4>{% trans "Recipient Regions" %}</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Region" %}</th>
+                        <th>{% trans "Percentage" %}</th>
+                        <th>{% trans "Vocabulary" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for region in project.recipient_regions.all %}
+                    <tr>
+                        <td>{{region.region}}</td>
+                        <td>{{region.iati_region}}</td>
+                        <td>{% if region.percentage %}{{region.percentage}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{{region.iati_vocabulary}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        <div class="col-sm-4">
+            <h4>{% trans "Reporting Organisation" %}</h4>
+            {% with reporting_org=project.first_partner %}
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr>
+                        <th scope="row">{% trans "Name" %}</th>
+                        <td>{{reporting_org.name}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "IATI ID" %}</th>
+                        <td>{% if reporting_org.iati_org_id %}{{reporting_org.iati_org_id}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Type" %}</th>
+                        <td>{{reporting_org.iati_org_type}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Secondary Reporter" %}?</th>
+                        <td><i>({% trans "To do" %})</i></td>
+                    </tr>
+                </tbody>
+            </table>
+            {% endwith %}
+        </div>
     </div>
 
 </article>

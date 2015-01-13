@@ -208,6 +208,9 @@ class Organisation(TimestampsMixin, models.Model):
     def __unicode__(self):
         return self.name
 
+    def iati_org_type(self):
+        return dict(IATI_LIST_ORGANISATION_TYPE)[self.new_organisation_type]
+
     def is_partner_type(self, partner_type):
         "returns True if the organisation is a partner of type partner_type to at least one project"
         return self.partnerships.filter(partner_type__exact=partner_type).count() > 0
