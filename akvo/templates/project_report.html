@@ -187,6 +187,102 @@
                 </tbody>
             </table>
             {% endwith %}
+            <h4>{% trans "Participating Organisations" %}</h4>
+            {% for partnership in project.partnerships.all %}
+            {% with partner=partnership.organisation %}
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr>
+                        <th scope="row">{% trans "Name" %}</th>
+                        <td>{{partner.name}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "IATI ID" %}</th>
+                        <td>{% if partner.iati_org_id %}{{partner.iati_org_id}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Type" %}</th>
+                        <td>{{partner.iati_org_type}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Role" %}</th>
+                        <td>{{partnership.partner_type|title}} {% trans "partner" %}</td>
+                    </tr>
+                    {% if partnership.internal_id %}
+                    <tr>
+                        <th scope="row">{% trans "Internal Project ID" %}</th>
+                        <td>{{partnership.internal_id}}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th scope="row">{% trans "RSR ID" %}</th>
+                        <td>{{partner.pk}}</td>
+                    </tr>
+                    {% if partnership.funding_amount %}
+                    <tr>
+                        <th scope="row">{% trans "RSR Funding Amount" %}</th>
+                        <td>{{partnership.funding_amount}}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            {% endwith %}
+            {% endfor %}
+            {% if project.contacts.all %}
+            <h4>{% trans "Contact Details" %}</h4>
+            {% for contact in project.contacts.all %}
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    {% if contact.organisation %}
+                    <tr>
+                        <th scope="row">{% trans "Organisation" %}</th>
+                        <td>{{contact.organisation}}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th scope="row">{% trans "Department" %}</th>
+                        <td><i>({% trans "To do" %})</i></td>
+                    </tr>
+                    {% if contact.person_name %}
+                    <tr>
+                        <th scope="row">{% trans "Name" %}</th>
+                        <td>{{contact.person_name}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if contact.job_title %}
+                    <tr>
+                        <th scope="row">{% trans "Job Title" %}</th>
+                        <td>{{contact.job_title}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if contact.telephone %}
+                    <tr>
+                        <th scope="row">{% trans "Telephone" %}</th>
+                        <td>{{contact.telephone}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if contact.email %}
+                    <tr>
+                        <th scope="row">{% trans "Email" %}</th>
+                        <td>{{contact.email}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if contact.website %}
+                    <tr>
+                        <th scope="row">{% trans "Website" %}</th>
+                        <td>{{contact.website}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if contact.mailing_address %}
+                    <tr>
+                        <th scope="row">{% trans "Address" %}</th>
+                        <td>{{contact.mailing_address}}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            {% endfor %}
+            {% endif %}
         </div>
     </div>
 
