@@ -208,8 +208,7 @@ def project_list(request, slug='all'):
         else:
             queryset = Project.objects.published().filter(categories__focus_area=focus_area)
 
-    # not sure prefetch_related helps since the filtering is applied afterwards. Profiling needed.
-    queryset = queryset.latest_update_fields().distinct().order_by('-pk')  # .prefetch_related('locations')
+    queryset = queryset.order_by('-pk')  # Default ordering
     filtered_projects = ProjectFilterSet(query_dict or None, queryset=queryset)
 
     return {
@@ -990,12 +989,6 @@ def project_list_widget(request, template='project-list', org_id=0):
             .status_not_cancelled()
 
     order_by = request.GET.get('order_by', 'title')
-    sql = (
-        'SELECT MAX(created_at) '
-        'FROM rsr_projectupdate '
-        'WHERE project_id = rsr_project.id'
-    )
-    p = p.extra(select={'last_update': sql})
 
     if order_by == 'country__continent':
         p = p.order_by(order_by, 'primary_location__country__name', 'title')

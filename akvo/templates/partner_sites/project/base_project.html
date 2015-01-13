@@ -190,7 +190,12 @@
           {% endfor %}
         </div>
         <div class="txt_right marg_top20">
-          <span class="grey tiny">{% trans "Akvo ref" %}: {{project.id}}</span>
+            <span class="grey tiny">{% trans 'Akvo Ref' %}: {{project.id}}
+            {% for partnership in project.partnerships.all %}
+              {% if partnership.iati_activity_id %}<br>{% trans 'IATI ID' %}: {{partnership.iati_activity_id}}{% endif %}
+              {% if partnership.internal_id %}<br>{{partnership.organisation}}'s project ID: {{partnership.internal_id}}{% endif %}
+            {% endfor %}
+            </span>
         </div>
       {% endblock project_aside_partners %}
 

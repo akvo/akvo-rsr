@@ -68,7 +68,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     user_agent = ValidXMLCharField(_(u'user agent'), blank=True, max_length=200, default='')
     uuid = ValidXMLCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
         help_text=_(u'Universally unique ID set by creating user agent'))
-    
+
     notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
 
     class Meta:

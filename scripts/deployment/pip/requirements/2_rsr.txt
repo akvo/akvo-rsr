@@ -43,11 +43,13 @@ Markdown==2.4
 Pillow==2.4.0
 python-memcached==1.53
 template-utils==0.4p2
-django-pipeline
+django-pipeline==1.3.26
 
 # Database requirements
 MySQL-python==1.2.5
 South==0.8.4
+psycopg2
+py-mysql2pgsql
 
 # App container
 gunicorn==18.0

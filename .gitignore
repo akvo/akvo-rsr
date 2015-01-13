@@ -22,6 +22,11 @@ dev-env
 venv
 scripts/dev-vm
 
+# PG migration
+pg_migrate_conf.yml
+pg_tests.log
+pg_db_password.tmp
+
 
 ## Deployment
 scripts/deployment/builders/osx/config/python_system.config

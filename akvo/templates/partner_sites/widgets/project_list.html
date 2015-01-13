@@ -9,7 +9,7 @@
 {% endblock style %}
 
 {% block body %}
-<section id="container" class="projectList {{style}} rsrWidget floats-in"> 
+<section id="container" class="projectList {{style}} rsrWidget floats-in">
   <!-- DEVICES TABLE-->
   <ul class="thead">
       <li class="projectDescrTd">
@@ -23,7 +23,7 @@
       <li class="projectStatusTd">
         <a href="{% url 'widget_project_list'%}{% addparam "order_by" "status" %}" target="_self">
           {% trans "Status" %}</a>
-        / 
+        /
         <a href="{% url 'widget_project_list'%}{% addparam "order_by" "last_update" %}" target="_self">
           {% trans "Update" %}</a>
       </li>
@@ -51,7 +51,7 @@
           <tr class="projectListDescr">
             <td class="projectDescrTd">
             <div class="projectDescr">
-               
+
                 {% rsr_widget_project_photo project 120 90 %}
                 <p id="project_subtitle">{{project.project_plan_summary|smart_truncate:50}}</p>
                 <a href="{% url 'project_main' project.id %}">{% trans "See full description" %}</a>
@@ -71,16 +71,16 @@
               {% endif %}
 
               <span class="lastUpdate"><br>{% trans "Last Update" %}:<br>
-                {% with project.last_update as last_update %}
-                  {% if not last_update %}
+                {% if project.last_update %}
+                <a href="{% url 'update_main' project.id project.last_update.id %}">
+                  {{ project.last_update.created_at|string_to_date|date:"Y-m-d  H:i" }}
+                </a>
+                {% else %}
                     {% trans 'Not yet' %}
-                  {% else %}
-                    <a href="{% url 'update_main' project.id project.project_updates.latest.id %}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
-                  {% endif %}
-                {% endwith %}
+                {% endif %}
               </span>
             </td>
-            
+
             <td class="projectPartnerTd"><ul>
               {% for partner in project.partners.all.distinct|slice:":5" %}
                 {#<li><a href="{% url 'organisation_main' partner.id %}">{{partner.name}}</a></li>#}
@@ -91,7 +91,7 @@
               {% endfor %}
             </ul></td>
             <td class="projectFundingTd">
-              {% rsr_widget_project_budget project %}  
+              {% rsr_widget_project_budget project %}
             </td>
           </tr>
         {% endfor %}

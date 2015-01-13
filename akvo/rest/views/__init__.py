@@ -21,7 +21,7 @@ from .organisation_location import OrganisationLocationViewSet
 from .partner_site import PartnerSiteViewSet
 from .partner_type import PartnerTypeViewSet
 from .partnership import PartnershipViewSet
-from .project import ProjectViewSet
+from .project import ProjectViewSet, ProjectExtraViewSet
 from .project_comment import ProjectCommentViewSet
 from .project_location import ProjectLocationViewSet
 from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
@@ -48,6 +48,7 @@ __all__ = [
     'PartnerTypeViewSet',
     'PartnershipViewSet',
     'ProjectViewSet',
+    'ProjectExtraViewSet',
     'ProjectCommentViewSet',
     'ProjectLocationViewSet',
     'ProjectUpdateLocationViewSet',

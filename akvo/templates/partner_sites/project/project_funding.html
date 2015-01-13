@@ -17,7 +17,10 @@
       </span>
       <h2 style="padding-top:20px;">{% trans 'Funding details' %}</h2>
       <p class="grey small">
-        {% trans 'Request posted' %} {{project.date_start_actual|date:"d-M-Y"}}
+		{% trans 'Planned Start Date:' %} {{project.date_start_planned|date:"d-M-Y"}}<br />
+		{% trans 'Actual Start Date:' %} {{project.date_start_actual|date:"d-M-Y"}}<br />
+		{% trans 'Planned End Date:' %} {{project.date_end_planned|date:"d-M-Y"}}<br />
+		{% trans 'Actual End Date:' %} {{project.date_end_actual|date:"d-M-Y"}}<br />
       </p>
     </div>
     {% counter_badge project %}
@@ -121,8 +124,12 @@
                 <br /><b>{% trans "Grant" %}: {{project.get_currency_display|safe}} {{partnership.funding_amount|round|intcomma}}</b>
                 {% if partnership.iati_activity_id %}
                   <br /><span class="small grey">
-                    {% trans "IATI activity ID" %}:
-                    <br/>{{partnership.iati_activity_id}}
+                    {% trans "IATI activity ID" %}:<br/>
+                    {% if partnership.iati_url %}
+                      <a href="{{partnership.iati_url}}">{{partnership.iati_activity_id}}</a>
+                    {% else %}
+                      {{partnership.iati_activity_id}}
+                    {% endif %}
                   </span>
                 {% endif %}
               </td>
