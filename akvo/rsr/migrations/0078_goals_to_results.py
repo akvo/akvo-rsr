@@ -16,14 +16,15 @@ class Migration(DataMigration):
         # Move benchmarks to indicators
         # As the structure is different than before, we add an empty result under which the indicator is stored
         for benchmark in orm.Benchmark.objects.all():
-            empty_result = orm.Result.objects.create(project=benchmark.project)
-            empty_result.save()
-            indicator = orm.Indicator.objects.create(result=empty_result)
-            indicator.title = benchmark.name.name
-            indicator.save()
-            indicator_period = orm.IndicatorPeriod.objects.create(indicator=indicator)
-            indicator_period.actual_value = benchmark.value
-            indicator_period.save()
+            if benchmark.value:
+                empty_result = orm.Result.objects.create(project=benchmark.project)
+                empty_result.save()
+                indicator = orm.Indicator.objects.create(result=empty_result)
+                indicator.title = benchmark.name.name
+                indicator.save()
+                indicator_period = orm.IndicatorPeriod.objects.create(indicator=indicator)
+                indicator_period.actual_value = benchmark.value
+                indicator_period.save()
 
     def backwards(self, orm):
         # User chose to not deal with backwards NULL issues for 'Indicator.baseline_year'

@@ -133,7 +133,7 @@
                     {% for country in project.recipient_countries.all %}
                     <tr>
                         <td>{{country.iati_country}}</td>
-                        <td>{% if country.percentage %}{{country.percentage}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if country.percentage %}{{country.percentage}}%{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -155,8 +155,102 @@
                     <tr>
                         <td>{{region.region}}</td>
                         <td>{{region.iati_region}}</td>
-                        <td>{% if region.percentage %}{{region.percentage}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if region.percentage %}{{region.percentage}}%{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
                         <td>{{region.iati_vocabulary}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            {% if project.sectors.all %}
+            <h4>{% trans "Sectors" %}</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Sector" %}</th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Percentage" %}</th>
+                        <th>{% trans "Vocabulary" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sector in project.sectors.all %}
+                    <tr>
+                        <td>{{sector.iati_sector|title}}</td>
+                        <td>{{sector.sector_code}}</td>
+                        <td>{% if sector.percentage %}{{sector.percentage}}%{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{{sector.iati_vocabulary}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            {% if project.policy_markers.all %}
+            <h4>{% trans "Policy Markers" %}</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Policy Marker" %}</th>
+                        <th>{% trans "Significance" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for marker in project.policy_markers.all %}
+                    <tr>
+                        <td>{% if marker.policy_marker %}{{marker.iati_policy_marker|title}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if marker.significance %}{{marker.iati_significance|title}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            {% if project.country_budget_items.all %}
+            <h4>{% trans "Country Budget Items" %}</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Percentage" %}</th>
+                        <th>{% trans "Vocabulary" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for budget_item in project.country_budget_items.all %}
+                    <tr>
+                        <td>{% if budget_item.description %}{{budget_item.description}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if budget_item.code %}{{budget_item.iati_code}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if budget_item.percentage %}{{budget_item.percentage}}%{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if budget_item.vocabulary %}{{budget_item.iati_vocabulary}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            {% if project.budget_items.all %}
+            <h4>{% trans "Product Budget Items" %}</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Type" %}</th>
+                        <th>{% trans "Value" %}</th>
+                        <th>{% trans "Currency" %}</th>
+                        <th>{% trans "Start Date" %}</th>
+                        <th>{% trans "End Date" %}</th>
+                        <th>{% trans "Value Date" %}</th>
+                        <th>{% trans "Original/ Revised" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for budget_item in project.budget_items.all %}
+                    <tr>
+                        <td>{% if budget_item.type %}{{budget_item.iati_type}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if budget_item.amount %}{{budget_item.amount}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if budget_item.currency %}{{budget_item.iati_currency}}%{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if budget_item.period_start %}{{budget_item.period_start}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if budget_item.period_end %}{{budget_item.period_end}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td>{% if budget_item.value_date %}{{budget_item.value_date}}{% else %}<i>({% trans "Information missing" %})</i>{% endif %}</td>
+                        <td><i>({% trans "To do" %})</i></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -282,6 +376,49 @@
                 </tbody>
             </table>
             {% endfor %}
+            {% endif %}
+            {% if project.project_scope or project.collaboration_type or project.default_flow_type or project.default_finance_type or project.default_tied_status or project.default_aid_type %}
+            <h4>{% trans "Additional Details" %}</h4>
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    {% if project.project_scope %}
+                    <tr>
+                        <th scope="row">{% trans "Activity Scope" %}</th>
+                        <td>{{project.iati_project_scope|title}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if project.collaboration_type %}
+                    <tr>
+                        <th scope="row">{% trans "Collaboration Type" %}</th>
+                        <td>{{project.iati_collaboration_type|title}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if project.default_flow_type %}
+                    <tr>
+                        <th scope="row">{% trans "Default Flow Type" %}</th>
+                        <td>{{project.iati_default_flow_type|title}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if project.default_finance_type %}
+                    <tr>
+                        <th scope="row">{% trans "Default Finance Type" %}</th>
+                        <td>{{project.iati_default_finance_type}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if project.default_tied_status %}
+                    <tr>
+                        <th scope="row">{% trans "Default Tied Status" %}</th>
+                        <td>{{project.iati_default_tied_status}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if project.default_aid_type %}
+                    <tr>
+                        <th scope="row">{% trans "Default Aid Type" %}</th>
+                        <td>{{project.iati_default_aid_type}}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
             {% endif %}
         </div>
     </div>

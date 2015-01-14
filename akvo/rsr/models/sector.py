@@ -27,6 +27,18 @@ class Sector(models.Model):
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
 
+    def iati_sector(self):
+        if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
+            return dict([code[:2] for code in codelists.SECTOR])[self.sector_code]
+        elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
+            return dict([code[:2] for code in codelists.SECTOR_CATEGORY])[self.sector_code]
+        else:
+            return None
+
+    def iati_vocabulary(self):
+        voc = 'DAC' if self.vocabulary == '1' else 'DAC-3'
+        return dict([code[:2] for code in codelists.VOCABULARY])[voc]
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'sector')
