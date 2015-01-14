@@ -18,27 +18,19 @@
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    {# CSS #}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-
-    {# jQuery #}
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-
-    {# React #}
-    <script src="http://fb.me/react-0.10.0.js"></script>
-
     {# Fonts #}
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,400italic,600italic,300italic%7CMontserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700" rel="stylesheet" type="text/css">
 
+    {# CSS #}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
     {% compressed_css 'rsr_v3_style' %}
     {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
-    {% compressed_js 'rsr_v3_script' %}
-    {% compressed_js 'rsr_v3_libraries' %}
 
-    <!-- Piwik -->
+    {# Piwik #}
     {% tracking_code %}
+    {% block head %}{% endblock head %}
+
     {% block head_js %}{% endblock %}
   </head>
 
@@ -50,7 +42,17 @@
 
     {% include 'navigation/footer.html' %}
 
-    {% block js %}{% endblock %}
+    {# jQuery #}
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    {# React #}
+    <script src="http://fb.me/react-0.10.0.js"></script>
+
+    {% compressed_js 'rsr_v3_script' %}
+    {% compressed_js 'rsr_v3_libraries' %}
+
+    {% block js %}{% endblock js %}
 
     <script>
      $(document).ready(function() {
