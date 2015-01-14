@@ -5,7 +5,7 @@
 {% block title %}{{project.title}}{% endblock title%}
 
 {% block head_js %}
-  <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
+    {% compressed_css 'timeline' %}
 {% endblock head_js %}
 
 {% block maincontent %}
