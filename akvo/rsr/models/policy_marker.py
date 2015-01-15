@@ -26,10 +26,13 @@ class PolicyMarker(models.Model):
     )
 
     def iati_policy_marker(self):
-        return dict(codelists.POLICY_MARKER)[self.policy_marker]
+        return dict(codelists.POLICY_MARKER)[self.policy_marker] if self.policy_marker else ""
 
     def iati_significance(self):
-        return dict([code[:2] for code in codelists.POLICY_SIGNIFICANCE])[self.significance]
+        if self.significance:
+            return dict([code[:2] for code in codelists.POLICY_SIGNIFICANCE])[self.significance]
+        else:
+            return ""
 
     def __unicode__(self):
         return self.policy_marker

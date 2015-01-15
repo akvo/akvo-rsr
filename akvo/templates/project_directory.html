@@ -80,12 +80,12 @@
             {% if p.primary_location.country %}
               <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
             {% endif %}
-            {% if p.first_partner %}
-              <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.first_partner.id %}">{{p.first_partner}}</a>
+            {% if p.reporting_org %}
+              <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.reporting_org.id %}">{{p.reporting_org}}</a>
               {% if p.partners.distinct.count > 1 %}
                 <a href="javascript:;" class="small" data-toggle="tooltip"
                   title="{% for partner in p.partners.all.distinct %}
-                    {% ifnotequal partner.id p.first_partner.id %}
+                    {% ifnotequal partner.id p.reporting_org.id %}
                       <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a><br>
                     {% endifnotequal %}
                   {% endfor %}"

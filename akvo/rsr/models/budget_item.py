@@ -62,10 +62,10 @@ class BudgetItem(models.Model):
             return self.__unicode__()
 
     def iati_type(self):
-        return dict(codelists.BUDGET_TYPE)[self.type]
+        return dict(codelists.BUDGET_TYPE)[self.type] if self.type else ''
 
     def iati_currency(self):
-        return dict(codelists.CURRENCY)[self.currency]
+        return dict(codelists.CURRENCY)[self.currency] if self.currency else ''
 
     class Meta:
         app_label = 'rsr'

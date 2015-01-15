@@ -93,6 +93,24 @@ class ProjectLocation(BaseLocation):
         _(u'feature designation'), blank=True, max_length=5, choices=[code[:2] for code in codelists.LOCATION_TYPE]
     )
 
+    def iati_vocabulary(self):
+        return dict([code[:2] for code in codelists.GEOGRAPHIC_VOCABULARY])[self.vocabulary] if self.vocabulary else ""
+
+    def iati_exactness(self):
+        return dict(codelists.GEOGRAPHIC_EXACTNESS)[self.exactness] if self.exactness else ""
+
+    def iati_reach(self):
+        return dict(codelists.GEOGRAPHIC_LOCATION_REACH)[self.location_reach] if self.location_reach else ""
+
+    def iati_class(self):
+        return dict(codelists.GEOGRAPHIC_LOCATION_CLASS)[self.location_class] if self.location_class else ""
+
+    def iati_designation(self):
+        if self.feature_designation:
+            return dict([code[:2] for code in codelists.LOCATION_TYPE])[self.feature_designation]
+        else:
+            return ""
+
 
 class ProjectUpdateLocation(BaseLocation):
     # the project update that's related to this location

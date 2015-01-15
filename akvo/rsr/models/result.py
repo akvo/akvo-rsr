@@ -26,7 +26,7 @@ class Result(models.Model):
         return self.title
 
     def iati_type(self):
-        return dict(codelists.RESULT_TYPE)[self.type]
+        return dict(codelists.RESULT_TYPE)[self.type] if self.type else ""
 
     class Meta:
         app_label = 'rsr'

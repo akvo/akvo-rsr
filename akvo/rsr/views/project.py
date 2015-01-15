@@ -185,8 +185,8 @@ def main(request, project_id):
     accordion_data = _get_accordion_data(project)
     timeline_data = _get_timeline_data(project)
 
-    first_partner = project.first_partner()
-    first_partner_info = (first_partner, first_partner.has_partner_types(project))
+    reporting_org = project.reporting_org()
+    reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
     partners = _get_project_partners(project)
 
     context = {
@@ -195,7 +195,7 @@ def main(request, project_id):
         'project': project,
         'timeline_data': json.dumps(timeline_data),
         'updates': updates,
-        'first_partner': first_partner_info,
+        'reporting_org': reporting_org_info,
         'partners': partners,
     }
 

@@ -25,7 +25,7 @@ class PlannedDisbursement(models.Model):
         return self.value
 
     def iati_currency(self):
-        return dict(codelists.CURRENCY)[self.currency]
+        return dict(codelists.CURRENCY)[self.currency] if self.currency else ""
 
     class Meta:
         app_label = 'rsr'

@@ -33,7 +33,7 @@ class Indicator(models.Model):
         return self.title
 
     def iati_measure(self):
-        return dict(codelists.INDICATOR_MEASURE)[self.measure]
+        return dict(codelists.INDICATOR_MEASURE)[self.measure] if self.measure else ""
 
     class Meta:
         app_label = 'rsr'

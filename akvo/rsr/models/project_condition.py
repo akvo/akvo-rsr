@@ -19,7 +19,7 @@ class ProjectCondition(models.Model):
     attached = models.NullBooleanField(_(u'attached'), blank=True)
 
     def iati_type(self):
-        return dict(codelists.CONDITION_TYPE)[self.type]
+        return dict(codelists.CONDITION_TYPE)[self.type] if self.type else ""
 
     class Meta:
         app_label = 'rsr'

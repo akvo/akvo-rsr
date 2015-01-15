@@ -33,11 +33,14 @@ class Sector(models.Model):
         elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
             return dict([code[:2] for code in codelists.SECTOR_CATEGORY])[self.sector_code]
         else:
-            return None
+            return ""
 
     def iati_vocabulary(self):
-        voc = 'DAC' if self.vocabulary == '1' else 'DAC-3'
-        return dict([code[:2] for code in codelists.VOCABULARY])[voc]
+        if self.vocabulary:
+            voc = 'DAC' if self.vocabulary == '1' else 'DAC-3'
+            return dict([code[:2] for code in codelists.VOCABULARY])[voc]
+        else:
+            return ""
 
     class Meta:
         app_label = 'rsr'

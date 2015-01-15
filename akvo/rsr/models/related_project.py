@@ -20,6 +20,8 @@ class RelatedProject(models.Model):
         u'(E.g. select the \'Parent\' relation when the project is a parent of the related project).')
     )
 
+    def iati_relation(self):
+        return dict([code[:2] for code in codelists.RELATED_ACTIVITY_TYPE])[self.relation] if self.relation else ""
 
     class Meta:
         app_label = 'rsr'

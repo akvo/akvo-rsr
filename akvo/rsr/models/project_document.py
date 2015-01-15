@@ -31,10 +31,10 @@ class ProjectDocument(models.Model):
         return u'<a href="%s">%s</a>' % (self.url, self.title,)
 
     def iati_category(self):
-        return dict([codelist[:2] for codelist in codelists.DOCUMENT_CATEGORY])[self.category]
+        return dict([codelist[:2] for codelist in codelists.DOCUMENT_CATEGORY])[self.category] if self.category else ""
 
     def iati_language(self):
-        return dict(codelists.LANGUAGE)[self.language]
+        return dict(codelists.LANGUAGE)[self.language] if self.language else ""
 
     class Meta:
         app_label = 'rsr'
