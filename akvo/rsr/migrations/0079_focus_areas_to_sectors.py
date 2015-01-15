@@ -11,23 +11,29 @@ class Migration(DataMigration):
     def forwards(self, orm):
         for focus_area in orm.FocusArea.objects.all():
             if not focus_area.id == 3:
-                sector_code = FOCUSAREA_TO_SECTOR_MAPPING[focus_area.pk]
-                projects = orm.Project.objects.filter(categories__in=focus_area.categories.all())
-                for project in projects:
-                    sector = orm.Sector.objects.create(project=project)
-                    sector.vocabulary = 2
-                    sector.sector_code = sector_code
-                    sector.save()
+                try:
+                    sector_code = FOCUSAREA_TO_SECTOR_MAPPING[focus_area.pk]
+                    projects = orm.Project.objects.filter(categories__in=focus_area.categories.all())
+                    for project in projects:
+                        sector = orm.Sector.objects.create(project=project)
+                        sector.vocabulary = 2
+                        sector.sector_code = sector_code
+                        sector.save()
+                except:
+                    pass
 
         for project in orm.Project.objects.all():
             categories = project.categories.all()
             for category in categories:
-                sector_codes = CATEGORY_TO_SECTOR_MAPPING[category.pk]
-                for sector_code in sector_codes:
-                    sector = orm.Sector.objects.create(project=project)
-                    sector.vocabulary = 1
-                    sector.sector_code = sector_code
-                    sector.save()
+                try:
+                    sector_codes = CATEGORY_TO_SECTOR_MAPPING[category.pk]
+                    for sector_code in sector_codes:
+                        sector = orm.Sector.objects.create(project=project)
+                        sector.vocabulary = 1
+                        sector.sector_code = sector_code
+                        sector.save()
+                except:
+                    pass
 
     def backwards(self, orm):
         pass

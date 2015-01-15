@@ -677,19 +677,19 @@ class Project(TimestampsMixin, models.Model):
         return dict(codelists.ACTIVITY_SCOPE)[self.project_scope]
 
     def iati_collaboration_type(self):
-        return dict(codelists.COLLABORATION_TYPE)[self.collaboration_type]
+        return dict([code[:2] for code in codelists.COLLABORATION_TYPE])[self.collaboration_type]
 
     def iati_default_flow_type(self):
-        return dict(codelists.FLOW_TYPE)[self.default_flow_type]
+        return dict([code[:2] for code in codelists.FLOW_TYPE])[self.default_flow_type]
 
     def iati_default_finance_type(self):
-        return dict(codelists.FINANCE_TYPE)[self.default_finance_type]
+        return dict([code[:2] for code in codelists.FINANCE_TYPE])[self.default_finance_type]
 
     def iati_default_aid_type(self):
-        return dict(codelists.AID_TYPE)[self.default_aid_type]
+        return dict([code[:2] for code in codelists.AID_TYPE])[self.default_aid_type]
 
     def iati_default_tied_status(self):
-        return dict(codelists.TIED_STATUS)[self.default_tied_status]
+        return dict([code[:2] for code in codelists.TIED_STATUS])[self.default_tied_status]
 
     def sector_names(self):
         from .sector import Sector

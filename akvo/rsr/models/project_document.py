@@ -24,14 +24,21 @@ class ProjectDocument(models.Model):
     )
     language = ValidXMLCharField(_(u'language'), max_length=2, blank=True, choices=codelists.LANGUAGE)
 
+    def __unicode__(self):
+        return self.title
+
+    def show_link(self):
+        return u'<a href="%s">%s</a>' % (self.url, self.title,)
+
+    def iati_category(self):
+        return dict([codelist[:2] for codelist in codelists.DOCUMENT_CATEGORY])[self.category]
+
+    def iati_language(self):
+        return dict(codelists.LANGUAGE)[self.language]
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project document')
         verbose_name_plural = _(u'project documents')
         ordering = ['-id', ]
 
-    def __unicode__(self):
-        return self.title
-
-    def show_link(self):
-        return u'<a href="%s">%s</a>' % (self.url, self.title,)

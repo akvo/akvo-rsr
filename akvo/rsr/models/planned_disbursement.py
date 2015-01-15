@@ -24,6 +24,9 @@ class PlannedDisbursement(models.Model):
     def __unicode__(self):
         return self.value
 
+    def iati_currency(self):
+        return dict(codelists.CURRENCY)[self.currency]
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'planned disbursement')

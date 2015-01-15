@@ -25,6 +25,9 @@ class Result(models.Model):
     def __unicode__(self):
         return self.title
 
+    def iati_type(self):
+        return dict(codelists.RESULT_TYPE)[self.type]
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'result')

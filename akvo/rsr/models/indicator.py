@@ -32,6 +32,9 @@ class Indicator(models.Model):
     def __unicode__(self):
         return self.title
 
+    def iati_measure(self):
+        return dict(codelists.INDICATOR_MEASURE)[self.measure]
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'indicator')

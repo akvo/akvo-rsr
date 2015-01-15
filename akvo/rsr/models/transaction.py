@@ -70,6 +70,15 @@ class Transaction(models.Model):
     def __unicode__(self):
         return self.value
 
+    def iati_currency(self):
+        return dict(codelists.CURRENCY)[self.currency]
+
+    def iati_transaction_type(self):
+        return dict([code[:2] for code in codelists.TRANSACTION_TYPE])[self.transaction_type]
+
+    def iati_disbursement_channel(self):
+        return dict(codelists.DISBURSEMENT_CHANNEL)[self.disbursement_channel]
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'transaction')
