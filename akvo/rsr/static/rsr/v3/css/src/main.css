@@ -253,7 +253,8 @@ footer .navbar {
 .detailedInfo {
   font-size: 0.875em;
   text-transform: uppercase;
-  font-weight: bold; }
+  font-weight: bold;
+  color: #202024; }
 
 h4.detailedInfo {
   margin-bottom: 0.25em; }
@@ -368,18 +369,95 @@ h4.detailedInfo {
   white-space: normal; }
 
 /* PROJECT */
-header {
-  margin-bottom: 20px;
-  padding: 6px;
-  background: #ccc; }
-  header h1 {
+header.projectHeader {
+  margin-bottom: 0;
+  padding: 15px 0;
+  background: #fdf2e8; }
+  header.projectHeader h1 {
     margin-top: 10px;
     margin-bottom: 0;
     font-size: 1.5em; }
+  header.projectHeader .shareBlock {
+    position: relative; }
+    header.projectHeader .shareBlock a {
+      position: relative;
+      top: 30px; }
+      @media only screen and (max-width: 768px) {
+        header.projectHeader .shareBlock a {
+          left: 0;
+          top: 0; } }
+  header.projectHeader .projectLocation {
+    color: #9c9ca7; }
+    header.projectHeader .projectLocation .map-toggle {
+      text-transform: uppercase;
+      font-size: 0.875em;
+      font-weight: bold; }
 
-.map-toggle {
-  text-transform: uppercase;
-  font-size: 0.875em; }
+#project-map {
+  border: 1px solid #f9d7b9; }
+  #project-map div.akvo_map {
+    width: calc(100%-2px);
+    height: 300px; }
+
+div.projectTopRow {
+  position: relative;
+  background: whitesmoke;
+  margin-top: 1px; }
+  div.projectTopRow #carousel {
+    padding: 15px 0;
+    background-color: #e6e7e8;
+    margin-left: -15px; }
+    @media only screen and (max-width: 768px) {
+      div.projectTopRow #carousel {
+        margin-left: inherit; } }
+    div.projectTopRow #carousel .carousel-inner .item {
+      text-align: center; }
+      div.projectTopRow #carousel .carousel-inner .item a img {
+        max-height: 400px;
+        margin: auto; }
+    div.projectTopRow #carousel .carousel-control.right {
+      background-image: none; }
+    div.projectTopRow #carousel .carousel-control.left {
+      background-image: none; }
+  div.projectTopRow .projectSideInfo {
+    padding: 5px 0;
+    margin-left: -15px; }
+    @media only screen and (max-width: 768px) {
+      div.projectTopRow .projectSideInfo {
+        margin-left: inherit; } }
+    div.projectTopRow .projectSideInfo ul {
+      margin: 0;
+      padding: 0; }
+      div.projectTopRow .projectSideInfo ul li {
+        color: #9c9ca7;
+        list-style-type: none;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-bottom: thin solid #f0f0f0;
+        border-top: thin solid white; }
+        div.projectTopRow .projectSideInfo ul li:first-child {
+          padding-top: 0;
+          border-top: none; }
+        div.projectTopRow .projectSideInfo ul li:last-child {
+          padding-bottom: 0;
+          border-bottom: none; }
+        div.projectTopRow .projectSideInfo ul li.projectPartners span {
+          margin-bottom: 10px; }
+        div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg {
+          max-width: 50px; }
+          div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg img {
+            width: 80%; }
+        div.projectTopRow .projectSideInfo ul li.projectPartners .partType {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: normal; }
+        div.projectTopRow .projectSideInfo ul li.financeBlock {
+          padding: 10px 0;
+          background: rgba(114, 205, 255, 0.1); }
+          div.projectTopRow .projectSideInfo ul li.financeBlock span {
+            margin-left: 15px; }
+          div.projectTopRow .projectSideInfo ul li.financeBlock a {
+            margin-left: 15px; }
 
 #draft {
   background: #E04F46;
@@ -392,13 +470,12 @@ header {
   height: 300px;
   background: #ccc; }
 
-.carousel-inner > .item > img {
-  max-height: 400px; }
-
+/* Project timeline */
 #timeline {
   height: 400px;
   background: #FFFFFF; }
 
+/* Project carousel */
 /* Project hierarchy */
 .project-hierarchy-window {
   border: 0.1em solid #d3d3d3;

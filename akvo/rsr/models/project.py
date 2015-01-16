@@ -713,11 +713,10 @@ class Project(TimestampsMixin, models.Model):
         else:
             return ""
 
-    def sector_names(self):
+    def sector_categories(self):
         from .sector import Sector
-        sector_codes = [sector.sector_code for sector in Sector.objects.filter(project=self)]
-        sector_codelist = [code[:2] for code in codelists.SECTOR]
-        return [name for code, name in sector_codelist if code in sector_codes]
+        sector_categories = Sector.objects.filter(project=self, vocabulary='2')
+        return [sector.iati_sector for sector in sector_categories]
 
     def has_relations(self):
         return self.parents() or self.children() or self.siblings()

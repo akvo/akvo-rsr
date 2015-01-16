@@ -51,7 +51,7 @@ var CarouselInstance = React.createClass({displayName: 'CarouselInstance',
         var photos = this.props.source.photos.map(function(photo) {
           return (
             CarouselItem(null, 
-                React.DOM.img( {width:"100%", height:400, src:photo.url} ),
+                React.DOM.a( {href:photo.original_url, target:"_blank"}, React.DOM.img( {src:photo.url} )),
                 React.DOM.div( {className:"carousel-caption"}, 
                     React.DOM.h3(null, photo.caption),
                     React.DOM.p(null, photo.credit)
@@ -67,8 +67,9 @@ var CarouselInstance = React.createClass({displayName: 'CarouselInstance',
     }
 });
 
-var accordion_data = JSON.parse(document.getElementById("accordion-data").innerHTML);
-var carousel_data = JSON.parse(document.getElementById("carousel-data").innerHTML);
-
-React.renderComponent(AccordionInstance( {source:accordion_data} ), document.getElementById('accordion'));
-React.renderComponent(CarouselInstance( {source:carousel_data} ), document.getElementById('carousel'));
+React.renderComponent(
+    AccordionInstance( {source:JSON.parse(document.getElementById("akvo-rsr-accordion").innerHTML)} ),
+    document.getElementById('accordion'));
+React.renderComponent(
+    CarouselInstance( {source:JSON.parse(document.getElementById("akvo-rsr-carousel").innerHTML)} ),
+    document.getElementById('carousel'));

@@ -1,15 +1,22 @@
 {% load i18n maps %}
 
-<header>
+<header class="projectHeader">
     <div class="container">
         <div class="row">
-            <div class="col-sm-8 col-xs-8">
+            <div class="col-sm-8">
                 <h1>{{project.title}}</h1>
                 <p>{{project.subtitle}}</p>
-                <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">Show map +</a></p>
+                <div class="projectLocation">
+                    <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">Show map +</a></p>
+                </div>
             </div>
-            <div class="col-sm-4 col-xs-4">
-                Share <a href="#" class="btn btn-primary">Follow project</a>
+            <div class="col-sm-4 shareBlock">
+                <div class="text-right">
+                    <nav>
+                        <a href="#" class="btn btn-primary">Follow project</a>
+                        <a href="#" class="btn"><i class="fa fa-print"></i> Printable full data report</a>
+                    </nav>
+                </div>
             </div>
         </div>
         <div style="display: None" id="project-map" class="row initial">
