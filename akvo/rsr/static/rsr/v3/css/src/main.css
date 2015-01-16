@@ -40,16 +40,16 @@ body {
   color: #243032;
   line-height: 1.42857;
   text-rendering: optimizelegibility;
-  font-family: 'Raleway', 'Open Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 80px; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Raleway', 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal; }
 
 a, a:link, a:visited {
   outline: none;
-  color: #4ab1cf;
+  color: #0caaff;
   text-decoration: none;
   cursor: pointer;
   -webkit-transition: color 0.2s linear;
@@ -57,7 +57,22 @@ a, a:link, a:visited {
   a:link, a:link:link, a:visited:link {
     -webkit-tap-highlight-color: #fcd700; }
   a:hover, a:link:hover, a:visited:hover {
-    color: #f6a01a; }
+    color: #ffa372; }
+
+/****************** Miscellanous Typography ********************/
+.noItem {
+  color: rgba(44, 42, 116, 0.2); }
+
+.moreLink {
+  margin-left: 5px;
+  padding: 3px;
+  background: rgba(11, 169, 255, 0.1);
+  -moz-border-radius: 4px;
+  -o-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px; }
+  .moreLink:hover {
+    background: rgba(255, 163, 113, 0.1); }
 
 ::-moz-selection {
   background: #72cdff;
@@ -82,13 +97,13 @@ a, a:link, a:visited {
     width: 100%; } }
 
 a.btn-primary, button.btn-primary {
-  border: 1px solid #4ec1ea;
+  border: 1px solid #0caaff;
   color: white;
-  background: #4ec1ea; }
+  background: #0caaff; }
   a.btn-primary:hover, button.btn-primary:hover {
     color: white;
-    background: #f6a01a;
-    border: 1px solid #f6a01a; }
+    background: #ffa372;
+    border: 1px solid #ffa372; }
 
 .dropdown-label {
   display: block;
@@ -164,9 +179,9 @@ span.twitter-typeahead {
 								HEADER + NAVIGATION
 ****************************************************************************/
 nav[role=navigation] {
-  background-color: #f4f4f4;
+  background-color: rgba(255, 255, 255, 0.95);
   border: none;
-  border-top: 1px solid rgba(132, 132, 136, 0.1);
+  border-top: 3px solid rgba(114, 205, 255, 0.5);
   padding: 5px 0;
   box-shadow: 0 1px 1px rgba(132, 132, 136, 0.1);
   border-radius: 0;
@@ -196,18 +211,26 @@ nav[role=navigation] {
   nav[role=navigation] .navbar-nav li {
     padding-top: 3px; }
     nav[role=navigation] .navbar-nav li a {
-      font-weight: bold;
-      color: #4ab1cf; }
+      color: #0caaff;
+      font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif; }
       nav[role=navigation] .navbar-nav li a:hover {
-        color: #f6a01a; }
+        color: #ffa372; }
       nav[role=navigation] .navbar-nav li a.active {
-        color: #2c2a74;
-        font-weight: bold; }
+        /*color: $akvoPurple;*/
+        color: #ffa372;
+        font-weight: bold;
+        background: rgba(255, 163, 113, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
+        background-size: 15px 15px; }
       nav[role=navigation] .navbar-nav li a.addUpdateBtn {
         margin-top: 10px;
         color: white; }
         nav[role=navigation] .navbar-nav li a.addUpdateBtn:hover {
-          background-color: #f6a01a; }
+          background-color: #ffa372; }
+  nav[role=navigation] .navbar-nav.navbar-right li {
+    margin-right: 2px; }
+    nav[role=navigation] .navbar-nav.navbar-right li a {
+      padding-left: 10px;
+      padding-right: 10px; }
 
 .navbar .btn {
   padding: 4px 9px; }
@@ -221,8 +244,24 @@ body > footer {
   margin-top: 1em; }
 
 footer .navbar {
-  margin-bottom: 0;
-  border-radius: 0px; }
+  background: #202024;
+  border-radius: 0; }
+  footer .navbar #footer-body ul.nav li a {
+    display: block; }
+    footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
+      margin: 0;
+      width: 42px;
+      background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
+      text-indent: -9999px;
+      background-size: 42px 42px; }
+  footer .navbar #footer-body ul.nav li.akvoLogo {
+    width: 70px; }
+    footer .navbar #footer-body ul.nav li.akvoLogo a[href="http://akvo.org"] {
+      margin: 0;
+      width: 70px;
+      background: url(../../img/akvo.orgLogo.svg) center 5px no-repeat;
+      text-indent: -9999px;
+      background-size: 70px 42px; }
 
 #footer-body {
   text-align: center;
@@ -232,16 +271,6 @@ footer .navbar {
   display: inline-block;
   float: none;
   font-size: 14px; }
-
-#project-footer {
-  margin-bottom: -1em;
-  padding-top: 2em;
-  padding-bottom: 2em;
-  background: #f4f4f4; }
-
-#project-footer-right {
-  background: #ccc;
-  padding: 1.5em; }
 
 /* GENERIC STRUCTURE and TEXT STYLES */
 .touch-navbar {
@@ -272,32 +301,26 @@ h4.detailedInfo {
       height: 450px;
       padding-top: 0px; } }
 
-@media only screen and (max-width: 768px) {
-  #search-filter {
-    padding-bottom: 0; } }
-@media only screen and (max-width: 768px) {
-  #search-filter #search {
-    padding-bottom: 0; } }
-
 .searchContainer {
   position: relative; }
-  .searchContainer .showFilters {
-    background: #00a79d;
+  .searchContainer #search .showFilters {
+    background-color: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(0, 167, 157, 0);
     color: white;
     transition: all 0.4s ease-in; }
-    .searchContainer .showFilters:hover {
+    .searchContainer #search .showFilters:hover {
       background: rgba(0, 167, 157, 0.5);
       border: 1px solid rgba(0, 167, 157, 0.7);
       color: white; }
     @media only screen and (max-width: 768px) {
-      .searchContainer .showFilters {
+      .searchContainer #search .showFilters {
         display: table;
         top: inherit;
         left: inherit;
         margin: 10px auto 0; } }
-  .searchContainer aside#sidebar-wrapper .showFilters {
-    position: relative; }
+  .searchContainer #search.toggled .showFilters {
+    background-color: #00a79d;
+    border: 1px solid #00a79d; }
 
 #sidebar-wrapper {
   z-index: 1000;
@@ -306,7 +329,7 @@ h4.detailedInfo {
   width: 0;
   margin-left: -200px;
   overflow-y: auto;
-  background: #00a79d;
+  background: rgba(255, 255, 255, 0.9);
   -moz-border-radius: 0 0 5px 0;
   -o-border-radius: 0 0 5px 0;
   -webkit-border-radius: 0 0 5px 0;
@@ -316,10 +339,22 @@ h4.detailedInfo {
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); }
+  #sidebar-wrapper .btn-group {
+    width: 100%;
+    border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+    padding: 5px 0; }
+    #sidebar-wrapper .btn-group select {
+      border-color: rgba(32, 32, 36, 0.2); }
+  #sidebar-wrapper .showFilters {
+    position: relative;
+    margin: 10px auto; }
   #sidebar-wrapper div#filter {
     padding: 5px 15px 15px 15px; }
     #sidebar-wrapper div#filter label {
-      color: white; }
+      color: #00a79d;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal; }
 
 #page-content-wrapper {
   width: 100%;
@@ -335,11 +370,17 @@ h4.detailedInfo {
 
 #search-filter {
   background-color: #241F20; }
-  #search-filter p {
-    color: rgba(0, 167, 157, 0.5); }
-  #search-filter div#search {
+  @media only screen and (max-width: 768px) {
+    #search-filter {
+      padding-bottom: 0; } }
+  #search-filter #search {
     color: #fff;
     text-align: center; }
+    @media only screen and (max-width: 768px) {
+      #search-filter #search {
+        padding-bottom: 0; } }
+  #search-filter p {
+    color: #a5dfff; }
   #search-filter div#filter {
     background: #383334;
     text-align: center; }
@@ -348,12 +389,14 @@ h4.detailedInfo {
 		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
 .main-list li {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   list-style-type: none;
   padding: 15px 0;
   border-radius: 3px; }
   .main-list li:nth-child(2n+1) {
     background: #eeeeee; }
+  .main-list li:last-child {
+    margin-bottom: 0; }
   .main-list li h1 {
     margin-top: 0;
     font-size: 1.3em; }
@@ -372,7 +415,7 @@ h4.detailedInfo {
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
-  background: #fdf2e8; }
+  background: #fff6f1; }
   header.projectHeader h1 {
     margin-top: 10px;
     margin-bottom: 0;
@@ -405,7 +448,7 @@ div.projectTopRow {
   margin-top: 1px; }
   div.projectTopRow #carousel {
     padding: 15px 0;
-    background-color: #e6e7e8;
+    /*background-color: rgb(230, 231, 232);*/
     margin-left: -15px; }
     @media only screen and (max-width: 768px) {
       div.projectTopRow #carousel {
@@ -432,32 +475,66 @@ div.projectTopRow {
         color: #9c9ca7;
         list-style-type: none;
         padding-top: 10px;
-        padding-bottom: 10px;
-        border-bottom: thin solid #f0f0f0;
-        border-top: thin solid white; }
+        padding-bottom: 5px;
+        border-bottom: thin solid #e6e6e6;
+        border-top: thin solid #f8f8f8; }
         div.projectTopRow .projectSideInfo ul li:first-child {
-          padding-top: 0;
+          padding-top: 5px;
           border-top: none; }
         div.projectTopRow .projectSideInfo ul li:last-child {
           padding-bottom: 0;
           border-bottom: none; }
-        div.projectTopRow .projectSideInfo ul li.projectPartners span {
-          margin-bottom: 10px; }
-        div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg {
-          max-width: 50px; }
-          div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg img {
-            width: 80%; }
-        div.projectTopRow .projectSideInfo ul li.projectPartners .partType {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: normal; }
+        div.projectTopRow .projectSideInfo ul li.projectPartners {
+          padding-bottom: 20px;
+          border-bottom: none; }
+          div.projectTopRow .projectSideInfo ul li.projectPartners span {
+            margin-bottom: 10px; }
+          div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg {
+            max-width: 50px; }
+            div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg img {
+              width: 80%; }
+          div.projectTopRow .projectSideInfo ul li.projectPartners .partType {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal; }
         div.projectTopRow .projectSideInfo ul li.financeBlock {
-          padding: 10px 0;
+          border-top: none;
+          padding: 15px 0 15px 0;
           background: rgba(114, 205, 255, 0.1); }
           div.projectTopRow .projectSideInfo ul li.financeBlock span {
             margin-left: 15px; }
           div.projectTopRow .projectSideInfo ul li.financeBlock a {
             margin-left: 15px; }
+
+div.timelineBlock {
+  margin: 15px auto 25px; }
+  div.timelineBlock #timeline {
+    height: 200px; }
+
+div.textBlock .panel {
+  border: 1px solid rgba(235, 235, 235, 0.5); }
+  div.textBlock .panel .panel-heading {
+    padding: 0; }
+    div.textBlock .panel .panel-heading .panel-title a {
+      display: block;
+      padding: 15px 15px; }
+  div.textBlock .panel .panel-collapse .panel-body {
+    background: rgba(114, 205, 255, 0); }
+div.textBlock .udpateComponent {
+  padding-top: 10px;
+  padding-bottom: 15px;
+  background: #fff6f1; }
+
+#project-footer {
+  margin-bottom: -16px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  background: #f0f0fa; }
+  #project-footer .detailedInfo {
+    color: #2c2a74; }
+  #project-footer #project-footer-right {
+    background: rgba(44, 42, 116, 0.1);
+    padding: 1.5em; }
 
 #draft {
   background: #E04F46;
@@ -470,12 +547,6 @@ div.projectTopRow {
   height: 300px;
   background: #ccc; }
 
-/* Project timeline */
-#timeline {
-  height: 400px;
-  background: #FFFFFF; }
-
-/* Project carousel */
 /* Project hierarchy */
 .project-hierarchy-window {
   border: 0.1em solid #d3d3d3;

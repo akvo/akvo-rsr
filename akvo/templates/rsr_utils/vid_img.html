@@ -4,7 +4,7 @@
     {% video vid as video_obj %}
         {% with video_thumbnail=video_obj.thumbnail %}
             {% thumbnail video_thumbnail geometry format="PNG" upscale=True as im %}
-                <img src="{{im.url}}" style="margin:{{im|margin:geometry}}" />
+                <img src="{{im.url}}" />
             {% endthumbnail %}
         {% endwith %}
     {% endvideo %}
