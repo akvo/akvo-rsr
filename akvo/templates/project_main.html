@@ -6,6 +6,9 @@
 
 {% block head_js %}
   <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
+<style>
+
+</style>
 {% endblock head_js %}
 
 {% block maincontent %}
@@ -41,55 +44,25 @@
                             {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector|title}}{% endfor %}
                             </li>
                             {% endif %}
-                            <li class="projectPartners"><span class="detailedInfo">Partners</span>
-                            <div class="row">
-                                    <div class="col-xs-6">
+                            <li class="projectPartners"><span class="detailedInfo">{% trans "Reporting organisation" %}</span>
+                                <div class="row">
+                                    <div class="col-xs-12">
                                         <a href="{% url 'organisation-main' project.reporting_org.pk %}" class="pull-left logoImg">
                                             {% img project.reporting_org 80 60 project.reporting_org.name %}
                                         </a>
                                         <div class="media-body">
-                                            <p>
-                                                <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                {% for partner, types in partners.items %}
-                                    <div class="col-xs-6">
-                                        <a href="{% url 'organisation-main' partner.pk %}" class="pull-left logoImg">
-                                            {% img partner 80 60 partner.title %}
-                                        </a>
-                                        <div class="media-body">
-                                            <p>
-                                                <a href="{% url 'organisation-main' partner.pk %}">{{partner}}</a>
-                                                {% for type in types %}
-                                                    <br><small class="partType">{{type}} partner</small>
-                                                {% endfor %}
-                                            </p>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                                </div>
-                            </li>
-                            <p>
-                                <a href="{% url 'organisation-main' project.reporting_org.pk %}">
-                                    {% img reporting_org.0 180 80 reporting_org.0.title %}
-                                </a>
-                                <div class="media-body">
-                                    <p>
-                                        <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
-                                        {% if partners|length > 1 %}
+                                            <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
                                             <a href="javascript:;" class="small" data-toggle="tooltip"
                                              title="{% for partner, types in partners.items %}
-                                                        {% ifnotequal partner project.reporting_org %}
-                                                            <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
-                                                            ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)
-                                                        {% endifnotequal %}
+                                                        {% if not forloop.first %}<br>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
+                                                        ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)
                                                     {% endfor %}"
-                                             data-placement="right" data-container="body">+{{partners|length|add:"-1"}} more</a>
-                                        {% endif %}
-                                    </p>
+                                             data-placement="right" data-container="body">+ {{partners|length}} partners</a>
+                                            {% if project.reporting_org.primary_location.country %}<br><i class="fa fa-globe"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}
+                                        </div>
+                                    </div>
                                 </div>
-                            </p>
+                            </li>
                             <li class="financeBlock"><span class="detailedInfo">{% trans "financial info" %}</span>
                                 <br><a href="#" class="text-center"><i class="fa fa-line-chart"></i> See all financial info</a>
                             </li>
@@ -146,9 +119,16 @@
 
   {# Tooltip #}
   $(function () {
-    $('[data-toggle="tooltip"]').tooltip({html: true, delay: { "show": 0, "hide": 1000 }})
+    $('[data-toggle="tooltip"]').tooltip(
+        {
+            html: true,
+            delay: {
+                "show": 0,
+                "hide": 1000
+            }
+        }
+    )
   });
-
 
   {# Timeline #}
   var timeline_data = {{ timeline_data|safe }};

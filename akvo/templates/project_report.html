@@ -33,45 +33,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    {% if project.has_relations %}
-                    <h4>{% trans "Related activities" %}</h4>
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>{% trans "Relation" %}</th>
-                                <th>{% trans "Activity" %}</th>
-                                <th>{% trans "IATI ID" %}</th>
-                                <th>{% trans "RSR ID" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for parent in project.parents.all %}
-                            <tr>
-                                <td>{% trans "Parent" %}</td>
-                                <td><a href="{% url 'project-main' parent.pk %}">{{parent.title}}</a></td>
-                                <td>{{parent.iati_activity_id}}</td>
-                                <td>{{parent.pk}}</td>
-                            </tr>
-                            {% endfor %}
-                            {% for child in project.children.all %}
-                            <tr>
-                                <td>{% trans "Child" %}</td>
-                                <td><a href="{% url 'project-main' child.pk %}">{{child.title}}</a></td>
-                                <td>{{child.iati_activity_id}}</td>
-                                <td>{{child.pk}}</td>
-                            </tr>
-                            {% endfor %}
-                            {% for sibling in project.siblings.all %}
-                            <tr>
-                                <td>{% trans "Sibling" %}</td>
-                                <td><a href="{% url 'project-main' sibling.pk %}">{{sibling.title}}</a></td>
-                                <td>{{sibling.iati_activity_id}}</td>
-                                <td>{{sibling.pk}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% endif %}
                 </div>
                 <div class="col-sm-6">
                     <h4>{% trans "Activity Dates" %}</h4>
@@ -97,6 +58,45 @@
                     </table>
                 </div>
             </div>
+            {% if project.has_relations %}
+            <h4>{% trans "Related activities" %}</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Relation" %}</th>
+                        <th>{% trans "Activity" %}</th>
+                        <th>{% trans "IATI ID" %}</th>
+                        <th>{% trans "RSR ID" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for parent in project.parents.all %}
+                    <tr>
+                        <td>{% trans "Parent" %}</td>
+                        <td><a href="{% url 'project-main' parent.pk %}">{{parent.title}}</a></td>
+                        <td>{{parent.iati_activity_id}}</td>
+                        <td>{{parent.pk}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for child in project.children.all %}
+                    <tr>
+                        <td>{% trans "Child" %}</td>
+                        <td><a href="{% url 'project-main' child.pk %}">{{child.title}}</a></td>
+                        <td>{{child.iati_activity_id}}</td>
+                        <td>{{child.pk}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for sibling in project.siblings.all %}
+                    <tr>
+                        <td>{% trans "Sibling" %}</td>
+                        <td><a href="{% url 'project-main' sibling.pk %}">{{sibling.title}}</a></td>
+                        <td>{{sibling.iati_activity_id}}</td>
+                        <td>{{sibling.pk}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
             <h4>{% trans "Descriptions" %}</h4>
             <table class="table table-striped table-bordered">
                 <tbody>
