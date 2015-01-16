@@ -172,6 +172,7 @@ class Project(TimestampsMixin, models.Model):
 
     # synced projects
     sync_owner = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
+    sync_owner_secondary_reporter = models.NullBooleanField(_(u'secondary reporter'),)
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=100, blank=True, db_index=True,)

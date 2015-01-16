@@ -20,12 +20,16 @@ class PlannedDisbursement(models.Model):
     updated = models.DateField(_(u'updated'), null=True, blank=True)
     period_start = models.DateField(_(u'period start'), null=True, blank=True)
     period_end = models.DateField(_(u'period end'), null=True, blank=True)
+    type = ValidXMLCharField(_(u'type'), blank=True, max_length=1, choices=codelists.BUDGET_TYPE)
 
     def __unicode__(self):
         return self.value
 
     def iati_currency(self):
         return dict(codelists.CURRENCY)[self.currency] if self.currency else ""
+
+    def iati_type(self):
+        return dict(codelists.BUDGET_TYPE)[self.type] if self.type else ''
 
     class Meta:
         app_label = 'rsr'
