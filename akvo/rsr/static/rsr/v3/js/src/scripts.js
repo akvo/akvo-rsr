@@ -1,3 +1,52 @@
+// Resets a file Form element
+function resetFormElement(e) {
+  e.wrap('<form>').closest('form').get(0).reset();
+  e.unwrap();
+}
+
+
+function bootstrapAlert(errorMsg, elementToPrepend) {
+  var s = '<div class="alert alert-danger alert-dismissible" role="alert">'
+        + '<button type="button" class="close" data-dismiss="alert">'
+        + '<span aria-hidden="true">×</span><span class="sr-only">'
+        + 'Close</span></button><%= msg %></div>',
+      t = _.template(s),
+      c = t({ 'msg': errorMsg });
+  return c;
+}
+
+
+// Show a Bootstrap 3 alert
+// Depends on lo-dash
+function alertSnippet(msg) {
+  var s = '<div class="alert alert-danger alert-dismissible" role="alert">'
+        + '<button type="button" class="close" data-dismiss="alert">'
+        + '<span aria-hidden="true">×</span><span class="sr-only">'
+        + 'Close</span></button><%= msg %></div>',
+      t = _.template(s);
+  return t({'msg': msg});
+
+  // $anchor.prepend(snippet);
+  // $('#profile').prepend(snippet);
+
+  // Fill with the alert code from my-details.js
+      //   $("#profile").prepend(bootstrapAlert('File is too large'));
+      // window.setTimeout(function() {
+      //   $(".alert").fadeTo(500,0).slideUp(500, function() {
+      //     resetFormElement($("#id_avatar"));
+      //     $(this).remove();
+      //   });
+      // }, 2000);
+}
+
+function scheduleAlertFade(timeOut) {
+  window.setTimeout(function() {
+    $('.alert').fadeTo(500, 0).slideUp(500, function() {
+      $(this).remove();
+    });
+  }, timeOut);
+}
+
 $(document).ready(function() {
 
     function getCookie(name) {
