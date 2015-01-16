@@ -54,7 +54,7 @@
         <li>
             <a href="{% if project %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
                class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
-              {% bootstrap_icon "bullhorn" %} Add an update
+              {% bootstrap_icon "bullhorn" %}  Add an update
             </a>
         </li>
         {% if not user.username %}
