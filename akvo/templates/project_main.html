@@ -20,31 +20,34 @@
         {% if not project.is_published %}
             <div id="draft" class="row">This is a draft view of the project. It can only be seen by Administrators and Project editors.</div>
         {% endif %}
-        <div class="row projectTopRow">
-            <div class="col-sm-8">
-                <div id="carousel"></div>
-            </div>
-            <div class="col-sm-4">
-                <aside class="projectSideInfo">
-                    <ul>
-                            <li><span class="detailedInfo">Project summary</span><p>{{project.project_plan_summary}}</p></li>
-                            {% if project.iati_activity_id %}
-                            <li><span class="detailedInfo">IATI ID</span> {{project.iati_activity_id}}</li>
-                            {% endif %}
-                            <li><span class="detailedInfo">Status</span> {{project.get_status_display}}</li>
-                            {% if project.has_relations %}
-                            <li><span class="detailedInfo">Hierarchy</span>
-                                This project has {{project.parents.count}} parent project{{project.parents.count|pluralize}},
-                                {{project.children.count}} child project{{project.children.count|pluralize}} and
-                                {{project.siblings.count}} sibling project{{project.siblings.count|pluralize}}
-                                <a href="{% url 'project-hierarchy' project.pk %}">View full hierarchy</a></li>
-                            {% endif %}
-                            {% if project.sectors.all %}
-                            <li><span class="detailedInfo">{% trans "Sectors" %}</span>
-                            {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector|title}}{% endfor %}
-                            </li>
-                            {% endif %}
-                            <li class="projectPartners"><span class="detailedInfo">{% trans "Reporting organisation" %}</span>
+    </div>
+    <div class="projectTopRow">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div id="carousel"></div>
+                </div>
+                <div class="col-sm-4">
+                    <aside class="projectSideInfo">
+                        <ul>
+                                <li><span class="detailedInfo">Project summary</span><p>{{project.project_plan_summary}}</p></li>
+                                {% if project.iati_activity_id %}
+                                <li><span class="detailedInfo">IATI ID</span> {{project.iati_activity_id}}</li>
+                                {% endif %}
+                                <li><span class="detailedInfo">Status</span> {{project.get_status_display}}</li>
+                                {% if project.has_relations %}
+                                <li><span class="detailedInfo">Hierarchy</span>
+                                    This project has {{project.parents.count}} parent project{{project.parents.count|pluralize}},
+                                    {{project.children.count}} child project{{project.children.count|pluralize}} and
+                                    {{project.siblings.count}} sibling project{{project.siblings.count|pluralize}}
+                                    <a href="{% url 'project-hierarchy' project.pk %}">View full hierarchy</a></li>
+                                {% endif %}
+                                {% if project.sectors.all %}
+                                <li><span class="detailedInfo">{% trans "Sectors" %}</span>
+                                {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector|title}}{% endfor %}
+                                </li>
+                                {% endif %}
+                                <li class="projectPartners"><span class="detailedInfo">{% trans "Reporting organisation" %}</span>
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <a href="{% url 'organisation-main' project.reporting_org.pk %}" class="pull-left logoImg">
@@ -62,14 +65,17 @@
                                         </div>
                                     </div>
                                 </div>
-                            </li>
-                            <li class="financeBlock"><span class="detailedInfo">{% trans "financial info" %}</span>
-                                <br><a href="#" class="text-center"><i class="fa fa-line-chart"></i> See all financial info</a>
-                            </li>
-                    </ul>
-                </aside>
+                                </li>
+                                <li class="financeBlock"><span class="detailedInfo">{% trans "financial info" %}</span>
+                                    <br><a href="#" class="text-center"><i class="fa fa-line-chart"></i> See all financial info</a>
+                                </li>
+                        </ul>
+                    </aside>
+                </div>
             </div>
         </div>
+    </div>
+    <div class="container">
         <div class="row hidden">
             <div class="col-sm-3 col-xs-6">
                 <h4 class="detailedInfo">Finance</h4>
@@ -77,16 +83,20 @@
                 <p class="center-text"><a href="#">See all financial info</a></p>
             </div>
         </div>
+    </div>
+    <div class="container timelineBlock">
         <div class="row">
             <div class="col-sm-12">
                 <div id="timeline"></div>
             </div>
         </div>
+    </div>
+    <div class="container textBlock">
         <div class="row">
             <div class="col-sm-8">
               <div id="accordion"></div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4 udpateComponent">
               <h4 class="detailedInfo">Latest project updates</h4>
               {% for update in updates %}
               <a href="{{update.get_absolute_url}}">{{update.title}}</a><br>

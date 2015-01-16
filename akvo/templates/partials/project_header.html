@@ -16,7 +16,7 @@
                         <a href="#" class="btn btn-primary">Follow project</a>
                         {% url 'project-report' project.pk as report_url %}
                         {% if not request.get_full_path == report_url %}
-                        <a href="{% url 'project-report' project.pk %}" class="btn"><i class="fa fa-th-list"></i> Full data report</a>
+                        <a href="{% url 'project-report' project.pk %}" class="btn"><i class="fa fa-th-list"></i> Show full data report</a>
                         {% endif %}
                     </nav>
                 </div>

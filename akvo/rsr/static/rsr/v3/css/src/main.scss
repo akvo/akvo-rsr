@@ -40,6 +40,19 @@ a, a:link, a:visited {
     }
 }
 
+/****************** Miscellanous Typography ********************/
+.noItem {
+	color:rgba($akvoPurple,0.2);
+}
+.moreLink {
+	margin-left:5px;
+	padding:3px;
+	background:rgba($anchorLink, 0.1);
+	@include border-radius(4px);
+	&:hover {
+		background:rgba($anchorLinkHover, 0.1);
+	}
+}
 ::-moz-selection {
     background: rgb(114, 205, 255);
     color: #fff;
@@ -70,9 +83,9 @@ a, a:link, a:visited {
 
 
 a.btn-primary, button.btn-primary {
-    border: 1px solid $btnColor;
+    border: 1px solid $anchorLink;
     color: white;
-    background: $btnColor;
+    background: $anchorLink;
     &:hover {
         color: white;
         background: $anchorLinkHover;
@@ -166,9 +179,9 @@ span.twitter-typeahead {
 								HEADER + NAVIGATION
 ****************************************************************************/
 nav[role=navigation] {
-    background-color: rgb(244, 244, 244);
+    background-color: rgba(white,0.95);
     border: none;
-    border-top: 1px solid rgba(132, 132, 136, 0.1);
+    border-top: 3px solid rgba($rsrBlue, 0.5);
     padding: 5px 0;
     box-shadow: 0 1px 1px rgba(132, 132, 136, 0.1);
     border-radius: 0;
@@ -209,14 +222,17 @@ nav[role=navigation] {
             padding-top: 3px;
             &:first-child {}
             a {
-                font-weight: bold;
                 color: $anchorLink;
+                font-family: $titleFont;
                 &:hover {
                     color: $anchorLinkHover;
                 }
                 &.active {
-                    color: $akvoPurple;
+                    /*color: $akvoPurple;*/
+                    color: complement($rsrBlue);
                     font-weight: bold;
+                    background: rgba($anchorLinkHover,0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
+                    background-size: 15px 15px;
                 }
                 &.addUpdateBtn {
                     margin-top: 10px;
@@ -226,6 +242,15 @@ nav[role=navigation] {
                     }
                 }
             }
+        }
+        &.navbar-right {
+        	li {
+        		margin-right:2px;
+        		a {
+        			padding-left:10px;
+        			padding-right:10px;
+        		}
+        	}
         }
     }
 }
@@ -245,10 +270,37 @@ nav[role=navigation] {
 body > footer {
     margin-top: 1em;
 }
-
-footer .navbar {
-    margin-bottom: 0;
-    border-radius: 0px;
+footer {
+	.navbar {
+		background: $akvoBlack;
+		border-radius: 0;
+		#footer-body {
+			ul.nav {
+				li{
+					a {
+						display:block;
+						&[href="http://akvo.org"] {
+						    margin: 0;
+						    width: 42px;
+						    background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
+						    text-indent: -9999px;
+						    background-size: 42px 42px;						
+						}
+					}
+					&.akvoLogo {
+						width:70px;
+						a[href="http://akvo.org"] {
+						    margin: 0;
+						    width: 70px;
+						    background: url(../../img/akvo.orgLogo.svg) center 5px no-repeat;
+						    text-indent: -9999px;
+						    background-size: 70px 42px;						
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 #footer-body {
@@ -260,18 +312,6 @@ footer .navbar {
     display: inline-block;
     float: none;
     font-size: 14px;
-}
-
-#project-footer {
-    margin-bottom: -1em;
-    padding-top: 2em;
-    padding-bottom: 2em;
-    background: rgb(244, 244, 244);
-}
-
-#project-footer-right {
-    background: #ccc;
-    padding: 1.5em;
 }
 
 /* GENERIC STRUCTURE and TEXT STYLES */
@@ -308,45 +348,34 @@ h4.detailedInfo {
         padding-top: 0px;
     }
 }
-
-#search-filter {
-    @include responsive(small-max-screens) {
-        padding-bottom: 0;
-    }
-
-    #search {
-        @include responsive(small-max-screens) {
-            padding-bottom: 0;
-        }
-    }
-}
-
 .searchContainer {
     position: relative;
-    .showFilters {
-        background: rgba($rsrGreen, 1);
-        border: 1px solid rgba($rsrGreen, 0);
-        color: white;
-        transition: all 0.4s ease-in;
-        &:hover {
-            background: rgba($rsrGreen, 0.5);
-            border: 1px solid rgba($rsrGreen, 0.7);
-            color: white;
+    #search {
+	    .showFilters {
+	        background-color: rgba(white,0.2);
+	        border: 1px solid rgba($rsrGreen, 0);
+	        color: white;
+	        transition: all 0.4s ease-in;
+	        &:hover {
+	            background: rgba($rsrGreen, 0.5);
+	            border: 1px solid rgba($rsrGreen, 0.7);
+	            color: white;
+	        }
+	        @include responsive(small-max-screens) {
+	            display: table;
+	            top: inherit;
+	            left: inherit;
+	            margin: 10px auto 0;
+	        }
+	    }
+	   	&.toggled  {
+	   		.showFilters {
+		        background-color: rgba($rsrGreen, 1);
+		        border: 1px solid rgba($rsrGreen, 1);
+		    }
         }
-        @include responsive(small-max-screens) {
-            display: table;
-            top: inherit;
-            left: inherit;
-            margin: 10px auto 0;
-        }
-    }
-    aside#sidebar-wrapper {
-        .showFilters {
-            position: relative;
-        }
-    }
+	}	
 }
-
 #sidebar-wrapper {
     z-index: 1000;
     position: absolute;
@@ -354,14 +383,27 @@ h4.detailedInfo {
     width: 0;
     margin-left: -200px;
     overflow-y: auto;
-    background: rgba($rsrGreen, 1);
+    background: rgba(white, 0.9);
     @include border-radius(0 0 5px 0);
     @include transition(all 0.5s ease);
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    .btn-group {
+    	width:100%;
+    	border-bottom:1px solid rgba($akvoBlack,0.1);
+    	padding:5px 0;
+	    select {
+		    border-color:rgba($akvoBlack,0.2);
+		    }
+		}
+    .showFilters {
+            position: relative;
+            margin:10px auto;
+        }
     div#filter {
         padding: 5px 15px 15px 15px;
         label {
-            color: white;
+    		color: $rsrGreen;
+            @include noWrapBlockTxt;
         }
     }
 }
@@ -383,13 +425,19 @@ h4.detailedInfo {
 }
 
 #search-filter {
-    background-color: #241F20;
-    p {
-        color: rgba($rsrGreen, 0.5);
+	@include responsive(small-max-screens) {
+        padding-bottom: 0;
     }
-    div#search {
+    #search {
         color: #fff;
         text-align: center;
+        @include responsive(small-max-screens) {
+            padding-bottom: 0;
+        }
+    }
+    background-color: #241F20;
+    p {
+        color: lighten($rsrBlue, 10%);
     }
     div#filter {
         background: darken(rgba(#383334, 1), 0%);
@@ -397,18 +445,22 @@ h4.detailedInfo {
     }
 }
 
+
 /************************************************************************
 		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
 
 .main-list {
     li {
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         list-style-type: none;
         padding: 15px 0;
         border-radius: 3px;
         &:nth-child(2n+1) {
             background: rgb(238, 238, 238);
+        }
+        &:last-child {
+        	margin-bottom:0;
         }
         h1 {
             margin-top: 0;
@@ -434,7 +486,7 @@ header {
     &.projectHeader {
         margin-bottom: 0;
         padding: 15px 0;
-        background: $lightOrange;
+        background: lighten($anchorLinkHover, 25%);
         h1 {
             margin-top: 10px;
             margin-bottom: 0;
@@ -472,16 +524,15 @@ header {
 
 div.projectTopRow {
     position: relative;
-    background: rgb(245, 245, 245);
+    background: rgba(245,245,245,1);
     margin-top: 1px;
     #carousel {
         padding: 15px 0;
-        background-color: rgb(230, 231, 232);
+        /*background-color: rgb(230, 231, 232);*/
         margin-left: -15px;
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
-
         .carousel-inner {
             .item {
                 text-align: center;
@@ -514,11 +565,11 @@ div.projectTopRow {
                 color: lighten($akvoBlack, 50%);
                 list-style-type: none;
                 padding-top: 10px;
-                padding-bottom: 10px;
-                border-bottom:thin solid rgb(240,240,240);                
-                border-top:thin solid white;
+                padding-bottom: 5px;
+                border-bottom:thin solid rgb(230,230,230);                
+                border-top:thin solid rgb(248,248,248);
                 &:first-child {
-                    padding-top: 0;                	
+                    padding-top: 5px;                	
                     border-top:none;
                 }                
                 &:last-child {
@@ -526,6 +577,8 @@ div.projectTopRow {
                     border-bottom:none;
                 }
                 &.projectPartners {
+                	padding-bottom:20px;
+                	border-bottom: none;
                     span {
                         margin-bottom: 10px;
                     }
@@ -540,7 +593,8 @@ div.projectTopRow {
                     }
                 }
                 &.financeBlock {
-                    padding: 10px 0;
+                	border-top: none;
+                    padding:15px 0 15px 0;
                     background: rgba($rsrBlue,0.1);
                     span {
                         margin-left: 15px;
@@ -553,6 +607,51 @@ div.projectTopRow {
         }
     }
 }
+div.timelineBlock {
+	margin:15px auto 25px;
+	#timeline {
+	    height: 200px;
+	}
+}
+div.textBlock {
+	.panel {
+		border: 1px solid rgba(235,235,235,0.5);
+		.panel-heading {
+			padding:0;
+			.panel-title {
+				a {
+					display:block;
+					padding:15px 15px;
+				}
+			}
+		}
+	.panel-collapse{
+			.panel-body{
+				background: rgba($rsrBlue,0);
+			}
+		}
+	}
+	.udpateComponent {
+		padding-top:10px;
+		padding-bottom:15px;
+        background: lighten($anchorLinkHover, 25%);
+	}
+}
+#project-footer {
+    margin-bottom: -16px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    background: lighten($akvoPurple, 65%);
+    .detailedInfo {
+    	color:rgba($akvoPurple,1);
+    }
+    #project-footer-right {
+	    background: rgba($akvoPurple, 0.1);;
+	    padding: 1.5em;
+	}
+}
+
+
 
 #draft {
     background: #E04F46;
@@ -566,14 +665,6 @@ div.projectTopRow {
     height: 300px;
     background: #ccc;
 }
-
-/* Project timeline */
-#timeline {
-    height: 400px;
-    background: #FFFFFF;
-}
-
-/* Project carousel */
 
 /* Project hierarchy */
 .project-hierarchy-window {
