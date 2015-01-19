@@ -31,9 +31,9 @@ $akvoLink: rgb(55, 146, 179);
 /* Akvo black */
 $akvoBlack: rgb(32, 32, 36);
 
-$anchorLink: rgb(74, 177, 207);
+$anchorLink: darken($rsrBlue,20%);
 $anchorLinkHeader: rgb(102, 204, 255);
-$anchorLinkHover: rgb(246, 160, 26);
+$anchorLinkHover: complement($rsrBlue);
 $btnColor :rgb(78, 193, 234);
 
 $rsrGreen: rgb(0, 167, 157);
@@ -58,9 +58,9 @@ $secondary9: rgb(74, 177, 207);
 
 $lightOrange: rgb(253,242,232);
 
-$bodyFont: 'Raleway', 'Open Sans',  "Helvetica Neue", Helvetica, Arial, sans-serif;
+$bodyFont: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, sans-serif;
 $scriptFont: 'Dancing Script', Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
-$titleFont:  'Raleway','Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+$titleFont:  'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 @mixin border-radius($property) {
     -moz-border-radius: $property;
