@@ -25,18 +25,6 @@ function alertSnippet(msg) {
         + 'Close</span></button><%= msg %></div>',
       t = _.template(s);
   return t({'msg': msg});
-
-  // $anchor.prepend(snippet);
-  // $('#profile').prepend(snippet);
-
-  // Fill with the alert code from my-details.js
-      //   $("#profile").prepend(bootstrapAlert('File is too large'));
-      // window.setTimeout(function() {
-      //   $(".alert").fadeTo(500,0).slideUp(500, function() {
-      //     resetFormElement($("#id_avatar"));
-      //     $(this).remove();
-      //   });
-      // }, 2000);
 }
 
 function scheduleAlertFade(timeOut) {

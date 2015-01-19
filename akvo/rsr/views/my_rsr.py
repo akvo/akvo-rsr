@@ -24,7 +24,6 @@ def my_details(request):
     if request.method == "POST" and 'avatar' in request.FILES:
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
         if avatar_form.is_valid():
-            print "-> valid!"
             avatar_form.save()
         return HttpResponseRedirect(reverse('my_details'))
 
