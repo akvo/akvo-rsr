@@ -734,6 +734,18 @@ class Project(TimestampsMixin, models.Model):
         return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |
                 Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=3)).distinct()
 
+    def has_results(self):
+        for result in self.results.all():
+            if result.title or result.type or result.aggregation_status or result.description:
+                return True
+        return False
+
+    def has_indicators(self):
+        for result in self.results.all():
+            if result.indicators.all():
+                return True
+        return False
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project')
