@@ -161,7 +161,7 @@ def directory(request):
 
     # Instead of true or false, adhere to bootstrap3 class names to simplify
     show_filters = "in"
-    available_filters = ['continent', 'status', 'organisation', 'focus_area', ]
+    available_filters = ['continent', 'status', 'organisation', 'sector', ]
     if frozenset(qs.keys()).isdisjoint(available_filters):
         show_filters = ""
 

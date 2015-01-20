@@ -6,8 +6,8 @@
   <section id="map" class="touch-navbar">
     {% coll_map page '100%' '100%'  %}
   </section>
-  <section id="search-filter">
-    <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
+  <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
+    <section id="search-filter">
       <div class="container-fluid">
         <div id="search" class="verticalPadding">
           <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
@@ -24,9 +24,9 @@
           </div>
         </div>
       </div>
-  </section>
-  <div id="wrapper">
-    <aside  id="sidebar-wrapper" class="{ show_filters }}">
+    </section>
+    <div id="wrapper">
+      <aside  id="sidebar-wrapper" class="{{ show_filters }}">
         <div id="filter" class="">
             <div>
                   <div class="btn-group">
@@ -45,16 +45,16 @@
             </div>      
             <div>
               <div class="btn-group">
-                {% bootstrap_field filter.form.focus_area %}
+                {% bootstrap_field filter.form.sector %}
               </div>
             </div>
             <div>
               <a class="btn showFilters btn-default menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
             </div>
         </div>
-    </aside>
-  </div>
- </form>
+      </aside>
+    </div>
+  </form>
 
   <div class="container-fluid">
     <div class="row center-text verticalPadding">
@@ -95,7 +95,7 @@
           <div class="col-sm-3 hidden-xs hidden-sm">
             {% if p.sector_categories %}
               <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
-              <p>{% for sector in p.sector_categories %}{% if not forloop.first %}, {% endif %}{{sector|title}}{% endfor %}</p>
+              <p>{% for sector in p.sector_categories_codes %}{% if not forloop.first %}<br>{% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}</p>
             {% endif %}
             <h4 class="detailedInfo">{% trans "Status" %}</h4>
             <p>{{p.get_status_display}}</p>
@@ -106,8 +106,6 @@
           </div>
           <div class="col-xs-7 col-xs-offset-5 col-sm-6 col-sm-offset-0 visible-xs-block visible-sm">
             <p class="small">
-            <span class="detailedInfo">{% trans "Focus Areas" %}</span>
-            {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>
             <span class="detailedInfo">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
             <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
             <span class="detailedInfo">{% trans "Finance" %}</span>
