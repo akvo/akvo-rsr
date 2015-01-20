@@ -191,8 +191,8 @@ def main(request, project_id):
     accordion_data = _get_accordion_data(project)
     timeline_data = _get_timeline_data(project)
 
-    first_partner = project.first_partner()
-    first_partner_info = (first_partner, first_partner.has_partner_types(project))
+    reporting_org = project.reporting_org()
+    reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
     partners = _get_project_partners(project)
 
     context = {
@@ -201,7 +201,7 @@ def main(request, project_id):
         'project': project,
         'timeline_data': json.dumps(timeline_data),
         'updates': updates,
-        'first_partner': first_partner_info,
+        'reporting_org': reporting_org_info,
         'partners': partners,
     }
 
@@ -210,6 +210,10 @@ def main(request, project_id):
 
 def hierarchy(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+
+    # Non-editors are not allowed to view unpublished projects
+    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+        raise PermissionDenied
 
     if not project.has_relations():
         raise Http404
@@ -224,9 +228,27 @@ def hierarchy(request, project_id):
     return render(request, 'project_hierarchy.html', context)
 
 
+def report(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    # Non-editors are not allowed to view unpublished projects
+    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+        raise PermissionDenied
+
+    context = {
+        'project': project,
+    }
+
+    return render(request, 'project_report.html', context)
+
+
 def widgets(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     selected_widget = request.GET.get('widget', None)
+
+    # Non-editors are not allowed to view unpublished projects
+    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+        raise PermissionDenied
 
     context = {
         'project': project,
@@ -245,6 +267,11 @@ def widgets(request, project_id):
 @login_required()
 def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
     project = get_object_or_404(Project, id=project_id)
+
+    # Non-editors are not allowed to view unpublished projects
+    if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
+        raise PermissionDenied
+
     updates = project.updates_desc()[:5]
     update = None
 
@@ -289,4 +316,3 @@ def finance(request, project_id):
         'project': project
     }
     return render(request, 'project_finance.html', context)
-

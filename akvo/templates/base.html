@@ -42,6 +42,15 @@
 
     {% include 'navigation/footer.html' %}
 
+    {# Localisation strings #}
+    <script type="application/json" id="akvo-rsr-i18n">
+      {"is-larger-than-the-allowed-limit": "{% trans "is larger than the allowed limit" %}"}
+    </script>
+    <script type="application/javascript">
+      var AKVO_RSR = {};
+      AKVO_RSR["i18n"] = JSON.parse(document.getElementById("akvo-rsr-i18n").innerHTML);
+    </script>
+
     {# jQuery #}
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>

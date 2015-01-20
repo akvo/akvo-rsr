@@ -105,19 +105,6 @@ class Project(TimestampsMixin, models.Model):
                                    u'and should be less than 3.5 mb in size.'
                                ),
     )
-
-    # current_image = ImageField(
-    #     _(u'project photo'), blank=True, upload_to=image_path,
-    #     thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-    #     extra_thumbnails={
-    #         'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-    #         'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-    #     },
-    #     help_text=_(
-    #         u'The project image looks best in landscape format (4:3 width:height ratio), '
-    #         u'and should be less than 3.5 mb in size.'
-    #     ),
-    # )
     current_image_caption = ValidXMLCharField(
         _(u'photo caption'), blank=True, max_length=50,
         help_text=_(u'Enter a caption for your project picture (50 characters).')
@@ -185,6 +172,7 @@ class Project(TimestampsMixin, models.Model):
 
     # synced projects
     sync_owner = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
+    sync_owner_secondary_reporter = models.NullBooleanField(_(u'secondary reporter'),)
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=100, blank=True, db_index=True,)
@@ -638,8 +626,10 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
-    def first_partner(self):
-        if self.support_partners():
+    def reporting_org(self):
+        if self.sync_owner:
+            return self.sync_owner
+        elif self.support_partners():
             return self.support_partners()[0]
         elif self.all_partners():
             return self.all_partners()[0]
@@ -661,6 +651,27 @@ class Project(TimestampsMixin, models.Model):
     def all_partners(self):
         return self._partners()
 
+    def partners_info(self):
+        """
+        Return a dict of the distinct partners with the organisation as key and as content:
+        1. The partnerships of the organisation
+        2. The (added up) funding amount, if available. Otherwise None.
+        E.g. {<Organisation 1>: [[<Partnership 1>,], 10000], <Organisation 2>: [[<Partnership 2>,], None]]}
+        """
+        partners_info = {}
+        for partnership in Partnership.objects.filter(project=self):
+            funding_amount = partnership.funding_amount if partnership.funding_amount else None
+            if not partnership.organisation in partners_info.keys():
+                partners_info[partnership.organisation] = [[partnership], funding_amount]
+            else:
+                partners_info[partnership.organisation][0].append(partnership)
+                existing_funding_amount = partners_info[partnership.organisation][1]
+                if funding_amount and existing_funding_amount:
+                    partners_info[partnership.organisation][1] += funding_amount
+                elif funding_amount:
+                    partners_info[partnership.organisation][1] = funding_amount
+        return partners_info
+
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
@@ -673,11 +684,40 @@ class Project(TimestampsMixin, models.Model):
             )
         )
 
-    def sector_names(self):
+    def iati_project_scope(self):
+        return dict(codelists.ACTIVITY_SCOPE)[self.project_scope] if self.project_scope else ""
+
+    def iati_collaboration_type(self):
+        if self.collaboration_type:
+            return dict([code[:2] for code in codelists.COLLABORATION_TYPE])[self.collaboration_type]
+        else:
+            return ""
+
+    def iati_default_flow_type(self):
+        if self.default_flow_type:
+            return dict([code[:2] for code in codelists.FLOW_TYPE])[self.default_flow_type]
+        else:
+            return ""
+
+    def iati_default_finance_type(self):
+        if self.default_finance_type:
+            return dict([code[:2] for code in codelists.FINANCE_TYPE])[self.default_finance_type]
+        else:
+            return ""
+
+    def iati_default_aid_type(self):
+        return dict([code[:2] for code in codelists.AID_TYPE])[self.default_aid_type] if self.default_aid_type else ""
+
+    def iati_default_tied_status(self):
+        if self.default_tied_status:
+            return dict([code[:2] for code in codelists.TIED_STATUS])[self.default_tied_status]
+        else:
+            return ""
+
+    def sector_categories(self):
         from .sector import Sector
-        sector_codes = [sector.sector_code for sector in Sector.objects.filter(project=self)]
-        sector_codelist = [code[:2] for code in codelists.SECTOR]
-        return [name for code, name in sector_codelist if code in sector_codes]
+        sector_categories = Sector.objects.filter(project=self, vocabulary='2')
+        return [sector.iati_sector for sector in sector_categories]
 
     def has_relations(self):
         return self.parents() or self.children() or self.siblings()
@@ -693,6 +733,18 @@ class Project(TimestampsMixin, models.Model):
     def siblings(self):
         return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |
                 Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=3)).distinct()
+
+    def has_results(self):
+        for result in self.results.all():
+            if result.title or result.type or result.aggregation_status or result.description:
+                return True
+        return False
+
+    def has_indicators(self):
+        for result in self.results.all():
+            if result.indicators.all():
+                return True
+        return False
 
     class Meta:
         app_label = 'rsr'

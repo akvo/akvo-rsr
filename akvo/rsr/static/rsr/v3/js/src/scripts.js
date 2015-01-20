@@ -1,3 +1,45 @@
+// Akvo RSR is covered by the GNU Affero General Public License.
+// See more details in the license.txt file located at the root folder of the
+// Akvo RSR module. For additional details on the GNU license please see
+// < http://www.gnu.org/licenses/agpl.html >.
+
+// Resets a file Form element
+function resetFormElement(e) {
+  e.wrap('<form>').closest('form').get(0).reset();
+  e.unwrap();
+}
+
+
+function bootstrapAlert(errorMsg, elementToPrepend) {
+  var s = '<div class="alert alert-danger alert-dismissible" role="alert">'
+        + '<button type="button" class="close" data-dismiss="alert">'
+        + '<span aria-hidden="true">×</span><span class="sr-only">'
+        + 'Close</span></button><%= msg %></div>',
+      t = _.template(s),
+      c = t({ 'msg': errorMsg });
+  return c;
+}
+
+
+// Show a Bootstrap 3 alert
+// Depends on lo-dash
+function alertSnippet(msg) {
+  var s = '<div class="alert alert-danger alert-dismissible" role="alert">'
+        + '<button type="button" class="close" data-dismiss="alert">'
+        + '<span aria-hidden="true">×</span><span class="sr-only">'
+        + 'Close</span></button><%= msg %></div>',
+      t = _.template(s);
+  return t({'msg': msg});
+}
+
+function scheduleAlertFade(timeOut) {
+  window.setTimeout(function() {
+    $('.alert').fadeTo(500, 0).slideUp(500, function() {
+      $(this).remove();
+    });
+  }, timeOut);
+}
+
 $(document).ready(function() {
 
     function getCookie(name) {

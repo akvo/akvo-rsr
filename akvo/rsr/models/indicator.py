@@ -21,7 +21,7 @@ class Indicator(models.Model):
     description_type = ValidXMLCharField(
         _(u'description type'), blank=True, max_length=1, choices=[code[:2] for code in codelists.DESCRIPTION_TYPE]
     )
-    baseline_year = models.PositiveIntegerField(_(u'baseline year'), blank=True, max_length=4)
+    baseline_year = models.PositiveIntegerField(_(u'baseline year'), blank=True, null=True, max_length=4)
     baseline_value = ValidXMLCharField(
         _(u'baseline value'), blank=True, max_length=50, help_text=_(u'(max 50 characters)')
     )
@@ -31,6 +31,9 @@ class Indicator(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def iati_measure(self):
+        return dict(codelists.INDICATOR_MEASURE)[self.measure] if self.measure else ""
 
     class Meta:
         app_label = 'rsr'

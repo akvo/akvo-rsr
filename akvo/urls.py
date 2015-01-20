@@ -33,6 +33,9 @@ urlpatterns = patterns(
     url(r'^project/(?P<project_id>\d+)/hierarchy/$',
         'akvo.rsr.views.project.hierarchy', name='project-hierarchy'),
 
+    url(r'^project/(?P<project_id>\d+)/report/$',
+        'akvo.rsr.views.project.report', name='project-report'),
+
     url(r'^project/(?P<project_id>\d+)/widgets/$',
         'akvo.rsr.views.project.widgets', name='project-widgets'),
 

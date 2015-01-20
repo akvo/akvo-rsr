@@ -368,7 +368,7 @@ class PlannedDisbursementInline(admin.StackedInline):
     fieldsets = (
         ('Planned Disbursement', {
             'classes': ('collapse',),
-            'fields': ('currency', 'value', 'value_date', 'period_start', 'period_end', 'updated')
+            'fields': ('currency', 'value', 'value_date', 'period_start', 'period_end', 'type', 'updated')
         }),
     )
 
@@ -401,8 +401,8 @@ class ProjectContactInline(admin.StackedInline):
     fieldsets = (
         ('Project Contact', {
             'classes': ('collapse',),
-            'fields': ('person_name', 'organisation', 'type', 'email', 'job_title', 'mailing_address', 'state',
-            'country', 'telephone', 'website')
+            'fields': ('person_name', 'organisation', 'department', 'type', 'email', 'job_title', 'mailing_address',
+                       'state', 'country', 'telephone', 'website')
         }),
     )
 

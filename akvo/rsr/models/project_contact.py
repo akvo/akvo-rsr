@@ -24,6 +24,7 @@ class ProjectContact(models.Model):
     state = ValidXMLCharField(_(u'state'), blank=True, max_length=100, help_text=_('(100 characters)'))
     country = models.ForeignKey('Country', blank=True, null=True, verbose_name=u'country', related_name='contacts')
     organisation = ValidXMLCharField(_(u'organisation'), blank=True, max_length=100, help_text=_('(100 characters)'))
+    department = ValidXMLCharField(_(u'department'), blank=True, max_length=100, help_text=_('(100 characters)'))
     telephone = ValidXMLCharField(_(u'telephone'), blank=True, max_length=15)
     website = models.URLField(_(u'website'), blank=True)
 

@@ -1,3 +1,8 @@
+// Akvo RSR is covered by the GNU Affero General Public License.
+// See more details in the license.txt file located at the root folder of the
+// Akvo RSR module. For additional details on the GNU license please see
+// < http://www.gnu.org/licenses/agpl.html >.
+
 // Typeahead for organisation and country input
 var organisations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
@@ -27,11 +32,27 @@ countries.initialize();
 // Jquery dependent code
 $(function() {
 
-  $( "#id_avatar" ).change(function () {
-    $( ".btn" ).prop('disabled', true);
-    $( ".btn" ).attr('disabled', true);
-    $( "#avatarForm" ).submit();
+  // When an avatar image is selected
+  $("#id_avatar").change(function () {
+    var file = this.files[0],
+        fileName = file.name,
+        fileSize = file.size,
+        msg;
+    if (fileSize > 8388608) { // 8Mb
+      msg = fileName
+        + ' '
+        + AKVO_RSR['i18n']['is-larger-than-the-allowed-limit']
+        + ' (8Mb)'; // should come from configs
+      $('#profile').prepend(alertSnippet(msg));
+      resetFormElement($('#id_avatar'));
+      scheduleAlertFade(4000);
+    } else {
+      $( ".btn" ).prop('disabled', true);
+      $( ".btn" ).attr('disabled', true);
+      $( "#avatarForm" ).submit();
+    }
   });
+
 
   // Auto dismiss alerts
   $(".alert").alert();
