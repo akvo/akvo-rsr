@@ -83,10 +83,10 @@ $( ".radio" ).change(function() {
         $( ".preview" ).html('<iframe src="{% url 'widget_project_small' project.pk %}" width="170px" height="312px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
     }
     else if (widget == 'map') {
-        $( ".preview" ).html('<iframe src="{% url 'widget_org_map' %}?organisation_id={{project.first_partner.pk}}&width=600&height=300" width="600px" height="300px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
+        $( ".preview" ).html('<iframe src="{% url 'widget_org_map' %}?organisation_id={{project.reporting_org.pk}}&width=600&height=300" width="600px" height="300px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
     }
     else if (widget == 'list') {
-        $( ".preview" ).html('<iframe src="{% url 'widget_project_list' %}?organisation_id={{project.first_partner.pk}}" width="730px" height="745px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
+        $( ".preview" ).html('<iframe src="{% url 'widget_project_list' %}?organisation_id={{project.reporting_org.pk}}" width="730px" height="745px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe>');
     }
 });
 {% endblock %}

@@ -36,9 +36,9 @@
                     </div>
                     <div class="form-group">
                         <select class="form-control" id="widget-organisation" disabled>
-                        <option value="{{project.first_partner.pk}}">{{project.first_partner.name}}</option>
+                        <option value="{{project.reporting_org.pk}}">{{project.reporting_org.name}}</option>
                         {% for partner in project.all_partners.distinct %}
-                            {% if not partner == project.first_partner %}
+                            {% if not partner == project.reporting_org %}
                                 <option value="{{partner.pk}}">{{partner.name}}</option>
                             {% endif %}
                         {% endfor %}
@@ -48,9 +48,9 @@
                     <h3><small>{% trans "Organisation" %}</small></h3>
                     <div class="form-group">
                         <select class="form-control" id="widget-organisation">
-                        <option value="{{project.first_partner.pk}}">{{project.first_partner.name}}</option>
+                        <option value="{{project.reporting_org.pk}}">{{project.reporting_org.name}}</option>
                         {% for partner in project.all_partners.distinct %}
-                            {% if not partner == project.first_partner %}
+                            {% if not partner == project.reporting_org %}
                                 <option value="{{partner.pk}}">{{partner.name}}</option>
                             {% endif %}
                         {% endfor %}
@@ -97,9 +97,9 @@
                     {% elif widget == 'small' %}
                         <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_project_small' project.pk %}?style=dark" width="170px" height="312px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
                     {% elif widget == 'map' %}
-                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_org_map' %}?organisation_id={{project.first_partner.pk}}&width=600&height=300&style=dark&state=dynamic" width="600px" height="300px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
+                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_org_map' %}?organisation_id={{project.reporting_org.pk}}&width=600&height=300&style=dark&state=dynamic" width="600px" height="300px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
                     {% elif widget == 'list' %}
-                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_project_list' %}?organisation_id={{project.first_partner.pk}}&style=dark" width="730px" height="745px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
+                        <textarea class="form-control" name="code" id="code" rows="5"><iframe src="{{domain_url}}{% url 'widget_project_list' %}?organisation_id={{project.reporting_org.pk}}&style=dark" width="730px" height="745px" frameborder="0" allowTransparency="true" style="overflow: hidden"> </iframe></textarea>
                     {% endif %}
                 </p>
                 <p class="small">
@@ -120,7 +120,7 @@
 $( ".preview" ).html($( "#code" ).val());
 
 // Initials var(s) for text replacements
-var org_id = {{project.first_partner.pk}}
+var org_id = {{project.reporting_org.pk}}
 {% if widget == 'map' %}
     var height = 300
     var width = 600

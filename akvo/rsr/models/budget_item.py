@@ -61,6 +61,12 @@ class BudgetItem(models.Model):
         else:
             return self.__unicode__()
 
+    def iati_type(self):
+        return dict(codelists.BUDGET_TYPE)[self.type] if self.type else ''
+
+    def iati_currency(self):
+        return dict(codelists.CURRENCY)[self.currency] if self.currency else ''
+
     class Meta:
         app_label = 'rsr'
         ordering = ('label',)
@@ -84,6 +90,12 @@ class CountryBudgetItem(models.Model):
         _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
+
+    def iati_code(self):
+        return dict([code[:2] for code in codelists.BUDGET_IDENTIFIER])[self.code]
+
+    def iati_vocabulary(self):
+        return dict(codelists.BUDGET_IDENTIFIER_VOCABULARY)[self.vocabulary]
 
     class Meta:
         app_label = 'rsr'

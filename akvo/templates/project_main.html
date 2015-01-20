@@ -6,6 +6,9 @@
 
 {% block head_js %}
   <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
+<style>
+
+</style>
 {% endblock head_js %}
 
 {% block maincontent %}
@@ -39,65 +42,29 @@
                                     {{project.siblings.count}} sibling project{{project.siblings.count|pluralize}}
                                     <a href="{% url 'project-hierarchy' project.pk %}">View full hierarchy</a></li>
                                 {% endif %}
-                                {% if project.focus_areas %}
-                                <li><span class="detailedInfo">{% trans "Focus Areas" %}</span>
-                                <a href="{% url 'project-directory' %}?focus_area={{project.focus_areas.0.id}}">{{project.focus_areas.0.name}}</a>
-                                    {% if project.focus_areas.distinct.count > 1 %}
-                                    <a href="javascript:;" class="small moreLink" data-toggle="tooltip"
-                                       title="{% for area in project.focus_areas.all.distinct %}
-                                                  {% ifnotequal area.id project.focus_areas.0.id %}
-                                                      <a href='{% url 'project-directory' %}?focus_area={{area.id}}'>{{area.name}}</a><br>
-                                                  {% endifnotequal %}
-                                              {% endfor %}"
-                                       data-placement="right">+{{project.focus_areas.distinct.count|add:"-1"}} more</a>
-                                    {% endif %}
-                                </li>
-                                {% endif %}
-                                {% if project.sector_names %}
+                                {% if project.sectors.all %}
                                 <li><span class="detailedInfo">{% trans "Sectors" %}</span>
-                                {{project.sector_names.0}}
-                                    {% if project.sector_names|length > 1 %}
-                                    <a href="javascript:;" class="small" data-toggle="tooltip"
-                                     title="{% for name in project.sector_names %}
-                                                {% ifnotequal name project.sector_names.0 %}{{name}}<br>{% endifnotequal %}
-                                            {% endfor %}"
-                                     data-placement="right" data-container="body">+{{project.sector_names|length|add:"-1"}} more</a>
-                                  {% endif %}
+                                {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector|title}}{% endfor %}
                                 </li>
                                 {% endif %}
-                                <li class="projectPartners"><span class="detailedInfo">Partners</span>
+                                <li class="projectPartners"><span class="detailedInfo">{% trans "Reporting organisation" %}</span>
                                 <div class="row">
-                                        <div class="col-xs-6">
-                                            <a href="{% url 'organisation-main' first_partner.0.pk %}" class="pull-left logoImg">
-                                                {% img first_partner.0 80 60 first_partner.0.title %}
-                                            </a>
-                                            <div class="media-body">
-                                                <p>
-                                                    <a href="{% url 'organisation-main' first_partner.0.pk %}">{{first_partner.0}}</a>
-                                                    {% for partner_type in first_partner.1 %}
-                                                        <br><small class="partType">{{partner_type}} partner</small>
-                                                    {% endfor %}
-                                                </p>
-                                            </div>
+                                    <div class="col-xs-12">
+                                        <a href="{% url 'organisation-main' project.reporting_org.pk %}" class="pull-left logoImg">
+                                            {% img project.reporting_org 80 60 project.reporting_org.name %}
+                                        </a>
+                                        <div class="media-body">
+                                            <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
+                                            <a href="javascript:;" class="small" data-toggle="tooltip"
+                                             title="{% for partner, types in partners.items %}
+                                                        {% if not forloop.first %}<br>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
+                                                        ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)
+                                                    {% endfor %}"
+                                             data-placement="right" data-container="body">+ {{partners|length}} partners</a>
+                                            {% if project.reporting_org.primary_location.country %}<br><i class="fa fa-globe"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}
                                         </div>
-                                    {% for partner, types in partners.items %}
-                                        {% ifnotequal partner project.first_partner %}
-                                        <div class="col-xs-6">
-                                            <a href="{% url 'organisation-main' partner.pk %}" class="pull-left logoImg">
-                                                {% img partner 80 60 partner.title %}
-                                            </a>
-                                            <div class="media-body">
-                                                <p>
-                                                    <a href="{% url 'organisation-main' partner.pk %}">{{partner}}</a>
-                                                    {% for type in types %}
-                                                        <br><small class="partType">{{type}} partner</small>
-                                                    {% endfor %}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        {% endifnotequal %}
-                                    {% endfor %}
                                     </div>
+                                </div>
                                 </li>
                                 <li class="financeBlock"><span class="detailedInfo">{% trans "financial info" %}</span>
                                     <br><a href="#" class="text-center"><i class="fa fa-line-chart"></i> See all financial info</a>
@@ -162,9 +129,16 @@
 
   {# Tooltip #}
   $(function () {
-    $('[data-toggle="tooltip"]').tooltip({html: true, delay: { "show": 0, "hide": 1000 }})
+    $('[data-toggle="tooltip"]').tooltip(
+        {
+            html: true,
+            delay: {
+                "show": 0,
+                "hide": 1000
+            }
+        }
+    )
   });
-
 
   {# Timeline #}
   var timeline_data = {{ timeline_data|safe }};

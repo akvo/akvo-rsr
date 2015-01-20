@@ -25,6 +25,14 @@ class Result(models.Model):
     def __unicode__(self):
         return self.title
 
+    def iati_type(self):
+        return dict(codelists.RESULT_TYPE)[self.type] if self.type else ""
+
+    def has_info(self):
+        if self.title or self.type or self.aggregation_status or self.description:
+            return True
+        return False
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'result')

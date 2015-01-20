@@ -78,12 +78,12 @@
             {% if p.primary_location.country %}
               <p><span class="glyphicon glyphicon-globe"></span> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
             {% endif %}
-            {% if p.first_partner %}
-              <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.first_partner.id %}">{{p.first_partner}}</a>
+            {% if p.reporting_org %}
+              <p><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'organisation-main' p.reporting_org.id %}">{{p.reporting_org}}</a>
               {% if p.partners.distinct.count > 1 %}
                 <a href="javascript:;" class="small" data-toggle="tooltip"
                   title="{% for partner in p.partners.all.distinct %}
-                    {% ifnotequal partner.id p.first_partner.id %}
+                    {% ifnotequal partner.id p.reporting_org.id %}
                       <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a><br>
                     {% endifnotequal %}
                   {% endfor %}"
@@ -93,52 +93,30 @@
             {% endif %}
           </div>
           <div class="col-sm-3 hidden-xs hidden-sm">
-            {% if p.focus_areas %}
-              <h4 class="detailedInfo">{% trans "Focus Areas" %}</h4>
-              <p><a href="{% url 'project-directory' %}?focus_area={{p.focus_areas.0.id}}">{{p.focus_areas.0.name}}</a>
-              {% if p.focus_areas.distinct.count > 1 %}
-                <a href="javascript:;" class="small" data-toggle="tooltip"
-                  title="{% for area in p.focus_areas.all.distinct %}
-                    {% ifnotequal area.id p.focus_areas.0.id %}
-                      <a href='{% url 'project-directory' %}?focus_area={{area.id}}'>{{area.name}}</a><br>
-                    {% endifnotequal %}
-                  {% endfor %}"
-                data-placement="right">+{{p.focus_areas.distinct.count|add:"-1"}} more</a>
-              {% endif %}
-              </p>
-            {% endif %}
-            {% if p.sector_names %}
+            {% if p.sector_categories %}
               <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
-              <p>{{p.sector_names.0}}
-              {% if p.sector_names|length > 1 %}
-                <a href="javascript:;" class="small" data-toggle="tooltip"
-                  title="{% for name in p.sector_names %}
-                  {% ifnotequal name p.sector_names.0 %}{{name}}<br>{% endifnotequal %}
-                {% endfor %}"
-              data-placement="right" data-container="body">+{{p.sector_names|length|add:"-1"}} more</a>
+              <p>{% for sector in p.sector_categories %}{% if not forloop.first %}, {% endif %}{{sector|title}}{% endfor %}</p>
             {% endif %}
+            <h4 class="detailedInfo">{% trans "Status" %}</h4>
+            <p>{{p.get_status_display}}</p>
+          </div>
+          <div class="col-md-3 hidden-xs hidden-sm">
+            <h4 class="detailedInfo">{% trans "Finance" %}</h4>
+            {% include "partials/project_budget.html" with project=p %}
+          </div>
+          <div class="col-xs-7 col-xs-offset-5 col-sm-6 col-sm-offset-0 visible-xs-block visible-sm">
+            <p class="small">
+            <span class="detailedInfo">{% trans "Focus Areas" %}</span>
+            {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>
+            <span class="detailedInfo">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
+            <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
+            <span class="detailedInfo">{% trans "Finance" %}</span>
+            {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
             </p>
-          {% endif %}
-          <h4 class="detailedInfo">{% trans "Status" %}</h4>
-          <p>{{p.get_status_display}}</p>
-        </div>
-        <div class="col-md-3 hidden-xs hidden-sm">
-          <h4 class="detailedInfo">{% trans "Finance" %}</h4>
-          {% include "partials/project_budget.html" with project=p %}
-        </div>
-        <div class="col-xs-7 col-xs-offset-5 col-sm-6 col-sm-offset-0 visible-xs-block visible-sm">
-          <p class="small">
-          <span class="detailedInfo">{% trans "Focus Areas" %}</span>
-          {% for area in p.focus_areas %}<a href="#">{{area.name}}</a> {% endfor %}<br>
-          <span class="detailedInfo">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
-          <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
-          <span class="detailedInfo">{% trans "Finance" %}</span>
-          {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
-          </p>
-        </div>
-      </li>
-  {% endfor %}
-</ul>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
   </section>
 <div class="container-fluid">
   <div class="row center-text">
