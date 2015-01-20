@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% load compressed i18n rsr_utils %}
+
+{% block title %}{{project.title}}{% endblock title%}
+
+{% block head_js %}
+{% endblock head_js %}
+
+{% block maincontent %}
+
+<article class="touch-navbar project-container">
+    {% include "partials/project_header.html" %}
+    <section class="projectFinancial">
+	    <div class="container">
+	    	<div class="row verticalPadding">
+	    		<h4 class="">Project financial details:</h4>
+			    <dl class="dl-horizontal">
+			    	<dt>Building material:</dt><dd><span class="currency">€</span>30,000</dd>
+			    	<dt>Employment:</dt><dd><span class="currency">€</span>30,000</dd>
+			    	<dt>Maintenance:</dt><dd><span class="currency">€</span>30,000</dd>
+			    	<dt>Management:</dt><dd><span class="currency">€</span>30,000</dd>
+			    	<dt>Training:</dt><dd><span class="currency">€</span>30,000</dd>
+			    	<dt class="totalFinance">Total:</dt><dd class="totalFinance"><span class="currency">€</span>1,000,000</dd>
+			    </dl>
+			</div>
+			<div class="row verticalPadding">
+	    		<h4 class="">Project transactions:</h4>
+	    		<p class="small noInfoBlock">No info for this project</p>
+			</div>
+			<div class="row verticalPadding">
+	    		<dl><dt><h4 class="">IATI ID:</h4></dt><dd><a href="#">321354</a></dd></dl>
+	    		
+			</div>
+	    </div>
+	</section>
+    {% include "partials/project_footer.html" %}
+</article>
+{% endblock maincontent %}
+
+{% block js %}
+  {{ block.super }}
+
+
+  {% compressed_js 'rsr_v3_react_project_main' %}
+{% endblock js %}
+
+{% block jq %}
+  {{ block.super }}
+
+  {# Tooltip #}
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip({html: true, delay: { "show": 0, "hide": 1000 }})
+  });
+
+{% endblock jq %}
