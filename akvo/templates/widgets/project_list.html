@@ -1,145 +1,101 @@
-{% extends "widgets/base_widget.html" %}
-{% load i18n rsr_tags rsr_filters addparam thumbnail humanize %}
+{% extends "widgets/base.html" %}
+{% load i18n rsr_filters rsr_tags rsr_widgets addparam rsr_utils %}
+
 {% load compressed %}
 
-{% block title %}projects@{{block.super}}{% endblock title %}
-
 {% block style %}
-  {% compressed_css 'widget_project_list' %}
+{{block.super}}
+{% compressed_css 'sites_widget_project_list' %}
 {% endblock style %}
 
-{% block inline_styles %}
-  {{block.super}}
-  #heightconstrain {
-  height: expression( this.scrollHeight > 4 ? "585px" : "auto" ); /* sets max-height for IE */
-  max-height:585px;
-  height:585px;
-  overflow:auto;
-  }
-
-  .fundingbox-content{
-  height: expression( this.scrollHeight > 4 ? "131px" : "auto" ); /* sets max-height for IE */
-  max-height:126px;
-  height:126px;
-  overflow:hidden;
-  }
-
-{% endblock inline_styles %}
-
-
-{% block header %}
-  {% with projects.count as total %}
-    <h1>{% trans 'Project List' %}<span> ({{ total }} {% trans 'total' %})</span></h1>
-  {% endwith %}
-{% endblock header %}
-
-{% block content %}
-<div id="tableHeader">
-  <table cellspacing="0">
-    <tr>
-      {% if not request_get.order_by %}
-        <th scope="col" id="projectColumnHeader" class="activeTableHeader">
-          <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "title" %}" target="_self">{% trans 'Project' %}</a>
-          {% if debug %}
-            TIME DEBUG: {% now "jS F Y H:i:s" %}
-          {% endif %}
-        </th>
-      {% else %}
-        {% if request_get.order_by = 'name' %}
-          <th scope="col" id="projectColumnHeader" class="activeTableHeader">
-            <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "title" %}" target="_self">{% trans 'Project' %}</a>
-            {% if debug %}
-              TIME DEBUG: {% now "jS F Y H:i:s" %}
-            {% endif %}
-          </th>
-        {% else %}
-          <th scope="col" id="projectColumnHeader">
-            <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "title" %}" target="_self">{% trans 'Project' %}</a>
-            {% if debug %}
-              TIME DEBUG: {% now "jS F Y H:i:s" %}
-            {% endif %}
-          </th>
-        {% endif %}
-      {% endif %}
-      <th scope="col" id="locationColumnHeader" class="tableHeaderCell">
-        {% trans "Location" %}
-      </th>
-      {% comment %}
-      <th scope="col" id="locationColumnHeader" class="tableHeaderCell {% if request_get.order_by = 'country__continent' %}activeTableHeader{% endif %}{% if request_get.order_by = 'country__name' %}activeTableHeader{% endif %}">
-        <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "country__continent"%}" target="_self" {% if request_get.order_by = 'country__name'%} style="font-weight:normal;" {% endif %}>{% trans 'Continent' %}</a>
-
-        <span style="font-weight:normal;">/</span><br />
-
-        <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "country__name" %}" target="_self" {% if equest_get.order_by = 'country__continent' %}style="font-weight:normal" {% endif %} >{% trans 'Country' %}</a>
-      </th>
-      {% endcomment %}
-      <th scope="col" id="statusColumnHeader" class="tableHeaderCell {% if request_get.order_by = 'status' %}activeTableHeader{% endif %} {% if request_get.order_by = 'last_update' %}activeTableHeader{% endif %}">
-        <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "status" %}" target="_self" {% if request_get.order_by = 'last_update' %} style="font-weight:normal;" {% endif %}>{% trans 'Status' %}</a> <span style="font-weight:normal;">/</span><br />
-
-        <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "last_update" %}" target="_self"  {% if request_get.order_by = 'status' %} style="font-weight:normal;" {%  endif %}>{% trans 'Last update' %}</a>
-
-      </th>
-      <th scope="col" id="partnerColumnHeader" class="tableHeaderCell">
-        {% trans 'Partners' %}
-      </th>
-      <th scope="col" id="fundingColumnHeader" class="tableHeaderCell {% if request_get.order_by = 'budget' %}activeTableHeader{% endif %}{% if request_get.order_by = 'funds_needed' %}activeTableHeader{% endif %}">
-        <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "budget" %}" target="_self" {% if request_get.order_by = 'funds_needed' %} style="font-weight:normal;" {%  endif %}>{% trans 'Total Budget' %}</a> <span style="font-weight: normal;">/</span><br />
-        <a href="{% url 'project_list_widget_for_org' org_id %}{% addparam "order_by" "funds_needed" %}" target="_self" {% if request_get.order_by = 'budget' %} style="font-weight:normal;" {% endif %}>{% trans 'Funding Needed' %}</a><br />
-      </th>
-    </tr>
-  </table>
-</div>
-<div id="heightconstrain">
-  <table cellspacing="0" border="0" cellpadding="0">
-    {% for project in projects %} <!-- If no projects do something-->
-      <tr class="{% cycle 'row' 'altrow' %}">
-      <td class="tableRow projectCell">
-        <h2 style="margin-bottom:4px; padding-bottom:0; font-weight:bold"><a href="{% url 'project_main' project.id %}">{{project.title}}</a></h2>
-        <p class="grey" style="margin-top:4px;margin-bottom:4px;">{{project.subtitle}}</p>
-
-        <div class="category-icons">
-          <a href="{% url 'project_main' project.id %}">{% trans 'More' %}&nbsp;<span class="arrowSize">&#x25BA;</span></a>
-        </div>
-        <a href="{% url 'project_main' project.id %}">
-          {% project_thumb project 100 75 %}
+{% block body %}
+<section id="container" class="projectList {{style}} rsrWidget floats-in">
+  <!-- DEVICES TABLE-->
+  <ul class="thead">
+      <li class="projectDescrTd">
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "title" %}" target="_self">
+          {% trans "Project" %}
         </a>
-      </td>
-      <td class="tableRow locationCell">
-        <p style="margin-top:3px;"><span class="capz">{{project.primary_location.country.continent}}</span><br />
-          {{project.primary_location.country}}, {{project.primary_location.city}}
-        </p>
-        <p class="miniFont lightgrey">
-          {% trans 'Akvo Ref' %}: {{project.id}}
-        </p>
-      </td>
-      <td class="tableRow statusCell grey">
-        <p style="margin-top:2px;">{% trans 'Status' %}<br />
-          {{project.show_status}}
-        </p>
-        <p class="topmargin">{% trans 'Last Update' %}<br />
-          {% if not project.last_update %}
-            <span style="color:#000;">{% trans 'Not yet' %}</span>
-          {% else %}
-            <a href="{% url 'update_main' project.id project.last_update.id %}">
-              {{ project.last_update.created_at|string_to_date|date:"Y-m-d  H:i" }}
-            </a>
-          {% endif %}
-        </p>
-      </td>
-      <td class="tableRow partnerCell">
-        <p class="grey" style="margin-top:2px;">
-          {% for partner in project.partners.all.distinct %}
-            <a href="{{partner.get_absolute_url}}">
-              {{partner.name}}</a>{% if not forloop.last %},{% endif %}
-          {% endfor %}
-        </p>
-      </td>
-      <td class="tableRow fundingCell">
-        <div style="margin: 0 auto 0 auto; text-align:center;">
-          {% funding_box project %}
-        </div>
-      </td>
-    {% endfor %}
-  </table>
-</div>
-{% endblock content %}
+      </li>
+      <li class="projectLocTd">
+        {% trans "Location" %}
+      </li>
+      <li class="projectStatusTd">
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "status" %}" target="_self">
+          {% trans "Status" %}</a>
+        /
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "last_update" %}" target="_self">
+          {% trans "Update" %}</a>
+      </li>
+      <li class="projectPartnerTd">
+        {% trans "Partners" %}
+      </li>
+      <li class="projectFundingTd">
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "budget" %}" target="_self">
+          {% trans "Budget" %}</a>
+        /
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "funds_needed" %}" target="_self">
+          {% trans "Needed" %}</a>
+      </li>
+  </ul>
+  <!-- DEVICES TABLE-->
+  <div class="projectListTable">
+    <table class="projectListWidget" >
+      <tbody>
+        {% for project in projects  %}
+        <tr class="projectListTitle"> <td colspan="4"><h2 id="project_title">
+                  <a href="{% url 'project-main' project.id %}">
+                    {{project.title|smart_truncate:60}}
+                  </a>
+                </h2></td></tr>
+          <tr class="projectListDescr">
+            <td class="projectDescrTd">
+            <div class="projectDescr">
+
+                {% img project 120 90 project.title %}
+                <p id="project_subtitle">{{project.project_plan_summary|smart_truncate:50}}</p>
+                <a href="{% url 'project-main' project.id %}">{% trans "See full description" %}</a>
+            </div>
+            </td>
+            <td class="projectLocTd">
+              {% rsr_widget_project_location project %}
+            </td>
+
+            <td class="">
+              {% if project.status == 'H' %}<span class="projectStatus notComplete">{% trans "Needs funding" %}</span>
+              {% elif project.status == 'A' %}<span class="projectStatus notComplete">{% trans "Active" %}</span>
+              {% elif project.status == 'C' %}<span class="projectStatus complete">{% trans "Complete" %}</span>
+              {% elif project.status == 'L' %}<span class="projectStatus complete">{% trans "Cancelled" %}</span>
+              {% elif project.status == 'R' %}<span class="projectStatus complete">{% trans "Archived" %}</span>
+              {% else %} {# None (N) #} <span class="projectStatus notComplete">{% trans "None" %}</span>
+              {% endif %}
+              <span class="lastUpdate"><br>{% trans "Last Update" %}:<br>
+
+                {% if not project.last_update %}
+                  {% trans 'Not yet' %}
+                {% else %}
+                  <a href="{% url 'update-main' project.id project.last_update.id %}">
+                  {{ project.last_update.created_at|string_to_date|date:"Y-m-d  H:i"}}</a>
+                {% endif %}
+              </span>
+            </td>
+
+            <td class="projectPartnerTd"><ul>
+              {% for partner in project.partners.all.distinct|slice:":5" %}
+                {#<li><a href="{% url 'organisation-main' partner.id %}">{{partner.name}}</a></li>#}
+                <li>{{partner.name}}</li>
+                {% if forloop.last and project.partners.all.distinct.count > 5 %}
+                  ...
+                {% endif %}
+              {% endfor %}
+            </ul></td>
+            <td class="projectFundingTd">
+              {% rsr_widget_project_budget project %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock body %}

@@ -25,6 +25,15 @@ class PolicyMarker(models.Model):
         _(u'description'), max_length=255, blank=True, help_text=_(u'(max 255 characters)')
     )
 
+    def iati_policy_marker(self):
+        return dict(codelists.POLICY_MARKER)[self.policy_marker] if self.policy_marker else ""
+
+    def iati_significance(self):
+        if self.significance:
+            return dict([code[:2] for code in codelists.POLICY_SIGNIFICANCE])[self.significance]
+        else:
+            return ""
+
     def __unicode__(self):
         return self.policy_marker
 

@@ -17,6 +17,7 @@ router.register(r'budget_item', views.BudgetItemViewSet)
 router.register(r'budget_item_label', views.BudgetItemLabelViewSet)
 router.register(r'category', views.CategoryViewSet)
 router.register(r'country', views.CountryViewSet)
+router.register(r'employment', views.EmploymentViewSet)
 router.register(r'focus_area', views.FocusAreaViewSet)
 router.register(r'goal', views.GoalViewSet)
 router.register(r'internal_organisation_id', views.InternalOrganisationIDViewSet)
@@ -36,14 +37,15 @@ router.register(r'project_update', views.ProjectUpdateViewSet, base_name='projec
 router.register(r'project_update_location', views.ProjectUpdateLocationViewSet)
 router.register(r'publishing_status', views.PublishingStatusViewSet)
 router.register(r'user', views.UserViewSet)
-router.register(r'user_profile', views.UserProfileViewSet)
 
 # Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browseable API.
-urlpatterns = patterns('',
+# Additionally, we include URLs for non-viewsets (functional views).
+urlpatterns = patterns(
+    '',
     url(r'^', include(router.urls)),
-    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^employment/(?P<pk>[0-9]+)/approve/$', views.approve_employment, name='approve_employment'),
+    url(r'^employment/(?P<pk>[0-9]+)/set_group/(?P<group_id>[0-9]+)/$', views.set_group, name='set_group'),
+    url(r'^user/(?P<pk>[0-9]+)/change_password/$', views.change_password, name='user_change_password'),
+    url(r'^user/(?P<pk>[0-9]+)/update_details/$', views.update_details, name='user_update_details'),
+    url(r'^user/(?P<pk>[0-9]+)/request_organisation/$', views.request_organisation, name='user_request_organisation'),
 )
-
-
-

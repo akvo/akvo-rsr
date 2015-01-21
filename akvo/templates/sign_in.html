@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load i18n bootstrap3 compressed %}
+
+{% block title %}{% trans 'Sign in to your Akvo RSR account' %}{% endblock %}
+
+{% block js %}
+    {% compressed_js 'rsr_v3_react_password_reset' %}
+{% endblock %}
+
+{% block maincontent %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form method="post" action="" name="registrationForm">
+                {% csrf_token %}
+                {% bootstrap_form_errors form type='non_fields' %}
+                {% for field in form %}
+                    {% bootstrap_field field %}
+                {% endfor %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "ok-sign" %} {% trans 'Login' %}
+                    </button>
+                    <div id="reset-pw" class="pull-right"></div>
+                {% endbuttons %}
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

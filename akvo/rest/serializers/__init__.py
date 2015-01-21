@@ -10,6 +10,7 @@ from .budget_item import BudgetItemSerializer
 from .budget_item_label import BudgetItemLabelSerializer
 from .category import CategorySerializer
 from .country import CountrySerializer
+from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
 from .goal import GoalSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
@@ -26,8 +27,7 @@ from .project_location import ProjectLocationSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
 from .project_update_location import ProjectUpdateLocationSerializer
 from .publishing_status import PublishingStatusSerializer
-from .user import UserSerializer
-from .user_profile import UserProfileSerializer
+from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
 
 __all__ = [
     'BenchmarkSerializer',
@@ -36,6 +36,7 @@ __all__ = [
     'BudgetItemLabelSerializer',
     'CategorySerializer',
     'CountrySerializer',
+    'EmploymentSerializer',
     'FocusAreaSerializer',
     'GoalSerializer',
     'InternalOrganisationIDSerializer',
@@ -55,5 +56,6 @@ __all__ = [
     'ProjectUpdateLocationSerializer',
     'PublishingStatusSerializer',
     'UserSerializer',
-    'UserProfileSerializer',
+    'UserDetailsSerializer',
+    'UserPasswordSerializer',
 ]

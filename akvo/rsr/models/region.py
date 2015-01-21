@@ -23,6 +23,12 @@ class RecipientRegion(models.Model):
                                      validators=[MaxValueValidator(100), MinValueValidator(0)])
     text = ValidXMLCharField(_(u'region description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
 
+    def iati_region(self):
+        return dict(codelists.REGION)[self.region] if self.region else ""
+
+    def iati_vocabulary(self):
+        return dict(codelists.REGION_VOCABULARY)[self.region_vocabulary] if self.region_vocabulary else ""
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'recipient region')

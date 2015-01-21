@@ -1,0 +1,11 @@
+{% load thumbnail %}
+
+{% if img %}
+    {% thumbnail img geometry format="PNG" upscale=True as im %}
+        <img src="{{im.url}}" />
+    {% endthumbnail %}
+{% else %}
+    {% with url='//placehold.it/'|add:geometry %}
+        <img src="{{url}}" alt="" />
+    {% endwith %}
+{% endif %}

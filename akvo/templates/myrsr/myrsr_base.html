@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load i18n bootstrap3 rules %}
+
+{% block maincontent %}
+<div class="container">
+    <div class="row">
+        {% block myrsr_menu %}
+        <div class="col-md-2">
+            <h4>MyRSR</h4>
+            <ul class="list-unstyled">
+                <li><a href="{% url 'my_details' %}">My details</a></li>
+                <li><a href="{% url 'my_updates' %}">My updates</a></li>
+                <li><a href="{% url 'my_projects' %}">My projects</a></li>
+                {% has_perm 'rsr.change_employment' user as can_change_employments %}
+                {% if can_change_employments %}
+                <li><a href="{% url 'user_management' %}">User management</a></li>
+                {% endif %}
+            </ul>
+            <ul class="list-unstyled">
+                <li><a href="/myrsr/password_change">Change password</a></li>
+            </ul>
+        </div>
+        {% endblock %}
+
+        <div class="col-md-10">
+        {% block myrsr_main %}{% endblock %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

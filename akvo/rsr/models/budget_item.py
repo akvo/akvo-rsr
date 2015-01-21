@@ -9,8 +9,6 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.utils import RSR_LIMITED_CHANGE
-
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 
@@ -63,15 +61,18 @@ class BudgetItem(models.Model):
         else:
             return self.__unicode__()
 
+    def iati_type(self):
+        return dict(codelists.BUDGET_TYPE)[self.type] if self.type else ''
+
+    def iati_currency(self):
+        return dict(codelists.CURRENCY)[self.currency] if self.currency else ''
+
     class Meta:
         app_label = 'rsr'
         ordering = ('label',)
         verbose_name = _(u'budget item')
         verbose_name_plural = _(u'budget items')
         unique_together = ('project', 'label')
-        permissions = (
-            ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
-        )
 
 
 class CountryBudgetItem(models.Model):
@@ -89,6 +90,12 @@ class CountryBudgetItem(models.Model):
         _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
+
+    def iati_code(self):
+        return dict([code[:2] for code in codelists.BUDGET_IDENTIFIER])[self.code]
+
+    def iati_vocabulary(self):
+        return dict(codelists.BUDGET_IDENTIFIER_VOCABULARY)[self.vocabulary]
 
     class Meta:
         app_label = 'rsr'
