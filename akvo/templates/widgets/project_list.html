@@ -69,13 +69,14 @@
               {% elif project.status == 'R' %}<span class="projectStatus complete">{% trans "Archived" %}</span>
               {% else %} {# None (N) #} <span class="projectStatus notComplete">{% trans "None" %}</span>
               {% endif %}
-              <span class="lastUpdate"><br>{% trans "Last Update" %}:<br>
 
-                {% if not project.last_update %}
-                  {% trans 'Not yet' %}
+              <span class="lastUpdate"><br>{% trans "Last Update" %}:<br>
+                {% if project.last_update %}
+                <a href="{% url 'update-main' project.id project.last_update.id %}">
+                  {{ project.last_update.created_at|string_to_date|date:"Y-m-d  H:i"}}
+                </a>
                 {% else %}
-                  <a href="{% url 'update-main' project.id project.last_update.id %}">
-                  {{ project.last_update.created_at|string_to_date|date:"Y-m-d  H:i"}}</a>
+                  {% trans 'Not yet' %}
                 {% endif %}
               </span>
             </td>
