@@ -70,8 +70,8 @@ class PartnerSite(TimestampsMixin, models.Model):
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
     custom_logo = models.FileField(_(u'organisation banner logo'), blank=True, upload_to=custom_logo_path,
         help_text=_(
-            u'<p>Upload a logo file for the banner at the top of the partner site page. '
-            u'By default the logo currently used by akvo.org will be displayed.</p>'
+            u'<p>Upload a logo file for the logo at the top of the partner site page. '
+            u'By default logo of the organisation belonging to the Akvo Page will be displayed.</p>'
         )
     )
     custom_favicon = models.FileField(_(u'favicon'), blank=True, upload_to=custom_favicon_path,

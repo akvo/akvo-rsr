@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% load i18n maps rsr_utils bootstrap3 compressed %}
+
+{% block title %}{% trans 'Organisations' %}{% endblock %}
+
+{% block maincontent %}
+
+<section id="map" class="touch-navbar">
+  {% coll_map page '100%' '100%' %}
+</section>
+
+<section id="search-filter">
+  <form id="filterForm" action="" method="get" accept-charset="uft-8">
+
+    <div class="container-fluid">
+      <div id="search" class="verticalPadding">
+        <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
+        <div class="form-inline" role="form">
+          <div class="form-group">
+            <div class="input-group">
+              {% bootstrap_field filter.form.name field_class='search-query' show_label=False %}
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
+              </span>
+            </div>
+            <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
+          </div>
+          {#</form>#}
+        </div>
+      </div>
+    </div>
+
+    <div id="collapseOne" class="panel-collapse collapse {{ show_filters }}">
+      <div id="filter" class="verticalPadding row">
+
+        <div class="btn-group">
+          {% bootstrap_field filter.form.continent %}
+        </div>
+
+      </div>
+    </div>
+  </form>
+</section>
+
+<div class="container-fluid">
+  <div class="row center-text verticalPadding">
+        <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} organisations</p>
+        {% include 'navigation/pagination.html' %}
+    </div>
+</div>
+
+    <section class="main-list organisations">
+      <ul class="container">
+        {% for o in page %}
+        <li class="row">
+          <div class="col-lg-2 col-sm-3 col-xs-5">
+            <a href="{% url 'organisation-main' o.id %}">
+                {% img o 165 165 o.name %}
+            </a>
+          </div>
+          <div class="col-lg-4 col-sm-3 col-xs-7">
+            <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
+            <p class="small">
+              {% if o.iati_org_id %}{{o.iati_org_id}}<br>{% endif %}
+              <span class="glyphicon glyphicon-tag"></span> {{o.get_new_organisation_type_display}}<br>
+              {% if o.primary_location.country %}<span class="glyphicon glyphicon-globe"></span> {{o.primary_location.country}}, {{o.primary_location.country.continent}}{% endif %}
+            </p>
+          </div>
+          <div class="col-sm-3 hidden-xs hidden-sm">
+            <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
+            <p class="small">
+              <span class="glyphicon glyphicon-folder-open"></span> {{o.published_projects.count}} {% trans "projects" %}<br>
+              <span class="glyphicon glyphicon-user"></span> {{o.all_users.count}} {% trans "users" %}<br>
+              <span class="glyphicon glyphicon-list"></span> {{o.all_projects.all_updates.count}} {% trans "updates" %}
+            </p>
+          </div>
+          {% if o.facebook or o.twitter or o.linkedin %}
+          <div class="col-md-3 hidden-xs hidden-sm">
+            <h4 class="detailedInfo">{% trans "Social Media" %}</h4>
+            <p class="small">
+              {% if o.facebook %}<img src="http://www.lindersoft.com/images/Common/files/social-icon-sm-facebook.png"> <a href="{{o.facebook}}">Facebook</a><br>{% endif %}
+              {% if o.twitter %}<img src="http://www.cyfe.com/images/icon-twitter.png"> <a href="{{o.twitter}}">Twitter</a><br>{% endif %}
+              {% if o.linkedin %}<img src="http://www.bvgh.org/Portals/_default/Skins/_common/images/Linked-In-icon.png"> <a href="{{o.linkedin}}">LinkedIn</a>{% endif %}
+            </p>
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
+        </ul>
+    </section>
+</div>
+<div class="container-fluid">
+    <div class="row center-text">
+            {% include 'navigation/pagination.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  {% compressed_js 'rsr_v3_organisation_directory' %}
+{% endblock js %}

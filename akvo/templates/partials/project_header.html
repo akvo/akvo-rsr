@@ -1,0 +1,47 @@
+{% load i18n maps %}
+
+<header class="projectHeader">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <h1><a href="{% url 'project-main' project.pk %}">{{project.title}}</a></h1>
+                <p>{{project.subtitle}}</p>
+                <div class="projectLocation">
+                    <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">Show map +</a></p>
+                </div>
+            </div>
+            <div class="col-sm-4 shareBlock">
+                <div class="text-right">
+                    <nav>
+                        <a href="#" class="btn btn-primary">Follow project</a>
+                        {% url 'project-report' project.pk as report_url %}
+                        {% if not request.get_full_path == report_url %}
+                        <a href="{% url 'project-report' project.pk %}" class="btn"><i class="fa fa-bar-chart"></i> Show full data report</a>
+                        {% else %}
+                        <a href="javascript:window.print();" class="btn"><i class="fa fa-print"></i> Print this page</a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div style="display: None" id="project-map" class="row initial">
+            {% project_map project.id '100%' '300px' %}
+        </div>
+    </div>
+</header>
+
+<script type="text/javascript">
+    function maptoggle() {
+        if ($( "#project-map" ).css('display') == 'none') {
+            $( "#project-map" ).slideToggle('slow');
+            if ($('#project-map').hasClass('initial')) {
+                googleMap.load();
+                $( "#project-map" ).removeClass('initial');
+            }
+            $('.map-toggle').html('HIDE MAP -');
+        } else {
+            $( "#project-map" ).slideToggle('slow');
+            $('.map-toggle').html('SHOW MAP +');
+        }
+    };
+</script>

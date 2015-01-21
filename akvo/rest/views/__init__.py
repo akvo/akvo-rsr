@@ -11,6 +11,7 @@ from .budget_item import BudgetItemViewSet
 from .budget_item_label import BudgetItemLabelViewSet
 from .category import CategoryViewSet
 from .country import CountryViewSet
+from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
 from .internal_organisation_id import InternalOrganisationIDViewSet
@@ -27,8 +28,7 @@ from .project_location import ProjectLocationViewSet
 from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
 from .project_update_location import ProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
-from .user import UserViewSet
-from .user_profile import UserProfileViewSet
+from .user import UserViewSet, change_password, update_details, request_organisation
 
 __all__ = [
     'BenchmarkViewSet',
@@ -37,6 +37,9 @@ __all__ = [
     'BudgetItemLabelViewSet',
     'CategoryViewSet',
     'CountryViewSet',
+    'EmploymentViewSet',
+    'approve_employment',
+    'set_group',
     'FocusAreaViewSet',
     'GoalViewSet',
     'InternalOrganisationIDViewSet',
@@ -56,5 +59,7 @@ __all__ = [
     'ProjectUpdateExtraViewSet',
     'PublishingStatusViewSet',
     'UserViewSet',
-    'UserProfileViewSet',
+    'change_password',
+    'update_details',
+    'request_organisation',
 ]

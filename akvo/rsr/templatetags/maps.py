@@ -9,8 +9,11 @@
 import os
 from django import template
 from django.conf import settings
+from sorl.thumbnail import get_thumbnail
 
-from akvo.rsr.models import Project, Organisation, ProjectLocation, OrganisationLocation, ProjectUpdateLocation
+from akvo.rsr.models import (Project, Organisation, ProjectUpdate,
+                             ProjectLocation, OrganisationLocation,
+                             ProjectUpdateLocation)
 
 register = template.Library()
 
@@ -22,6 +25,87 @@ MEDIA_URL = getattr(settings, 'MEDIA_URL', '/media/')
 
 # TODO: this should be fixed so partner sites use their own domain
 HOST = 'http://%s' % getattr(settings, 'RSR_DOMAIN', 'akvo.org')
+
+
+def avatar(item, geometry='60x60', quality=99):
+    """
+    Digs out the url to the visual representation from object. If no one exists
+    defaults to empty string.
+    """
+    url = ""
+    try:
+        if isinstance(item, Project):
+            url = get_thumbnail(item.current_image, geometry,
+                                 crop='center', quality=quality).url
+        elif isinstance(item, Organisation):
+            url = get_thumbnail(item.logo, geometry,
+                                crop='center', quality=quality).url
+        elif isinstance(item, ProjectUpdate):
+            url = get_thumbnail(item.photo, geometry,
+                                crop='center', quality=quality).url
+    except Exception, e:
+        print e
+        pass
+
+    return url
+
+
+@register.inclusion_tag('inclusion_tags/map.html')
+def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
+    """
+    ...
+    """
+    if dynamic != 'dynamic':
+        dynamic = False
+    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+
+    locations = []
+    for item in coll:
+        try:
+            location = item.primary_location
+            if location.latitude == 0 and location.longitude == 0:
+                continue
+            if location.latitude > 80 or location.latitude < -80:
+                continue
+
+            if isinstance(item, Project):
+                item_type = 'project'
+                icon = PROJECT_MARKER_ICON
+                text = item.title.encode('utf8')
+
+            elif isinstance(item, Organisation):
+                item_type = 'organisation'
+                icon = ORGANISATION_MARKER_ICON
+                text = item.name.encode('utf8')
+
+            elif isinstance(item, ProjectUpdate):
+                item_type = 'projectUpdate'
+                icon = PROJECT_UPDATE_MARKER_ICON
+                text = item.title.encode('utf8')
+
+            locations.append(
+                {'type': item_type,
+                 'image': avatar(item),
+                 'latitude': location.latitude,
+                 'longitude': location.longitude,
+                 'url': item.get_absolute_url(),
+                 'icon': icon,
+                 'pk': str(item.pk),
+                 'text': text})
+        except Exception, e:
+            # print e
+            pass
+
+    return {
+        'map_id': map_id,
+        'width': width,
+        'height': height,
+        'marker_icon': PROJECT_MARKER_ICON,
+        'locations': locations,
+        'dynamic': dynamic,
+        'infowindows': True,
+        'partnersite_widget': False}
+
 
 @register.inclusion_tag('inclusion_tags/maps.html')
 def project_map(id, width, height, dynamic='dynamic'):
@@ -41,11 +125,21 @@ def project_map(id, width, height, dynamic='dynamic'):
     update_locations = []
 
     for location in ProjectLocation.objects.filter(location_target=id):
+        if location.latitude == 0 and location.longitude == 0:
+            continue
+        if location.latitude > 80 or location.latitude < -80:
+            continue
+
         locations.append([location.latitude, location.longitude])
 
     for update_location in ProjectUpdateLocation.objects.filter(location_target__project=id):
+        if update_location.latitude == 0 and update_location.longitude == 0:
+            continue
+        if update_location.latitude > 80 or update_location.latitude < -80:
+            continue
+
         project_update = update_location.location_target
-        
+
         # Do not show placeholder locations
         if update_location.latitude == 0 and update_location.longitude == 0:
             continue
@@ -91,6 +185,11 @@ def organisation_map(id, width, height, dynamic='dynamic'):
     locations = []
 
     for location in OrganisationLocation.objects.filter(location_target_id=id):
+        if location.latitude == 0 and location.longitude == 0:
+            continue
+        if location.latitude > 80 or location.latitude < -80:
+            continue
+
         locations.append([location.latitude, location.longitude])
 
     template_context = {
@@ -103,7 +202,6 @@ def organisation_map(id, width, height, dynamic='dynamic'):
         'infowindows': False,
         'partnersite_widget': False
     }
-
     return template_context
 
 
@@ -121,11 +219,16 @@ def global_project_map(width, height, dynamic='dynamic'):
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
 
     locations = []
-    update_locations = []
 
-    for project in Project.objects.all().active():
+    for project in Project.objects.published():
         try:
             location = project.primary_location
+
+            if location.latitude == 0 and location.longitude == 0:
+                continue
+            if location.latitude > 80 or location.latitude < -80:
+                continue
+
             try:
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
             except:
@@ -158,7 +261,6 @@ def global_project_map(width, height, dynamic='dynamic'):
         'width': width,
         'height': height,
         'marker_icon': PROJECT_MARKER_ICON,
-        'update_marker_icon': PROJECT_UPDATE_MARKER_ICON,
         'locations': locations,
         'update_locations': update_locations,
         'dynamic': dynamic,
@@ -187,7 +289,13 @@ def global_organisation_map(width, height, dynamic='dynamic'):
     for organisation in Organisation.objects.all():
         try:
             location = organisation.primary_location
-            thumbnail = organisation.logo.extra_thumbnails['map_thumb'].absolute_url
+
+            if location.latitude == 0 and location.longitude == 0:
+                continue
+            if location.latitude > 80 or location.latitude < -80:
+                continue
+
+            thumbnail = organisation.logo.url
             locations.append([location.latitude,
                               location.longitude,
                               [str(organisation.pk),organisation.name.encode('utf8'), thumbnail, 'organisation']])
@@ -199,6 +307,55 @@ def global_organisation_map(width, height, dynamic='dynamic'):
         'width': width,
         'height': height,
         'marker_icon': ORGANISATION_MARKER_ICON,
+        'locations': locations,
+        'dynamic': dynamic,
+        'infowindows': True,
+        'partnersite_widget': False
+    }
+
+    return template_context
+
+
+@register.inclusion_tag('inclusion_tags/maps.html')
+def global_update_map(width, height, dynamic='dynamic'):
+    """
+    params:
+        width, height: the dimensions of the map.
+        dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
+    """
+
+    if dynamic != 'dynamic':
+        dynamic = False
+
+    map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
+
+    locations = []
+
+    for update in ProjectUpdateLocation.objects.all():
+        if update.latitude == 0 and update.longitude == 0:
+            continue
+        if update.latitude > 80 or update.latitude < -80:
+            continue
+
+        try:
+            thumbnail = ""
+            locations.append([update.latitude,
+                              update.longitude,
+                              [
+                                  str(update.location_target.pk),
+                                  update.location_target.title.encode('utf8'),
+                                  thumbnail,
+                                  'project',
+                                  str(update.location_target.project.pk),
+                              ]])
+        except:
+            pass
+
+    template_context = {
+        'map_id': map_id,
+        'width': width,
+        'height': height,
+        'marker_icon': PROJECT_UPDATE_MARKER_ICON,
         'locations': locations,
         'dynamic': dynamic,
         'infowindows': True,
@@ -228,6 +385,10 @@ def projects_map(projects, width, height, dynamic='dynamic'):
     for project in projects:
         proj_locations = ProjectLocation.objects.filter(location_target=project)
         for location in proj_locations:
+            if location.latitude == 0 and location.longitude == 0:
+                continue
+            if location.latitude > 80 or location.latitude < -80:
+                continue
             try:
                 thumbnail = project.current_image.extra_thumbnails['map_thumb'].absolute_url
             except:
@@ -237,6 +398,11 @@ def projects_map(projects, width, height, dynamic='dynamic'):
                               [str(project.pk), project.title.encode('utf8'), thumbnail, 'project']])
 
         for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
+            if update_location.latitude == 0 and update_location.longitude == 0:
+                continue
+            if update_location.latitude > 80 or update_location.latitude < -80:
+                continue
+
             project_update = update_location.location_target
 
             # Do not show placeholder locations

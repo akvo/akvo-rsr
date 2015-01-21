@@ -21,6 +21,8 @@ scripts/dev-vm/
 dev-env
 venv
 scripts/dev-vm
+scripts/devhelpers/node_modules
+vagrant/vagrant-ssh-conf.*
 
 # PG migration
 pg_migrate_conf.yml
@@ -105,3 +107,7 @@ tramp
 .vagrant
 
 *.hp6rKR
+
+# SASS
+akvo/rsr/static/rsr/v3/css/src/.sass-cache
+akvo/rsr/static/rsr/v3/css/src/*.map

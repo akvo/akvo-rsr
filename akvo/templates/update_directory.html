@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% load i18n maps markup_tags rsr_utils bootstrap3 compressed %}
+
+{% block title %}{% trans 'Updates' %}{% endblock %}
+
+{% block maincontent %}
+
+<section id="map" class="touch-navbar">
+    {% coll_map page '100%' '100%' %}
+</section>
+
+<section id="search-filter">
+  <form id="filterForm" action="" method="get" accept-charset="uft-8">
+
+    <div class="container-fluid">
+      <div id="search" class="verticalPadding">
+        <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
+        <div class="form-inline" role="form">
+          {#<form class="form-inline" role="form">#}
+          <div class="form-group">
+            <div class="input-group">
+              {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
+              </span>
+            </div>
+            <a class="btn showFilters btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="fa fa-filter"></i> Advanced filters</a>
+          </div>
+          {#</form>#}
+        </div>
+      </div>
+    </div>
+
+    <div id="collapseOne" class="panel-collapse collapse {{ show_filters }}">
+      <div id="filter" class="verticalPadding row">
+
+        <div class="btn-group">
+          {% bootstrap_field filter.form.continent %}
+        </div>
+
+      </div>
+    </div>
+  </form>
+</section>
+
+<div class="container-fluid">
+  <div class="row center-text verticalPadding">
+        <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
+        {% include 'navigation/pagination.html' %}
+    </div>
+</div>
+
+    <section class="main-list updates">
+      <ul class="container">
+        {% for u in page %}
+        <li class="row updateAsset">
+          <div class="col-sm-3 col-md-2 col-xs-4 col-lg-2">
+            <a href="{% url 'update-main' u.project.id u.id %}">
+              {% if u.video %}
+                {% vid_img u 160 160 u.title %}
+              {% else %}
+                {% img u 160 160 u.title %}
+              {% endif %}
+            </a>
+          </div>
+          <div class="col-sm-4 col-xs-8 col-md-5 col-lg-5">
+            <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
+            <p class="small"><span class="glyphicon glyphicon-folder-close"></span> <a href="{% url 'project-main' u.project.pk %}">{{u.project.title}}</a><br>
+              <span class="glyphicon glyphicon-user"></span> {{u.user.first_name}} {{u.user.last_name}}
+                {% if u.user.approved_organisations %}
+                  {% with org=u.user.approved_organisations.0 %}
+                    (<a href="{% url 'organisation-main' org.pk %}">{{org.long_name}}</a>)
+                  {% endwith %}
+                {% endif %}
+              <br>
+              {% if u.primary_location.country %}
+              <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}}, {{u.primary_location.country.continent}}<br>
+              {% endif %}
+              <span class="glyphicon glyphicon-calendar"></span> {{u.created_at|date:"d-M-Y"}}
+            </p>
+          </div>
+          <div class="excerpt small col-sm-5 col-xs-12  col-md-5 col-lg-5 hidden-xs">
+            {% autoescape off %}
+              {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+            {% endautoescape %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+<div class="container-fluid">
+    <div class="row center-text">
+            {% include 'navigation/pagination.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  {% compressed_js 'rsr_v3_update_directory' %}
+{% endblock js %}

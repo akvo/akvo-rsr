@@ -1,35 +1,14 @@
-{% extends "rsr/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
-{% block head %}
-{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}rsr/main/css/src/404.css">
-{% endblock head %}
-
-{% block breadcrum_items %}
-{{block.super}}
-<li id="last_breadcrum_item">{% trans 'Page not found' %}</li>
-{% endblock breadcrum_items %}
+{% block title %}{% trans 'Page not found (404)' %}{% endblock title %}
 
 {% block maincontent %}
-<div id="content" class="wrapper">
-    <section id="post-not-found">
-    <header class="posthead">
-    <h1 class="backLined">
-    404 Error Page. Not Found!
-    </h1>
-    </header>
-    <section class="post-content twoColumns floats-in">
-      <div><img src="{{ STATIC_URL }}rsr/main/img/404/Surprise-polaroid-L.png" alt="Products"  style="max-height:450px;margin-left:5%;"/></div>
-      <div style="margin-top:2em;">
-        <p class="strongType">
-          <br/>
-          Or isn't this what you were hoping for?<br/><br/>
-          In that case something's gone wrong.<br/><br/>
-          You might want to try our home page, or the menu bar above.</p>
-      </div>
-    </section>
-
+<div class="container">
+    <div class="row">
+        <h1>{% trans '404 Error Page. Not Found!' %}</h1>
+        <h2><small>{% trans 'You might want to try our home page, or the menu bar above' %}</small></h2>
+    </div>
 </div>
 {% endblock maincontent %}
 
