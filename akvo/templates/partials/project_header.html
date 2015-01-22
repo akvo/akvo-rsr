@@ -11,12 +11,12 @@
                 </div>
             </div>
             <div class="col-sm-4 shareBlock">
-                <div class="text-right">
+                <div>
                     <nav>
-                        <a href="#" class="btn btn-primary">Follow project</a>
+                        <a href="#" class="btn btn-primary"><i class="fa fa-lightbulb-o"></i> Follow project</a>
                         {% url 'project-report' project.pk as report_url %}
                         {% if not request.get_full_path == report_url %}
-                        <a href="{% url 'project-report' project.pk %}" class="btn"><i class="fa fa-bar-chart"></i> Show full data report</a>
+                        <a href="{% url 'project-report' project.pk %}" class="fullPdf"><i class="fa fa-bar-chart"></i> Show full data report</a>
                         {% else %}
                         <a href="javascript:window.print();" class="btn"><i class="fa fa-print"></i> Print this page</a>
                         {% endif %}

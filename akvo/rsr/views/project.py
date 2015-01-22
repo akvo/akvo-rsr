@@ -303,3 +303,16 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     }
 
     return render(request, 'update_add.html', context)
+
+
+def search(request):
+    context = {'projects': Project.objects.published()}
+    return render(request, 'project_search.html', context)
+
+
+def finance(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    context = {
+        'project': project
+    }
+    return render(request, 'project_finance.html', context)

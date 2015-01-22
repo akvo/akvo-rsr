@@ -55,7 +55,7 @@
                                         </a>
                                         <div class="media-body">
                                             <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
-                                            <a href="javascript:;" class="small" data-toggle="tooltip"
+                                            <a href="javascript:;" class="small moreLink" data-toggle="tooltip"
                                              title="{% for partner, types in partners.items %}
                                                         {% if not forloop.first %}<br>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
                                                         ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)
@@ -67,7 +67,7 @@
                                 </div>
                                 </li>
                                 <li class="financeBlock"><span class="detailedInfo">{% trans "financial info" %}</span>
-                                    <br><a href="#" class="text-center"><i class="fa fa-line-chart"></i> See all financial info</a>
+                                    <br><a href="{% url 'project-finance' project.id %}" class="text-center"><i class="fa fa-line-chart"></i> See all financial info</a>
                                 </li>
                         </ul>
                     </aside>
