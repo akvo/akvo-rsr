@@ -8,7 +8,7 @@ html {
 body {
     width: 100%;
     height: 100%;
-    color: rgb(36, 48, 50);
+    color: lighten(rgb(36, 48, 50), 10%);
     line-height: 1.42857;
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
@@ -43,6 +43,11 @@ a, a:link, a:visited {
 /****************** Miscellanous Typography ********************/
 .noItem {
 	color:rgba($akvoPurple,0.2);
+}
+em {
+    font-family:$scriptFont;
+    font-size: 1.2em;
+    margin: 0 5px 0em 0em;
 }
 a.moreLink {
 	margin-left:5px;
@@ -203,6 +208,7 @@ dl {
         }
     }
 }
+
 /****************************************************************************
 								HEADER + NAVIGATION
 ****************************************************************************/
@@ -264,6 +270,7 @@ nav[role=navigation] {
                 }
                 &.addUpdateBtn {
                     margin-top: 10px;
+
                     color: white;
                     &:hover {
                         background-color: $anchorLinkHover;
@@ -282,7 +289,6 @@ nav[role=navigation] {
         }
     }
 }
-
 .navbar .btn {
     padding: 4px 9px;
 }
@@ -482,7 +488,7 @@ h4.detailedInfo {
     }
     background-color: #241F20;
     p {
-        color: lighten($rsrBlue, 10%);
+        color: lighten($anchorLinkHover, 10%);
     }
     div#filter {
         background: darken(rgba(#383334, 1), 0%);
@@ -502,7 +508,10 @@ h4.detailedInfo {
         padding: 15px 0;
         border-radius: 3px;
         background:white;
-        img {border:1px solid rgba($anchorLinkHover,0.5);}
+        img {
+            border: 1px solid rgba($akvoBlack,0.05);
+            box-shadow: 0 0 2px rgba($anchorLinkHover, 0);
+        }
         &:nth-child(2n+1) {
             background: rgb(238, 238, 238);
         }
@@ -522,6 +531,38 @@ h4.detailedInfo {
                 width: 100%;
             }
         }
+        .projectLocation {
+            color:rgba($akvoBlack,0.5);
+        }
+        .projectTitle {
+            display:block;
+            margin:0 0 3px 0;
+        }
+        span.userFullName {
+            color:rgba($akvoBlack,0.5);
+            margin:0 0 0px 0;
+        }
+        .upDateTime {
+            color:rgba($akvoBlack,0.5);
+            margin-top:10px;
+        }
+        .orgType {
+            color:rgba($akvoBlack,0.5);    
+        }
+        .additionalInfo {
+            div {
+                span {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+    &.updates {
+        li {
+            &:nth-child(2n+1) {
+                background: darken(rgba(complement($rsrBlue), 0.1),10%);
+            }
+        }
     }
     .excerpt {
         @include noWrapBlockTxt;
@@ -529,11 +570,33 @@ h4.detailedInfo {
     &.projects {
     	ul{
     		li{
+                &:nth-child(2n+1) {
+                    background: darken(rgba($rsrGreen, 0.1),10%);
+                }
 		    	.projectLocation {
 		    		color:rgba($akvoBlack,0.5);
 		    	}
     		}
     	}
+    }
+    &.organisations {
+        ul {
+            li {
+                img {
+                    -webkit-filter: grayscale(100%);
+                    filter: grayscale(100%);
+                    filter: gray;
+                    filter: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' height='0'><filter id='greyscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0' /></filter></svg>#greyscale");
+                    transition: all 0.2s ease-in;
+                    &:hover {
+                        -webkit-filter: grayscale(0); 
+                        -webkit-filter: grayscale(0);
+                        filter: gray; filter: grayscale(0);
+                        filter: url(desaturate.svg);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -647,17 +710,31 @@ div.projectTopRow {
                 &.projectPartners {
                 	padding-bottom:20px;
                 	border-bottom: none;
-                    span {
-                        margin-bottom: 10px;
+                    span + div {
+                        margin-top: 10px;
                     }
                     a.logoImg {
                         max-width: 50px;
                         img {
                             width: 80%;
+                            -webkit-filter: grayscale(100%);
+                            filter: grayscale(100%);
+                            filter: gray;
+                            filter: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' height='0'><filter id='greyscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0' /></filter></svg>#greyscale");
+                            transition: all 0.2s ease-in;
+                            &:hover {
+                                -webkit-filter: grayscale(0); 
+                                -webkit-filter: grayscale(0);
+                                filter: gray; filter: grayscale(0);
+                                filter: url(desaturate.svg);
+                            }
                         }
                     }
                     .partType {
                         @include noWrapBlockTxt;
+                    }
+                    .projectLocation {
+                        margin-top:5px;
                     }
                 }
                 &.financeBlock {

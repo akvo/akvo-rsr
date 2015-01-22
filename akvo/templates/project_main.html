@@ -61,7 +61,8 @@
                                                         ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)
                                                     {% endfor %}"
                                              data-placement="right" data-container="body">+ {{partners|length}} partners</a>
-                                            {% if project.reporting_org.primary_location.country %}<br><i class="fa fa-globe"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}
+                                            {% if project.reporting_org.primary_location.country %}
+                                            <div class="projectLocation"><i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}</div>
                                         </div>
                                     </div>
                                 </div>

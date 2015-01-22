@@ -52,6 +52,7 @@
           </a>
         </li>
       </ul>
+
       <ul class="nav navbar-nav navbar-right">
         <li>
             <a href="{% if project %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
