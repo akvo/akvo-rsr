@@ -28,13 +28,11 @@ manage='sudo -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/manage.py'
 if [ ! -e /etc/localdev_rsr_provisioned ]
 then
     /var/akvo/rsr/install_test_db.sh
-    $manage migrate
-    echo `date` > /etc/localdev_rsr_provisioned
-else
     $manage syncdb --noinput
-    $manage migrate
+    echo `date` > /etc/localdev_rsr_provisioned
 fi
 
+$manage migrate
 $manage collectstatic --noinput
 
 # Temporary Hack (see https://github.com/akvo/akvo-provisioning/issues/29)
