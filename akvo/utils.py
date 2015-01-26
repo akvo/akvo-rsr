@@ -439,7 +439,10 @@ def codelist_choices(model, version=settings.IATI_VERSION):
     :param version: String of version (optional)
     :return: List of tuples with available choices, tuples in the form of (code, name)
     """
-    return [(cl.code, cl) for cl in model.objects.filter(version__code=version)]
+    try:
+        return [(cl.code, cl) for cl in model.objects.filter(version__code=version)]
+    except:
+        return []
 
 def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     """
