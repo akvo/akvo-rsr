@@ -9,17 +9,19 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+
+from akvo.codelists.models import ConditionType
+from akvo.utils import codelist_choices, codelist_value
 
 
 class ProjectCondition(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='conditions')
     text = ValidXMLCharField(_(u'condition'), blank=True, max_length=100, help_text=_(u'(100 characters)'))
-    type = ValidXMLCharField(_(u'condition type'), blank=True, max_length=1, choices=codelists.CONDITION_TYPE)
+    type = ValidXMLCharField(_(u'condition type'), blank=True, max_length=1, choices=codelist_choices(ConditionType))
     attached = models.NullBooleanField(_(u'attached'), blank=True)
 
     def iati_type(self):
-        return dict(codelists.CONDITION_TYPE)[self.type] if self.type else ""
+        return codelist_value(ConditionType, self, 'type')
 
     class Meta:
         app_label = 'rsr'

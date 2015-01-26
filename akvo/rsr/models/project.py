@@ -21,10 +21,10 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.utils import rsr_image_path, rsr_show_keywords
+from akvo.codelists.models import AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus
+from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
-from ..iati.codelists import codelists_v104 as codelists
 from ..mixins import TimestampsMixin
 
 from .budget_item import BudgetItem, BudgetItemLabel
@@ -179,28 +179,22 @@ class Project(TimestampsMixin, models.Model):
     hierarchy = models.PositiveIntegerField(
         _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS
     )
-    project_scope = ValidXMLCharField(
-        _(u'project scope'), blank=True, max_length=2, choices=codelists.ACTIVITY_SCOPE
-    )
+    project_scope = ValidXMLCharField(_(u'project scope'), blank=True, max_length=2,
+                                      choices=codelist_choices(ActivityScope))
     capital_spend_percentage = models.DecimalField(
         _(u'capital spend percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
-    collaboration_type = ValidXMLCharField(
-        _(u'collaboration type'), blank=True, max_length=1, choices=[code[:2] for code in codelists.COLLABORATION_TYPE]
-    )
-    default_aid_type = ValidXMLCharField(
-        _(u'default aid type'), blank=True, max_length=3, choices=[code[:2] for code in codelists.AID_TYPE]
-    )
-    default_finance_type = ValidXMLCharField(
-        _(u'default finance type'), blank=True, max_length=3, choices=[code[:2] for code in codelists.FINANCE_TYPE]
-    )
-    default_flow_type = ValidXMLCharField(
-        _(u'default flow type'), blank=True, max_length=2, choices=[code[:2] for code in codelists.FLOW_TYPE]
-    )
-    default_tied_status = ValidXMLCharField(
-        _(u'default tied status'), blank=True, max_length=1, choices=[code[:2] for code in codelists.TIED_STATUS]
-    )
+    collaboration_type = ValidXMLCharField(_(u'collaboration type'), blank=True, max_length=1,
+                                           choices=codelist_choices(CollaborationType))
+    default_aid_type = ValidXMLCharField(_(u'default aid type'), blank=True, max_length=3,
+                                         choices=codelist_choices(AidType))
+    default_finance_type = ValidXMLCharField(_(u'default finance type'), blank=True, max_length=3,
+                                             choices=codelist_choices(FinanceType))
+    default_flow_type = ValidXMLCharField(_(u'default flow type'), blank=True, max_length=2,
+                                          choices=codelist_choices(FlowType))
+    default_tied_status = ValidXMLCharField(_(u'default tied status'), blank=True, max_length=1,
+                                            choices=codelist_choices(TiedStatus))
 
 
     # denormalized data
@@ -685,34 +679,22 @@ class Project(TimestampsMixin, models.Model):
         )
 
     def iati_project_scope(self):
-        return dict(codelists.ACTIVITY_SCOPE)[self.project_scope] if self.project_scope else ""
+        return codelist_value(ActivityScope, self, 'project_scope')
 
     def iati_collaboration_type(self):
-        if self.collaboration_type:
-            return dict([code[:2] for code in codelists.COLLABORATION_TYPE])[self.collaboration_type]
-        else:
-            return ""
+        return codelist_value(CollaborationType, self, 'collaboration_type')
 
     def iati_default_flow_type(self):
-        if self.default_flow_type:
-            return dict([code[:2] for code in codelists.FLOW_TYPE])[self.default_flow_type]
-        else:
-            return ""
+        return codelist_value(FlowType, self, 'default_flow_type')
 
     def iati_default_finance_type(self):
-        if self.default_finance_type:
-            return dict([code[:2] for code in codelists.FINANCE_TYPE])[self.default_finance_type]
-        else:
-            return ""
+        return codelist_value(FinanceType, self, 'default_finance_type')
 
     def iati_default_aid_type(self):
-        return dict([code[:2] for code in codelists.AID_TYPE])[self.default_aid_type] if self.default_aid_type else ""
+        return codelist_value(AidType, self, 'default_aid_type')
 
     def iati_default_tied_status(self):
-        if self.default_tied_status:
-            return dict([code[:2] for code in codelists.TIED_STATUS])[self.default_tied_status]
-        else:
-            return ""
+        return codelist_value(TiedStatus, self, 'default_tied_status')
 
     def sector_categories(self):
         from .sector import Sector

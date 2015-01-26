@@ -9,30 +9,31 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+
+from akvo.codelists.models import PolicyMarker, PolicyMarkerVocabulary, PolicySignificance
+from akvo.utils import codelist_choices, codelist_value
 
 
 class PolicyMarker(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='policy_markers')
-    policy_marker = ValidXMLCharField(_(u'policy marker'), blank=True, max_length=2, choices=codelists.POLICY_MARKER)
-    significance = ValidXMLCharField(
-        _(u'significance'), max_length=2, blank=True, choices=[code[:2] for code in codelists.POLICY_SIGNIFICANCE]
-    )
-    vocabulary = ValidXMLCharField(
-        _(u'vocabulary'), blank=True, max_length=5, choices=[code[:2] for code in codelists.VOCABULARY]
-    )
+    policy_marker = ValidXMLCharField(_(u'policy marker'), blank=True, max_length=2,
+                                      choices=codelist_choices(PolicyMarker))
+    significance = ValidXMLCharField(_(u'significance'), max_length=2, blank=True,
+                                     choices=codelist_choices(PolicySignificance))
+    vocabulary = ValidXMLCharField(_(u'vocabulary'), blank=True, max_length=5,
+                                   choices=codelist_choices(PolicyMarkerVocabulary))
     description = ValidXMLCharField(
         _(u'description'), max_length=255, blank=True, help_text=_(u'(max 255 characters)')
     )
 
     def iati_policy_marker(self):
-        return dict(codelists.POLICY_MARKER)[self.policy_marker] if self.policy_marker else ""
+        return codelist_value(PolicyMarker, self, 'policy_marker')
 
     def iati_significance(self):
-        if self.significance:
-            return dict([code[:2] for code in codelists.POLICY_SIGNIFICANCE])[self.significance]
-        else:
-            return ""
+        return codelist_value(PolicySignificance, self, 'significance')
+
+    def iati_vocabulary(self):
+        return codelist_value(PolicyMarkerVocabulary, self, 'vocabulary')
 
     def __unicode__(self):
         return self.policy_marker

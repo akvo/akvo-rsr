@@ -432,29 +432,29 @@ def filter_query_string(qs):
         '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))
 
 
-def codelist_choices(model, version):
+def codelist_choices(model, version=settings.IATI_VERSION):
     """
     Based on a model from the codelists app and a version, returns a list of tuples with the available choices.
     :param model: Model from codelists app
-    :param version: String of version (e.g. '1.04' or '2.01')
+    :param version: String of version (optional)
     :return: List of tuples with available choices, tuples in the form of (code, name)
     """
-    result = []
+    return [(cl.code, cl) for cl in model.objects.filter(version__code=version)]
 
-    try:
-        has_code = model._meta.get_field('code')
-    except:
-        has_code = False
-
-    try:
-        has_name = model._meta.get_field('name')
-    except:
-        has_name = False
-
-    for codelist in model.objects.filter(version__code=version):
-        if has_code and has_name:
-            result.append((codelist.code, codelist.name))
-        elif has_code:
-            result.append((codelist.code, codelist.code))
-
-    return result
+def codelist_value(model, instance, field, version=settings.IATI_VERSION):
+    """
+    Looks up the value of a codelist
+    :param model: Model from codelists app
+    :param instance: Instance from model
+    :param field: String of the lookup field (e.g. 'type')
+    :param version: String of version (optional)
+    :return: String of the codelist instance
+    """
+    value = getattr(instance, field, None)
+    if value:
+        try:
+            objects = getattr(model, 'objects')
+            return objects.get(code=value, version__code=version)
+        except model.DoesNotExist:
+            return ''
+    return ''

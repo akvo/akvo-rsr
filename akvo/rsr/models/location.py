@@ -9,7 +9,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import LatitudeField, LongitudeField, ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+from akvo.codelists.models import (GeographicExactness, GeographicLocationClass, GeographicLocationReach,
+                                   GeographicVocabulary, LocationType)
+from akvo.utils import codelist_choices, codelist_value
 
 
 class BaseLocation(models.Model):
@@ -66,50 +68,42 @@ class ProjectLocation(BaseLocation):
     # Extra IATI fields
     reference = ValidXMLCharField(_(u'reference'), blank=True, max_length=50)
     location_code = ValidXMLCharField(_(u'code'), blank=True, max_length=25)
-    vocabulary = ValidXMLCharField(
-        _(u'vocabulary'), blank=True, max_length=2, choices=[code[:2] for code in codelists.GEOGRAPHIC_VOCABULARY]
-    )
+    vocabulary = ValidXMLCharField(_(u'vocabulary'), blank=True, max_length=2,
+                                   choices=codelist_choices(GeographicVocabulary))
     name = ValidXMLCharField(_(u'name'), blank=True, max_length=100)
     description = ValidXMLCharField(_(u'description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)'))
     activity_description = ValidXMLCharField(
         _(u'activity description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)')
     )
     administrative_code = ValidXMLCharField(_(u'administrative code'), blank=True, max_length=25)
-    administrative_vocabulary = ValidXMLCharField(
-        _(u'administrative vocabulary'), blank=True, max_length=2,
-        choices=[code[:2] for code in codelists.GEOGRAPHIC_VOCABULARY]
-    )
+    administrative_vocabulary = ValidXMLCharField(_(u'administrative vocabulary'), blank=True, max_length=2,
+                                                  choices=codelist_choices(GeographicVocabulary))
     administrative_level = models.PositiveSmallIntegerField(
         _(u'administrative level'), blank=True, null=True, max_length=1
     )
-    exactness = ValidXMLCharField(_(u'exactness'), blank=True, max_length=1, choices=codelists.GEOGRAPHIC_EXACTNESS)
-    location_reach = ValidXMLCharField(
-        _(u'reach'), blank=True, max_length=1, choices=codelists.GEOGRAPHIC_LOCATION_REACH
-    )
-    location_class = ValidXMLCharField(
-        _(u'class'), blank=True, max_length=1, choices=codelists.GEOGRAPHIC_LOCATION_CLASS
-    )
-    feature_designation = ValidXMLCharField(
-        _(u'feature designation'), blank=True, max_length=5, choices=[code[:2] for code in codelists.LOCATION_TYPE]
-    )
+    exactness = ValidXMLCharField(_(u'exactness'), blank=True, max_length=1,
+                                  choices=codelist_choices(GeographicExactness))
+    location_reach = ValidXMLCharField(_(u'reach'), blank=True, max_length=1,
+                                       choices=codelist_choices(GeographicLocationReach))
+    location_class = ValidXMLCharField(_(u'class'), blank=True, max_length=1,
+                                       choices=codelist_choices(GeographicLocationClass))
+    feature_designation = ValidXMLCharField(_(u'feature designation'), blank=True, max_length=5,
+                                            choices=codelist_choices(LocationType))
 
     def iati_vocabulary(self):
-        return dict([code[:2] for code in codelists.GEOGRAPHIC_VOCABULARY])[self.vocabulary] if self.vocabulary else ""
+        return codelist_value(GeographicVocabulary, self, 'vocabulary')
 
     def iati_exactness(self):
-        return dict(codelists.GEOGRAPHIC_EXACTNESS)[self.exactness] if self.exactness else ""
+        return codelist_value(GeographicExactness, self, 'exactness')
 
     def iati_reach(self):
-        return dict(codelists.GEOGRAPHIC_LOCATION_REACH)[self.location_reach] if self.location_reach else ""
+        return codelist_value(GeographicLocationReach, self, 'location_reach')
 
     def iati_class(self):
-        return dict(codelists.GEOGRAPHIC_LOCATION_CLASS)[self.location_class] if self.location_class else ""
+        return codelist_value(GeographicLocationClass, self, 'location_class')
 
     def iati_designation(self):
-        if self.feature_designation:
-            return dict([code[:2] for code in codelists.LOCATION_TYPE])[self.feature_designation]
-        else:
-            return ""
+        return codelist_value(LocationType, self, 'feature_designation')
 
 
 class ProjectUpdateLocation(BaseLocation):

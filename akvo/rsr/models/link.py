@@ -9,7 +9,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
 
 
 class Link(models.Model):
