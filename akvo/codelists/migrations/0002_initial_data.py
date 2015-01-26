@@ -31,7 +31,7 @@ class Migration(DataMigration):
                     for codelist in codelist_data[1:]:
                         new_instance = model.objects.create(version=version)
                         for i, field in enumerate(fields):
-                            setattr(new_instance, field.replace('-','_'), codelist[i])
+                            setattr(new_instance, field.replace('-', '_'), codelist[i])
                         new_instance.save()
 
     def backwards(self, orm):

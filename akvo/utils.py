@@ -430,3 +430,31 @@ def filter_query_string(qs):
 
     return '&{}'.format(
         '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))
+
+
+def codelist_choices(model, version):
+    """
+    Based on a model from the codelists app and a version, returns a list of tuples with the available choices.
+    :param model: Model from codelists app
+    :param version: String of version (e.g. '1.04' or '2.01')
+    :return: List of tuples with available choices, tuples in the form of (code, name)
+    """
+    result = []
+
+    try:
+        has_code = model._meta.get_field('code')
+    except:
+        has_code = False
+
+    try:
+        has_name = model._meta.get_field('name')
+    except:
+        has_name = False
+
+    for codelist in model.objects.filter(version__code=version):
+        if has_code and has_name:
+            result.append((codelist.code, codelist.name))
+        elif has_code:
+            result.append((codelist.code, codelist.code))
+
+    return result

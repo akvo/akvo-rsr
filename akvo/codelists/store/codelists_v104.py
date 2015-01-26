@@ -1090,16 +1090,16 @@ LOCATION_TYPE = (
 
 # From http://iatistandard.org/104/codelists/downloads/clv2/xml/Vocabulary.xml
 VOCABULARY = (
-    (u'code', u'name'),
-    (u'ADT', u'AidData'),
+    (u'code', u'name', u'url'),
+    (u'ADT', u'AidData', u''),
     (u'COFOG', u'Classification of the Functions of Government (UN)', u'http://unstats.un.org/unsd/cr/registry/regcst.asp?Cl=4'),
     (u'DAC', u'OECD Development Assistance Committee', u'http://www.oecd.org/dac/stats/dacandcrscodelists.htm'),
     (u'DAC-3', u'OECD Development Assistance Committee 3 digit codes', u'http://www.oecd.org/dac/stats/dacandcrscodelists.htm'),
-    (u'ISO', u'International Organization for Standardization'),
+    (u'ISO', u'International Organization for Standardization', u''),
     (u'NACE', u'Statistical classification of economic activities in the European Community', u'http://ec.europa.eu/eurostat/ramon/nomenclatures/index.cfm?TargetUrl=LST_NOM_DTL&StrNom=NACE_REV2&StrLanguageCode=EN'),
     (u'NTEE', u'National Taxonomy for Exempt Entities (USA)', u'http://nccs.urban.org/classification/NTEE.cfm'),
-    (u'RO', u'Reporting Organisation (i.e. maintained by the organisation referred to in the <reporting-org> element.'),
-    (u'WB', u'World Bank')
+    (u'RO', u'Reporting Organisation (i.e. maintained by the organisation referred to in the <reporting-org> element.', u''),
+    (u'WB', u'World Bank', u'')
 )
 
 # From http://iatistandard.org/104/codelists/downloads/clv2/xml/BudgetIdentifierSector-category.xml
@@ -1659,7 +1659,7 @@ FLOW_TYPE = (
     (u'10', u'ODA', u'Aide Publique au Développement'),
     (u'20', u'OOF', u'Other Official Flows'),
     (u'30', u'Private NGO and other private sources', u'ONG et autres sources'),
-    (u'35', u'Private Market'),
+    (u'35', u'Private Market', u''),
     (u'40', u'Non flow', u'e.g. GNI'),
     (u'50', u'Other flows', u'e.g. non-ODA component of peacebuilding operations')
 )
@@ -1775,7 +1775,7 @@ POLICY_SIGNIFICANCE = (
     (u'1', u'significant objective', u'Significant (secondary) policy objectives are those which, although important, were not the prime motivation for undertaking the activity.'),
     (u'2', u'principal objective', u'Principal (primary) policy objectives are those which can be identified as being fundamental in the design and impact of the activity and which are an explicit objective of the activity. They may be selected by answering the question "Would the activity have been undertaken without this objective?"'),
     (u'3', u'principal objective AND in support of an action programme', u'For desertification-related aid only'),
-    (u'4', u'Explicit primary objective')
+    (u'4', u'Explicit primary objective', u'')
 )
 
 # From http://iatistandard.org/104/codelists/downloads/clv2/xml/GeographicExactness.xml
@@ -1998,12 +1998,12 @@ SECTOR = (
 
 # From http://iatistandard.org/104/codelists/downloads/clv2/xml/GeographicVocabulary.xml
 GEOGRAPHIC_VOCABULARY = (
-    (u'code', u'name', u'url'),
-    (u'A1', u'Global Admininistrative Unit Layers', u'http://www.fao.org/geonetwork/srv/en/metadata.show?id=12691'),
-    (u'A2', u'UN Second Administrative Level Boundary Project', u'Note: the unsalb.org website is no longer accessible, and public access to the boundaries resources has been removed http://www.ungiwg.org/content/united-nations-international-and-administrative-boundaries-resources', u'http://www.unsalb.org/'),
-    (u'A3', u'Global Administrative Areas', u'http://www.gadm.org/'),
-    (u'A4', u'ISO Country (3166-1 alpha-2)', u'http://www.iso.org/iso/country_codes.htm'),
-    (u'G1', u'Geonames', u'http://www.geonames.org/'),
+    (u'code', u'name', u'url', u'description'),
+    (u'A1', u'Global Admininistrative Unit Layers', u'http://www.fao.org/geonetwork/srv/en/metadata.show?id=12691', u''),
+    (u'A2', u'UN Second Administrative Level Boundary Project', u'http://www.unsalb.org/', u'Note: the unsalb.org website is no longer accessible, and public access to the boundaries resources has been removed http://www.ungiwg.org/content/united-nations-international-and-administrative-boundaries-resources'),
+    (u'A3', u'Global Administrative Areas', u'http://www.gadm.org/', u''),
+    (u'A4', u'ISO Country (3166-1 alpha-2)', u'http://www.iso.org/iso/country_codes.htm', u''),
+    (u'G1', u'Geonames', u'http://www.geonames.org/', u''),
     (u'G2', u'OpenStreetMap', u'http://www.openstreetmap.org/', u'Note: the code should be formed by prefixing the relevant OpenStreetMap ID with node/ way/ or relation/ as appropriate, e.g. node/1234567')
 )
 

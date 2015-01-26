@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-codelist_list = ['POLICY_MARKER', 'TRANSACTION_TYPE', 'LOAN_REPAYMENT_PERIOD', 'LOAN_REPAYMENT_TYPE', 'INDICATOR_MEASURE', 'BUDGET_TYPE', 'AID_TYPE', 'COUNTRY', 'BUDGET_IDENTIFIER_SECTOR', 'DOCUMENT_CATEGORY', 'LOCATION_TYPE', 'BUDGET_IDENTIFIER_SECTOR_CATEGORY', 'VERIFICATION_STATUS', 'GEOGRAPHIC_LOCATION_REACH', 'RESULT_TYPE', 'RELATED_ACTIVITY_TYPE', 'ORGANISATION_TYPE', 'GAZETTEER_AGENCY', 'ACTIVITY_DATE_TYPE', 'POLICY_MARKER_VOCABULARY', 'ACTIVITY_STATUS', 'TIED_STATUS', 'COLLABORATION_TYPE', 'ORGANISATION_IDENTIFIER', 'GEOGRAPHICAL_PRECISION', 'I_A_T_I_ORGANISATION_IDENTIFIER', 'DISBURSEMENT_CHANNEL', 'FLOW_TYPE', 'SECTOR_CATEGORY', 'REGION_VOCABULARY', 'ORGANISATION_REGISTRATION_AGENCY', 'POLICY_SIGNIFICANCE', 'GEOGRAPHIC_EXACTNESS', 'SECTOR', 'GEOGRAPHIC_VOCABULARY', 'FINANCE_TYPE', 'CONDITION_TYPE', 'LOCATION_TYPE_CATEGORY', 'LANGUAGE', 'BUDGET_IDENTIFIER_VOCABULARY', 'CURRENCY', 'C_R_S_ADD_OTHER_FLAGS', 'ACTIVITY_SCOPE', 'REGION', 'OTHER_IDENTIFIER_TYPE', 'PUBLISHER_TYPE', 'ORGANISATION_ROLE', 'BUDGET_IDENTIFIER', 'FINANCE_TYPE_CATEGORY', 'DESCRIPTION_TYPE', 'SECTOR_VOCABULARY', 'FILE_FORMAT', 'GEOGRAPHIC_LOCATION_CLASS', 'DOCUMENT_CATEGORY_CATEGORY', 'VERSION', 'CONTACT_TYPE', 'AID_TYPE_CATEGORY', ]
-
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/PolicyMarker.xml
+# Fields: code, name
+
 POLICY_MARKER = (
-    (u'code', u'name'),
     (u'1', u'Gender Equality'),
     (u'2', u'Aid to Environment'),
     (u'3', u'Participatory Development/Good Governance'),
@@ -17,8 +16,9 @@ POLICY_MARKER = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/TransactionType.xml
+# Fields: code, name, description
+
 TRANSACTION_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Incoming Funds', u'Funds recieved for use on the activity, which can be from an external or internal source. '),
     (u'2', u'Commitment', u'A firm, written obligation from a donor or provider to provide a specified amount of funds, under particular terms and conditions, for specific purposes, for the benefit of the recipient. '),
     (u'3', u'Disbursement', u'Outgoing funds that are placed at the disposal of a recipient government or organisation, or funds transferred between two separately reported activities.Under IATI traceability standards the recipient of a disbursement should also be required to report their activities to IATI.'),
@@ -32,8 +32,9 @@ TRANSACTION_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/LoanRepaymentPeriod.xml
+# Fields: code, name, description
+
 LOAN_REPAYMENT_PERIOD = (
-    (u'code', u'name', u'description'),
     (u'1', u'Annual', u'The loan has 1 repayment per year'),
     (u'2', u'Semi-annual', u'The loan has 2 repayments per year'),
     (u'4', u'Quarterly', u'The loan has 4 repayments per year '),
@@ -41,8 +42,9 @@ LOAN_REPAYMENT_PERIOD = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/LoanRepaymentType.xml
+# Fields: code, name, description
+
 LOAN_REPAYMENT_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Equal Principal Payments (EPP)', u'As required and defined by CRS++ reporting format Column 44'),
     (u'2', u'Annuity', u'As required and defined by CRS++ reporting format Column 44'),
     (u'3', u'Lump sum', u'As required and defined by CRS++ reporting format Column 44'),
@@ -50,22 +52,25 @@ LOAN_REPAYMENT_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/IndicatorMeasure.xml
+# Fields: code, name, description
+
 INDICATOR_MEASURE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Unit', u'The indicator is measured in units.'),
     (u'2', u'Percentage', u'The indicator is measured in percentages')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/BudgetType.xml
+# Fields: code, name, description
+
 BUDGET_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Original', u'The original budget allocated to the activity'),
     (u'2', u'Revised', u'The updated budget for an activity')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/AidType.xml
+# Fields: code, category, name, description
+
 AID_TYPE = (
-    (u'code', u'category', u'name', u'description'),
     (u'A01', u'A', u'General budget support', u'Unearmarked contributions to the government budget including funding to support the implementation of macroeconomic reforms (structural adjustment programmes, poverty reduction strategies). Budget support is a method of financing a recipient countrys budget through a transfer of resources from an external financing agency to the recipient governments national treasury. The funds thus transferred are managed in accordance with the recipients budgetary procedures. Funds transferred to the national treasury for financing programmes or projects managed according to different budgetary procedures from those of the recipient country, with the intention of earmarking the resources for specific uses, are therefore excluded.'),
     (u'A02', u'A', u'Sector budget support', u'Sector budget support, like general budget support, is a financial contribution to a recipient government\s budget. However, in sector budget support, the dialogue between donors and partner governments focuses on sector-specific concerns, rather than on overall policy and budget priorities'),
     (u'B01', u'B', u'Core support to NGOs, other private bodies, PPPs and research institutes', u'Funds are paid over to NGOs (local, national and international) for use at the latters discretion, and contribute to programmes and activities which NGOs have developed themselves, and which they implement on their own authority and responsibility. Core contributions to PPPs, funds paid over to foundations (e.g. philanthropic foundations), and contributions to research institutes (public and private) are also recorded here. Annex 2 of the DAC Directives provides a list of INGOs, PPPs and networks core contributions to which may be reported under B01. This list is not exclusive.'),
@@ -84,8 +89,9 @@ AID_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/Country.xml
+# Fields: code, name
+
 COUNTRY = (
-    (u'code', u'name'),
     (u'AF', u'Afghanistan'),
     (u'AX', u'Åland Islands'),
     (u'AL', u'Albania'),
@@ -340,8 +346,9 @@ COUNTRY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/BudgetIdentifierSector.xml
+# Fields: code, category, name
+
 BUDGET_IDENTIFIER_SECTOR = (
-    (u'code', u'category', u'name'),
     (u'1.1', u'1', u'Executive'),
     (u'1.2', u'1', u'Legislative'),
     (u'1.3', u'1', u'Accountability'),
@@ -377,8 +384,9 @@ BUDGET_IDENTIFIER_SECTOR = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/DocumentCategory.xml
+# Fields: code, category, name, description
+
 DOCUMENT_CATEGORY = (
-    (u'code', u'category', u'name', u'description'),
     (u'A01', u'A', u'Pre- and post-project impact appraisal', u''),
     (u'A02', u'A', u'Objectives / Purpose of activity', u''),
     (u'A03', u'A', u'Intended ultimate beneficiaries', u''),
@@ -412,8 +420,9 @@ DOCUMENT_CATEGORY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/LocationType.xml
+# Fields: code, category, name, description
+
 LOCATION_TYPE = (
-    (u'code', u'category', u'name', u'description'),
     (u'AIRQ', u'S', u'abandoned airfield', u'abandoned airfield'),
     (u'CMPQ', u'S', u'abandoned camp', u'abandoned camp'),
     (u'CNLQ', u'H', u'abandoned canal', u'abandoned canal'),
@@ -1099,8 +1108,9 @@ LOCATION_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/BudgetIdentifierSector-category.xml
+# Fields: code, name
+
 BUDGET_IDENTIFIER_SECTOR_CATEGORY = (
-    (u'code', u'name'),
     (u'1', u'General Public Service'),
     (u'2', u'Justice, Law, Order and Security'),
     (u'3', u'Economic Affairs'),
@@ -1111,22 +1121,25 @@ BUDGET_IDENTIFIER_SECTOR_CATEGORY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/VerificationStatus.xml
+# Fields: code, name, description
+
 VERIFICATION_STATUS = (
-    (u'code', u'name', u'description'),
     (u'0', u'Not verified', u'The data published for the activity has not been verified'),
     (u'1', u'Verified', u'The data published for the activity has been verified. ')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/GeographicLocationReach.xml
+# Fields: code, name, description
+
 GEOGRAPHIC_LOCATION_REACH = (
-    (u'code', u'name', u'description'),
     (u'1', u'Activity', u'The location specifies where the activity is carried out'),
     (u'2', u'Intended Beneficiaries', u'The location specifies where the intended beneficiaries of the activity live')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/ResultType.xml
+# Fields: code, name, description
+
 RESULT_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Output', u'Results of the activity that came about as a direct effect of your work and specific, what is done, and what communities are reached. For example, X number of individuals '),
     (u'2', u'Outcome', u'Results of the activity that produce an effect on the overall communities or issues you serve. For example lower rate of infection after a vaccination procgramme'),
     (u'3', u'Impact', u'The long term effects of the outcomes, that lead to larger, over arching results, such as improved life-expectancy.'),
@@ -1134,8 +1147,9 @@ RESULT_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/RelatedActivityType.xml
+# Fields: code, name, description
+
 RELATED_ACTIVITY_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Parent', u'An activity that contains sub-activities (sub-components) which are reported separately to IATI'),
     (u'2', u'Child', u'A sub-activity (or sub-component) that sits within a larger activity (parent) which is also reported to IATI'),
     (u'3', u'Sibling', u'A sub-activity (or sub-component) that is related to another sub-activity with the same parent '),
@@ -1144,8 +1158,9 @@ RELATED_ACTIVITY_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/OrganisationType.xml
+# Fields: code, name
+
 ORGANISATION_TYPE = (
-    (u'code', u'name'),
     (u'10', u'Government'),
     (u'15', u'Other Public Sector'),
     (u'21', u'International NGO'),
@@ -1159,16 +1174,18 @@ ORGANISATION_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/GazetteerAgency.xml
+# Fields: code, name
+
 GAZETTEER_AGENCY = (
-    (u'code', u'name'),
     (u'1', u'Geonames.org'),
     (u'2', u'National Geospatial-Intelligence Agency'),
     (u'3', u'Open Street Map')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/ActivityDateType.xml
+# Fields: code, name, description
+
 ACTIVITY_DATE_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Planned start', u'The date on which the activity is planned to start, for example the date of the first planned disbursement or when physical activity starts.'),
     (u'2', u'Actual start', u'The actual date the activity starts, for example the date of the first disbursement or when physical activity starts.'),
     (u'3', u'Planned End', u'The date on which the activity is planned to end, for example the date of the last planned disbursement or when physical activity is complete.'),
@@ -1176,15 +1193,17 @@ ACTIVITY_DATE_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/PolicyMarkerVocabulary.xml
+# Fields: code, name, description
+
 POLICY_MARKER_VOCABULARY = (
-    (u'code', u'name', u'description'),
     (u'1', u'OECD DAC CRS', u'The policy marker is an OECD DAC CRS policy marker, Reported in columns 20-23, 28-31 and 54 of CRS++ reporting format.'),
     (u'99', u'Reporting Organisation', u'The policy marker is one that is defined and tracked by the reporting organisation')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/ActivityStatus.xml
+# Fields: code, name, description
+
 ACTIVITY_STATUS = (
-    (u'code', u'name', u'description'),
     (u'1', u'Pipeline/identification', u'The activity is being scoped or planned '),
     (u'2', u'Implementation', u'The activity is currently being implemented'),
     (u'3', u'Completion', u'Physical activity is complete or the final disbursement has been made.'),
@@ -1194,16 +1213,18 @@ ACTIVITY_STATUS = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/TiedStatus.xml
+# Fields: code, name, description
+
 TIED_STATUS = (
-    (u'code', u'name', u'description'),
     (u'3', u'Partially tied', u'Official Development Assistance for which the associated goods and services must be procured from a restricted number of countries, which must however include substantially all aid recipient countries and can include the donor country.'),
     (u'4', u'Tied', u'Official grants or loans where procurement of the goods or services involved is limited to the donor country or to a group of countries which does not include substantially all aid recipient countries.'),
     (u'5', u'Untied', u'Untied aid is defined as loans and grants whose proceeds are fully and freely available to finance procurement from all OECD countries and substantially all developing countries.')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/CollaborationType.xml
+# Fields: code, name, description
+
 COLLABORATION_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Bilateral', u'Bilateral transactions are those undertaken by a donor, excluding core contributions to other organisations (codes 2 and 3 below). It includes transactions channelled through other organisations.'),
     (u'2', u'Multilateral', u'Multilateral contributions are those made to a recipient institution which:     i. conducts all or part of its activities in favour of development;     ii. is an international agency, institution or organisation whose members are governments, or a fund managed autonomously by such an agency; and     iii. pools contributions so that they lose their identity and become an integral part of its financial assets.'),
     (u'3', u'Bilateral, core contributions to NGOs and other private bodies / PPPs', u'Bilateral funds paid over to national and international non-governmental organisations (NGOs), Public Private Partnerships (PPPs), or other private bodies for use at their discretion.'),
@@ -1213,8 +1234,9 @@ COLLABORATION_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/OrganisationIdentifier.xml
+# Fields: code, name
+
 ORGANISATION_IDENTIFIER = (
-    (u'code', u'name'),
     (u'AT-1', u'Federal Ministry of Finance'),
     (u'AT-10', u'Ministry for Agriculture and Environment'),
     (u'AT-11', u'Ministry of Defense'),
@@ -1637,8 +1659,9 @@ ORGANISATION_IDENTIFIER = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/GeographicalPrecision.xml
+# Fields: code, name, description
+
 GEOGRAPHICAL_PRECISION = (
-    (u'code', u'name', u'description'),
     (u'1', u'Exact location', u'The coordinates corresponds to an exact location, such as a populated place or a hill. The code is also used for locations that join a location which is a line (such as a road or railroad). Lines are not coded only the points that connect lines. All points that are mentioned in the source are coded.'),
     (u'2', u'Near exact location', u'The location is mentioned in the source as being "near", in the "area" of, or up to 25 km away from an exact location. The coordinates refer to that adjacent, exact, location.'),
     (u'3', u'Second order administrative division', u'The location is, or lies in, a second order administrative division (ADM2), such as a district, municipality or commune'),
@@ -1651,8 +1674,9 @@ GEOGRAPHICAL_PRECISION = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/DisbursementChannel.xml
+# Fields: code, name, description
+
 DISBURSEMENT_CHANNEL = (
-    (u'code', u'name', u'description'),
     (u'1', u'Money is disbursed through central Ministry of Finance or Treasury', u'Money is disbursed through central Ministry of Finance or Treasury'),
     (u'2', u'Money is disbursed directly to the implementing institution and managed through a separate bank account', u'Money is disbursed directly to the implementing institution and managed through a separate bank account'),
     (u'3', u'Aid in kind: Donors utilise third party agencies, e.g. NGOs or management companies', u'Aid in kind: Donors utilise third party agencies, e.g. NGOs or management companies'),
@@ -1660,19 +1684,21 @@ DISBURSEMENT_CHANNEL = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/FlowType.xml
+# Fields: code, name, description
+
 FLOW_TYPE = (
-    (u'code', u'name', u'description'),
     (u'10', u'ODA', u'Aide Publique au Développement'),
     (u'20', u'OOF', u'Other Official Flows'),
     (u'30', u'Private NGO and other private sources', u'ONG et autres sources'),
-    (u'35', u'Private Market', u''),
+    (u'35', u'Private Market'),
     (u'40', u'Non flow', u'e.g. GNI'),
     (u'50', u'Other flows', u'e.g. non-ODA component of peacebuilding operations')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/SectorCategory.xml
+# Fields: code, name, description
+
 SECTOR_CATEGORY = (
-    (u'code', u'name', u'description'),
     (u'111', u'Education, level unspecified', u'Education sector policy, planning and programmes; aid to education ministries, administration and management systems; institution capacity building and advice; school management and governance; curriculum and materials development; unspecified education activities.'),
     (u'112', u'Basic education', u'Formal and non-formal primary education for children; all elementary and first cycle systematic instruction; provision of learning materials.'),
     (u'113', u'Secondary education', u'Second cycle systematic instruction at both junior and senior levels.'),
@@ -1713,15 +1739,17 @@ SECTOR_CATEGORY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/RegionVocabulary.xml
+# Fields: code, name, description
+
 REGION_VOCABULARY = (
-    (u'code', u'name', u'description'),
     (u'1', u'OECD DAC', u'Supra-national regions according to OECD DAC CRS recipient codes'),
     (u'2', u'UN', u'Supra-national regions maintained by UN Statistics Division')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/OrganisationRegistrationAgency.xml
+# Fields: code, category, url, name, description
+
 ORGANISATION_REGISTRATION_AGENCY = (
-    (u'code', u'category', u'url', u'name', u'description'),
     (u'AF-CBR', u'AF', u'http://acbr.gov.af/', u'Afghanistan Central Business Registry', u'Website not yet searchable '),
     (u'AF-MOE', u'AF', u'http://moec.gov.af/en', u'Ministry of Economy', u''),
     (u'AU-ABN', u'AU', u'http://abr.business.gov.au/', u'Australian Business Register', u''),
@@ -1772,7 +1800,7 @@ ORGANISATION_REGISTRATION_AGENCY = (
     (u'XM-DAC', u'XM', u'http://www.oecd.org/dac/stats/dacandcrscodelists.htm', u'OECD Development Assistance Committee', u'See Donor, Agency, and Delivery Channel codes'),
     (u'XM-OCHA', u'XM', u'http://www.unocha.org', u'United Nations Office for the Coordination of Humanitarian Affairs', u'OCHA is the part of the United Nations Secretariat responsible for bringing together humanitarian actors to ensure a coherent response to emergencies.'),
     (u'ZA-CIP', u'ZA', u'http://www.cipro.gov.za/', u'Companies and Intellectual Property Commission (CIPC)', u''),
-    (u'ZA-NPO', u'ZA', u'http://www.npo.gov.za/', u'Association for Non-Profit Organisations', u''),
+    (u'ZA-NPO', u'', u'ZA', u'http://www.npo.gov.za/', u'Association for Non-Profit Organisations'),
     (u'ZA-PBO', u'ZA', u'http://www.sars.gov.za/home.asp?pid=170', u'SA Revenue Service Tax Exemption Unit / Public Benefit Organisations', u''),
     (u'ZM-NRB', u'ZM', u'', u'Non Governmental Organisation Registration Board', u''),
     (u'ZM-PCR', u'ZM', u'http://www.pacra.org.zm/', u'Patents and Companies Registration Agency', u''),
@@ -1781,25 +1809,28 @@ ORGANISATION_REGISTRATION_AGENCY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/PolicySignificance.xml
+# Fields: code, name, description
+
 POLICY_SIGNIFICANCE = (
-    (u'code', u'name', u'description'),
     (u'0', u'not targeted', u'The score "not targeted" means that the activity was examined but found not to target the policy objective.'),
     (u'1', u'significant objective', u'Significant (secondary) policy objectives are those which, although important, were not the prime motivation for undertaking the activity.'),
     (u'2', u'principal objective', u'Principal (primary) policy objectives are those which can be identified as being fundamental in the design and impact of the activity and which are an explicit objective of the activity. They may be selected by answering the question "Would the activity have been undertaken without this objective?"'),
     (u'3', u'principal objective AND in support of an action programme', u'For desertification-related aid only'),
-    (u'4', u'Explicit primary objective', u'')
+    (u'4', u'Explicit primary objective')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/GeographicExactness.xml
+# Fields: code, name, description
+
 GEOGRAPHIC_EXACTNESS = (
-    (u'code', u'name', u'description'),
     (u'1', u'Exact', u'The designated geographic location is exact'),
     (u'2', u'Approximate', u'The designated geographic location is approximate')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/Sector.xml
+# Fields: code, category, name, description
+
 SECTOR = (
-    (u'code', u'category', u'name', u'description'),
     (u'11110', u'111', u'Education policy and administrative management', u'Education sector policy, planning and programmes; aid to education ministries,                administration and management systems; institution capacity building and advice; school                management and governance; curriculum and materials development; unspecified education                activities.'),
     (u'11120', u'111', u'Education facilities and training', u'Educational buildings, equipment, materials; subsidiary services to education                (boarding facilities, staff housing); language training; colloquia, seminars, lectures,                etc.'),
     (u'11130', u'111', u'Teacher training', u'Teacher education (where the level of education is unspecified); in-service and                pre-service training; materials development.'),
@@ -2009,19 +2040,21 @@ SECTOR = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/GeographicVocabulary.xml
+# Fields: code, url, name
+
 GEOGRAPHIC_VOCABULARY = (
-    (u'code', u'url', u'name', u'description'),
-    (u'A1', u'http://www.fao.org/geonetwork/srv/en/metadata.show?id=12691', u'Global Admininistrative Unit Layers', u''),
+    (u'A1', u'http://www.fao.org/geonetwork/srv/en/metadata.show?id=12691', u'Global Admininistrative Unit Layers'),
     (u'A2', u'http://www.unsalb.org/', u'UN Second Administrative Level Boundary Project', u'Note: the unsalb.org website is no longer accessible, and public access to the boundaries resources has been removed http://www.ungiwg.org/content/united-nations-international-and-administrative-boundaries-resources'),
-    (u'A3', u'http://www.gadm.org/', u'Global Administrative Areas', u''),
-    (u'A4', u'http://www.iso.org/iso/country_codes.htm', u'ISO Country (3166-1 alpha-2)', u''),
-    (u'G1', u'http://www.geonames.org/', u'Geonames', u''),
+    (u'A3', u'http://www.gadm.org/', u'Global Administrative Areas'),
+    (u'A4', u'http://www.iso.org/iso/country_codes.htm', u'ISO Country (3166-1 alpha-2)'),
+    (u'G1', u'http://www.geonames.org/', u'Geonames'),
     (u'G2', u'http://www.openstreetmap.org/', u'OpenStreetMap', u'Note: the code should be formed by prefixing the relevant OpenStreetMap ID with node/ way/ or relation/ as appropriate, e.g. node/1234567')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/FinanceType.xml
+# Fields: code, category, name
+
 FINANCE_TYPE = (
-    (u'code', u'category', u'name'),
     (u'110', u'100', u'Aid grant excluding debt reorganisation'),
     (u'111', u'100', u'Subsidies to national private investors'),
     (u'210', u'200', u'Interest subsidy grant in AF'),
@@ -2069,16 +2102,18 @@ FINANCE_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/ConditionType.xml
+# Fields: code, name, description
+
 CONDITION_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Policy', u'The condition attached requires a particular policy to be implemented by the recipient'),
     (u'2', u'Performance', u'The condition attached requires certain outputs or outcomes to be achieved by the recipient'),
     (u'3', u'Fiduciary', u'The condition attached requires use of certain public financial management or public accountability measures by the recipient')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/LocationType-category.xml
+# Fields: code, name
+
 LOCATION_TYPE_CATEGORY = (
-    (u'code', u'name'),
     (u'A', u'Administrative Region'),
     (u'H', u'Hydrographic'),
     (u'L', u'Area'),
@@ -2091,8 +2126,9 @@ LOCATION_TYPE_CATEGORY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/Language.xml
+# Fields: code, name
+
 LANGUAGE = (
-    (u'code', u'name'),
     (u'aa', u'Afar'),
     (u'ab', u'Abkhazian'),
     (u'ae', u'Avestan'),
@@ -2277,8 +2313,9 @@ LANGUAGE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/BudgetIdentifierVocabulary.xml
+# Fields: code, name, description
+
 BUDGET_IDENTIFIER_VOCABULARY = (
-    (u'code', u'name', u'description'),
     (u'1', u'IATI', u'The budget identifier reported uses IATI budget identifier categories'),
     (u'2', u'Country Chart of Accounts', u'The budget identifier reported corresponds to the recipient country chart of accounts'),
     (u'3', u'Other Country System', u'The budget identifier reported corresponds to a recipient country system other than the chart of accounts'),
@@ -2287,8 +2324,9 @@ BUDGET_IDENTIFIER_VOCABULARY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/Currency.xml
+# Fields: code, name
+
 CURRENCY = (
-    (u'code', u'name'),
     (u'AED', u'UAE Dirham'),
     (u'AFN', u'Afghani'),
     (u'ALL', u'Lek'),
@@ -2459,8 +2497,9 @@ CURRENCY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/CRSAddOtherFlags.xml
+# Fields: code, name, description
+
 C_R_S_ADD_OTHER_FLAGS = (
-    (u'code', u'name', u'description'),
     (u'1', u'Free standing technical cooperation', u'Free standing technical cooperation (Col 24 in CRS++ Reporting format)'),
     (u'2', u'Programme-based approach', u'Programme-based approach (Col 25 in CRS++ Reporting format)'),
     (u'3', u'Investment project', u'Investment project (Col 26 in CRS++ Reporting format)'),
@@ -2468,8 +2507,9 @@ C_R_S_ADD_OTHER_FLAGS = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/ActivityScope.xml
+# Fields: code, name, description
+
 ACTIVITY_SCOPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Global', u'The activity scope is global'),
     (u'2', u'Regional', u'The activity scope is a supranational region'),
     (u'3', u'Multi-national', u'The activity scope covers multiple countries, that dont constitute a region'),
@@ -2481,8 +2521,9 @@ ACTIVITY_SCOPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/Region.xml
+# Fields: code, name
+
 REGION = (
-    (u'code', u'name'),
     (u'88', u'States Ex-Yugoslavia unspecified'),
     (u'89', u'Europe, regional'),
     (u'189', u'North of Sahara, regional'),
@@ -2503,27 +2544,30 @@ REGION = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/OtherIdentifierType.xml
+# Fields: code, name
+
 OTHER_IDENTIFIER_TYPE = (
-    (u'code', u'name', u'description'),
-    (u'A1', u'Reporting Organisations internal activity identifier', u''),
-    (u'A2', u'CRS Activity identifier', u''),
+    (u'A1', u'Reporting Organisations internal activity identifier'),
+    (u'A2', u'CRS Activity identifier'),
     (u'A3', u'Previous Activity Identifier', u'The standard insists that once an activity has been reported to IATI its identifier MUST NOT be changed, even if the reporting organisation changes its organisation identifier. There may be exceptional circumstances in which this rule cannot be followed, in which case the previous identifier should be reported using this code.'),
-    (u'A9', u'Other Activity Identifier', u''),
-    (u'B1', u'Previous Reporting Organisation Identifier', u''),
-    (u'B9', u'Other Organisation Identifier', u'')
+    (u'A9', u'Other Activity Identifier'),
+    (u'B1', u'Previous Reporting Organisation Identifier'),
+    (u'B9', u'Other Organisation Identifier')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/PublisherType.xml
+# Fields: code, name, description
+
 PUBLISHER_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Aid Provider', u'A government, organisation, agency or institution that provides aid funds.'),
     (u'2', u'Aid Recipient', u'A government, organisation, agency or institution that recieves aid funds.'),
     (u'3', u'Aggregator', u'An organisation that collects and reproduces information from other providers or recipients')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/OrganisationRole.xml
+# Fields: code, name, description
+
 ORGANISATION_ROLE = (
-    (u'code', u'name', u'description'),
     (u'1', u'Funding', u'The government or organisation which provides funds to the activity. '),
     (u'2', u'Accountable', u'An organisation responsible for oversight of the activity and its outcomes'),
     (u'3', u'Extending', u'An organisation that manages the budget and direction of an activity on behalf of the funding organisation'),
@@ -2531,8 +2575,9 @@ ORGANISATION_ROLE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/BudgetIdentifier.xml
+# Fields: code, category, name
+
 BUDGET_IDENTIFIER = (
-    (u'code', u'category', u'name'),
     (u'1.1.1', u'1.1', u'Executive - executive'),
     (u'1.2.1', u'1.2', u'Legislative - legislative'),
     (u'1.3.1', u'1.3', u'Accountability - macroeconomic policy'),
@@ -2689,8 +2734,9 @@ BUDGET_IDENTIFIER = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/FinanceType-category.xml
+# Fields: code, name, description
+
 FINANCE_TYPE_CATEGORY = (
-    (u'code', u'name', u'description'),
     (u'100', u'GRANT', u'Transfers in cash or in kind for which no legal debt is incurred by the recipient.'),
     (u'200', u'INTEREST SUBSIDY', u'Subsidies to soften the terms of private export credits, or loans or credits by the banking sector.'),
     (u'300', u'CAPITAL SUBSCRIPTION', u'Payments to multilateral agencies in the form of notes and similar instruments, unconditionally cashable at sight by the recipient institutions.'),
@@ -2704,8 +2750,9 @@ FINANCE_TYPE_CATEGORY = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/DescriptionType.xml
+# Fields: code, name, description
+
 DESCRIPTION_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'General', u'Unstructured, long description of the activity '),
     (u'2', u'Objectives', u'Specific objectives for the activity, e.g. taken from logical framework'),
     (u'3', u'Target Groups', u'Details of groups that are intended to benefit from the activity'),
@@ -2713,21 +2760,23 @@ DESCRIPTION_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/SectorVocabulary.xml
+# Fields: code, url, name, description
+
 SECTOR_VOCABULARY = (
-    (u'code', u'url', u'name', u'description'),
     (u'1', u'http://www.oecd.org/dac/stats/dacandcrscodelists.htm', u'OECD DAC CRS Purpose Codes (5 digit)', u'The sector reported corresponds to an OECD DAC CRS 5-digit purpose code'),
     (u'2', u'http://www.oecd.org/dac/stats/dacandcrscodelists.htm', u'OECD DAC CRS Purpose Codes (3 digit)', u'The sector reported corresponds to an OECD DAC CRS 3-digit purpose code'),
     (u'3', u'http://unstats.un.org/unsd/cr/registry/regcst.asp?Cl=4', u'Classification of the Functions of Government (UN)', u'The sector reported corresponds to the UN Classification of the Functions of Government (CoFoG)'),
     (u'4', u'http://ec.europa.eu/eurostat/ramon/nomenclatures/index.cfm?TargetUrl=LST_NOM_DTL&StrNom=NACE_REV2&StrLanguageCode=EN', u'Statistical classification of economic activities in the European Community', u'The sector reported corresponds to the statistical classifications of economic activities in the European Community'),
     (u'5', u'http://nccs.urban.org/classification/NTEE.cfm', u'National Taxonomy for Exempt Entities (USA)', u'The sector reported corresponds to the National Taxonomy for Exempt Entities (NTEE) - USA'),
-    (u'6', u'', u'AidData', u'The sector reported corresponds to AidData classifications'),
-    (u'99', u'', u'Reporting Organisation', u'The sector reported corresponds to a sector vocabulary maintained by the reporting organisation for this activity'),
-    (u'98', u'', u'Reporting Organisation 2', u'The sector reported corresponds to a sector vocabulary maintained by the reporting organisation for this activity (if they are referencing more than one)')
+    (u'6', u'AidData', u'The sector reported corresponds to AidData classifications'),
+    (u'99', u'Reporting Organisation', u'The sector reported corresponds to a sector vocabulary maintained by the reporting organisation for this activity'),
+    (u'98', u'Reporting Organisation 2', u'The sector reported corresponds to a sector vocabulary maintained by the reporting organisation for this activity (if they are referencing more than one)')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/FileFormat.xml
+# Fields: code, category
+
 FILE_FORMAT = (
-    (u'code', u'category'),
     (u'application/1d-interleaved-parityfec', u'application'),
     (u'application/3gpp-ims+xml', u'application'),
     (u'application/activemessage', u'application'),
@@ -4175,8 +4224,9 @@ FILE_FORMAT = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/GeographicLocationClass.xml
+# Fields: code, name, description
+
 GEOGRAPHIC_LOCATION_CLASS = (
-    (u'code', u'name', u'description'),
     (u'1', u'Administrative Region', u'The designated geographic location is an administrative region (state, county, province, district, municipality etc.)'),
     (u'2', u'Populated Place', u'The designated geographic location is a populated place (town, village, farm etc.)'),
     (u'3', u'Structure', u'The designated geopgraphic location is a structure (such as a school or a clinic)'),
@@ -4184,26 +4234,29 @@ GEOGRAPHIC_LOCATION_CLASS = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/DocumentCategory-category.xml
+# Fields: code, name, description
+
 DOCUMENT_CATEGORY_CATEGORY = (
-    (u'code', u'name', u'description'),
     (u'A', u'Activity Level', u'The document is relevant to a specific activity'),
     (u'B', u'Organisation Level', u'The document is relevant to the organisation as a whole')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/Version.xml
+# Fields: code, url
+
 VERSION = (
-    (u'code', u'url'),
     (u'1.01', u'http://iatistandard.org/101/'),
     (u'1.02', u'http://iatistandard.org/102/'),
     (u'1.03', u'http://iatistandard.org/103/'),
     (u'1.04', u'http://iatistandard.org/104/'),
     (u'1.05', u'http://iatistandard.org/105/'),
-    (u'2.01', u'')
+    (u'2.01')
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/ContactType.xml
+# Fields: code, name, description
+
 CONTACT_TYPE = (
-    (u'code', u'name', u'description'),
     (u'1', u'General Enquiries', u'General Enquiries'),
     (u'2', u'Project Management', u'Project Management'),
     (u'3', u'Financial Management', u'Financial Management'),
@@ -4211,8 +4264,9 @@ CONTACT_TYPE = (
 )
 
 # From http://iatistandard.org/201/codelists/downloads/clv2/xml/AidType-category.xml
+# Fields: code, name, description
+
 AID_TYPE_CATEGORY = (
-    (u'code', u'name', u'description'),
     (u'A', u'Budget support', u'For contributions under this category, the donor relinquishes the exclusive control of its funds by sharing the responsibility with the recipient.'),
     (u'B', u'Core contributions and pooled programmes and funds', u'For contributions under this category, the donor relinquishes the exclusive control of its funds by sharing the responsibility with other stakeholders (other donors, NGOs, multilateral institutions, Public Private Partnerships). The category covers both core contributions (B01 and B02), and pooled contributions with a specific earmarking (B03 and B04).'),
     (u'C', u'Project-type interventions', u'N.B. Within this category, members able to do so are requested to report the aggregate amount used for financing donor experts/consultants on Table DAC1. Where the activity consists solely of experts costs, report under category D.'),

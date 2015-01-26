@@ -70,33 +70,34 @@ def codelist_to_tuples(xml_string, codelist, version):
         codelist_tree = tree.find('codelist-items').findall('codelist-item')
 
     fields = []
-    for field in list(tree.find(codelist_lookup)):
-        unicode_field_tag = "u'" + field.tag + "'"
-        if not unicode_field_tag in fields:
-            fields.append(unicode_field_tag)
-    fields = ', '.join(fields)
+    for codelist_field in list(codelist_tree):
+        for codelist_field_item in codelist_field.findall('*'):
+            unicode_field_tag = "u'" + codelist_field_item.tag + "'"
+            if not unicode_field_tag in fields:
+                fields.append(unicode_field_tag)
+    fields_string = ', '.join(fields)
 
     codelist_content = []
     for codelist_field in list(codelist_tree):
-        codelist_field_content = []
+        codelist_field_content = ["" for _field in fields]
         codelist_tags = []
         for codelist_field_item in codelist_field.findall('*'):
             if not codelist_field_item.tag in codelist_tags:
                 codelist_tags.append(codelist_field_item.tag)
+                list_index = fields.index("u'" + codelist_field_item.tag + "'")
                 if codelist_field_item.text:
                     # Make country names look nice
                     if codelist == "Country" and codelist_field_item.tag == "name":
-                        codelist_field_content.append(prettify_country_name(codelist_field_item.text))
+                        codelist_field_content[list_index] = prettify_country_name(codelist_field_item.text)
                     else:
-                        codelist_field_content.append(codelist_field_item.text.replace("\n", "").replace("\r", ""))
-                else:
-                    codelist_field_content.append("")
+                        codelist_field_content[list_index] = codelist_field_item.text.\
+                            replace("\n", "").replace("\r", "")
         codelist_content.append(codelist_field_content)
     tuples = '),\n    ('.join([', '.join(stringify(row)) for row in codelist_content])
 
     identifier = pythonify_codelist_name(codelist)
 
-    return '%s = (\n    (%s),\n    (%s)\n)' % (identifier, fields, tuples)
+    return '%s = (\n    (%s),\n    (%s)\n)' % (identifier, fields_string, tuples)
 
 
 def get_codelists(version, url):

@@ -58,7 +58,7 @@ INDICATOR_MEASURE = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/BudgetType.xml
 BUDGET_TYPE = (
-    (u'code', u'name', u'name'),
+    (u'code', u'name'),
     (u'1', u'Original'),
     (u'2', u'Revised')
 )
@@ -1096,17 +1096,17 @@ LOCATION_TYPE = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/Vocabulary.xml
 VOCABULARY = (
-    (u'code', u'name', u'name'),
-    (u'ADT', u'AidData'),
+    (u'code', u'name', u'url'),
+    (u'ADT', u'AidData', u''),
     (u'COFOG', u'Classification of the Functions of Government (UN)', u'http://unstats.un.org/unsd/cr/registry/regcst.asp?Cl=4'),
     (u'DAC', u'OECD Development Assistance Committee', u'http://www.oecd.org/dac/stats/dacandcrscodelists.htm'),
     (u'DAC-3', u'OECD Development Assistance Committee 3 digit codes', u'http://www.oecd.org/dac/stats/dacandcrscodelists.htm'),
-    (u'ISO', u'International Organization for Standardization'),
+    (u'ISO', u'International Organization for Standardization', u''),
     (u'NACE', u'Statistical classification of economic activities in the European Community', u'http://ec.europa.eu/eurostat/ramon/nomenclatures/index.cfm?TargetUrl=LST_NOM_DTL&StrNom=NACE_REV2&StrLanguageCode=EN'),
     (u'NTEE', u'National Taxonomy for Exempt Entities (USA)', u'http://nccs.urban.org/classification/NTEE.cfm'),
-    (u'RO', u'Reporting Organisation (i.e. maintained by the organisation referred to in the <reporting-org> element.'),
-    (u'RO2', u'Reporting Organisation (2) - where reporting organisations have more than one vocabulary that they wish to reference'),
-    (u'WB', u'World Bank')
+    (u'RO', u'Reporting Organisation (i.e. maintained by the organisation referred to in the <reporting-org> element.', u''),
+    (u'RO2', u'Reporting Organisation (2) - where reporting organisations have more than one vocabulary that they wish to reference', u''),
+    (u'WB', u'World Bank', u'')
 )
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/BudgetIdentifierSector-category.xml
@@ -1137,7 +1137,7 @@ GEOGRAPHIC_LOCATION_REACH = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/ResultType.xml
 RESULT_TYPE = (
-    (u'code', u'name', u'name'),
+    (u'code', u'name'),
     (u'1', u'Output'),
     (u'2', u'Outcome'),
     (u'3', u'Impact'),
@@ -1156,7 +1156,7 @@ RELATED_ACTIVITY_TYPE = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/OrganisationType.xml
 ORGANISATION_TYPE = (
-    (u'code', u'name', u'name'),
+    (u'code', u'name'),
     (u'10', u'Government'),
     (u'15', u'Other Public Sector'),
     (u'21', u'International NGO'),
@@ -1179,7 +1179,7 @@ GAZETTEER_AGENCY = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/ActivityDateType.xml
 ACTIVITY_DATE_TYPE = (
-    (u'code', u'name', u'name'),
+    (u'code', u'name'),
     (u'start-actual', u'The actual start date, such as date of first disbursement'),
     (u'end-actual', u'The actual end date, such as date of last disbursement'),
     (u'start-planned', u'The planned start date as recorded in project documentation. Can be date of signature of activity agreement or approval by relevant body'),
@@ -1188,7 +1188,7 @@ ACTIVITY_DATE_TYPE = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/ActivityStatus.xml
 ACTIVITY_STATUS = (
-    (u'code', u'name', u'name'),
+    (u'code', u'name'),
     (u'1', u'Pipeline/identification'),
     (u'2', u'Implementation'),
     (u'3', u'Completion'),
@@ -1207,7 +1207,7 @@ TIED_STATUS = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/CollaborationType.xml
 COLLABORATION_TYPE = (
-    (u'code', u'name', u'name', u'description'),
+    (u'code', u'name', u'description'),
     (u'1', u'Bilateral', u'Bilateral transactions are those undertaken by a donor, excluding core contributions to other organisations (codes 2 and 3 below). It includes transactions channelled through other organisations.'),
     (u'2', u'Multilateral', u'Multilateral contributions are those made to a recipient institution which:     i. conducts all or part of its activities in favour of development;     ii. is an international agency, institution or organisation whose members are governments, or a fund managed autonomously by such an agency; and     iii. pools contributions so that they lose their identity and become an integral part of its financial assets.'),
     (u'3', u'Bilateral, core contributions to NGOs and other private bodies / PPPs', u'Bilateral funds paid over to national and international non-governmental organisations (NGOs), Public Private Partnerships (PPPs), or other private bodies for use at their discretion.'),
@@ -1665,11 +1665,11 @@ DISBURSEMENT_CHANNEL = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/FlowType.xml
 FLOW_TYPE = (
-    (u'code', u'name', u'name', u'description'),
+    (u'code', u'name', u'description'),
     (u'10', u'ODA', u'Aide Publique au Développement'),
     (u'20', u'OOF', u'Other Official Flows'),
     (u'30', u'Private NGO and other private sources', u'ONG et autres sources'),
-    (u'35', u'Private Market'),
+    (u'35', u'Private Market', u''),
     (u'40', u'Non flow', u'e.g. GNI'),
     (u'50', u'Other flows', u'e.g. non-ODA component of peacebuilding operations')
 )
@@ -1776,7 +1776,7 @@ ORGANISATION_REGISTRATION_AGENCY = (
     (u'XM-DAC', u'XM', u'http://www.oecd.org/dac/stats/dacandcrscodelists.htm', u'OECD Development Assistance Committee', u'See Donor, Agency, and Delivery Channel codes'),
     (u'XM-OCHA', u'XM', u'http://www.unocha.org', u'United Nations Office for the Coordination of Humanitarian Affairs', u'OCHA is the part of the United Nations Secretariat responsible for bringing together humanitarian actors to ensure a coherent response to emergencies.'),
     (u'ZA-CIP', u'ZA', u'http://www.cipro.gov.za/', u'Companies and Intellectual Property Commission (CIPC)', u''),
-    (u'ZA-NPO', u'', u'ZA', u'http://www.npo.gov.za/', u'Association for Non-Profit Organisations'),
+    (u'ZA-NPO', u'ZA', u'http://www.npo.gov.za/', u'Association for Non-Profit Organisations', u''),
     (u'ZA-PBO', u'ZA', u'http://www.sars.gov.za/home.asp?pid=170', u'SA Revenue Service Tax Exemption Unit / Public Benefit Organisations', u''),
     (u'ZM-NRB', u'ZM', u'', u'Non Governmental Organisation Registration Board', u''),
     (u'ZM-PCR', u'ZM', u'http://www.pacra.org.zm/', u'Patents and Companies Registration Agency', u''),
@@ -1791,7 +1791,7 @@ POLICY_SIGNIFICANCE = (
     (u'1', u'significant objective', u'Significant (secondary) policy objectives are those which, although important, were not the prime motivation for undertaking the activity.'),
     (u'2', u'principal objective', u'Principal (primary) policy objectives are those which can be identified as being fundamental in the design and impact of the activity and which are an explicit objective of the activity. They may be selected by answering the question "Would the activity have been undertaken without this objective?"'),
     (u'3', u'principal objective AND in support of an action programme', u'For desertification-related aid only'),
-    (u'4', u'Explicit primary objective')
+    (u'4', u'Explicit primary objective', u'')
 )
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/GeographicExactness.xml
@@ -2014,12 +2014,12 @@ SECTOR = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/GeographicVocabulary.xml
 GEOGRAPHIC_VOCABULARY = (
-    (u'code', u'name', u'url'),
-    (u'A1', u'Global Admininistrative Unit Layers', u'http://www.fao.org/geonetwork/srv/en/metadata.show?id=12691'),
-    (u'A2', u'UN Second Administrative Level Boundary Project', u'Note: the unsalb.org website is no longer accessible, and public access to the boundaries resources has been removed http://www.ungiwg.org/content/united-nations-international-and-administrative-boundaries-resources', u'http://www.unsalb.org/'),
-    (u'A3', u'Global Administrative Areas', u'http://www.gadm.org/'),
-    (u'A4', u'ISO Country (3166-1 alpha-2)', u'http://www.iso.org/iso/country_codes.htm'),
-    (u'G1', u'Geonames', u'http://www.geonames.org/'),
+    (u'code', u'name', u'url', u'description'),
+    (u'A1', u'Global Admininistrative Unit Layers', u'http://www.fao.org/geonetwork/srv/en/metadata.show?id=12691', u''),
+    (u'A2', u'UN Second Administrative Level Boundary Project', u'http://www.unsalb.org/', u'Note: the unsalb.org website is no longer accessible, and public access to the boundaries resources has been removed http://www.ungiwg.org/content/united-nations-international-and-administrative-boundaries-resources'),
+    (u'A3', u'Global Administrative Areas', u'http://www.gadm.org/', u''),
+    (u'A4', u'ISO Country (3166-1 alpha-2)', u'http://www.iso.org/iso/country_codes.htm', u''),
+    (u'G1', u'Geonames', u'http://www.geonames.org/', u''),
     (u'G2', u'OpenStreetMap', u'http://www.openstreetmap.org/', u'Note: the code should be formed by prefixing the relevant OpenStreetMap ID with node/ way/ or relation/ as appropriate, e.g. node/1234567')
 )
 
@@ -2477,7 +2477,7 @@ ACTIVITY_SCOPE = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/Region.xml
 REGION = (
-    (u'code', u'name', u'name'),
+    (u'code', u'name'),
     (u'88', u'States Ex-Yugoslavia unspecified'),
     (u'89', u'Europe, regional'),
     (u'189', u'North of Sahara, regional'),
@@ -2499,7 +2499,7 @@ REGION = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/PublisherType.xml
 PUBLISHER_TYPE = (
-    (u'code', u'name', u'name'),
+    (u'code', u'name'),
     (u'1', u'Aid Provider'),
     (u'2', u'Aid Recipient'),
     (u'3', u'Aggregator')
@@ -2507,7 +2507,7 @@ PUBLISHER_TYPE = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/OrganisationRole.xml
 ORGANISATION_ROLE = (
-    (u'code', u'name', u'name', u'description'),
+    (u'code', u'name', u'description'),
     (u'Accountable', u'Accountable', u'The government agency, civil society or private sector institution which is accountable for the implementation of the activity.'),
     (u'Extending', u'Extending', u'The government entity (central, state or local government agency or department), or agency within an institution, financing the activity from its own budget'),
     (u'Funding', u'Funding', u'The country or institution which provides the funds.'),
@@ -2689,7 +2689,7 @@ FINANCE_TYPE_CATEGORY = (
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/DescriptionType.xml
 DESCRIPTION_TYPE = (
-    (u'code', u'name', u'name', u'description'),
+    (u'code', u'name', u'description'),
     (u'1', u'General', u'Long description of the activity with no particular structure'),
     (u'2', u'Objectives', u'Objectives for the activity, for example from a logical framework'),
     (u'3', u'Target Groups', u'Statement of groups targeted to benefit from the activity'),
@@ -4169,7 +4169,7 @@ VERSION = (
     (u'1.03', u'http://iatistandard.org/103/'),
     (u'1.04', u'http://iatistandard.org/104/'),
     (u'1.05', u'http://iatistandard.org/105/'),
-    (u'2.01')
+    (u'2.01', u'')
 )
 
 # From http://iatistandard.org/105/codelists/downloads/clv2/xml/AidTypeFlag.xml
