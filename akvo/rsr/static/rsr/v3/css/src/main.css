@@ -477,12 +477,12 @@ h4.detailedInfo {
   filter: gray;
   filter: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' height='0'><filter id='greyscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0' /></filter></svg>#greyscale");
   transition: all 0.2s ease-in; }
-  .main-list.organisations ul li img:hover {
-    -webkit-filter: grayscale(0);
-    -webkit-filter: grayscale(0);
-    filter: gray;
-    filter: grayscale(0);
-    filter: url(desaturate.svg); }
+.main-list.organisations ul li:hover img {
+  -webkit-filter: grayscale(0);
+  -webkit-filter: grayscale(0);
+  filter: gray;
+  filter: grayscale(0);
+  filter: url(desaturate.svg); }
 
 /* PROJECT */
 header.projectHeader {
@@ -666,5 +666,11 @@ div.textBlock .udpateComponent {
   margin: 30px; }
 
 /* Tooltips */
-.tooltip-inner {
-  max-width: 350px; }
+.tooltip .tooltip-inner {
+  max-width: 350px;
+  padding: 15px;
+  background: rgba(32, 32, 36, 0.05);
+  color: #202024;
+  box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
+  .tooltip .tooltip-inner a {
+    font-weight: bold; }

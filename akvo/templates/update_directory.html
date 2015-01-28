@@ -2,11 +2,9 @@
 {% load i18n maps markup_tags rsr_utils bootstrap3 compressed %}
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
-
 <section id="map" class="touch-navbar">
     {% coll_map page '100%' '100%' %}
 </section>
-
 <section id="search-filter">
   <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
     <div class="container-fluid">
@@ -63,7 +61,7 @@
       <ul class="container">
         {% for u in page %}
         <li class="row updateAsset">
-          <div class="col-sm-3 col-md-2 col-xs-4">
+          <div class="col-sm-3 col-xs-4">
             <a href="{% url 'update-main' u.project.id u.id %}">
               {% if u.video %}
                 {% vid_img u 160 160 u.title %}
@@ -72,15 +70,13 @@
               {% endif %}
             </a>
           </div>
-
-          <div class="col-sm-4 col-xs-8 col-md-4">
-
+          <div class="col-sm-4 col-xs-8">
             <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
             <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><i class="fa fa-folder-o"></i> {{u.project.title}}</a>
-            <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>                  
+            <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span> 
                 {% if u.user.approved_organisations %}
                   {% with org=u.user.approved_organisations.0 %}
-                    (<a href="{% url 'organisation-main' org.pk %}"><i class="fa fa-users"></i>  {{org.long_name}}</a>)
+                    ( <a href="{% url 'organisation-main' org.pk %}"><i class="fa fa-users"></i>  {{org.long_name}}</a> )
                   {% endwith %}
                 {% endif %}
             </div>
@@ -91,7 +87,6 @@
             </div>
             <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.created_at|date:"d-M-Y"}}</div>
           </div>
-
           <div class="excerpt col-sm-5 col-xs-12 hidden-xs">
             {% autoescape off %}
               {{ u.text|force_escape|urlize|apply_markup:"markdown" }}

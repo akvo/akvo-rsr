@@ -588,7 +588,9 @@ h4.detailedInfo {
                     filter: gray;
                     filter: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' height='0'><filter id='greyscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0' /></filter></svg>#greyscale");
                     transition: all 0.2s ease-in;
-                    &:hover {
+                }
+                &:hover {
+                    img {
                         -webkit-filter: grayscale(0); 
                         -webkit-filter: grayscale(0);
                         filter: gray; filter: grayscale(0);
@@ -838,6 +840,17 @@ div.textBlock {
 }
 
 /* Tooltips */
-.tooltip-inner {
-    max-width: 350px;
+.tooltip {
+    .tooltip-arrow {
+    }
+    .tooltip-inner {
+        max-width: 350px;
+        padding:15px;
+        background: rgba($akvoBlack, 0.05);
+        color:$akvoBlack;
+        box-shadow: 0 0 2px rgba($akvoBlack, 0.3);
+        a {
+            font-weight:bold;
+        }
+    }
 }
