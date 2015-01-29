@@ -9,7 +9,15 @@
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="Akvo RSR"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{{request.path}}"/>
-    {% if project %}
+    {% if update %}
+    <meta property="og:title" content="{{update.title}} - {{project.title}}"/>
+    <meta property="og:description" content="{{update.text|force_escape|urlize}}"/>
+    {% if update.photo %}
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{update.photo.url}}"/>
+    {% else %}
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/v3/img/rsrLogo.svg"/>
+    {% endif %}
+    {% elif project %}
     <meta property="og:title" content="{{project.title}}"/>
     <meta property="og:description" content="{{project.subtitle}}"/>
     {% if project.current_image %}
