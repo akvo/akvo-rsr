@@ -4,53 +4,63 @@
 
 {% block title %}{{project.title}}{% endblock title%}
 
-{% block head_js %}
-{% endblock head_js %}
-
 {% block maincontent %}
-
 <article class="touch-navbar project-container">
     {% include "partials/project_header.html" %}
     <section class="projectFinancial">
 	    <div class="container">
 	    	<div class="row verticalPadding">
-	    		<h4 class="">Project financial details:</h4>
-			    <dl class="dl-horizontal">
-			    	<dt>Building material:</dt><dd><span class="currency">€</span>30,000</dd>
-			    	<dt>Employment:</dt><dd><span class="currency">€</span>30,000</dd>
-			    	<dt>Maintenance:</dt><dd><span class="currency">€</span>30,000</dd>
-			    	<dt>Management:</dt><dd><span class="currency">€</span>30,000</dd>
-			    	<dt>Training:</dt><dd><span class="currency">€</span>30,000</dd>
-			    	<dt class="totalFinance">Total:</dt><dd class="totalFinance"><span class="currency">€</span>1,000,000</dd>
-			    </dl>
+                <div class="col-sm-4">
+                    <h4 class="">{% trans "Project financial details" %}:</h4>
+                    <dl class="dl-horizontal">
+                        {% for budget_item in project.budget_items.all %}
+                        <dt>{{budget_item.label.label}}:</dt><dd><span class="currency">{% if project.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{budget_item.amount}}</dd>
+                        {% endfor %}
+                        <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance"><span class="currency">{% if project.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{project.budget}}</dd>
+                    </dl>
+                </div>
+                <div class="col-sm-4">
+                    <h4 class="">{% trans "Project funding" %}:</h4>
+                    <dl class="dl-horizontal">
+                        <dt>{% trans "Budget" %}:</dt><dd><span class="currency">{% if project.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{project.budget}}</dd>
+                        <dt>{% trans "Funded" %}:</dt><dd><span class="currency">{% if project.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{project.funds}}</dd>
+                        <dt class="totalFinance">{% trans "Funds needed" %}:</dt><dd class="totalFinance"><span class="currency">{% if project.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{project.funds_needed}}</dd>
+                    </dl>
+                </div>
+                <div class="col-sm-4">
+                    <h4 class="">{% trans "Current funders" %}:</h4>
+                    {% for partnership in project.funding_partnerships %}
+                    <dl class="dl-horizontal">
+                        <dt><a href="{% url 'organisation-main' partnership.organisation.pk %}">{% img partnership.organisation 80 60 partnership.organisation.name %}</a></dt>
+                        <dd>
+                            <a href="{% url 'organisation-main' partnership.organisation.pk %}">{{partnership.organisation}}</a>
+                            <br><span class="currency">{% if project.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{partnership.funding_amount}}
+                        </dd>
+                    </dl>
+                    {% endfor %}
+                    <h4>{% trans "Donations" %}:</h4>
+                    <dl class="dl-horizontal">
+                        {% for donation in project.all_donations %}
+                        <dt>{% if donation.is_anonymous %}{% trans "Anonymous" %}{% else %}{{donation.name}}{% endif %}:</dt><dd><span class="currency">{% if project.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{donation.amount}}</dd>
+                        {% empty %}
+                        <dt>{% trans "No donations" %}</dt><dd></dd>
+                        {% endfor %}
+                        {% if project.all_donations %}
+                        <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance"><span class="currency">{% if project.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{project.all_donations_amount}}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
 			</div>
 			<div class="row verticalPadding">
-	    		<h4 class="">Project transactions:</h4>
-	    		<p class="small noInfoBlock">No info for this project</p>
-			</div>
-			<div class="row verticalPadding">
-	    		<dl><dt><h4 class="">IATI ID:</h4></dt><dd><a href="#">321354</a></dd></dl>
-	    		
+	    		<h4 class="">{% trans "Project transactions" %}:</h4>
+                {% for transaction in project.transactions.all %}
+                <dt>{{transaction.description}}:</dt><dd><span class="currency">{% if transaction.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{transaction.value}}</dd>
+                {% empty %}
+	    		<p class="small noInfoBlock">{% trans "No transactions for this project" %}</p>
+                {% endfor %}
 			</div>
 	    </div>
 	</section>
     {% include "partials/project_footer.html" %}
 </article>
 {% endblock maincontent %}
-
-{% block js %}
-  {{ block.super }}
-
-
-  {% compressed_js 'rsr_v3_react_project_main' %}
-{% endblock js %}
-
-{% block jq %}
-  {{ block.super }}
-
-  {# Tooltip #}
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip({html: true, delay: { "show": 0, "hide": 1000 }})
-  });
-
-{% endblock jq %}
