@@ -11,15 +11,21 @@
                 </div>
             </div>
             <div class="col-sm-4 shareBlock">
-                <div>
+                <div class="row">
                     <nav>
-                        <a href="#" class="btn btn-primary"><i class="fa fa-lightbulb-o"></i> Follow project</a>
-                        {% url 'project-report' project.pk as report_url %}
-                        {% if not request.get_full_path == report_url %}
-                        <a href="{% url 'project-report' project.pk %}" class="fullPdf"><i class="fa fa-file-text-o"></i> Show full data report</a>
-                        {% else %}
-                        <a href="javascript:window.print();" class="btn"><i class="fa fa-print"></i> Print this page</a>
-                        {% endif %}
+                        <div class="col-xs-12">
+                            <a href="#" class="btn btn-primary" style="display: none;"><i class="fa fa-lightbulb-o"></i> Follow project</a>
+                            <a id="btn-fbShare" href="#" class="btn btn-primary"><i class="fa fa-facebook-official fa-lg"></i> Share</a>
+                            <a id="btn-twShare" href="#" class="btn btn-primary"><i class="fa fa-twitter-square fa-lg"></i> Share</a>
+                            <div class="col-xs-12 reportPdf">
+                                {% url 'project-report' project.pk as report_url %}
+                                {% if not request.get_full_path == report_url %}
+                                <a href="{% url 'project-report' project.pk %}" class="fullPdf"><i class="fa fa-file-text-o"></i> Show full data report</a>
+                                {% else %}
+                                <a href="javascript:window.print();" class="btn"><i class="fa fa-print"></i> Print this page</a>
+                                {% endif %}
+                            </div>
+                        </div>
                     </nav>
                 </div>
             </div>

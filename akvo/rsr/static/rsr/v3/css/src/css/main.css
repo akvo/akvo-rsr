@@ -11,7 +11,7 @@
         Author:         Loïc Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
-/* Colours
+                        /* Colours
 ---------------------------------------------------------------------------------*/
 /* Akvo Primary Colours:    */
 /* Akvo Purplish Blue */
@@ -47,11 +47,16 @@ body {
   color: #394c50;
   line-height: 1.42857;
   text-rendering: optimizelegibility;
-  font-family: 'Open Sans', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 80px; }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #2c2a74; }
 
@@ -72,7 +77,7 @@ a, a:link, a:visited {
   color: rgba(44, 42, 116, 0.2); }
 
 em {
-  font-family: 'Dancing Script', Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+  font-family: "Dancing Script", Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 1.2em;
   margin: 0 5px 0em 0em; }
 
@@ -115,7 +120,6 @@ a.moreLink {
   .col-ty-12 {
     float: none;
     width: 100%; } }
-
 a.btn-primary, button.btn-primary {
   border: 1px solid #0ca9ff;
   color: white;
@@ -166,11 +170,12 @@ span.twitter-typeahead .tt-suggestion > p {
   padding: 3px 20px;
   clear: both;
   font-weight: normal;
-  line-height: 1.42857;
+  line-height: 1.42857143;
   color: #333333;
   white-space: nowrap; }
 
-span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
+span.twitter-typeahead .tt-suggestion > p:hover,
+span.twitter-typeahead .tt-suggestion > p:focus {
   color: #ffffff;
   text-decoration: none;
   outline: 0;
@@ -235,7 +240,7 @@ nav.navbar-fixed-top {
         background: #72cdff; }
   nav.navbar-fixed-top .navbar-collapse {
     /*background:white;
-        border-top:1px solid rgb(228,228,228);*/ }
+    border-top:1px solid rgb(228,228,228);*/ }
   nav.navbar-fixed-top .navbar-brand {
     float: left;
     font-size: 18px;
@@ -264,7 +269,7 @@ nav.navbar-fixed-top {
     padding-top: 3px; }
     nav.navbar-fixed-top .navbar-nav li a {
       color: #0ca9ff;
-      font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif; }
+      font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif; }
       nav.navbar-fixed-top .navbar-nav li a:hover {
         color: #ffa472; }
       nav.navbar-fixed-top .navbar-nav li a.active {
@@ -290,12 +295,11 @@ nav.navbar-fixed-top {
 @media only screen and (min-width: 768px) {
   body > .navbar > .container .navbar-brand {
     margin-left: 0; } }
-
 .myRsrMenu nav[role=navigation] {
   background: rgba(32, 32, 36, 0.05); }
   .myRsrMenu nav[role=navigation] ul li a {
     color: #0ca9ff;
-    font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif; }
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif; }
     .myRsrMenu nav[role=navigation] ul li a:hover {
       color: #ffa472;
       background: rgba(255, 164, 114, 0.1) url(../../img/carret.png) 98% center no-repeat;
@@ -370,8 +374,8 @@ h4.detailedInfo {
   position: relative; }
   .searchContainer #search .showFilters {
     /*background-color: rgba(white,0.2);
-	        border: 1px solid rgba($rsrGreen, 0);
-	        color: white;*/
+    border: 1px solid rgba($rsrGreen, 0);
+    color: white;*/
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.4s ease-in; }
@@ -511,7 +515,7 @@ h4.detailedInfo {
 .main-list.organisations ul li img {
   filter: gray;
   -webkit-filter: grayscale(100%);
-  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
+  filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='grayscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>#grayscale");
   filter: grayscale(100%);
   transition: all 0.2s ease-in; }
 .main-list.organisations ul li:hover img {
@@ -638,7 +642,7 @@ div.projectTopRow {
               width: 80%;
               filter: gray;
               -webkit-filter: grayscale(100%);
-              filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
+              filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='grayscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0'/></filter></svg>#grayscale");
               filter: grayscale(100%);
               transition: all 0.2s ease-in; }
               div.projectTopRow .projectSideInfo ul li.projectPartners a.logoImg img:hover {
@@ -714,7 +718,9 @@ div.textBlock .udpateComponent {
   -moz-border-radius: 5px;
   border-radius: 5px; }
 
-.project-hierarchy-window:hover, .project-hierarchy-window._jsPlumb_source_hover, .project-hierarchy-window._jsPlumb_target_hover {
+.project-hierarchy-window:hover,
+.project-hierarchy-window._jsPlumb_source_hover,
+.project-hierarchy-window._jsPlumb_target_hover {
   border: 1px solid orange;
   color: orange; }
 

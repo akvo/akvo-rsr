@@ -1,3 +1,10 @@
+/*---------------------------------------------------------------------------------
+
+        Title:          Akvo RSR v3 
+        Author:         Loïc Sans, loic@akvo.org
+
+/*---------------------------------------------------------------------------------*/
+
 @import "library.scss";
 
 html {
@@ -23,6 +30,7 @@ h5,
 h6 {
     font-family: $titleFont;
     font-weight: normal;
+    color:$akvoPurple;
 }
 
 a, a:link, a:visited {
@@ -208,16 +216,20 @@ dl {
         }
     }
 }
-
+label {
+    color: $rsrGreen;
+    font-weight: normal;
+    @include noWrapTxt;
+}
 /****************************************************************************
 								HEADER + NAVIGATION
 ****************************************************************************/
-nav[role=navigation] {
+nav.navbar-fixed-top {
     background-color: rgba(white,0.95);
     border: none;
     border-top: 3px solid rgba($rsrBlue, 0.5);
     padding: 5px 0;
-    box-shadow: 0 1px 2px rgba(132, 132, 136, 0.2);
+    box-shadow: 0 2px 3px rgba(132, 132, 136, 0.2);
     border-radius: 0;
     border-bottom: 1px solid rgb(228, 228, 228);
     button.navbar-toggle {
@@ -249,6 +261,16 @@ nav[role=navigation] {
             background-size: 125px auto;
             text-indent: -9999px;
             margin-top: 0;
+            @include responsive (small-max-screens) {
+               width: 180px;
+                top: -5px;
+                height: inherit;
+                background: url(../../img/rsrLogo.svg) no-repeat 5px center;
+                -webkit-background-size: 175px auto;
+                background-size: 175px auto;
+                text-indent: -9999px;
+                margin-top: 0; 
+            }
         }
     }
     .navbar-nav {
@@ -299,7 +321,31 @@ nav[role=navigation] {
     }
 }
 
-
+.myRsrMenu {
+    nav[role=navigation] {
+        background:rgba($akvoBlack,0.05);
+        ul {
+            li {
+                a {
+                    color: $anchorLink;
+                    font-family: $titleFont;
+                    &:hover {
+                        color: $anchorLinkHover;
+                        background: rgba($anchorLinkHover,0.10) url(../../img/carret.png) 98% center no-repeat;
+                        background-size: 5px auto;
+                    }
+                    &.active {
+                        /*color: $akvoPurple;*/
+                        color: complement($rsrBlue);
+                        font-weight: bold;
+                        background: rgba($anchorLinkHover,0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
+                        background-size: 15px 15px;
+                    }
+                }
+            }
+        }
+    }
+}
 /* FOOTER */
 body > footer {
     margin-top: 1em;
@@ -340,17 +386,16 @@ footer {
 #footer-body {
     text-align: center;
     font-size: 0;
-}
-
-#footer-body .navbar-nav {
-    display: inline-block;
-    float: none;
-    font-size: 14px;
+    .navbar-nav {
+        display: inline-block;
+        float: none;
+        font-size: 14px;
+    }
 }
 
 /* GENERIC STRUCTURE and TEXT STYLES */
 .touch-navbar {
-    margin-top: -20px;
+    margin-top: -10px;
 }
 
 .center-text {
@@ -375,8 +420,6 @@ h4.detailedInfo {
 /* LISTINGS */
 #map {
     height: 400px;
-    background: #428bca;
-    padding-top: 9px;
     @include responsive(small-max-screens) {
         height: 450px;
         padding-top: 0px;
@@ -584,6 +627,7 @@ h4.detailedInfo {
             li {
                 img {
                     @include bw();
+                    transition: all 0.2s ease-in;
                 }
                 &:hover {
                     img {
@@ -608,6 +652,7 @@ header {
         }
         .shareBlock {
             position: relative;
+            margin-top: 10px;
             div {
             	text-align:right;
             	@include responsive(small-max-screens) {
@@ -615,19 +660,25 @@ header {
                 }
                 a {
 	                position: relative;
-	                top: 30px;
+	                top: 0px;
 	                @include responsive(small-max-screens) {
 	                    left: 0;
 	                    top: 0;
 	                }
 	                &.fullPdf {
-	                	margin-left:10px;
 	                	@include noWrapTxt;
 	                }
 	            }
             }
-
-        }
+            .reportPdf {
+                margin-top: 15px;
+                text-align: right;
+                padding-right: 0;
+                @include responsive(small-max-screens) {
+                    text-align: left;
+                    padding-left: 0;
+                }
+            }
         .projectLocation {
             color: lighten($akvoBlack, 50%);
             .map-toggle {
@@ -638,7 +689,7 @@ header {
         }
     }
 }
-
+}
 #project-map {
     border: 1px solid darken($lightOrange, 10%);
     div.akvo_map {
@@ -659,6 +710,15 @@ div.projectTopRow {
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
+        .carousel-indicators {
+            bottom:35px;
+            li {
+                border-color: $rsrGreen;
+                &.active {
+                    background-color: $rsrGreen;
+                }
+            }
+        }
         .carousel-inner {
             .item {
                 text-align: center;
@@ -666,6 +726,18 @@ div.projectTopRow {
                     img {
                         max-height: 400px;
                         margin: auto;
+                    }
+                }
+                .carousel-caption {
+                    background-color: rgba(255,255,255, 0.1);
+                    bottom:0px;
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                    h3 {
+                        color:$lightOrange;
+                    }
+                    p {
+                        padding-top: 20px;
                     }
                 }
             }
@@ -712,16 +784,10 @@ div.projectTopRow {
                         max-width: 50px;
                         img {
                             width: 80%;
-                            -webkit-filter: grayscale(100%);
-                            filter: grayscale(100%);
-                            filter: gray;
-                            filter: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' height='0'><filter id='greyscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0' /></filter></svg>#greyscale");
+                            @include bw();     
                             transition: all 0.2s ease-in;
                             &:hover {
-                                -webkit-filter: grayscale(0); 
-                                -webkit-filter: grayscale(0);
-                                filter: gray; filter: grayscale(0);
-                                filter: url(desaturate.svg);
+                                @include colour();     
                             }
                         }
                     }
