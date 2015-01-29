@@ -335,7 +335,6 @@ nav.navbar-fixed-top {
                         background-size: 5px auto;
                     }
                     &.active {
-                        /*color: $akvoPurple;*/
                         color: complement($rsrBlue);
                         font-weight: bold;
                         background: rgba($anchorLinkHover,0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;

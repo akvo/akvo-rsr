@@ -301,7 +301,6 @@ nav.navbar-fixed-top {
       background: rgba(255, 164, 114, 0.1) url(../../img/carret.png) 98% center no-repeat;
       background-size: 5px auto; }
     .myRsrMenu nav[role=navigation] ul li a.active {
-      /*color: $akvoPurple;*/
       color: #ffa472;
       font-weight: bold;
       background: rgba(255, 164, 114, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
