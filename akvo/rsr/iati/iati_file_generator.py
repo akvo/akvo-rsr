@@ -137,8 +137,8 @@ def iati_links(activity, links):
             website = schema.activity_website()
             website.set_valueOf_(xml_enc(link.url))
 
-            if check_value(link.caption):
-                website.set_anyAttributes_({"akvo:url-caption": xml_enc(link.caption)})
+            if check_value(link.title):
+                website.set_anyAttributes_({"akvo:url-caption": xml_enc(link.title)})
 
             activity.add_activity_website(website)
 

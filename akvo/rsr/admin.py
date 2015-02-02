@@ -134,7 +134,11 @@ class LinkInline(admin.StackedInline):
     list_display = ('url', 'caption', 'show_link')
     fieldsets = (
         (None, {
-            'fields': ('kind', 'url', 'caption')
+            'fields': ('kind', 'url', 'document', 'language', 'title', 'title_language')
+        }),
+        ('IATI fields (advanced)', {
+            'classes': ('collapse',),
+            'fields': ('format', 'category')
         }),
     )
 
