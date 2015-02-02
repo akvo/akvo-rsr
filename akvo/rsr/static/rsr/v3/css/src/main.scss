@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------
 
-        Title:          Akvo RSR v3 
-        Author:         Loïc Sans, loic@akvo.org
+            Title:   Akvo RSR v3 
+            Author:  Loic Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
 
@@ -30,7 +30,7 @@ h5,
 h6 {
     font-family: $titleFont;
     font-weight: normal;
-    color:$akvoPurple;
+    color: $akvoPurple;
 }
 
 a, a:link, a:visited {
@@ -50,24 +50,27 @@ a, a:link, a:visited {
 
 /****************** Miscellanous Typography ********************/
 .noItem {
-	color:rgba($akvoPurple,0.2);
+    color: rgba($akvoPurple, 0.2);
 }
+
 em {
-    font-family:$scriptFont;
+    font-family: $scriptFont;
     font-size: 1.2em;
     margin: 0 5px 0em 0em;
 }
+
 a.moreLink {
-	margin-left:5px;
-	padding:3px 5px;
-	background:rgba($anchorLink, 0.2);
-	@include border-radius(4px);
-	font-weight: bold;
-	&:hover {
-		background:rgba($anchorLinkHover, 0.8);
-		color:white;
-	}
+    margin-left: 5px;
+    padding: 3px 5px;
+    background: rgba($anchorLink, 0.2);
+    @include border-radius(4px);
+    font-weight: bold;
+    &:hover {
+        background: rgba($anchorLinkHover, 0.8);
+        color: white;
+    }
 }
+
 ::-moz-selection {
     background: rgb(114, 205, 255);
     color: #fff;
@@ -87,8 +90,9 @@ a.moreLink {
 .verticalPadding {
     padding: 20px 0;
 }
+
 .noInfoBlock {
-    background: rgba($akvoBlack,0.1);
+    background: rgba($akvoBlack, 0.1);
     text-align: center;
     padding: 20px 0;
 }
@@ -195,37 +199,38 @@ span.twitter-typeahead {
     top: 28px !important;
 }
 
-
 dl {
     &.dl-horizontal {
         dt {
             text-transform: uppercase;
             text-align: left;
-            color:rgba($akvoBlack,0.4);
+            color: rgba($akvoBlack, 0.4);
             font-weight: normal;
             &.totalFinance {
-                margin-top:30px;
+                margin-top: 30px;
                 font-weight: bold;
             }
         }
         dd {
-             &.totalFinance {
-                margin-top:30px;
+            &.totalFinance {
+                margin-top: 30px;
                 font-weight: bold;
             }
         }
     }
 }
+
 label {
     color: $rsrGreen;
     font-weight: normal;
     @include noWrapTxt;
 }
+
 /****************************************************************************
-								HEADER + NAVIGATION
+                                HEADER + NAVIGATION
 ****************************************************************************/
 nav.navbar-fixed-top {
-    background-color: rgba(white,0.95);
+    background-color: rgba(white, 0.95);
     border: none;
     border-top: 3px solid rgba($rsrBlue, 0.5);
     padding: 5px 0;
@@ -261,15 +266,15 @@ nav.navbar-fixed-top {
             background-size: 125px auto;
             text-indent: -9999px;
             margin-top: 0;
-            @include responsive (small-max-screens) {
-               width: 180px;
+            @include responsive(small-max-screens) {
+                width: 180px;
                 top: -5px;
                 height: inherit;
                 background: url(../../img/rsrLogo.svg) no-repeat 5px center;
                 -webkit-background-size: 175px auto;
                 background-size: 175px auto;
                 text-indent: -9999px;
-                margin-top: 0; 
+                margin-top: 0;
             }
         }
     }
@@ -284,33 +289,38 @@ nav.navbar-fixed-top {
                     color: $anchorLinkHover;
                 }
                 &.active {
-                    /*color: $akvoPurple;*/
                     color: complement($rsrBlue);
                     font-weight: bold;
-                    background: rgba($anchorLinkHover,0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
+                    background: rgba($anchorLinkHover, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
                     background-size: 15px 15px;
                 }
                 &.addUpdateBtn {
                     margin-top: 10px;
-
                     color: white;
+                    background-color: $akvoBlack;
+                    border-color: $akvoBlack;
                     &:hover {
                         background-color: $anchorLinkHover;
+                        border-color: $anchorLinkHover;
+                    }
+                @include responsive(small-max-screens) {
+                        width:90%;
                     }
                 }
             }
         }
         &.navbar-right {
-        	li {
-        		margin-right:2px;
-        		a {
-        			padding-left:10px;
-        			padding-right:10px;
-        		}
-        	}
+            li {
+                margin-right: 2px;
+                a {
+                    padding-left: 5px;
+                    padding-right: 5px;
+                }
+            }
         }
     }
 }
+
 .navbar .btn {
     padding: 4px 9px;
 }
@@ -321,9 +331,10 @@ nav.navbar-fixed-top {
     }
 }
 
+
 .myRsrMenu {
     nav[role=navigation] {
-        background:rgba($akvoBlack,0.05);
+        background: rgba($akvoBlack, 0.05);
         ul {
             li {
                 a {
@@ -331,13 +342,13 @@ nav.navbar-fixed-top {
                     font-family: $titleFont;
                     &:hover {
                         color: $anchorLinkHover;
-                        background: rgba($anchorLinkHover,0.10) url(../../img/carret.png) 98% center no-repeat;
+                        background: rgba($anchorLinkHover, 0.1) url(../../img/carret.png) 98% center no-repeat;
                         background-size: 5px auto;
                     }
                     &.active {
                         color: complement($rsrBlue);
                         font-weight: bold;
-                        background: rgba($anchorLinkHover,0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
+                        background: rgba($anchorLinkHover, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
                         background-size: 15px 15px;
                     }
                 }
@@ -345,41 +356,43 @@ nav.navbar-fixed-top {
         }
     }
 }
+
 /* FOOTER */
 body > footer {
     margin-top: 1em;
 }
+
 footer {
-	.navbar {
-		background: $akvoBlack;
-		border-radius: 0;
-		#footer-body {
-			ul.nav {
-				li{
-					a {
-						display:block;
-						&[href="http://akvo.org"] {
-						    margin: 0;
-						    width: 42px;
-						    background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
-						    text-indent: -9999px;
-						    background-size: 42px 42px;						
-						}
-					}
-					&.akvoLogo {
-						width:70px;
-						a[href="http://akvo.org"] {
-						    margin: 0;
-						    width: 70px;
-						    background: url(../../img/akvo.orgLogo.svg) center 5px no-repeat;
-						    text-indent: -9999px;
-						    background-size: 70px 42px;						
-						}
-					}
-				}
-			}
-		}
-	}
+    .navbar {
+        background: $akvoBlack;
+        border-radius: 0;
+        #footer-body {
+            ul.nav {
+                li {
+                    a {
+                        display: block;
+                        &[href="http://akvo.org"] {
+                            margin: 0;
+                            width: 42px;
+                            background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
+                            text-indent: -9999px;
+                            background-size: 42px 42px;
+                        }
+                    }
+                    &.akvoLogo {
+                        width: 70px;
+                        a[href="http://akvo.org"] {
+                            margin: 0;
+                            width: 70px;
+                            background: url(../../img/akvo.orgLogo.svg) center 5px no-repeat;
+                            text-indent: -9999px;
+                            background-size: 70px 42px;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 #footer-body {
@@ -395,6 +408,9 @@ footer {
 /* GENERIC STRUCTURE and TEXT STYLES */
 .touch-navbar {
     margin-top: -10px;
+    @include responsive(small-max-screens) { 
+        margin-top: -15px;
+    }
 }
 
 .center-text {
@@ -424,42 +440,44 @@ h4.detailedInfo {
         padding-top: 0px;
     }
 }
+
 .searchContainer {
     position: relative;
     #search {
-	    .showFilters {
-	        /*background-color: rgba(white,0.2);
-	        border: 1px solid rgba($rsrGreen, 0);
-	        color: white;*/
-	        color:white;
-	        border: 1px solid rgba(white,0.2);
-	        transition: all 0.4s ease-in;
-	        &:hover {
-	            background: rgba($anchorLinkHover, 0);
-	            border: 1px solid rgba($anchorLinkHover,0.5);
-	            color: $anchorLinkHover;
-	        }
-	        @include responsive(small-max-screens) {
-	            display: table;
-	            top: inherit;
-	            left: inherit;
-	            margin: 10px auto 0;
-	        }
-	    }
-	   	&.toggled  {
-	   		.showFilters {
-		        background-color: rgba(white, 0.1);
-		        border: 1px solid rgba($rsrGreen, 0.5);
-		        color:$rsrGreen;
-		        &:hover {
-		            background: rgba($anchorLinkHover, 0);
-		            border: 1px solid rgba($anchorLinkHover, 0.5);
-		            color: $anchorLinkHover;
-		        }		        
-		    }
+        .showFilters {
+            /*background-color: rgba(white,0.2);
+            border: 1px solid rgba($rsrGreen, 0);
+            color: white;*/
+            color: white;
+            border: 1px solid rgba(white, 0.2);
+            transition: all 0.4s ease-in;
+            &:hover {
+                background: rgba($anchorLinkHover, 0);
+                border: 1px solid rgba($anchorLinkHover, 0.5);
+                color: $anchorLinkHover;
+            }
+            @include responsive(small-max-screens) {
+                display: table;
+                top: inherit;
+                left: inherit;
+                margin: 10px auto 0;
+            }
         }
-	}	
+        &.toggled {
+            .showFilters {
+                background-color: rgba(white, 0.1);
+                border: 1px solid rgba($rsrGreen, 0.5);
+                color: $rsrGreen;
+                &:hover {
+                    background: rgba($anchorLinkHover, 0);
+                    border: 1px solid rgba($anchorLinkHover, 0.5);
+                    color: $anchorLinkHover;
+                }
+            }
+        }
+    }
 }
+
 #sidebar-wrapper {
     z-index: 1000;
     position: absolute;
@@ -471,33 +489,32 @@ h4.detailedInfo {
     @include border-radius(0 0 5px 0);
     @include transition(all 0.5s ease);
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-   	.showFilters {
+    .showFilters {
         &:hover {
             color: $anchorLinkHover;
-	        }
-	    }
+        }
+    }
     div#filter {
         padding: 5px 15px 15px 15px;
-        div {   
-		    .btn-group {
-		    	width:100%;
-		    	border-top:1px solid rgba($akvoBlack,0.1);
-		    	padding:5px 0;
-			    select {
-				    border-color:rgba($akvoBlack,0.2);
-			    }
-			    label {
-		    		color: $rsrGreen;
-		            @include noWrapTxt;
-		        }
-			}
-			&:nth-child(1) {
-				.btn-group {
-					border-top:none;
-				}
-			}
-		}    
-
+        div {
+            .btn-group {
+                width: 100%;
+                border-top: 1px solid rgba($akvoBlack, 0.1);
+                padding: 5px 0;
+                select {
+                    border-color: rgba($akvoBlack, 0.2);
+                }
+                label {
+                    color: $rsrGreen;
+                    @include noWrapTxt;
+                }
+            }
+            &:nth-child(1) {
+                .btn-group {
+                    border-top: none;
+                }
+            }
+        }
     }
 }
 
@@ -518,9 +535,10 @@ h4.detailedInfo {
 }
 
 #search-filter {
-	@include responsive(small-max-screens) {
+    @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
+
     #search {
         color: #fff;
         text-align: center;
@@ -538,9 +556,8 @@ h4.detailedInfo {
     }
 }
 
-
 /************************************************************************
-		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
+        COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
 
 .main-list {
@@ -549,16 +566,16 @@ h4.detailedInfo {
         list-style-type: none;
         padding: 15px 0;
         border-radius: 3px;
-        background:white;
+        background: white;
         img {
-            border: 1px solid rgba($akvoBlack,0.05);
+            border: 1px solid rgba($akvoBlack, 0.05);
             box-shadow: 0 0 2px rgba($anchorLinkHover, 0);
         }
         &:nth-child(2n+1) {
             background: rgb(238, 238, 238);
         }
         &:last-child {
-        	margin-bottom:0;
+            margin-bottom: 0;
         }
         h1 {
             margin-top: 0;
@@ -574,22 +591,22 @@ h4.detailedInfo {
             }
         }
         .projectLocation {
-            color:rgba($akvoBlack,0.5);
+            color: rgba($akvoBlack, 0.5);
         }
         .projectTitle {
-            display:block;
-            margin:0 0 3px 0;
+            display: block;
+            margin: 0 0 3px 0;
         }
         span.userFullName {
-            color:rgba($akvoBlack,0.5);
-            margin:0 0 0px 0;
+            color: rgba($akvoBlack, 0.5);
+            margin: 0 0 0px 0;
         }
         .upDateTime {
-            color:rgba($akvoBlack,0.5);
-            margin-top:10px;
+            color: rgba($akvoBlack, 0.5);
+            margin-top: 10px;
         }
         .orgType {
-            color:rgba($akvoBlack,0.5);    
+            color: rgba($akvoBlack, 0.5);
         }
         .additionalInfo {
             div {
@@ -602,7 +619,7 @@ h4.detailedInfo {
     &.updates {
         li {
             &:nth-child(2n+1) {
-                background: darken(rgba(complement($rsrBlue), 0.1),10%);
+                background: darken(rgba(complement($rsrBlue), 0.1), 10%);
             }
         }
     }
@@ -610,27 +627,27 @@ h4.detailedInfo {
         @include noWrapBlockTxt;
     }
     &.projects {
-    	ul{
-    		li{
+        ul {
+            li {
                 &:nth-child(2n+1) {
-                    background: darken(rgba($rsrGreen, 0.1),10%);
+                    background: darken(rgba($rsrGreen, 0.1), 10%);
                 }
-		    	.projectLocation {
-		    		color:rgba($akvoBlack,0.5);
-		    	}
-    		}
-    	}
+                .projectLocation {
+                    color: rgba($akvoBlack, 0.5);
+                }
+            }
+        }
     }
     &.organisations {
         ul {
             li {
                 img {
-                    @include bw();
+                    @include bw;
                     transition: all 0.2s ease-in;
                 }
                 &:hover {
                     img {
-                        @include colour();     
+                        @include colour;
                     }
                 }
             }
@@ -653,21 +670,23 @@ header {
             position: relative;
             margin-top: 10px;
             div {
-            	text-align:right;
-            	@include responsive(small-max-screens) {
-            		text-align:left;
+                text-align: right;
+                @include responsive(small-max-screens) {
+                    text-align: left;
                 }
+
                 a {
-	                position: relative;
-	                top: 0px;
-	                @include responsive(small-max-screens) {
-	                    left: 0;
-	                    top: 0;
-	                }
-	                &.fullPdf {
-	                	@include noWrapTxt;
-	                }
-	            }
+                    position: relative;
+                    top: 0px;
+                    @include responsive(small-max-screens) {
+                        left: 0;
+                        top: 0;
+                    }
+
+                    &.fullPdf {
+                        @include noWrapTxt;
+                    }
+                }
             }
             .reportPdf {
                 margin-top: 15px;
@@ -678,17 +697,18 @@ header {
                     padding-left: 0;
                 }
             }
-        .projectLocation {
-            color: lighten($akvoBlack, 50%);
-            .map-toggle {
-                text-transform: uppercase;
-                font-size: 0.875em;
-                font-weight: bold;
+            .projectLocation {
+                color: lighten($akvoBlack, 50%);
+                .map-toggle {
+                    text-transform: uppercase;
+                    font-size: 0.875em;
+                    font-weight: bold;
+                }
             }
         }
     }
 }
-}
+
 #project-map {
     border: 1px solid darken($lightOrange, 10%);
     div.akvo_map {
@@ -699,9 +719,9 @@ header {
 
 div.projectTopRow {
     position: relative;
-    background: rgba(245,245,245,0.5);
+    background: rgba(245, 245, 245, 0.5);
     margin-top: 1px;
-    border-bottom:1px solid rgba($akvoBlack,0.1);
+    border-bottom: 1px solid rgba($akvoBlack, 0.1);
     #carousel {
         padding: 15px 0;
         /*background-color: rgb(230, 231, 232);*/
@@ -709,8 +729,9 @@ div.projectTopRow {
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
+
         .carousel-indicators {
-            bottom:35px;
+            bottom: 35px;
             li {
                 border-color: $rsrGreen;
                 &.active {
@@ -728,12 +749,12 @@ div.projectTopRow {
                     }
                 }
                 .carousel-caption {
-                    background-color: rgba(255,255,255, 0.1);
-                    bottom:0px;
+                    background-color: rgba(255, 255, 255, 0.1);
+                    bottom: 0px;
                     padding-top: 10px;
                     padding-bottom: 10px;
                     h3 {
-                        color:$lightOrange;
+                        color: $lightOrange;
                     }
                     p {
                         padding-top: 20px;
@@ -763,19 +784,19 @@ div.projectTopRow {
                 list-style-type: none;
                 padding-top: 10px;
                 padding-bottom: 5px;
-                border-bottom:thin solid rgba(230,230,230,0.5);                
-                border-top:thin solid rgba(248,248,248,0.8);
+                border-bottom: thin solid rgba(230, 230, 230, 0.5);
+                border-top: thin solid rgba(248, 248, 248, 0.8);
                 &:first-child {
-                    padding-top: 5px;                	
-                    border-top:none;
-                }                
+                    padding-top: 5px;
+                    border-top: none;
+                }
                 &:last-child {
                     padding-bottom: 0;
-                    border-bottom:none;
+                    border-bottom: none;
                 }
                 &.projectPartners {
-                	padding-bottom:20px;
-                	border-bottom: none;
+                    padding-bottom: 20px;
+                    border-bottom: none;
                     span + div {
                         margin-top: 10px;
                     }
@@ -783,10 +804,10 @@ div.projectTopRow {
                         max-width: 50px;
                         img {
                             width: 80%;
-                            @include bw();     
+                            @include bw;
                             transition: all 0.2s ease-in;
                             &:hover {
-                                @include colour();     
+                                @include colour;
                             }
                         }
                     }
@@ -794,13 +815,13 @@ div.projectTopRow {
                         @include noWrapBlockTxt;
                     }
                     .projectLocation {
-                        margin-top:5px;
+                        margin-top: 5px;
                     }
                 }
                 &.financeBlock {
-                	border-top: none;
-                    padding:15px 0 15px 0;
-                    background: rgba($rsrBlue,0.1);
+                    border-top: none;
+                    padding: 15px 0 15px 0;
+                    background: rgba($rsrBlue, 0.1);
                     span {
                         margin-left: 15px;
                     }
@@ -812,51 +833,77 @@ div.projectTopRow {
         }
     }
 }
+.results {
+    ul {
+        padding: 5px 0 5px 20px;
+        li {
+            i {
+                color:$rsrGreen;
+            }
+        }
+    }
+}
+.indicators, .results {
+    dl {
+        padding: 5px 0 5px 20px;
+        dt, dd {
+            display: inline-block;
+        }
+        dd {
+            width:15%;
+        }        
+        dt {
+            width:85%;
+            color: rgba($akvoBlack, 0.4);
+            font-weight: normal;
+        }
+    }    
+}
 div.timelineBlock {
-	margin:15px auto 25px;
-	#timeline {
-	    height: 200px;
-	}
+    margin: 15px auto 25px;
+    #timeline {
+        height: 200px;
+    }
 }
+
 div.textBlock {
-	.panel {
-		border: 1px solid rgba(235,235,235,0.5);
-		.panel-heading {
-			padding:0;
-			.panel-title {
-				a {
-					display:block;
-					padding:15px 15px;
-				}
-			}
-		}
-	.panel-collapse{
-			.panel-body{
-				background: rgba($rsrBlue,0);
-			}
-		}
-	}
-	.udpateComponent {
-		padding-top:10px;
-		padding-bottom:15px;
+    .panel {
+        border: 1px solid rgba(235, 235, 235, 0.5);
+        .panel-heading {
+            padding: 0;
+            .panel-title {
+                a {
+                    display: block;
+                    padding: 15px 15px;
+                }
+            }
+        }
+        .panel-collapse {
+            .panel-body {
+                background: rgba($rsrBlue, 0);
+            }
+        }
+    }
+    .udpateComponent {
+        padding-top: 10px;
+        padding-bottom: 15px;
         background: lighten($anchorLinkHover, 25%);
-	}
+    }
 }
+
 #project-footer {
     margin-bottom: -16px;
     padding-top: 30px;
     padding-bottom: 30px;
     background: lighten($akvoPurple, 65%);
     .detailedInfo {
-    	color:rgba($akvoPurple,1);
+        color: rgba($akvoPurple, 1);
     }
     #project-footer-right {
-	    background: rgba($akvoPurple, 0.1);;
-	    padding: 1.5em;
-	}
+        background: rgba($akvoPurple, 0.1);
+        padding: 1.5em;
+    }
 }
-
-
 
 #draft {
     background: #E04F46;
@@ -899,16 +946,16 @@ div.textBlock {
 
 /* Tooltips */
 .tooltip {
-    .tooltip-arrow {
-    }
+    .tooltip-arrow {}
     .tooltip-inner {
         max-width: 350px;
-        padding:15px;
+        padding: 15px;
         background: rgba($akvoBlack, 0.05);
-        color:$akvoBlack;
+        color: $akvoBlack;
         box-shadow: 0 0 2px rgba($akvoBlack, 0.3);
         a {
-            font-weight:bold;
+            font-weight: bold;
         }
     }
 }
+

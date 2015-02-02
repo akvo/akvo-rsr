@@ -1,8 +1,8 @@
 @charset "UTF-8";
 /*---------------------------------------------------------------------------------
 
-        Title:          Akvo RSR v3 
-        Author:         Loïc Sans, loic@akvo.org
+            Title:   Akvo RSR v3 
+            Author:  Loic Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ label {
   white-space: nowrap; }
 
 /****************************************************************************
-								HEADER + NAVIGATION
+                                HEADER + NAVIGATION
 ****************************************************************************/
 nav.navbar-fixed-top {
   background-color: rgba(255, 255, 255, 0.95);
@@ -268,21 +268,26 @@ nav.navbar-fixed-top {
       nav.navbar-fixed-top .navbar-nav li a:hover {
         color: #ffa472; }
       nav.navbar-fixed-top .navbar-nav li a.active {
-        /*color: $akvoPurple;*/
         color: #ffa472;
         font-weight: bold;
         background: rgba(255, 164, 114, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
         background-size: 15px 15px; }
       nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
         margin-top: 10px;
-        color: white; }
+        color: white;
+        background-color: #202024;
+        border-color: #202024; }
         nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn:hover {
-          background-color: #ffa472; }
+          background-color: #ffa472;
+          border-color: #ffa472; }
+        @media only screen and (max-width: 768px) {
+          nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
+            width: 90%; } }
   nav.navbar-fixed-top .navbar-nav.navbar-right li {
     margin-right: 2px; }
     nav.navbar-fixed-top .navbar-nav.navbar-right li a {
-      padding-left: 10px;
-      padding-right: 10px; }
+      padding-left: 5px;
+      padding-right: 5px; }
 
 .navbar .btn {
   padding: 4px 9px; }
@@ -341,6 +346,9 @@ footer .navbar {
 /* GENERIC STRUCTURE and TEXT STYLES */
 .touch-navbar {
   margin-top: -10px; }
+  @media only screen and (max-width: 768px) {
+    .touch-navbar {
+      margin-top: -15px; } }
 
 .center-text {
   text-align: center; }
@@ -369,8 +377,8 @@ h4.detailedInfo {
   position: relative; }
   .searchContainer #search .showFilters {
     /*background-color: rgba(white,0.2);
-	        border: 1px solid rgba($rsrGreen, 0);
-	        color: white;*/
+            border: 1px solid rgba($rsrGreen, 0);
+            color: white;*/
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.4s ease-in; }
@@ -458,7 +466,7 @@ h4.detailedInfo {
     text-align: center; }
 
 /************************************************************************
-		COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
+        COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
 .main-list li {
   margin-bottom: 30px;
@@ -659,6 +667,22 @@ div.projectTopRow {
             margin-left: 15px; }
           div.projectTopRow .projectSideInfo ul li.financeBlock a {
             margin-left: 15px; }
+
+.results ul {
+  padding: 5px 0 5px 20px; }
+  .results ul li i {
+    color: #00a79d; }
+
+.indicators dl, .results dl {
+  padding: 5px 0 5px 20px; }
+  .indicators dl dt, .indicators dl dd, .results dl dt, .results dl dd {
+    display: inline-block; }
+  .indicators dl dd, .results dl dd {
+    width: 15%; }
+  .indicators dl dt, .results dl dt {
+    width: 85%;
+    color: rgba(32, 32, 36, 0.4);
+    font-weight: normal; }
 
 div.timelineBlock {
   margin: 15px auto 25px; }
