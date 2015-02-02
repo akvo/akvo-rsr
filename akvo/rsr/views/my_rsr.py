@@ -22,6 +22,7 @@ from django.template import RequestContext
 @login_required
 def my_details(request):
     if request.method == "POST" and 'avatar' in request.FILES:
+        request.FILES['avatar'].name = request.FILES['avatar'].name.encode('ascii', 'ignore')
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
         if avatar_form.is_valid():
             avatar_form.save()
