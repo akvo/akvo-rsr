@@ -18,7 +18,7 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 
 class IndicatorSerializer(BaseRSRSerializer):
 
-    periods = IndicatorPeriodSerializer(many=True)
+    periods = IndicatorPeriodSerializer(many=True, required=False, allow_add_remove=True)
 
     class Meta:
         model = Indicator

@@ -59,8 +59,6 @@ class ProjectExtraSerializer(ProjectSerializer):
     project_updates = ProjectUpdateSerializer(
         source='project_updates', many=True, required=False, allow_add_remove=True
     )
-    # TODO
-    # publishing_status = PublishingStatusSerializer(source='publishing_status', )
     recipient_countries = RecipientCountrySerializer(
         source='recipient_countries', many=True, required=False, allow_add_remove=True
     )
