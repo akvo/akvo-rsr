@@ -26,7 +26,6 @@ from .partner_type import PartnerTypeSerializer
 from .partnership import PartnershipSerializer
 from .planned_disbursement import PlannedDisbursementSerializer
 from .policy_marker import PolicyMarkerSerializer
-from .project import ProjectSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
@@ -41,6 +40,7 @@ from .result import ResultSerializer
 from .sector import SectorSerializer
 from .transaction import TransactionSerializer
 from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
+from .project import ProjectSerializer, ProjectExtraSerializer
 
 __all__ = [
     'BenchmarkSerializer',
@@ -66,7 +66,6 @@ __all__ = [
     'PartnershipSerializer',
     'PlannedDisbursementSerializer',
     'PolicyMarkerSerializer',
-    'ProjectSerializer',
     'ProjectCommentSerializer',
     'ProjectConditionSerializer',
     'ProjectContactSerializer',
@@ -84,4 +83,6 @@ __all__ = [
     'UserSerializer',
     'UserDetailsSerializer',
     'UserPasswordSerializer',
+    'ProjectSerializer',
+    'ProjectExtraSerializer',
 ]

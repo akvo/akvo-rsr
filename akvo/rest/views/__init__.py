@@ -27,7 +27,7 @@ from .partner_type import PartnerTypeViewSet
 from .partnership import PartnershipViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
-from .project import ProjectViewSet
+from .project import ProjectViewSet, ProjectExtraViewSet
 from .project_comment import ProjectCommentViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
@@ -70,6 +70,7 @@ __all__ = [
     'PlannedDisbursementViewSet',
     'PolicyMarkerViewSet',
     'ProjectViewSet',
+    'ProjectExtraViewSet',
     'ProjectCommentViewSet',
     'ProjectConditionViewSet',
     'ProjectContactViewSet',
