@@ -17,6 +17,7 @@ from .goal import GoalViewSet
 from .indicator import IndicatorViewSet, IndicatorPeriodViewSet
 from .internal_organisation_id import InternalOrganisationIDViewSet
 from .invoice import InvoiceViewSet
+from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
 from .organisation import OrganisationViewSet
@@ -58,6 +59,7 @@ __all__ = [
     'IndicatorPeriodViewSet',
     'InternalOrganisationIDViewSet',
     'InvoiceViewSet',
+    'KeywordViewSet',
     'LegacyDataViewSet',
     'LinkViewSet',
     'OrganisationViewSet',

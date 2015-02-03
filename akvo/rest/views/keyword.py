@@ -5,15 +5,14 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import LegacyData
+from akvo.rsr.models import Keyword
 
-from ..serializers import LegacyDataSerializer
+from ..serializers import KeywordSerializer
 from ..viewsets import BaseRSRViewSet
 
 
-class LegacyDataViewSet(BaseRSRViewSet):
+class KeywordViewSet(BaseRSRViewSet):
     """
     """
-    queryset = LegacyData.objects.all()
-    serializer_class = LegacyDataSerializer
-    filter_fields = ('project', )
+    queryset = Keyword.objects.all()
+    serializer_class = KeywordSerializer

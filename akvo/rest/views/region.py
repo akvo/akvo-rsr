@@ -16,3 +16,4 @@ class RecipientRegionViewSet(BaseRSRViewSet):
     """
     queryset = RecipientRegion.objects.all()
     serializer_class = RecipientRegionSerializer
+    filter_fields = ('project', 'region', )

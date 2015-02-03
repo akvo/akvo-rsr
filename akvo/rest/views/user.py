@@ -24,6 +24,7 @@ class UserViewSet(BaseRSRViewSet):
     """
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
+    filter_fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_admin', )
 
 
 @api_view(['POST'])

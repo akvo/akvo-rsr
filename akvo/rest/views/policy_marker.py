@@ -16,3 +16,4 @@ class PolicyMarkerViewSet(BaseRSRViewSet):
     """
     queryset = PolicyMarker.objects.all()
     serializer_class = PolicyMarkerSerializer
+    filter_fields = ('project', 'policy_marker', )

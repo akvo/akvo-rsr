@@ -16,3 +16,7 @@ class TransactionViewSet(BaseRSRViewSet):
     """
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
+    filter_fields = (
+        'project', 'reference', 'transaction_type', 'currency', 'provider_organisation', 'receiver_organisation',
+        'provider_organisation_ref', 'receiver_organisation_ref'
+    )

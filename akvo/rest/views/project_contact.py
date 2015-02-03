@@ -16,3 +16,4 @@ class ProjectContactViewSet(BaseRSRViewSet):
     """
     queryset = ProjectContact.objects.all()
     serializer_class = ProjectContactSerializer
+    filter_fields = ('project', 'type', )

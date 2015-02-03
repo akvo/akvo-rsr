@@ -16,6 +16,7 @@ from .goal import GoalSerializer
 from .indicator import IndicatorPeriodSerializer, IndicatorSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
 from .invoice import InvoiceSerializer
+from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
 from .organisation import OrganisationSerializer
@@ -55,6 +56,7 @@ __all__ = [
     'IndicatorSerializer',
     'InternalOrganisationIDSerializer',
     'InvoiceSerializer',
+    'KeywordSerializer',
     'LegacyDataSerializer',
     'LinkSerializer',
     'OrganisationSerializer',

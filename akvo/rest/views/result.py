@@ -16,3 +16,4 @@ class ResultViewSet(BaseRSRViewSet):
     """
     queryset = Result.objects.all()
     serializer_class = ResultSerializer
+    filter_fields = ('project', 'type', )
