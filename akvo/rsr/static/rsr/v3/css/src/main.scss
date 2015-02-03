@@ -297,8 +297,8 @@ nav.navbar-fixed-top {
                 &.addUpdateBtn {
                     margin-top: 10px;
                     color: white;
-                    background-color: $akvoBlack;
-                    border-color: $akvoBlack;
+                    background-color: $rsrGreen;
+                    border-color: $rsrGreen;
                     &:hover {
                         background-color: $anchorLinkHover;
                         border-color: $anchorLinkHover;
@@ -835,17 +835,17 @@ div.projectTopRow {
 }
 .results {
     ul {
-        padding: 5px 0 5px 20px;
+        padding: 5px 0 5px 5px;
         li {
             i {
-                color:$rsrGreen;
             }
         }
     }
 }
 .indicators, .results {
+    padding:0 0 0 15px;
     dl {
-        padding: 5px 0 5px 20px;
+        padding: 5px 0 5px 10px;
         dt, dd {
             display: inline-block;
         }

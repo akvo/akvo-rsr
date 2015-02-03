@@ -275,8 +275,8 @@ nav.navbar-fixed-top {
       nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
         margin-top: 10px;
         color: white;
-        background-color: #202024;
-        border-color: #202024; }
+        background-color: #00a79d;
+        border-color: #00a79d; }
         nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn:hover {
           background-color: #ffa472;
           border-color: #ffa472; }
@@ -669,20 +669,20 @@ div.projectTopRow {
             margin-left: 15px; }
 
 .results ul {
-  padding: 5px 0 5px 20px; }
-  .results ul li i {
-    color: #00a79d; }
+  padding: 5px 0 5px 5px; }
 
-.indicators dl, .results dl {
-  padding: 5px 0 5px 20px; }
-  .indicators dl dt, .indicators dl dd, .results dl dt, .results dl dd {
-    display: inline-block; }
-  .indicators dl dd, .results dl dd {
-    width: 15%; }
-  .indicators dl dt, .results dl dt {
-    width: 85%;
-    color: rgba(32, 32, 36, 0.4);
-    font-weight: normal; }
+.indicators, .results {
+  padding: 0 0 0 15px; }
+  .indicators dl, .results dl {
+    padding: 5px 0 5px 10px; }
+    .indicators dl dt, .indicators dl dd, .results dl dt, .results dl dd {
+      display: inline-block; }
+    .indicators dl dd, .results dl dd {
+      width: 15%; }
+    .indicators dl dt, .results dl dt {
+      width: 85%;
+      color: rgba(32, 32, 36, 0.4);
+      font-weight: normal; }
 
 div.timelineBlock {
   margin: 15px auto 25px; }
