@@ -61,7 +61,8 @@
                                                         ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)
                                                     {% endfor %}"
                                              data-placement="right" data-container="body">+ {{partners|length}} partners</a>
-                                            {% if project.reporting_org.primary_location.country %}<br><i class="fa fa-globe"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}
+                                            {% if project.reporting_org.primary_location.country %}
+                                            <div class="projectLocation"><i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -95,6 +96,34 @@
         <div class="row">
             <div class="col-sm-8">
               <div id="accordion"></div>
+              {% if project.has_results %}
+              <div class="results verticalPadding">
+                <h4 class="">Results</h4>
+                <ul class="fa-ul">
+                  {% for result in project.results.all %}
+                  {% if result.has_info %}
+                  <li><i class="fa-li fa fa-circle-o"></i>{{result.title}}</li>
+                  {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+              {% if project.has_indicators %}
+              <div class="indicators">
+                <h4 class="">Indicators</h4>
+                    <dl class="">
+                        {% for result in project.results.all %}
+                        {% for indicator in result.indicators.all %}
+                        {% for period in indicator.periods.all %}
+                        <dt>{{indicator.title}}</dt><dd>{{period.actual_value}}</dd>
+                        {% empty %}
+                        <dt>{{indicator.title}}</dt><dd></dd>
+                        {% endfor %}
+                        {% endfor %}
+                        {% endfor %}
+                    </dl>
+              </div>
+              {% endif %}
             </div>
             <div class="col-sm-4 udpateComponent">
               <h4 class="detailedInfo">Latest project updates</h4>

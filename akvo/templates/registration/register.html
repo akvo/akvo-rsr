@@ -6,6 +6,7 @@
 
 {% block maincontent %}
 <div class="container">
+    <h2 class="text-center verticalPadding">Register</h2>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <form method="post" action="" name="registrationForm">
@@ -15,8 +16,8 @@
                     {% bootstrap_field field %}
                 {% endfor %}
                 {% buttons %}
-                    <button type="submit" class="btn btn-primary">
-                        {% bootstrap_icon "star" %} {% trans 'Register' %}
+                    <button type="submit" class="btn btn-primary center-block">
+                       <i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}
                     </button>
                 {% endbuttons %}
             </form>

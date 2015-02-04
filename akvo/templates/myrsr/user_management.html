@@ -4,15 +4,16 @@
 
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
-{% block head_js %}
-    <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
-{% endblock %}
-
 {% block myrsr_main %}
     <h1>User management</h1>
     <div id="user_table"></div>
-    {% compressed_js 'rsr_v3_react_user_management' %}
-    {% comment %}
-    <script type="application/javascript" src="/static/rsr/v3/js/build/rsr_v3_user_management.min.js" charset="utf-8"></script>
-    {% endcomment %}
 {% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    {# App data #}
+    <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
+
+    {% compressed_js 'rsr_v3_react_user_management' %}
+{% endblock js %}
