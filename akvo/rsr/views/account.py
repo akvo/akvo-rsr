@@ -87,7 +87,8 @@ def sign_in(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return HttpResponseRedirect('/myrsr')
+            next_page = request.GET.get('next')
+            return HttpResponseRedirect(next_page) if next_page else HttpResponseRedirect('/myrsr')
     # Password reset on sign in page
     elif request.method == "POST" and 'email' in request.POST:
         reset_form = PasswordResetForm(data=request.POST)
