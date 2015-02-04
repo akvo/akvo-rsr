@@ -4,22 +4,6 @@
 
 {% block title %}{{project.title}}{% endblock %}
 
-{% block head_js %}
-<script>
-    $(document).ready(function() {
-        $( "#id_latitude").val(0);
-        $( "#id_longitude").val(0);
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(storePosition);
-        }
-        function storePosition(position) {
-            $( "#id_latitude").val(position.coords.latitude);
-            $( "#id_longitude").val(position.coords.longitude);
-        }
-    });
-</script>
-{% endblock %}
-
 {% block maincontent %}
 <article class="touch-navbar">
     {% include "partials/project_header.html" %}
@@ -82,3 +66,16 @@
 </article>
 
 {% endblock %}
+
+{% block jq %}
+  {{ block.super }}
+  $( "#id_latitude").val(0);
+  $( "#id_longitude").val(0);
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(storePosition);
+  }
+  function storePosition(position) {
+    $( "#id_latitude").val(position.coords.latitude);
+    $( "#id_longitude").val(position.coords.longitude);
+  }
+{% endblock jq %}
