@@ -21,7 +21,9 @@
               </div>
               <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
             </div>
+            {% if q %}
             <div><a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  Reset all filters</a></div>
+            {% endif %}
           </div>
         </div>
       </div>
