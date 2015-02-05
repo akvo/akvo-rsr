@@ -141,13 +141,13 @@ var AddEmploymentForm = React.createClass({
     render: function() {
         return (
             <span>
-                <h3>Connect with an organisation</h3>
+                <h4>Connect with an organisation</h4>
                 <form>
                     <OrganisationInput ref="organisationInput" />
                     <CountryInput ref="countryInput" />
                     <JobTitleInput ref="jobtitleInput" />
                     <ModalTrigger modal={<ResponseModal title={this.state.title} response={this.state.response} />}>
-                        <Button onClick={this.addEmployment} bsStyle='success'>Request to join</Button>
+                        <Button onClick={this.addEmployment} bsStyle='primary'>Request to join</Button>
                     </ModalTrigger>
                 </form>
             </span>
@@ -178,7 +178,7 @@ var EmploymentApp = React.createClass({
     render: function() {
         return (
             <span>
-                <h2>My organisations</h2>
+                <h3><i class="fa fa-users"></i> My organisations</h3>
                 <EmploymentList employments={this.state.employments} />
                 <AddEmploymentForm link={this.props.link} addEmployment={this.addEmployment} />
             </span>

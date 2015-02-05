@@ -9,7 +9,8 @@
 {% endblock %}
 
 {% block myrsr_main %}
-    <h1>User management</h1>
+    <h3>User management</h3>
+    <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">You don't have the right to manage users.</p>
     <div id="user_table"></div>
     {% compressed_js 'rsr_v3_react_user_management' %}
     {% comment %}
