@@ -22,26 +22,13 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.files.FileField')(default='', max_length=100, blank=True),
                       keep_default=False)
 
-        # Adding field 'Link.language'
-        db.add_column(u'rsr_link', 'language',
-                      self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=2, blank=True),
-                      keep_default=False)
-
         # Adding field 'Link.title_language'
         db.add_column(u'rsr_link', 'title_language',
                       self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=2, blank=True),
                       keep_default=False)
 
-        # Adding field 'Link.format'
-        db.add_column(u'rsr_link', 'format',
-                      self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=75, blank=True),
-                      keep_default=False)
-
-        # Adding field 'Link.category'
-        db.add_column(u'rsr_link', 'category',
-                      self.gf('akvo.rsr.fields.ValidXMLCharField')(default='', max_length=3, blank=True),
-                      keep_default=False)
-
+        # Deleting field 'Link.credit'
+        db.delete_column(u'rsr_link', 'credit')
 
     def backwards(self, orm):
         # Adding model 'ProjectDocument'
@@ -66,18 +53,8 @@ class Migration(SchemaMigration):
         # Deleting field 'Link.document'
         db.delete_column(u'rsr_link', 'document')
 
-        # Deleting field 'Link.language'
-        db.delete_column(u'rsr_link', 'language')
-
         # Deleting field 'Link.title_language'
         db.delete_column(u'rsr_link', 'title_language')
-
-        # Deleting field 'Link.format'
-        db.delete_column(u'rsr_link', 'format')
-
-        # Deleting field 'Link.category'
-        db.delete_column(u'rsr_link', 'category')
-
 
     models = {
         u'auth.group': {
