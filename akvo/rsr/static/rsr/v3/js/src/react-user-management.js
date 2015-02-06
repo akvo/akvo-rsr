@@ -164,7 +164,7 @@ var CountryJobTitle = React.createClass({displayName: 'CountryJobTitle',
                 if (job_title != "") {
                     text += " "
                 }
-                text += "in " + country
+                text += "in " + country.name
             }
             text += ")";
             return (
