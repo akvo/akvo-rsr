@@ -59,11 +59,18 @@
       {% include 'navigation/pagination.html' %}
   </div>
   {% else %}
-  <p class="noItem text-center col-sm-6 col-sm-offset-3">You can't see any projects yet.</p>
-  <p class="text-center col-sm-8 col-sm-offset-2">
-    Go to the <a href="{% url 'my_details' %}">My details</a> page to request to join an organisation.
-    Once your request is approved, you will see the projects of this organisation on this page.
-  </p>
+      <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
+      {% if not organisations %}
+      <p class="text-center col-sm-8 col-sm-offset-2">
+        Go to the <a href="{% url 'my_details' %}">My details</a> page to request to join an organisation.
+        Once your request is approved, you will see the projects of this organisation on this page.
+      </p>
+      {% else %}
+      <p class="text-center col-sm-8 col-sm-offset-2">
+        The organisation(s) you have joined do not have any projects yet.
+        Go to the <a href="{% url 'my_details' %}">My details</a> page to see your organisation(s).
+      </p>
+      {% endif %}
   {% endif %}
 </div>
 {% endblock %}

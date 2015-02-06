@@ -75,12 +75,14 @@ def my_updates(request):
 
 @login_required
 def my_projects(request):
-    projects = request.user.organisations.all_projects().distinct()
+    organisations = request.user.employers.approved().organisations()
+    projects = organisations.all_projects().distinct()
     page = request.GET.get('page')
 
     page, paginator, page_range = pagination(page, projects, 10)
 
     context = {
+        'organisations': organisations,
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
