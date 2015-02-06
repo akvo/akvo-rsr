@@ -16,7 +16,7 @@ from django.contrib.auth.models import check_password
 
 
 class AuthBackend(ModelBackend):
-    def authenticate(self, username=None, password=None, **kwargs):
+    def authenticate(self, username=None, password=None, no_password=False, **kwargs):
         # Check the username-password combination and return a User.
         # The login can be either the username or the email of the user.
         email_regex = re.compile(r"[^@]+@[^@]+\.[^@]+")
@@ -31,4 +31,7 @@ class AuthBackend(ModelBackend):
         except get_user_model().DoesNotExist:
             return None
 
-        return user if check_password(password, user.password) else None
+        if no_password:
+            return user
+        else:
+            return user if check_password(password, user.password) else None
