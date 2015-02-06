@@ -1,0 +1,9 @@
+Dear {{ user.get_full_name }},
+
+Your request to join {{organisation.long_name}} on Akvo RSR has been approved.
+
+Please visit the MyRSR section to view your projects and add updates to the projects here:
+http://{{ site }}/myrsr/
+
+Thank you,
+Akvo.org

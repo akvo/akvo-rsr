@@ -214,8 +214,14 @@ def employment_save(sender, **kwargs):
                 notify,
                 subject='registration/user_organisation_request_subject.txt',
                 message='registration/user_organisation_request_message.txt',
-                subject_context={'organisation': organisation},
-                msg_context={'user': user, 'organisation': organisation},
+                subject_context={
+                    'user': user,
+                    'organisation': organisation
+                },
+                msg_context={
+                    'user': user,
+                    'organisation': organisation
+                },
             )
     else:
         employment = kwargs.get("instance", False)

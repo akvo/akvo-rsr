@@ -12,6 +12,8 @@ from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 
+from akvo.utils import rsr_send_mail
+
 from .models_utils import QuerySetManager
 
 from ..fields import ValidXMLCharField
@@ -58,6 +60,25 @@ class Employment(models.Model):
 
     def __unicode__(self):
         return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name, self.organisation.name)
+
+    def approve(self):
+        if not self.is_approved:
+            self.is_approved = True
+            self.save()
+
+            # Send mail
+            rsr_send_mail(
+                [self.user.email],
+                subject='templates/registration/approved_email_subject.txt',
+                message='templates/registration/approved_email_message.txt',
+                subject_context={
+                    'organisation': self.organisation,
+                },
+                msg_context={
+                    'user': self.user,
+                    'organisation': self.organisation,
+                }
+            )
 
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)
