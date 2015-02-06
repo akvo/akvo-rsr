@@ -101,5 +101,5 @@ def user_management(request):
     org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
     users_array = [user.employments_dict(org_actions) for user in organisations.users().exclude(pk=user.pk).order_by('-date_joined')]
 
-    context = {'user_data': json.dumps({'users': users_array, }), }
+    context = {'user_data': json.dumps({'users': users_array, }), } if users_array else {}
     return render(request, 'myrsr/user_management.html', context)

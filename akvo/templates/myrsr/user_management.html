@@ -1,20 +1,31 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load bootstrap3 compressed i18n %}
+{% load bootstrap3 compressed i18n rules %}
 
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
 {% block myrsr_main %}
     <h3>User management</h3>
-    <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">You don't have the right to manage users.</p>
+    {% has_perm 'rsr.change_employment' user as can_change_employments %}
+    {% if not can_change_employments or not user_data %}
+    <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
+        {% if not can_change_employments %}
+        {% trans "You don't have the rights to manage users." %}
+        {% elif not user_data %}
+        {% trans "There are no users that you can manage." %}
+        {% endif %}
+    </p>
+    {% endif %}
     <div id="user_table"></div>
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
 
+    {% if user_data %}
     {# App data #}
     <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
 
     {% compressed_js 'rsr_v3_react_user_management' %}
+    {% endif %}
 {% endblock js %}
