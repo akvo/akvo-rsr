@@ -147,6 +147,33 @@ var DropDownItem = React.createClass({
     }
 });
 
+var CountryJobTitle = React.createClass({
+    render: function() {
+        var country = this.props.country;
+        var job_title = this.props.job_title;
+        if (country == "" && job_title == "") {
+            return (
+                <span>&nbsp;</span>
+                )
+        } else {
+            var text = "(";
+            if (job_title != "") {
+                text += job_title
+            }
+            if (country != "") {
+                if (job_title != "") {
+                    text += " "
+                }
+                text += "in " + country
+            }
+            text += ")";
+            return (
+                <span className="small">{text}&nbsp; &nbsp;</span>
+                )
+        }
+    }
+});
+
 var Employment = React.createClass({
     getInitialState: function() {
         return {
@@ -192,7 +219,8 @@ var Employment = React.createClass({
           )
         });
         return this.state.visible
-            ? <span>{this.props.employment.organisation_full.long_name} &nbsp; &nbsp;
+            ? <span>{this.props.employment.organisation_full.long_name}&nbsp;
+              <CountryJobTitle country={this.props.employment.country_full} job_title={this.props.employment.job_title} />
               <DropdownButton title={this.state.button_title} disabled={this.state.loading}>{other_groups}</DropdownButton> &nbsp; &nbsp;
               <TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={true} /> &nbsp;
               <TriggerModal employment={this.props.employment} onDeleteToggle={this.onDelete} delete={false} /><br /><br /></span>
