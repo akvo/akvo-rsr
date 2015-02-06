@@ -495,6 +495,9 @@ class Project(TimestampsMixin, models.Model):
             country_ids = list(set(country_ids))
             return Country.objects.filter(id__in=country_ids).distinct()
 
+        def publishingstatuses(self):
+            return PublishingStatus.objects.filter(project__in=self)
+
 
     def __unicode__(self):
         return u'%s' % self.title
