@@ -63,10 +63,11 @@
  </form>
 
   <div class="container-fluid">
-    <div class="row center-text verticalPadding">
-      <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
-      {% include 'navigation/pagination.html' %}
+    <div class="row center-text">
+      <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>    
     </div>
+      {% include 'navigation/pagination.html' %}
+
   </div>
 
   <section class="main-list projects">
@@ -124,10 +125,8 @@
       {% endfor %}
     </ul>
   </section>
-<div class="container-fluid">
-  <div class="row center-text">
-     {% include 'navigation/pagination.html' %}
-   </div>
+  <div class="container-fluid">
+       {% include 'navigation/pagination.html' %}
   </div>
 
 {% endblock %}

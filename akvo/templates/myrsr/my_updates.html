@@ -5,7 +5,7 @@
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
 {% block myrsr_main %}
-    <h1>My updates</h1>
+    <h3>My updates</h3>
     {% if page %}
         <div class="table-responsive" id="updates">
             <table class="table table-striped">
@@ -36,6 +36,6 @@
               {% include 'navigation/pagination.html' %}
           </div>
     {% else %}
-        <h2><small>You have not placed any updates yet.</small></h2>
+        <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">You have not placed any updates yet.</p>
     {% endif %}
 {% endblock %}

@@ -51,8 +51,11 @@ a, a:link, a:visited {
 /****************** Miscellanous Typography ********************/
 .noItem {
     color: rgba($akvoPurple, 0.2);
+    font-weight: bold;
 }
-
+.emTxt {
+    color: rgba($akvoPurple, 0.5);
+}
 em {
     font-family: $scriptFont;
     font-size: 1.2em;
@@ -248,10 +251,6 @@ nav.navbar-fixed-top {
             }
         }
     }
-    .navbar-collapse {
-        /*background:white;
-        border-top:1px solid rgb(228,228,228);*/
-    }
     .navbar-brand {
         float: left;
         font-size: 18px;
@@ -291,8 +290,12 @@ nav.navbar-fixed-top {
                 &.active {
                     color: complement($rsrBlue);
                     font-weight: bold;
-                    background: rgba($anchorLinkHover, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
+                    background: rgba($anchorLinkHover, 0.1);
                     background-size: 15px 15px;
+                    @include border-radius(3px);
+                    @include responsive(small-max-screens) {
+                        background:rgba($anchorLinkHover, 0.1);
+                    }
                 }
                 &.addUpdateBtn {
                     margin-top: 10px;
@@ -303,9 +306,11 @@ nav.navbar-fixed-top {
                         background-color: $anchorLinkHover;
                         border-color: $anchorLinkHover;
                     }
-                @include responsive(small-max-screens) {
-                        width:90%;
-                    }
+                    @include responsive(small-max-screens) {
+                            width:95%;
+                            padding:10px 5%;
+                            margin:0 auto 10px auto;
+                        }
                 }
             }
         }
@@ -315,28 +320,45 @@ nav.navbar-fixed-top {
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
+                    @include responsive(small-max-screens) {
+                        padding:10px 15px;
+                    }
+                    &.active {
+                        background: none;
+                    }
                 }
             }
         }
     }
 }
-
+.navbar-inverse {
+    .navbar-collapse {
+        border-color:rgb(228,228,228);
+    }
+}
 .navbar .btn {
     padding: 4px 9px;
 }
 
-@include responsive(small-screens) {
+@include responsive(small-max-screens) {
     body > .navbar > .container .navbar-brand {
         margin-left: 0;
     }
 }
 
-
+/* My RSR stuff */
 .myRsrMenu {
+    h4 {
+        padding-top: 15px;
+    }
     nav[role=navigation] {
         background: rgba($akvoBlack, 0.05);
         ul {
             li {
+                @include responsive(small-max-screens) {
+                    padding-top:15px;
+                    padding-bottom:15px;
+                }
                 a {
                     color: $anchorLink;
                     font-family: $titleFont;
@@ -356,7 +378,51 @@ nav.navbar-fixed-top {
         }
     }
 }
-
+#organisations {
+    background: darken(rgba($anchorLinkHover, 0.1), 0);
+    padding-bottom: 15px;
+    @include border-radius(5px);
+    @include responsive(small-max-screens) {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        .btn {
+            margin: 10px auto;
+        }
+    }   
+    ul {
+        padding-left: 5px;
+        margin-bottom: 25px;
+        li {
+            list-style-type: none;
+        }
+    }
+    .tt-hint {
+        color: #999;
+    }
+    .tt-dropdown-menu {
+        margin-top: 12px;
+        padding: 8px 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    }
+    .tt-suggestion {
+        padding: 3px 20px;
+        line-height: 24px;
+        &.tt-cursor {
+            color: #fff;
+            background-color: #0097cf;
+        }
+        p {
+            margin: 0;
+        }
+    }
+    .twitter-typeahead {
+        width: 100%;
+    }
+}
 /* FOOTER */
 body > footer {
     margin-top: 1em;
@@ -369,24 +435,20 @@ footer {
         #footer-body {
             ul.nav {
                 li {
+                    padding-top:10px;
+                    padding-bottom:10px;
                     a {
                         display: block;
                         &[href="http://akvo.org"] {
                             margin: 0;
-                            width: 42px;
+                            width: 70px;
                             background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
                             text-indent: -9999px;
-                            background-size: 42px 42px;
-                        }
-                    }
-                    &.akvoLogo {
-                        width: 70px;
-                        a[href="http://akvo.org"] {
-                            margin: 0;
-                            width: 70px;
-                            background: url(../../img/akvo.orgLogo.svg) center 5px no-repeat;
-                            text-indent: -9999px;
                             background-size: 70px 42px;
+                            @include responsive(small-max-screens) { 
+                                width:100%;
+                                background-size: 80px auto;
+                            }
                         }
                     }
                 }
@@ -473,6 +535,17 @@ h4.detailedInfo {
                     border: 1px solid rgba($anchorLinkHover, 0.5);
                     color: $anchorLinkHover;
                 }
+            }
+        }
+    }
+}
+
+.pagination {
+    li {
+        a, span {
+            @include responsive(small-max-screens) {
+                padding: 10px 16px;
+                font-size: 18px;
             }
         }
     }
@@ -630,7 +703,21 @@ h4.detailedInfo {
         ul {
             li {
                 &:nth-child(2n+1) {
-                    background: darken(rgba($rsrGreen, 0.1), 10%);
+                    background: darken(rgba($rsrBlue, 0.05), 10%);
+                    border:thin solid rgba($rsrBlue, 0.2);
+                }
+                .projectLocation {
+                    color: rgba($akvoBlack, 0.5);
+                }
+            }
+        }
+    }
+    &.updates {
+        ul {
+            li {
+                &:nth-child(2n+1) {
+                    background: darken(rgba($rsrGreen, 0.05), 10%);
+                    border:thin solid rgba($rsrGreen, 0.15);
                 }
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
@@ -641,6 +728,10 @@ h4.detailedInfo {
     &.organisations {
         ul {
             li {
+                &:nth-child(2n+1) {
+                    background: darken(rgba($akvoTvRed, 0.05), 0);
+                    border:thin solid rgba($akvoTvRed, 0.15);
+                }
                 img {
                     @include bw;
                     transition: all 0.2s ease-in;
@@ -661,6 +752,8 @@ header {
         margin-bottom: 0;
         padding: 15px 0;
         background: lighten($anchorLinkHover, 25%);
+        border-bottom:1px solid rgb(238,238,238);
+        margin-bottom:15px;
         h1 {
             margin-top: 10px;
             margin-bottom: 0;

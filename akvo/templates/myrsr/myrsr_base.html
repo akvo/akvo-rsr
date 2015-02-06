@@ -6,8 +6,8 @@
 <div class="container">
     <div class="row">
         {% block myrsr_menu %}
-        <div class="col-md-2 myRsrMenu">
-            <h4 class="verticalPadding">MyRSR</h4>
+        <div class="col-sm-2 myRsrMenu">
+            <h4 class="">MyRSR</h4>
             <nav class="navbar navbar-nav" role="navigation">
                 <ul class="nav nav-pills nav-stacked">
                     <li><a href="{% url 'my_details' %}">My details</a></li>
@@ -24,8 +24,8 @@
             </nav>
         </div>
         {% endblock %}
-        <div class="col-md-10">
-            {% block myrsr_main %}{% endblock %}
+        <div class="col-sm-10">
+                {% block myrsr_main %}{% endblock %}
         </div>
     </div>
 </div>
