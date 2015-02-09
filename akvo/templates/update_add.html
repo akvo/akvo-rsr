@@ -68,7 +68,6 @@
 {% endblock %}
 
 {% block jq %}
-  {{ block.super }}
   $( "#id_latitude").val(0);
   $( "#id_longitude").val(0);
   if (navigator.geolocation) {
@@ -78,4 +77,4 @@
     $( "#id_latitude").val(position.coords.latitude);
     $( "#id_longitude").val(position.coords.longitude);
   }
-{% endblock jq %}
+{% endblock %}
