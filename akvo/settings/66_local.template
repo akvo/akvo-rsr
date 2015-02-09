@@ -6,21 +6,23 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+AKVOAPP_DOMAIN = 'localakvoapp.org'
 DEBUG = TEMPLATE_DEBUG = True
 PIPELINE_ENABLED = False
 
-# STATIC_URL = '/static/'
+STATIC_URL = '/static-dev/'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'rsr',
-#         'USER': 'rsr',
-#         'PASSWORD': 'password',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'rsr',
+        'USER': 'rsr',
+        'PASSWORD': 'password',
+        'HOST': '192.168.50.101',
+        'PORT': '5432',
+    }
+}
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
