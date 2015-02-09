@@ -72,6 +72,9 @@ def extra_pages_context(request):
             'akvoapp_root_url': request.akvoapp_root_url,
             'domain_url': request.domain_url,
             'projects_qs': projects.latest_update_fields().order_by('-id'),
+            'no_facebook': not page.facebook_button,
+            'facebook_app_id': page.facebook_app_id,
+            'no_twitter': not page.twitter_button,
         }
 
     return {}

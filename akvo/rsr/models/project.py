@@ -228,23 +228,27 @@ class Project(TimestampsMixin, models.Model):
 
     def all_donations(self):
         return Invoice.objects.filter(
-            project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-        )
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True)
 
     def public_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-                status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-            ).exclude(is_anonymous=True)
+        return Invoice.objects.filter(
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).exclude(is_anonymous=True)
 
     def all_donations_amount(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-                status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-            ).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+        return Invoice.objects.filter(
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).aggregate(
+            all_donations_sum=Sum('amount')
+        )['all_donations_sum']
 
     def all_donations_amount_received(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-        ).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+        return Invoice.objects.filter(
+            project__exact=self.id).filter(
+            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).aggregate(
+            all_donations_sum=Sum('amount_received')
+        )['all_donations_sum']
 
     def amount_needed_to_fully_fund_via_paypal(self):
         if self.currency == 'USD':

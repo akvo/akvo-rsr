@@ -25,35 +25,35 @@ from akvo import settings
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(
-        label='',
+        label='Email',
         max_length=254,
         widget=forms.TextInput(
             attrs={'placeholder': 'Email'}
         ),
     )
     first_name = forms.CharField(
-        label='',
+        label='First name',
         max_length=30,
         widget=forms.TextInput(
             attrs={'placeholder': 'First name'}
         ),
     )
     last_name = forms.CharField(
-        label='',
+        label='Last name',
         max_length=30,
         widget=forms.TextInput(
             attrs={'placeholder': 'Last name'}
         ),
     )
     password1 = forms.CharField(
-        label='',
+        label='Password',
         widget=forms.PasswordInput(
             attrs={'placeholder': 'Password'},
             render_value=False
         )
     )
     password2 = forms.CharField(
-        label='',
+        label='Repeat password',
         widget=forms.PasswordInput(
             attrs={'placeholder': 'Repeat password'},
             render_value=False

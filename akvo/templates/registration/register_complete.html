@@ -5,10 +5,10 @@
 {% block title %}{% trans 'Registration complete' %}{% endblock %}
 
 {% block maincontent %}
-<div class="container">
-    <div class="row">
-        <h1>Welcome, {{ new_user.first_name }}!</h1>
-        <h2><small>{% trans 'A confirmation will be sent to you via email. Please click the link in the email to complete the setup of your account.' %}</small></h2>
-    </div>
-</div>
+	<div class="container">
+	    <div class="row">
+	        <h2 class="text-center verticalPadding">Welcome, {{ new_user.first_name }}!</h2>
+	        <p class="text-center verticalPadding">{% trans 'A confirmation will be sent to you via email. Please click the link in the email to complete the setup of your account.' %}</p>
+	    </div>
+	</div>
 {% endblock %}

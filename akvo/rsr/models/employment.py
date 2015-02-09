@@ -59,7 +59,7 @@ class Employment(models.Model):
         verbose_name_plural = _(u'user employments')
 
     def __unicode__(self):
-        return "{0} {1}: {2}".format(self.user.first_name, self.user.last_name, self.organisation.name)
+        return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name, self.organisation.name)
 
     def save(self, *args, **kwargs):
         """Before we save make sure the required auth groups are existing."""
