@@ -16,3 +16,18 @@ More information in these files:
 * [AUTHORS](AUTHORS.txt)
 * [LICENSE](LICENSE.md)
 * [INSTALL](INSTALL.md)
+
+
+ 
+## From checkout to running dev server
+
+```shell
+$ cd akvo/settings
+$ cp ./66_local.template ./66_local.conf
+$ cd ../../vagrant
+$ vagrant up --provider=virtualbox
+$ cd ../scripts/devhelpers
+$ ./supervisord.sh stop rsr && ./manage.sh runserver
+```
+
+Now open a browser and visist [http://rsr.localdev.akvo.org/](http://rsr.localdev.akvo.org/).
