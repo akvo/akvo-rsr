@@ -21,7 +21,7 @@ from django.db.models import get_model, ImageField
 
 from sorl.thumbnail import ImageField
 
-from akvo.utils import send_donation_confirmation_emails, rsr_send_mail_to_users
+from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_send_mail_to_users
 
 
 def create_publishing_status(sender, **kwargs):
@@ -183,7 +183,33 @@ def act_on_log_entry(sender, **kwargs):
                 criterion['call'](object)
 
 
-def employment_save(sender, **kwargs):
+def employment_pre_save(sender, **kwargs):
+    """
+    Send a mail to the user when his/her account has been approved.
+    """
+    employment = kwargs.get("instance", False)
+    try:
+        obj = sender.objects.get(pk=employment.pk)
+    except sender.DoesNotExist:
+        # Object is new
+        pass
+    else:
+        if not obj.is_approved and employment.is_approved:
+            # Employment is approved, send mail
+            rsr_send_mail(
+                [employment.user.email],
+                subject='registration/approved_email_subject.txt',
+                message='registration/approved_email_message.txt',
+                subject_context={
+                    'organisation': employment.organisation,
+                },
+                msg_context={
+                    'user': employment.user,
+                    'organisation': employment.organisation,
+                }
+            )
+
+def employment_post_save(sender, **kwargs):
     """
     If a new employment is created:
     - Set 'Users' Group for this employment

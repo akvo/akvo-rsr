@@ -66,20 +66,6 @@ class Employment(models.Model):
             self.is_approved = True
             self.save()
 
-            # Send mail
-            rsr_send_mail(
-                [self.user.email],
-                subject='templates/registration/approved_email_subject.txt',
-                message='templates/registration/approved_email_message.txt',
-                subject_context={
-                    'organisation': self.organisation,
-                },
-                msg_context={
-                    'user': self.user,
-                    'organisation': self.organisation,
-                }
-            )
-
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)
         # Set groups in right order
