@@ -56,6 +56,13 @@ a, a:link, a:visited {
 .emTxt {
     color: rgba($akvoPurple, 0.5);
 }
+.noStyleUl {
+    list-style-type: none;
+    padding:0;
+    li {
+        padding:0;
+    }
+}
 em {
     font-family: $scriptFont;
     font-size: 1.2em;
@@ -1052,3 +1059,25 @@ div.textBlock {
     }
 }
 
+/* Organisation Page */
+.organisationDetail {
+    .organisationHeader {
+        background:rgba($akvoBlack,0.05);
+    }
+    h1 {
+        margin-top:0;
+        margin-bottom:20px;
+    }
+    .orgLogo {
+        padding:10px 0;
+        background:rgba(white,0.5);
+        img {
+            width:35%;
+            margin-left:5px;
+        }
+    }
+    .orgDetails {
+        background:rgba(white,0.05);
+        @include border-radius(5px);
+    }
+}
