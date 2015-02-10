@@ -28,6 +28,7 @@ from akvo.utils import custom_get_or_create_country
 from akvo.rsr.fields import ValidXMLCharField
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin
+from nested_inlines.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -128,15 +129,10 @@ class OrganisationAccountAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
-class LinkInline(admin.StackedInline):
+class LinkInline(NestedStackedInline):
     model = get_model('rsr', 'link')
-    extra = 1
-    list_display = ('url', 'caption', 'show_link')
-    fieldsets = (
-        (None, {
-            'fields': ('kind', 'url', 'caption')
-        }),
-    )
+    extra = 0
+    fields = ('id', 'kind', 'url', 'caption')
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
@@ -163,12 +159,19 @@ class BudgetItemAdminInLineFormSet(forms.models.BaseInlineFormSet):
             raise forms.ValidationError(_("The 'total' budget item cannot be used in combination with other budget items."))
 
 
-class BudgetItemAdminInLine(admin.TabularInline):
+class BudgetItemAdminInLine(NestedStackedInline):
     model = get_model('rsr', 'budgetitem')
     extra = 1
     formset = BudgetItemAdminInLineFormSet
-    fields = ('label', 'other_extra', 'amount', 'type', 'period_start', 'period_start_text', 'period_end',
-              'period_end_text', 'value_date')
+    fieldsets = (
+        (None, {
+            'fields': ('id', 'label', 'other_extra', 'type', 'amount', 'period_start', 'period_end', 'value_date')
+        }),
+        ('IATI fields (advanced)', {
+            'classes': ('collapse',),
+            'fields': ('period_start_text', 'period_end_text', )
+        })
+    )
 
     class Media:
         css = {'all': (os.path.join(settings.STATIC_URL, 'rsr/main/css/src/rsr_admin.css').replace('\\', '/'),)}
@@ -228,18 +231,28 @@ class MiniCMSAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'MiniCMS'), MiniCMSAdmin)
 
 
-class BenchmarkInline(admin.TabularInline):
+class BenchmarkInline(NestedStackedInline):
     model = get_model('rsr', 'benchmark')
     # only show the value, category and benchmark are not to be edited here
-    fields = ('value',)
+    fieldsets = (
+        (None, {
+            'classes': ('collapse',),
+            'fields': ('id', 'value',)
+        }),
+    )
     extra = 0
     max_num = 0
 
 
-class GoalInline(admin.TabularInline):
+class GoalInline(NestedStackedInline):
     model = get_model('rsr', 'goal')
-    fields = ('text',)
-    extra = 3
+    fieldsets = (
+        (None, {
+            'classes': ('collapse',),
+            'fields': ('id', 'text',)
+        }),
+    )
+    extra = 0
     max_num = 8
 
 
@@ -306,9 +319,9 @@ class RSR_PartnershipInlineForm(forms.ModelForm):
         return data
 
 
-class PartnershipInline(admin.TabularInline):
+class PartnershipInline(NestedStackedInline):
     model = get_model('rsr', 'Partnership')
-    exclude = ('iati_activity_id',)
+    fields = ('id', 'organisation', 'partner_type', 'funding_amount', 'internal_id', 'partner_type_extra')
     extra = 1
     form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
@@ -324,12 +337,12 @@ class PartnershipInline(admin.TabularInline):
         return formset
 
 
-class ProjectLocationInline(admin.StackedInline):
+class ProjectLocationInline(NestedStackedInline):
     model = get_model('rsr', 'projectlocation')
     extra = 0
     fieldsets = (
         (None, {
-            'fields': ('latitude', 'longitude', 'city', 'state', 'country', 'address_1', 'address_2', 'postcode')
+            'fields': ('id', 'latitude', 'longitude', 'country', 'city', 'state', 'address_1', 'address_2', 'postcode')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
@@ -340,114 +353,126 @@ class ProjectLocationInline(admin.StackedInline):
     )
 
 
-class CountryBudgetInline(admin.StackedInline):
+class CountryBudgetInline(NestedStackedInline):
     model = get_model('rsr', 'CountryBudgetItem')
     extra = 0
     fieldsets = (
         ('Country Budget Item', {
             'classes': ('collapse',),
-            'fields': ('code', 'description', 'vocabulary', 'percentage')
+            'fields': ('id', 'code', 'description', 'vocabulary', 'percentage')
         }),
     )
 
 
-class ResultInline(admin.StackedInline):
+class IndicatorPeriodInline(NestedStackedInline):
+    model = get_model('rsr', 'IndicatorPeriod')
+    fields = ('id', 'period_start', 'period_end', 'target_value', 'target_comment', 'actual_value', 'actual_comment')
+    extra = 1
+
+
+class IndicatorInline(NestedStackedInline):
+    model = get_model('rsr', 'Indicator')
+    fields = ('id', 'title', 'description', 'measure', 'ascending', 'baseline_year', 'baseline_value',
+              'baseline_comment')
+    inlines = (IndicatorPeriodInline,)
+    extra = 1
+
+
+class ResultInline(NestedStackedInline):
     model = get_model('rsr', 'Result')
-    extra = 0
-    fieldsets = (
-        ('Result', {
-            'classes': ('collapse',),
-            'fields': ('title', 'type', 'aggregation_status', 'description', 'description_type')
-        }),
-    )
+    inlines = (IndicatorInline,)
+    extra = 1
+    fields = ('id', 'title', 'description', 'type', 'aggregation_status')
 
 
-class PlannedDisbursementInline(admin.StackedInline):
+class PlannedDisbursementInline(NestedStackedInline):
     model = get_model('rsr', 'PlannedDisbursement')
     extra = 0
     fieldsets = (
         ('Planned Disbursement', {
             'classes': ('collapse',),
-            'fields': ('currency', 'value', 'value_date', 'period_start', 'period_end', 'type', 'updated')
+            'fields': ('id', 'currency', 'value', 'value_date', 'period_start', 'period_end', 'type', 'updated')
         }),
     )
 
 
-class PolicyMarkerInline(admin.StackedInline):
+class PolicyMarkerInline(NestedStackedInline):
     model = get_model('rsr', 'PolicyMarker')
     extra = 0
     fieldsets = (
         ('Policy Marker', {
             'classes': ('collapse',),
-            'fields': ('policy_marker', 'significance', 'vocabulary', 'description')
+            'fields': ('id', 'policy_marker', 'significance', 'vocabulary', 'description')
         }),
     )
 
 
-class ProjectConditionInline(admin.StackedInline):
+class ProjectConditionInline(NestedStackedInline):
     model = get_model('rsr', 'ProjectCondition')
     extra = 0
     fieldsets = (
         ('Project Condition', {
             'classes': ('collapse',),
-            'fields': ('type', 'text', 'attached')
+            'fields': ('id', 'type', 'text', 'attached')
         }),
     )
 
 
-class ProjectContactInline(admin.StackedInline):
+class ProjectContactInline(NestedStackedInline):
     model = get_model('rsr', 'ProjectContact')
-    extra = 0
     fieldsets = (
-        ('Project Contact', {
+        (None, {
+            'fields': ('id', 'type', 'person_name', 'email', 'job_title', 'organisation', 'telephone',
+                       'mailing_address',)
+        }),
+        ('Additional fields', {
             'classes': ('collapse',),
-            'fields': ('person_name', 'organisation', 'department', 'type', 'email', 'job_title', 'mailing_address',
-                       'state', 'country', 'telephone', 'website')
+            'fields': ('website', 'department', 'country', 'state',)
         }),
     )
 
+    def get_extra(self, request, obj=None, **kwargs):
+        return 1 if obj.contacts.count() == 0 else 0
 
-class RecipientCountryInline(admin.StackedInline):
+
+class RecipientCountryInline(NestedStackedInline):
     model = get_model('rsr', 'RecipientCountry')
     extra = 0
     fieldsets = (
         ('Recipient Country', {
             'classes': ('collapse',),
-            'fields': ('country', 'percentage', 'text')
+            'fields': ('id', 'country', 'percentage', 'text')
         }),
     )
 
 
-class RecipientRegionInline(admin.StackedInline):
+class RecipientRegionInline(NestedStackedInline):
     model = get_model('rsr', 'RecipientRegion')
     extra = 0
     fieldsets = (
         ('Recipient Region', {
             'classes': ('collapse',),
-            'fields': ('region', 'region_vocabulary', 'percentage', 'text')
+            'fields': ('id', 'region', 'region_vocabulary', 'percentage', 'text')
         }),
     )
 
 
-class SectorInline(admin.StackedInline):
+class SectorInline(NestedStackedInline):
     model = get_model('rsr', 'Sector')
     extra = 0
-    fieldsets = (
-        ('Sector', {
-            'classes': ('collapse',),
-            'fields': ('sector_code', 'vocabulary', 'percentage', 'text')
-        }),
-    )
+    fields = ('id', 'sector_code', 'vocabulary', 'percentage', 'text')
 
 
-class TransactionInline(admin.StackedInline):
+class TransactionInline(NestedStackedInline):
     model = get_model('rsr', 'Transaction')
     extra = 0
     fieldsets = (
-        ('Transaction', {
+        (None, {
+            'fields': ('id', 'reference', 'transaction_type', 'value', 'transaction_date', 'description')
+        }),
+        ('IATI fields (advanced)', {
             'classes': ('collapse',),
-            'fields': ('currency', 'value', 'value_date', 'description', 'transaction_date', 'reference',
-                       'transaction_type', 'transaction_type_text', 'provider_organisation',
+            'fields': ('currency',  'value_date', 'transaction_type_text', 'provider_organisation',
                        'provider_organisation_ref', 'provider_organisation_activity', 'receiver_organisation',
                        'receiver_organisation_ref', 'receiver_organisation_activity', 'aid_type', 'aid_type_text',
                        'disbursement_channel', 'disbursement_channel_text', 'finance_type', 'finance_type_text',
@@ -456,97 +481,170 @@ class TransactionInline(admin.StackedInline):
     )
 
 
-class LegacyDataInline(admin.StackedInline):
+class LegacyDataInline(NestedStackedInline):
     model = get_model('rsr', 'LegacyData')
     extra = 0
     fieldsets = (
         ('Legacy Data', {
             'classes': ('collapse',),
-            'fields': ('name', 'value', 'iati_equivalent')
+            'fields': ('id', 'name', 'value', 'iati_equivalent')
         }),
     )
 
 
-class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin):
+class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        GoalInline, ProjectLocationInline, BudgetItemAdminInLine, BenchmarkInline, PartnershipInline, LinkInline,
-        ProjectConditionInline, ProjectContactInline, CountryBudgetInline, PlannedDisbursementInline,
-        PolicyMarkerInline, RecipientCountryInline, RecipientRegionInline, ResultInline, SectorInline,
-        TransactionInline, LegacyDataInline
+        ProjectContactInline, PartnershipInline, ProjectLocationInline, SectorInline, BudgetItemAdminInLine,
+        TransactionInline, ResultInline, LinkInline, ProjectConditionInline, CountryBudgetInline,
+        PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline, RecipientRegionInline, LegacyDataInline,
+        BenchmarkInline, GoalInline,
     )
     save_as = True
 
     fieldsets = (
         (_(u'General Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'This section should contain the top-level information about your project which will be publicly available and used within searches. Try to keep your Title and Subtitle short and snappy.'
+                u'This section should contain the top-level information about your project which will be publicly '
+                u'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'language', 'date_start_planned',
-                       'date_start_actual', 'date_end_planned', 'date_end_actual', 'donate_button', 'hierarchy'),
-            }),
-        (_(u'Description'), {
+            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'hierarchy', 'date_start_planned',
+                       'date_start_actual', 'date_end_planned', 'date_end_actual', 'language', 'currency',
+                       'donate_button'),
+        }),
+        (_(u'Contact Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future. Both The Project Plan and Sustainability fields are unlimited, so you can add additional details to your project there.'
+                u'This section should contain the contact information of your project which will be publicly available.'
+                u' Try to fill in at least a contact person and email.'
             ),
-            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'sustainability', 'target_group',),
-            }),
-        (_(u'Goals'), {
+            'fields': (),
+        }),
+        (_(u'Reporting Organisation'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Here you should be entering information about what your project intends to achieve through its implementation.'
+                u'Indicate the reporting organisation of this project. This organisation must be existing '
+                u'already in Akvo RSR. If the organisation does not exist in the system, please send the details of '
+                u'the organisation including Name, Address, Logo, Contact Person and Website to '
+                u'<a href="mailto:support@akvo.org" target="_blank">support@akvo.org</a>.'
             ),
-            'fields': ('goals_overview',),
-            }),
-        (_(u'Photo'), {
+            'fields': ('sync_owner', 'sync_owner_secondary_reporter'),
+        }),
+        (_(u'Project Partners'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Please upload a photo that displays an interesting part of your project, plan or implementation.'
+                u'Add each of the partners you are working with on your project. These organisations must be existing '
+                u'already in Akvo RSR. If you are working with a Partner that does not exist in the system, please '
+                u'send the details of the organisation including Name, Address, Logo, Contact Person and Website to '
+                u'<a href="mailto:support@akvo.org" target="_blank">support@akvo.org</a>.'
+            ),
+            'fields': (),
+        }),
+        (_(u'Project Information'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Here you can complete the in-depth descriptive details regarding your project, its history and plans '
+                u'for the future. Both The Project Plan and Sustainability fields are unlimited, so you can add '
+                u'additional details to your project there.'
+            ),
+            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'target_group',
+                       'sustainability', 'goals_overview'),
+        }),
+        (_(u'Project Photo'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Adding a photo to your project is important to be able to correctly visualise the project on the web.'
+                u' Please upload an image that represents the project clearly. Ensure that you have the user rights and'
+                u' permissions to be able to use this image publicly before uploading.'
             ),
             'fields': ('current_image', 'current_image_caption', 'current_image_credit'),
-            }),
-        (_(u'Locations'), {
+        }),
+        (_(u'Project Documents'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Here you can add the physical locations where the project is being carried out. These will appear on the map on your project page. Use the link to iTouchMap.com to obtain the Coordinates for your locations, as these are the items that ensure the pin is in the correct place.'
+                u'You can add any additional supporting documents to your project here. This could be in the form of '
+                u'annual reports, baseline surveys, contextual information or any other report or summary that can '
+                u'help users understand more about the projects activities.'
             ),
             'fields': (),
-            }),
-        (_(u'Budget'), {
+        }),
+        (_(u'Project Scope'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Please enter the details of what your project will be spending its available funds on.'
+                u'The scope of the project refers to the geographical area that the project is active within.<br><br>'
+                u'Also add the physical locations where the project is being carried out. These will appear on '
+                u'the map on your project page. Use the link to <a href="http://mygeoposition.com/" target="_blank">'
+                u'http://mygeoposition.com/</a> to obtain the coordinates for your locations, as these are the items '
+                u'that ensure the pin is in the correct place.'
             ),
-            'fields': ('currency', ),
-            }),
+            'fields': ('project_scope', ),
+        }),
         (_(u'Project Focus'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Here you can choose the Categories, & Focus Areas that your project is operating in. Once you have selected those, Save your project and you will then be presented with a list of Benchmarks applicable to your fields which you can define for measuring the success of your project.'
-            ),
-            'fields': ('categories',),
-            }),
-        (_(u'Partners'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Add each of the partners you are working with on your project. These organisations must be existing already in Akvo RSR. If you are working with a Partner that does not exist in the system, please send the details of the organisation including Name, Address, Logo, Contact Person and Website to support@akvo.org.'
+                u'The project focus aims to define the broad areas of the project activities. This ensures that the '
+                u'project can be collectively grouped with other similar projects to help make the most out of the '
+                u'project resources.'
             ),
             'fields': (),
-            }),
+        }),
+        (_(u'Project Financials - Budgets'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'You can define the budget information as a total for the whole project or within sections and '
+                u'periods to provide more granular information about where the project funds are being spent.'
+            ),
+            'fields': (),
+        }),
+        (_(u'Project Financials - Transactions'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Transactions refer to the actual transfers of funds between organisations related to the funding '
+                u'and expenditure of the project. This information is crucially important when defining the funding '
+                u'chain within the development aid sector and can help to shape the overall picture. Providing this '
+                u'information can also be beneficial to give clarity on expenditure over periods of time which is '
+                u'reflected within the results obtained for the project.'
+            ),
+            'fields': (),
+        }),
+        (_(u'Results'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Here you can record the projected and achieved results for your project. Results are ordered within'
+                u' a hierarchy that helps to provide a structure under which to report your results. At the top level '
+                u'of the results are your project goals. These should be the high level aims of the project and need '
+                u'not be something that can be directly counted, but should provide context.<br><br>'
+                u'Within each goal an indicator can be defined. Indicators should be items that can be counted and '
+                u'evaluated as the project continues and is completed. Each indicator can be given one or more periods '
+                u'of achievement. These periods should cover the dates from which the indicator is evaluated.<br><br>'
+                u'<strong>Important note:</strong> If a result does not display an indicator or indicator period, '
+                u'please save the project first. After saving the project, the indicator (period) will be shown.'
+            ),
+            'fields': (),
+        }),
         (_(u'Additional Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'You can add links to your project such as Organisation Websites or Akvopedia articles containing relevant information to improve the information available to viewers of your project. You can also make notes on the project. These notes are only visible within this Admin so can be used to identify missing information, specific contact details or status changes that you do not want to be visible on your project page.'
+                u'You can add links to your project such as Organisation Websites or Akvopedia articles containing '
+                u'relevant information to improve the information available to viewers of your project. You can also '
+                u'make notes on the project. These notes are only visible within this Admin so can be used to identify '
+                u'missing information, specific contact details or status changes that you do not want to be visible '
+                u'on your project page.'
             ),
             'fields': ('notes',),
-            }),
+        }),
         (_(u'Keywords'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Add keywords belonging to your project. These keywords must be existing already in Akvo RSR. If you want to use a keyword that does not exist in the system, please contact support@akvo.org.'
+                u'Add keywords belonging to your project. These keywords must be existing already in Akvo RSR. If '
+                u'you want to use a keyword that does not exist in the system, please contact '
+                u'<a href="mailto:support@akvo.org" target="_blank">support@akvo.org</a>.'
             ),
             'fields': ('keywords',),
-            }),
+        }),
         (_(u'Additional IATI information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Optionally, you can add additional information based on the IATI standard.'
             ),
             'classes': ('collapse',),
-            'fields': ('project_scope', 'capital_spend_percentage', 'collaboration_type',
-                       'default_aid_type', 'default_finance_type', 'default_flow_type', 'default_tied_status'),
-            }),
+            'fields': ('capital_spend_percentage', 'default_aid_type', 'default_flow_type', 'default_tied_status',
+                       'collaboration_type', 'default_finance_type',),
+        }),
+        (_(u'Legacy RSR Data'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Data that was used in RSR v2, but is currently not used anymore. This is still available in order '
+                u'to see the old data.'
+            ),
+            'classes': ('collapse',),
+            'fields': ('categories', ),
+        }),
     )
     filter_horizontal = ('keywords',)
     list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published', 'show_keywords')
@@ -729,20 +827,6 @@ class UserAdmin(UserAdmin):
         return qs.distinct()
 
 admin.site.register(get_user_model(), UserAdmin)
-
-
-class IndicatorPeriodInline(admin.TabularInline):
-    model = get_model('rsr', 'IndicatorPeriod')
-    extra = 1
-
-
-class ResultIndicatorAdmin(admin.ModelAdmin):
-    list_display = ('result', 'title', 'description')
-    list_filter = ('result', 'title')
-    search_fields = ('result', 'title',)
-    inlines = (IndicatorPeriodInline,)
-
-admin.site.register(get_model('rsr', 'Indicator'), ResultIndicatorAdmin)
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):

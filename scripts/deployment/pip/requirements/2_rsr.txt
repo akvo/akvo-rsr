@@ -73,3 +73,6 @@ raven==4.2.3
 
 # Permission rules
 rules==0.3
+
+# Nested inlines in admin
+-e git+git://github.com/Soaa-/django-nested-inlines.git#egg=django-nested-inlines

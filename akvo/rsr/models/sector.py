@@ -16,16 +16,26 @@ from ..iati.codelists import codelists_v104 as codelists
 class Sector(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='sectors')
     sector_code = ValidXMLCharField(
-        _(u'sector'), blank=True, max_length=5, choices=[code[:2] for code in codelists.SECTOR]
+        _(u'sector code'), blank=True, max_length=5,
+        help_text=_(u'Enter the sector code of the sectors that the project is working within.<br>'
+                    u'See these lists for the DAC-5 and DAC-3 sector codes:<br>'
+                    u'- <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">DAC-5 sector codes</a>'
+                    u'<br>'
+                    u'- <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">DAC-3 sector '
+                    u'codes</a>')
     )
     text = ValidXMLCharField(_(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)'))
     vocabulary = ValidXMLCharField(
         _(u'vocabulary'), blank=True, max_length=5, choices=[code[:2] for code in codelists.VOCABULARY]
     )
     percentage = models.DecimalField(
-        _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-        validators=[MaxValueValidator(100), MinValueValidator(0)]
+        _(u'sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
+        help_text=_(u'You can set the percentage of the project that is relevant for this sector here.')
     )
+
+    def __unicode__(self):
+        return self.iati_sector()
 
     def iati_sector(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):

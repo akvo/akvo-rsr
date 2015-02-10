@@ -14,10 +14,21 @@ from ..iati.codelists import codelists_v104 as codelists
 
 class Result(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='results')
-    title = ValidXMLCharField(_(u'title'), blank=True, max_length=255, help_text=_(u'(max 255 characters)'))
-    type = ValidXMLCharField(_(u'type'), blank=True, max_length=1, choices=codelists.RESULT_TYPE)
+    title = ValidXMLCharField(
+        _(u'title'), blank=True, max_length=255,
+        help_text=_(u'Enter the title of the result for this project. (255 characters)')
+    )
+    type = ValidXMLCharField(
+        _(u'type'), blank=True, max_length=1, choices=codelists.RESULT_TYPE,
+        help_text=_(u'Select whether the result is an output, outcome or impact. '
+                    u'<a href="http://www.tacticalphilanthropy.com/2010/06/outputs-outcomes-impact-oh-my/" '
+                    u'target="_blank">Further explanation on result types</a>')
+    )
     aggregation_status = models.NullBooleanField(_(u'aggregation status'), blank=True)
-    description = ValidXMLCharField(_(u'description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)'))
+    description = ValidXMLCharField(
+        _(u'description'), blank=True, max_length=255,
+        help_text=_(u'You can provide further information of the result here. (255 characters)')
+    )
     description_type = ValidXMLCharField(
         _(u'description type'), blank=True, max_length=1, choices=[code[:2] for code in codelists.DESCRIPTION_TYPE]
     )

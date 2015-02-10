@@ -31,12 +31,17 @@ class Partnership(models.Model):
 
     PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
-    organisation = models.ForeignKey('Organisation', verbose_name=_(u'organisation'), related_name='partnerships')
+    organisation = models.ForeignKey(
+        'Organisation', verbose_name=_(u'organisation'), related_name='partnerships',
+        help_text=_(u'Select an organisation that is taking an active role in the project.'))
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
-    partner_type = ValidXMLCharField(_(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,)
+    partner_type = ValidXMLCharField(
+        _(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,
+        help_text=_(u'Select the role that the organisation is taking within the project.'))
     funding_amount = models.DecimalField(
-        _(u'funding amount'), max_digits=10, decimal_places=2,
-        blank=True, null=True, db_index=True
+        _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
+        help_text=_(u'The funding amount of the partner.<br>'
+                    u'Note that it\'s only possible to indicate a funding amount for funding partners.')
     )
     partner_type_extra = ValidXMLCharField(
         _(u'partner type extra'), max_length=30,
@@ -45,7 +50,8 @@ class Partnership(models.Model):
     iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
     internal_id = ValidXMLCharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
-        help_text=_(u"The organisation's internal ID for the project"),
+        help_text=_(u'This field can be used to indicate an internal identifier that is used by the organisation '
+                    u'for this project. (75 characters)')
     )
     iati_url = models.URLField(
         blank=True,
