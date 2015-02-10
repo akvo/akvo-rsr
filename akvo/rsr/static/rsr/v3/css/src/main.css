@@ -321,26 +321,36 @@ nav.navbar-fixed-top {
     margin-left: 0; } }
 
 /* My RSR stuff */
-.myRsrMenu h4 {
-  padding-top: 15px; }
-.myRsrMenu nav[role=navigation] {
-  background: rgba(32, 32, 36, 0.05); }
-  @media only screen and (max-width: 768px) {
-    .myRsrMenu nav[role=navigation] ul li {
+.myRsrMenu {
+  min-height: 100%;
+  bottom: 0;
+  top: 0; }
+  .myRsrMenu h4 {
+    padding-top: 15px; }
+  .myRsrMenu nav[role=navigation] {
+    background: rgba(32, 32, 36, 0.05); }
+    .myRsrMenu nav[role=navigation] ul li a {
+      color: #0ca9ff;
+      font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
       padding-top: 15px;
-      padding-bottom: 15px; } }
-  .myRsrMenu nav[role=navigation] ul li a {
-    color: #0ca9ff;
-    font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif; }
-    .myRsrMenu nav[role=navigation] ul li a:hover {
-      color: #ffa472;
-      background: rgba(255, 164, 114, 0.1) url(../../img/carret.png) 98% center no-repeat;
-      background-size: 5px auto; }
-    .myRsrMenu nav[role=navigation] ul li a.active {
-      color: #ffa472;
-      font-weight: bold;
-      background: rgba(255, 164, 114, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
-      background-size: 15px 15px; }
+      padding-bottom: 15px; }
+      @media only screen and (max-width: 768px) {
+        .myRsrMenu nav[role=navigation] ul li a {
+          padding-top: 20px;
+          padding-bottom: 20px; } }
+      .myRsrMenu nav[role=navigation] ul li a:hover {
+        color: #ffa472;
+        background: rgba(255, 164, 114, 0.05) url(../../img/carret.png) 98% center no-repeat;
+        background-size: 5px auto; }
+      .myRsrMenu nav[role=navigation] ul li a.active {
+        color: #ffa472;
+        font-weight: bold;
+        background: rgba(255, 164, 114, 0.05) url(../../img/carret.png) 98% center no-repeat;
+        background-size: 5px auto; }
+
+#profile .usrAvatar {
+  background-color: rgba(32, 32, 36, 0.05);
+  padding: 10px; }
 
 #organisations {
   background: rgba(255, 164, 114, 0.1);

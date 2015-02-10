@@ -7,10 +7,10 @@
     <div class="row">
         {% block myrsr_menu %}
         <div class="col-sm-2 myRsrMenu">
-            <h4 class="">MyRSR</h4>
+            <h4 class="hidden">MyRSR</h4>
             <nav class="navbar navbar-nav" role="navigation">
                 <ul class="nav nav-pills nav-stacked">
-                    <li><a href="{% url 'my_details' %}">My details</a></li>
+                    <li><a href="{% url 'my_details' %}" class="active">My details</a></li>
                     <li><a href="{% url 'my_updates' %}">My updates</a></li>
                     <li><a href="{% url 'my_projects' %}">My projects</a></li>
                     {% has_perm 'rsr.change_employment' user as can_change_employments %}
