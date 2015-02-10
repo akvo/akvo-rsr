@@ -16,7 +16,10 @@ akvo/settings/6*.conf
 akvo/settings/backup
 akvo/testing.py
 scripts/dev-vm/
-data/dump
+data/*
+!data/README.md
+!data/dump.sh
+!data/load.sh
 
 # Dev environment
 .vagrant

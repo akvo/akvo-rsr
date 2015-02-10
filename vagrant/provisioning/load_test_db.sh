@@ -26,7 +26,7 @@ unzip $WORKDIR/rsr-test-db.zip -d $WORKDIR
 
 rm -rfv /var/akvo/rsr/mediaroot/db
 cp -rv $WORKDIR/rsr-test-db/media/db /var/akvo/rsr/mediaroot/db
-chown -R rsr.rsr /var/akvo/rsr/mediaroot/db
+chown -R rsr:rsr /var/akvo/rsr/mediaroot/db
 
 zcat $WORKDIR/rsr-test-db/rsr.sql.gz | sudo -H -u postgres psql rsr
 
@@ -36,4 +36,3 @@ $manage migrate
 $manage collectstatic --noinput
 
 echo `date` > /etc/localdev_rsr_provisioned
-
