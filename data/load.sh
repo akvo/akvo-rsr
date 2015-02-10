@@ -1,14 +1,35 @@
 #!/bin/bash
 
+WORKDIR=/tmp/rsr-load
+
+# Make sure we have a clean working dir
+sudo rm -rfv $WORKDIR
+mkdir -p $WORKDIR
+
+# Copy instead of curl
+cp -rvf /var/akvo/rsr/code/data/dump/db $WORKDIR/db
+cp -v /var/akvo/rsr/code/data/dump/rsr.dump $WORKDIR/
+
+# User images
+sudo -u rsr bash <<EOF
+rm -rfv /var/akvo/rsr/mediaroot/db
+rm -ffv /var/akvo/rsr/mediaroot/cache
+cp -rv $WORKDIR/db /var/akvo/rsr/mediaroot/db
+
+# Clean up thumbnails
+cd /var/akvo/rsr
+. venv/bin/activate
+cd ./code
+python ./manage.py thumbnail clear
+deactivate
+EOF
+
+
 # Clear Postgres
 sudo -u postgres bash <<EOF
 dropdb rsr
 createdb rsr -E UTF8 -O rsr -T template0
-EOF
-
-# Clear db dir
-sudo -u rsr bash <<EOF
-sudo rm -Rf /var/akvo/rsr/mediaroot/db
+pg_restore -d rsr /tmp/rsr-load/rsr.dump
 EOF
 
 echo "Done loading new data!"
