@@ -2,9 +2,12 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "rsr-dev-pg-20150209"
-  config.vm.box_url = "https://www.dropbox.com/s/z9378xx7ab6fh58/rsr-dev-pg-20150209.box?dl=1"
-  # config.vm.box_url = "http://files.akvo-ops.org/rsr-dev-20141022.box"
+  config.vm.box = "rsr-base-box-20150209.box"
+  config.vm.box_url = "http://files.akvo-ops.org/rsr-base-box-20150209.box"
+
+  # config.vm.box_url = "https://www.dropbox.com/s/z9378xx7ab6fh58/rsr-dev-pg-20150209.box?dl=1"
+  # config.vm.box = "rsr-dev-pg-20150209"
+  # config.vm.box_url = "https://www.dropbox.com/s/z9378xx7ab6fh58/rsr-dev-pg-20150209.box?dl=1"
 
   config.vm.synced_folder "../", "/vagrant/rsr/checkout/", id: "vagrant-root",
   :owner => "rsr",
