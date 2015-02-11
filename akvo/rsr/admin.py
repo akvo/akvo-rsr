@@ -375,6 +375,21 @@ class ProjectLocationInline(NestedStackedInline):
             return 1
 
 
+class ProjectDocumentInline(NestedStackedInline):
+    model = get_model('rsr', 'ProjectDocument')
+    fieldsets = (
+        (None, {
+            'fields': ('id', 'url', 'document', 'title', 'format', 'category', 'language')
+        }),
+    )
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.documents.count() == 0 else 0
+        else:
+            return 1
+
+
 class CountryBudgetInline(NestedStackedInline):
     model = get_model('rsr', 'CountryBudgetItem')
     extra = 0
@@ -544,8 +559,8 @@ class LegacyDataInline(NestedStackedInline):
 class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        ProjectContactInline, PartnershipInline, ProjectLocationInline, SectorInline, BudgetItemAdminInLine,
-        TransactionInline, ResultInline, LinkInline, ProjectConditionInline, CountryBudgetInline,
+        ProjectContactInline, PartnershipInline, ProjectDocumentInline, ProjectLocationInline, SectorInline,
+        BudgetItemAdminInLine, TransactionInline, ResultInline, LinkInline, ProjectConditionInline, CountryBudgetInline,
         PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline, RecipientRegionInline, LegacyDataInline,
         BenchmarkInline, GoalInline,
     )
@@ -607,7 +622,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'You can add any additional supporting documents to your project here. This could be in the form of '
                 u'annual reports, baseline surveys, contextual information or any other report or summary that can '
-                u'help users understand more about the projects activities.'
+                u'help users understand more about the projects activities.<br><br>'
+                u'<strong>Important note:</strong> It is required to upload a document or to indicate an URL.'
             ),
             'fields': (),
         }),
