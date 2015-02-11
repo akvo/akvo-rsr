@@ -29,17 +29,6 @@ python ./manage.py syncdb
 deactivate
 EOF
 
-# supervisorctl start rsr
-# supervisorctl stop rsr
-
-# sudo -u rsr bash <<EOF
-# cd /var/akvo/rsr
-# . venv/bin/activate
-# cd code
-# python ./manage.py thumbnail clear
-# deactivate
-# EOF
-
 # Postgres
 sudo -u postgres bash <<EOF
 dropdb rsr
