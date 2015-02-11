@@ -83,6 +83,7 @@
       </dl>
     </div>
     <div class="col-md-6">
+      {% if organisation.euro_projects_count or organisation.dollar_projects_count %}
       <h2>{% trans 'Funding' %}</h2>
       <dl class="org_statistics_table dl-horizontal">
         {% if organisation.euro_projects_count %}
@@ -120,6 +121,7 @@
           </dd>
         {% endif %}
       </dl>
+      {% endif %}
     </div>
   </div>
   <div class="row">
