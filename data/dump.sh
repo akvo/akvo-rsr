@@ -1,6 +1,8 @@
 #!/bin/bash
+set -e
 
 # Create a tmp directory
+rm -rfv /tmp/rsr_dump
 mkdir -p /tmp/rsr_dump
 
 # Postgres
@@ -24,10 +26,11 @@ sudo cp -R /var/akvo/rsr/mediaroot/db /tmp/rsr_dump/db
 
 # Move to vagrant share
 sudo -u rsr bash <<EOF
-cd /tmp
-tar -zcvf rsr_dump.`date +"%Y%m%d_%H%M%S"`.tar.gz ./rsr_dump
+cd /tmp/rsr_dump
+tar -zcvf ../rsr_dump.`date +"%Y%m%d_%H%M%S"`.tar.gz .
+cd ..
 mkdir -p /var/akvo/rsr/code/data/dump
-mv ./rsr_dump.*.tar.gz /var/akvo/rsr/code/data/dump
+mv ./rsr_dump.*.tar.gz /var/akvo/rsr/code/data/dump/
 EOF
 
 # Clean up

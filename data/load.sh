@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 WORKDIR=/tmp/rsr-load
 
@@ -6,11 +7,14 @@ WORKDIR=/tmp/rsr-load
 sudo rm -rfv $WORKDIR
 mkdir -p $WORKDIR
 
-# Copy instead of curl
-cp -rvf /var/akvo/rsr/code/data/dump/db $WORKDIR/db
-cp -v /var/akvo/rsr/code/data/dump/rsr.dump $WORKDIR/
+# # Copy instead of curl
+# cp -rvf /var/akvo/rsr/code/data/dump/db $WORKDIR/db
+# cp -v /var/akvo/rsr/code/data/dump/rsr.dump $WORKDIR/
 
-# User images
+# Extract to workingdir
+tar -C /tmp/rsr-load -zxvf /var/akvo/rsr/code/data/dump/rsr_dump.tar.gz
+
+# Content
 sudo -u rsr bash <<EOF
 rm -rfv /var/akvo/rsr/mediaroot/db
 rm -ffv /var/akvo/rsr/mediaroot/cache
@@ -24,8 +28,7 @@ python ./manage.py thumbnail clear
 deactivate
 EOF
 
-
-# Clear Postgres
+# Postgres
 sudo -u postgres bash <<EOF
 dropdb rsr
 createdb rsr -E UTF8 -O rsr -T template0

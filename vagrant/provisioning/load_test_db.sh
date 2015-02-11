@@ -7,30 +7,43 @@ manage='sudo -H -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/manage.p
 if [ -e /etc/localdev_rsr_provisioned ]
 then
     $manage syncdb --noinput
-    $manage migrate
-    $manage collectstatic --noinput
+    # $manage migrate
+    # $manage collectstatic --noinput
     exit 0
 fi
 
-WORKDIR=/tmp/rsr-test-db/
-DBZIP='http://files.support.akvo-ops.org/devdbs/rsr-test-db-small.zip'
 
-rm -rfv $WORKDIR
-mkdir $WORKDIR
+# ---
+DUMPDIR='/var/akvo/rsr/code/data/dump'
+DBFILE='https://www.dropbox.com/s/hgutekdo53t143y/rsr_dump.20150211_075722.tar.gz?dl=1'
 
-cd $WORKDIR
+mkdir -p $DUMPDIR
+cd $DUMPDIR
+curl $DBFILE > $DUMPDIR/rsr_dump.tar.gz
+cd /var/akvo/rsr/code/data/
+./load.sh
 
-curl $DBZIP > $WORKDIR/rsr-test-db.zip
+# ---
 
-unzip $WORKDIR/rsr-test-db.zip -d $WORKDIR
+# WORKDIR=/tmp/rsr-test-db/
+# DBZIP='http://files.support.akvo-ops.org/devdbs/rsr-test-db-small.zip'
 
-rm -rfv /var/akvo/rsr/mediaroot/db
-cp -rv $WORKDIR/rsr-test-db/media/db /var/akvo/rsr/mediaroot/db
-chown -R rsr:rsr /var/akvo/rsr/mediaroot/db
+# rm -rfv $WORKDIR
+# mkdir $WORKDIR
 
-zcat $WORKDIR/rsr-test-db/rsr.sql.gz | sudo -H -u postgres psql rsr
+# cd $WORKDIR
 
-rm -rfv $WORKDIR
+# curl $DBZIP > $WORKDIR/rsr-test-db.zip
+
+# unzip $WORKDIR/rsr-test-db.zip -d $WORKDIR
+
+# rm -rfv /var/akvo/rsr/mediaroot/db
+# cp -rv $WORKDIR/rsr-test-db/media/db /var/akvo/rsr/mediaroot/db
+# chown -R rsr:rsr /var/akvo/rsr/mediaroot/db
+
+# zcat $WORKDIR/rsr-test-db/rsr.sql.gz | sudo -H -u postgres psql rsr
+
+# rm -rfv $WORKDIR
 
 $manage migrate
 $manage collectstatic --noinput
