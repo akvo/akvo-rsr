@@ -7,19 +7,20 @@ manage='sudo -H -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/manage.p
 if [ -e /etc/localdev_rsr_provisioned ]
 then
     $manage syncdb --noinput
-    # $manage migrate
-    # $manage collectstatic --noinput
+    $manage migrate
+    #$manage collectstatic --noinput
     exit 0
 fi
 
-
 # ---
+
+# DUMP='http://files.support.akvo-ops.org/devdbs/rsr_dump.20150211_075722.tar.gz'
 DUMPDIR='/var/akvo/rsr/code/data/dump'
 DBFILE='https://www.dropbox.com/s/hgutekdo53t143y/rsr_dump.20150211_075722.tar.gz?dl=1'
-
+#DBFILE='"https://dl.dropboxusercontent.com/content_link/VcAo6bmT3MnOltIApwbFyYaiGkctugxzWty4WwDWvDbConXz5MX7VJeH50oNd0e9?dl=1'
 mkdir -p $DUMPDIR
 cd $DUMPDIR
-curl $DBFILE > $DUMPDIR/rsr_dump.tar.gz
+curl -L $DBFILE > $DUMPDIR/rsr_dump.tar.gz
 cd /var/akvo/rsr/code/data/
 ./load.sh
 
@@ -45,7 +46,7 @@ cd /var/akvo/rsr/code/data/
 
 # rm -rfv $WORKDIR
 
-$manage migrate
+# $manage migrate
 $manage collectstatic --noinput
 
 echo `date` > /etc/localdev_rsr_provisioned

@@ -47,7 +47,7 @@ template-utils==0.4p2
 django-pipeline==1.3.26
 
 # Images and videos
-sorl-thumbnail==11.12
+sorl-thumbnail==12.2
 django-embed-video==0.11
 
 # Database requirements

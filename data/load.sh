@@ -17,16 +17,28 @@ tar -C /tmp/rsr-load -zxvf /var/akvo/rsr/code/data/dump/rsr_dump.tar.gz
 # Content
 sudo -u rsr bash <<EOF
 rm -rfv /var/akvo/rsr/mediaroot/db
-rm -ffv /var/akvo/rsr/mediaroot/cache
+rm -rfv /var/akvo/rsr/mediaroot/cache
 cp -rv $WORKDIR/db /var/akvo/rsr/mediaroot/db
 
 # Clean up thumbnails
 cd /var/akvo/rsr
 . venv/bin/activate
 cd ./code
-python ./manage.py thumbnail clear
+python ./manage.py syncdb
+# python ./manage.py thumbnail clear_delete_all
 deactivate
 EOF
+
+# supervisorctl start rsr
+# supervisorctl stop rsr
+
+# sudo -u rsr bash <<EOF
+# cd /var/akvo/rsr
+# . venv/bin/activate
+# cd code
+# python ./manage.py thumbnail clear
+# deactivate
+# EOF
 
 # Postgres
 sudo -u postgres bash <<EOF
