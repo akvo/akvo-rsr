@@ -31,7 +31,9 @@ class BaseLocation(models.Model):
         _(u'address 2'), max_length=255, blank=True,
         help_text=_(u'Add additional address information, if needed. (255 characters)')
     )
-    postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
+    postcode = ValidXMLCharField(
+        _(u'postal code'), max_length=10, blank=True, help_text=_(u'Enter the postal/area code. (10 characters)')
+    )
 
     def delete(self, *args, **kwargs):
         super(BaseLocation, self).delete(*args, **kwargs)

@@ -94,7 +94,7 @@ class Project(TimestampsMixin, models.Model):
                     u'3) Completed: projects that have been finished.<br>'
                     u'4) Cancelled: projects that were never fully implemented or carried out.')
     )
-    categories = models.ManyToManyField('Category', verbose_name=_(u'categories'), related_name='projects',)
+    categories = models.ManyToManyField('Category', verbose_name=_(u'categories'), related_name='projects', blank=True)
     partners = models.ManyToManyField(
         'Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',
     )

@@ -131,8 +131,13 @@ admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccount
 
 class LinkInline(NestedStackedInline):
     model = get_model('rsr', 'link')
-    extra = 0
     fields = ('id', 'kind', 'url', 'caption')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.links.count() == 0 else 0
+        else:
+            return 1
 
 
 class BudgetItemLabelAdmin(admin.ModelAdmin):
@@ -172,6 +177,12 @@ class BudgetItemAdminInLine(NestedStackedInline):
             'fields': ('period_start_text', 'period_end_text', )
         })
     )
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.budget_items.count() == 0 else 0
+        else:
+            return 1
 
     class Media:
         css = {'all': (os.path.join(settings.STATIC_URL, 'rsr/main/css/src/rsr_admin.css').replace('\\', '/'),)}
@@ -322,7 +333,7 @@ class RSR_PartnershipInlineForm(forms.ModelForm):
 class PartnershipInline(NestedStackedInline):
     model = get_model('rsr', 'Partnership')
     fields = ('id', 'organisation', 'partner_type', 'funding_amount', 'internal_id', 'partner_type_extra')
-    extra = 1
+    extra = 0
     form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
     formfield_overrides = {
@@ -336,10 +347,15 @@ class PartnershipInline(NestedStackedInline):
         formset.request = request
         return formset
 
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.partnerships.count() == 0 else 0
+        else:
+            return 1
+
 
 class ProjectLocationInline(NestedStackedInline):
     model = get_model('rsr', 'projectlocation')
-    extra = 0
     fieldsets = (
         (None, {
             'fields': ('id', 'latitude', 'longitude', 'country', 'city', 'state', 'address_1', 'address_2', 'postcode')
@@ -351,6 +367,12 @@ class ProjectLocationInline(NestedStackedInline):
                        'location_reach', 'location_class', 'feature_designation')
         }),
     )
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.locations.count() == 0 else 0
+        else:
+            return 1
 
 
 class CountryBudgetInline(NestedStackedInline):
@@ -367,7 +389,12 @@ class CountryBudgetInline(NestedStackedInline):
 class IndicatorPeriodInline(NestedStackedInline):
     model = get_model('rsr', 'IndicatorPeriod')
     fields = ('id', 'period_start', 'period_end', 'target_value', 'target_comment', 'actual_value', 'actual_comment')
-    extra = 1
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.periods.count() == 0 else 0
+        else:
+            return 1
 
 
 class IndicatorInline(NestedStackedInline):
@@ -375,14 +402,24 @@ class IndicatorInline(NestedStackedInline):
     fields = ('id', 'title', 'description', 'measure', 'ascending', 'baseline_year', 'baseline_value',
               'baseline_comment')
     inlines = (IndicatorPeriodInline,)
-    extra = 1
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.indicators.count() == 0 else 0
+        else:
+            return 1
 
 
 class ResultInline(NestedStackedInline):
     model = get_model('rsr', 'Result')
     inlines = (IndicatorInline,)
-    extra = 1
     fields = ('id', 'title', 'description', 'type', 'aggregation_status')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.results.count() == 0 else 0
+        else:
+            return 1
 
 
 class PlannedDisbursementInline(NestedStackedInline):
@@ -432,7 +469,10 @@ class ProjectContactInline(NestedStackedInline):
     )
 
     def get_extra(self, request, obj=None, **kwargs):
-        return 1 if obj.contacts.count() == 0 else 0
+        if obj:
+            return 1 if obj.contacts.count() == 0 else 0
+        else:
+            return 1
 
 
 class RecipientCountryInline(NestedStackedInline):
@@ -459,13 +499,17 @@ class RecipientRegionInline(NestedStackedInline):
 
 class SectorInline(NestedStackedInline):
     model = get_model('rsr', 'Sector')
-    extra = 0
     fields = ('id', 'sector_code', 'vocabulary', 'percentage', 'text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.sectors.count() == 0 else 0
+        else:
+            return 1
 
 
 class TransactionInline(NestedStackedInline):
     model = get_model('rsr', 'Transaction')
-    extra = 0
     fieldsets = (
         (None, {
             'fields': ('id', 'reference', 'transaction_type', 'value', 'transaction_date', 'description')
@@ -480,6 +524,11 @@ class TransactionInline(NestedStackedInline):
         }),
     )
 
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.transactions.count() == 0 else 0
+        else:
+            return 1
 
 class LegacyDataInline(NestedStackedInline):
     model = get_model('rsr', 'LegacyData')
