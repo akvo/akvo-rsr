@@ -25,9 +25,11 @@ class ProjectDocument(models.Model):
     )
     document = models.FileField(
         _(u'document'), blank=True, upload_to=document_path,
-        help_text=_(u'You can upload additional documents to your project. These documents will be stored on the RSR '
-                    u'server and publicly available for users to download and view to gain further insight in the '
-                    u'project activities.')
+        help_text=_(u'You can upload a document to your project. To upload multiple documents, press the \'Add '
+                    u'another Project Document\' link.<br>'
+                    u'These documents will be stored on the RSR server and will be '
+                    u'publicly available for users to download and view to gain further insight in the project '
+                    u'activities.')
     )
     format = ValidXMLCharField(
         _(u'format'), max_length=75, blank=True,
@@ -43,7 +45,7 @@ class ProjectDocument(models.Model):
         help_text=_(u'Select the language of the document title.')
     )
     category = ValidXMLCharField(
-        _(u'title language'), max_length=3, blank=True,
+        _(u'category'), max_length=3, blank=True,
         choices=[codelist[:2] for codelist in codelists.DOCUMENT_CATEGORY],
         help_text=_(u'Select a document category.')
     )

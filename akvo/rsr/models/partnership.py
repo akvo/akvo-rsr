@@ -44,8 +44,8 @@ class Partnership(models.Model):
                     u'Note that it\'s only possible to indicate a funding amount for funding partners.')
     )
     partner_type_extra = ValidXMLCharField(
-        _(u'partner type extra'), max_length=30,
-        blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
+        _(u'partner type extra'), max_length=30, blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
+        help_text=_(u'RSR specific partner type.')
     )
     iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
     internal_id = ValidXMLCharField(

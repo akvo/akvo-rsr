@@ -168,7 +168,10 @@ class Project(TimestampsMixin, models.Model):
     keywords = models.ManyToManyField('Keyword', verbose_name=_(u'keywords'), related_name='projects', blank=True)
 
     # budget
-    currency = ValidXMLCharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
+    currency = ValidXMLCharField(
+        _(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR',
+        help_text=_(u'The default currency for this project. Used in all financial aspects of the project.')
+    )
     date_start_planned = models.DateField(
         _(u'start date (planned)'), default=date.today, help_text=_(u'Enter the planned start date of the project.')
     )
@@ -186,12 +189,15 @@ class Project(TimestampsMixin, models.Model):
 
     # donate button
     donate_button = models.BooleanField(
-        _(u'donate button'), default=True, help_text=(u'Show donate button for this project.')
+        _(u'donate button'), default=True,
+        help_text=_(u'Show donate button for this project. If not selected, it is not possible to donate to this '
+                    u'project and the donate button will not be shown.')
     )
 
     # synced projects
     sync_owner = models.ForeignKey(
-        'Organisation', verbose_name=_(u'reporting organisation'), null=True, on_delete=models.SET_NULL
+        'Organisation', verbose_name=_(u'reporting organisation'), null=True, on_delete=models.SET_NULL,
+        help_text=_(u'Select the reporting organisation of the project.')
     )
     sync_owner_secondary_reporter = models.NullBooleanField(
         _(u'secondary reporter'),
