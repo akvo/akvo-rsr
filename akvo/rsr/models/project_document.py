@@ -56,11 +56,13 @@ class ProjectDocument(models.Model):
         return self.title
 
     def clean(self):
-        """
-        Check if the user has at least uploaded a document or indicated an URL.
-        """
+        # Check if the user has at least uploaded a document or indicated an URL.
         if not (self.url or self.document):
             raise ValidationError(u'It is required to upload a document or indicate an URL.')
+
+        # Check for non-unicode characters
+        if self.document:
+            self.document.name = self.document.name.encode('ascii','ignore')
 
     def show_link(self):
         title = self.title if self.title else u'Untitled document'
