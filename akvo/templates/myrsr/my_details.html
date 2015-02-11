@@ -51,7 +51,8 @@
   </script>
   <script type="application/json" id="user-request-link">
     {"link": "{% url 'user_request_organisation' user.id %}",
-     "org_rest_link": "{% url 'organisation-list' %}"}
+     "org_rest_link": "{% url 'organisation-list' %}",
+     "country_rest_link": "{% url 'country-list' %}"}
   </script>
   <script type="application/json" id="akvo-rsr-ajax-url">
     {"ajaxUrl": "{% url 'user_update_details' user.id %}?format=json"}

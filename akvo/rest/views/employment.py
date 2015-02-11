@@ -36,8 +36,7 @@ def approve_employment(request, pk=None):
     if not user.has_perm('rsr.change_employment', employment):
         raise PermissionDenied
 
-    employment.is_approved = True
-    employment.save()
+    employment.approve()
 
     return Response({'status': 'employment approved'})
 

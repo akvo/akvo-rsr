@@ -11,7 +11,7 @@ import re
 from akvo.rsr.forms import RegisterForm
 
 from django.conf import settings
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -52,10 +52,10 @@ def activate(request, activation_key, extra_context=None):
         except RegistrationProfile.DoesNotExist:
             user = False
         else:
-            user = registration_profile.user
             if not registration_profile.activation_key_expired():
                 registration_profile.activation_key = RegistrationProfile.ACTIVATED
                 registration_profile.save()
+                user = registration_profile.user
                 user.is_active = True
                 user.save()
 
@@ -63,7 +63,7 @@ def activate(request, activation_key, extra_context=None):
                 # user_activated.send(sender=RegistrationProfile, user=user)
 
                 # Log in user without password, using custom backend
-                user.backend = settings.AUTHENTICATION_BACKENDS[0]
+                user = authenticate(username=user.username, no_password=True)
                 login(request, user)
     if extra_context is None:
         extra_context = {}
