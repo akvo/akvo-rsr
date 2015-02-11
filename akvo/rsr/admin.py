@@ -622,8 +622,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'You can add any additional supporting documents to your project here. This could be in the form of '
                 u'annual reports, baseline surveys, contextual information or any other report or summary that can '
-                u'help users understand more about the projects activities.<br><br>'
-                u'<strong>Important note:</strong> It is required to upload a document or to indicate an URL.'
+                u'help users understand more about the projects activities.'
             ),
             'fields': (),
         }),
