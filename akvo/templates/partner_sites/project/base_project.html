@@ -1,0 +1,204 @@
+{% extends "partner_sites/base.html" %}
+{% load i18n rsr_tags webdesign thumbnail rsr_filters humanize markup_tags %}
+
+
+{% block title %}{{project}} - {% endblock title %}
+
+{% block draft %}
+  {% if draft %}
+    <div style="background-color:#E04F46; color:#fff; padding:10px; text-align:center;">
+      {% trans "This is a draft view of the project. It can only be seen by Project Members and Akvo Administrators." %}
+    </div>
+  {% endif %}
+{% endblock draft %}
+
+{% block breadcrum_right %}
+  {{block.super}}
+  | <a href="#">{% trans "Project updates" %}</a>
+{% endblock breadcrum_right %}
+
+{% block breadcrum_items %}
+  {% if return_url %}
+    {{block.super}}
+    <li><a href="{% url 'home' %}"><span>{% trans "Projects" %}</span></a></li>
+  {% else %}
+    <li><a href="{% url 'home' %}"><span class="notranslate">{{organisation|truncatewords:3}}</span></a></li>
+  {% endif %}
+{% endblock breadcrum_items %}
+
+{% block content %}
+ <div class="clearfix">
+    <article>
+      <h1 style="margin-bottom:4px">
+        <a href="{% url 'project_main' project.id %}">{{project}}</a>
+      </h1>
+      <p class="grey" style="margin-top:0;">{{project.subtitle}}</p>
+      {% block project_content %}{% endblock project_content %}
+    </article>
+    <aside>
+
+      {% block project_aside_funding %}
+        <div class="money_blue_background" style="padding:10px; color:#fff;">
+          {{project.show_status_large}}<br />
+          <div class="clearfix marg_top20 marg_bottom10">
+            <div style="float:left; width:145px; background-color:organe;">
+              <h3 style="color:#96FFFF;">{% trans "Funding" %}</h3>
+              {% partner_sites_funding_box project %}
+            </div>
+            <div style="float:right; width:110px;" >
+              <h3 style="color:#96FFFF;">
+				{% comment %}Translators: Heading in the top right blue box on Partner sites, http://akvo.akvoapp.org/project/276/ {% endcomment %}
+				{% trans "Schedule" %}</h3>
+              <p class="white tiny">
+                {% trans "Begun" %}<br />
+                <span class="fat">{{project.date_start_actual}}</span>
+              </p>
+              <p class="white tiny">
+                {% trans "Completed" %}<br />
+                {% if project.date_end_actual %}
+                  <span class="fat">{{project.date_end_actual}}</span>
+                {% else %}
+                <span class="fat">{% trans "Not yet" %}</span>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+          {% block project_aside_funding_link %}
+          <a id="project_funding_details_link" href="{% url 'project_funding' project.id %}" class="tiny" style="color:yellow">
+            {% trans "See funding and milestone details" %} &#x25BA;
+          </a>
+          {% endblock project_aside_funding_link %}
+        </div>
+      {% endblock project_aside_funding %}
+      
+      {% block project_aside_updates %}
+        {% if updates %}
+          <div style="float:left; width:160px; padding-top: 20px;">
+            <h2>{% trans 'Latest updates' %}</h2>
+          </div>
+          <div style="margin:1px 0; float:right; width:100px; text-align:right; padding-top: 20px;">
+            <a class="small" href="{% url 'update_list' project.id %}">{% trans 'See all' %} &#x25BA;</a>
+          </div>
+          <div class="clear"></div>
+
+          {% for update in updates|slice:":3" %}
+            {% if update.video or update.photo %}
+              <div class="whitebox pad5" style="min-height: 91px;{% if not forloop.first %}margin-top: 10px;{% endif %} ">
+                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.created_at|date:"d-M-Y"}}</span>
+                <div style="float:left; width:170px;">
+                  <p class="small marg_bottom0" style="margin-top: 15px;">
+                    <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br/>
+                    <div class="update_preview">
+                      {% autoescape off %}
+                        {{ update.text|force_escape|smart_truncate:50|urlize|apply_markup:"markdown" }}
+                      {% endautoescape %}
+                    </div>
+                  </p>
+                </div>
+                {% if update.video %}
+                  <div style="width:108px; height: 81px; float: right;">
+                    <a class="video_thumb" href="{% url 'update_main' project.id update.id %}" style="width:108px;">
+                      <img src="{{ update.get_video_thumbnail_url }}" alt="" style="width:108px;">
+                      <i style="background-image: url({{ STATIC_URL }}common/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
+                    </a>
+                  </div>
+                {% else %}
+                  <div style="width:108px; height: 81px; float: right;">
+                    <a href="{% url 'update_main' project.id update.id %}">
+                      <img src="{% thumbnail update.photo 108x81 crop autocrop sharpen upscale %}" alt="" style="margin:0;" />
+                    </a>
+                  </div>
+                {% endif %}
+                <div class="clear"></div>
+              </div>
+            {% else %}
+              <div class="whitebox pad5" style="overflow:hidden; {% if not forloop.first %}margin-top: 10px;{% endif %}">
+                <span class="tiny grey" style="float: right; padding-bottom: 3px;">{{update.created_at|date:"d-M-Y"}}</span>
+                <p class="small marg_bottom0" style="margin-top: 15px;">
+                  <b><a href="{% url 'update_main' project.id update.id %}">{{update.title}}</a></b><br />
+                  <div class="update_preview">
+                    {% autoescape off %}
+                        {{ update.text|force_escape|smart_truncate:120|urlize|apply_markup:"markdown" }}
+                      {% endautoescape %}
+                  </div>
+                </p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+           <h2 class="marg_top40">
+             {% trans "No updates yet" %}
+          </h2>
+        {% endif %}
+      {% endblock project_aside_updates %}
+
+      {% block social %}
+      {% endblock social %}
+
+      {% block project_tools %}
+        <h2 class="marg_top40">{% trans "Tools for this page" %}</h2>
+        <div class="whitebox">
+          {% if can_add_update %}
+            <div style="width:45%; float:left; padding-top:15px; padding-left:10px;">
+              <a class="aqua awesome" href="{% url 'update_add' project.id %}" style="color:#fff" target="_top">{% trans 'Add update' %}</a>
+            </div>
+          {% elif not user.username or not can_add_update %}
+            <div style="width:45%; float:left; padding-top:15px; padding-left:10px;">
+              <span class="grey awesome">{% trans 'Add update' %}</span>
+            </div>
+            <div style="width:45%; float:right; padding-top:15px; padding-right:10px">
+              <p style="margin:0;" class="tiny grey">
+                {% if not user.username %}
+                  {% trans 'Sign in to add an update to your project.' %}
+                {% elif not can_add_update %}
+                  {% trans 'You are not allowed to place updates for this project.' %}
+                {% endif %}
+              </p>
+            </div>
+          {% endif %}
+            <div class="clear"></div>
+            <hr style="margin-bottom:0; margin-left:5px; margin-right:5px;" />
+          <p class="grey small pad10" style="margin:0;">
+            <a href="{% url 'get_widget' project.id %}">{% trans 'Get a widget' %}</a> {% trans "for your website" %}<br />
+            <a href="{% url 'project_main' project.id %}">{% trans 'Permalink' %}</a> {% trans "to this project" %}<br />
+          </p>
+        </div>
+      {% endblock project_tools %}
+
+      {% block project_aside_partners %}
+        <h2 class="marg_top40"><a href="{% url 'partner_list' %}">{% trans "Project partners" %}</a></h2>
+        <div class="whitebox pad_top20 pad5">
+          {% for organisation in project.partners.all.distinct  %}
+            <div style="float:left; width:100px;">
+              <a href="{{organisation.get_absolute_url}}">
+                {% org_logo organisation 90 60 'margin:0;' %}
+              </a>
+            </div>
+            <div style="float:left; width:165px;">
+              <p class="small grey" style="margin:0;">
+                <a href="{{organisation.get_absolute_url}}" class="notranslate">{{organisation.name}}</a><br />
+                {% if organisation.primary_location.city %}
+                  {{organisation.primary_location.city}},
+                {% endif %}
+                {{organisation.primary_location.country}}
+              </p>
+            </div>
+            <div class="clear"></div>
+            {% if not forloop.last %}
+              <hr style="margin-bottom:12px; margin-top:10px;"/>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="txt_right marg_top20">
+            <span class="grey tiny">{% trans 'Akvo Ref' %}: {{project.id}}
+            {% for partnership in project.partnerships.all %}
+              {% if partnership.iati_activity_id %}<br>{% trans 'IATI ID' %}: {{partnership.iati_activity_id}}{% endif %}
+              {% if partnership.internal_id %}<br>{{partnership.organisation}}'s project ID: {{partnership.internal_id}}{% endif %}
+            {% endfor %}
+            </span>
+        </div>
+      {% endblock project_aside_partners %}
+
+    </aside>
+  </div>
+{% endblock content %}

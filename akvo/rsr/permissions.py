@@ -66,9 +66,9 @@ def is_org_user_manager(user, obj):
                 return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
-            elif isinstance(obj, Employment) and obj in employment.organisation.employees.all():
+            elif type(obj) == Employment and obj in employment.organisation.employees.all():
                 return True
-            elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
+            elif type(obj) == Project and obj in employment.organisation.all_projects():
                 return True
     return False
 

@@ -68,13 +68,13 @@
 {% endblock %}
 
 {% block jq %}
-    $( "#id_latitude").val(0);
-    $( "#id_longitude").val(0);
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(storePosition);
-    }
-    function storePosition(position) {
-        $( "#id_latitude").val(position.coords.latitude);
-        $( "#id_longitude").val(position.coords.longitude);
-    }
+  $( "#id_latitude").val(0);
+  $( "#id_longitude").val(0);
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(storePosition);
+  }
+  function storePosition(position) {
+    $( "#id_latitude").val(position.coords.latitude);
+    $( "#id_longitude").val(position.coords.longitude);
+  }
 {% endblock %}

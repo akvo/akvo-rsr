@@ -9,17 +9,14 @@ import getopt
 import sys
 
 from lxml import etree
-from rest_framework.status import HTTP_200_OK
 
 from tastypie.http import HttpCreated, HttpNoContent
 
-from django.http import HttpResponse
-
 from akvo.scripts.rain import (
-    log, API_VERSION, RAIN_IATI_ACTIVITIES_XML, RAIN_ACTIVITIES_CSV_FILE, ACTION_CREATE_PROJECT, ERROR_EXCEPTION,
-    ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT,
-    RAIN_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_NO_ORGS, RainActivity, AKVO_NS, RAIN_ACTIVITY_NS, RAIN_ORG_ID,
-    ERROR_MISSING_IATI_ID, ERROR_IDENTIFY_RSR_PROJECT
+    log, API_VERSION, ACTION_CREATE_PROJECT, ERROR_EXCEPTION, ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY,
+    ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT, RAIN_ACTIVITIES_CSV_FILE, print_log, init_log, ERROR_NO_ORGS,
+    RainActivity, AKVO_NS, RAIN_ACTIVITY_NS, RAIN_ORG_ID, ERROR_MISSING_IATI_ID, ERROR_IDENTIFY_RSR_PROJECT, load_xml,
+    RAIN_IATI_ACTIVITES_URL, save_xml
 )
 
 from akvo.api_utils import Requester
@@ -187,28 +184,6 @@ def get_project_count(user, **q_args):
         return False, None
     return True, project
 
-def load_xml(location):
-    xml = ''
-    if location[:4] == 'http':
-        try:
-            xml = Requester(
-                url_template=location,
-                headers={
-                    'content-type': 'application/xml',
-                    'encoding': 'utf-8',
-                },
-                accept_codes=[HTTP_200_OK],
-            )
-        except Exception, e:
-            return None
-        if xml.response.status_code is HTTP_200_OK:
-            return xml.response.text.encode('utf-8')
-
-    else:
-        with open(location, 'r') as f:
-            xml = f.read()
-
-    return xml
 
 def identify_rsr_project(user, rsr_id, iati_id, internal_id):
     """ Figure out if we can identify an RSR project from one or more of
@@ -268,8 +243,9 @@ def identify_rsr_project(user, rsr_id, iati_id, internal_id):
 def upload_activities(argv):
     user = credentials_from_args(argv)
     if user:
-        xml = load_xml(RAIN_IATI_ACTIVITIES_XML)
+        xml = load_xml(RAIN_IATI_ACTIVITES_URL)
         if xml:
+            save_xml(xml, "rain_activities_{datetime}.xml")
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
             root = etree.fromstring(xml, parser=parser)
             document_akvo_ns = root.nsmap['akvo']

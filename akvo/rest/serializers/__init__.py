@@ -21,7 +21,7 @@ from .organisation_location import OrganisationLocationSerializer
 from .partner_site import PartnerSiteSerializer
 from .partner_type import PartnerTypeSerializer
 from .partnership import PartnershipSerializer
-from .project import ProjectSerializer
+from .project import ProjectSerializer, ProjectExtraSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_location import ProjectLocationSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
@@ -48,6 +48,7 @@ __all__ = [
     'PartnerTypeSerializer',
     'PartnershipSerializer',
     'ProjectSerializer',
+    'ProjectExtraSerializer',
     'ProjectCommentSerializer',
     'ProjectLocationSerializer',
     'ProjectUpdateSerializer',

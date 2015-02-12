@@ -13,9 +13,9 @@ from akvo import settings
 
 from akvo.scripts.rain import (
     ERROR_EXCEPTION, ERROR_CREATE_ORG, ERROR_UPLOAD_ORG, ACTION_CREATE_ORG, log, init_log, print_log, ACTION_CREATE_IOI,
-    ACTION_UPDATE_ORG, RAIN_ORG_ID, ERROR_OTHER_CONTENT_OWNER, ERROR_UPDATE_ORG, RAIN_ORGANISATION_NS, RAIN_ORGANISATIONS_XML,
-    RAIN_ORG_CSV_FILE, ERROR_CREATE_INTERNAL_ID, ERROR_XML_PARSING
-)
+    ACTION_UPDATE_ORG, RAIN_ORG_ID, ERROR_OTHER_CONTENT_OWNER, ERROR_UPDATE_ORG, RAIN_ORGANISATION_NS,
+    RAIN_ORG_CSV_FILE, ERROR_CREATE_INTERNAL_ID, ERROR_XML_PARSING, RAIN_ORGANISATIONS_XML, load_xml,
+    RAIN_ORGANISATIONS_URL, save_xml)
 
 import getopt
 import json
@@ -213,6 +213,7 @@ def post_internal_id(user_cred, reporting_org_id, internal_identifier, pk):
     if internal_org_id.response.status_code is HTTP_201_CREATED:
         return "Created internal organisation ID: {extra}", dict(
             pk=pk,
+            internal_org_id=internal_identifier,
             event=ACTION_CREATE_IOI,
             extra=internal_org_id.response.json()['id'],
         )
@@ -241,7 +242,9 @@ def put_org(pk, internal_org_id, org_as_dict, user_cred):
         )
     if organisation.response.status_code is HTTP_200_OK:
         return True, "Updated organisation ID: {pk}", dict(
-            pk=organisation.response.json()['id'], event=ACTION_UPDATE_ORG,
+            pk=organisation.response.json()['id'],
+            internal_org_id=internal_org_id,
+            event=ACTION_UPDATE_ORG,
         )
     else:
         return (
@@ -388,11 +391,15 @@ def python_organisation(tree):
         org_dict['logo'] = logo
     return org_dict
 
+
 def upload_organisations(argv):
     user_cred = credentials_from_args(argv)
     if user_cred:
-        with open(RAIN_ORGANISATIONS_XML, 'r') as f:
-            root = etree.fromstring(f.read())
+        xml = load_xml(RAIN_ORGANISATIONS_URL)
+        if xml:
+            save_xml(xml, "rain_organisations_{datetime}.xml")
+            parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
+            root = etree.fromstring(xml, parser=parser)
             organisations = root.findall('organisation')
             for i, org_as_etree in enumerate(organisations):
                 org_id = find_text(org_as_etree, 'internal_org_id@{{{}}}akvo_identifier'.format(RAIN_ORGANISATION_NS))

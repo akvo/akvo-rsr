@@ -5,8 +5,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
@@ -61,6 +63,15 @@ class Employment(models.Model):
     def __unicode__(self):
         return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name, self.organisation.name)
 
+    def save(self, *args, **kwargs):
+        """Before we save make sure the required auth groups are existing."""
+        group_names = ['Users', 'User managers', 'Project editors', 'Admins', ]
+        for group_name in settings.REQUIRED_AUTH_GROUPS:
+            group, created = Group.objects.get_or_create(name=group_name)
+            if created:
+                print "Created group => {}".format(group)
+        super(Employment, self).save(*args, **kwargs)
+
     def approve(self):
         if not self.is_approved:
             self.is_approved = True
@@ -69,10 +80,14 @@ class Employment(models.Model):
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)
         # Set groups in right order
+
         all_groups = [
-            Group.objects.get(name='Users'), Group.objects.get(name='User managers'),
-            Group.objects.get(name='Project editors'), Group.objects.get(name='Admins')
+            Group.objects.get(name='Users'),
+            Group.objects.get(name='User managers'),
+            Group.objects.get(name='Project editors'),
+            Group.objects.get(name='Admins')
         ]
+
         user_group = model_to_dict(self.group, fields=['id', 'name']) if self.group else None
         other_groups = [model_to_dict(group, fields=['id', 'name']) for group in all_groups]
 
