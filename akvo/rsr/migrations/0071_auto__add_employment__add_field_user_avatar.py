@@ -8,6 +8,12 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        try:
+            # Deleting model 'Employment' if it already exists
+            db.delete_table(u'rsr_employment')
+        except:
+            pass
+
         # Renaming old table to 'Employment'
         db.rename_table(u'rsr_user_organisations', u'rsr_employment')
 

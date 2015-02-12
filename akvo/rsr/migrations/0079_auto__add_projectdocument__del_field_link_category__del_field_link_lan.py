@@ -8,6 +8,12 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        try:
+            # Deleting model 'ProjectDocument' if it exists
+            db.delete_table(u'rsr_projectdocument')
+        except:
+            pass
+
         # Adding model 'ProjectDocument'
         db.create_table(u'rsr_projectdocument', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
