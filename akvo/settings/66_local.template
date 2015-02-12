@@ -6,24 +6,10 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-AKVOAPP_DOMAIN = 'localakvoapp.org'
 DEBUG = TEMPLATE_DEBUG = True
 PIPELINE_ENABLED = False
 
-STATIC_URL = '/static-dev/'
+# STATIC_URL = '/static/' # For production collectstatic behaviour
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'rsr',
-        'USER': 'rsr',
-        'PASSWORD': 'password',
-        'HOST': '192.168.50.101',
-        'PORT': '5432',
-    }
-}
-
-
+# The console email backend will print emails to console, useful for dev server
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-ALLOWED_HOSTS = ['*']
