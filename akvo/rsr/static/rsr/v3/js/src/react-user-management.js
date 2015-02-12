@@ -147,6 +147,33 @@ var DropDownItem = React.createClass({displayName: 'DropDownItem',
     }
 });
 
+var CountryJobTitle = React.createClass({displayName: 'CountryJobTitle',
+    render: function() {
+        var country = this.props.country;
+        var job_title = this.props.job_title;
+        if (country == "" && job_title == "") {
+            return (
+                React.DOM.span(null, " ")
+                )
+        } else {
+            var text = "(";
+            if (job_title != "") {
+                text += job_title
+            }
+            if (country != "") {
+                if (job_title != "") {
+                    text += " "
+                }
+                text += "in " + country.name
+            }
+            text += ")";
+            return (
+                React.DOM.span( {className:"small"}, text,"   ")
+                )
+        }
+    }
+});
+
 var Employment = React.createClass({displayName: 'Employment',
     getInitialState: function() {
         return {
@@ -192,7 +219,8 @@ var Employment = React.createClass({displayName: 'Employment',
           )
         });
         return this.state.visible
-            ? React.DOM.span(null, this.props.employment.organisation_full.long_name, "    ",
+            ? React.DOM.span(null, this.props.employment.organisation_full.long_name," ",
+              CountryJobTitle( {country:this.props.employment.country_full, job_title:this.props.employment.job_title} ),
               DropdownButton( {title:this.state.button_title, disabled:this.state.loading}, other_groups), "    ",
               TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:true} ), "  ",
               TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:false} ),React.DOM.br(null ),React.DOM.br(null ))

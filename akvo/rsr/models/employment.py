@@ -14,6 +14,8 @@ from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 
+from akvo.utils import rsr_send_mail
+
 from .models_utils import QuerySetManager
 
 from ..fields import ValidXMLCharField
@@ -69,6 +71,11 @@ class Employment(models.Model):
             if created:
                 print "Created group => {}".format(group)
         super(Employment, self).save(*args, **kwargs)
+
+    def approve(self):
+        if not self.is_approved:
+            self.is_approved = True
+            self.save()
 
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)

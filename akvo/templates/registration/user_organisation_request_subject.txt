@@ -1,1 +1,1 @@
-A new user has requested to join {{ organisation.name }}
+[Akvo RSR] {{ user.get_full_name }} has requested to join {{ organisation.name }}

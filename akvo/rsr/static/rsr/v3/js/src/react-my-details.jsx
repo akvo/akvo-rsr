@@ -90,6 +90,9 @@ var AddEmploymentForm = React.createClass({
     },
 
     postEmployment: function( data ) {
+        this.setState({
+            response: "Linking user to organisation..."
+        });
         $.ajax({
             type: "POST",
             url: this.props.link + "?format=json",
@@ -118,29 +121,19 @@ var AddEmploymentForm = React.createClass({
         });
     },
 
-    getOrgByName: function( serializedData ) {
-        var name = $('#organisationInput').val();
-        $.get(this.props.org_link + "?format=json&name=" + name, function( data ) {
+    getCountryByName: function( serializedData ) {
+        this.setState({
+            response: "Retrieving country information..."
+        });
+        var name = $('#countriesInput').val();
+        $.get(this.props.country_link + "?format=json&name=" + name, function( data ) {
             if (data.count == 1) {
-                serializedData.organisation = data.results[0].id;
-                this.postEmployment( serializedData );
-            } else if (data.count > 1) {
-                this.setState({
-                    title: "Request failed",
-                    response: "Request failed, multiple organisations found."
-                })
-            } else {
-                this.setState({
-                    title: "Request failed",
-                    response: "Request failed, organisation not found."
-                })
+                serializedData.country = data.results[0].id;
             }
+            this.postEmployment( serializedData );
         }.bind(this))
             .fail(function() {
-                this.setState({
-                    title: "Request failed",
-                    response: "Request failed, organisation not found."
-                })
+                this.postEmployment( serializedData );
             }.bind(this)
         );
     },
@@ -153,18 +146,25 @@ var AddEmploymentForm = React.createClass({
         $.get(this.props.org_link + "?format=json&long_name=" + name, function( data ) {
             if (data.count == 1) {
                 serializedData.organisation = data.results[0].id;
-                this.postEmployment( serializedData );
+                this.getCountryByName( serializedData );
             } else if (data.count > 1) {
                 this.setState({
                     title: "Request failed",
-                    response: "Request failed, multiple organisations found."
+                    response: "Request failed, multiple organisations named \"" + name + "\" found. " +
+                        "Please send a mail to support@akvo.org to get this resolved."
                 })
             } else {
-                this.getOrgByName( serializedData );
+                this.setState({
+                    title: "Request failed",
+                    response: "Request failed, could not find organisation \"" + name + "\"."
+                })
             }
         }.bind(this))
             .fail(function() {
-                this.getOrgByName( serializedData )
+                this.setState({
+                    title: "Request failed",
+                    response: "Request failed, could not find organisation \"" + name + "\"."
+                })
             }.bind(this)
         );
     },
@@ -176,12 +176,7 @@ var AddEmploymentForm = React.createClass({
         });
 
         var serializedData = this.getFormData();
-
-        if (typeof serializedData.organisation === "undefined") {
-            this.getOrgByLongName( serializedData );
-        } else {
-            this.postEmployment( serializedData );
-        }
+        this.getOrgByLongName( serializedData );
     },
 
     getFormData: function() {
@@ -238,7 +233,8 @@ var EmploymentApp = React.createClass({
             <span>
                 <h3><i class="fa fa-users"></i> My organisations</h3>
                 <EmploymentList employments={this.state.employments} />
-                <AddEmploymentForm link={this.props.link} org_link={this.props.org_link} addEmployment={this.addEmployment} />
+                <AddEmploymentForm link={this.props.link} org_link={this.props.org_link}
+                    country_link={this.props.country_link} addEmployment={this.addEmployment} />
             </span>
             );
     }
@@ -248,6 +244,7 @@ var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML)
 var request_link = JSON.parse(document.getElementById("user-request-link").innerHTML);
 
 React.renderComponent(
-    <EmploymentApp source={initial_data} link={request_link.link} org_link={request_link.org_rest_link} />,
+    <EmploymentApp source={initial_data} link={request_link.link} org_link={request_link.org_rest_link}
+        country_link={request_link.country_rest_link}/>,
     document.getElementById('organisations')
 );
