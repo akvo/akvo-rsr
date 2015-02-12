@@ -19,11 +19,11 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='documents', to=orm['rsr.Project'])),
             ('url', self.gf('django.db.models.fields.URLField')(max_length=200)),
-            ('format', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=75, blank=True)),
-            ('title', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True)),
-            ('title_language', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2, blank=True)),
-            ('category', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=3, blank=True)),
-            ('language', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2, blank=True)),
+            ('format', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=75, blank=True, default="")),
+            ('title', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=100, blank=True, default="")),
+            ('title_language', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2, blank=True, default="")),
+            ('category', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=3, blank=True, default="")),
+            ('language', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=2, blank=True, default="")),
         ))
         db.send_create_signal('rsr', ['ProjectDocument'])
 

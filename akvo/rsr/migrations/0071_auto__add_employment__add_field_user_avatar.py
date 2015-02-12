@@ -29,7 +29,7 @@ class Migration(SchemaMigration):
 
         # Adding field 'Employment.job_title'
         db.add_column(u'rsr_employment', 'job_title',
-                      self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=50, blank=True),
+                      self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=50, blank=True, default=""),
                       keep_default=False)
 
         # Adding field 'User.avatar'
