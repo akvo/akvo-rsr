@@ -1,0 +1,98 @@
+{% load i18n rsr_tags webdesign piwik_tags %}
+{% load url from future %}
+{% load compressed %}
+
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="Akvo RSR"/>
+    <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{{request.path}}"/>
+    {% if update %}
+    <meta property="og:title" content="{{update.title}} - {{project.title}}"/>
+    <meta property="og:description" content="{{update.text|force_escape|urlize}}"/>
+    {% if update.photo %}
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{update.photo.url}}"/>
+    {% else %}
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/v3/img/rsrLogo.svg"/>
+    {% endif %}
+    {% elif project %}
+    <meta property="og:title" content="{{project.title}}"/>
+    <meta property="og:description" content="{{project.subtitle}}"/>
+    {% if project.current_image %}
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{project.current_image.url}}"/>
+    {% else %}
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/v3/img/rsrLogo.svg"/>
+    {% endif %}
+    {% else %}
+    <meta property="og:title" content="Akvo RSR"/>
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/v3/img/rsrLogo.svg"/>
+    <meta property="og:description" content="{% trans 'Akvo Really Simple Reporting is a web and Android-based system that makes it easy for development aid teams to bring complex networks of projects online and instantly share progress with everyone involved and interested.' %}"/>
+    {% endif %}
+    {% if facebook_app_id %}
+    <meta property="fb:app_id" content="{{facebook_app_id}}"/>
+    {% endif %}
+
+    <title>Akvo RSR - {% block title %}{% trans 'Home' %}{% endblock %}</title>
+
+    {% if favicon %}
+        <link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">
+    {% else %}
+        <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
+    {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    {# Fonts #}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700%7COpen+Sans:400,300,600,700,400italic,600italic,300italic%7CMontserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700" rel="stylesheet" type="text/css">
+
+    {# CSS #}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    {% compressed_css 'rsr_v3_style' %}
+    {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+
+    {# Piwik #}
+    {% tracking_code %}
+
+    {% block head %}{% endblock head %}
+
+    {% block head_js %}{% endblock %}
+  </head>
+
+  <body>
+
+    {% include 'navigation/header.html' %}
+
+    {% block maincontent %}{% endblock %}
+
+    {% include 'navigation/footer.html' %}
+
+    {# Localisation strings #}
+    <script type="application/json" id="akvo-rsr-i18n">
+      {"is-larger-than-the-allowed-limit": "{% trans "is larger than the allowed limit" %}"}
+    </script>
+    <script type="application/javascript">
+      var AKVO_RSR = {};
+      AKVO_RSR["i18n"] = JSON.parse(document.getElementById("akvo-rsr-i18n").innerHTML);
+    </script>
+
+    {# jQuery #}
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    {# React #}
+    <script src="http://fb.me/react-0.10.0.js"></script>
+
+    {% compressed_js 'rsr_v3_script' %}
+    {% compressed_js 'rsr_v3_libraries' %}
+
+    {% block js %}{% endblock js %}
+
+    <script>
+     $(document).ready(function() {
+        {% block jq %}{% endblock %}
+     });
+    </script>
+  </body>
+</html>

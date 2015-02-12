@@ -1,0 +1,15 @@
+{% load thumbnail embed_video_tags %}
+
+{% if vid %}
+    {% video vid as video_obj %}
+        {% with video_thumbnail=video_obj.thumbnail %}
+            {% thumbnail video_thumbnail geometry format="PNG" upscale=True as im %}
+                <img src="{{im.url}}" />
+            {% endthumbnail %}
+        {% endwith %}
+    {% endvideo %}
+{% else %}
+    {% with url='//placehold.it/'|add:geometry %}
+        <img src="{{url}}" alt="" />
+    {% endwith %}
+{% endif %}

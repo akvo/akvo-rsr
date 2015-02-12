@@ -18,6 +18,9 @@ class ProjectCondition(models.Model):
     type = ValidXMLCharField(_(u'condition type'), blank=True, max_length=1, choices=codelists.CONDITION_TYPE)
     attached = models.NullBooleanField(_(u'attached'), blank=True)
 
+    def iati_type(self):
+        return dict(codelists.CONDITION_TYPE)[self.type] if self.type else ""
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'condition')

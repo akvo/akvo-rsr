@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% load compressed i18n %}
+
+{% block title %}{% trans "Hierarchy of" %} {{project.title}}{% endblock %}
+
+{% block maincontent %}
+<article class="touch-navbar project-container">
+    {% include "partials/project_header.html" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 hidden-xs project-hierarchy small" id="project-hierarchy">
+                {% for row in hierarchy_grid %}
+                <div class="row">
+                    {% if row.0.0 %}
+                    <a href="{% url 'project-hierarchy' row.0.0.pk %}">
+                        <div class="project-hierarchy-window project-hierarchy-{{row.0.1}}" id="project-hierarchy-{{row.0.1}}{{forloop.counter}}">{{row.0.0.title}}</div>
+                    </a>
+                    {% else %}
+                    <div class="project-hierarchy-empty-window"></div>
+                    {% endif %}
+                    {% if row.1.0 and not row.1.1 == 'project' %}
+                    <a href="{% url 'project-hierarchy' row.1.0.pk %}">
+                        <div class="project-hierarchy-window project-hierarchy-{{row.1.1}}" id="project-hierarchy-{{row.1.1}}{{forloop.counter}}">{{row.1.0.title}}</div>
+                    </a>
+                    {% elif row.1.0 %}
+                    <div class="project-hierarchy-window {{row.1.1}}" id="project-hierarchy-{{row.1.1}}">{{row.1.0.title}}</div>
+                    {% else %}
+                    <div class="project-hierarchy-empty-window"></div>
+                    {% endif %}
+                    {% if row.2.0 %}
+                    <a href="{% url 'project-hierarchy' row.2.0.pk %}">
+                        <div class="project-hierarchy-window project-hierarchy-{{row.2.1}}" id="project-hierarchy-{{row.2.1}}{{forloop.counter}}">{{row.2.0.title}}</div>
+                    </a>
+                    {% else %}
+                    <div class="project-hierarchy-empty-window"></div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="hidden-sm hidden-md hidden-lg">
+                <h2><small>{% trans "Screen to small to show project hierarchy" %}</small></h2>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    {% compressed_js 'rsr_v3_project_hierarchy' %}
+{% endblock js %}

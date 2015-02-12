@@ -8,7 +8,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 
 from akvo.utils import rsr_image_path
 
@@ -39,11 +39,9 @@ class FocusArea(models.Model):
         u'description', max_length=500,
         help_text=_(u'Enter the text that will appear on the focus area project listing page. (500 characters).')
     )
-    image = ImageWithThumbnailsField(
-        _(u'focus area image'),
-        upload_to=image_path,
-        thumbnail={'size': (20, 20), 'options': ('crop', )},
-        help_text=_(u'The image that will appear on the focus area project listing page.'),
+    image = ImageField(_('focus area image'),
+                       upload_to=image_path,
+                       help_text=_(u'The image that will appear on the focus area project listing page.'),
     )
     link_to = models.URLField(
         _(u'accordion link'),
@@ -56,7 +54,7 @@ class FocusArea(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('project_list', (), {'slug': self.slug})
+        return ('project-directory', ())
 
     def projects(self):
         'return all projects that "belong" to the FA through the Categories it links to'

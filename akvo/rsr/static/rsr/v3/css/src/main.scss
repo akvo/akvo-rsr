@@ -1,0 +1,1095 @@
+/*---------------------------------------------------------------------------------
+
+            Title:   Akvo RSR v3 
+            Author:  Loic Sans, loic@akvo.org
+
+/*---------------------------------------------------------------------------------*/
+
+@import "library.scss";
+
+html {
+    width: 100%;
+    overflow-y: scroll;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    color: lighten(rgb(36, 48, 50), 10%);
+    line-height: 1.42857;
+    text-rendering: optimizelegibility;
+    font-family: $bodyFont;
+    padding-top: 80px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $titleFont;
+    font-weight: normal;
+    color: $akvoPurple;
+}
+
+a, a:link, a:visited {
+    outline: none;
+    color: $anchorLink;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-transition: color 0.2s linear;
+    transition: color 0.2s linear;
+    &:link {
+        -webkit-tap-highlight-color: #fcd700;
+    }
+    &:hover {
+        color: $anchorLinkHover;
+    }
+}
+
+/****************** Miscellanous Typography ********************/
+.noItem {
+    color: rgba($akvoPurple, 0.2);
+    font-weight: bold;
+}
+.emTxt {
+    color: rgba($akvoPurple, 0.5);
+}
+.noStyleUl {
+    list-style-type: none;
+    padding:0;
+    li {
+        padding:0;
+    }
+}
+em {
+    font-family: $scriptFont;
+    font-size: 1.2em;
+    margin: 0 5px 0em 0em;
+}
+
+a.moreLink {
+    margin-left: 5px;
+    padding: 3px 5px;
+    background: rgba($anchorLink, 0.2);
+    @include border-radius(4px);
+    font-weight: bold;
+    &:hover {
+        background: rgba($anchorLinkHover, 0.8);
+        color: white;
+    }
+}
+
+::-moz-selection {
+    background: rgb(114, 205, 255);
+    color: #fff;
+    text-shadow: none;
+}
+
+::selection {
+    background: rgb(114, 205, 255);
+    color: #fff;
+    text-shadow: none;
+}
+
+.topMargin {
+    margin-top: 15px;
+}
+
+.verticalPadding {
+    padding: 20px 0;
+}
+
+.noInfoBlock {
+    background: rgba($akvoBlack, 0.1);
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Force full-width columns below 570px (when using col-xs-N) */
+@include responsive(small-screens) {
+    .col-ty-12 {
+        float: none;
+        width: 100%;
+    }
+}
+
+
+a.btn-primary, button.btn-primary {
+    border: 1px solid $anchorLink;
+    color: white;
+    background: $anchorLink;
+    &:hover {
+        color: white;
+        background: $anchorLinkHover;
+        border: 1px solid $anchorLinkHover;
+    }
+}
+
+.dropdown-label {
+    display: block;
+    color: rgba($rsrGreen, 0.7);
+    text-align: left;
+}
+
+.btn-group, .form-group {
+    button {
+        @include border-radius(3px);
+    }
+}
+
+/* Bootstrap style for typeahead dropdown, to be included in CSS file */
+.tt-input, .tt-hint {
+    border-radius: initial;
+}
+
+span.twitter-typeahead .tt-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    font-size: 14px;
+    text-align: left;
+    color: #000000;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box;
+}
+
+span.twitter-typeahead .tt-suggestion > p {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333333;
+    white-space: nowrap;
+}
+
+span.twitter-typeahead .tt-suggestion > p:hover,
+span.twitter-typeahead .tt-suggestion > p:focus {
+    color: #ffffff;
+    text-decoration: none;
+    outline: 0;
+    background-color: #428bca;
+}
+
+span.twitter-typeahead .tt-suggestion.tt-cursor {
+    color: #ffffff;
+    background-color: #428bca;
+}
+
+span.twitter-typeahead {
+    width: 100%;
+}
+
+.input-group span.twitter-typeahead {
+    display: block !important;
+}
+
+.input-group span.twitter-typeahead .tt-dropdown-menu {
+    top: 32px !important;
+}
+
+.input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
+    top: 44px !important;
+}
+
+.input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
+    top: 28px !important;
+}
+
+dl {
+    &.dl-horizontal {
+        dt {
+            text-transform: uppercase;
+            text-align: left;
+            color: rgba($akvoBlack, 0.4);
+            font-weight: normal;
+            &.totalFinance {
+                margin-top: 30px;
+                font-weight: bold;
+            }
+        }
+        dd {
+            &.totalFinance {
+                margin-top: 30px;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+label {
+    color: $rsrGreen;
+    font-weight: normal;
+    @include noWrapTxt;
+}
+
+/****************************************************************************
+                                HEADER + NAVIGATION
+****************************************************************************/
+nav.navbar-fixed-top {
+    background-color: rgba(white, 0.95);
+    border: none;
+    border-top: 3px solid rgba($rsrBlue, 0.5);
+    padding: 5px 0;
+    box-shadow: 0 2px 3px rgba(132, 132, 136, 0.2);
+    border-radius: 0;
+    border-bottom: 1px solid rgb(228, 228, 228);
+    button.navbar-toggle {
+        background: $rsrBlue;
+        border: 1px solid $rsrBlue;
+        &:hover {
+            background: white;
+            border: 1px solid $rsrBlue;
+            .icon-bar {
+                background: $rsrBlue;
+            }
+        }
+    }
+    .navbar-brand {
+        float: left;
+        font-size: 18px;
+        line-height: 20px;
+        padding: 0 15px 0 0;
+        h1 {
+            width: 130px;
+            top: 0px;
+            height: inherit;
+            background: url(../../img/rsrLogo.svg) no-repeat 5px center;
+            -webkit-background-size: 125px auto;
+            background-size: 125px auto;
+            text-indent: -9999px;
+            margin-top: 0;
+            @include responsive(small-max-screens) {
+                width: 180px;
+                top: -5px;
+                height: inherit;
+                background: url(../../img/rsrLogo.svg) no-repeat 5px center;
+                -webkit-background-size: 175px auto;
+                background-size: 175px auto;
+                text-indent: -9999px;
+                margin-top: 0;
+            }
+        }
+    }
+    .navbar-nav {
+        li {
+            padding-top: 3px;
+            &:first-child {}
+            a {
+                color: $anchorLink;
+                font-family: $titleFont;
+                &:hover {
+                    color: $anchorLinkHover;
+                }
+                &.active {
+                    color: complement($rsrBlue);
+                    font-weight: bold;
+                    background: rgba($anchorLinkHover, 0.1);
+                    background-size: 15px 15px;
+                    @include border-radius(3px);
+                    @include responsive(small-max-screens) {
+                        background:rgba($anchorLinkHover, 0.1);
+                    }
+                }
+                &.addUpdateBtn {
+                    margin-top: 10px;
+                    color: white;
+                    background-color: $rsrGreen;
+                    border-color: $rsrGreen;
+                    &:hover {
+                        background-color: $anchorLinkHover;
+                        border-color: $anchorLinkHover;
+                    }
+                    @include responsive(small-max-screens) {
+                            width:95%;
+                            padding:10px 5%;
+                            margin:0 auto 10px auto;
+                        }
+                }
+            }
+        }
+        &.navbar-right {
+            li {
+                margin-right: 2px;
+                a {
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    @include responsive(small-max-screens) {
+                        padding:10px 15px;
+                    }
+                    &.active {
+                        background: none;
+                    }
+                }
+            }
+        }
+    }
+}
+.navbar-inverse {
+    .navbar-collapse {
+        border-color:rgb(228,228,228);
+    }
+}
+.navbar .btn {
+    padding: 4px 9px;
+}
+
+@include responsive(small-max-screens) {
+    body > .navbar > .container .navbar-brand {
+        margin-left: 0;
+    }
+}
+
+/* My RSR stuff */
+.myRsrMenu {
+    min-height:100%;
+    bottom:0;
+    top:0;
+    h4 {
+        padding-top: 15px;
+    }
+    nav[role=navigation] {
+        background: rgba($akvoBlack, 0.05);
+        ul {
+            li {
+
+                a {
+                    color: $anchorLink;
+                    font-family: $titleFont;
+                    padding-top:15px;
+                    padding-bottom:15px;
+                    @include responsive(small-max-screens) {
+                        padding-top:20px;
+                        padding-bottom:20px;
+                    }
+                    &:hover {
+                        color: $anchorLinkHover;
+                        background: rgba($anchorLinkHover, 0.05) url(../../img/carret.png) 98% center no-repeat;
+                        background-size: 5px auto;
+                    }
+                    &.active {
+                        color: complement($rsrBlue);
+                        font-weight: bold;
+                        background: rgba($anchorLinkHover, 0.05) url(../../img/carret.png) 98% center no-repeat;
+                        background-size: 5px auto;
+                    }
+                }
+            }
+        }
+    }
+}
+#profile {
+    .usrAvatar {
+        background-color: rgba($akvoBlack,0.05);
+        padding:10px;
+    }
+}
+#organisations {
+    background: darken(rgba($anchorLinkHover, 0.1), 0);
+    padding-bottom: 15px;
+    @include border-radius(5px);
+    @include responsive(small-max-screens) {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        .btn {
+            margin: 10px auto;
+        }
+    }   
+    ul {
+        padding-left: 5px;
+        margin-bottom: 25px;
+        li {
+            list-style-type: none;
+        }
+    }
+    .tt-hint {
+        color: #999;
+    }
+    .tt-dropdown-menu {
+        margin-top: 12px;
+        padding: 8px 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    }
+    .tt-suggestion {
+        padding: 3px 20px;
+        line-height: 24px;
+        &.tt-cursor {
+            color: #fff;
+            background-color: #0097cf;
+        }
+        p {
+            margin: 0;
+        }
+    }
+    .twitter-typeahead {
+        width: 100%;
+    }
+}
+/* FOOTER */
+body > footer {
+    margin-top: 1em;
+}
+
+footer {
+    .navbar {
+        background: $akvoBlack;
+        border-radius: 0;
+        #footer-body {
+            ul.nav {
+                li {
+                    padding-top:10px;
+                    padding-bottom:10px;
+                    a {
+                        display: block;
+                        &[href="http://akvo.org"] {
+                            margin: 0;
+                            width: 70px;
+                            background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
+                            text-indent: -9999px;
+                            background-size: 70px 42px;
+                            @include responsive(small-max-screens) { 
+                                width:100%;
+                                background-size: 80px auto;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#footer-body {
+    text-align: center;
+    font-size: 0;
+    .navbar-nav {
+        display: inline-block;
+        float: none;
+        font-size: 14px;
+    }
+}
+
+/* GENERIC STRUCTURE and TEXT STYLES */
+.touch-navbar {
+    margin-top: -10px;
+    @include responsive(small-max-screens) { 
+        margin-top: -15px;
+    }
+}
+
+.center-text {
+    text-align: center;
+}
+
+.detailedInfo {
+    font-size: 0.875em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: $akvoBlack;
+}
+
+h4.detailedInfo {
+    margin-bottom: 0.25em;
+}
+
+.progress-bar-info {
+    background-color: $secondary1;
+}
+
+/* LISTINGS */
+#map {
+    height: 400px;
+    @include responsive(small-max-screens) {
+        height: 450px;
+        padding-top: 0px;
+    }
+}
+
+.searchContainer {
+    position: relative;
+    #search {
+        .showFilters {
+            /*background-color: rgba(white,0.2);
+            border: 1px solid rgba($rsrGreen, 0);
+            color: white;*/
+            color: white;
+            border: 1px solid rgba(white, 0.2);
+            transition: all 0.4s ease-in;
+            &:hover {
+                background: rgba($anchorLinkHover, 0);
+                border: 1px solid rgba($anchorLinkHover, 0.5);
+                color: $anchorLinkHover;
+            }
+            @include responsive(small-max-screens) {
+                display: table;
+                top: inherit;
+                left: inherit;
+                margin: 10px auto 0;
+            }
+        }
+        &.toggled {
+            .showFilters {
+                background-color: rgba(white, 0.1);
+                border: 1px solid rgba($rsrGreen, 0.5);
+                color: $rsrGreen;
+                &:hover {
+                    background: rgba($anchorLinkHover, 0);
+                    border: 1px solid rgba($anchorLinkHover, 0.5);
+                    color: $anchorLinkHover;
+                }
+            }
+        }
+    }
+}
+
+.pagination {
+    li {
+        a, span {
+            @include responsive(small-max-screens) {
+                padding: 10px 16px;
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: absolute;
+    left: 200px;
+    width: 0;
+    margin-left: -200px;
+    overflow-y: auto;
+    background: rgba(white, 0.9);
+    @include border-radius(0 0 5px 0);
+    @include transition(all 0.5s ease);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    .showFilters {
+        &:hover {
+            color: $anchorLinkHover;
+        }
+    }
+    div#filter {
+        padding: 5px 15px 15px 15px;
+        div {
+            .btn-group {
+                width: 100%;
+                border-top: 1px solid rgba($akvoBlack, 0.1);
+                padding: 5px 0;
+                select {
+                    border-color: rgba($akvoBlack, 0.2);
+                }
+                label {
+                    color: $rsrGreen;
+                    @include noWrapTxt;
+                }
+            }
+            &:nth-child(1) {
+                .btn-group {
+                    border-top: none;
+                }
+            }
+        }
+    }
+}
+
+#page-content-wrapper {
+    width: 100%;
+    padding: 15px;
+}
+
+#wrapper.toggled {
+    padding-left: 200px;
+    #sidebar-wrapper {
+        width: 200px;
+    }
+    #page-content-wrapper {
+        position: absolute;
+        margin-right: -200px;
+    }
+}
+
+#search-filter {
+    @include responsive(small-max-screens) {
+        padding-bottom: 0;
+    }
+
+    #search {
+        color: #fff;
+        text-align: center;
+        @include responsive(small-max-screens) {
+            padding-bottom: 0;
+        }
+    }
+    background-color: #241F20;
+    p {
+        color: lighten($anchorLinkHover, 10%);
+    }
+    div#filter {
+        background: darken(rgba(#383334, 1), 0%);
+        text-align: center;
+    }
+}
+
+/************************************************************************
+        COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
+************************************************************************/
+
+.main-list {
+    li {
+        margin-bottom: 30px;
+        list-style-type: none;
+        padding: 15px 0;
+        border-radius: 3px;
+        background: white;
+        img {
+            border: 1px solid rgba($akvoBlack, 0.05);
+            box-shadow: 0 0 2px rgba($anchorLinkHover, 0);
+        }
+        &:nth-child(2n+1) {
+            background: rgb(238, 238, 238);
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        div h4:first-of-type {
+            margin-top: 0;
+        }
+        .thumbImg {
+            height: 100%;
+            img {
+                width: 100%;
+            }
+        }
+        .projectLocation {
+            color: rgba($akvoBlack, 0.5);
+        }
+        .projectTitle {
+            display: block;
+            margin: 0 0 3px 0;
+        }
+        span.userFullName {
+            color: rgba($akvoBlack, 0.5);
+            margin: 0 0 0px 0;
+        }
+        .upDateTime {
+            color: rgba($akvoBlack, 0.5);
+            margin-top: 10px;
+        }
+        .orgType {
+            color: rgba($akvoBlack, 0.5);
+        }
+        .additionalInfo {
+            div {
+                span {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+    &.updates {
+        li {
+            &:nth-child(2n+1) {
+                background: darken(rgba(complement($rsrBlue), 0.1), 10%);
+            }
+        }
+    }
+    .excerpt {
+        @include noWrapBlockTxt;
+    }
+    &.projects {
+        ul {
+            li {
+                &:nth-child(2n+1) {
+                    background: darken(rgba($rsrBlue, 0.05), 10%);
+                    border:thin solid rgba($rsrBlue, 0.2);
+                }
+                .projectLocation {
+                    color: rgba($akvoBlack, 0.5);
+                }
+            }
+        }
+    }
+    &.updates {
+        ul {
+            li {
+                &:nth-child(2n+1) {
+                    background: darken(rgba($rsrGreen, 0.05), 10%);
+                    border:thin solid rgba($rsrGreen, 0.15);
+                }
+                .projectLocation {
+                    color: rgba($akvoBlack, 0.5);
+                }
+            }
+        }
+    }
+    &.organisations {
+        ul {
+            li {
+                &:nth-child(2n+1) {
+                    background: darken(rgba($akvoTvRed, 0.05), 0);
+                    border:thin solid rgba($akvoTvRed, 0.15);
+                }
+                img {
+                    @include bw;
+                    transition: all 0.2s ease-in;
+                }
+                &:hover {
+                    img {
+                        @include colour;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* PROJECT */
+header {
+    &.projectHeader {
+        margin-bottom: 0;
+        padding: 15px 0;
+        background: lighten($anchorLinkHover, 25%);
+        border-bottom:1px solid rgb(238,238,238);
+        margin-bottom:15px;
+        h1 {
+            margin-top: 10px;
+            margin-bottom: 0;
+            font-size: 1.5em;
+        }
+        .shareBlock {
+            position: relative;
+            margin-top: 10px;
+            div {
+                text-align: right;
+                @include responsive(small-max-screens) {
+                    text-align: left;
+                }
+
+                a {
+                    position: relative;
+                    top: 0px;
+                    @include responsive(small-max-screens) {
+                        left: 0;
+                        top: 0;
+                    }
+
+                    &.fullPdf {
+                        @include noWrapTxt;
+                    }
+                }
+            }
+            .reportPdf {
+                margin-top: 15px;
+                text-align: right;
+                padding-right: 0;
+                @include responsive(small-max-screens) {
+                    text-align: left;
+                    padding-left: 0;
+                }
+            }
+            .projectLocation {
+                color: lighten($akvoBlack, 50%);
+                .map-toggle {
+                    text-transform: uppercase;
+                    font-size: 0.875em;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}
+
+#project-map {
+    border: 1px solid darken($lightOrange, 10%);
+    div.akvo_map {
+        width: calc(100%-2px);
+        height: 300px;
+    }
+}
+
+div.projectTopRow {
+    position: relative;
+    background: rgba(245, 245, 245, 0.5);
+    margin-top: 1px;
+    border-bottom: 1px solid rgba($akvoBlack, 0.1);
+    #carousel {
+        padding: 15px 0;
+        /*background-color: rgb(230, 231, 232);*/
+        margin-left: -15px;
+        @include responsive(small-max-screens) {
+            margin-left: inherit;
+        }
+
+        .carousel-indicators {
+            bottom: 35px;
+            li {
+                border-color: $rsrGreen;
+                &.active {
+                    background-color: $rsrGreen;
+                }
+            }
+        }
+        .carousel-inner {
+            .item {
+                text-align: center;
+                a {
+                    img {
+                        max-height: 400px;
+                        margin: auto;
+                    }
+                }
+                .carousel-caption {
+                    background-color: rgba(255, 255, 255, 0.1);
+                    bottom: 0px;
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                    h3 {
+                        color: $lightOrange;
+                    }
+                    p {
+                        padding-top: 20px;
+                    }
+                }
+            }
+        }
+        .carousel-control.right {
+            background-image: none;
+        }
+        .carousel-control.left {
+            background-image: none;
+        }
+    }
+    .projectSideInfo {
+        padding: 5px 0;
+        margin-left: -15px;
+        @include responsive(small-max-screens) {
+            margin-left: inherit;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            li {
+                color: lighten($akvoBlack, 50%);
+                list-style-type: none;
+                padding-top: 10px;
+                padding-bottom: 5px;
+                border-bottom: thin solid rgba(230, 230, 230, 0.5);
+                border-top: thin solid rgba(248, 248, 248, 0.8);
+                &:first-child {
+                    padding-top: 5px;
+                    border-top: none;
+                }
+                &:last-child {
+                    padding-bottom: 0;
+                    border-bottom: none;
+                }
+                &.projectPartners {
+                    padding-bottom: 20px;
+                    border-bottom: none;
+                    span + div {
+                        margin-top: 10px;
+                    }
+                    a.logoImg {
+                        max-width: 50px;
+                        img {
+                            width: 80%;
+                            @include bw;
+                            transition: all 0.2s ease-in;
+                            &:hover {
+                                @include colour;
+                            }
+                        }
+                    }
+                    .partType {
+                        @include noWrapBlockTxt;
+                    }
+                    .projectLocation {
+                        margin-top: 5px;
+                    }
+                }
+                &.financeBlock {
+                    border-top: none;
+                    padding: 15px 0 15px 0;
+                    background: rgba($rsrBlue, 0.1);
+                    span {
+                        margin-left: 15px;
+                    }
+                    a {
+                        margin-left: 15px;
+                    }
+                }
+            }
+        }
+    }
+}
+.results {
+    ul {
+        padding: 5px 0 5px 5px;
+        li {
+            i {
+            }
+        }
+    }
+}
+.indicators, .results {
+    padding:0 0 0 15px;
+    dl {
+        padding: 5px 0 5px 10px;
+        dt, dd {
+            display: inline-block;
+        }
+        dd {
+            width:15%;
+        }        
+        dt {
+            width:85%;
+            color: rgba($akvoBlack, 0.4);
+            font-weight: normal;
+        }
+    }    
+}
+div.timelineBlock {
+    margin: 15px auto 25px;
+    #timeline {
+        height: 200px;
+    }
+}
+
+div.textBlock {
+    .panel {
+        border: 1px solid rgba(235, 235, 235, 0.5);
+        .panel-heading {
+            padding: 0;
+            .panel-title {
+                a {
+                    display: block;
+                    padding: 15px 15px;
+                }
+            }
+        }
+        .panel-collapse {
+            .panel-body {
+                background: rgba($rsrBlue, 0);
+            }
+        }
+    }
+    .udpateComponent {
+        padding-top: 10px;
+        padding-bottom: 15px;
+        background: lighten($anchorLinkHover, 25%);
+    }
+}
+
+#project-footer {
+    margin-bottom: -16px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    background: lighten($akvoPurple, 65%);
+    .detailedInfo {
+        color: rgba($akvoPurple, 1);
+    }
+    #project-footer-right {
+        background: rgba($akvoPurple, 0.1);
+        padding: 1.5em;
+    }
+}
+
+#draft {
+    background: #E04F46;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#gallery {
+    height: 300px;
+    background: #ccc;
+}
+
+/* Project hierarchy */
+.project-hierarchy-window {
+    border: 0.1em solid #d3d3d3;
+    width: 150px;
+    float: left;
+    margin: 30px;
+    padding: 10px;
+    text-align: center;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.project-hierarchy-window:hover,
+.project-hierarchy-window._jsPlumb_source_hover,
+.project-hierarchy-window._jsPlumb_target_hover {
+    border: 1px solid orange;
+    color: orange;
+}
+
+.project-hierarchy-empty-window {
+    width: 150px;
+    float: left;
+    margin: 30px;
+}
+
+/* Tooltips */
+.tooltip {
+    .tooltip-arrow {}
+    .tooltip-inner {
+        max-width: 350px;
+        padding: 15px;
+        background: rgba($akvoBlack, 0.05);
+        color: $akvoBlack;
+        box-shadow: 0 0 2px rgba($akvoBlack, 0.3);
+        a {
+            font-weight: bold;
+        }
+    }
+}
+
+/* Organisation Page */
+.organisationDetail {
+    .organisationHeader {
+        background:rgba($akvoBlack,0.05);
+    }
+    h1 {
+        margin-top:0;
+        margin-bottom:20px;
+    }
+    .orgLogo {
+        padding:10px 0;
+        background:rgba(white,0.5);
+        img {
+            width:35%;
+            margin-left:5px;
+        }
+    }
+    .orgDetails {
+        background:rgba(white,0.05);
+        @include border-radius(5px);
+    }
+}

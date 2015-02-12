@@ -21,9 +21,9 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 
-from akvo.utils import rsr_image_path, rsr_show_keywords, RSR_LIMITED_CHANGE
+from akvo.utils import rsr_image_path, rsr_show_keywords
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..iati.codelists import codelists_v104 as codelists
@@ -38,7 +38,6 @@ from .organisation import Organisation
 from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
-from .user_profile import UserProfile
 
 
 class Project(TimestampsMixin, models.Model):
@@ -101,17 +100,13 @@ class Project(TimestampsMixin, models.Model):
         help_text=_(u'Briefly summarize the project (400 characters).')
     )
 
-    current_image = ImageWithThumbnailsField(
-        _(u'project photo'), blank=True, upload_to=image_path,
-        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-        extra_thumbnails={
-            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-        },
-        help_text=_(
-            u'The project image looks best in landscape format (4:3 width:height ratio), '
-            u'and should be less than 3.5 mb in size.'
-        ),
+    current_image = ImageField(_('project photo'),
+                               blank=True,
+                               upload_to=image_path,
+                               help_text=_(
+                                   u'The project image looks best in landscape format (4:3 width:height ratio), '
+                                   u'and should be less than 3.5 mb in size.'
+                               ),
     )
     current_image_caption = ValidXMLCharField(
         _(u'photo caption'), blank=True, max_length=50,
@@ -180,8 +175,10 @@ class Project(TimestampsMixin, models.Model):
 
     # synced projects
     sync_owner = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
+    sync_owner_secondary_reporter = models.NullBooleanField(_(u'secondary reporter'),)
 
     # extra IATI fields
+    iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=100, blank=True, db_index=True,)
     hierarchy = models.PositiveIntegerField(
         _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS
     )
@@ -227,27 +224,31 @@ class Project(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('project_main', (), {'project_id': self.pk})
+        return ('project-main', (), {'project_id': self.pk})
 
     def all_donations(self):
         return Invoice.objects.filter(
-            project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-        )
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True)
 
     def public_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-                status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-            ).exclude(is_anonymous=True)
+        return Invoice.objects.filter(
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).exclude(is_anonymous=True)
 
     def all_donations_amount(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-                status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-            ).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+        return Invoice.objects.filter(
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).aggregate(
+            all_donations_sum=Sum('amount')
+        )['all_donations_sum']
 
     def all_donations_amount_received(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-        ).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+        return Invoice.objects.filter(
+            project__exact=self.id).filter(
+            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).aggregate(
+            all_donations_sum=Sum('amount_received')
+        )['all_donations_sum']
 
     def amount_needed_to_fully_fund_via_paypal(self):
         if self.currency == 'USD':
@@ -331,6 +332,10 @@ class Project(TimestampsMixin, models.Model):
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
             return self.filter(partners__exact=organisation)
+
+        def of_partners(self, organisations):
+            "return projects that have one of the organisations as partner"
+            return self.filter(partners__in=organisations)
 
         def has_location(self):
             return self.filter(primary_location__isnull=False)
@@ -458,6 +463,11 @@ class Project(TimestampsMixin, models.Model):
                 latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at')
             )
 
+        def all_updates(self):
+            "return ProjectUpdates for self, newest first"
+            from .project_update import ProjectUpdate
+            return ProjectUpdate.objects.filter(project__in=self)
+
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
             orgs = Organisation.objects.filter(partnerships__project__in=self)
@@ -489,6 +499,9 @@ class Project(TimestampsMixin, models.Model):
 
             country_ids = list(set(country_ids))
             return Country.objects.filter(id__in=country_ids).distinct()
+
+        def publishingstatuses(self):
+            return PublishingStatus.objects.filter(project__in=self)
 
 
     def __unicode__(self):
@@ -572,12 +585,13 @@ class Project(TimestampsMixin, models.Model):
         '''
         Test if a user is connected to self through an organisation
         '''
-        is_connected = False
         try:
-            is_connected = self in UserProfile.objects.get(user=user).organisation.all_projects()
+            for organisation in user.organisations.all():
+                if self in organisation.all_projects():
+                    return True
         except:
             pass
-        return is_connected
+        return False
 
     def is_published(self):
         if self.publishingstatus:
@@ -624,6 +638,16 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
+    def reporting_org(self):
+        if self.sync_owner:
+            return self.sync_owner
+        elif self.support_partners():
+            return self.support_partners()[0]
+        elif self.all_partners():
+            return self.all_partners()[0]
+        else:
+            return None
+
     def field_partners(self):
         return self._partners(Partnership.FIELD_PARTNER)
 
@@ -639,6 +663,27 @@ class Project(TimestampsMixin, models.Model):
     def all_partners(self):
         return self._partners()
 
+    def partners_info(self):
+        """
+        Return a dict of the distinct partners with the organisation as key and as content:
+        1. The partnerships of the organisation
+        2. The (added up) funding amount, if available. Otherwise None.
+        E.g. {<Organisation 1>: [[<Partnership 1>,], 10000], <Organisation 2>: [[<Partnership 2>,], None]]}
+        """
+        partners_info = {}
+        for partnership in Partnership.objects.filter(project=self):
+            funding_amount = partnership.funding_amount if partnership.funding_amount else None
+            if not partnership.organisation in partners_info.keys():
+                partners_info[partnership.organisation] = [[partnership], funding_amount]
+            else:
+                partners_info[partnership.organisation][0].append(partnership)
+                existing_funding_amount = partners_info[partnership.organisation][1]
+                if funding_amount and existing_funding_amount:
+                    partners_info[partnership.organisation][1] += funding_amount
+                elif funding_amount:
+                    partners_info[partnership.organisation][1] = funding_amount
+        return partners_info
+
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
@@ -651,14 +696,76 @@ class Project(TimestampsMixin, models.Model):
             )
         )
 
+    def iati_project_scope(self):
+        return dict(codelists.ACTIVITY_SCOPE)[self.project_scope] if self.project_scope else ""
+
+    def iati_collaboration_type(self):
+        if self.collaboration_type:
+            return dict([code[:2] for code in codelists.COLLABORATION_TYPE])[self.collaboration_type]
+        else:
+            return ""
+
+    def iati_default_flow_type(self):
+        if self.default_flow_type:
+            return dict([code[:2] for code in codelists.FLOW_TYPE])[self.default_flow_type]
+        else:
+            return ""
+
+    def iati_default_finance_type(self):
+        if self.default_finance_type:
+            return dict([code[:2] for code in codelists.FINANCE_TYPE])[self.default_finance_type]
+        else:
+            return ""
+
+    def iati_default_aid_type(self):
+        return dict([code[:2] for code in codelists.AID_TYPE])[self.default_aid_type] if self.default_aid_type else ""
+
+    def iati_default_tied_status(self):
+        if self.default_tied_status:
+            return dict([code[:2] for code in codelists.TIED_STATUS])[self.default_tied_status]
+        else:
+            return ""
+
+    def sector_categories(self):
+        from .sector import Sector
+        sector_categories = Sector.objects.filter(project=self, vocabulary='2')
+        return [sector.iati_sector for sector in sector_categories]
+
+    def has_relations(self):
+        return self.parents() or self.children() or self.siblings()
+
+    def parents(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=1) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=2)).distinct()
+
+    def children(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=2) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=1)).distinct()
+
+    def siblings(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=3)).distinct()
+
+    def has_results(self):
+        for result in self.results.all():
+            if result.title or result.type or result.aggregation_status or result.description:
+                return True
+        return False
+
+    def has_indicators(self):
+        for result in self.results.all():
+            if result.indicators.all():
+                return True
+        return False
+
     class Meta:
         app_label = 'rsr'
-        permissions = (
-            ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
-        )
         verbose_name = _(u'project')
         verbose_name_plural = _(u'projects')
         ordering = ['-id', ]
+        permissions = (
+            ('post_updates', u'Can post updates'),
+        )
 
 
 @receiver(post_save, sender=ProjectUpdate)

@@ -1,0 +1,67 @@
+{% load i18n maps %}
+
+<header class="projectHeader">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <h1><a href="{% url 'project-main' project.pk %}">{{project.title}}</a></h1>
+                <p>{{project.subtitle}}</p>
+                <div class="projectLocation">
+                    <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">Show map +</a></p>
+                </div>
+            </div>
+            <div class="col-sm-4 shareBlock">
+                <div class="row">
+                    <nav>
+                        <div class="col-xs-12">
+                            <a href="#" class="btn btn-primary hidden"><i class="fa fa-lightbulb-o"></i> Follow project</a>
+                            {% if not no_facebook %}
+                            <a id="btn-fbShare" class="btn btn-primary" href="#" onclick="
+                            window.open(
+                              'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                              'facebook-share-dialog',
+                              'width=626,height=436');
+                            return false;"><i class="fa fa-facebook-official fa-lg"></i> Share</a>
+                            {% endif %}
+                            {% if not no_twitter %}
+                            <a id="btn-twShare" class="btn btn-primary" href="#" onclick="
+                            window.open(
+                              'https://twitter.com/intent/tweet?text={% if update %}%22{{update.title}}%22{% if update.user.first_name and update.user.last_name %} by {{update.user.first_name}} {{update.user.last_name}}{% endif %} - {% endif %}{{project.title}}&url=http://{{request.META.HTTP_HOST}}{{request.path}}&via=Akvo&hashtags=AkvoRSR',
+                              'twitter-share-dialog',
+                              'width=626,height=436');
+                            return false;"><i class="fa fa-twitter-square fa-lg"></i> Share</a>
+                            {% endif %}
+                            <div class="col-xs-12 reportPdf">
+                                {% url 'project-report' project.pk as report_url %}
+                                {% if not request.get_full_path == report_url %}
+                                <a href="{% url 'project-report' project.pk %}" class="fullPdf"><i class="fa fa-file-text-o"></i> Show full data report</a>
+                                {% else %}
+                                <a href="javascript:window.print();" class="btn"><i class="fa fa-print"></i> Print this page</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div style="display: None" id="project-map" class="row initial">
+            {% project_map project.id '100%' '300px' %}
+        </div>
+    </div>
+</header>
+
+<script type="text/javascript">
+    function maptoggle() {
+        if ($( "#project-map" ).css('display') == 'none') {
+            $( "#project-map" ).slideToggle('slow');
+            if ($('#project-map').hasClass('initial')) {
+                googleMap.load();
+                $( "#project-map" ).removeClass('initial');
+            }
+            $('.map-toggle').html('HIDE MAP -');
+        } else {
+            $( "#project-map" ).slideToggle('slow');
+            $('.map-toggle').html('SHOW MAP +');
+        }
+    };
+</script>

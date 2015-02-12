@@ -1,72 +1,23 @@
-{% load i18n rsr_tags rsr_filters thumbnail humanize piwik_tags %}
+{% extends "widgets/base.html" %}
+{% load i18n rsr_filters rsr_tags rsr_widgets rsr_utils %}
 {% load compressed %}
 
-<!DOCTYPE html>
-<html lang="{{ request.LANGUAGE_CODE }}">
-<head>
-  <meta charset="UTF-8" />
+{% block style %}
+{{block.super}}
+{% compressed_css 'sites_widget_project_small' %}
+{% endblock style %}
 
-  <title>{% block title %}Akvo.org{% endblock title %}</title>
-  <base target="_top" />
-
-  {% block style %}
-    {% compressed_css 'widget_project_small' %}
-  {% endblock style %}
-
-  <style type="text/css" media="screen">
-    {% block inline_styles %}
-      #header {background-color:#{{bgcolor}};}
-      #header h1 { color:#{{textcolor}}; }
-      #footer {background-color:#{{bgcolor}}; color:#{{textcolor}} !important; }
-      h2 a {color:#{{bgcolor}} !important;}
-
-      #project_title {
-        display:block;
-        height:36px;
-        overflow:hidden;
-      }
-
-      #project_location{
-        display:block;
-        max-height:32px;
-        height:32px;
-        overflow:hidden;
-      }
-
-    {% endblock inline_styles %}
-  </style>
-
-  {#  Piwik #}
-  {% tracking_code %}
-
-</head>
-<body style="margin-left:0px; margin-top:0px; background-color:transparent;">
-<div id="container" style="background-color:white; border-bottom:1px solid #9B9AAC;">
-  <div id="header" style="padding-top:1px; padding-bottom:1px;">
-    <h1>Project</h1>
-    <div style="float:right; padding-top:6px;">
+{% block body %}
+<section id="container" class="w170pxSmall {{style}} rsrWidget floats-in">
+  {% rsr_widget_header %}
+  <div id="content" class="floats-in">
+    <div class="projectDescr">
+      {% rsr_widget_project_status_location project %}
+      <h2 id="project_title"><a href="{{project.get_absolute_url}}">
+        {{project.title|smart_truncate:60}}
+      </a></h2>
+      <a href="{{project.get_absolute_url}}">{% img project 145 109 project.title %}</a>
     </div>
   </div>
-  <div id="content">
-    <div id="heightconstrain">
-      <h2 id="project_title" style="margin-top:5px;"><a href="{% url 'project_main' project.id %}">{{project.title|smart_truncate:35}}</a></h2>
-      <div class="photo_frame">
-        <a href="{% url 'project_main' project.id %}">
-          {% project_thumb project 150 113 %}
-        </a>
-      </div>
-      <p class="smallFont grey topmargin">{% trans 'Location' %}</p>
-      <div id="project_location">
-        <p class="smallFont"><span class="capz">{{project.primary_location.country.continent}}</span><br />
-          {{project.primary_location.country}}, {{project.primary_location.city}}
-        </p>
-      </div>
-      <p class="miniFont lightgrey right" style="margin-top:10px; margin-bottom:5px; padding-right:9px; text-transform: capitalize;">
-
-        {% trans 'Powered by' %} <a href="http://{{ request.META.HTTP_HOST }}">Akvo</a>. {% trans 'Ref' %}: {{project.id}}
-      </p>
-    </div>
-  </div>
-</div>
-</body>
-</html>
+</section>
+{% endblock body %}

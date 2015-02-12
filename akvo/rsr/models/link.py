@@ -25,16 +25,6 @@ class Link(models.Model):
     caption = ValidXMLCharField(_(u'caption'), max_length=50)
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='links')
 
-    # Extra IATI fields
-    credit = ValidXMLCharField(_(u'credit'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
-    format = ValidXMLCharField(
-        _(u'format'), max_length=100, blank=True, choices=[[x, x] for (x, y) in codelists.FILE_FORMAT]
-    )
-    category = ValidXMLCharField(
-        _(u'category'), max_length=3, blank=True, choices=[code[:2] for code in codelists.DOCUMENT_CATEGORY]
-    )
-    language = ValidXMLCharField(_(u'language'), max_length=2, blank=True, choices=codelists.LANGUAGE)
-
     def __unicode__(self):
         return self.url
 
