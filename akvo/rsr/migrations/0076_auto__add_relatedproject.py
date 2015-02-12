@@ -383,6 +383,7 @@ class Migration(SchemaMigration):
             'keywords': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'projects'", 'blank': 'True', 'to': "orm['rsr.Keyword']"}),
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '2'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'last_update': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'the_project'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': "orm['rsr.ProjectUpdate']"}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
             'partners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'through': "orm['rsr.Partnership']", 'to': "orm['rsr.Organisation']"}),
             'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.ProjectLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
