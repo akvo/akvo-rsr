@@ -9,12 +9,12 @@ class Migration(DataMigration):
     def forwards(self, orm):
         # First set the vocabulary for sectors where it is missing
         for sector in orm.Sector.objects.all():
-            if sector.vocabulary not in ['1', '2']:
+            if sector.vocabulary not in ['DAC', 'DAC-3']:
                 if len(sector.sector_code) == 5:
-                    sector.vocabulary = '1'
+                    sector.vocabulary = 'DAC'
                     sector.save()
                 elif len(sector.sector_code) == 3:
-                    sector.vocabulary = '2'
+                    sector.vocabulary = 'DAC-3'
                     sector.save()
 
         for project in orm.Project.objects.all():
@@ -35,13 +35,6 @@ class Migration(DataMigration):
                     for similar_sector in similar_sectors:
                         if not similar_sector.percentage:
                             similar_sector.delete()
-
-            # Add sector categories based on the 5-digit sectors, if not existing yet
-            sectors = orm.Sector.objects.filter(project=project, vocabulary='1')
-            for sector in sectors:
-                sector_category = sector.sector_code[:3]
-                if not orm.Sector.objects.filter(project=project, vocabulary='2', sector_code=sector_category).exists():
-                    orm.Sector.objects.create(project=project, vocabulary='2', sector_code=sector_category)
 
     def backwards(self, orm):
         pass

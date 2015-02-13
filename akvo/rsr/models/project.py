@@ -771,12 +771,14 @@ class Project(TimestampsMixin, models.Model):
 
     def sector_categories_codes(self):
         from .sector import Sector
-        sector_categories = Sector.objects.filter(project=self, vocabulary='2')
+        sector_categories = Sector.objects.filter(project=self, vocabulary='2') | \
+            Sector.objects.filter(project=self, vocabulary='DAC-3')
         return [sector.iati_sector_codes for sector in sector_categories]
 
     def sector_categories(self):
         from .sector import Sector
-        sector_categories = Sector.objects.filter(project=self, vocabulary='2')
+        sector_categories = Sector.objects.filter(project=self, vocabulary='2') | \
+            Sector.objects.filter(project=self, vocabulary='DAC-3')
         return [sector.iati_sector for sector in sector_categories]
 
     def has_relations(self):
