@@ -7,7 +7,7 @@ function createDiv(){
     var bodytag = document.getElementsByTagName('body')[0];
     var div = document.createElement('div');
     div.setAttribute('id','cookie-law');
-    div.innerHTML = '<p>This website uses cookies to improve your experience. By continuing to browse the site you are agreeing to our use of cookies, as detailed in our <a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-terms-of-use/cookie-policy/" rel="nofollow" title="Privacy &amp; Cookies Policy">privacy and cookies policy</a>.    <a class="close-cookie-banner btn btn-primary" href="javascript:void(0);" onclick="removeMe();"><span>Accept</span></a></p>';    
+    div.innerHTML = '<p>This website uses cookies to improve your experience. By continuing to browse the site you are agreeing to our use of cookies, as detailed in our <a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-terms-of-use/cookie-policy/" rel="nofollow" title="Privacy &amp; Cookies Policy" target="_blank">privacy and cookies policy</a>.    <a class="close-cookie-banner btn btn-primary" href="javascript:void(0);" onclick="removeMe();"><span>Accept</span></a></p>';
  // Be advised the Close Banner 'X' link requires jQuery
      
     // bodytag.appendChild(div); // Adds the Cookie Law Banner just before the closing </body> tag
