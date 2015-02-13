@@ -14,7 +14,7 @@ var AccordionInstance = React.createClass({
             background = null;
         }
         if (this.props.source.current_status != "") {
-            current_status = <Panel  className="current_status" header="Current status" key={'current_status'}>{this.props.source.current_status}</Panel>;
+            current_status = <Panel  className="current_status" header="Current situation" key={'current_status'}>{this.props.source.current_status}</Panel>;
         } else {
             current_status = null;
         }

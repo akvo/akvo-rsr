@@ -8,25 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        try:
-            # Deleting model 'RelatedProject' if it already exists
-            db.delete_table(u'rsr_relatedproject')
-        except:
-            pass
-
-        # Adding model 'RelatedProject'
-        db.create_table(u'rsr_relatedproject', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='related_projects', to=orm['rsr.Project'])),
-            ('related_project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='related_to_projects', to=orm['rsr.Project'])),
-            ('relation', self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=1)),
-        ))
-        db.send_create_signal('rsr', ['RelatedProject'])
+        # Adding field 'ProjectDocument.document'
+        db.add_column(u'rsr_projectdocument', 'document',
+                      self.gf('django.db.models.fields.files.FileField')(default='', max_length=100, blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'RelatedProject'
-        db.delete_table(u'rsr_relatedproject')
+        # Deleting field 'ProjectDocument.document'
+        db.delete_column(u'rsr_projectdocument', 'document')
 
 
     models = {
@@ -138,7 +128,7 @@ class Migration(SchemaMigration):
             'ascending': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
             'baseline_comment': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'}),
             'baseline_value': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
-            'baseline_year': ('django.db.models.fields.PositiveIntegerField', [], {'max_length': '4', 'blank': 'True'}),
+            'baseline_year': ('django.db.models.fields.PositiveIntegerField', [], {'max_length': '4', 'null': 'True', 'blank': 'True'}),
             'description': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '255', 'blank': 'True'}),
             'description_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -201,12 +191,8 @@ class Migration(SchemaMigration):
         'rsr.link': {
             'Meta': {'object_name': 'Link'},
             'caption': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50'}),
-            'category': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
-            'credit': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
-            'format': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'kind': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1'}),
-            'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'links'", 'to': "orm['rsr.Project']"}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
         },
@@ -346,6 +332,7 @@ class Migration(SchemaMigration):
             'period_end': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'period_start': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'planned_disbursements'", 'to': "orm['rsr.Project']"}),
+            'type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             'updated': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'value': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
             'value_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'})
@@ -364,7 +351,7 @@ class Migration(SchemaMigration):
             'background': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'budget': ('django.db.models.fields.DecimalField', [], {'decimal_places': '2', 'default': '0', 'max_digits': '10', 'blank': 'True', 'null': 'True', 'db_index': 'True'}),
             'capital_spend_percentage': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '1', 'blank': 'True'}),
-            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
+            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'projects'", 'blank': 'True', 'to': "orm['rsr.Category']"}),
             'collaboration_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'currency': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'EUR'", 'max_length': '3'}),
@@ -385,11 +372,11 @@ class Migration(SchemaMigration):
             'funds_needed': ('django.db.models.fields.DecimalField', [], {'decimal_places': '2', 'default': '0', 'max_digits': '10', 'blank': 'True', 'null': 'True', 'db_index': 'True'}),
             'goals_overview': ('akvo.rsr.fields.ProjectLimitedTextField', [], {}),
             'hierarchy': ('django.db.models.fields.PositiveIntegerField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
+            'iati_activity_id': ('akvo.rsr.fields.ValidXMLCharField', [], {'db_index': 'True', 'max_length': '100', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'keywords': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'projects'", 'blank': 'True', 'to': "orm['rsr.Keyword']"}),
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '2'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
-            'last_update': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'the_project'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': "orm['rsr.ProjectUpdate']"}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
             'partners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'through': "orm['rsr.Partnership']", 'to': "orm['rsr.Organisation']"}),
             'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.ProjectLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
@@ -401,6 +388,7 @@ class Migration(SchemaMigration):
             'subtitle': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75'}),
             'sustainability': ('akvo.rsr.fields.ValidXMLTextField', [], {}),
             'sync_owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
+            'sync_owner_secondary_reporter': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
             'target_group': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '45', 'db_index': 'True'})
         },
@@ -424,6 +412,7 @@ class Migration(SchemaMigration):
         'rsr.projectcontact': {
             'Meta': {'object_name': 'ProjectContact'},
             'country': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'contacts'", 'null': 'True', 'to': "orm['rsr.Country']"}),
+            'department': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'job_title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
@@ -435,6 +424,18 @@ class Migration(SchemaMigration):
             'telephone': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '15', 'blank': 'True'}),
             'type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
+        },
+        'rsr.projectdocument': {
+            'Meta': {'ordering': "['-id']", 'object_name': 'ProjectDocument'},
+            'category': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
+            'document': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
+            'format': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'documents'", 'to': "orm['rsr.Project']"}),
+            'title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
+            'title_language': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
+            'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
         'rsr.projectlocation': {
             'Meta': {'ordering': "['id']", 'object_name': 'ProjectLocation'},
@@ -480,7 +481,7 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.User']"}),
             'user_agent': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '200', 'blank': 'True'}),
             'uuid': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "''", 'max_length': '40', 'db_index': 'True', 'blank': 'True'}),
-            'video': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
+            'video': ('embed_video.fields.EmbedVideoField', [], {'max_length': '200', 'blank': 'True'}),
             'video_caption': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75', 'blank': 'True'}),
             'video_credit': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '25', 'blank': 'True'})
         },

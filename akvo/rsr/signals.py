@@ -220,8 +220,8 @@ def employment_post_save(sender, **kwargs):
     'User managers' or 'Admins', or when the user is a superuser or general admin.
     """
     users_group = Group.objects.get(name='Users')
-    project_editors_group = Group.objects.get(name='Project editors')
-    user_managers_group = Group.objects.get(name='User managers')
+    project_editors_group = Group.objects.get(name='Project Editors')
+    user_managers_group = Group.objects.get(name='User Managers')
     admins_group = Group.objects.get(name='Admins')
     if kwargs['created']:
         employment = kwargs.get("instance", False)

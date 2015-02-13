@@ -8,6 +8,12 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        try:
+            # Deleting model 'Employment' if it already exists
+            db.delete_table(u'rsr_employment')
+        except:
+            pass
+
         # Renaming old table to 'Employment'
         db.rename_table(u'rsr_user_organisations', u'rsr_employment')
 
@@ -23,7 +29,7 @@ class Migration(SchemaMigration):
 
         # Adding field 'Employment.job_title'
         db.add_column(u'rsr_employment', 'job_title',
-                      self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=50, blank=True),
+                      self.gf('akvo.rsr.fields.ValidXMLCharField')(max_length=50, blank=True, default=""),
                       keep_default=False)
 
         # Adding field 'User.avatar'
