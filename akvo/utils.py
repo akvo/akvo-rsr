@@ -18,6 +18,7 @@ from workflows.models import State
 from workflows.utils import get_state
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail, EmailMessage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
@@ -430,3 +431,42 @@ def filter_query_string(qs):
 
     return '&{}'.format(
         '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))
+
+
+def codelist_choices(model, version=settings.IATI_VERSION):
+    """
+    Based on a model from the codelists app and a version, returns a list of tuples with the available choices.
+    :param model: Model from codelists app
+    :param version: String of version (optional)
+    :return: List of tuples with available choices, tuples in the form of (code, name)
+    """
+    try:
+        return [(cl.code, cl) for cl in model.objects.filter(version__code=version)]
+    except:
+        return []
+
+
+def codelist_value(model, instance, field, version=settings.IATI_VERSION):
+    """
+    Looks up the value of a codelist
+    :param model: Model from codelists app
+    :param instance: Instance from model
+    :param field: String of the lookup field (e.g. 'type')
+    :param version: String of version (optional)
+    :return: String of the codelist instance
+    """
+    value = getattr(instance, field, None)
+    if value:
+        try:
+            objects = getattr(model, 'objects')
+            return objects.get(code=value, version__code=version)
+        except model.DoesNotExist:
+            return ''
+    return ''
+
+
+def check_auth_groups(group_names):
+    for group_name in group_names:
+        group, created = Group.objects.get_or_create(name=group_name)
+        if created:
+            print "Created group => {}".format(group)

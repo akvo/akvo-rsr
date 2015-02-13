@@ -9,18 +9,18 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+from akvo.codelists.models import DescriptionType, IndicatorMeasure
+from akvo.utils import codelist_choices, codelist_value
 
 
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
     title = ValidXMLCharField(_(u'title'), blank=True, max_length=255, help_text=_(u'(max 255 characters)'))
-    measure = ValidXMLCharField(_(u'measure'), blank=True, max_length=1, choices=codelists.INDICATOR_MEASURE)
+    measure = ValidXMLCharField(_(u'measure'), blank=True, max_length=1, choices=codelist_choices(IndicatorMeasure))
     ascending = models.NullBooleanField(_(u'ascending'), blank=True)
     description = ValidXMLCharField(_(u'description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)'))
-    description_type = ValidXMLCharField(
-        _(u'description type'), blank=True, max_length=1, choices=[code[:2] for code in codelists.DESCRIPTION_TYPE]
-    )
+    description_type = ValidXMLCharField(_(u'description type'), blank=True, max_length=1,
+                                         choices=codelist_choices(DescriptionType))
     baseline_year = models.PositiveIntegerField(_(u'baseline year'), blank=True, null=True, max_length=4)
     baseline_value = ValidXMLCharField(
         _(u'baseline value'), blank=True, max_length=50, help_text=_(u'(max 50 characters)')
@@ -33,7 +33,7 @@ class Indicator(models.Model):
         return self.title
 
     def iati_measure(self):
-        return dict(codelists.INDICATOR_MEASURE)[self.measure] if self.measure else ""
+        return codelist_value(IndicatorMeasure, self, 'measure')
 
     class Meta:
         app_label = 'rsr'

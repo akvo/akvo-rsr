@@ -218,7 +218,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment = Employment.objects.get(user=self, organisation=org)
         except:
             return False
-        return employment.group == Group.objects.get(name='Project editors') if employment.is_approved else False
+        return employment.group == Group.objects.get(name='Project Editors') if employment.is_approved else False
     get_is_project_editor.boolean = True  # make pretty icons in the admin list view
     get_is_project_editor.short_description = _(u'organisation admin')
 
@@ -229,7 +229,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         except:
             pass
         if set_it:
-            employment.group = Group.objects.get(name='Project editors')
+            employment.group = Group.objects.get(name='Project Editors')
             employment.save()
         else:
             employment.group.delete()

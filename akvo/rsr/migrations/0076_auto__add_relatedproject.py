@@ -8,6 +8,12 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        try:
+            # Deleting model 'RelatedProject' if it already exists
+            db.delete_table(u'rsr_relatedproject')
+        except:
+            pass
+
         # Adding model 'RelatedProject'
         db.create_table(u'rsr_relatedproject', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),

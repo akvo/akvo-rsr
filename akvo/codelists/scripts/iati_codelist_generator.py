@@ -20,6 +20,7 @@ VERSIONS = {
     "1.03": "http://codelists103.archive.iatistandard.org/data/",
     "1.04": "http://iatistandard.org/104/codelists/downloads/clv2/",
     "1.05": "http://iatistandard.org/105/codelists/downloads/clv2/",
+    "2.01": "http://iatistandard.org/201/codelists/downloads/clv2/",
 }
 
 
@@ -69,32 +70,34 @@ def codelist_to_tuples(xml_string, codelist, version):
         codelist_tree = tree.find('codelist-items').findall('codelist-item')
 
     fields = []
-    for field in list(tree.find(codelist_lookup)):
-        if not field.tag in fields:
-            fields.append(field.tag)
-    fields = ', '.join(fields)
+    for codelist_field in list(codelist_tree):
+        for codelist_field_item in codelist_field.findall('*'):
+            unicode_field_tag = "u'" + codelist_field_item.tag + "'"
+            if not unicode_field_tag in fields:
+                fields.append(unicode_field_tag)
+    fields_string = ', '.join(fields)
 
     codelist_content = []
     for codelist_field in list(codelist_tree):
-        codelist_field_content = []
+        codelist_field_content = ["" for _field in fields]
         codelist_tags = []
         for codelist_field_item in codelist_field.findall('*'):
             if not codelist_field_item.tag in codelist_tags:
                 codelist_tags.append(codelist_field_item.tag)
+                list_index = fields.index("u'" + codelist_field_item.tag + "'")
                 if codelist_field_item.text:
                     # Make country names look nice
                     if codelist == "Country" and codelist_field_item.tag == "name":
-                        codelist_field_content.append(prettify_country_name(codelist_field_item.text))
+                        codelist_field_content[list_index] = prettify_country_name(codelist_field_item.text)
                     else:
-                        codelist_field_content.append(codelist_field_item.text.replace("\n", "").replace("\r", ""))
-                else:
-                    codelist_field_content.append("")
+                        codelist_field_content[list_index] = codelist_field_item.text.\
+                            replace("\n", "").replace("\r", "")
         codelist_content.append(codelist_field_content)
     tuples = '),\n    ('.join([', '.join(stringify(row)) for row in codelist_content])
 
     identifier = pythonify_codelist_name(codelist)
 
-    return '# Fields: %s\n\n%s = (\n    (%s)\n)' % (fields, identifier, tuples)
+    return '%s = (\n    (%s),\n    (%s)\n)' % (identifier, fields_string, tuples)
 
 
 def get_codelists(version, url):
@@ -129,6 +132,11 @@ def generate_code_lists(version):
     codelist_url, codelists = get_codelists(version, codelists_url)
 
     python_code = []
+    python_code.append('codelist_list = [')
+    for codelist in codelists:
+        python_code.append("'" + pythonify_codelist_name(codelist) + "', ")
+    python_code.append(']\n\n')
+
     for codelist in codelists:
         result = requests.get(codelist_url % codelist)
         if result.status_code == 200 and len(result.text) > 0:
@@ -158,6 +166,6 @@ if __name__ == '__main__':
         sys.exit(0)
 
     source = generate_code_lists(args.version)
-    with open("codelists/codelists_v%s.py" % args.version.replace(".", ""), "w") as iati_file:
+    with open("../store/codelists_v%s.py" % args.version.replace(".", ""), "w") as iati_file:
         iati_file.write('# -*- coding: utf-8 -*-\n\n')
         iati_file.write(''.join(source).encode('utf-8'))

@@ -10,17 +10,20 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+
+from akvo.codelists import models as codelist_models
+from akvo.codelists.models import Sector, SectorCategory, SectorVocabulary
+from akvo.utils import codelist_choices, codelist_value
 
 
 class Sector(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='sectors')
-    sector_code = ValidXMLCharField(
-        _(u'sector'), blank=True, max_length=5, choices=[code[:2] for code in codelists.SECTOR]
-    )
+    sector_code = ValidXMLCharField(_(u'sector'), blank=True, max_length=5,
+                                    choices=codelist_choices(codelist_models.SectorCategory) +
+                                    codelist_choices(codelist_models.Sector))
     text = ValidXMLCharField(_(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)'))
     vocabulary = ValidXMLCharField(
-        _(u'vocabulary'), blank=True, max_length=5, choices=[code[:2] for code in codelists.VOCABULARY]
+        _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(codelist_models.SectorVocabulary)
     )
     percentage = models.DecimalField(
         _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
@@ -29,18 +32,14 @@ class Sector(models.Model):
 
     def iati_sector(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
-            return dict([code[:2] for code in codelists.SECTOR])[self.sector_code]
+            return codelist_value(codelist_models.Sector, self, 'sector_code')
         elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
-            return dict([code[:2] for code in codelists.SECTOR_CATEGORY])[self.sector_code]
+            return codelist_value(codelist_models.SectorCategory, self, 'sector_code')
         else:
             return ""
 
     def iati_vocabulary(self):
-        if self.vocabulary:
-            voc = 'DAC' if self.vocabulary == '1' else 'DAC-3'
-            return dict([code[:2] for code in codelists.VOCABULARY])[voc]
-        else:
-            return ""
+        return codelist_value(codelist_models.SectorVocabulary, self, 'vocabulary')
 
     class Meta:
         app_label = 'rsr'

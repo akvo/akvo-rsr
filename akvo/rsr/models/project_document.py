@@ -9,7 +9,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+
+from akvo.codelists.models import DocumentCategory, Language
+from akvo.utils import codelist_choices, codelist_value
 
 
 class ProjectDocument(models.Model):
@@ -17,12 +19,11 @@ class ProjectDocument(models.Model):
     url = models.URLField(_(u'url'))
     format = ValidXMLCharField(_(u'format'), max_length=75, blank=True)
     title = ValidXMLCharField(_(u'title'), max_length=100, blank=True)
-    title_language = ValidXMLCharField(_(u'title language'), max_length=2, blank=True, choices=codelists.LANGUAGE)
-    category = ValidXMLCharField(
-        _(u'title language'),
-        max_length=3, blank=True, choices=[codelist[:2] for codelist in codelists.DOCUMENT_CATEGORY]
-    )
-    language = ValidXMLCharField(_(u'language'), max_length=2, blank=True, choices=codelists.LANGUAGE)
+    title_language = ValidXMLCharField(_(u'title language'), max_length=2, blank=True,
+                                       choices=codelist_choices(Language))
+    category = ValidXMLCharField(_(u'title language'), max_length=3, blank=True,
+                                 choices=codelist_choices(DocumentCategory))
+    language = ValidXMLCharField(_(u'language'), max_length=2, blank=True, choices=codelist_choices(Language))
 
     def __unicode__(self):
         return self.title
@@ -31,10 +32,10 @@ class ProjectDocument(models.Model):
         return u'<a href="%s">%s</a>' % (self.url, self.title,)
 
     def iati_category(self):
-        return dict([codelist[:2] for codelist in codelists.DOCUMENT_CATEGORY])[self.category] if self.category else ""
+        return codelist_value(DocumentCategory, self, 'category')
 
     def iati_language(self):
-        return dict(codelists.LANGUAGE)[self.language] if self.language else ""
+        return codelist_value(Language, self, 'language')
 
     class Meta:
         app_label = 'rsr'
