@@ -67,6 +67,7 @@ em {
     font-family: $scriptFont;
     font-size: 1.2em;
     margin: 0 5px 0em 0em;
+    font-style: italic;
 }
 
 a.moreLink {
@@ -291,6 +292,7 @@ nav.navbar-fixed-top {
             a {
                 color: $anchorLink;
                 font-family: $titleFont;
+                border:thin solid transparent;
                 &:hover {
                     color: $anchorLinkHover;
                 }
@@ -298,7 +300,6 @@ nav.navbar-fixed-top {
                     color: complement($rsrBlue);
                     font-weight: bold;
                     background: rgba($anchorLinkHover, 0.1);
-                    background-size: 15px 15px;
                     @include border-radius(3px);
                     @include responsive(small-max-screens) {
                         background:rgba($anchorLinkHover, 0.1);
@@ -320,6 +321,51 @@ nav.navbar-fixed-top {
                         }
                 }
             }
+            &.navProject {
+                .active {
+                    background: darken(rgba($rsrBlue, 0.05), 10%);
+                    border:thin solid rgba($rsrBlue, 0.2);
+                    @include border-radius(3px);
+                    color:$rsrBlue;
+                    @include transition(all 0.2s linear);
+                    &:hover {
+                        background: darken(rgba($rsrBlue, 0), 10%);
+                        border:thin solid rgba($rsrBlue, 0);
+                        @include border-radius(3px);
+                        color:$anchorLinkHover;
+                        }
+                    }
+                }
+            &.navUpdate {
+                .active {
+                    background: darken(rgba($rsrGreen, 0.05), 10%);
+                    border:thin solid rgba($rsrGreen, 0.2);
+                    @include border-radius(3px);
+                    color:$rsrGreen;
+                    @include transition(all 0.2s linear);
+                    &:hover {
+                        background: darken(rgba($rsrGreen, 0), 10%);
+                        border:thin solid rgba($rsrGreen, 0);
+                        @include border-radius(3px);
+                        color:$anchorLinkHover;
+                        }
+                    }                            
+                }
+            &.navOrganisation {
+                .active {
+                    background: darken(rgba($akvoTvRed, 0.05), 10%);
+                    border:thin solid rgba($akvoTvRed, 0.2);
+                    @include border-radius(3px);
+                    color:$akvoTvRed;
+                    @include transition(all 0.2s linear);
+                    &:hover {
+                        background: darken(rgba($akvoTvRed, 0), 10%);
+                        border:thin solid rgba($akvoTvRed, 0);
+                        @include border-radius(3px);
+                        color:$anchorLinkHover;
+                        }                   
+                    }                          
+                }
         }
         &.navbar-right {
             li {
@@ -507,6 +553,7 @@ footer {
 
 h4.detailedInfo {
     margin-bottom: 0.25em;
+    color:$akvoBlack;
 }
 
 .progress-bar-info {
@@ -684,6 +731,7 @@ h4.detailedInfo {
         }
         .projectLocation {
             color: rgba($akvoBlack, 0.5);
+            margin-top: 0;
         }
         .projectTitle {
             display: block;
@@ -708,19 +756,25 @@ h4.detailedInfo {
             }
         }
     }
-    &.updates {
-        li {
-            &:nth-child(2n+1) {
-                background: darken(rgba(complement($rsrBlue), 0.1), 10%);
-            }
-        }
-    }
     .excerpt {
         @include noWrapBlockTxt;
     }
     &.projects {
         ul {
             li {
+                h1 {
+                    a {
+                        color:$rsrBlue;
+                        &:hover {
+                            color:$anchorLinkHover;
+                        }
+                    }
+                }
+                border:thin solid rgba($rsrBlue, 0);
+                @include transition(all 0.2s ease-in);                
+                .projectSubT {
+                    margin-bottom: 0;
+                }
                 &:nth-child(2n+1) {
                     background: darken(rgba($rsrBlue, 0.05), 10%);
                     border:thin solid rgba($rsrBlue, 0.2);
@@ -728,12 +782,39 @@ h4.detailedInfo {
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
                 }
+                &:hover {
+                    background: darken(rgba($rsrBlue, 0.05), 30%);
+                    border:thin solid rgba($rsrBlue, 0.35);
+                }
             }
         }
     }
     &.updates {
         ul {
             li {
+                border:thin solid rgba($rsrGreen, 0);
+                @include transition(all 0.2s ease-in);
+                .orgName {
+
+                }
+                .projectTitle {
+                    color: rgba($anchorLink, 1);
+                    i {
+                        font-size: 1.1em;
+                        color: rgba($anchorLink, 1);
+                    }
+                    &:hover {
+                        color: $anchorLinkHover;
+                    }
+                }
+                h1{           
+                    a {
+                        color:$rsrGreen;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                }
                 &:nth-child(2n+1) {
                     background: darken(rgba($rsrGreen, 0.05), 10%);
                     border:thin solid rgba($rsrGreen, 0.15);
@@ -741,15 +822,62 @@ h4.detailedInfo {
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
                 }
+                &:hover {
+                    background: darken(rgba($rsrGreen, 0.05), 30%);
+                    border:thin solid rgba($rsrGreen, 0.35);
+                }
+                .excerpt {
+                    p {
+                    }
+                }
             }
         }
     }
     &.organisations {
         ul {
             li {
+                border:thin solid rgba($akvoTvRed, 0);
+                @include transition(all 0.2s ease-in);                
+                i {
+                    font-size:1.1em;
+                }
+                .projectLocation {
+                }
+                .projectTitle {
+                    display: block;
+                    margin: 0 0 3px 0;
+                }
+                span.userFullName {
+                    margin: 0 0 0px 0;
+                }
+                .upDateTime {
+                    margin-top: 10px;
+                }
+                .orgType {
+                }
+                .additionalInfo {
+                    div {
+                        color: rgba($akvoBlack, 0.5);
+                        span {
+                            margin-left: 5px;
+                        }
+                    }
+                }
+                h1{          
+                    a {
+                        color:$akvoTvRed;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }                        
+                    }
+                }
                 &:nth-child(2n+1) {
                     background: darken(rgba($akvoTvRed, 0.05), 0);
                     border:thin solid rgba($akvoTvRed, 0.15);
+                }
+                &:hover {
+                    background: darken(rgba($akvoTvRed, 0.05), 30%);
+                    border:thin solid rgba($akvoTvRed, 0.35);
                 }
                 img {
                     @include bw;
@@ -770,7 +898,7 @@ header {
     &.projectHeader {
         margin-bottom: 0;
         padding: 15px 0;
-        background: lighten($anchorLinkHover, 25%);
+        background: lighten($veryLightOrange, 25%);
         border-bottom:1px solid rgb(238,238,238);
         margin-bottom:15px;
         h1 {
@@ -999,7 +1127,7 @@ div.textBlock {
     .udpateComponent {
         padding-top: 10px;
         padding-bottom: 15px;
-        background: lighten($anchorLinkHover, 25%);
+        background: lighten($veryLightOrange, 25%);
     }
 }
 

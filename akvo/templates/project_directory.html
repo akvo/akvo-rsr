@@ -80,8 +80,8 @@
             </a>
           </div>
           <div class="col-lg-4 col-sm-3 col-xs-7">
-            <h1><a href="{% url 'project-main' p.id %}">{{p.title}}</a></h1>
-            <p>{{p.subtitle}}</p>
+            <h1><a href="{% url 'project-main' p.id %}"><i class="fa fa-folder-o"></i> {{p.title}}</a></h1>
+            <p class="projectSubT">{{p.subtitle}}</p>
             {% if p.primary_location.country %}
               <p class="projectLocation"><i class="fa fa-map-marker"></i> {{p.primary_location.country}}, {{p.primary_location.country.continent}}</p>
             {% endif %}
