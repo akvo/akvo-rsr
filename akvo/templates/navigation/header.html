@@ -19,13 +19,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{% url 'index' %}">
-        {% if rsr_page and logo %}
-          {% img rsr_page 125 60 rsr_page.organisation.name %}
-        {% elif rsr_page %}
+
+      <a class="navbar-brand" href="{% firstof rsr_page.return_url '/' %}">
+        {% if rsr_page.logo %}
+          {% img rsr_page 125 60 organisation.name %}
+        {% elif rsr_page.organisation %}
           {% img rsr_page.organisation 125 60 rsr_page.organisation.name %}
         {% else %}
-          <h1>Akvo RSR</h1>
+          <h1>Akvo RSR</h1> {# Text is just a placeholder, svg from css #}
         {% endif %}
       </a>
     </div>
