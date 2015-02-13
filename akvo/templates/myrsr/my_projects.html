@@ -6,7 +6,7 @@
 
 {% block myrsr_main %}
 <div class="table-responsive">
-  <h1>{% trans "My project" %}s</h1>
+  <h3>{% trans "My project" %}s</h3>
   {% if page %}
   <table class="table table-striped">
     <thead>
@@ -35,8 +35,11 @@
           <td>
               <a href="{% url 'project-main' project.id %}">View</a>
               {% has_perm 'rsr.change_project' user project as can_edit_project %}
+              {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
               {% if can_edit_project %}
               <a href="/admin/rsr/project/{{project.pk}}/">Edit</a>
+              {% endif %}
+              {% if can_publish %}
               <a href="/admin/rsr/publishingstatus/?project={{project.pk}}">
                 {% if project.is_published %}
                     Unpublish
@@ -52,16 +55,25 @@
       </tr>
     {% endfor %}
   </table>
+  </div>
+  <div class="container">
   <div class="row center-text">
       <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
       {% include 'navigation/pagination.html' %}
   </div>
   {% else %}
-  <h2><small>You can't see any projects yet.</small></h2>
-  <p>
-    Go to the <a href="{% url 'my_details' %}">My details</a> page to request to join an organisation.
-    Once your request is approved, you will see the projects of this organisation on this page.
-  </p>
+      <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
+      {% if not organisations %}
+      <p class="text-center col-sm-8 col-sm-offset-2">
+        Go to the <a href="{% url 'my_details' %}">My details</a> page to request to join an organisation.
+        Once your request is approved, you will see the projects of this organisation on this page.
+      </p>
+      {% else %}
+      <p class="text-center col-sm-8 col-sm-offset-2">
+        The organisation(s) you have joined do not have any projects yet.
+        Go to the <a href="{% url 'my_details' %}">My details</a> page to see your organisation(s).
+      </p>
+      {% endif %}
   {% endif %}
 </div>
 {% endblock %}

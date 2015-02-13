@@ -52,6 +52,7 @@
           </a>
         </li>
       </ul>
+
       <ul class="nav navbar-nav navbar-right">
         <li>
             <a href="{% if project %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
@@ -60,14 +61,14 @@
             </a>
         </li>
         {% if not user.username %}
-        <li><a href="{% url 'register' %}">Register</a></li>
-        <li><a href="{% url 'sign_in' %}">Sign in</a></li>
+        <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> Register</a></li>
+        <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> Sign in</a></li>
         {% else %}
         <li>
           <a class="{% if current_path == myrsr_path %}active{% endif %}"
-             href="{% url 'my_details' %}">MyRSR</a>
+             href="{% url 'my_details' %}"><i class="fa fa-user"></i> MyRSR</a>
         </li>
-        <li><a href="{% url 'sign_out' %}">Sign out</a></li>
+        <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> Sign out</a></li>
         {% endif %}
       </ul>
     </div>

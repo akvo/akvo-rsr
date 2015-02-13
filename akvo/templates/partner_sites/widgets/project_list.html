@@ -1,0 +1,102 @@
+{% extends "partner_sites/widgets/base.html" %}
+{% load i18n rsr_filters rsr_tags rsr_widgets addparam %}
+
+{% load compressed %}
+
+{% block style %}
+{{block.super}}
+{% compressed_css 'sites_widget_project_list' %}
+{% endblock style %}
+
+{% block body %}
+<section id="container" class="projectList {{style}} rsrWidget floats-in">
+  <!-- DEVICES TABLE-->
+  <ul class="thead">
+      <li class="projectDescrTd">
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "title" %}" target="_self">
+          {% trans "Project" %}
+        </a>
+      </li>
+      <li class="projectLocTd">
+        {% trans "Location" %}
+      </li>
+      <li class="projectStatusTd">
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "status" %}" target="_self">
+          {% trans "Status" %}</a>
+        /
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "last_update" %}" target="_self">
+          {% trans "Update" %}</a>
+      </li>
+      <li class="projectPartnerTd">
+        {% trans "Partners" %}
+      </li>
+      <li class="projectFundingTd">
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "budget" %}" target="_self">
+          {% trans "Budget" %}</a>
+        /
+        <a href="{% url 'widget_project_list'%}{% addparam "order_by" "funds_needed" %}" target="_self">
+          {% trans "Needed" %}</a>
+      </li>
+  </ul>
+  <!-- DEVICES TABLE-->
+  <div class="projectListTable">
+    <table class="projectListWidget" >
+      <tbody>
+        {% for project in projects  %}
+        <tr class="projectListTitle"> <td colspan="4"><h2 id="project_title">
+                  <a href="{% url 'project_main' project.id %}">
+                    {{project.title|smart_truncate:60}}
+                  </a>
+                </h2></td></tr>
+          <tr class="projectListDescr">
+            <td class="projectDescrTd">
+            <div class="projectDescr">
+
+                {% rsr_widget_project_photo project 120 90 %}
+                <p id="project_subtitle">{{project.project_plan_summary|smart_truncate:50}}</p>
+                <a href="{% url 'project_main' project.id %}">{% trans "See full description" %}</a>
+            </div>
+            </td>
+            <td class="projectLocTd">
+              {% rsr_widget_project_location project %}
+            </td>
+
+            <td class="">
+              {% if project.status == 'H' %}<span class="projectStatus notComplete">{% trans "Needs funding" %}</span>
+              {% elif project.status == 'A' %}<span class="projectStatus notComplete">{% trans "Active" %}</span>
+              {% elif project.status == 'C' %}<span class="projectStatus complete">{% trans "Complete" %}</span>
+              {% elif project.status == 'L' %}<span class="projectStatus complete">{% trans "Canelled" %}</span>
+              {% elif project.status == 'R' %}<span class="projectStatus complete">{% trans "Archived" %}</span>
+              {% else %} {# None (N) #} <span class="projectStatus notComplete">{% trans "None" %}</span>
+              {% endif %}
+
+              <span class="lastUpdate"><br>{% trans "Last Update" %}:<br>
+                {% if project.last_update %}
+                <a href="{% url 'update_main' project.id project.last_update.id %}">
+                  {{ project.last_update.created_at|string_to_date|date:"Y-m-d  H:i" }}
+                </a>
+                {% else %}
+                    {% trans 'Not yet' %}
+                {% endif %}
+              </span>
+            </td>
+
+            <td class="projectPartnerTd"><ul>
+              {% for partner in project.partners.all.distinct|slice:":5" %}
+                {#<li><a href="{% url 'organisation_main' partner.id %}">{{partner.name}}</a></li>#}
+                <li>{{partner.name}}</li>
+                {% if forloop.last and project.partners.all.distinct.count > 5 %}
+                  ...
+                {% endif %}
+              {% endfor %}
+            </ul></td>
+            <td class="projectFundingTd">
+              {% rsr_widget_project_budget project %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock body %}

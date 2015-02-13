@@ -10,6 +10,7 @@
 
 {% block maincontent %}
 <div class="container">
+    <h2 class="text-center verticalPadding">Sign in</h2>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <form method="post" action="" name="registrationForm">
@@ -19,10 +20,10 @@
                     {% bootstrap_field field %}
                 {% endfor %}
                 {% buttons %}
-                    <button type="submit" class="btn btn-primary">
-                        {% bootstrap_icon "ok-sign" %} {% trans 'Login' %}
+                    <button type="submit" class="btn btn-primary center-block">
+                        <i class="fa fa-sign-in"></i> {% trans 'Login' %}
                     </button>
-                    <div id="reset-pw" class="pull-right"></div>
+                    <div id="reset-pw" class="text-center topMargin"></div>
                 {% endbuttons %}
             </form>
 

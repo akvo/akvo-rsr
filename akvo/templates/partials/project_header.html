@@ -11,15 +11,35 @@
                 </div>
             </div>
             <div class="col-sm-4 shareBlock">
-                <div>
+                <div class="row">
                     <nav>
-                        <a href="#" class="btn btn-primary"><i class="fa fa-lightbulb-o"></i> Follow project</a>
-                        {% url 'project-report' project.pk as report_url %}
-                        {% if not request.get_full_path == report_url %}
-                        <a href="{% url 'project-report' project.pk %}" class="fullPdf"><i class="fa fa-bar-chart"></i> Show full data report</a>
-                        {% else %}
-                        <a href="javascript:window.print();" class="btn"><i class="fa fa-print"></i> Print this page</a>
-                        {% endif %}
+                        <div class="col-xs-12">
+                            <a href="#" class="btn btn-primary hidden"><i class="fa fa-lightbulb-o"></i> Follow project</a>
+                            {% if not no_facebook %}
+                            <a id="btn-fbShare" class="btn btn-primary" href="#" onclick="
+                            window.open(
+                              'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                              'facebook-share-dialog',
+                              'width=626,height=436');
+                            return false;"><i class="fa fa-facebook-official fa-lg"></i> Share</a>
+                            {% endif %}
+                            {% if not no_twitter %}
+                            <a id="btn-twShare" class="btn btn-primary" href="#" onclick="
+                            window.open(
+                              'https://twitter.com/intent/tweet?text={% if update %}%22{{update.title}}%22{% if update.user.first_name and update.user.last_name %} by {{update.user.first_name}} {{update.user.last_name}}{% endif %} - {% endif %}{{project.title}}&url=http://{{request.META.HTTP_HOST}}{{request.path}}&via=Akvo&hashtags=AkvoRSR',
+                              'twitter-share-dialog',
+                              'width=626,height=436');
+                            return false;"><i class="fa fa-twitter-square fa-lg"></i> Share</a>
+                            {% endif %}
+                            <div class="col-xs-12 reportPdf">
+                                {% url 'project-report' project.pk as report_url %}
+                                {% if not request.get_full_path == report_url %}
+                                <a href="{% url 'project-report' project.pk %}" class="fullPdf"><i class="fa fa-file-text-o"></i> Show full data report</a>
+                                {% else %}
+                                <a href="javascript:window.print();" class="btn"><i class="fa fa-print"></i> Print this page</a>
+                                {% endif %}
+                            </div>
+                        </div>
                     </nav>
                 </div>
             </div>

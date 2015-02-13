@@ -18,6 +18,7 @@ class ConditionalApiKeyAuthentication(ApiKeyAuthentication):
     """
     def __init__(self, methods_requiring_key=None):
         "All methods require API key if nothing else is specified on object creation"
+        super(ConditionalApiKeyAuthentication, self).__init__()
         if methods_requiring_key is not None:
             self.methods_requiring_key = methods_requiring_key
         else:

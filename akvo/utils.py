@@ -18,6 +18,7 @@ from workflows.models import State
 from workflows.utils import get_state
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail, EmailMessage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
@@ -444,6 +445,7 @@ def codelist_choices(model, version=settings.IATI_VERSION):
     except:
         return []
 
+
 def codelist_value(model, instance, field, version=settings.IATI_VERSION):
     """
     Looks up the value of a codelist
@@ -461,3 +463,10 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
         except model.DoesNotExist:
             return ''
     return ''
+
+
+def check_auth_groups(group_names):
+    for group_name in group_names:
+        group, created = Group.objects.get_or_create(name=group_name)
+        if created:
+            print "Created group => {}".format(group)

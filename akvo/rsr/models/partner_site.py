@@ -120,8 +120,8 @@ class PartnerSite(TimestampsMixin, models.Model):
     )
     ui_translation = models.BooleanField(_(u'Translate user interface'), default=False)
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
-    facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
-    twitter_button = models.BooleanField(_(u'Twitter button'), default=False)
+    facebook_button = models.BooleanField(_(u'Facebook share button'), default=False)
+    twitter_button = models.BooleanField(_(u'Twitter share button'), default=False)
     facebook_app_id = ValidXMLCharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
         help_text=_(
             u'<p>Your FaceBook app id is used when sharing pages from your partner site. '

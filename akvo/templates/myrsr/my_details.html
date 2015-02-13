@@ -7,48 +7,17 @@
 {% block head %}
 
 <style>
-/* Style for typeahead dropdown, to be included in CSS file */
 
-.tt-hint {
-    color: #999;
-}
-
-.tt-dropdown-menu {
-    /*width: 422px;*/
-    margin-top: 12px;
-    padding: 8px 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
-}
-
-.tt-suggestion {
-    padding: 3px 20px;
-    line-height: 24px;
-}
-
-.tt-suggestion.tt-cursor {
-    color: #fff;
-    background-color: #0097cf;
-
-}
-
-.tt-suggestion p {
-    margin: 0;
-}
-.twitter-typeahead {
-  width: 100%;
-}
 </style>
 {% endblock head %}
 
 
 {% block myrsr_main %}
     <div class="col-sm-7 col-xs-12" id="profile">
-        <h2>My details</h2>
-        {% img user 100 100 user.get_full_name %}
+        <h3>My details</h3>
+        <div class="usrAvatar">
+            {% img user 100 100 user.get_full_name %}
+        </div>
         <p>
             <form method="POST" action="" id="avatarForm" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -81,7 +50,9 @@
     {{ user_data|safe }}
   </script>
   <script type="application/json" id="user-request-link">
-    {"link": "{% url 'user_request_organisation' user.id %}"}
+    {"link": "{% url 'user_request_organisation' user.id %}",
+     "org_rest_link": "{% url 'organisation-list' %}",
+     "country_rest_link": "{% url 'country-list' %}"}
   </script>
   <script type="application/json" id="akvo-rsr-ajax-url">
     {"ajaxUrl": "{% url 'user_update_details' user.id %}?format=json"}

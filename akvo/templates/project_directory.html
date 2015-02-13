@@ -20,7 +20,8 @@
                 </span>
               </div>
               <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
-            </div>
+            </div>              
+            <div><a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  Reset all filters</a></div>
           </div>
         </div>
       </div>
@@ -51,7 +52,7 @@
       <div>
         <nav>
         <ul class="nav nav-pills nav-stacked">
-          <li><a href="{% url 'project-directory' %}" class="btn btn-default"><i class="icon-eraser"></i>  Reset all filters</a></li>
+          <li><a href="{% url 'project-directory' %}" class="btn btn-default"><i class="fa fa-times"></i>  Reset all filters</a></li>
           <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> Close this</a></li>
           </ul>
         </nav>
@@ -62,10 +63,11 @@
  </form>
 
   <div class="container-fluid">
-    <div class="row center-text verticalPadding">
-      <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
-      {% include 'navigation/pagination.html' %}
+    <div class="row center-text">
+      <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>    
     </div>
+      {% include 'navigation/pagination.html' %}
+
   </div>
 
   <section class="main-list projects">
@@ -103,7 +105,7 @@
               <p>{% for sector in p.sector_categories %}{% if not forloop.first %}, {% endif %}{{sector|title}}{% endfor %}</p>
             {% endif %}
             <h4 class="detailedInfo">{% trans "Status" %}</h4>
-            <p>{{p.get_status_display}}</p>
+            <p class="complete">{{p.get_status_display}}</p>
           </div>
           <div class="col-md-3 hidden-xs hidden-sm">
             <h4 class="detailedInfo">{% trans "Finance" %}</h4>
@@ -123,10 +125,8 @@
       {% endfor %}
     </ul>
   </section>
-<div class="container-fluid">
-  <div class="row center-text">
-     {% include 'navigation/pagination.html' %}
-   </div>
+  <div class="container-fluid">
+       {% include 'navigation/pagination.html' %}
   </div>
 
 {% endblock %}

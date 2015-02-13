@@ -89,18 +89,14 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
         };
     },
 
-    addEmployment: function() {
+    postEmployment: function( data ) {
         this.setState({
-            title: "Sending request",
-            response: "Waiting..."
+            response: "Linking user to organisation..."
         });
-
-        serializedData = this.getFormData();
-
         $.ajax({
             type: "POST",
             url: this.props.link + "?format=json",
-            data : JSON.stringify(serializedData),
+            data : JSON.stringify( data ),
             contentType : 'application/json; charset=UTF-8',
             success: function(response) {
                 this.handleAddEmployment(response);
@@ -118,20 +114,77 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
                 } else {
                     this.setState({
                         title: "Request failed",
-                        response: "Request failed, check if the organisation field is filled in correctly."
+                        response: "Request failed, could not connect to organisation."
                     })
                 }
             }.bind(this)
         });
     },
 
+    getCountryByName: function( serializedData ) {
+        this.setState({
+            response: "Retrieving country information..."
+        });
+        var name = $('#countriesInput').val();
+        $.get(this.props.country_link + "?format=json&name=" + name, function( data ) {
+            if (data.count == 1) {
+                serializedData.country = data.results[0].id;
+            }
+            this.postEmployment( serializedData );
+        }.bind(this))
+            .fail(function() {
+                this.postEmployment( serializedData );
+            }.bind(this)
+        );
+    },
+
+    getOrgByLongName: function( serializedData ) {
+        this.setState({
+            response: "Retrieving organisation information..."
+        });
+        var name = $('#organisationInput').val();
+        $.get(this.props.org_link + "?format=json&long_name=" + name, function( data ) {
+            if (data.count == 1) {
+                serializedData.organisation = data.results[0].id;
+                this.getCountryByName( serializedData );
+            } else if (data.count > 1) {
+                this.setState({
+                    title: "Request failed",
+                    response: "Request failed, multiple organisations named \"" + name + "\" found. " +
+                        "Please send a mail to support@akvo.org to get this resolved."
+                })
+            } else {
+                this.setState({
+                    title: "Request failed",
+                    response: "Request failed, could not find organisation \"" + name + "\"."
+                })
+            }
+        }.bind(this))
+            .fail(function() {
+                this.setState({
+                    title: "Request failed",
+                    response: "Request failed, could not find organisation \"" + name + "\"."
+                })
+            }.bind(this)
+        );
+    },
+
+    addEmployment: function() {
+        this.setState({
+            title: "Sending request",
+            response: "Waiting..."
+        });
+
+        var serializedData = this.getFormData();
+        this.getOrgByLongName( serializedData );
+    },
+
     getFormData: function() {
-        var data = {
+        return {
             organisation: $('#organisationInput').attr('value_id'),
             country: $('#countriesInput').attr('value_id'),
             job_title: $('#jobtitleInput').val()
-        };
-        return data
+        }
     },
 
     handleAddEmployment: function(employment) {
@@ -141,13 +194,13 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
     render: function() {
         return (
             React.DOM.span(null, 
-                React.DOM.h3(null, "Connect with an organisation"),
+                React.DOM.h4(null, "Connect with an organisation"),
                 React.DOM.form(null, 
                     OrganisationInput( {ref:"organisationInput"} ),
                     CountryInput( {ref:"countryInput"} ),
                     JobTitleInput( {ref:"jobtitleInput"} ),
                     ModalTrigger( {modal:ResponseModal( {title:this.state.title, response:this.state.response} )}, 
-                        Button( {onClick:this.addEmployment, bsStyle:"success"}, "Request to join")
+                        Button( {onClick:this.addEmployment, bsStyle:"primary"}, "Request to join")
                     )
                 )
             )
@@ -178,9 +231,10 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
     render: function() {
         return (
             React.DOM.span(null, 
-                React.DOM.h2(null, "My organisations"),
+                React.DOM.h3(null, React.DOM.i( {class:"fa fa-users"}), " My organisations"),
                 EmploymentList( {employments:this.state.employments} ),
-                AddEmploymentForm( {link:this.props.link, addEmployment:this.addEmployment} )
+                AddEmploymentForm( {link:this.props.link, org_link:this.props.org_link,
+                    country_link:this.props.country_link, addEmployment:this.addEmployment} )
             )
             );
     }
@@ -190,6 +244,7 @@ var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML)
 var request_link = JSON.parse(document.getElementById("user-request-link").innerHTML);
 
 React.renderComponent(
-    EmploymentApp( {source:initial_data, link:request_link.link} ),
+    EmploymentApp( {source:initial_data, link:request_link.link, org_link:request_link.org_rest_link,
+        country_link:request_link.country_rest_link}),
     document.getElementById('organisations')
 );

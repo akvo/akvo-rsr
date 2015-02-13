@@ -7,6 +7,138 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR ver 2.6 Conakry
+---
+
+Wednesday 17th December 2014, adriancollier
+
+New & Noteworthy
+---
+
+### PostgreSQL as the Database Engine
+
+In this release we are migrating our underlying database engine from MySQL to PostgreSQL. Following on from this change, we will begin to be able to take advantage of many of the additional pieces of functionality that PostgreSQL offers us including Materialised Views.
+
+Github issue: [#813](https://github.com/akvo/akvo-rsr/issues/813) & [#753](https://github.com/akvo/akvo-rsr/issues/753)
+
+### Minor Visual Updates
+
+We have made some minor changes to the data visualisation within RSR. Nothing large, but these should meet some of the demands we've been receiving.
+
+#### Visualise Identifiers on Project Pages
+
+If a project has additional identifiers, including an IATI ID or an Internal ID obtained from an external system, then these are now displayed on the Project page alongside the RSR ID.
+
+Github issue: [#946](https://github.com/akvo/akvo-rsr/issues/946)
+
+#### Start and End dates
+
+We are accepting 4 types of dates on a project now, start and end with both planned and actual values. We have now implemented a change to show all of these dates within the Funding page for the project.
+
+Github issue: [#936](https://github.com/akvo/akvo-rsr/issues/936)
+
+#### IATI Activity Link in Akvo Pages
+
+This is a minor fix to enhance the IATI Identifier (if existing) on the Funding page to direct a user towards an external source of further information (such as Openaid.nl) to match the functionality within RSR.
+
+Github issue: [#868](https://github.com/akvo/akvo-rsr/issues/868)
+
+#### Partner Name on Akvo Pages
+
+The Partner Name on Akvo Pages was previously only displaying the short name. We have updated this to match the layout and display of both the name and country as displayed in RSR.
+
+Github issue: [#729](https://github.com/akvo/akvo-rsr/issues/729)
+
+
+--------
+
+Akvo RSR ver 2.5.1 Bujumbura Hotfix
+---
+
+Sunday 2nd November 2014, kasperbrandt
+
+Bug Fixes
+---
+
+### Update locations on maps
+
+We noticed a bug that showed project update locations with (0, 0) as longitude and latitude on the maps, these are now not shown anymore.
+
+Github issue: [#837](https://github.com/akvo/akvo-rsr/issues/837)
+
+### Cordaid import
+
+Two bugs in the Cordaid import have been fixed. One causing the import to run slowly due to the 'sync_owner' field, and another that did not import the 'date_start_planned' and 'date_end_planned' fields correctly.
+
+Github issue: [#865](https://github.com/akvo/akvo-rsr/issues/865)
+
+--------
+
+Akvo RSR ver 2.5 Bujumbura
+---
+
+Wednesday 21st October 2014, adriancollier
+
+Improvements
+---
+
+### Filtering of Updates
+
+The API has been modified to allow the list of updates to be filtered on timestamp. This was to ensure that the RSR API is fully compatible with the upcoming release of RSR Up.
+
+Github issue:  [#769](https://github.com/akvo/akvo-rsr/issues/769)
+
+Bug Fixes
+---
+
+### Finalisation of PayPal Donations
+
+We noticed a bug that was preventing PayPal donations from being completed as the callback from the PayPal service was not being correctly read. This has been fixed and we will apply this to all affected donations.
+
+Github issue: [#796](https://github.com/akvo/akvo-rsr/issues/796)
+
+### IATI Export Activity ID
+
+There was a mistake in the IATI export that resulted in an incorrect IATI ID being applied to activities that has now been rectified.
+
+Github issue: [#799](https://github.com/akvo/akvo-rsr/issues/799)
+
+### Project Update Extra API Resource
+
+An issue was discovered that when an organisation has no location, the API resource was returning an error value. While not common, this needed to be resolved for the few instances where this is the case.
+
+Github issue: [#820](https://github.com/akvo/akvo-rsr/issues/820)
+
+--------
+
+Akvo RSR ver 2/4/2 Astana Hotfix II
+---
+
+Tuesday 30th September 2014, zzgvh
+
+Included changes
+---
+
+### Import RAIN IATI Data
+
+Update the import scripts with better logging, use of online source files for the import adn a bugfix for an API call needed by the RAIN import.
+
+Github issue: [#710](https://github.com/akvo/akvo-rsr/issues/710)
+
+### Project exclusion for Pages
+
+Using keywords introduced in 2.3.9 Yam it is now possible to exclude projects for an Akvo Pages website.
+
+Github issue: [#745](https://github.com/akvo/akvo-rsr/issues/745)
+
+### Bugfix for RSR country list
+
+The country list used in RSR also contains a mapping between countires and continents. The mapping for Bonaire, Sint Eustatius and Saba was missing.
+
+Github issue: [#748](https://github.com/akvo/akvo-rsr/issues/748)
+
+--------
+
 Akvo RSR ver 2/4/1 Astana Hotfix
 ---
 

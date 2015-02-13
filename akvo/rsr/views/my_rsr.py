@@ -22,6 +22,7 @@ from django.template import RequestContext
 @login_required
 def my_details(request):
     if request.method == "POST" and 'avatar' in request.FILES:
+        request.FILES['avatar'].name = request.FILES['avatar'].name.encode('ascii', 'ignore')
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
         if avatar_form.is_valid():
             avatar_form.save()
@@ -74,12 +75,14 @@ def my_updates(request):
 
 @login_required
 def my_projects(request):
-    projects = request.user.organisations.all_projects().distinct()
+    organisations = request.user.employers.approved().organisations()
+    projects = organisations.all_projects().distinct()
     page = request.GET.get('page')
 
     page, paginator, page_range = pagination(page, projects, 10)
 
     context = {
+        'organisations': organisations,
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
@@ -96,7 +99,7 @@ def user_management(request):
         raise PermissionDenied
 
     org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
-    users_array = [user.employments_dict(org_actions) for user in organisations.users().exclude(pk=user.pk)]
+    users_array = [user.employments_dict(org_actions) for user in organisations.users().exclude(pk=user.pk).order_by('-date_joined')]
 
-    context = {'user_data': json.dumps({'users': users_array, }), }
+    context = {'user_data': json.dumps({'users': users_array, }), } if users_array else {}
     return render(request, 'myrsr/user_management.html', context)
