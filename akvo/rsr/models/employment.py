@@ -59,13 +59,22 @@ class Employment(models.Model):
     def __unicode__(self):
         return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name, self.organisation.name)
 
+    def approve(self):
+        if not self.is_approved:
+            self.is_approved = True
+            self.save()
+
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)
         # Set groups in right order
+
         all_groups = [
-            Group.objects.get(name='Users'), Group.objects.get(name='User managers'),
-            Group.objects.get(name='Project editors'), Group.objects.get(name='Admins')
+            Group.objects.get(name='Users'),
+            Group.objects.get(name='User Managers'),
+            Group.objects.get(name='Project Editors'),
+            Group.objects.get(name='Admins')
         ]
+
         user_group = model_to_dict(self.group, fields=['id', 'name']) if self.group else None
         other_groups = [model_to_dict(group, fields=['id', 'name']) for group in all_groups]
 

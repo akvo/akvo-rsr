@@ -86,13 +86,6 @@ class ProjectListView(BaseWidgetView):
         organisation = get_object_or_404(Organisation, pk=org_id)
         projects = organisation.published_projects()
 
-        sql = (
-            'SELECT MAX(created_at) '
-            'FROM rsr_projectupdate '
-            'WHERE project_id = rsr_project.id'
-        )
-        projects = projects.extra(select={'last_update': sql})
-
         if order_by == 'status':
             projects = projects.order_by('status', 'title')
         elif order_by == 'last_update':

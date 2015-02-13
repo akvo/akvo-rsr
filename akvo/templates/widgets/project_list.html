@@ -9,7 +9,7 @@
 {% endblock style %}
 
 {% block body %}
-<section id="container" class="projectList {{style}} rsrWidget floats-in"> 
+<section id="container" class="projectList {{style}} rsrWidget floats-in">
   <!-- DEVICES TABLE-->
   <ul class="thead">
       <li class="projectDescrTd">
@@ -23,7 +23,7 @@
       <li class="projectStatusTd">
         <a href="{% url 'widget_project_list'%}{% addparam "order_by" "status" %}" target="_self">
           {% trans "Status" %}</a>
-        / 
+        /
         <a href="{% url 'widget_project_list'%}{% addparam "order_by" "last_update" %}" target="_self">
           {% trans "Update" %}</a>
       </li>
@@ -71,16 +71,16 @@
               {% endif %}
 
               <span class="lastUpdate"><br>{% trans "Last Update" %}:<br>
-                {% with project.last_update as last_update %}
-                  {% if not last_update %}
-                    {% trans 'Not yet' %}
-                  {% else %}
-                    <a href="{% url 'update-main' project.id project.project_updates.latest.id %}">{{last_update|string_to_date|date:"Y-m-d  H:i"}}</a>
-                  {% endif %}
-                {% endwith %}
+                {% if project.last_update %}
+                <a href="{% url 'update-main' project.id project.last_update.id %}">
+                  {{ project.last_update.created_at|string_to_date|date:"Y-m-d  H:i"}}
+                </a>
+                {% else %}
+                  {% trans 'Not yet' %}
+                {% endif %}
               </span>
             </td>
-            
+
             <td class="projectPartnerTd"><ul>
               {% for partner in project.partners.all.distinct|slice:":5" %}
                 {#<li><a href="{% url 'organisation-main' partner.id %}">{{partner.name}}</a></li>#}
@@ -91,7 +91,7 @@
               {% endfor %}
             </ul></td>
             <td class="projectFundingTd">
-              {% rsr_widget_project_budget project %}  
+              {% rsr_widget_project_budget project %}
             </td>
           </tr>
         {% endfor %}

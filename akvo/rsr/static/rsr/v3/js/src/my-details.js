@@ -108,10 +108,6 @@ $(function() {
       name: 'organisations',
       displayKey: 'long_name',
       source: organisations.ttAdapter()
-    }).on('typeahead:selected typeahead:autocompleted', function(event, data) {
-      $('#organisationInput').attr("value_id", data.id);
-    }).change(function() {
-      $('#organisationInput').attr("value_id", null);
     });
 
   $('#countriesInput').typeahead(
@@ -122,10 +118,6 @@ $(function() {
       name: 'countries',
       displayKey: 'name',
       source: countries.ttAdapter()
-    }).on('typeahead:selected typeahead:autocompleted', function(event, data){
-      $('#countriesInput').attr("value_id", data.id);
-    }).change(function() {
-      $('#countriesInput').attr("value_id", null);
     });
 
 });
