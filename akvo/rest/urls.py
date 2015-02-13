@@ -39,6 +39,7 @@ router.register(r'project_extra', views.ProjectExtraViewSet, base_name='project_
 router.register(r'project_comment', views.ProjectCommentViewSet)
 router.register(r'project_condition', views.ProjectConditionViewSet)
 router.register(r'project_contact', views.ProjectContactViewSet)
+router.register(r'project_document', views.ProjectDocumentViewSet)
 router.register(r'project_location', views.ProjectLocationViewSet)
 router.register(r'project_update_extra', views.ProjectUpdateExtraViewSet, base_name='project_update_extra')
 router.register(r'project_update', views.ProjectUpdateViewSet, base_name='project_update')

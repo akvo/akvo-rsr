@@ -17,11 +17,11 @@ from .partnership import PartnershipSerializer
 from .planned_disbursement import PlannedDisbursementSerializer
 from .policy_marker import PolicyMarkerSerializer
 from .project_comment import ProjectCommentSerializer
-from .project_location import ProjectLocationSerializer, ProjectLocationExtraSerializer
+from .project_document import ProjectDocumentSerializer
+from .project_location import ProjectLocationExtraSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
 from .project_update import ProjectUpdateSerializer
-from .publishing_status import PublishingStatusSerializer
 from .recipient_country import RecipientCountrySerializer
 from .region import RecipientRegionSerializer
 from .related_project import RelatedProjectSerializer
@@ -51,15 +51,10 @@ class ProjectExtraSerializer(ProjectSerializer):
         source='planned_disbursements', many=True, required=False, allow_add_remove=True
     )
     policy_markers = PolicyMarkerSerializer(source='policy_markers', many=True, required=False, allow_add_remove=True)
-    comments = ProjectCommentSerializer(
-        source='comments', many=True, required=False, allow_add_remove=True
-    )
-    conditions = ProjectConditionSerializer(
-        source='conditions', many=True, required=False, allow_add_remove=True
-    )
-    contacts = ProjectContactSerializer(
-        source='contacts', many=True, required=False, allow_add_remove=True
-    )
+    documents = ProjectDocumentSerializer(source='documents', many=True, required=False, allow_add_remove=True)
+    comments = ProjectCommentSerializer(source='comments', many=True, required=False, allow_add_remove=True)
+    conditions = ProjectConditionSerializer(source='conditions', many=True, required=False, allow_add_remove=True)
+    contacts = ProjectContactSerializer(source='contacts', many=True, required=False, allow_add_remove=True)
     project_updates = ProjectUpdateSerializer(
         source='project_updates', many=True, required=False, allow_add_remove=True
     )

@@ -30,6 +30,7 @@ from .project import ProjectSerializer, ProjectExtraSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
+from .project_document import ProjectDocumentSerializer
 from .project_location import ProjectLocationSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
 from .project_update_location import ProjectUpdateLocationSerializer
@@ -72,6 +73,7 @@ __all__ = [
     'ProjectCommentSerializer',
     'ProjectConditionSerializer',
     'ProjectContactSerializer',
+    'ProjectDocumentSerializer',
     'ProjectLocationSerializer',
     'ProjectUpdateSerializer',
     'ProjectUpdateExtraSerializer',
