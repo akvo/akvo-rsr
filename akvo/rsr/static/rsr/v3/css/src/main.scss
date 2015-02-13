@@ -1221,3 +1221,25 @@ div.textBlock {
         @include border-radius(5px);
     }
 }
+
+
+/* Cookie */ 
+
+#cookie-law {
+    position:fixed;
+    bottom:0;
+    z-index:9999;
+    box-shadow: 0px -2px 3px rgba($akvoBlack,0.55);
+    width:100%;
+    background: darken($akvoPurple, 15%);
+    p { 
+        padding:15px 0; 
+        text-align:center; 
+        color:white; 
+        margin:0;
+        font-size:1.1em;
+        a {
+            font-weight: bold;
+        }
+    }
+}
