@@ -75,6 +75,12 @@ a, a:link, a:visited {
 .emTxt {
   color: rgba(44, 42, 116, 0.5); }
 
+.noStyleUl {
+  list-style-type: none;
+  padding: 0; }
+  .noStyleUl li {
+    padding: 0; }
+
 em {
   font-family: 'Dancing Script', Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 1.2em;
@@ -315,26 +321,36 @@ nav.navbar-fixed-top {
     margin-left: 0; } }
 
 /* My RSR stuff */
-.myRsrMenu h4 {
-  padding-top: 15px; }
-.myRsrMenu nav[role=navigation] {
-  background: rgba(32, 32, 36, 0.05); }
-  @media only screen and (max-width: 768px) {
-    .myRsrMenu nav[role=navigation] ul li {
+.myRsrMenu {
+  min-height: 100%;
+  bottom: 0;
+  top: 0; }
+  .myRsrMenu h4 {
+    padding-top: 15px; }
+  .myRsrMenu nav[role=navigation] {
+    background: rgba(32, 32, 36, 0.05); }
+    .myRsrMenu nav[role=navigation] ul li a {
+      color: #0ca9ff;
+      font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
       padding-top: 15px;
-      padding-bottom: 15px; } }
-  .myRsrMenu nav[role=navigation] ul li a {
-    color: #0ca9ff;
-    font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif; }
-    .myRsrMenu nav[role=navigation] ul li a:hover {
-      color: #ffa472;
-      background: rgba(255, 164, 114, 0.1) url(../../img/carret.png) 98% center no-repeat;
-      background-size: 5px auto; }
-    .myRsrMenu nav[role=navigation] ul li a.active {
-      color: #ffa472;
-      font-weight: bold;
-      background: rgba(255, 164, 114, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
-      background-size: 15px 15px; }
+      padding-bottom: 15px; }
+      @media only screen and (max-width: 768px) {
+        .myRsrMenu nav[role=navigation] ul li a {
+          padding-top: 20px;
+          padding-bottom: 20px; } }
+      .myRsrMenu nav[role=navigation] ul li a:hover {
+        color: #ffa472;
+        background: rgba(255, 164, 114, 0.05) url(../../img/carret.png) 98% center no-repeat;
+        background-size: 5px auto; }
+      .myRsrMenu nav[role=navigation] ul li a.active {
+        color: #ffa472;
+        font-weight: bold;
+        background: rgba(255, 164, 114, 0.05) url(../../img/carret.png) 98% center no-repeat;
+        background-size: 5px auto; }
+
+#profile .usrAvatar {
+  background-color: rgba(32, 32, 36, 0.05);
+  padding: 10px; }
 
 #organisations {
   background: rgba(255, 164, 114, 0.1);
@@ -834,3 +850,22 @@ div.textBlock .udpateComponent {
   box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
   .tooltip .tooltip-inner a {
     font-weight: bold; }
+
+/* Organisation Page */
+.organisationDetail .organisationHeader {
+  background: rgba(32, 32, 36, 0.05); }
+.organisationDetail h1 {
+  margin-top: 0;
+  margin-bottom: 20px; }
+.organisationDetail .orgLogo {
+  padding: 10px 0;
+  background: rgba(255, 255, 255, 0.5); }
+  .organisationDetail .orgLogo img {
+    width: 35%;
+    margin-left: 5px; }
+.organisationDetail .orgDetails {
+  background: rgba(255, 255, 255, 0.05);
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }

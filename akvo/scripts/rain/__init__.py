@@ -3,7 +3,7 @@
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+from rest_framework.status import HTTP_200_OK
 
 from akvo import settings
 
@@ -13,6 +13,7 @@ import sys
 import tablib
 
 from django.utils.encoding import smart_str, smart_unicode
+from akvo.api_utils import Requester
 
 
 API_VERSION = 'v1'
@@ -23,16 +24,16 @@ me = sys.modules[__name__]
 rain_settings = dict(
     AKVO_NS='http://akvo.org/iati-activities',
     RAIN_ORGANISATION_NS="http://data.rainfoundation.org/rsr-organisations",
-    RAIN_ACTIVITY_NS="http://data.rainfoundation.org/rsr-organisations",
+    RAIN_ACTIVITY_NS="http://data.rainfoundation.org",
 
     RAIN_ROOT_DIR = '/var/tmp/rain',
-    # RAIN_ROOT_DIR = '/Users/gabriel/git/akvo-rsr/akvo/rain',
     RAIN_PROJECT_IMAGES_SUBDIR = 'project_images',
     RAIN_LOGOS_SUBDIR = 'logos',
 
-    # RAIN_IATI_ACTIVITES_FILENAME = 'rain_one_activities_v20.xml',
-    RAIN_IATI_ACTIVITES_FILENAME = 'rain_activities_v20.xml',
+    RAIN_IATI_ACTIVITES_FILENAME = 'rain_activities.xml',
+    RAIN_IATI_ACTIVITES_URL='https://data.rainfoundation.org/iati/',
     RAIN_ORGANISATIONS_FILENAME = 'rain_organisations_v03.xml',
+    RAIN_ORGANISATIONS_URL='https://data.rainfoundation.org/iati/rsrorg/',
 
     RAIN_ORG_CSV_FILENAME = 'rain_organisations_upload_{datetime}.csv',
     RAIN_ACTIVITIES_CSV_FILENAME = 'rain_activities_upload_{datetime}.csv',
@@ -58,7 +59,6 @@ RAIN_POST_PROCESS_CSV_FILE = os.path.join(me.RAIN_ROOT_DIR, me.RAIN_POST_PROCESS
 RAIN_PROJECT_IMAGES_DIR =  os.path.join(me.RAIN_ROOT_DIR, me.RAIN_PROJECT_IMAGES_SUBDIR)
 RAIN_LOGOS_DIR =  os.path.join(me.RAIN_ROOT_DIR, me.RAIN_LOGOS_SUBDIR)
 
-
 # class ImportAdapter(logging.LoggerAdapter):
 #     def process(self, msg, kwargs):
 #         return '{}\t{}\t{}\t{}'.format(
@@ -79,6 +79,14 @@ RAIN_LOGOS_DIR =  os.path.join(me.RAIN_ROOT_DIR, me.RAIN_LOGOS_SUBDIR)
 def outsys(txt):
     sys.stdout.write(txt)
     sys.stdout.flush()
+
+def save_xml(xml, xml_filename):
+    xml_filename = xml_filename.format(
+        datetime=datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    )
+    xml_filename = os.path.join(me.RAIN_ROOT_DIR, xml_filename)
+    with open(xml_filename, "w") as f:
+        f.write(xml)
 
 #base_log = dict(msg=[], error=[])
 log_bits = []
@@ -116,6 +124,29 @@ def print_log(log_file, column_names, to_console=False):
 
     log_to_file(dataset.csv, log_file)
 
+def load_xml(location):
+    "Load XMl either from file or from a URL"
+    xml = ''
+    if location[:4] == 'http':
+        try:
+            xml = Requester(
+                url_template=location,
+                headers={
+                    'content-type': 'application/xml',
+                    'encoding': 'utf-8',
+                },
+                accept_codes=[HTTP_200_OK],
+            )
+        except Exception, e:
+            return ''
+        if xml.response.status_code is HTTP_200_OK:
+            return xml.response.text.encode('utf-8')
+
+    else:
+        with open(location, 'r') as f:
+            xml = f.read()
+    return xml
+
 # Activities
 # ==========
 # RAIN ID       Akvo ID IATI ID Event   Error/info
@@ -142,11 +173,14 @@ ACTION_UPDATE_PROJECT = 'project updated'
 ACTION_CREATE_IOI = 'internal org id created'
 ACTION_CREATE_ORG = 'organisation created'
 ACTION_UPDATE_ORG = 'organisation updated'
-ACTION_PUBLISHING_SET = 'set publishing status'
+ACTION_PROJECT_PUBLISHED = 'project published'
+ACTION_PROJECT_NOT_PUBLISHED = 'project not published'
+ACTION_PROJECT_POST_PROCESS_DONE = 'project saved'
 
 ERROR_COUNTRY_CODE = 'invalid country code'
 ERROR_MULTIPLE_OBJECTS = 'multiple objects'
 ERROR_IMAGE_UPLOAD = 'image upload exception'
+ERROR_IMAGE_NOT_FOUND = 'no image found'
 ERROR_EXCEPTION = 'general exception'
 ERROR_CREATE_ACTIVITY = 'activity create error'
 ERROR_UPDATE_ACTIVITY = 'activity update error'
@@ -178,7 +212,7 @@ class RainActivity():
         """ Look for the RSR Id of the project, search for a tag similar to:
             <other-identifier owner-name="akvorsr" owner-ref="29"/>
         """
-        tags = self.tree.xpath("//other-identifier[@owner-name='akvorsr']")
+        tags = self.tree.xpath("other-identifier[@owner-name='akvorsr']")
         if len(tags) == 1:
             return tags[0].get('owner-ref')
 
@@ -186,7 +220,7 @@ class RainActivity():
         """ Look for the internal Id of the project, search for a tag similar to:
             <other-identifier owner-name="rainpms" rain:type="id" owner-ref="520"/>
         """
-        tags =  self.tree.xpath("//other-identifier[@owner-name='rainpms' and @rain:type='id']", namespaces=self.ns_map)
+        tags =  self.tree.xpath("other-identifier[@owner-name='rainpms' and @rain:type='id']", namespaces=self.ns_map)
         if len(tags) == 1:
             return tags[0].get('owner-ref')
 

@@ -17,6 +17,7 @@ from django.middleware.locale import LocaleMiddleware
 from django.shortcuts import redirect
 from django.utils import translation
 from django.utils.cache import patch_vary_headers
+from akvo.rsr.context_processors import extra_context
 
 from akvo.rsr.models import PartnerSite
 
@@ -238,3 +239,16 @@ class ExceptionLoggingMiddleware(object):
     def process_exception(self, request, exception):
 
         logging.exception('Exception handling request for ' + request.path)
+
+
+class RSRVersionHeaderMiddleware(object):
+    """ Add a response header with RSR version info
+    """
+    def process_response(self, request, response):
+        context = extra_context(request)
+        response['X-RSR-Version'] = "Tag:{deploy_tag} Commit:{deploy_commit_id} Branch:{deploy_branch}".format(
+                deploy_tag=context['deploy_tag'],
+                deploy_commit_id=context['deploy_commit_id'],
+                deploy_branch=context['deploy_branch'],
+            )
+        return response

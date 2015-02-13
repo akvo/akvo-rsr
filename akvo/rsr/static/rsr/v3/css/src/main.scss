@@ -56,6 +56,13 @@ a, a:link, a:visited {
 .emTxt {
     color: rgba($akvoPurple, 0.5);
 }
+.noStyleUl {
+    list-style-type: none;
+    padding:0;
+    li {
+        padding:0;
+    }
+}
 em {
     font-family: $scriptFont;
     font-size: 1.2em;
@@ -348,6 +355,9 @@ nav.navbar-fixed-top {
 
 /* My RSR stuff */
 .myRsrMenu {
+    min-height:100%;
+    bottom:0;
+    top:0;
     h4 {
         padding-top: 15px;
     }
@@ -355,27 +365,36 @@ nav.navbar-fixed-top {
         background: rgba($akvoBlack, 0.05);
         ul {
             li {
-                @include responsive(small-max-screens) {
-                    padding-top:15px;
-                    padding-bottom:15px;
-                }
+
                 a {
                     color: $anchorLink;
                     font-family: $titleFont;
+                    padding-top:15px;
+                    padding-bottom:15px;
+                    @include responsive(small-max-screens) {
+                        padding-top:20px;
+                        padding-bottom:20px;
+                    }
                     &:hover {
                         color: $anchorLinkHover;
-                        background: rgba($anchorLinkHover, 0.1) url(../../img/carret.png) 98% center no-repeat;
+                        background: rgba($anchorLinkHover, 0.05) url(../../img/carret.png) 98% center no-repeat;
                         background-size: 5px auto;
                     }
                     &.active {
                         color: complement($rsrBlue);
                         font-weight: bold;
-                        background: rgba($anchorLinkHover, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
-                        background-size: 15px 15px;
+                        background: rgba($anchorLinkHover, 0.05) url(../../img/carret.png) 98% center no-repeat;
+                        background-size: 5px auto;
                     }
                 }
             }
         }
+    }
+}
+#profile {
+    .usrAvatar {
+        background-color: rgba($akvoBlack,0.05);
+        padding:10px;
     }
 }
 #organisations {
@@ -1052,3 +1071,25 @@ div.textBlock {
     }
 }
 
+/* Organisation Page */
+.organisationDetail {
+    .organisationHeader {
+        background:rgba($akvoBlack,0.05);
+    }
+    h1 {
+        margin-top:0;
+        margin-bottom:20px;
+    }
+    .orgLogo {
+        padding:10px 0;
+        background:rgba(white,0.5);
+        img {
+            width:35%;
+            margin-left:5px;
+        }
+    }
+    .orgDetails {
+        background:rgba(white,0.05);
+        @include border-radius(5px);
+    }
+}

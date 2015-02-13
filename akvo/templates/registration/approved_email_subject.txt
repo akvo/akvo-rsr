@@ -1,0 +1,1 @@
+[Akvo RSR] Your request to join {{organisation.long_name}} has been approved

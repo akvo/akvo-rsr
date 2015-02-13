@@ -201,7 +201,7 @@ class PublishingStatusAdmin(admin.ModelAdmin):
         from .models import PublishingStatus
         qs = PublishingStatus.objects.none()
         for employment in request.user.employers.approved():
-            if employment.group in Group.objects.filter(name__in=['Admins', 'Project editors']):
+            if employment.group in Group.objects.filter(name__in=['Admins', 'Project Editors']):
                 project_pks = (project.pk for project in employment.organisation.all_projects())
                 qs = qs | PublishingStatus.objects.filter(project__pk__in=project_pks)
         return qs.distinct()
@@ -732,7 +732,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
         from .models import Project
         qs = Project.objects.none()
         for employment in request.user.employers.approved():
-            if employment.group in Group.objects.filter(name__in=['Admins', 'Project editors']):
+            if employment.group in Group.objects.filter(name__in=['Admins', 'Project Editors']):
                 project_pks = [project.pk for project in employment.organisation.all_projects()]
                 qs = qs | Project.objects.filter(pk__in=project_pks)
         return qs.distinct()
@@ -886,7 +886,7 @@ class UserAdmin(UserAdmin):
 
         qs = get_user_model().objects.filter(pk__in=[request.user.pk, ])
         for employment in request.user.employers.approved():
-            if employment.group in Group.objects.filter(name__in=['Admins', 'User managers']):
+            if employment.group in Group.objects.filter(name__in=['Admins', 'User Managers']):
                 qs = qs.distinct() | employment.organisation.all_users().distinct()
         return qs.distinct()
 
@@ -1080,7 +1080,7 @@ class EmploymentAdmin(admin.ModelAdmin):
         from .models import Employment
         qs = Employment.objects.none()
         for employment in request.user.employers.approved():
-            if employment.group in Group.objects.filter(name__in=['Admins', 'User managers']):
+            if employment.group in Group.objects.filter(name__in=['Admins', 'User Managers']):
                 qs = qs | employment.organisation.employees.all()
         return qs
 
