@@ -33,19 +33,19 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
       <ul class="nav navbar-nav">
-        <li>
+        <li class="navProject">
           <a class="{% if current_path == project_path %}active{% endif %}"
              href="{% url 'project-directory' %}">
             {% trans "Projects" %}
           </a>
         </li>
-        <li>
+        <li class="navUpdate">
           <a class="{% if current_path == update_path %}active{% endif %}"
              href="{% url 'update-directory' %}">
             {% trans "Updates" %}
           </a>
         </li>
-        <li>
+        <li class="navOrganisation">
           <a class="{% if current_path  == organisation_path %}active{% endif %}"
              href="{% url 'organisation-directory' %}">
             {% trans "Organisations" %}
