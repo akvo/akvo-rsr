@@ -79,6 +79,7 @@ class UserDetailsSerializer(BaseRSRSerializer):
     class Meta:
         model = get_user_model()
         fields = (
+            'id',
             'first_name',
             'last_name',
         )

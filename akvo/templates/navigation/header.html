@@ -66,7 +66,7 @@
         {% else %}
         <li>
           <a class="{% if current_path == myrsr_path %}active{% endif %}"
-             href="{% url 'my_details' %}">MyRSR</a>
+             href="{% url 'my_details' %}"><i class="fa fa-user"></i> MyRSR</a>
         </li>
         <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> Sign out</a></li>
         {% endif %}

@@ -16,6 +16,10 @@ akvo/settings/6*.conf
 akvo/settings/backup
 akvo/testing.py
 scripts/dev-vm/
+data/*
+!data/README.md
+!data/dump.sh
+!data/load.sh
 
 # Dev environment
 .vagrant
@@ -24,6 +28,12 @@ venv
 scripts/dev-vm
 scripts/devhelpers/node_modules
 vagrant/vagrant-ssh-conf.*
+
+
+# PG migration
+pg_migrate_conf.yml
+pg_tests.log
+pg_db_password.tmp
 
 
 ## Deployment

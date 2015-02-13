@@ -140,6 +140,10 @@ def project_map(id, width, height, dynamic='dynamic'):
 
         project_update = update_location.location_target
 
+        # Do not show placeholder locations
+        if update_location.latitude == 0 and update_location.longitude == 0:
+            continue
+
         # Small map, so don't show thumbnail of updates
         thumbnail = ""
 
@@ -235,12 +239,30 @@ def global_project_map(width, height, dynamic='dynamic'):
         except:
             pass
 
+        for update_location in ProjectUpdateLocation.objects.filter(location_target__project=project):
+            project_update = update_location.location_target
+
+            # Do not show placeholder locations
+            if update_location.latitude == 0 and update_location.longitude == 0:
+                continue
+
+            try:
+                thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url
+            except:
+                thumbnail = ""
+
+            update_locations.append([update_location.latitude,
+                                     update_location.longitude,
+                                     [str(project_update.pk), project_update.title.encode('utf8'), thumbnail, 'project',
+                                      str(project.pk)]])
+
     template_context = {
         'map_id': map_id,
         'width': width,
         'height': height,
         'marker_icon': PROJECT_MARKER_ICON,
         'locations': locations,
+        'update_locations': update_locations,
         'dynamic': dynamic,
         'infowindows': True,
         'partnersite_widget': False
@@ -382,6 +404,10 @@ def projects_map(projects, width, height, dynamic='dynamic'):
                 continue
 
             project_update = update_location.location_target
+
+            # Do not show placeholder locations
+            if update_location.latitude == 0 and update_location.longitude == 0:
+                continue
 
             try:
                 thumbnail = project_update.photo.extra_thumbnails['map_thumb'].absolute_url

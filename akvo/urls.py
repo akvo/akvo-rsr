@@ -7,6 +7,7 @@
 """
 
 from akvo.api.urls import named_api
+from akvo.utils import check_auth_groups
 from .rsr.views import widgets as widget_views
 
 from django.conf import settings
@@ -177,3 +178,6 @@ if 'rosetta' in settings.INSTALLED_APPS:
 
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
+
+if settings.REQUIRED_AUTH_GROUPS:
+    check_auth_groups(settings.REQUIRED_AUTH_GROUPS)

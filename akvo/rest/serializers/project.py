@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from rest_framework import serializers
 
 from akvo.rsr.models import Project
 
@@ -12,10 +13,11 @@ from ..fields import Base64ImageField
 from .budget_item import BudgetItemSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
+from .partnership import PartnershipSerializer
 from .planned_disbursement import PlannedDisbursementSerializer
 from .policy_marker import PolicyMarkerSerializer
 from .project_comment import ProjectCommentSerializer
-from .project_location import ProjectLocationSerializer
+from .project_location import ProjectLocationSerializer, ProjectLocationExtraSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
 from .project_update import ProjectUpdateSerializer
@@ -31,6 +33,7 @@ from .rsr_serializer import BaseRSRSerializer
 
 class ProjectSerializer(BaseRSRSerializer):
 
+    publishing_status = serializers.Field(source='publishingstatus.status')
     current_image = Base64ImageField(required=False, allow_empty_file=True)
 
     class Meta:
@@ -39,10 +42,11 @@ class ProjectSerializer(BaseRSRSerializer):
 
 class ProjectExtraSerializer(ProjectSerializer):
 
+    publishing_status = serializers.Field(source='publishingstatus.status')
     budget_items = BudgetItemSerializer(source='budget_items', many=True, required=False, allow_add_remove=True)
     legacy_data = LegacyDataSerializer(source='legacy_data', many=True, required=False, allow_add_remove=True)
     links = LinkSerializer(source='links', many=True, required=False, allow_add_remove=True)
-    locations = ProjectLocationSerializer(source='locations', many=True, required=False, allow_add_remove=True)
+    locations = ProjectLocationExtraSerializer(source='locations', many=True, required=False, allow_add_remove=True)
     planned_disbursements = PlannedDisbursementSerializer(
         source='planned_disbursements', many=True, required=False, allow_add_remove=True
     )
@@ -71,3 +75,7 @@ class ProjectExtraSerializer(ProjectSerializer):
     results = ResultSerializer(source='results', many=True, required=False, allow_add_remove=True)
     sectors = SectorSerializer(source='sectors', many=True, required=False, allow_add_remove=True)
     transactions = TransactionSerializer(source='transactions', many=True, required=False, allow_add_remove=True)
+    partnerships = PartnershipSerializer(source='partnerships', many=True)
+
+    class Meta(ProjectSerializer.Meta):
+        pass

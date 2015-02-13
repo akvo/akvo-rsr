@@ -88,4 +88,7 @@ class OrganisationViewSet(BaseRSRViewSet):
         name = self.request.QUERY_PARAMS.get('name', None)
         if name is not None:
             queryset = queryset.filter(name=name)
+        long_name = self.request.QUERY_PARAMS.get('long_name', None)
+        if long_name is not None:
+            queryset = queryset.filter(long_name=long_name)
         return queryset

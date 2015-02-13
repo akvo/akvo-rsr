@@ -51,11 +51,11 @@
 
 
 <div class="container-fluid">
-  <div class="row center-text verticalPadding">
-        <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
+  <div class="row center-text">
+        <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>    
+  </div>
         {% include 'navigation/pagination.html' %}
-    </div>
-</div>
+  </div>
 
     <section class="main-list updates">
       <ul class="container">
@@ -98,9 +98,7 @@
     </section>
 
 <div class="container-fluid">
-    <div class="row center-text">
             {% include 'navigation/pagination.html' %}
-    </div>
 </div>
 {% endblock %}
 

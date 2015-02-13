@@ -17,14 +17,25 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     queryset = ProjectUpdate.objects.all()
     serializer_class = ProjectUpdateSerializer
     filter_fields = ('project', 'user', )
+    paginate_by_param = 'limit'
+    max_paginate_by = 1000
 
     def get_queryset(self):
         """ Allow simple filtering on selected fields
         """
         queryset = self.queryset
+        project = self.request.QUERY_PARAMS.get('project', None)
+        if project is not None:
+            queryset = self.queryset.filter(project=project)
         uuid = self.request.QUERY_PARAMS.get('uuid', None)
         if uuid is not None:
             queryset = self.queryset.filter(uuid=uuid)
+        created_at = self.request.QUERY_PARAMS.get('created_at__gt', None)
+        if created_at is not None:
+            queryset = self.queryset.filter(created_at__gt=created_at)
+        last_modified_at = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
+        if last_modified_at is not None:
+            queryset = self.queryset.filter(last_modified_at__gt=last_modified_at)
         return queryset
 
 
@@ -45,4 +56,10 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         uuid = self.request.QUERY_PARAMS.get('uuid', None)
         if uuid is not None:
             queryset = self.queryset.filter(uuid=uuid)
+        created_at = self.request.QUERY_PARAMS.get('created_at__gt', None)
+        if created_at is not None:
+            queryset = self.queryset.filter(created_at__gt=created_at)
+        last_modified_at = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
+        if last_modified_at is not None:
+            queryset = self.queryset.filter(last_modified_at__gt=last_modified_at)
         return queryset

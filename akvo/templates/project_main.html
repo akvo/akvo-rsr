@@ -96,23 +96,34 @@
         <div class="row">
             <div class="col-sm-8">
               <div id="accordion"></div>
-              <div class="results">
+              {% if project.has_results %}
+              <div class="results verticalPadding">
                 <h4 class="">Results</h4>
                 <ul class="fa-ul">
-                  <li><i class="fa-li fa fa-check-square"></i>Provide a good drainage system that will carry runoff to the appropriate outfall for the communities</li>
-                  <li><i class="fa-li fa fa-check-square"></i>Improve on the sanitary conditions of the project areas.</li>
-                  <li><i class="fa-li fa fa-square"></i>Convey storm-water from low lying areas quickly to appropriate outfall.</li>
+                  {% for result in project.results.all %}
+                  {% if result.has_info %}
+                  <li><i class="fa-li fa fa-circle-o"></i>{{result.title}}</li>
+                  {% endif %}
+                  {% endfor %}
                 </ul>
-              </div>              
+              </div>
+              {% endif %}
+              {% if project.has_indicators %}
               <div class="indicators">
                 <h4 class="">Indicators</h4>
                     <dl class="">
-                        <dt>Cooperatives created and functional</dt><dd>30</dd>
-                        <dt>Cooperatives created and functional </dt><dd>10</dd>
-                        <dt>Indirect target population that benefitted from the project</dt><dd>3200</dd>
-                        <dt>Direct target population that benefitted from the project</dt><dd>360</dd>
+                        {% for result in project.results.all %}
+                        {% for indicator in result.indicators.all %}
+                        {% for period in indicator.periods.all %}
+                        <dt>{{indicator.title}}</dt><dd>{{period.actual_value}}</dd>
+                        {% empty %}
+                        <dt>{{indicator.title}}</dt><dd></dd>
+                        {% endfor %}
+                        {% endfor %}
+                        {% endfor %}
                     </dl>
               </div>
+              {% endif %}
             </div>
             <div class="col-sm-4 udpateComponent">
               <h4 class="detailedInfo">Latest project updates</h4>

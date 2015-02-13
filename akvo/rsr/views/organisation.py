@@ -24,7 +24,7 @@ def directory(request):
         show_filters = ""
 
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, f.qs, 10)
+    page, paginator, page_range = pagination(page, f.qs.distinct(), 10)
 
     context = {
         'filter': f,

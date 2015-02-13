@@ -16,7 +16,7 @@ from akvo.api.models import create_api_key
 
 from ..signals import (
     change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status, create_organisation_account,
-    create_payment_gateway_selector, donation_completed, act_on_log_entry, employment_save,
+    create_payment_gateway_selector, donation_completed, act_on_log_entry, employment_post_save, employment_pre_save,
     update_project_budget, update_project_funding
 )
 
@@ -232,7 +232,7 @@ rules.add_perm('rsr.delete_organisationlocation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_user', is_rsr_admin)
 rules.add_perm('rsr.change_user', is_rsr_admin | is_org_admin | is_org_user_manager | is_self)
@@ -248,7 +248,8 @@ rules.add_perm('rsr.post_updates', is_rsr_admin | is_org_admin | is_org_user_man
 
 
 # Signals
-post_save.connect(employment_save, sender=Employment)
+pre_save.connect(employment_pre_save, sender=Employment)
+post_save.connect(employment_post_save, sender=Employment)
 
 post_save.connect(create_organisation_account, sender=Organisation)
 

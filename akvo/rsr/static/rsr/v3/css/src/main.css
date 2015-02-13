@@ -69,7 +69,17 @@ a, a:link, a:visited {
 
 /****************** Miscellanous Typography ********************/
 .noItem {
-  color: rgba(44, 42, 116, 0.2); }
+  color: rgba(44, 42, 116, 0.2);
+  font-weight: bold; }
+
+.emTxt {
+  color: rgba(44, 42, 116, 0.5); }
+
+.noStyleUl {
+  list-style-type: none;
+  padding: 0; }
+  .noStyleUl li {
+    padding: 0; }
 
 em {
   font-family: 'Dancing Script', Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
@@ -233,9 +243,6 @@ nav.navbar-fixed-top {
       border: 1px solid #72cdff; }
       nav.navbar-fixed-top button.navbar-toggle:hover .icon-bar {
         background: #72cdff; }
-  nav.navbar-fixed-top .navbar-collapse {
-    /*background:white;
-        border-top:1px solid rgb(228,228,228);*/ }
   nav.navbar-fixed-top .navbar-brand {
     float: left;
     font-size: 18px;
@@ -270,46 +277,119 @@ nav.navbar-fixed-top {
       nav.navbar-fixed-top .navbar-nav li a.active {
         color: #ffa472;
         font-weight: bold;
-        background: rgba(255, 164, 114, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
-        background-size: 15px 15px; }
+        background: rgba(255, 164, 114, 0.1);
+        background-size: 15px 15px;
+        -moz-border-radius: 3px;
+        -o-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px; }
+        @media only screen and (max-width: 768px) {
+          nav.navbar-fixed-top .navbar-nav li a.active {
+            background: rgba(255, 164, 114, 0.1); } }
       nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
         margin-top: 10px;
         color: white;
-        background-color: #202024;
-        border-color: #202024; }
+        background-color: #00a79d;
+        border-color: #00a79d; }
         nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn:hover {
           background-color: #ffa472;
           border-color: #ffa472; }
         @media only screen and (max-width: 768px) {
           nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
-            width: 90%; } }
+            width: 95%;
+            padding: 10px 5%;
+            margin: 0 auto 10px auto; } }
   nav.navbar-fixed-top .navbar-nav.navbar-right li {
     margin-right: 2px; }
     nav.navbar-fixed-top .navbar-nav.navbar-right li a {
       padding-left: 5px;
       padding-right: 5px; }
+      @media only screen and (max-width: 768px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a {
+          padding: 10px 15px; } }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li a.active {
+        background: none; }
+
+.navbar-inverse .navbar-collapse {
+  border-color: #e4e4e4; }
 
 .navbar .btn {
   padding: 4px 9px; }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (max-width: 768px) {
   body > .navbar > .container .navbar-brand {
     margin-left: 0; } }
 
-.myRsrMenu nav[role=navigation] {
-  background: rgba(32, 32, 36, 0.05); }
-  .myRsrMenu nav[role=navigation] ul li a {
-    color: #0ca9ff;
-    font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif; }
-    .myRsrMenu nav[role=navigation] ul li a:hover {
-      color: #ffa472;
-      background: rgba(255, 164, 114, 0.1) url(../../img/carret.png) 98% center no-repeat;
-      background-size: 5px auto; }
-    .myRsrMenu nav[role=navigation] ul li a.active {
-      color: #ffa472;
-      font-weight: bold;
-      background: rgba(255, 164, 114, 0) url(../../img/arrowDownOrange.svg) no-repeat center 30px;
-      background-size: 15px 15px; }
+/* My RSR stuff */
+.myRsrMenu {
+  min-height: 100%;
+  bottom: 0;
+  top: 0; }
+  .myRsrMenu h4 {
+    padding-top: 15px; }
+  .myRsrMenu nav[role=navigation] {
+    background: rgba(32, 32, 36, 0.05); }
+    .myRsrMenu nav[role=navigation] ul li a {
+      color: #0ca9ff;
+      font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+      padding-top: 15px;
+      padding-bottom: 15px; }
+      @media only screen and (max-width: 768px) {
+        .myRsrMenu nav[role=navigation] ul li a {
+          padding-top: 20px;
+          padding-bottom: 20px; } }
+      .myRsrMenu nav[role=navigation] ul li a:hover {
+        color: #ffa472;
+        background: rgba(255, 164, 114, 0.05) url(../../img/carret.png) 98% center no-repeat;
+        background-size: 5px auto; }
+      .myRsrMenu nav[role=navigation] ul li a.active {
+        color: #ffa472;
+        font-weight: bold;
+        background: rgba(255, 164, 114, 0.05) url(../../img/carret.png) 98% center no-repeat;
+        background-size: 5px auto; }
+
+#profile .usrAvatar {
+  background-color: rgba(32, 32, 36, 0.05);
+  padding: 10px; }
+
+#organisations {
+  background: rgba(255, 164, 114, 0.1);
+  padding-bottom: 15px;
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
+  @media only screen and (max-width: 768px) {
+    #organisations {
+      margin-top: 20px;
+      margin-bottom: 20px; }
+      #organisations .btn {
+        margin: 10px auto; } }
+  #organisations ul {
+    padding-left: 5px;
+    margin-bottom: 25px; }
+    #organisations ul li {
+      list-style-type: none; }
+  #organisations .tt-hint {
+    color: #999; }
+  #organisations .tt-dropdown-menu {
+    margin-top: 12px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }
+  #organisations .tt-suggestion {
+    padding: 3px 20px;
+    line-height: 24px; }
+    #organisations .tt-suggestion.tt-cursor {
+      color: #fff;
+      background-color: #0097cf; }
+    #organisations .tt-suggestion p {
+      margin: 0; }
+  #organisations .twitter-typeahead {
+    width: 100%; }
 
 /* FOOTER */
 body > footer {
@@ -318,22 +398,21 @@ body > footer {
 footer .navbar {
   background: #202024;
   border-radius: 0; }
-  footer .navbar #footer-body ul.nav li a {
-    display: block; }
-    footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
-      margin: 0;
-      width: 42px;
-      background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
-      text-indent: -9999px;
-      background-size: 42px 42px; }
-  footer .navbar #footer-body ul.nav li.akvoLogo {
-    width: 70px; }
-    footer .navbar #footer-body ul.nav li.akvoLogo a[href="http://akvo.org"] {
-      margin: 0;
-      width: 70px;
-      background: url(../../img/akvo.orgLogo.svg) center 5px no-repeat;
-      text-indent: -9999px;
-      background-size: 70px 42px; }
+  footer .navbar #footer-body ul.nav li {
+    padding-top: 10px;
+    padding-bottom: 10px; }
+    footer .navbar #footer-body ul.nav li a {
+      display: block; }
+      footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
+        margin: 0;
+        width: 70px;
+        background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
+        text-indent: -9999px;
+        background-size: 70px 42px; }
+        @media only screen and (max-width: 768px) {
+          footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
+            width: 100%;
+            background-size: 80px auto; } }
 
 #footer-body {
   text-align: center;
@@ -400,6 +479,11 @@ h4.detailedInfo {
       background: rgba(255, 164, 114, 0);
       border: 1px solid rgba(255, 164, 114, 0.5);
       color: #ffa472; }
+
+@media only screen and (max-width: 768px) {
+  .pagination li a, .pagination li span {
+    padding: 10px 16px;
+    font-size: 18px; } }
 
 #sidebar-wrapper {
   z-index: 1000;
@@ -512,9 +596,18 @@ h4.detailedInfo {
   text-overflow: ellipsis;
   white-space: normal; }
 .main-list.projects ul li:nth-child(2n+1) {
-  background: rgba(0, 116, 109, 0.1); }
+  background: rgba(63, 187, 255, 0.05);
+  border: thin solid rgba(114, 205, 255, 0.2); }
 .main-list.projects ul li .projectLocation {
   color: rgba(32, 32, 36, 0.5); }
+.main-list.updates ul li:nth-child(2n+1) {
+  background: rgba(0, 116, 109, 0.05);
+  border: thin solid rgba(0, 167, 157, 0.15); }
+.main-list.updates ul li .projectLocation {
+  color: rgba(32, 32, 36, 0.5); }
+.main-list.organisations ul li:nth-child(2n+1) {
+  background: rgba(238, 49, 36, 0.05);
+  border: thin solid rgba(238, 49, 36, 0.15); }
 .main-list.organisations ul li img {
   filter: gray;
   -webkit-filter: grayscale(100%);
@@ -531,7 +624,9 @@ h4.detailedInfo {
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
-  background: #fff6f1; }
+  background: #fff6f1;
+  border-bottom: 1px solid #eeeeee;
+  margin-bottom: 15px; }
   header.projectHeader h1 {
     margin-top: 10px;
     margin-bottom: 0;
@@ -669,20 +764,20 @@ div.projectTopRow {
             margin-left: 15px; }
 
 .results ul {
-  padding: 5px 0 5px 20px; }
-  .results ul li i {
-    color: #00a79d; }
+  padding: 5px 0 5px 5px; }
 
-.indicators dl, .results dl {
-  padding: 5px 0 5px 20px; }
-  .indicators dl dt, .indicators dl dd, .results dl dt, .results dl dd {
-    display: inline-block; }
-  .indicators dl dd, .results dl dd {
-    width: 15%; }
-  .indicators dl dt, .results dl dt {
-    width: 85%;
-    color: rgba(32, 32, 36, 0.4);
-    font-weight: normal; }
+.indicators, .results {
+  padding: 0 0 0 15px; }
+  .indicators dl, .results dl {
+    padding: 5px 0 5px 10px; }
+    .indicators dl dt, .indicators dl dd, .results dl dt, .results dl dd {
+      display: inline-block; }
+    .indicators dl dd, .results dl dd {
+      width: 15%; }
+    .indicators dl dt, .results dl dt {
+      width: 85%;
+      color: rgba(32, 32, 36, 0.4);
+      font-weight: normal; }
 
 div.timelineBlock {
   margin: 15px auto 25px; }
@@ -755,3 +850,22 @@ div.textBlock .udpateComponent {
   box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
   .tooltip .tooltip-inner a {
     font-weight: bold; }
+
+/* Organisation Page */
+.organisationDetail .organisationHeader {
+  background: rgba(32, 32, 36, 0.05); }
+.organisationDetail h1 {
+  margin-top: 0;
+  margin-bottom: 20px; }
+.organisationDetail .orgLogo {
+  padding: 10px 0;
+  background: rgba(255, 255, 255, 0.5); }
+  .organisationDetail .orgLogo img {
+    width: 35%;
+    margin-left: 5px; }
+.organisationDetail .orgDetails {
+  background: rgba(255, 255, 255, 0.05);
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
