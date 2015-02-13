@@ -8,6 +8,12 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        try:
+            # Deleting model 'User' if it already exists
+            db.delete_table(u'rsr_user')
+        except:
+            pass
+
         # Adding model 'User'
         db.create_table(u'rsr_user', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),

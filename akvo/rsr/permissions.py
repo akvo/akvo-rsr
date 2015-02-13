@@ -61,7 +61,7 @@ def is_org_user_manager(user, obj):
     if not user.is_authenticated():
         return False
     for employment in user.employers.approved():
-        if employment.group == Group.objects.get(name='User managers'):
+        if employment.group == Group.objects.get(name='User Managers'):
             if not obj:
                 return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
@@ -77,7 +77,7 @@ def is_org_project_editor(user, obj):
     if not user.is_authenticated():
         return False
     for employment in user.employers.approved():
-        if employment.group == Group.objects.get(name='Project editors'):
+        if employment.group == Group.objects.get(name='Project Editors'):
             if not obj:
                 return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
