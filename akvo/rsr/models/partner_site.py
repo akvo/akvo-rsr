@@ -147,7 +147,7 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     @property
     def return_url(self):
-        return self.custom_return_url or self.organisation.url
+        return self.custom_return_url or "/"
 
     @property
     def stylesheet(self):
