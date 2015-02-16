@@ -23,7 +23,9 @@
               <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
           </div>
           </div>
+          {% if q %}
             <div><a href="{% url 'organisation-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
+          {% endif %}
           </div>
           {#</form>#}
         </div>
@@ -37,11 +39,10 @@
         <div class="btn-group">
           {% bootstrap_field filter.form.continent %}
         </div>
-      </div> 
+      </div>
       <div>
         <nav>
         <ul class="nav nav-pills nav-stacked">
-          <li><a href="{% url 'organisation-directory' %}" class="btn btn-default"><i class="fa fa-times"></i> Reset all filters</a></li>
           <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> Close this</a></li>
           </ul>
         </nav>
