@@ -82,7 +82,7 @@
 
     {% compressed_js 'rsr_v3_script' %}
     {% compressed_js 'rsr_v3_libraries' %}
-    {% compressed_js 'rsr_v3_cookie' %}
+    <script src="{{ STATIC_URL }}lib/js/cookie.js"></script>
 
     {% block js %}{% endblock js %}
 
