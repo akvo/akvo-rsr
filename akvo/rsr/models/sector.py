@@ -14,7 +14,6 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists import models as codelist_models
-from akvo.codelists.models import Sector, SectorCategory, SectorVocabulary
 from akvo.utils import codelist_choices, codelist_value
 
 
