@@ -5,15 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import ProjectLocation
+from akvo.rsr.models import PolicyMarker
 
-from ..serializers import ProjectLocationSerializer
+from ..serializers import PolicyMarkerSerializer
 from ..viewsets import BaseRSRViewSet
 
 
-class ProjectLocationViewSet(BaseRSRViewSet):
+class PolicyMarkerViewSet(BaseRSRViewSet):
     """
     """
-    queryset = ProjectLocation.objects.all()
-    serializer_class = ProjectLocationSerializer
-    filter_fields = ('location_target', 'country', )
+    queryset = PolicyMarker.objects.all()
+    serializer_class = PolicyMarkerSerializer
+    filter_fields = ('project', 'policy_marker', )

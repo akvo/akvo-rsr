@@ -16,6 +16,7 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     """
     queryset = ProjectUpdate.objects.all()
     serializer_class = ProjectUpdateSerializer
+    filter_fields = ('project', 'user', )
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 
@@ -43,6 +44,7 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
     """
     queryset = ProjectUpdate.objects.all()
     serializer_class = ProjectUpdateExtraSerializer
+    filter_fields = ('project', 'user', )
 
     def get_queryset(self):
         """ Allow simple filtering on selected fields

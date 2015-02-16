@@ -16,3 +16,4 @@ class BudgetItemViewSet(BaseRSRViewSet):
     """
     queryset = BudgetItem.objects.all()
     serializer_class = BudgetItemSerializer
+    filter_fields = ('project', 'label', 'type', )

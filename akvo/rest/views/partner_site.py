@@ -16,3 +16,4 @@ class PartnerSiteViewSet(BaseRSRViewSet):
     """
     queryset = PartnerSite.objects.all()
     serializer_class = PartnerSiteSerializer
+    filter_fields = ('organisation', )

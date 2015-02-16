@@ -5,15 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import ProjectLocation
+from akvo.rsr.models import RecipientRegion
 
-from ..serializers import ProjectLocationSerializer
+from ..serializers import RecipientRegionSerializer
 from ..viewsets import BaseRSRViewSet
 
 
-class ProjectLocationViewSet(BaseRSRViewSet):
+class RecipientRegionViewSet(BaseRSRViewSet):
     """
     """
-    queryset = ProjectLocation.objects.all()
-    serializer_class = ProjectLocationSerializer
-    filter_fields = ('location_target', 'country', )
+    queryset = RecipientRegion.objects.all()
+    serializer_class = RecipientRegionSerializer
+    filter_fields = ('project', 'region', )

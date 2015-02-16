@@ -5,19 +5,20 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import ProjectUpdateLocation
+from akvo.rsr.models import IndicatorPeriod, Indicator
 
 from .rsr_serializer import BaseRSRSerializer
 
 
-class ProjectUpdateLocationSerializer(BaseRSRSerializer):
+class IndicatorPeriodSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = ProjectUpdateLocation
-        exclude = ('location_target',)
+        model = IndicatorPeriod
 
 
-class ProjectUpdateLocationExtraSerializer(ProjectUpdateLocationSerializer):
+class IndicatorSerializer(BaseRSRSerializer):
 
-    class Meta(ProjectUpdateLocationSerializer.Meta):
-        depth = 2
+    periods = IndicatorPeriodSerializer(many=True, required=False, allow_add_remove=True)
+
+    class Meta:
+        model = Indicator

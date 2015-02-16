@@ -5,15 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Invoice
+from akvo.rsr.models import Keyword
 
-from ..serializers import InvoiceSerializer
-from ..viewsets import BaseRSRViewSet
+from .rsr_serializer import BaseRSRSerializer
 
 
-class InvoiceViewSet(BaseRSRViewSet):
-    """
-    """
-    queryset = Invoice.objects.all()
-    serializer_class = InvoiceSerializer
-    filter_fields = ('project', )
+class KeywordSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = Keyword
