@@ -7,7 +7,7 @@ $(function() {
 
     $.ajax({
       type:"POST",
-      url: JSON.parse(document.getElementById("akvo-rsr-ajax-url").innerHTML)["ajaxUrl"],
+      url: JSON.parse(document.getElementById("akvo-rsr-ajax-url").innerHTML).ajaxUrl,
       data : JSON.stringify(serializedData),
       contentType : 'application/json; charset=UTF-8',
       success: function(response){
@@ -20,7 +20,7 @@ $(function() {
       },
       error: function(response)
       {
-        jsonValue = $.parseJSON( response['responseText'] );
+        jsonValue = $.parseJSON( response.responseText );
 
         $.each(jsonValue, function(key, value){
           $( "#password" ).prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>' + value + '</div>');
