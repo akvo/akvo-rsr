@@ -27,11 +27,11 @@ var DeleteModal = React.createClass({displayName: 'DeleteModal',
 
     render: function() {
         return this.transferPropsTo(
-            Modal( {title:"Remove user from organisation"}, 
-              React.DOM.div( {className:"modal-body"}, 
+            Modal( {title:"Remove user from organisation"},
+              React.DOM.div( {className:"modal-body"},
                 'Are you sure you want to remove ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' from ' + this.props.employment.organisation_full.name + '?'
               ),
-              React.DOM.div( {className:"modal-footer"}, 
+              React.DOM.div( {className:"modal-footer"},
                 Button( {onClick:this.props.onRequestHide}, "Close"),
                 Button( {onClick:this.deleteEmployment, bsStyle:"danger"}, "Remove")
               )
@@ -61,11 +61,11 @@ var ApproveModal = React.createClass({displayName: 'ApproveModal',
 
     render: function() {
         return this.transferPropsTo(
-            Modal( {title:"Approve user"}, 
-              React.DOM.div( {className:"modal-body"}, 
+            Modal( {title:"Approve user"},
+              React.DOM.div( {className:"modal-body"},
                 'Are you sure you want to approve ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' at ' + this.props.employment.organisation_full.long_name + '?'
               ),
-              React.DOM.div( {className:"modal-footer"}, 
+              React.DOM.div( {className:"modal-footer"},
                 Button( {onClick:this.props.onRequestHide}, "Close"),
                 Button( {onClick:this.approveEmployment, bsStyle:"success"}, "Approve")
               )
@@ -103,13 +103,14 @@ var TriggerModal = React.createClass({displayName: 'TriggerModal',
 
     render: function () {
         if (this.state.visible) {
-            return this.props.delete
-                ? ModalTrigger( {modal:DeleteModal( {employment:this.props.employment, onDeleteToggle:this.props.onDeleteToggle} )}, 
+            return (
+                this.props.delete ?
+                ModalTrigger( {modal:DeleteModal( {employment:this.props.employment, onDeleteToggle:this.props.onDeleteToggle} )},
                     Button( {bsStyle:"danger", bsSize:"xsmall"}, "X")
                   )
-                : ModalTrigger( {modal:ApproveModal( {employment:this.props.employment, onApproveToggle:this.onApprove} )}, 
-                    Button( {bsStyle:"success", bsSize:"xsmall"}, "√")
-                  );
+                : ModalTrigger( {modal:ApproveModal( {employment:this.props.employment, onApproveToggle:this.onApprove} )},
+                    Button( {bsStyle:"success", bsSize:"xsmall"}, "√"))
+            );
         } else {
             return React.DOM.span(null);
         }
@@ -151,25 +152,25 @@ var CountryJobTitle = React.createClass({displayName: 'CountryJobTitle',
     render: function() {
         var country = this.props.country;
         var job_title = this.props.job_title;
-        if (country == "" && job_title == "") {
+        if (country === "" && job_title === "") {
             return (
                 React.DOM.span(null, " ")
-                )
+                );
         } else {
             var text = "(";
-            if (job_title != "") {
-                text += job_title
+            if (job_title !== "") {
+                text += job_title;
             }
-            if (country != "") {
-                if (job_title != "") {
-                    text += " "
+            if (country !== "") {
+                if (job_title !== "") {
+                    text += " ";
                 }
-                text += "in " + country.name
+                text += "in " + country.name;
             }
             text += ")";
             return (
                 React.DOM.span( {className:"small"}, text,"   ")
-                )
+                );
         }
     }
 });
@@ -185,7 +186,7 @@ var Employment = React.createClass({displayName: 'Employment',
 
     componentDidMount: function() {
         var group = this.props.employment.group;
-        if (this.isMounted() && group != null) {
+        if (this.isMounted() && group !== null) {
             this.setState({
                 button_title: group.name
             });
@@ -216,15 +217,15 @@ var Employment = React.createClass({displayName: 'Employment',
         var other_groups = this.props.employment.other_groups.map(function(group) {
           return (
             DropDownItem( {group:group, employment_id:employment_id, onSetGroup:setGroupName, old_group:old_title, loading:loading} )
-          )
+          );
         });
-        return this.state.visible
-            ? React.DOM.span(null, this.props.employment.organisation_full.long_name," ",
+        return (this.state.visible ?
+              React.DOM.span(null, this.props.employment.organisation_full.long_name," ",
               CountryJobTitle( {country:this.props.employment.country_full, job_title:this.props.employment.job_title} ),
               DropdownButton( {title:this.state.button_title, disabled:this.state.loading}, other_groups), "    ",
               TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:true} ), "  ",
               TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:false} ),React.DOM.br(null ),React.DOM.br(null ))
-            : React.DOM.span(null );
+            : React.DOM.span(null));
     }
 });
 
@@ -246,7 +247,7 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
         var employments = this.state.employments.map(function(employment) {
             return (
                 Employment( {employment:employment} )
-                )
+                );
         });
         return (
                 React.DOM.span(null, employments)
@@ -257,7 +258,7 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
 var UserRow = React.createClass({displayName: 'UserRow',
     render: function() {
         return (
-            React.DOM.tr(null, 
+            React.DOM.tr(null,
               React.DOM.td(null, this.props.user.email),
               React.DOM.td(null, this.props.user.first_name),
               React.DOM.td(null, this.props.user.last_name),
@@ -287,10 +288,10 @@ var UserTable = React.createClass({displayName: 'UserTable',
         var users = this.state.users.map(function(user) {
           return (
             UserRow( {user:user} )
-          )
+          );
         });
         return (
-            Table( {striped:true}, 
+            Table( {striped:true},
                 React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Email"),React.DOM.th(null, "First name"),React.DOM.th(null, "Last name"),React.DOM.th(null, "Organisations"))),
                 React.DOM.tbody(null, users)
             )

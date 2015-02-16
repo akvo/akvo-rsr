@@ -24,6 +24,7 @@ jsPlumb.ready(function() {
         var top_sibling_windows = $(".project-hierarchy .project-hierarchy-sibling-top");
         var bottom_sibling_windows = $(".project-hierarchy .project-hierarchy-sibling-bottom");
         var child_windows = $(".project-hierarchy .project-hierarchy-child");
+        var i;
 
         if (top_sibling_windows.length) {
             instance.addEndpoint(project_window, {uuid: "project-top", anchor: "Top", maxConnections: -1});
@@ -38,22 +39,22 @@ jsPlumb.ready(function() {
             instance.addEndpoint(project_window, {uuid: "project-left", anchor: "Left", maxConnections: -1});
         }
 
-        for (var i = 0; i < parent_windows.length; i++) {
+        for (i = 0; i < parent_windows.length; i++) {
             var parent_uuid = parent_windows[i].getAttribute("id") + "-right";
             instance.addEndpoint(parent_windows[i], {uuid:parent_uuid, anchor:"Right"});
             instance.connect({uuids:[parent_uuid, "project-left"], overlays:arrow});
         }
-        for (var i = 0; i < top_sibling_windows.length; i++) {
+        for (i = 0; i < top_sibling_windows.length; i++) {
             var top_sibling_uuid = top_sibling_windows[i].getAttribute("id") + "-bottom";
             instance.addEndpoint(top_sibling_windows[i], {uuid:top_sibling_uuid, anchor:"Bottom"});
             instance.connect({uuids:[top_sibling_uuid, "project-top"], overlays:two_arrows});
         }
-        for (var i = 0; i < bottom_sibling_windows.length; i++) {
+        for (i = 0; i < bottom_sibling_windows.length; i++) {
             var bottom_sibling_uuid = bottom_sibling_windows[i].getAttribute("id") + "-top";
             instance.addEndpoint(bottom_sibling_windows[i], {uuid:bottom_sibling_uuid, anchor:"Top"});
             instance.connect({uuids:[bottom_sibling_uuid, "project-bottom"], overlays:two_arrows});
         }
-        for (var i = 0; i < child_windows.length; i++) {
+        for (i = 0; i < child_windows.length; i++) {
             var child_uuid = child_windows[i].getAttribute("id") + "-left";
             instance.addEndpoint(child_windows[i], {uuid:child_uuid, anchor:"Left"});
             instance.connect({uuids:["project-right", child_uuid], overlays:arrow});
