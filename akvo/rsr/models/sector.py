@@ -12,7 +12,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+
+from akvo.codelists import models as codelist_models
+from akvo.utils import codelist_choices, codelist_value
 
 
 class Sector(models.Model):
@@ -28,7 +30,7 @@ class Sector(models.Model):
     )
     text = ValidXMLCharField(_(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)'))
     vocabulary = ValidXMLCharField(
-        _(u'vocabulary'), blank=True, max_length=5, choices=[code[:2] for code in codelists.VOCABULARY]
+        _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(codelist_models.SectorVocabulary)
     )
     percentage = models.DecimalField(
         _(u'sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
@@ -40,39 +42,23 @@ class Sector(models.Model):
         return self.iati_sector()
 
     def iati_sector_codes(self):
-        try:
-            if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
-                return self.sector_code, dict([code[:2] for code in codelists.SECTOR])[self.sector_code]
-            elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
-                return self.sector_code, dict([code[:2] for code in codelists.SECTOR_CATEGORY])[self.sector_code]
-            else:
-                return "", ""
-        except:
-            return "", ""
+        if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
+            return self.sector_code, codelist_value(codelist_models.Sector, self, 'sector_code')
+        elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
+            return self.sector_code, codelist_value(codelist_models.SectorCategory, self, 'sector_code')
+        else:
+            return self.sector_code, self.sector_code
 
     def iati_sector(self):
-        try:
-            if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
-                return dict([code[:2] for code in codelists.SECTOR])[self.sector_code]
-            elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
-                return dict([code[:2] for code in codelists.SECTOR_CATEGORY])[self.sector_code]
-            else:
-                return ""
-        except:
-            return ""
+        if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
+            return codelist_value(codelist_models.Sector, self, 'sector_code')
+        elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
+            return codelist_value(codelist_models.SectorCategory, self, 'sector_code')
+        else:
+            return self.sector_code
 
     def iati_vocabulary(self):
-        if self.vocabulary and (self.vocabulary != 'DAC' or self.vocabulary != 'DAC-3'):
-            if self.vocabulary == '1':
-                return dict([code[:2] for code in codelists.VOCABULARY])['DAC']
-            elif self.vocabulary == '2':
-                return dict([code[:2] for code in codelists.VOCABULARY])['DAC-3']
-            else:
-                return ""
-        elif self.vocabulary:
-            return dict([code[:2] for code in codelists.VOCABULARY])[self.vocabulary]
-        else:
-            return ""
+        return codelist_value(codelist_models.SectorVocabulary, self, 'vocabulary')
 
     class Meta:
         app_label = 'rsr'
