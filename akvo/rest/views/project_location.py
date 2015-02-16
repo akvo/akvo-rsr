@@ -16,3 +16,4 @@ class ProjectLocationViewSet(BaseRSRViewSet):
     """
     queryset = ProjectLocation.objects.all()
     serializer_class = ProjectLocationSerializer
+    filter_fields = ('location_target', 'country', )

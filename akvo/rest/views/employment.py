@@ -6,8 +6,6 @@
 
 from django.contrib.auth.models import Group
 
-from rest_framework import filters
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
@@ -24,8 +22,7 @@ class EmploymentViewSet(BaseRSRViewSet):
     """
     queryset = Employment.objects.all()
     serializer_class = EmploymentSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('user', 'organisation',)
+    filter_fields = ('user', 'organisation', 'group', 'is_approved', )
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))

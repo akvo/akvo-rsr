@@ -18,7 +18,7 @@ from .user import UserSerializer
 
 class ProjectUpdateSerializer(BaseRSRSerializer):
 
-    locations = ProjectUpdateLocationSerializer(source='locations', many=True)
+    locations = ProjectUpdateLocationSerializer(source='locations', many=True, required=False, allow_add_remove=True)
     photo = Base64ImageField(required=False, allow_empty_file=True)
 
     class Meta:

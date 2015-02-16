@@ -19,11 +19,23 @@ class BaseLocation(models.Model):
                    u'to get the decimal coordinates of your project.')
     latitude = LatitudeField(_(u'latitude'), db_index=True, default=0, help_text=_help_text)
     longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
-    city = ValidXMLCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
-    state = ValidXMLCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
-    address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
-    address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
-    postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
+    city = ValidXMLCharField(
+        _(u'city'), blank=True, max_length=255, help_text=_(u'Select the city. (255 characters)')
+    )
+    state = ValidXMLCharField(
+        _(u'state'), blank=True, max_length=255, help_text=_(u'Select the state. (255 characters)')
+    )
+    address_1 = ValidXMLCharField(
+        _(u'address 1'), max_length=255, blank=True,
+        help_text=_(u'Enter the street and house number. (255 characters)')
+    )
+    address_2 = ValidXMLCharField(
+        _(u'address 2'), max_length=255, blank=True,
+        help_text=_(u'Add additional address information, if needed. (255 characters)')
+    )
+    postcode = ValidXMLCharField(
+        _(u'postal code'), max_length=10, blank=True, help_text=_(u'Enter the postal/area code. (10 characters)')
+    )
 
     def delete(self, *args, **kwargs):
         super(BaseLocation, self).delete(*args, **kwargs)
@@ -63,7 +75,9 @@ class OrganisationLocation(BaseLocation):
 class ProjectLocation(BaseLocation):
     # the project that's related to this location
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
-    country = models.ForeignKey('Country', verbose_name=_(u'country'))
+    country = models.ForeignKey(
+        'Country', verbose_name=_(u'country'), help_text=_(u'Select the country.')
+    )
 
     # Extra IATI fields
     reference = ValidXMLCharField(_(u'reference'), blank=True, max_length=50)

@@ -461,7 +461,7 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
             objects = getattr(model, 'objects')
             return objects.get(code=value, version__code=version)
         except model.DoesNotExist:
-            return ''
+            return 'Unknown code'
     return ''
 
 

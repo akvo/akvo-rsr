@@ -6,6 +6,7 @@
 
 from django.shortcuts import get_object_or_404
 
+from rest_framework import filters
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import DjangoObjectPermissions
@@ -17,5 +18,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
     """
     Base class used for the view sets for RSR models. Provides unified auth and perms settings.
     """
-    authentication_classes = (SessionAuthentication, TastyTokenAuthentication)
+    authentication_classes = (SessionAuthentication, TastyTokenAuthentication, )
     permission_classes = (DjangoObjectPermissions, )
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter, )
+    ordering_fields = '__all__'

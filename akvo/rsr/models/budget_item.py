@@ -34,7 +34,10 @@ class BudgetItem(models.Model):
     OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
 
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='budget_items')
-    label = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
+    label = models.ForeignKey(
+        BudgetItemLabel, verbose_name=_(u'project budget'),
+        help_text=u'Select the budget item. Use the \'Other\' fields to custom budget items.'
+    )
     other_extra = ValidXMLCharField(
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
@@ -43,8 +46,10 @@ class BudgetItem(models.Model):
     amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     # Extra IATI fields
-    type = ValidXMLCharField(_(u'budget type'), blank=True, max_length=1,
-                             choices=codelist_choices(BudgetType))
+    type = ValidXMLCharField(
+        _(u'budget type'), blank=True, max_length=1, choices=codelist_choices(BudgetType),
+        help_text=u'Select whether this is a planned or actual budget of the project.'
+    )
     period_start = models.DateField(_(u'period start'), null=True, blank=True)
     period_start_text = ValidXMLCharField(_(u'period start label'), max_length=50, blank=True)
     period_end = models.DateField(_(u'period end'), null=True, blank=True)

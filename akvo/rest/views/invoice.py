@@ -16,3 +16,4 @@ class InvoiceViewSet(BaseRSRViewSet):
     """
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
+    filter_fields = ('project', )

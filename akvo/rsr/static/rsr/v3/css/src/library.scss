@@ -11,7 +11,9 @@
 /* Akvo Primary Colours:    */
 $akvoPurple: rgb(44, 42, 116);
 /* Akvo Purplish Blue */
-$rsrBlue: rgb(114, 205, 255);
+$rsrBlue: rgb(44, 42, 116);
+
+$rsrBlue2: rgb(114, 205, 255);
 /* Akvo very light blue */
 $flowOrange: rgb(222, 137, 41);
 /* Akvo Orange / light Brown */ 
@@ -31,9 +33,12 @@ $akvoLink: rgb(55, 146, 179);
 /* Akvo black */
 $akvoBlack: rgb(32, 32, 36);
 
-$anchorLink: darken($rsrBlue,20%);
 $anchorLinkHeader: rgb(102, 204, 255);
-$anchorLinkHover: complement($rsrBlue);
+$anchorLink: darken($anchorLinkHeader, 20%);
+
+$veryLightOrange: complement($rsrBlue2);
+
+$anchorLinkHover: complement($anchorLink);
 $btnColor :rgb(78, 193, 234);
 
 $rsrGreen: rgb(0, 167, 157);
@@ -59,7 +64,7 @@ $secondary9: rgb(74, 177, 207);
 $lightOrange: rgb(253,242,232);
 
 $bodyFont: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, sans-serif;
-$scriptFont: 'Dancing Script', Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+$scriptFont: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
 $titleFont:  'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 @mixin border-radius($property) {

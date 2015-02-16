@@ -16,3 +16,4 @@ class LinkViewSet(BaseRSRViewSet):
     """
     queryset = Link.objects.all()
     serializer_class = LinkSerializer
+    filter_fields = ('project', 'kind', )
