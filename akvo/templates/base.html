@@ -48,12 +48,9 @@
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700%7COpen+Sans:400,300,600,700,400italic,600italic,300italic%7CMontserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700" rel="stylesheet" type="text/css">
 
     {# CSS #}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
     {% compressed_css 'rsr_v3_style' %}
     {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
-
-    {# Piwik #}
-    {% tracking_code %}
 
     {% block head %}{% endblock head %}
 
@@ -77,11 +74,11 @@
     </script>
 
     {# jQuery #}
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
     {# React #}
-    <script src="http://fb.me/react-0.10.0.js"></script>
+    <script src="//fb.me/react-0.10.0.js"></script>
 
     {% compressed_js 'rsr_v3_script' %}
     {% compressed_js 'rsr_v3_libraries' %}
@@ -94,5 +91,8 @@
         {% block jq %}{% endblock %}
      });
     </script>
+
+    {# Piwik #}
+    {% tracking_code %}
   </body>
 </html>
