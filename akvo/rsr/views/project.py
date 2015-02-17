@@ -181,7 +181,8 @@ def directory(request):
         'page_range': page_range,
         'paginator': paginator,
         'show_filters': show_filters,
-        'q': filter_query_string(qs)
+        'q': filter_query_string(qs),
+        'sorting': sorting,
     }
     return render(request, 'project_directory.html', context)
 
