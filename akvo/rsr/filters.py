@@ -8,9 +8,10 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 
 import django_filters
+
 from .models import Project, Organisation, Category, ProjectUpdate
 from .iso3166 import CONTINENTS
-from akvo.codelists.store.codelists_v104 import SECTOR_CATEGORY
+
 from akvo.codelists.models import SectorCategory
 from akvo.utils import codelist_choices
 
