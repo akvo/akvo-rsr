@@ -40,7 +40,7 @@ $(function() {
         msg;
     if (fileSize > 8388608) { // 8Mb
       msg = fileName + ' ' +
-        AKVO_RSR.i18n.is-larger-than-the-allowed-limit +
+        AKVO_RSR.i18n['is-larger-than-the-allowed-limit'] +
         ' (8Mb)'; // should come from configs
       $('#profile').prepend(alertSnippet(msg));
       resetFormElement($('#id_avatar'));
