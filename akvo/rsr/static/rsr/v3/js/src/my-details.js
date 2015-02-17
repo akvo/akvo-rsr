@@ -42,9 +42,9 @@ $(function() {
       msg = fileName + ' ' +
         AKVO_RSR.i18n['is-larger-than-the-allowed-limit'] +
         ' (8Mb)'; // should come from configs
-      $('#profile').prepend(alertSnippet(msg));
-      resetFormElement($('#id_avatar'));
-      scheduleAlertFade(4000);
+      $('#profile').prepend(window.AKVO_RSR.utils.alertSnippet(msg));
+      window.AKVO_RSR.utils.resetFormElement($('#id_avatar'));
+      window.AKVO_RSR.utils.scheduleAlertFade(4000);
     } else {
       $( ".btn" ).prop('disabled', true);
       $( ".btn" ).attr('disabled', true);
