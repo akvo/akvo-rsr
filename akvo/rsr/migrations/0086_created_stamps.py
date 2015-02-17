@@ -3,7 +3,6 @@ from collections import namedtuple
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
 from south.utils import datetime_utils as datetime
-from south.db import db
 from south.v2 import DataMigration
 import tablib
 
@@ -24,7 +23,7 @@ class Migration(DataMigration):
         models = (project_data, org_data)
 
         def model_dict(csv_file):
-            """
+            """ Create a dictionary from the projects and organisations CSV files with created timestamps data
             :param csv_file: the file with object IDs and created_at timestamps.
                 Used when we don't find a record for creation in the django_admin_log
             :return: a dictionary with object IDs as keys and the created timestamp as values
@@ -41,26 +40,25 @@ class Migration(DataMigration):
 
         for model in models:
             timestamps = model_dict(model.csv_file)
-            for object in model.south_model.objects.all():
-                if object.created_at is None:
+            for obj in model.south_model.objects.all():
+                if obj.created_at is None:
                     try:
                         log = LogEntry.objects.get(
                             content_type=ContentType.objects.get_for_model(model.south_model),
-                            object_id=object.id,
+                            object_id=obj.id,
                             action_flag=ADDITION
                         )
-                        object.created_at = log.action_time
+                        obj.created_at = log.action_time
                     except:
                         try:
-                            object.created_at = timestamps[object.id]
+                            obj.created_at = timestamps[obj.id]
                         except:
-                            print "No creation date for {} {}".format(model.south_model.__name__, object.id)
+                            print "No creation date for {} {}".format(model.south_model.__name__, obj.id)
                     else:
-                        object.save()
-
+                        obj.save()
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        "Can't reverse this data migration, sorry..."
 
     models = {
         u'auth.group': {
