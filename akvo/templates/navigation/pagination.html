@@ -1,21 +1,37 @@
 <div class="row center-text paginationWrap">
-    <ul class="pagination">
-        {% if page.has_previous %}
-        <li><a href="?page={{ page.previous_page_number }}{{ q }}">&laquo;</a></li>
-        {% else %}
-        <li class="disabled"><span>&laquo;</span></li>
-        {% endif %}
-        {% for page_number in page_range %}
-        {% if not page_number == '...' %}
-        <li {% if page_number == page.number %}class="active"{% endif %}><a href="?page={{ page_number }}{{ q }}">{{ page_number }}</a></li>
-        {% else %}
-        <li class="disabled"><span>{{ page_number }}</span></li>
-        {% endif %}
-        {% endfor %}
-        {% if page.has_next %}
-        <li><a href="?page={{ page.next_page_number }}{{ q }} ">&raquo;</a></li>
-        {% else %}
-        <li class="disabled"><span>&raquo;</span></li>
-        {% endif %}
-    </ul>
+    <div class="col-md-8">
+        <ul class="pagination">
+            {% if page.has_previous %}
+            <li><a href="?page={{ page.previous_page_number }}{{ q }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for page_number in page_range %}
+            {% if not page_number == '...' %}
+            <li {% if page_number == page.number %}class="active"{% endif %}><a href="?page={{ page_number }}{{ q }}">{{ page_number }}</a></li>
+            {% else %}
+            <li class="disabled"><span>{{ page_number }}</span></li>
+            {% endif %}
+            {% endfor %}
+            {% if page.has_next %}
+            <li><a href="?page={{ page.next_page_number }}{{ q }} ">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="sortList col-md-4">
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+            Sort by
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1" href="#">Latest updates</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Oldest updates</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Title (A-Z)</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Title (Z-A)</a></li>
+          </ul>
+        </div>
+    </div>
 </div>
