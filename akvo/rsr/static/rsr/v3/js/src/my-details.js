@@ -39,10 +39,9 @@ $(function() {
         fileSize = file.size,
         msg;
     if (fileSize > 8388608) { // 8Mb
-      msg = fileName
-        + ' '
-        + AKVO_RSR['i18n']['is-larger-than-the-allowed-limit']
-        + ' (8Mb)'; // should come from configs
+      msg = fileName + ' ' +
+        AKVO_RSR.i18n.is-larger-than-the-allowed-limit +
+        ' (8Mb)'; // should come from configs
       $('#profile').prepend(alertSnippet(msg));
       resetFormElement($('#id_avatar'));
       scheduleAlertFade(4000);
@@ -68,7 +67,7 @@ $(function() {
 
     $.ajax({
       type:"POST",
-      url: JSON.parse(document.getElementById("akvo-rsr-ajax-url").innerHTML)["ajaxUrl"],
+      url: JSON.parse(document.getElementById("akvo-rsr-ajax-url").innerHTML).ajaxUrl,
       // url: "{% url 'user_update_details' user.id %}" + "?format=json",
       data : JSON.stringify(serializedData),
       contentType : 'application/json; charset=UTF-8',
@@ -82,7 +81,7 @@ $(function() {
       },
       error: function(response)
       {
-        jsonValue = $.parseJSON( response['responseText'] );
+        jsonValue = $.parseJSON( response.responseText );
 
         $.each(jsonValue, function(key, value){
           $( "#profile" ).prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>' + value + '</div>');

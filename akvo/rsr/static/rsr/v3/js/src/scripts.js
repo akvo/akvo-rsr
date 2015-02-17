@@ -11,10 +11,10 @@ function resetFormElement(e) {
 
 
 function bootstrapAlert(errorMsg, elementToPrepend) {
-  var s = '<div class="alert alert-danger alert-dismissible" role="alert">'
-        + '<button type="button" class="close" data-dismiss="alert">'
-        + '<span aria-hidden="true">×</span><span class="sr-only">'
-        + 'Close</span></button><%= msg %></div>',
+  var s = '<div class="alert alert-danger alert-dismissible" role="alert">' +
+        '<button type="button" class="close" data-dismiss="alert">' +
+        '<span aria-hidden="true">×</span><span class="sr-only">' +
+        'Close</span></button><%= msg %></div>',
       t = _.template(s),
       c = t({ 'msg': errorMsg });
   return c;
@@ -24,10 +24,10 @@ function bootstrapAlert(errorMsg, elementToPrepend) {
 // Show a Bootstrap 3 alert
 // Depends on lo-dash
 function alertSnippet(msg) {
-  var s = '<div class="alert alert-danger alert-dismissible" role="alert">'
-        + '<button type="button" class="close" data-dismiss="alert">'
-        + '<span aria-hidden="true">×</span><span class="sr-only">'
-        + 'Close</span></button><%= msg %></div>',
+  var s = '<div class="alert alert-danger alert-dismissible" role="alert">' +
+        '<button type="button" class="close" data-dismiss="alert">' +
+        '<span aria-hidden="true">×</span><span class="sr-only">' +
+        'Close</span></button><%= msg %></div>',
       t = _.template(s);
   return t({'msg': msg});
 }
@@ -44,7 +44,7 @@ $(document).ready(function() {
 
     function getCookie(name) {
         var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
+        if (document.cookie && document.cookie !== '') {
             var cookies = document.cookie.split(';');
             for (var i = 0; i < cookies.length; i++) {
                 var cookie = jQuery.trim(cookies[i]);
@@ -80,7 +80,7 @@ $(document).ready(function() {
         disableDefaultUI = false,
         draggable = true;
 
-    if ( node.dynamic == false ) {
+    if ( node.dynamic === false ) {
       disableDefaultUI = true;
       draggable = false;
     }
@@ -96,7 +96,7 @@ $(document).ready(function() {
         draggable: draggable
       },
 
-      locations: window[ mapId ][ 'locations' ],
+      locations: window[mapId].locations,
       load: function() {
         var map = new google.maps.Map( this.canvas, this.options ),
             bounds = new google.maps.LatLngBounds(),
@@ -119,8 +119,8 @@ $(document).ready(function() {
               },
               marker, infoWindow, listener;
 
-          if (node.dynamic == false) {
-            markerOpts[ 'clickable' ] = false;
+          if (node.dynamic === false) {
+            markerOpts.clickable = false;
           }
 
           // Setup marker

@@ -8,10 +8,22 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 
 import django_filters
-from .models import Project, Organisation, Category, FocusArea, ProjectUpdate
+
+from .models import Project, Organisation, Category, ProjectUpdate
 from .iso3166 import CONTINENTS
 
+from akvo.codelists.models import SectorCategory
+from akvo.utils import codelist_choices
+
 ANY_CHOICE = (('', 'All'), )
+
+
+def sectors():
+    sectors_list = []
+    for sector in codelist_choices(SectorCategory):
+        if Project.objects.filter(sectors__sector_code=sector[0]):
+            sectors_list.append(sector)
+    return sectors_list
 
 
 def remove_empty_querydict_items(request_get):
@@ -36,14 +48,11 @@ class ProjectFilter(django_filters.FilterSet):
         label='location',
         name='primary_location__country__continent_code')
 
-    # Focus areas
-    focus_area = django_filters.ChoiceFilter(
-        choices=([('', 'All')] +
-                 list(FocusArea.objects.all().values_list('id', 'name',
-                                                          flat=False))[1:]),
-        label='focus area',
-        name='categories__focus_area__id',
-        initial='All')
+    sector = django_filters.ChoiceFilter(
+        initial='All',
+        choices=([('', 'All')] + sectors()),
+        label='sector',
+        name='sectors__sector_code')
 
     status = django_filters.ChoiceFilter(
         initial='All',
@@ -68,7 +77,7 @@ class ProjectFilter(django_filters.FilterSet):
     class Meta:
         model = Project
         fields = ['status', 'continent', 'organisation', 'category',
-                  'focus_area', 'title', ]
+                  'sector', 'title', ]
 
 
 class ProjectUpdateFilter(django_filters.FilterSet):

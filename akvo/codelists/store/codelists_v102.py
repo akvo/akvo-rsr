@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/ActivityDateType.xml
-# Fields: code, name
+codelist_list = ['ACTIVITY_DATE_TYPE', 'ACTIVITY_STATUS', 'AID_TYPE', 'COUNTRY', 'BUDGET_TYPE', 'COLLABORATION_TYPE', 'CONDITION_TYPE', 'CURRENCY', 'DESCRIPTION_TYPE', 'DISBURSEMENT_CHANNEL', 'DOCUMENT_CATEGORY', 'FILE_FORMAT', 'FINANCE_TYPE', 'FLOW_TYPE', 'GAZETTEER_AGENCY', 'GEOGRAPHICAL_PRECISION', 'INDICATOR_MEASURE', 'LANGUAGE', 'LOCATION_TYPE', 'ORGANISATION_IDENTIFIER', 'ORGANISATION_ROLE', 'ORGANISATION_TYPE', 'POLICY_MARKER', 'POLICY_SIGNIFICANCE', 'PUBLISHER_TYPE', 'REGION', 'RELATED_ACTIVITY_TYPE', 'RESULT_TYPE', 'SECTOR', 'SECTOR_CATEGORY', 'TIED_STATUS', 'TRANSACTION_TYPE', 'VALUE_TYPE', 'VERIFICATION_STATUS', 'VOCABULARY', ]
 
+# From http://codelists102.archive.iatistandard.org/data/codelist/ActivityDateType.xml
 ACTIVITY_DATE_TYPE = (
+    (u'code', u'name'),
     (u'end-actual', u'The actual end date, such as date of last disbursement'),
     (u'end-planned', u'The planned end date as recorded in project documentation'),
     (u'start-actual', u'The actual start date, such as date of first disbursement'),
@@ -11,9 +12,8 @@ ACTIVITY_DATE_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/ActivityStatus.xml
-# Fields: code, name, language
-
 ACTIVITY_STATUS = (
+    (u'code', u'name', u'language'),
     (u'1', u'Pipeline/identification', u'en'),
     (u'2', u'Implementation', u'en'),
     (u'3', u'Completion', u'en'),
@@ -22,9 +22,8 @@ ACTIVITY_STATUS = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/AidType.xml
-# Fields: code, name, description, language, category, category-name, category-description
-
 AID_TYPE = (
+    (u'code', u'name', u'description', u'language', u'category', u'category-name', u'category-description'),
     (u'A01', u'General budget support', u'Unearmarked contributions to the government budget including funding to support the implementation of macroeconomic reforms (structural adjustment programmes, poverty reduction strategies). Budget support is a method of financing a recipient countrys budget through a transfer of resources from an external financing agency to the recipient governments national treasury. The funds thus transferred are managed in accordance with the recipients budgetary procedures. Funds transferred to the national treasury for financing programmes or projects managed according to different budgetary procedures from those of the recipient country, with the intention of earmarking the resources for specific uses, are therefore excluded.', u'en', u'A', u'Budget support', u'For contributions under this category, the donor relinquishes the exclusive control of its funds by sharing the responsibility with the recipient.'),
     (u'A02', u'Sector budget support', u'Sector budget support, like general budget support, is a financial contribution to a recipient government\s budget. However, in sector budget support, the dialogue between donors and partner governments focuses on sector-specific concerns, rather than on overall policy and budget priorities', u'en', u'A', u'Budget support', u'For contributions under this category, the donor relinquishes the exclusive control of its funds by sharing the responsibility with the recipient.'),
     (u'B01', u'Core support to NGOs, other private bodies, PPPs and research institutes', u'Funds are paid over to NGOs (local, national and international) for use at the latters discretion, and contribute to programmes and activities which NGOs have developed themselves, and which they implement on their own authority and responsibility. Core contributions to PPPs, funds paid over to foundations (e.g. philanthropic foundations), and contributions to research institutes (public and private) are also recorded here. Annex 2 of the DAC Directives provides a list of INGOs, PPPs and networks core contributions to which may be reported under B01. This list is not exclusive.', u'en', u'B', u'Core contributions and pooled programmes and funds', u'For contributions under this category, the donor relinquishes the exclusive control of its funds by sharing the responsibility with other stakeholders (other donors, NGOs, multilateral institutions, Public Private Partnerships). The category covers both core contributions (B01 and B02), and pooled contributions with a specific earmarking (B03 and B04).'),
@@ -43,9 +42,8 @@ AID_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/Country.xml
-# Fields: code, name, language
-
 COUNTRY = (
+    (u'code', u'name', u'language'),
     (u'AF', u'Afghanistan', u'en'),
     (u'AX', u'Åland Islands', u'en'),
     (u'AL', u'Albania', u'en'),
@@ -299,17 +297,15 @@ COUNTRY = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/BudgetType.xml
-# Fields: code, name, language
-
 BUDGET_TYPE = (
+    (u'code', u'name', u'language'),
     (u'1', u'Original', u'en'),
     (u'2', u'Revised', u'en')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/CollaborationType.xml
-# Fields: code, name, description, language
-
 COLLABORATION_TYPE = (
+    (u'code', u'name', u'description', u'language'),
     (u'1', u'Bilateral', u'Bilateral transactions are those undertaken by a donor, excluding core contributions to other organisations (codes 2 and 3 below). It includes transactions channelled through other organisations.', u'en'),
     (u'2', u'Multilateral', u'Multilateral contributions are those made to a recipient institution which: i. conducts all or part of its activities in favour of development; ii. is an international agency, institution or organisation whose members are governments, or a fund managed autonomously by such an agency; and iii. pools contributions so that they lose their identity and become an integral part of its financial assets.', u'en'),
     (u'3', u'Bilateral, core contributions to NGOs and other private bodies / PPPs', u'Bilateral funds paid over to national and international non-governmental organisations (NGOs), Public Private Partnerships (PPPs), or other private bodies for use at their discretion.', u'en'),
@@ -317,17 +313,15 @@ COLLABORATION_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/ConditionType.xml
-# Fields: code, name, language
-
 CONDITION_TYPE = (
+    (u'code', u'name', u'language'),
     (u'2', u'Performance', u'en'),
     (u'1', u'Policy', u'en')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/Currency.xml
-# Fields: code, name, language
-
 CURRENCY = (
+    (u'code', u'name', u'language'),
     (u'AED', u'UAE Dirham', u'en'),
     (u'AFN', u'Afghani', u'en'),
     (u'ALL', u'Lek', u'en'),
@@ -497,18 +491,16 @@ CURRENCY = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/DescriptionType.xml
-# Fields: code, name, description
-
 DESCRIPTION_TYPE = (
+    (u'code', u'name', u'description'),
     (u'1', u'General', u'Long description of the activity with no particular structure'),
     (u'2', u'Objectives', u'Objectives for the activity, for example from a logical framework'),
     (u'3', u'Target Groups', u'Statement of groups targeted to benefit from the activity')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/DisbursementChannel.xml
-# Fields: code, name
-
 DISBURSEMENT_CHANNEL = (
+    (u'code', u'name'),
     (u'1', u'Money is disbursed through central Ministry of Finance or Treasury'),
     (u'2', u'Money is disbursed directly to the implementing institution and managed through a separate bank account'),
     (u'3', u'Aid in kind: Donors utilise third party agencies, e.g. NGOs or management companies'),
@@ -516,9 +508,8 @@ DISBURSEMENT_CHANNEL = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/DocumentCategory.xml
-# Fields: code, name, description, category, category-name
-
 DOCUMENT_CATEGORY = (
+    (u'code', u'name', u'description', u'category', u'category-name'),
     (u'A01', u'Pre- and post-project impact appraisal', u'', u'A', u'Activity Level'),
     (u'A02', u'Objectives / Purpose of activity', u'', u'A', u'Activity Level'),
     (u'A03', u'Intended ultimate beneficiaries', u'', u'A', u'Activity Level'),
@@ -538,9 +529,8 @@ DOCUMENT_CATEGORY = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/FileFormat.xml
-# Fields: code, name
-
 FILE_FORMAT = (
+    (u'code', u'name'),
     (u'application/msword', u'Microsoft Word'),
     (u'application/pdf', u'Portable Data Format'),
     (u'application/rtf', u'Rich Text Format'),
@@ -553,9 +543,8 @@ FILE_FORMAT = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/FinanceType.xml
-# Fields: code, name, category, category-name, category-description
-
 FINANCE_TYPE = (
+    (u'code', u'name', u'category', u'category-name', u'category-description'),
     (u'110', u'Aid grant excluding debt reorganisation', u'100', u'GRANT', u'Transfers in cash or in kind for which no legal debt is incurred by the recipient.'),
     (u'111', u'Subsidies to national private investors', u'100', u'GRANT', u'Transfers in cash or in kind for which no legal debt is incurred by the recipient.'),
     (u'210', u'Interest subsidy grant in AF', u'200', u'INTEREST SUBSIDY', u'Subsidies to soften the terms of private export credits, or loans or credits by the banking sector.'),
@@ -603,9 +592,8 @@ FINANCE_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/FlowType.xml
-# Fields: code, name, description
-
 FLOW_TYPE = (
+    (u'code', u'name', u'description'),
     (u'10', u'ODA', u'Official Development Assistance.Those flows to countries and territories on the DAC List of ODA Recipients and to multilateral development institutions which are:-- provided by official agencies, including state and local governments, or by their executive agencies; and-- each transaction of which:a) is administered with the promotion of the economic development and welfare of developing countries as its main objective; andb) is concessional in character and conveys a grant element of at least 25 per cent (calculated at a rate of discount of 10 per cent).'),
     (u'20', u'OOF', u'Other Official FlowsOfficial sector transactions that do not meet the ODA criteria, e.g.-- Grants to developing countries for representational or essentially commercial purposes.-- Official bilateral transactions intended to promote development but having a grant element of less than 25 per cent.-- Official bilateral transactions, whatever their grant element, that are primarily export-facilitating in purpose.-- The net acquisition by governments and central monetary institutions of securities issued by multilateral development banks at market terms.-- Subsidies (grants) to the private sector to soften its credits to developing countries.-- Funds in support of private investment.'),
     (u'30', u'Private Grants', u'Grants made by private non-governmental organisations and other private sources (including foundations and other private bodies).Grants by private non-profit-making agencies, including co-operative societies and trade unions, which are active in development and national in the sense that their funds are fully or mainly obtained from sources in the donor economy.'),
@@ -614,18 +602,16 @@ FLOW_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/GazetteerAgency.xml
-# Fields: code, name
-
 GAZETTEER_AGENCY = (
+    (u'code', u'name'),
     (u'GEO', u'Geonames.org'),
     (u'NGA', u'National Geospatial-Intelligence Agency'),
     (u'OSM', u'Open Street Map')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/GeographicalPrecision.xml
-# Fields: code, name, description
-
 GEOGRAPHICAL_PRECISION = (
+    (u'code', u'name', u'description'),
     (u'1', u'Exact location', u'The coordinates corresponds to an exact location, such as a populated place or a hill. The code is also used for locations that join a location which is a line (such as a road or railroad). Lines are not coded only the points that connect lines. All points that are mentioned in the source are coded.'),
     (u'2', u'Near exact location', u'The location is mentioned in the source as being "near", in the "area" of, or up to 25 km away from an exact location. The coordinates refer to that adjacent, exact, location.'),
     (u'3', u'Second order administrative division', u'The location is, or lies in, a second order administrative division (ADM2), such as a district, municipality or commune'),
@@ -638,17 +624,15 @@ GEOGRAPHICAL_PRECISION = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/IndicatorMeasure.xml
-# Fields: code, name
-
 INDICATOR_MEASURE = (
+    (u'code', u'name'),
     (u'1', u'Unit'),
     (u'2', u'Percentage')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/Language.xml
-# Fields: code, name
-
 LANGUAGE = (
+    (u'code', u'name'),
     (u'aa', u'Afar'),
     (u'ab', u'Abkhazian'),
     (u'ae', u'Avestan'),
@@ -833,9 +817,8 @@ LANGUAGE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/LocationType.xml
-# Fields: code, name
-
 LOCATION_TYPE = (
+    (u'code', u'name'),
     (u'ADM1', u'first-order administrative division'),
     (u'ADM2', u'second-order administrative division'),
     (u'CNS', u'concession area'),
@@ -849,9 +832,8 @@ LOCATION_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/OrganisationIdentifier.xml
-# Fields: code, abbreviation, name
-
 ORGANISATION_IDENTIFIER = (
+    (u'code', u'abbreviation', u'name'),
     (u'AT-1', u'BMF', u'Federal Ministry of Finance'),
     (u'AT-10', u'BMLFUW', u'Ministry for Agriculture and Environment'),
     (u'AT-11', u'BMLV', u'Ministry of Defense'),
@@ -1296,9 +1278,8 @@ ORGANISATION_IDENTIFIER = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/OrganisationRole.xml
-# Fields: code, name, description
-
 ORGANISATION_ROLE = (
+    (u'code', u'name', u'description'),
     (u'Accountable', u'Accountable', u'The government agency, civil society or private sector institution which is accountable for the implementation of the activity.'),
     (u'Extending', u'Extending', u'The government entity (central, state or local government agency or department), or agency within an institution, financing the activity from its own budget'),
     (u'Funding', u'Funding', u'The country or institution which provides the funds.'),
@@ -1306,9 +1287,8 @@ ORGANISATION_ROLE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/OrganisationType.xml
-# Fields: code, name
-
 ORGANISATION_TYPE = (
+    (u'code', u'name'),
     (u'10', u'Government'),
     (u'15', u'Other Public Sector'),
     (u'21', u'International NGO'),
@@ -1322,9 +1302,8 @@ ORGANISATION_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/PolicyMarker.xml
-# Fields: code, name
-
 POLICY_MARKER = (
+    (u'code', u'name'),
     (u'1', u'Gender Equality'),
     (u'2', u'Aid to Environment'),
     (u'3', u'Participatory Development/Good Governance'),
@@ -1336,9 +1315,8 @@ POLICY_MARKER = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/PolicySignificance.xml
-# Fields: code, name, description
-
 POLICY_SIGNIFICANCE = (
+    (u'code', u'name', u'description'),
     (u'0', u'not targeted', u'The score "not targeted" means that the activity was examined but found not to target the policy objective.'),
     (u'1', u'significant objective', u'Significant (secondary) policy objectives are those which, although important, were not the prime motivation for undertaking the activity.'),
     (u'2', u'principal objective', u'Principal (primary) policy objectives are those which can be identified as being fundamental in the design and impact of the activity and which are an explicit objective of the activity. They may be selected by answering the question "Would the activity have been undertaken without this objective?"'),
@@ -1346,18 +1324,16 @@ POLICY_SIGNIFICANCE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/PublisherType.xml
-# Fields: code, name
-
 PUBLISHER_TYPE = (
+    (u'code', u'name'),
     (u'1', u'Aid Provider'),
     (u'2', u'Aid Recipient'),
     (u'3', u'Aggregator')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/Region.xml
-# Fields: code, name
-
 REGION = (
+    (u'code', u'name'),
     (u'89', u'Europe, regional'),
     (u'189', u'North of Sahara, regional'),
     (u'289', u'South of Sahara, regional'),
@@ -1377,9 +1353,8 @@ REGION = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/RelatedActivityType.xml
-# Fields: code, name, description
-
 RELATED_ACTIVITY_TYPE = (
+    (u'code', u'name', u'description'),
     (u'1', u'Parent', u'An activity that contains sub-activities (sub-components)'),
     (u'2', u'Child', u'A sub-activity (sub-component) of a larger activity (the parent)'),
     (u'3', u'Sibling', u'A sub-activity (sub-component) related to another sub-activity of the same parent'),
@@ -1387,18 +1362,16 @@ RELATED_ACTIVITY_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/ResultType.xml
-# Fields: code, name
-
 RESULT_TYPE = (
+    (u'code', u'name'),
     (u'1', u'Output'),
     (u'2', u'Outcome'),
     (u'3', u'Impact')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/Sector.xml
-# Fields: code, name, description, category, category-name, category-description
-
 SECTOR = (
+    (u'code', u'name', u'description', u'category', u'category-name', u'category-description'),
     (u'11110', u'Education policy and administrative management', u'Education sector policy, planning and programmes; aid to education ministries, administration and management systems; institution capacity building and advice; school management and governance; curriculum and materials development; unspecified education activities.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education is unspecified or unknown (e.g. training of primary school teachers should be coded under 11220).'),
     (u'11120', u'Education facilities and training', u'Educational buildings, equipment, materials; subsidiary services to education (boarding facilities, staff housing); language training; colloquia, seminars, lectures, etc.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education is unspecified or unknown (e.g. training of primary school teachers should be coded under 11220).'),
     (u'11130', u'Teacher training', u'Teacher education (where the level of education is unspecified); in-service and pre-service training; materials development.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education is unspecified or unknown (e.g. training of primary school teachers should be coded under 11220).'),
@@ -1596,9 +1569,8 @@ SECTOR = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/SectorCategory.xml
-# Fields: code, name, description
-
 SECTOR_CATEGORY = (
+    (u'code', u'name', u'description'),
     (u'111', u'Education, level unspecified', u'Education sector policy, planning and programmes; aid to education ministries, administration and management systems; institution capacity building and advice; school management and governance; curriculum and materials development; unspecified education activities.'),
     (u'112', u'Basic education', u'Formal and non-formal primary education for children; all elementary and first cycle systematic instruction; provision of learning materials.'),
     (u'113', u'Secondary education', u'Second cycle systematic instruction at both junior and senior levels.'),
@@ -1639,18 +1611,16 @@ SECTOR_CATEGORY = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/TiedStatus.xml
-# Fields: code, name, description
-
 TIED_STATUS = (
+    (u'code', u'name', u'description'),
     (u'3', u'Partially tied', u'Official Development Assistance for which the associated goods and services must be procured in the donor country or among a restricted group of other countries, which must however include substantially all aid recipient countries.'),
     (u'4', u'Tied', u'Official grants or loans where procurement of the goods or services involved is limited to the donor country or to a group of countries which does not include substantially all aid recipient countries.'),
     (u'5', u'Untied', u'Untied aid is defined as loans and grants whose proceeds are fully and freely available to finance procurement from all OECD countries and substantially all developing countries.')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/TransactionType.xml
-# Fields: code, name, description
-
 TRANSACTION_TYPE = (
+    (u'code', u'name', u'description'),
     (u'C', u'Commitment', u'A firm written obligation by the donor to provide resources of a specified amount under specified financial terms and conditions and for specified purposes for the benefit of the recipient'),
     (u'D', u'Disbursement', u'The amount placed at the disposal of a recipient country or agency (in the case of internal development-related expenditures, the outlay of funds)'),
     (u'E', u'Expenditure', u'The outlay by the implementing agency on goods and services for the activity'),
@@ -1664,9 +1634,8 @@ TRANSACTION_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/ValueType.xml
-# Fields: code, name, description
-
 VALUE_TYPE = (
+    (u'code', u'name', u'description'),
     (u'C', u'Commitment', u'A firm written obligation by the donor to provide resources of a specified amount under specified financial terms and conditions and for specified purposes for the benefit of the recipient'),
     (u'D', u'Disbursement', u'The amount placed at the disposal of a recipient country or agency (in the case of internal development-related expenditures, the outlay of funds)'),
     (u'E', u'Expenditure', u'The outlay by the implementing agency on goods and services for the activity'),
@@ -1679,17 +1648,15 @@ VALUE_TYPE = (
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/VerificationStatus.xml
-# Fields: code, name
-
 VERIFICATION_STATUS = (
+    (u'code', u'name'),
     (u'0', u'Not verified'),
     (u'1', u'Verified')
 )
 
 # From http://codelists102.archive.iatistandard.org/data/codelist/Vocabulary.xml
-# Fields: code, name
-
 VOCABULARY = (
+    (u'code', u'name'),
     (u'ADT', u'AidData'),
     (u'COFOG', u'Classification of the Functions of Government (UN)'),
     (u'DAC', u'OECD Development Assistance Committee'),

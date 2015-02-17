@@ -70,6 +70,7 @@ class OrganisationViewSet(BaseRSRViewSet):
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
     parser_classes = (AkvoOrganisationParser, JSONParser,)
+    filter_fields = ('name', 'long_name', 'iati_org_id', )
 
     def get_queryset(self):
         """ Enable filtering of Organisations on iati_org_id or name

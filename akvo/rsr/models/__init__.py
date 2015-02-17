@@ -222,6 +222,10 @@ rules.add_perm('rsr.add_legacydata', is_rsr_admin | is_org_admin | is_org_projec
 rules.add_perm('rsr.change_legacydata', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_legacydata', is_rsr_admin | is_org_admin | is_org_project_editor)
 
+rules.add_perm('rsr.add_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
+
 rules.add_perm('rsr.add_organisation', is_rsr_admin)
 rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin)
 

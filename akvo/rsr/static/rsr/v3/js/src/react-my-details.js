@@ -14,7 +14,7 @@ var Input = ReactBootstrap.Input;
 var ResponseModal = React.createClass({displayName: 'ResponseModal',
     render: function () {
         return this.transferPropsTo(
-        Modal( {title:this.props.title}, 
+        Modal( {title:this.props.title},
           React.DOM.div( {className:"modal-body"}, this.props.response),
           React.DOM.div( {className:"modal-footer"}, Button( {onClick:this.props.onRequestHide}, "Close"))
         )
@@ -33,13 +33,13 @@ var Employment = React.createClass({displayName: 'Employment',
 
     render: function() {
         if (this.props.employment.is_approved) {
-            return this.state.visible
-                ? React.DOM.li(null, this.props.employment.organisation_full.long_name)
-                : React.DOM.span(null);
+            return (this.state.visible ?
+                React.DOM.li(null, this.props.employment.organisation_full.long_name)
+                : React.DOM.span(null));
         } else {
-            return this.state.visible
-                ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", React.DOM.i(null, "(Not approved)"))
-                : React.DOM.span(null);
+            return (this.state.visible ?
+                React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", React.DOM.i(null, "(Not approved)"))
+                : React.DOM.span(null));
         }
     }
 });
@@ -49,7 +49,7 @@ var EmploymentList = React.createClass({displayName: 'EmploymentList',
         var employments = this.props.employments.map(function(employment) {
             return (
                 Employment( {employment:employment})
-                )
+                );
         });
         return (
             React.DOM.ul(null, employments)
@@ -110,12 +110,12 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
                     this.setState({
                         title: "Request failed",
                         response: "You are already connected to this organisation. Only one connection per organisation is allowed."
-                    })
+                    });
                 } else {
                     this.setState({
                         title: "Request failed",
                         response: "Request failed, could not connect to organisation."
-                    })
+                    });
                 }
             }.bind(this)
         });
@@ -152,19 +152,19 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
                     title: "Request failed",
                     response: "Request failed, multiple organisations named \"" + name + "\" found. " +
                         "Please send a mail to support@akvo.org to get this resolved."
-                })
+                });
             } else {
                 this.setState({
                     title: "Request failed",
                     response: "Request failed, could not find organisation \"" + name + "\"."
-                })
+                });
             }
         }.bind(this))
             .fail(function() {
                 this.setState({
                     title: "Request failed",
                     response: "Request failed, could not find organisation \"" + name + "\"."
-                })
+                });
             }.bind(this)
         );
     },
@@ -184,7 +184,7 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
             organisation: $('#organisationInput').attr('value_id'),
             country: $('#countriesInput').attr('value_id'),
             job_title: $('#jobtitleInput').val()
-        }
+        };
     },
 
     handleAddEmployment: function(employment) {
@@ -195,11 +195,11 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
         return (
             React.DOM.span(null, 
                 React.DOM.h4(null, "Connect with your employer"),
-                React.DOM.form(null, 
+                React.DOM.form(null,
                     OrganisationInput( {ref:"organisationInput"} ),
                     CountryInput( {ref:"countryInput"} ),
                     JobTitleInput( {ref:"jobtitleInput"} ),
-                    ModalTrigger( {modal:ResponseModal( {title:this.state.title, response:this.state.response} )}, 
+                    ModalTrigger( {modal:ResponseModal( {title:this.state.title, response:this.state.response} )},
                         Button( {onClick:this.addEmployment, bsStyle:"primary"}, "Request to join")
                     )
                 )
@@ -210,7 +210,7 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
 
 var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
     getInitialState: function() {
-        return { employments: [] }
+        return { employments: [] };
     },
 
     componentDidMount: function() {
@@ -225,12 +225,12 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
     addEmployment: function(employment) {
         this.setState({
             employments: this.state.employments.concat([employment])
-        })
+        });
     },
 
     render: function() {
         return (
-            React.DOM.span(null, 
+            React.DOM.span(null,
                 React.DOM.h3(null, React.DOM.i( {class:"fa fa-users"}), " My organisations"),
                 EmploymentList( {employments:this.state.employments} ),
                 AddEmploymentForm( {link:this.props.link, org_link:this.props.org_link,
