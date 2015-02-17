@@ -3,69 +3,61 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-// Resets a file Form element
-function resetFormElement(e) {
-  e.wrap('<form>').closest('form').get(0).reset();
-  e.unwrap();
-}
 
+// AKVO_RSR is defined in base.html
+window.AKVO_RSR.utils = {
 
-function bootstrapAlert(errorMsg, elementToPrepend) {
-  var s = '<div class="alert alert-danger alert-dismissible" role="alert">' +
-        '<button type="button" class="close" data-dismiss="alert">' +
-        '<span aria-hidden="true">×</span><span class="sr-only">' +
-        'Close</span></button><%= msg %></div>',
-      t = _.template(s),
-      c = t({ 'msg': errorMsg });
-  return c;
-}
+  resetFormElement: function(e) {
+    e.wrap('<form>').closest('form').get(0).reset();
+    e.unwrap();
+  },
 
-
-// Show a Bootstrap 3 alert
-// Depends on lo-dash
-function alertSnippet(msg) {
+  alertSnippet: function(msg) {
   var s = '<div class="alert alert-danger alert-dismissible" role="alert">' +
         '<button type="button" class="close" data-dismiss="alert">' +
         '<span aria-hidden="true">×</span><span class="sr-only">' +
         'Close</span></button><%= msg %></div>',
       t = _.template(s);
-  return t({'msg': msg});
-}
+    return t({'msg': msg});
+  },
 
-function scheduleAlertFade(timeOut) {
-  window.setTimeout(function() {
-    $('.alert').fadeTo(500, 0).slideUp(500, function() {
-      $(this).remove();
-    });
-  }, timeOut);
-}
+  scheduleAlertFade: function(timeOut) {
+    window.setTimeout(function() {
+      $('.alert').fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, timeOut);
+  }
+
+};
+
 
 $(document).ready(function() {
 
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
-        return cookieValue;
+      }
     }
+    return cookieValue;
+  }
 
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
+  function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
 
-    var csrftoken = getCookie('csrftoken');
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
+  var csrftoken = getCookie('csrftoken');
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
