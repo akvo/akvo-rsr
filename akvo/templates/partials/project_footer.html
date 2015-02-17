@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-3">
-                <p><span class="detailedInfo">{% trans "Related documents" %}:</span></p>
+                <p><span class="detailedInfo"><i class="fa fa-file-text"></i> {% trans "Related documents" %}:</span></p>
                 <p>
                     {% for doc in project.documents.all %}
                         {{doc.show_link|safe}}<br>
@@ -14,7 +14,7 @@
                 </p>
             </div>
             <div class="col-sm-3">
-                <p><span class="detailedInfo">{% trans "Related links" %}:</span></p>
+                <p><span class="detailedInfo"><i class="fa fa-external-link"></i> {% trans "Related links" %}:</span></p>
                 <p>
                     {% for link in project.links.all %}
                         {{link.show_link|safe}}<br>

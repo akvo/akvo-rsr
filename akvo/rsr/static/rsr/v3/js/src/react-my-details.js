@@ -193,9 +193,9 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
 
     render: function() {
         return (
-            React.DOM.span(null, 
-                React.DOM.h4(null, "Connect with an organisation"),
-                React.DOM.form(null, 
+            React.DOM.span(null,
+                React.DOM.h4(null, "Connect with your employer"),
+                React.DOM.form(null,
                     OrganisationInput( {ref:"organisationInput"} ),
                     CountryInput( {ref:"countryInput"} ),
                     JobTitleInput( {ref:"jobtitleInput"} ),
