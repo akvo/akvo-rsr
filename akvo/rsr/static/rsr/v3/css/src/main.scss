@@ -53,16 +53,19 @@ a, a:link, a:visited {
     color: rgba($akvoPurple, 0.2);
     font-weight: bold;
 }
+
 .emTxt {
     color: rgba($akvoPurple, 0.5);
 }
+
 .noStyleUl {
     list-style-type: none;
-    padding:0;
+    padding: 0;
     li {
-        padding:0;
+        padding: 0;
     }
 }
+
 em {
     font-family: $scriptFont;
     font-size: 1.2em;
@@ -292,7 +295,7 @@ nav.navbar-fixed-top {
             a {
                 color: $anchorLink;
                 font-family: $titleFont;
-                border:thin solid transparent;
+                border: thin solid transparent;
                 &:hover {
                     color: $anchorLinkHover;
                 }
@@ -302,7 +305,7 @@ nav.navbar-fixed-top {
                     background: rgba($anchorLinkHover, 0.1);
                     @include border-radius(3px);
                     @include responsive(small-max-screens) {
-                        background:rgba($anchorLinkHover, 0.1);
+                        background: rgba($anchorLinkHover, 0.1);
                     }
                 }
                 &.addUpdateBtn {
@@ -315,57 +318,57 @@ nav.navbar-fixed-top {
                         border-color: $anchorLinkHover;
                     }
                     @include responsive(small-max-screens) {
-                            width:95%;
-                            padding:10px 5%;
-                            margin:0 auto 10px auto;
-                        }
+                        width: 95%;
+                        padding: 10px 5%;
+                        margin: 0 auto 10px auto;
+                    }
                 }
             }
             &.navProject {
                 .active {
                     background: darken(rgba($rsrBlue, 0.05), 10%);
-                    border:thin solid rgba($rsrBlue, 0.2);
+                    border: thin solid rgba($rsrBlue, 0.2);
                     @include border-radius(3px);
-                    color:$rsrBlue;
+                    color: $rsrBlue;
                     @include transition(all 0.2s linear);
                     &:hover {
                         background: darken(rgba($rsrBlue, 0), 10%);
-                        border:thin solid rgba($rsrBlue, 0);
+                        border: thin solid rgba($rsrBlue, 0);
                         @include border-radius(3px);
-                        color:$anchorLinkHover;
-                        }
+                        color: $anchorLinkHover;
                     }
                 }
+            }
             &.navUpdate {
                 .active {
                     background: darken(rgba($rsrGreen, 0.05), 10%);
-                    border:thin solid rgba($rsrGreen, 0.2);
+                    border: thin solid rgba($rsrGreen, 0.2);
                     @include border-radius(3px);
-                    color:$rsrGreen;
+                    color: $rsrGreen;
                     @include transition(all 0.2s linear);
                     &:hover {
                         background: darken(rgba($rsrGreen, 0), 10%);
-                        border:thin solid rgba($rsrGreen, 0);
+                        border: thin solid rgba($rsrGreen, 0);
                         @include border-radius(3px);
-                        color:$anchorLinkHover;
-                        }
-                    }                            
+                        color: $anchorLinkHover;
+                    }
                 }
+            }
             &.navOrganisation {
                 .active {
                     background: darken(rgba($akvoTvRed, 0.05), 10%);
-                    border:thin solid rgba($akvoTvRed, 0.2);
+                    border: thin solid rgba($akvoTvRed, 0.2);
                     @include border-radius(3px);
-                    color:$akvoTvRed;
+                    color: $akvoTvRed;
                     @include transition(all 0.2s linear);
                     &:hover {
                         background: darken(rgba($akvoTvRed, 0), 10%);
-                        border:thin solid rgba($akvoTvRed, 0);
+                        border: thin solid rgba($akvoTvRed, 0);
                         @include border-radius(3px);
-                        color:$anchorLinkHover;
-                        }                   
-                    }                          
+                        color: $anchorLinkHover;
+                    }
                 }
+            }
         }
         &.navbar-right {
             li {
@@ -374,8 +377,9 @@ nav.navbar-fixed-top {
                     padding-left: 5px;
                     padding-right: 5px;
                     @include responsive(small-max-screens) {
-                        padding:10px 15px;
+                        padding: 10px 15px;
                     }
+
                     &.active {
                         background: none;
                     }
@@ -384,11 +388,13 @@ nav.navbar-fixed-top {
         }
     }
 }
+
 .navbar-inverse {
     .navbar-collapse {
-        border-color:rgb(228,228,228);
+        border-color: rgb(228, 228, 228);
     }
 }
+
 .navbar .btn {
     padding: 4px 9px;
 }
@@ -399,11 +405,12 @@ nav.navbar-fixed-top {
     }
 }
 
+
 /* My RSR stuff */
 .myRsrMenu {
-    min-height:100%;
-    bottom:0;
-    top:0;
+    min-height: 100%;
+    bottom: 0;
+    top: 0;
     h4 {
         padding-top: 15px;
     }
@@ -411,16 +418,16 @@ nav.navbar-fixed-top {
         background: rgba($akvoBlack, 0.05);
         ul {
             li {
-
                 a {
                     color: $anchorLink;
                     font-family: $titleFont;
-                    padding-top:15px;
-                    padding-bottom:15px;
+                    padding-top: 15px;
+                    padding-bottom: 15px;
                     @include responsive(small-max-screens) {
-                        padding-top:20px;
-                        padding-bottom:20px;
+                        padding-top: 20px;
+                        padding-bottom: 20px;
                     }
+
                     &:hover {
                         color: $anchorLinkHover;
                         background: rgba($anchorLinkHover, 0.05) url(../../img/carret.png) 98% center no-repeat;
@@ -437,12 +444,14 @@ nav.navbar-fixed-top {
         }
     }
 }
+
 #profile {
     .usrAvatar {
-        background-color: rgba($akvoBlack,0.05);
-        padding:10px;
+        background-color: rgba($akvoBlack, 0.05);
+        padding: 10px;
     }
 }
+
 #organisations {
     background: darken(rgba($anchorLinkHover, 0.1), 0);
     padding-bottom: 15px;
@@ -453,7 +462,8 @@ nav.navbar-fixed-top {
         .btn {
             margin: 10px auto;
         }
-    }   
+    }
+
     ul {
         padding-left: 5px;
         margin-bottom: 25px;
@@ -471,7 +481,7 @@ nav.navbar-fixed-top {
         border: 1px solid #ccc;
         border: 1px solid rgba(0, 0, 0, 0.2);
         border-radius: 8px;
-        box-shadow: 0 5px 10px rgba(0,0,0,.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     }
     .tt-suggestion {
         padding: 3px 20px;
@@ -488,6 +498,7 @@ nav.navbar-fixed-top {
         width: 100%;
     }
 }
+
 /* FOOTER */
 body > footer {
     margin-top: 1em;
@@ -500,8 +511,8 @@ footer {
         #footer-body {
             ul.nav {
                 li {
-                    padding-top:10px;
-                    padding-bottom:10px;
+                    padding-top: 10px;
+                    padding-bottom: 10px;
                     a {
                         display: block;
                         &[href="http://akvo.org"] {
@@ -510,8 +521,8 @@ footer {
                             background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
                             text-indent: -9999px;
                             background-size: 70px 42px;
-                            @include responsive(small-max-screens) { 
-                                width:100%;
+                            @include responsive(small-max-screens) {
+                                width: 100%;
                                 background-size: 80px auto;
                             }
                         }
@@ -535,7 +546,7 @@ footer {
 /* GENERIC STRUCTURE and TEXT STYLES */
 .touch-navbar {
     margin-top: -10px;
-    @include responsive(small-max-screens) { 
+    @include responsive(small-max-screens) {
         margin-top: -15px;
     }
 }
@@ -553,7 +564,7 @@ footer {
 
 h4.detailedInfo {
     margin-bottom: 0.25em;
-    color:$akvoBlack;
+    color: $akvoBlack;
 }
 
 .progress-bar-info {
@@ -605,10 +616,11 @@ h4.detailedInfo {
         }
     }
 }
+
 .paginationWrap {
-    background:rgba($akvoBlack,0.05);
+    background: rgba($akvoBlack, 0.05);
     @include border-radius(3px);
-    margin-bottom:15px;
+    margin-bottom: 15px;
     .pagination {
         li {
             a, span {
@@ -619,21 +631,22 @@ h4.detailedInfo {
             }
         }
     }
-        .sortList {
-            display: inline-block;
-            padding-left: 0;
-            margin: 20px 0;
-            text-align: left;
-            @include responsive(small-max-screens) {
-                text-align: center;
-                margin:20px auto;
-            }
-            .dropdown {
-                .dropdown-menu {
-                    li {
-                        a {
-                            color:$anchorLink;
-                        }
+    .sortList {
+        display: inline-block;
+        padding-left: 0;
+        margin: 20px 0;
+        text-align: left;
+        @include responsive(small-max-screens) {
+            text-align: center;
+            margin: 20px auto;
+        }
+
+        .dropdown {
+            .dropdown-menu {
+                li {
+                    a {
+                        color: $anchorLink;
+                    }
                     &.disabled {
                         a {
                             font-weight: bold;
@@ -645,6 +658,7 @@ h4.detailedInfo {
         }
     }
 }
+
 #sidebar-wrapper {
     z-index: 1000;
     position: absolute;
@@ -672,7 +686,7 @@ h4.detailedInfo {
                     border-color: rgba($akvoBlack, 0.2);
                 }
                 label {
-                    color: rgba($akvoBlack,0.5);
+                    color: rgba($akvoBlack, 0.5);
                     @include noWrapTxt;
                 }
             }
@@ -792,27 +806,27 @@ h4.detailedInfo {
             li {
                 h1 {
                     a {
-                        color:$rsrBlue;
+                        color: $rsrBlue;
                         &:hover {
-                            color:$anchorLinkHover;
+                            color: $anchorLinkHover;
                         }
                     }
                 }
-                border:thin solid rgba($rsrBlue, 0);
-                @include transition(all 0.2s ease-in);                
+                border: thin solid rgba($rsrBlue, 0);
+                @include transition(all 0.2s ease-in);
                 .projectSubT {
                     margin-bottom: 0;
                 }
                 &:nth-child(2n+1) {
                     background: darken(rgba($rsrBlue, 0.05), 10%);
-                    border:thin solid rgba($rsrBlue, 0.2);
+                    border: thin solid rgba($rsrBlue, 0.2);
                 }
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
                 }
                 &:hover {
                     background: darken(rgba($rsrBlue, 0.05), 30%);
-                    border:thin solid rgba($rsrBlue, 0.35);
+                    border: thin solid rgba($rsrBlue, 0.35);
                 }
             }
         }
@@ -820,11 +834,9 @@ h4.detailedInfo {
     &.updates {
         ul {
             li {
-                border:thin solid rgba($rsrGreen, 0);
+                border: thin solid rgba($rsrGreen, 0);
                 @include transition(all 0.2s ease-in);
-                .orgName {
-
-                }
+                .orgName {}
                 .projectTitle {
                     color: rgba($anchorLink, 1);
                     i {
@@ -835,9 +847,9 @@ h4.detailedInfo {
                         color: $anchorLinkHover;
                     }
                 }
-                h1{           
+                h1 {
                     a {
-                        color:$rsrGreen;
+                        color: $rsrGreen;
                         &:hover {
                             color: $anchorLinkHover;
                         }
@@ -845,18 +857,17 @@ h4.detailedInfo {
                 }
                 &:nth-child(2n+1) {
                     background: darken(rgba($rsrGreen, 0.05), 10%);
-                    border:thin solid rgba($rsrGreen, 0.15);
+                    border: thin solid rgba($rsrGreen, 0.15);
                 }
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
                 }
                 &:hover {
                     background: darken(rgba($rsrGreen, 0.05), 30%);
-                    border:thin solid rgba($rsrGreen, 0.35);
+                    border: thin solid rgba($rsrGreen, 0.35);
                 }
                 .excerpt {
-                    p {
-                    }
+                    p {}
                 }
             }
         }
@@ -864,13 +875,12 @@ h4.detailedInfo {
     &.organisations {
         ul {
             li {
-                border:thin solid rgba($akvoTvRed, 0);
-                @include transition(all 0.2s ease-in);                
+                border: thin solid rgba($akvoTvRed, 0);
+                @include transition(all 0.2s ease-in);
                 i {
-                    font-size:1.1em;
+                    font-size: 1.1em;
                 }
-                .projectLocation {
-                }
+                .projectLocation {}
                 .projectTitle {
                     display: block;
                     margin: 0 0 3px 0;
@@ -881,8 +891,7 @@ h4.detailedInfo {
                 .upDateTime {
                     margin-top: 10px;
                 }
-                .orgType {
-                }
+                .orgType {}
                 .additionalInfo {
                     div {
                         color: rgba($akvoBlack, 0.5);
@@ -891,21 +900,21 @@ h4.detailedInfo {
                         }
                     }
                 }
-                h1{          
+                h1 {
                     a {
-                        color:$akvoTvRed;
+                        color: $akvoTvRed;
                         &:hover {
                             color: $anchorLinkHover;
-                        }                        
+                        }
                     }
                 }
                 &:nth-child(2n+1) {
                     background: darken(rgba($akvoTvRed, 0.05), 0);
-                    border:thin solid rgba($akvoTvRed, 0.15);
+                    border: thin solid rgba($akvoTvRed, 0.15);
                 }
                 &:hover {
                     background: darken(rgba($akvoTvRed, 0.05), 30%);
-                    border:thin solid rgba($akvoTvRed, 0.35);
+                    border: thin solid rgba($akvoTvRed, 0.35);
                 }
                 img {
                     @include bw;
@@ -927,8 +936,8 @@ header {
         margin-bottom: 0;
         padding: 15px 0;
         background: lighten($veryLightOrange, 25%);
-        border-bottom:1px solid rgb(238,238,238);
-        margin-bottom:15px;
+        border-bottom: 1px solid rgb(238, 238, 238);
+        margin-bottom: 15px;
         h1 {
             margin-top: 10px;
             margin-bottom: 0;
@@ -1101,32 +1110,34 @@ div.projectTopRow {
         }
     }
 }
+
 .results {
     ul {
         padding: 5px 0 5px 5px;
         li {
-            i {
-            }
+            i {}
         }
     }
 }
+
 .indicators, .results {
-    padding:0 0 0 15px;
+    padding: 0 0 0 15px;
     dl {
         padding: 5px 0 5px 10px;
         dt, dd {
             display: inline-block;
         }
         dd {
-            width:15%;
-        }        
+            width: 15%;
+        }
         dt {
-            width:85%;
+            width: 85%;
             color: rgba($akvoBlack, 0.4);
             font-weight: normal;
         }
-    }    
+    }
 }
+
 div.timelineBlock {
     margin: 15px auto 25px;
     #timeline {
@@ -1230,42 +1241,41 @@ div.textBlock {
 /* Organisation Page */
 .organisationDetail {
     .organisationHeader {
-        background:rgba($akvoBlack,0.05);
+        background: rgba($akvoBlack, 0.05);
     }
     h1 {
-        margin-top:0;
-        margin-bottom:20px;
+        margin-top: 0;
+        margin-bottom: 20px;
     }
     .orgLogo {
-        padding:10px 0;
-        background:rgba(white,0.5);
+        padding: 10px 0;
+        background: rgba(white, 0.5);
         img {
-            width:35%;
-            margin-left:5px;
+            width: 35%;
+            margin-left: 5px;
         }
     }
     .orgDetails {
-        background:rgba(white,0.05);
+        background: rgba(white, 0.05);
         @include border-radius(5px);
     }
 }
 
-
-/* Cookie */ 
+/* Cookie */
 
 #cookie-law {
-    position:fixed;
-    bottom:0;
-    z-index:9999;
-    box-shadow: 0px -2px 3px rgba($akvoBlack,0.55);
-    width:100%;
+    position: fixed;
+    bottom: 0;
+    z-index: 9999;
+    box-shadow: 0px -2px 3px rgba($akvoBlack, 0.55);
+    width: 100%;
     background: darken($akvoPurple, 15%);
-    p { 
-        padding:15px 0; 
-        text-align:center; 
-        color:white; 
-        margin:0;
-        font-size:1.1em;
+    p {
+        padding: 15px 0;
+        text-align: center;
+        color: white;
+        margin: 0;
+        font-size: 1.1em;
         a {
             font-weight: bold;
         }
