@@ -10,8 +10,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
 from ..iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
+
+from akvo.codelists import models as codelist_models
+from akvo.utils import codelist_choices, codelist_value
 
 
 class Country(models.Model):
@@ -41,7 +43,8 @@ class Country(models.Model):
 
 class RecipientCountry(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='recipient_countries')
-    country = ValidXMLCharField(_(u'country'), blank=True, max_length=2, choices=codelists.COUNTRY)
+    country = ValidXMLCharField(_(u'country'), blank=True, max_length=2,
+                                choices=codelist_choices(codelist_models.Country))
     percentage = models.DecimalField(
         _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
@@ -49,7 +52,7 @@ class RecipientCountry(models.Model):
     text = ValidXMLCharField(_(u'country description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
 
     def iati_country(self):
-        return dict(codelists.COUNTRY)[self.country] if self.country else None
+        return codelist_value(codelist_models.Country, self, 'country')
 
     class Meta:
         app_label = 'rsr'

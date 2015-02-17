@@ -378,6 +378,7 @@ nav.navbar-fixed-top {
                     }
                     &.active {
                         background: none;
+                        color:$anchorLinkHover;
                     }
                 }
             }
@@ -427,9 +428,9 @@ nav.navbar-fixed-top {
                         background-size: 5px auto;
                     }
                     &.active {
-                        color: complement($rsrBlue);
+                        color: $anchorLinkHover;
                         font-weight: bold;
-                        background: rgba($anchorLinkHover, 0.05) url(../../img/carret.png) 98% center no-repeat;
+                        background: rgba($anchorLinkHover, 0.05) url(../../img/carretWhite.png) 98% center no-repeat;
                         background-size: 5px auto;
                     }
                 }
@@ -439,12 +440,12 @@ nav.navbar-fixed-top {
 }
 #profile {
     .usrAvatar {
-        background-color: rgba($akvoBlack,0.05);
-        padding:10px;
+        background-color: rgba($akvoBlack,0);
+        padding:10px 0 10px 0;
     }
 }
 #organisations {
-    background: darken(rgba($anchorLinkHover, 0.1), 0);
+    background: darken(rgba($anchorLinkHover, 0.05), 0);
     padding-bottom: 15px;
     @include border-radius(5px);
     @include responsive(small-max-screens) {
@@ -783,7 +784,7 @@ h4.detailedInfo {
                     color: rgba($akvoBlack, 0.5);
                 }
                 &:hover {
-                    background: darken(rgba($rsrBlue, 0.05), 30%);
+                    background: darken(rgba($rsrBlue, 0.15), 0%);
                     border:thin solid rgba($rsrBlue, 0.35);
                 }
             }
@@ -823,7 +824,7 @@ h4.detailedInfo {
                     color: rgba($akvoBlack, 0.5);
                 }
                 &:hover {
-                    background: darken(rgba($rsrGreen, 0.05), 30%);
+                    background: darken(rgba($rsrGreen, 0.10), 0%);
                     border:thin solid rgba($rsrGreen, 0.35);
                 }
                 .excerpt {
@@ -876,7 +877,7 @@ h4.detailedInfo {
                     border:thin solid rgba($akvoTvRed, 0.15);
                 }
                 &:hover {
-                    background: darken(rgba($akvoTvRed, 0.05), 30%);
+                    background: darken(rgba($akvoTvRed, 0.10), 0%);
                     border:thin solid rgba($akvoTvRed, 0.35);
                 }
                 img {
@@ -961,6 +962,7 @@ div.projectTopRow {
     position: relative;
     background: rgba(245, 245, 245, 0.5);
     margin-top: 1px;
+    margin-bottom: 20px;
     border-bottom: 1px solid rgba($akvoBlack, 0.1);
     #carousel {
         padding: 15px 0;
@@ -1101,12 +1103,14 @@ div.projectTopRow {
 }
 div.timelineBlock {
     margin: 15px auto 25px;
+    display:none;
     #timeline {
         height: 200px;
     }
 }
 
 div.textBlock {
+    margin:10px auto;
     .panel {
         border: 1px solid rgba(235, 235, 235, 0.5);
         .panel-heading {
@@ -1207,10 +1211,17 @@ div.textBlock {
     h1 {
         margin-top:0;
         margin-bottom:20px;
+        color: rgba($akvoTvRed, 1);
+        padding-bottom:10px;
+        border-bottom:1px solid rgba($akvoTvRed,0.05);
+        position:relative;
+        i {
+            font-size:0.75em;
+            top:-5px;
+        }
     }
     .orgLogo {
         padding:10px 0;
-        background:rgba(white,0.5);
         img {
             width:35%;
             margin-left:5px;

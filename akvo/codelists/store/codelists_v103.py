@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/ActivityDateType.xml
-# Fields: code, name
+codelist_list = ['ACTIVITY_DATE_TYPE', 'ACTIVITY_STATUS', 'ACTIVITY_SCOPE', 'AID_TYPE_FLAG', 'AID_TYPE', 'BUDGET_IDENTIFIER', 'BUDGET_IDENTIFIER_VOCABULARY', 'COUNTRY', 'BUDGET_TYPE', 'COLLABORATION_TYPE', 'CONDITION_TYPE', 'CONTACT_TYPE', 'CURRENCY', 'DESCRIPTION_TYPE', 'DISBURSEMENT_CHANNEL', 'DOCUMENT_CATEGORY', 'FILE_FORMAT', 'FINANCE_TYPE', 'FLOW_TYPE', 'GAZETTEER_AGENCY', 'GEOGRAPHICAL_PRECISION', 'INDICATOR_MEASURE', 'LANGUAGE', 'LOAN_REPAYMENT_TYPE', 'LOAN_REPAYMENT_PERIOD', 'LOCATION_TYPE', 'ORGANISATION_IDENTIFIER', 'ORGANISATION_ROLE', 'ORGANISATION_TYPE', 'POLICY_MARKER', 'POLICY_SIGNIFICANCE', 'PUBLISHER_TYPE', 'REGION', 'REGION_VOCABULARY', 'RELATED_ACTIVITY_TYPE', 'RESULT_TYPE', 'SECTOR', 'SECTOR_CATEGORY', 'TIED_STATUS', 'TRANSACTION_TYPE', 'VALUE_TYPE', 'VERIFICATION_STATUS', 'VOCABULARY', ]
 
+# From http://codelists103.archive.iatistandard.org/data/codelist/ActivityDateType.xml
 ACTIVITY_DATE_TYPE = (
+    (u'code', u'name'),
     (u'end-actual', u'The actual end date, such as date of last disbursement'),
     (u'end-planned', u'The planned end date as recorded in project documentation'),
     (u'start-actual', u'The actual start date, such as date of first disbursement'),
     (u'start-planned', u'The planned start date as recorded in project documentation. Can be date of signature of activity agreement or approval by relevant body')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/ActivityStatus.xml
-# Fields: code, name, language
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/ActivityStatus.xml
 ACTIVITY_STATUS = (
+    (u'code', u'name', u'language'),
     (u'1', u'Pipeline/identification', u'en'),
     (u'2', u'Implementation', u'en'),
     (u'3', u'Completion', u'en'),
@@ -21,10 +21,31 @@ ACTIVITY_STATUS = (
     (u'5', u'Cancelled', u'en')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/AidType.xml
-# Fields: code, name, description, language, category, category-name, category-description
+# From http://codelists103.archive.iatistandard.org/data/codelist/ActivityScope.xml
+ACTIVITY_SCOPE = (
+    (u'code', u'name'),
+    (u'1', u'Global'),
+    (u'2', u'Regional'),
+    (u'3', u'Multi-national'),
+    (u'4', u'National'),
+    (u'5', u'Sub-national: Multi-first-level administrative areas'),
+    (u'6', u'Sub-national: Single first-level administrative area'),
+    (u'7', u'Sub-national: Single second-level administrative area'),
+    (u'8', u'Single location')
+)
 
+# From http://codelists103.archive.iatistandard.org/data/codelist/AidTypeFlag.xml
+AID_TYPE_FLAG = (
+    (u'code', u'name'),
+    (u'1', u'Free standing technical cooperation'),
+    (u'2', u'Programme-based approach'),
+    (u'3', u'Investment project'),
+    (u'4', u'Associated financing')
+)
+
+# From http://codelists103.archive.iatistandard.org/data/codelist/AidType.xml
 AID_TYPE = (
+    (u'code', u'name', u'description', u'language', u'category', u'category-name', u'category-description'),
     (u'A01', u'General budget support', u'Unearmarked contributions to the government budget including funding to support the implementation of macroeconomic reforms (structural adjustment programmes, poverty reduction strategies). Budget support is a method of financing a recipient countrys budget through a transfer of resources from an external financing agency to the recipient governments national treasury. The funds thus transferred are managed in accordance with the recipients budgetary procedures. Funds transferred to the national treasury for financing programmes or projects managed according to different budgetary procedures from those of the recipient country, with the intention of earmarking the resources for specific uses, are therefore excluded.', u'en', u'A', u'Budget support', u'For contributions under this category, the donor relinquishes the exclusive control of its funds by sharing the responsibility with the recipient.'),
     (u'A02', u'Sector budget support', u'Sector budget support, like general budget support, is a financial contribution to a recipient government\s budget. However, in sector budget support, the dialogue between donors and partner governments focuses on sector-specific concerns, rather than on overall policy and budget priorities', u'en', u'A', u'Budget support', u'For contributions under this category, the donor relinquishes the exclusive control of its funds by sharing the responsibility with the recipient.'),
     (u'B01', u'Core support to NGOs, other private bodies, PPPs and research institutes', u'Funds are paid over to NGOs (local, national and international) for use at the latters discretion, and contribute to programmes and activities which NGOs have developed themselves, and which they implement on their own authority and responsibility. Core contributions to PPPs, funds paid over to foundations (e.g. philanthropic foundations), and contributions to research institutes (public and private) are also recorded here. Annex 2 of the DAC Directives provides a list of INGOs, PPPs and networks core contributions to which may be reported under B01. This list is not exclusive.', u'en', u'B', u'Core contributions and pooled programmes and funds', u'For contributions under this category, the donor relinquishes the exclusive control of its funds by sharing the responsibility with other stakeholders (other donors, NGOs, multilateral institutions, Public Private Partnerships). The category covers both core contributions (B01 and B02), and pooled contributions with a specific earmarking (B03 and B04).'),
@@ -42,10 +63,177 @@ AID_TYPE = (
     (u'H02', u'Refugees in donor countries', u'Official sector expenditures for the sustenance of refugees in donor countries during the first twelve months of their stay.', u'en', u'H', u'Other in-donor expenditures', u'Groups a number of contributions that do not give rise to a cross-border flow.')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/Country.xml
-# Fields: code, name, language
+# From http://codelists103.archive.iatistandard.org/data/codelist/BudgetIdentifier.xml
+BUDGET_IDENTIFIER = (
+    (u'code', u'name', u'category', u'sector'),
+    (u'1.1.1', u'Executive - executive', u'General Public Service', u'Executive'),
+    (u'1.2.1', u'Legislative - legislative', u'General Public Service', u'Legislative'),
+    (u'1.3.1', u'Accountability - macroeconomic policy', u'General Public Service', u'Accountability'),
+    (u'1.3.2', u'Accountability - budgeting', u'General Public Service', u'Accountability'),
+    (u'1.3.3', u'Accountability - planning', u'General Public Service', u'Accountability'),
+    (u'1.3.4', u'Accountability - Treasury/Accounts', u'General Public Service', u'Accountability'),
+    (u'1.3.5', u'Accountability - debt and aid management', u'General Public Service', u'Accountability'),
+    (u'1.3.6', u'Accountability - tax policy', u'General Public Service', u'Accountability'),
+    (u'1.3.7', u'Accountability - tax collection', u'General Public Service', u'Accountability'),
+    (u'1.3.8', u'Accountability - local government finance', u'General Public Service', u'Accountability'),
+    (u'1.3.9', u'Accountability - other central transfers to institutions ', u'General Public Service', u'Accountability'),
+    (u'1.3.10', u'Accountability - national audit', u'General Public Service', u'Accountability'),
+    (u'1.3.11', u'Accountability - national monitoring and evaluation', u'General Public Service', u'Accountability'),
+    (u'1.3.12', u'Accountability - monetary institutions', u'General Public Service', u'Accountability'),
+    (u'1.3.13', u'Accountability - financial sector policy and regulation', u'General Public Service', u'Accountability'),
+    (u'1.4.1', u'External Affairs - foreign affairs ', u'General Public Service', u'External Affairs'),
+    (u'1.4.2', u'External Affairs - diplomatic missions', u'General Public Service', u'External Affairs'),
+    (u'1.4.3', u'External Affairs - official development assistance', u'General Public Service', u'External Affairs'),
+    (u'1.5.1', u'General Personnel Services - general personnel services', u'General Public Service', u'General Personnel Services'),
+    (u'1.6.1', u'Statistics - statistics', u'General Public Service', u'Statistics'),
+    (u'1.7.1', u'Other General Services - support to civil society ', u'General Public Service', u'Other General Services'),
+    (u'1.7.2', u'Other General Services - central procurement', u'General Public Service', u'Other General Services'),
+    (u'1.7.3', u'Other General Services - Local Government Administration', u'General Public Service', u'Other General Services'),
+    (u'1.7.4', u'Other General Services - other general services', u'General Public Service', u'Other General Services'),
+    (u'1.8.1', u'Elections - elections', u'General Public Service', u'Elections'),
+    (u'2.1.1', u'Justice, Law and Order - policy, planning and administration', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.2', u'Justice, Law and Order - police', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.2', u'Justice, Law and Order - fire', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.3', u'Justice, Law and Order - judicial affairs', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.4', u'Justice, Law and Order - Ombudsman', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.5', u'Justice, Law and Order - human rights affairs', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.6', u'Justice, Law and Order - immigration', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.7', u'Justice, Law and Order - anti corruption', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.8', u'Justice, Law and Order - prisons', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.9', u'Justice, Law and Order - peace building', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.1.10', u'Justice, Law and Order - demobilisation', u'Justice, Law, Order and Security', u'Justice, Law and Order'),
+    (u'2.2.1', u'Defence - policy, planning and administration', u'Justice, Law, Order and Security', u'Defence'),
+    (u'2.2.2', u'Defence - military', u'Justice, Law, Order and Security', u'Defence'),
+    (u'2.2.3', u'Defence - civil defence', u'Justice, Law, Order and Security', u'Defence'),
+    (u'2.2.4', u'Defence - foreign military aid', u'Justice, Law, Order and Security', u'Defence'),
+    (u'3.1.1', u'General Economic, Commercial and Labour Affairs - policy, planning and administration', u'Economic Affairs', u'General Economic, Commercial and Labour Affairs'),
+    (u'3.1.2', u'General Economic, Commercial and Labour Affairs - general economic affairs', u'Economic Affairs', u'General Economic, Commercial and Labour Affairs'),
+    (u'3.1.3', u'General Economic, Commercial and Labour Affairs - investment promotion', u'Economic Affairs', u'General Economic, Commercial and Labour Affairs'),
+    (u'3.1.4', u'General Economic, Commercial and Labour Affairs - privatisation', u'Economic Affairs', u'General Economic, Commercial and Labour Affairs'),
+    (u'3.1.5', u'General Economic, Commercial and Labour Affairs - trade', u'Economic Affairs', u'General Economic, Commercial and Labour Affairs'),
+    (u'3.1.6', u'General Economic, Commercial and Labour Affairs - labour', u'Economic Affairs', u'General Economic, Commercial and Labour Affairs'),
+    (u'3.1.7', u'General Economic, Commercial and Labour Affairs - national standards development', u'Economic Affairs', u'General Economic, Commercial and Labour Affairs'),
+    (u'3.2.1', u'Public Works - policy, planning and administration', u'Economic Affairs', u'Public Works'),
+    (u'3.2.2', u'Public Works - construction regulation', u'Economic Affairs', u'Public Works'),
+    (u'3.2.3', u'Public Works - mechanical services', u'Economic Affairs', u'Public Works'),
+    (u'3.3.1', u'Agriculture - policy, planning and administration', u'Economic Affairs', u'Agriculture'),
+    (u'3.3.2', u'Agriculture - irrigation', u'Economic Affairs', u'Agriculture'),
+    (u'3.3.3', u'Agriculture - inputs', u'Economic Affairs', u'Agriculture'),
+    (u'3.3.4', u'Agriculture - food crop', u'Economic Affairs', u'Agriculture'),
+    (u'3.3.5', u'Agriculture - industrial crop', u'Economic Affairs', u'Agriculture'),
+    (u'3.3.6', u'Agriculture - livestock', u'Economic Affairs', u'Agriculture'),
+    (u'3.3.7', u'Agriculture - agricultural training and extension', u'Economic Affairs', u'Agriculture'),
+    (u'3.3.8', u'Agriculture - research', u'Economic Affairs', u'Agriculture'),
+    (u'3.3.9', u'Agriculture - other services', u'Economic Affairs', u'Agriculture'),
+    (u'3.4.1', u'Forestry - policy, planning and administration', u'Economic Affairs', u'Forestry'),
+    (u'3.4.2', u'Forestry - development and services', u'Economic Affairs', u'Forestry'),
+    (u'3.4.3', u'Forestry - education/training', u'Economic Affairs', u'Forestry'),
+    (u'3.4.4', u'Forestry - research', u'Economic Affairs', u'Forestry'),
+    (u'3.5.1', u'Fishing and Hunting - policy, planning and administration', u'Economic Affairs', u'Fishing and Hunting'),
+    (u'3.5.2', u'Fishing and Hunting - development and services', u'Economic Affairs', u'Fishing and Hunting'),
+    (u'3.5.3', u'Fishing and Hunting - education and training', u'Economic Affairs', u'Fishing and Hunting'),
+    (u'3.5.4', u'Fishing and Hunting - research', u'Economic Affairs', u'Fishing and Hunting'),
+    (u'3.6.1', u'Energy - policy, planning and administration', u'Economic Affairs', u'Energy'),
+    (u'3.6.2', u'Energy - education and training', u'Economic Affairs', u'Energy'),
+    (u'3.6.3', u'Energy - energy regulation', u'Economic Affairs', u'Energy'),
+    (u'3.6.4', u'Energy - electricity transmission', u'Economic Affairs', u'Energy'),
+    (u'3.6.5', u'Energy - nuclear', u'Economic Affairs', u'Energy'),
+    (u'3.6.6', u'Energy - power generation', u'Economic Affairs', u'Energy'),
+    (u'3.6.7', u'Energy - gas ', u'Economic Affairs', u'Energy'),
+    (u'3.7.1', u'Mining and Mineral Development - policy, planning and administration', u'Economic Affairs', u'Mining and Mineral Development'),
+    (u'3.7.2', u'Mining and Mineral Development - prospection and exploration', u'Economic Affairs', u'Mining and Mineral Development'),
+    (u'3.7.3', u'Mining and Mineral Development - coal and other solid mineral fuels', u'Economic Affairs', u'Mining and Mineral Development'),
+    (u'3.7.4', u'Mining and Mineral Development - petroleum and gas', u'Economic Affairs', u'Mining and Mineral Development'),
+    (u'3.7.6', u'Mining and Mineral Development - other fuel', u'Economic Affairs', u'Mining and Mineral Development'),
+    (u'3.7.7', u'Mining and Mineral Development - non fuel minerals', u'Economic Affairs', u'Mining and Mineral Development'),
+    (u'3.8.1', u'Transport - policy, planning and administration', u'Economic Affairs', u'Transport'),
+    (u'3.8.2', u'Transport - transport regulation', u'Economic Affairs', u'Transport'),
+    (u'3.8.3', u'Transport - feeder road construction', u'Economic Affairs', u'Transport'),
+    (u'3.8.4', u'Transport - feeder road maintenance', u'Economic Affairs', u'Transport'),
+    (u'3.8.5', u'Transport - national road construction', u'Economic Affairs', u'Transport'),
+    (u'3.8.6', u'Transport - national road maintenance', u'Economic Affairs', u'Transport'),
+    (u'3.8.7', u'Transport - rail', u'Economic Affairs', u'Transport'),
+    (u'3.8.8', u'Transport - water', u'Economic Affairs', u'Transport'),
+    (u'3.8.9', u'Transport - air', u'Economic Affairs', u'Transport'),
+    (u'3.8.10', u'Transport - pipeline', u'Economic Affairs', u'Transport'),
+    (u'3.8.11', u'Transport - storage and distribution', u'Economic Affairs', u'Transport'),
+    (u'3.8.12', u'Transport - public transport services', u'Economic Affairs', u'Transport'),
+    (u'3.8.13', u'Transport - meteorological services', u'Economic Affairs', u'Transport'),
+    (u'3.8.14', u'Transport - education and training', u'Economic Affairs', u'Transport'),
+    (u'3.9.1', u'Industry - policy, planning and administration', u'Economic Affairs', u'Industry'),
+    (u'3.9.2', u'Industry - development and services', u'Economic Affairs', u'Industry'),
+    (u'3.9.3', u'Industry - industrial research', u'Economic Affairs', u'Industry'),
+    (u'3.9.4', u'Industry - (investment in industry)', u'Economic Affairs', u'Industry'),
+    (u'3.10.1', u'Communications - policy, planning and administration', u'Economic Affairs', u'Communications'),
+    (u'3.10.2', u'Communications - ICT Infrastructure', u'Economic Affairs', u'Communications'),
+    (u'3.10.3', u'Communications - telecoms and postal services', u'Economic Affairs', u'Communications'),
+    (u'3.10.4', u'Communications - information services', u'Economic Affairs', u'Communications'),
+    (u'3.11.1', u'Tourism - policy, planning and administration', u'Economic Affairs', u'Tourism'),
+    (u'3.11.2', u'Tourism - services', u'Economic Affairs', u'Tourism'),
+    (u'3.12.1', u'Microfinance and financial services - Microfinance and financial services', u'Economic Affairs', u'Microfinance and financial services'),
+    (u'4.1.1', u'Water supply and Sanitation - policy, planning and administration', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.1.2', u'Water supply and Sanitation - education/training', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.1.3', u'Water supply and Sanitation - rural water supply and sanitation', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.1.4', u'Water supply and Sanitation - urban water supply and sanitation', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.1.5', u'Water supply and Sanitation - rural water supply', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.1.6', u'Water supply and Sanitation - urban water supply', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.1.7', u'Water supply and Sanitation - rural sanitation', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.1.8', u'Water supply and Sanitation - urban sanitation', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.1.9', u'Water supply and Sanitation - sewage and waste management', u'Water, Natural Resource Management and Environment', u'Water supply and Sanitation'),
+    (u'4.2.1', u'Environment - policy, planning and administration', u'Water, Natural Resource Management and Environment', u'Environment'),
+    (u'4.2.2', u'Environment - research/ education and training', u'Water, Natural Resource Management and Environment', u'Environment'),
+    (u'4.2.3', u'Environment - natural resource management', u'Water, Natural Resource Management and Environment', u'Environment'),
+    (u'4.2.4', u'Environment - water resources management', u'Water, Natural Resource Management and Environment', u'Environment'),
+    (u'4.2.5', u'Environment - wildlife protection, parks and site preservation', u'Water, Natural Resource Management and Environment', u'Environment'),
+    (u'5.1.1', u'Health - policy, planning and administration', u'Social Affairs', u'Health'),
+    (u'5.2.1', u'Recreation, Culture and Religion - recreation and sport', u'Social Affairs', u'Recreation, Culture and Religion'),
+    (u'5.2.2', u'Recreation, Culture and Religion - culture', u'Social Affairs', u'Recreation, Culture and Religion'),
+    (u'5.2.3', u'Recreation, Culture and Religion - broadcasting and publishing', u'Social Affairs', u'Recreation, Culture and Religion'),
+    (u'5.2.4', u'Recreation, Culture and Religion - religion', u'Social Affairs', u'Recreation, Culture and Religion'),
+    (u'5.3.1', u'Education - administration, policy and planning', u'Social Affairs', u'Education'),
+    (u'5.3.2', u'Education - research', u'Social Affairs', u'Education'),
+    (u'5.3.3', u'Education - pre-primary', u'Social Affairs', u'Education'),
+    (u'5.3.4', u'Education - primary', u'Social Affairs', u'Education'),
+    (u'5.3.5', u'Education - lower secondary', u'Social Affairs', u'Education'),
+    (u'5.3.6', u'Education - upper secondary', u'Social Affairs', u'Education'),
+    (u'5.3.7', u'Education - post secondary non tertiary ', u'Social Affairs', u'Education'),
+    (u'5.3.8', u'Education - tertiary', u'Social Affairs', u'Education'),
+    (u'5.3.9', u'Education - vocational training', u'Social Affairs', u'Education'),
+    (u'5.3.10', u'Education - advanced technical and managerial training', u'Social Affairs', u'Education'),
+    (u'5.3.11', u'Education - basic adult education', u'Social Affairs', u'Education'),
+    (u'5.3.12', u'Education - teacher training', u'Social Affairs', u'Education'),
+    (u'5.3.13', u'Education - subsidiary services', u'Social Affairs', u'Education'),
+    (u'5.4.1', u'Social Protection, Land Housing and Community Amenities - policy, planning and administration', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.2', u'Social Protection, Land Housing and Community Amenities - social security (excl pensions)', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.3', u'Social Protection, Land Housing and Community Amenities - general pensions', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.4', u'Social Protection, Land Housing and Community Amenities - civil service and military pensions', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.5', u'Social Protection, Land Housing and Community Amenities - social services (incl youth development and women+ children)', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.6', u'Social Protection, Land Housing and Community Amenities - land policy and management', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.7', u'Social Protection, Land Housing and Community Amenities - rural devt', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.8', u'Social Protection, Land Housing and Community Amenities - urban devt', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.9', u'Social Protection, Land Housing and Community Amenities - housing and community amenities', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.10', u'Social Protection, Land Housing and Community Amenities - emergency relief', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.11', u'Social Protection, Land Housing and Community Amenities - disaster prevention and preparedness', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'5.4.12', u'Social Protection, Land Housing and Community Amenities - support to refugees and internally displaced persons', u'Social Affairs', u'Social Protection, Land Housing and Community Amenities'),
+    (u'6.1.1', u'Development Partner affairs - policy planning and administration', u'Development Partner Affairs', u'Development Partner affairs'),
+    (u'6.1.2', u'Development Partner affairs - Technical staff services', u'Development Partner Affairs', u'Development Partner affairs'),
+    (u'7.1.1', u'External to government sector - External to general government sector', u'General Budget Support and Aid support external to General Government Sector', u'External to government sector'),
+    (u'7.2.1', u'General Budget Support - General Budget Support', u'General Budget Support and Aid support external to General Government Sector', u'General Budget Support')
+)
 
+# From http://codelists103.archive.iatistandard.org/data/codelist/BudgetIdentifierVocabulary.xml
+BUDGET_IDENTIFIER_VOCABULARY = (
+    (u'code', u'name'),
+    (u'1', u'IATI'),
+    (u'2', u'Country Chart of Accounts'),
+    (u'3', u'Other Country System'),
+    (u'4', u'Reporting Organisation'),
+    (u'5', u'Other')
+)
+
+# From http://codelists103.archive.iatistandard.org/data/codelist/Country.xml
 COUNTRY = (
+    (u'code', u'name', u'language'),
     (u'AF', u'Afghanistan', u'en'),
     (u'AX', u'Åland Islands', u'en'),
     (u'AL', u'Albania', u'en'),
@@ -203,7 +391,6 @@ COUNTRY = (
     (u'NR', u'Nauru', u'en'),
     (u'NP', u'Nepal', u'en'),
     (u'NL', u'Netherlands', u'en'),
-    (u'AN', u'Netherland Antilles', u'en'),
     (u'NC', u'New Caledonia', u'en'),
     (u'NZ', u'New Zealand', u'en'),
     (u'NI', u'Nicaragua', u'en'),
@@ -298,36 +485,43 @@ COUNTRY = (
     (u'ZW', u'Zimbabwe', u'en')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/BudgetType.xml
-# Fields: code, name, language
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/BudgetType.xml
 BUDGET_TYPE = (
+    (u'code', u'name', u'language'),
     (u'1', u'Original', u'en'),
     (u'2', u'Revised', u'en')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/CollaborationType.xml
-# Fields: code, name, description, language
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/CollaborationType.xml
 COLLABORATION_TYPE = (
+    (u'code', u'name', u'description', u'language'),
     (u'1', u'Bilateral', u'Bilateral transactions are those undertaken by a donor, excluding core contributions to other organisations (codes 2 and 3 below). It includes transactions channelled through other organisations.', u'en'),
     (u'2', u'Multilateral', u'Multilateral contributions are those made to a recipient institution which: i. conducts all or part of its activities in favour of development; ii. is an international agency, institution or organisation whose members are governments, or a fund managed autonomously by such an agency; and iii. pools contributions so that they lose their identity and become an integral part of its financial assets.', u'en'),
     (u'3', u'Bilateral, core contributions to NGOs and other private bodies / PPPs', u'Bilateral funds paid over to national and international non-governmental organisations (NGOs), Public Private Partnerships (PPPs), or other private bodies for use at their discretion.', u'en'),
-    (u'4', u'Multilateral outflows', u'Aid activities financed from the multilateral institutions regular budgets.', u'en')
+    (u'4', u'Multilateral outflows', u'Aid activities financed from the multilateral institutions regular budgets.', u'en'),
+    (u'6', u'Private sector outflow', u'', u'en')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/ConditionType.xml
-# Fields: code, name, language
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/ConditionType.xml
 CONDITION_TYPE = (
+    (u'code', u'name', u'language'),
     (u'2', u'Performance', u'en'),
-    (u'1', u'Policy', u'en')
+    (u'1', u'Policy', u'en'),
+    (u'3', u'Fiduciary', u'en')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/Currency.xml
-# Fields: code, name, language
+# From http://codelists103.archive.iatistandard.org/data/codelist/ContactType.xml
+CONTACT_TYPE = (
+    (u'code', u'name'),
+    (u'1', u'General Enquiries'),
+    (u'2', u'Project Management'),
+    (u'3', u'Financial Management'),
+    (u'4', u'Communications')
+)
 
+# From http://codelists103.archive.iatistandard.org/data/codelist/Currency.xml
 CURRENCY = (
+    (u'code', u'name', u'language'),
     (u'AED', u'UAE Dirham', u'en'),
     (u'AFN', u'Afghani', u'en'),
     (u'ALL', u'Lek', u'en'),
@@ -460,6 +654,7 @@ CURRENCY = (
     (u'SHP', u'Saint Helena Pound', u'en'),
     (u'SLL', u'Leone', u'en'),
     (u'SOS', u'Somali Shilling', u'en'),
+    (u'SSP', u'South Sudanese Pound', u'en'),
     (u'SRD', u'Surinam Dollar', u'en'),
     (u'STD', u'Dobra', u'en'),
     (u'SVC', u'El Salvador Colon', u'en'),
@@ -482,7 +677,7 @@ CURRENCY = (
     (u'UYI', u'Uruguay Peso en Unidades Indexadas', u'en'),
     (u'UYU', u'Peso Uruguayo', u'en'),
     (u'UZS', u'Uzbekistan Sum', u'en'),
-    (u'VEF', u'Bolivar Fuerte', u'en'),
+    (u'VEF', u'Bolivar', u'en'),
     (u'VND', u'Dong', u'en'),
     (u'VUV', u'Vatu', u'en'),
     (u'WST', u'Tala', u'en'),
@@ -496,29 +691,26 @@ CURRENCY = (
     (u'ZWL', u'Zimbabwe Dollar', u'en')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/DescriptionType.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/DescriptionType.xml
 DESCRIPTION_TYPE = (
+    (u'code', u'name', u'description'),
     (u'1', u'General', u'Long description of the activity with no particular structure'),
     (u'2', u'Objectives', u'Objectives for the activity, for example from a logical framework'),
     (u'3', u'Target Groups', u'Statement of groups targeted to benefit from the activity')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/DisbursementChannel.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/DisbursementChannel.xml
 DISBURSEMENT_CHANNEL = (
+    (u'code', u'name'),
     (u'1', u'Money is disbursed through central Ministry of Finance or Treasury'),
     (u'2', u'Money is disbursed directly to the implementing institution and managed through a separate bank account'),
     (u'3', u'Aid in kind: Donors utilise third party agencies, e.g. NGOs or management companies'),
     (u'4', u'Aid in kind: Donors manage funds themselves')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/DocumentCategory.xml
-# Fields: code, name, description, category, category-name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/DocumentCategory.xml
 DOCUMENT_CATEGORY = (
+    (u'code', u'name', u'description', u'category', u'category-name'),
     (u'A01', u'Pre- and post-project impact appraisal', u'', u'A', u'Activity Level'),
     (u'A02', u'Objectives / Purpose of activity', u'', u'A', u'Activity Level'),
     (u'A03', u'Intended ultimate beneficiaries', u'', u'A', u'Activity Level'),
@@ -531,16 +723,20 @@ DOCUMENT_CATEGORY = (
     (u'A10', u'Tender', u'', u'A', u'Activity Level'),
     (u'A11', u'Contract', u'', u'A', u'Activity Level'),
     (u'B01', u'Annual report', u'', u'B', u'Agency Level'),
-    (u'B02', u'Strategy paper', u'', u'B', u'Agency Level'),
+    (u'B02', u'Institutional Strategy paper', u'', u'B', u'Agency Level'),
     (u'B03', u'Country strategy paper', u'', u'B', u'Agency Level'),
     (u'B04', u'Aid Allocation Policy', u'', u'B', u'Agency Level'),
-    (u'B05', u'Procurement Policy and Procedure', u'', u'B', u'Agency Level')
+    (u'B05', u'Procurement Policy and Procedure', u'', u'B', u'Agency Level'),
+    (u'B06', u'Institutional Audit Report', u'', u'B', u'Agency Level'),
+    (u'B07', u'Country Audit Report', u'', u'B', u'Agency Level'),
+    (u'B08', u'Exclusions Policy', u'', u'B', u'Agency Level'),
+    (u'B09', u'Institutional Evaluation Report', u'', u'B', u'Agency Level'),
+    (u'B10', u'Country Evaluation Report', u'', u'B', u'Agency Level')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/FileFormat.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/FileFormat.xml
 FILE_FORMAT = (
+    (u'code', u'name'),
     (u'application/msword', u'Microsoft Word'),
     (u'application/pdf', u'Portable Data Format'),
     (u'application/rtf', u'Rich Text Format'),
@@ -552,10 +748,9 @@ FILE_FORMAT = (
     (u'text/xml', u'Extensible Markup Language')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/FinanceType.xml
-# Fields: code, name, category, category-name, category-description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/FinanceType.xml
 FINANCE_TYPE = (
+    (u'code', u'name', u'category', u'category-name', u'category-description'),
     (u'110', u'Aid grant excluding debt reorganisation', u'100', u'GRANT', u'Transfers in cash or in kind for which no legal debt is incurred by the recipient.'),
     (u'111', u'Subsidies to national private investors', u'100', u'GRANT', u'Transfers in cash or in kind for which no legal debt is incurred by the recipient.'),
     (u'210', u'Interest subsidy grant in AF', u'200', u'INTEREST SUBSIDY', u'Subsidies to soften the terms of private export credits, or loans or credits by the banking sector.'),
@@ -602,30 +797,28 @@ FINANCE_TYPE = (
     (u'912', u'Securities and other instruments issued by multilateral agencies', u'900', u'OTHER SECURITIES/CLAIMS', u'')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/FlowType.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/FlowType.xml
 FLOW_TYPE = (
-    (u'10', u'ODA', u'Official Development Assistance.Those flows to countries and territories on the DAC List of ODA Recipients and to multilateral development institutions which are:-- provided by official agencies, including state and local governments, or by their executive agencies; and-- each transaction of which:a) is administered with the promotion of the economic development and welfare of developing countries as its main objective; andb) is concessional in character and conveys a grant element of at least 25 per cent (calculated at a rate of discount of 10 per cent).'),
-    (u'20', u'OOF', u'Other Official FlowsOfficial sector transactions that do not meet the ODA criteria, e.g.-- Grants to developing countries for representational or essentially commercial purposes.-- Official bilateral transactions intended to promote development but having a grant element of less than 25 per cent.-- Official bilateral transactions, whatever their grant element, that are primarily export-facilitating in purpose.-- The net acquisition by governments and central monetary institutions of securities issued by multilateral development banks at market terms.-- Subsidies (grants) to the private sector to soften its credits to developing countries.-- Funds in support of private investment.'),
-    (u'30', u'Private Grants', u'Grants made by private non-governmental organisations and other private sources (including foundations and other private bodies).Grants by private non-profit-making agencies, including co-operative societies and trade unions, which are active in development and national in the sense that their funds are fully or mainly obtained from sources in the donor economy.'),
-    (u'35', u'Private Market', u'Private long-term (i.e. over one-year maturity) capital transactions.Direct investment (new capital outflows and reinvested earnings), other securities and claims (bonds, export credits, equities) by banks and nonbanks, multilateral private flows.'),
+    (u'code', u'name', u'description'),
+    (u'10', u'ODA', u'Official Development Assistance. Those flows to countries and territories on            the DAC List of ODA Recipients and to multilateral development institutions which are:            -- provided by official agencies, including state and local governments, or by their            executive agencies; and -- each transaction of which: a) is administered with the            promotion of the economic development and welfare of developing countries as its main            objective; and b) is concessional in character and conveys a grant element of at least            25 per cent (calculated at a rate of discount of 10 per cent).'),
+    (u'20', u'OOF', u'Other Official Flows Official sector transactions that do not meet the ODA            criteria, e.g. -- Grants to developing countries for representational or essentially            commercial purposes. -- Official bilateral transactions intended to promote development            but having a grant element of less than 25 per cent. -- Official bilateral transactions,            whatever their grant element, that are primarily export-facilitating in purpose. -- The            net acquisition by governments and central monetary institutions of securities issued by            multilateral development banks at market terms. -- Subsidies (grants) to the private            sector to soften its credits to developing countries. -- Funds in support of private            investment.'),
+    (u'30', u'Private Grants', u'Grants made by private non-governmental organisations and other private sources            (including foundations and other private bodies). Grants by private non-profit-making            agencies, including co-operative societies and trade unions, which are active in            development and national in the sense that their funds are fully or mainly obtained from            sources in the donor economy.'),
+    (u'35', u'Private Market', u'Private long-term (i.e. over one-year maturity) capital transactions. Direct            investment (new capital outflows and reinvested earnings), other securities and claims            (bonds, export credits, equities) by banks and nonbanks, multilateral private            flows.'),
+    (u'40', u'Non flow eg GNI', u''),
     (u'50', u'Other flows', u'Non-ODA component of peacebuilding operations.')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/GazetteerAgency.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/GazetteerAgency.xml
 GAZETTEER_AGENCY = (
+    (u'code', u'name'),
     (u'GEO', u'Geonames.org'),
     (u'NGA', u'National Geospatial-Intelligence Agency'),
     (u'OSM', u'Open Street Map')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/GeographicalPrecision.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/GeographicalPrecision.xml
 GEOGRAPHICAL_PRECISION = (
+    (u'code', u'name', u'description'),
     (u'1', u'Exact location', u'The coordinates corresponds to an exact location, such as a populated place or a hill. The code is also used for locations that join a location which is a line (such as a road or railroad). Lines are not coded only the points that connect lines. All points that are mentioned in the source are coded.'),
     (u'2', u'Near exact location', u'The location is mentioned in the source as being "near", in the "area" of, or up to 25 km away from an exact location. The coordinates refer to that adjacent, exact, location.'),
     (u'3', u'Second order administrative division', u'The location is, or lies in, a second order administrative division (ADM2), such as a district, municipality or commune'),
@@ -637,18 +830,16 @@ GEOGRAPHICAL_PRECISION = (
     (u'9', u'Unclear - country', u'Unclear. The locations is estimated to be the country level (often paired with the capital, with precision 7)')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/IndicatorMeasure.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/IndicatorMeasure.xml
 INDICATOR_MEASURE = (
+    (u'code', u'name'),
     (u'1', u'Unit'),
     (u'2', u'Percentage')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/Language.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/Language.xml
 LANGUAGE = (
+    (u'code', u'name'),
     (u'aa', u'Afar'),
     (u'ab', u'Abkhazian'),
     (u'ae', u'Avestan'),
@@ -832,10 +1023,27 @@ LANGUAGE = (
     (u'zu', u'Zulu')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/LocationType.xml
-# Fields: code, name
+# From http://codelists103.archive.iatistandard.org/data/codelist/LoanRepaymentType.xml
+LOAN_REPAYMENT_TYPE = (
+    (u'code', u'name'),
+    (u'1', u'Equal Principal Payments (EPP)'),
+    (u'2', u'Annuity'),
+    (u'3', u'Lump sum'),
+    (u'5', u'Other')
+)
 
+# From http://codelists103.archive.iatistandard.org/data/codelist/LoanRepaymentPeriod.xml
+LOAN_REPAYMENT_PERIOD = (
+    (u'code', u'name'),
+    (u'1', u'Annual'),
+    (u'2', u'Semi-annual'),
+    (u'4', u'Quarterly'),
+    (u'12', u'Monthly')
+)
+
+# From http://codelists103.archive.iatistandard.org/data/codelist/LocationType.xml
 LOCATION_TYPE = (
+    (u'code', u'name'),
     (u'ADM1', u'first-order administrative division'),
     (u'ADM2', u'second-order administrative division'),
     (u'CNS', u'concession area'),
@@ -848,10 +1056,9 @@ LOCATION_TYPE = (
     (u'RES', u'reserve')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/OrganisationIdentifier.xml
-# Fields: code, abbreviation, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/OrganisationIdentifier.xml
 ORGANISATION_IDENTIFIER = (
+    (u'code', u'abbreviation', u'name'),
     (u'AT-1', u'BMF', u'Federal Ministry of Finance'),
     (u'AT-10', u'BMLFUW', u'Ministry for Agriculture and Environment'),
     (u'AT-11', u'BMLV', u'Ministry of Defense'),
@@ -949,11 +1156,11 @@ ORGANISATION_IDENTIFIER = (
     (u'GR-9', u'YEN', u'Ministry of Merchant Marine'),
     (u'IE-1', u'DFA', u'Department of Foreign Affairs'),
     (u'IE-71', u'DIC', u'Department of Industry and Commerce'),
-    (u'IT-2', u'AGEA', u'Agenzia Erogazioni Per lAgricoltura'),
+    (u'IT-2', u'AGEA', u'Agenzia Erogazioni Per lAgricoltura'),
     (u'IT-4', u'DGCS', u'Direzione Generale per la Cooperazione allo Sviluppo'),
     (u'IT-5', u'MC', u'Not in CRS Directives'),
     (u'IT-7', u'CA', u'Central administration'),
-    (u'IT-74', u'SACE', u'Sezione Speciale per lAssicurazione del Credito allEsportazione'),
+    (u'IT-74', u'SACE', u'Sezione Speciale per lAssicurazione del Credito allEsportazione'),
     (u'IT-8', u'LA', u'Local administration'),
     (u'IT-9', u'ART', u'Artigiancassa'),
     (u'JP-1', u'MAFF', u'Ministry of Agriculture, Forestry and Fisheries '),
@@ -1021,7 +1228,7 @@ ORGANISATION_IDENTIFIER = (
     (u'41119', u'UNFPA', u'United Nations Population Fund'),
     (u'41120', u'UN Habitat', u'United Nations Human Settlement Programme'),
     (u'41121', u'UNHCR', u'United Nations Office of the United Nations High Commissioner for Refugees'),
-    (u'41122', u'UNICEF', u'United Nations Childrens Fund'),
+    (u'41122', u'UNICEF', u'United Nations Childrens Fund'),
     (u'41123', u'UNIDO', u'United Nations Industrial Development Organisation'),
     (u'41124', u'UNIFEM', u'United Nations Development Fund for Women'),
     (u'41125', u'UNITAR', u'United Nations Institute for Training and Research'),
@@ -1177,7 +1384,7 @@ ORGANISATION_IDENTIFIER = (
     (u'47095', u'SPBEA', u'South Pacific Board for Educational Assessment'),
     (u'47096', u'SPC', u'Secretariat of the Pacific Community'),
     (u'47097', u'SPREP', u'Pacific Regional Environment Programme'),
-    (u'47098', u'UNPO', u'Unrepresented Nations and Peoples Organisation'),
+    (u'47098', u'UNPO', u'Unrepresented Nations and Peoples Organisation'),
     (u'47099', u'USP', u'University of the South Pacific'),
     (u'47100', u'WAMU', u'West African Monetary Union'),
     (u'47101', u'WARDA', u'Africa Rice Centre'),
@@ -1253,8 +1460,8 @@ ORGANISATION_IDENTIFIER = (
     (u'21048', u'AAU', u'Association of African Universities'),
     (u'21049', u'ECDPM', u'European Centre for Development Policy Management'),
     (u'21050', u'', u'Geneva Call'),
-    (u'21051', u'ISPEC', u'Institut Supérieur Panafricaine dEconomie Coopérative'),
-    (u'21053', u'', u'IPAS-Protecting Womens Health, Advancing Womens Reproductive Rights '),
+    (u'21051', u'ISPEC', u'Institut Supérieur Panafricaine dEconomie Coopérative'),
+    (u'21053', u'', u'IPAS-Protecting Womens Health, Advancing Womens Reproductive Rights '),
     (u'21054', u'LPI', u'Life and Peace Institute'),
     (u'21055', u'RATN', u'Regional AIDS Training Network'),
     (u'21056', u'REEEP', u'Renewable Energy and Energy Efficiency Partnership'),
@@ -1271,44 +1478,42 @@ ORGANISATION_IDENTIFIER = (
     (u'30011', u'IUCN', u'International Union for the Conservation of Nature'),
     (u'31001', u'GDN', u'Global Development Network'),
     (u'31002', u'GKP', u'Global Knowledge Partnership'),
-    (u'10000', u'', u'Public Sector Institutions', u''),
-    (u'11000', u'', u'Donor Government', u''),
-    (u'12000', u'', u'Recipient Government', u''),
-    (u'13000', u'', u'Third Country Government (Delegated co-operation)', u''),
-    (u'20000', u'', u'Non-Governmental Organisations and Civil Society', u''),
-    (u'21000', u'', u'International NGO', u''),
-    (u'22000', u'', u'Donor country-based NGO', u''),
-    (u'23000', u'', u'Development country-based NGO', u''),
-    (u'30000', u'', u'Public-Private Partnerships and Networks', u''),
-    (u'31000', u'PP', u'Public-Private Partnerships', u''),
-    (u'32000', u'', u'Network', u''),
-    (u'40000', u'', u'Multi-lateral Organisations', u''),
-    (u'41000', u'UN', u'United Nations agency, fund or commission', u''),
+    (u'10000', u'Public Sector Institutions', u''),
+    (u'11000', u'Donor Government', u''),
+    (u'12000', u'Recipient Government', u''),
+    (u'13000', u'Third Country Government (Delegated co-operation)', u''),
+    (u'20000', u'Non-Governmental Organisations and Civil Society', u''),
+    (u'21000', u'International NGO', u''),
+    (u'22000', u'Donor country-based NGO', u''),
+    (u'23000', u'Development country-based NGO', u''),
+    (u'30000', u'Public-Private Partnerships and Networks', u''),
+    (u'31000', u'Public-Private Partnerships', u'PP', u''),
+    (u'32000', u'Network', u''),
+    (u'40000', u'Multi-lateral Organisations', u''),
+    (u'41000', u'United Nations agency, fund or commission', u'UN', u''),
     (u'42000', u'European Union Institution', u'EU', u''),
-    (u'43000', u'IIMF', u'International Monetary Fund', u''),
-    (u'44000', u'Work Bank Group', u'WBG', u''),
+    (u'43000', u'International Monetary Fund', u'IIMF', u''),
+    (u'44000', u'World Bank Group', u'WBG', u''),
     (u'45000', u'World Trade Organisation', u'WTO', u''),
     (u'46000', u'Regional Development Bank', u'RDB', u''),
     (u'47000', u'Other Multi-lateral Institution', u''),
-    (u'50000', u'', u'Other', u''),
-    (u'51000', u'', u'University,college or other teaching institution, research institute or            think-tank', u''),
-    (u'52000', u'', u'Other', u'')
+    (u'50000', u'Other', u''),
+    (u'51000', u'University,college or other teaching institution, research institute or            think-tank', u''),
+    (u'52000', u'Other', u'')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/OrganisationRole.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/OrganisationRole.xml
 ORGANISATION_ROLE = (
+    (u'code', u'name', u'description'),
     (u'Accountable', u'Accountable', u'The government agency, civil society or private sector institution which is accountable for the implementation of the activity.'),
     (u'Extending', u'Extending', u'The government entity (central, state or local government agency or department), or agency within an institution, financing the activity from its own budget'),
     (u'Funding', u'Funding', u'The country or institution which provides the funds.'),
     (u'Implementing', u'Implementing', u'The intermediary between the extending agency and the ultimate beneficiary. Also known as executing agency or channel of delivery. They can be public sector, non-governmental agencies (NGOs), Public-Private partnerships, or multilateral institutions')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/OrganisationType.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/OrganisationType.xml
 ORGANISATION_TYPE = (
+    (u'code', u'name'),
     (u'10', u'Government'),
     (u'15', u'Other Public Sector'),
     (u'21', u'International NGO'),
@@ -1321,10 +1526,9 @@ ORGANISATION_TYPE = (
     (u'80', u'Academic, Training and Research')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/PolicyMarker.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/PolicyMarker.xml
 POLICY_MARKER = (
+    (u'code', u'name'),
     (u'1', u'Gender Equality'),
     (u'2', u'Aid to Environment'),
     (u'3', u'Participatory Development/Good Governance'),
@@ -1335,29 +1539,26 @@ POLICY_MARKER = (
     (u'8', u'Aid Targeting the Objectives of the Convention to Combat Desertification')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/PolicySignificance.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/PolicySignificance.xml
 POLICY_SIGNIFICANCE = (
+    (u'code', u'name', u'description'),
     (u'0', u'not targeted', u'The score "not targeted" means that the activity was examined but found not to target the policy objective.'),
     (u'1', u'significant objective', u'Significant (secondary) policy objectives are those which, although important, were not the prime motivation for undertaking the activity.'),
     (u'2', u'principal objective', u'Principal (primary) policy objectives are those which can be identified as being fundamental in the design and impact of the activity and which are an explicit objective of the activity. They may be selected by answering the question "Would the activity have been undertaken without this objective?"'),
     (u'3', u'principal objective AND in support of an action programme', u'For desertification-related aid only')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/PublisherType.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/PublisherType.xml
 PUBLISHER_TYPE = (
+    (u'code', u'name'),
     (u'1', u'Aid Provider'),
     (u'2', u'Aid Recipient'),
     (u'3', u'Aggregator')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/Region.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/Region.xml
 REGION = (
+    (u'code', u'name'),
     (u'89', u'Europe, regional'),
     (u'189', u'North of Sahara, regional'),
     (u'289', u'South of Sahara, regional'),
@@ -1376,229 +1577,240 @@ REGION = (
     (u'998', u'Bilateral, unspecified')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/RelatedActivityType.xml
-# Fields: code, name, description
+# From http://codelists103.archive.iatistandard.org/data/codelist/RegionVocabulary.xml
+REGION_VOCABULARY = (
+    (u'code', u'name'),
+    (u'1', u'DAC'),
+    (u'2', u'UN')
+)
 
+# From http://codelists103.archive.iatistandard.org/data/codelist/RelatedActivityType.xml
 RELATED_ACTIVITY_TYPE = (
+    (u'code', u'name', u'description'),
     (u'1', u'Parent', u'An activity that contains sub-activities (sub-components)'),
     (u'2', u'Child', u'A sub-activity (sub-component) of a larger activity (the parent)'),
     (u'3', u'Sibling', u'A sub-activity (sub-component) related to another sub-activity of the same parent'),
     (u'4', u'Multifunded', u'A multifunded, or co-funded activity. The identifier should be globally unique and shared by all reporters of this activity.')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/ResultType.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/ResultType.xml
 RESULT_TYPE = (
+    (u'code', u'name'),
     (u'1', u'Output'),
     (u'2', u'Outcome'),
     (u'3', u'Impact')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/Sector.xml
-# Fields: code, name, description, category, category-name, category-description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/Sector.xml
 SECTOR = (
-    (u'11110', u'Education policy and administrative management', u'Education sector policy, planning and programmes; aid to education ministries, administration and management systems; institution capacity building and advice; school management and governance; curriculum and materials development; unspecified education activities.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education is unspecified or unknown (e.g. training of primary school teachers should be coded under 11220).'),
-    (u'11120', u'Education facilities and training', u'Educational buildings, equipment, materials; subsidiary services to education (boarding facilities, staff housing); language training; colloquia, seminars, lectures, etc.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education is unspecified or unknown (e.g. training of primary school teachers should be coded under 11220).'),
-    (u'11130', u'Teacher training', u'Teacher education (where the level of education is unspecified); in-service and pre-service training; materials development.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education is unspecified or unknown (e.g. training of primary school teachers should be coded under 11220).'),
-    (u'11182', u'Educational research', u'Research and studies on education effectiveness, relevance and quality; systematic evaluation and monitoring.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education is unspecified or unknown (e.g. training of primary school teachers should be coded under 11220).'),
-    (u'11220', u'Primary education', u'Formal and non-formal primary education for children; all elementary and first cycle systematic instruction; provision of learning materials.', u'112', u'Basic education', u''),
-    (u'11230', u'Basic life skills for youth and adults', u'Formal and non-formal education for basic life skills for young people and adults (adults education); literacy and numeracy training.', u'112', u'Basic education', u''),
+    (u'code', u'name', u'description', u'category', u'category-name', u'category-description'),
+    (u'11110', u'Education policy and administrative management', u'Education sector policy, planning and programmes; aid to education ministries,            administration and management systems; institution capacity building and advice; school            management and governance; curriculum and materials development; unspecified education            activities.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education            is unspecified or unknown (e.g. training of primary school teachers should be coded            under 11220).'),
+    (u'11120', u'Education facilities and training', u'Educational buildings, equipment, materials; subsidiary services to education            (boarding facilities, staff housing); language training; colloquia, seminars, lectures,            etc.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education            is unspecified or unknown (e.g. training of primary school teachers should be coded            under 11220).'),
+    (u'11130', u'Teacher training', u'Teacher education (where the level of education is unspecified); in-service and            pre-service training; materials development.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education            is unspecified or unknown (e.g. training of primary school teachers should be coded            under 11220).'),
+    (u'11182', u'Educational research', u'Research and studies on education effectiveness, relevance and quality;            systematic evaluation and monitoring.', u'111', u'Education, level unspecified', u'The codes in this category are to be used only when level of education            is unspecified or unknown (e.g. training of primary school teachers should be coded            under 11220).'),
+    (u'11220', u'Primary education', u'Formal and non-formal primary education for children; all elementary and first            cycle systematic instruction; provision of learning materials.', u'112', u'Basic education', u''),
+    (u'11230', u'Basic life skills for youth and adults', u'Formal and non-formal education for basic life skills for young people and            adults (adults education); literacy and numeracy training.', u'112', u'Basic education', u''),
     (u'11240', u'Early childhood education', u'Formal and non-formal pre-school education.', u'112', u'Basic education', u''),
-    (u'11320', u'Secondary education', u'Second cycle systematic instruction at both junior and senior levels.', u'113', u'Secondary education', u''),
-    (u'11330', u'Vocational training', u'Elementary vocational training and secondary level technical education; on-the job training; apprenticeships; including informal vocational training.', u'113', u'Secondary education', u''),
-    (u'11420', u'Higher education', u'Degree and diploma programmes at universities, colleges and polytechnics; scholarships.', u'114', u'Post-secondary education', u''),
-    (u'11430', u'Advanced technical and managerial training', u'Professional-level vocational training programmes and in-service training.', u'114', u'Post-secondary education', u''),
-    (u'12110', u'Health policy and administrative management', u'Health sector policy, planning and programmes; aid to health ministries, public health administration; institution capacity building and advice; medical insurance programmes; unspecified health activities.', u'121', u'Health, general', u''),
+    (u'11320', u'Secondary education', u'Second cycle systematic instruction at both junior and senior            levels.', u'113', u'Secondary education', u''),
+    (u'11330', u'Vocational training', u'Elementary vocational training and secondary level technical education; on-the            job training; apprenticeships; including informal vocational training.', u'113', u'Secondary education', u''),
+    (u'11420', u'Higher education', u'Degree and diploma programmes at universities, colleges and polytechnics;            scholarships.', u'114', u'Post-secondary education', u''),
+    (u'11430', u'Advanced technical and managerial training', u'Professional-level vocational training programmes and in-service            training.', u'114', u'Post-secondary education', u''),
+    (u'12110', u'Health policy and administrative management', u'Health sector policy, planning and programmes; aid to health ministries, public            health administration; institution capacity building and advice; medical insurance            programmes; unspecified health activities.', u'121', u'Health, general', u''),
     (u'12181', u'Medical education/training', u'Medical education and training for tertiary level services.', u'121', u'Health, general', u''),
     (u'12182', u'Medical research', u'General medical research (excluding basic health research).', u'121', u'Health, general', u''),
-    (u'12191', u'Medical services', u'Laboratories, specialised clinics and hospitals (including equipment and supplies); ambulances; dental services; mental health care; medical rehabilitation; control of non-infectious diseases; drug and substance abuse control [excluding narcotics traffic control (16063)].', u'121', u'Health, general', u''),
-    (u'12220', u'Basic health care', u'Basic and primary health care programmes; paramedical and nursing care programmes; supply of drugs, medicines and vaccines related to basic health care.', u'122', u'Basic health', u''),
-    (u'12230', u'Basic health infrastructure', u'District-level hospitals, clinics and dispensaries and related medical equipment; excluding specialised hospitals and clinics (12191).', u'122', u'Basic health', u''),
-    (u'12240', u'Basic nutrition', u'Direct feeding programmes (maternal feeding, breastfeeding and weaning foods, child feeding, school feeding); determination of micro-nutrient deficiencies; provision of vitamin A, iodine, iron etc.; monitoring of nutritional status; nutrition and food hygiene education; household food security.', u'122', u'Basic health', u''),
-    (u'12250', u'Infectious disease control', u'Immunisation; prevention and control of infectious and parasite diseases, except malaria (12262), tuberculosis (12263), HIV/AIDS and other STDs (13040). It includes diarrheal diseases, vector-borne diseases (e.g. river blindness and guinea worm), viral diseases, mycosis, helminthiasis, zoonosis, diseases by other bacteria and viruses, pediculosis, etc.', u'122', u'Basic health', u''),
-    (u'12261', u'Health education', u'Information, education and training of the population for improving health knowledge and practices; public health and awareness campaigns.', u'122', u'Basic health', u''),
+    (u'12191', u'Medical services', u'Laboratories, specialised clinics and hospitals (including equipment and            supplies); ambulances; dental services; mental health care; medical rehabilitation;            control of non-infectious diseases; drug and substance abuse control [excluding            narcotics traffic control (16063)].', u'121', u'Health, general', u''),
+    (u'12220', u'Basic health care', u'Basic and primary health care programmes; paramedical and nursing care            programmes; supply of drugs, medicines and vaccines related to basic health            care.', u'122', u'Basic health', u''),
+    (u'12230', u'Basic health infrastructure', u'District-level hospitals, clinics and dispensaries and related medical            equipment; excluding specialised hospitals and clinics (12191).', u'122', u'Basic health', u''),
+    (u'12240', u'Basic nutrition', u'Direct feeding programmes (maternal feeding, breastfeeding and weaning foods,            child feeding, school feeding); determination of micro-nutrient deficiencies; provision            of vitamin A, iodine, iron etc.; monitoring of nutritional status; nutrition and food            hygiene education; household food security.', u'122', u'Basic health', u''),
+    (u'12250', u'Infectious disease control', u'Immunisation; prevention and control of infectious and parasite diseases,            except malaria (12262), tuberculosis (12263), HIV/AIDS and other STDs (13040). It            includes diarrheal diseases, vector-borne diseases (e.g. river blindness and guinea            worm), viral diseases, mycosis, helminthiasis, zoonosis, diseases by other bacteria and            viruses, pediculosis, etc.', u'122', u'Basic health', u''),
+    (u'12261', u'Health education', u'Information, education and training of the population for improving health            knowledge and practices; public health and awareness campaigns.', u'122', u'Basic health', u''),
     (u'12262', u'Malaria control', u'Prevention and control of malaria.', u'122', u'Basic health', u''),
     (u'12263', u'Tuberculosis control', u'Immunisation, prevention and control of tuberculosis.', u'122', u'Basic health', u''),
     (u'12281', u'Health personnel development', u'Training of health staff for basic health care services.', u'122', u'Basic health', u''),
-    (u'13010', u'Population policy and administrative management', u'Population/development policies; census work, vital registration; migration data; demographic research/analysis; reproductive health research; unspecified population activities.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
-    (u'13020', u'Reproductive health care', u'Promotion of reproductive health; prenatal and postnatal care including delivery; prevention and treatment of infertility; prevention and management of consequences of abortion; safe motherhood activities.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
-    (u'13030', u'Family planning', u'Family planning services including counselling; information, education and communication (IEC) activities; delivery of contraceptives; capacity building and training.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
-    (u'13040', u'STD control including HIV/AIDS', u'All activities related to sexually transmitted diseases and HIV/AIDS control e.g. information, education and communication; testing; prevention; treatment, care.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
-    (u'13081', u'Personnel development for population and reproductive health', u'Education and training of health staff for population and reproductive health care services.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
-    (u'14010', u'Water resources policy and administrative management', u'Water sector policy, planning and programmes; water legislation and management; institution capacity building and advice; water supply assessments and studies; groundwater, water quality and watershed studies; hydrogeology; excluding agricultural water resources (31140).', u'140', u'WATER AND SANITATION', u''),
-    (u'14015', u'Water resources protection', u'Inland surface waters (rivers, lakes, etc.); conservation and rehabilitation of ground water; prevention of water contamination from agro-chemicals, industrial effluents.', u'140', u'WATER AND SANITATION', u''),
-    (u'14020', u'Water supply and sanitation - large systems', u'Water desalination plants; intakes, storage, treatment, pumping stations, conveyance and distribution systems; sewerage; domestic and industrial waste water treatment plants.', u'140', u'WATER AND SANITATION', u''),
-    (u'14030', u'Basic drinking water supply and basic sanitation', u'Water supply and sanitation through low-cost technologies such as handpumps, spring catchment, gravity-fed systems, rain water collection, storage tanks, small distribution systems; latrines, small-bore sewers, on-site disposal (septic tanks).', u'140', u'WATER AND SANITATION', u''),
-    (u'14040', u'River development', u'Integrated river basin projects; river flow control; dams and reservoirs [excluding dams primarily for irrigation (31140) and hydropower (23065) and activities related to river transport (21040)].', u'140', u'WATER AND SANITATION', u''),
-    (u'14050', u'Waste management/disposal', u'Municipal and industrial solid waste management, including hazardous and toxic waste; collection, disposal and treatment; landfill areas; composting and reuse.', u'140', u'WATER AND SANITATION', u''),
+    (u'13010', u'Population policy and administrative management', u'Population/development policies; census work, vital registration; migration            data; demographic research/analysis; reproductive health research; unspecified            population activities.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
+    (u'13020', u'Reproductive health care', u'Promotion of reproductive health; prenatal and postnatal care including            delivery; prevention and treatment of infertility; prevention and management of            consequences of abortion; safe motherhood activities.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
+    (u'13030', u'Family planning', u'Family planning services including counselling; information, education and            communication (IEC) activities; delivery of contraceptives; capacity building and            training.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
+    (u'13040', u'STD control including HIV/AIDS', u'All activities related to sexually transmitted diseases and HIV/AIDS control            e.g. information, education and communication; testing; prevention; treatment,            care.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
+    (u'13081', u'Personnel development for population and reproductive health', u'Education and training of health staff for population and reproductive health            care services.', u'130', u'POPULATION POLICIES/PROGRAMMES AND REPRODUCTIVE HEALTH', u''),
+    (u'14010', u'Water resources policy and administrative management', u'Water sector policy, planning and programmes; water legislation and management;            institution capacity building and advice; water supply assessments and studies;            groundwater, water quality and watershed studies; hydrogeology; excluding agricultural            water resources (31140).', u'140', u'WATER AND SANITATION', u''),
+    (u'14015', u'Water resources protection', u'Inland surface waters (rivers, lakes, etc.); conservation and rehabilitation of            ground water; prevention of water contamination from agro-chemicals, industrial            effluents.', u'140', u'WATER AND SANITATION', u''),
+    (u'14020', u'Water supply and sanitation - large systems', u'Water desalination plants; intakes, storage, treatment, pumping stations,            conveyance and distribution systems; sewerage; domestic and industrial waste water            treatment plants.', u'140', u'WATER AND SANITATION', u''),
+    (u'14021', u'Water supply - large systems ', u'Potable water treatment plants; intake works; storage; water supply pumping            stations; large scale transmission / conveyance and distribution systems.', u'140', u'WATER AND SANITATION', u''),
+    (u'14022', u'Sanitation - large systems', u'Large scale sewerage including trunk sewers and sewage pumping stations;            domestic and industrial waste water treatment plants.', u'140', u'WATER AND SANITATION', u''),
+    (u'14030', u'Basic drinking water supply and basic sanitation', u'Water supply and sanitation through low-cost technologies such as handpumps,            spring catchment, gravity-fed systems, rain water collection, storage tanks, small            distribution systems; latrines, small-bore sewers, on-site disposal (septic            tanks).', u'140', u'WATER AND SANITATION', u''),
+    (u'14031', u'Basic drinking water supply', u'Rural water supply schemes using handpumps, spring catchments, gravity-fed            systems, rainwater collection and fog harvesting, storage tanks, small distribution            systems typically with shared connections/points of use. Urban schemes using handpumps            and local neighbourhood networks including those with shared connections.', u'140', u'WATER AND SANITATION', u''),
+    (u'14032', u'Basic sanitation', u'Latrines, on-site disposal and alternative sanitation systems, including the            promotion of household and community investments in the construction of these            facilities. (Use code 12261 for activities promoting improved personal hygiene            practices.)', u'140', u'WATER AND SANITATION', u''),
+    (u'14040', u'River development', u'Integrated river basin projects; river flow control; dams and reservoirs            [excluding dams primarily for irrigation (31140) and hydropower (23065) and activities            related to river transport (21040)].', u'140', u'WATER AND SANITATION', u''),
+    (u'14050', u'Waste management/disposal', u'Municipal and industrial solid waste management, including hazardous and toxic            waste; collection, disposal and treatment; landfill areas; composting and            reuse.', u'140', u'WATER AND SANITATION', u''),
     (u'14081', u'Education and training in water supply and sanitation', u'', u'140', u'WATER AND SANITATION', u''),
-    (u'15110', u'Economic and development policy/planning', u'Macro-economic, fiscal and monetary policy and planning; social planning; economic and social analysis and forecasting; development planning and preparation of structural reforms; organisational development; support to ministries involved in aid co-ordination; other ministries and government departments when sector cannot be specified. (Use code 51010 for budget support to macroeconomic reforms.)', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15120', u'Public sector financial management', u'Strengthening financial and managerial accountability; public expenditure management; improving financial management systems; tax assessment procedures; budget drafting; field auditing; measures against waste, fraud and corruption.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15130', u'Legal and judicial development', u'Constitutional development, legal drafting; institutional strengthening of legal and judicial systems; legal training and education; legal advice and services; crime prevention.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15140', u'Government administration', u'Systems of government including parliament, local government, decentralisation; civil service and civil service reform. Including general services by government (or commissioned by government) not elsewhere specified e.g. police, fire protection; cartography, meteorology, legal metrology, aerial surveys and remote sensing; administrative buildings.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15150', u'Strengthening civil society', u'Community participation and development; co-operatives; grassroots organisations; development of other participatory planning and decision making procedures and institutions (see code 15220 for civilian peace-building, conflict prevention and resolution).', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15161', u'Elections', u'Electoral assistance and monitoring, voters education [other than in connection with UN peace building (15230)].', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15162', u'Human rights', u'Monitoring of human rights performance; support for national and regional human rights bodies; protection of ethnic, religious and cultural minorities [other than in connection with UN peace building (15230)].', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15163', u'Free flow of information', u'Uncensored flow of information on public issues, including activities that increase the professionalism, skills and integrity of the print and broadcast media (e.g. training of journalists).', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15164', u'Womens equality organisations and institutions', u'Support for institutions and organisations (governmental and non-governmental) working for gender equality and womens empowerment.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
-    (u'15210', u'Security system management and reform', u'Technical co-operation provided to parliament, government ministries, law enforcement agencies and the judiciary to assist review and reform of the security system to improve democratic governance and civilian control; technical co-operation provided to government to improve civilian oversight and democratic control of budgeting, management, accountability and auditing of security expenditure, including military budgets, as part of a public expenditure management programme; assistance to civil society to enhance its competence and capacity to scrutinise the security system so that it is managed in accordance with democratic norms and principles of accountability, transparency and good governance.', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict, peace and security related activities are given in paragraphs 41-46 of the DAC Statistical Reporting Directives.'),
-    (u'15220', u'Civilian peace-building, conflict prevention and resolution', u'Support for civilian activities related to peace building, conflict prevention and resolution, including capacity building, monitoring, dialogue and information exchange.', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict, peace and security related activities are given in paragraphs 41-46 of the DAC Statistical Reporting Directives.'),
-    (u'15230', u'Post-conflict peace-building (UN)', u'Participation in the post-conflict peace-building phase of United Nations peace operations (activities such as human rights and elections monitoring, rehabilitation of demobilised soldiers, rehabilitation of basic national infrastructure, monitoring or retraining of civil administrators and police forces, training in customs and border control procedures, advice or training in fiscal or macroeconomic stabilisation policy, repatriation and demobilisation of armed factions, and disposal of their weapons; support for landmine removal). Direct contributions to the UN peacekeeping budget are excluded from bilateral ODA (they are reportable in part as multilateral ODA).', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict, peace and security related activities are given in paragraphs 41-46 of the DAC Statistical Reporting Directives.'),
-    (u'15240', u'Reintegration and SALW control', u'Reintegration of demobilised military personnel into the economy; conversion of production facilities from military to civilian outputs; technical co-operation to control, prevent and/or reduce the proliferation of small arms and light weapons (SALW) - see para. 39 of the DAC Statistical Reporting Directives for definition of SALW activities covered. [Other than in connection with UN peace-building (15230) or child soldiers (15261)].', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict, peace and security related activities are given in paragraphs 41-46 of the DAC Statistical Reporting Directives.'),
-    (u'15250', u'Land mine clearance', u'Explosive mine removal for developmental purposes [other than in connection with UN peace-building (15230)].', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict, peace and security related activities are given in paragraphs 41-46 of the DAC Statistical Reporting Directives.'),
-    (u'15261', u'Child soldiers (Prevention and demobilisation)', u'Technical co-operation provided to government  and assistance to civil society organisations  to support and apply legislation designed to prevent the recruitment of child soldiers, and to demobilise, disarm, reintegrate, repatriate and resettle (DDR) child soldiers.', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict, peace and security related activities are given in paragraphs 41-46 of the DAC Statistical Reporting Directives.'),
-    (u'16010', u'Social/ welfare services', u'Social legislation and administration; institution capacity building and advice; social security and other social schemes; special programmes for the elderly, orphans, the disabled, street children; social dimensions of structural adjustment; unspecified social infrastructure and services, including consumer protection.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
-    (u'16020', u'Employment policy and administrative management', u'Employment policy and planning; labour law; labour unions; institution capacity building and advice; support programmes for unemployed; employment creation and income generation programmes; occupational safety and health; combating child labour.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
-    (u'16030', u'Housing policy and administrative management', u'Housing sector policy, planning and programmes; excluding low-cost housing and slum clearance (16040).', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
+    (u'15110', u'Economic and development policy/planning', u'Institution-building assistance to strengthen core public sector management            systems and capacities. This includes macro-economic and other policy management,            co-ordination, planning and reform; human resource management; organisational            development; civil service reform; e‑government; development planning, monitoring and            evaluation; support to ministries involved in aid co-ordination; other ministries and            government departments when sector cannot be specified. (Use specific sector codes for            development of systems and capacities in sector ministries.) ', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15111', u'Public finance management', u'Fiscal policy and planning; support to ministries of finance; strengthening            financial and managerial accountability; public expenditure management; improving            financial management systems; tax policy and administration; budget drafting;            inter-governmental fiscal relations, public audit, public debt. (Use code 33120 for            customs.) ', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15112', u'Decentralisation and support to subnational government', u'Decentralisation processes (including political, administrative and fiscal            dimensions); intergovernmental relations and federalism; strengthening departments of            regional and local government, regional and local authorities and their national            associations. (Use specific sector codes for decentralisation of sector management and            services.) ', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15113', u'Anti-corruption organisations and institutions', u'Specialised organisations, institutions and frameworks for the prevention of            and combat against corruption, bribery, money-laundering and other aspects of organised            crime, with or without law enforcement powers, e.g. anti-corruption commissions and            monitoring bodies, special investigation services, institutions and initiatives of            integrity and ethics oversight, specialised NGOs, other civil society and citizens’            organisations directly concerned with corruption. ', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15120', u'Public sector financial management', u'Strengthening financial and managerial accountability; public expenditure            management; improving financial management systems; tax assessment procedures; budget            drafting; field auditing; measures against waste, fraud and corruption.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15130', u'Legal and judicial development', u'Constitutional development, legal drafting; institutional strengthening of            legal and judicial systems; legal training and education; legal advice and services;            crime prevention.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15140', u'Government administration', u'Systems of government including parliament, local government, decentralisation;            civil service and civil service reform. Including general services by government (or            commissioned by government) not elsewhere specified e.g. police, fire protection;            cartography, meteorology, legal metrology, aerial surveys and remote sensing;            administrative buildings.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15150', u'Democratic participation and civil society', u'Support to the exercise of democracy and diverse forms of participation of            citizens beyond elections (15151); direct democracy instruments such as referenda and            citizens’ initiatives; support to organisations to represent and advocate for their            members, to monitor, engage and hold governments to account, and to help citizens learn            to act in the public sphere; curricula and teaching for civic education at various            levels. (This purpose code is restricted to activities targeting governance issues. When            assistance to civil society is for non-governance purposes use other appropriate purpose            codes.)', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15151', u'Elections', u'Electoral management bodies and processes, election observation, voters            education. (Use code 15230 when in the context of an international peacekeeping            operation.)', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15152', u'Legislatures and political parties', u'Assistance to strengthen key functions of legislatures/ parliaments including            subnational assemblies and councils (representation; oversight; legislation), such as            improving the capacity of legislative bodies, improving legislatures’ committees and            administrative procedures,; research and information management systems; providing            training programmes for legislators and support personnel. Assistance to political            parties and strengthening of party systems.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15153', u'Media and free flow of information', u'Activities that support free and uncensored flow of information on public            issues; activities that increase the editorial and technical skills and the integrity of            the print and broadcast media, e.g. training of journalists. (Use codes 22010-22040 for            provision of equipment and capital assistance to media.)', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15160', u'Human rights', u'Measures to support specialised official human rights institutions and            mechanisms at universal, regional, national and local levels in their statutory roles to            promote and protect civil and political, economic, social and cultural rights as defined            in international conventions and covenants; translation of international human rights            commitments into national legislation; reporting and follow-up; human rights dialogue.            Human rights defenders and human rights NGOs; human rights advocacy, activism,            mobilisation; awareness raising and public human rights education. Human rights            programming targeting specific groups, e.g. children, persons with disabilities,            migrants, ethnic, religious, linguistic and sexual minorities, indigenous people and            those suffering from caste discrimination, victims of trafficking, victims of torture.            (Use code 15230 when in the context of an international peacekeeping operation) ', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15170', u'Womens equality organisations and institutions *', u'            Support for institutions and organisations (governmental and non-governmental)            working for gender equality and womens empowerment.', u'151', u'Government and civil society, general', u'N.B. Use code 51010 for general budget support.'),
+    (u'15210', u'Security system management and reform', u'Technical co-operation provided to parliament, government ministries, law            enforcement agencies and the judiciary to assist review and reform of the security            system to improve democratic governance and civilian control; technical co-operation            provided to government to improve civilian oversight and democratic control of            budgeting, management, accountability and auditing of security expenditure, including            military budgets, as part of a public expenditure management programme; assistance to            civil society to enhance its competence and capacity to scrutinise the security system            so that it is managed in accordance with democratic norms and principles of            accountability, transparency and good governance.', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict,            peace and security related activities are given in paragraphs 41-46 of the DAC            Statistical Reporting Directives.'),
+    (u'15220', u'Civilian peace-building, conflict prevention and resolution', u'Support for civilian activities related to peace building, conflict prevention            and resolution, including capacity building, monitoring, dialogue and information            exchange.', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict,            peace and security related activities are given in paragraphs 41-46 of the DAC            Statistical Reporting Directives.'),
+    (u'15230', u'Post-conflict peace-building (UN)', u'Participation in the post-conflict peace-building phase of United Nations peace            operations (activities such as human rights and elections monitoring, rehabilitation of            demobilised soldiers, rehabilitation of basic national infrastructure, monitoring or            retraining of civil administrators and police forces, training in customs and border            control procedures, advice or training in fiscal or macroeconomic stabilisation policy,            repatriation and demobilisation of armed factions, and disposal of their weapons;            support for landmine removal). Direct contributions to the UN peacekeeping budget are            excluded from bilateral ODA (they are reportable in part as multilateral            ODA).', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict,            peace and security related activities are given in paragraphs 41-46 of the DAC            Statistical Reporting Directives.'),
+    (u'15240', u'Reintegration and SALW control', u'Reintegration of demobilised military personnel into the economy; conversion of            production facilities from military to civilian outputs; technical co-operation to            control, prevent and/or reduce the proliferation of small arms and light weapons (SALW)            - see para. 39 of the DAC Statistical Reporting Directives for definition of SALW            activities covered. [Other than in connection with UN peace-building (15230) or child            soldiers (15261)].', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict,            peace and security related activities are given in paragraphs 41-46 of the DAC            Statistical Reporting Directives.'),
+    (u'15250', u'Land mine clearance', u'Explosive mine removal for developmental purposes [other than in connection            with UN peace-building (15230)].', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict,            peace and security related activities are given in paragraphs 41-46 of the DAC            Statistical Reporting Directives.'),
+    (u'15261', u'Child soldiers (Prevention and demobilisation)', u'Technical co-operation provided to government and assistance to civil society            organisations to support and apply legislation designed to prevent the recruitment of            child soldiers, and to demobilise, disarm, reintegrate, repatriate and resettle (DDR)            child soldiers.', u'152', u'Conflict prevention and resolution, peace and security', u'N.B. Further notes on ODA eligibility (and exclusions) of conflict,            peace and security related activities are given in paragraphs 41-46 of the DAC            Statistical Reporting Directives.'),
+    (u'16010', u'Social/ welfare services', u'Social legislation and administration; institution capacity building and            advice; social security and other social schemes; special programmes for the elderly,            orphans, the disabled, street children; social dimensions of structural adjustment;            unspecified social infrastructure and services, including consumer            protection.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
+    (u'16020', u'Employment policy and administrative management', u'Employment policy and planning; labour law; labour unions; institution capacity            building and advice; support programmes for unemployed; employment creation and income            generation programmes; occupational safety and health; combating child            labour.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
+    (u'16030', u'Housing policy and administrative management', u'Housing sector policy, planning and programmes; excluding low-cost housing and            slum clearance (16040).', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
     (u'16040', u'Low-cost housing', u'Including slum clearance.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
-    (u'16050', u'Multisector aid for basic social services', u'Basic social services are defined to include basic education, basic health, basic nutrition, population/reproductive health and basic drinking water supply and basic sanitation.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
+    (u'16050', u'Multisector aid for basic social services', u'Basic social services are defined to include basic education, basic health,            basic nutrition, population/reproductive health and basic drinking water supply and            basic sanitation.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
     (u'16061', u'Culture and recreation', u'Including libraries and museums.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
-    (u'16062', u'Statistical capacity building', u'Both in national statistical offices and any other government ministries.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
-    (u'16063', u'Narcotics control', u'In-country and customs controls including training of the police; educational programmes and awareness campaigns to restrict narcotics traffic and in-country distribution.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
-    (u'16064', u'Social mitigation of HIV/AIDS', u'Special programmes to address the consequences of HIV/AIDS, e.g. social, legal and economic assistance to people living with HIV/AIDS including food security and employment; support to vulnerable groups and children orphaned by HIV/AIDS; human rights of HIV/AIDS affected people.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
-    (u'21010', u'Transport policy and administrative management', u'Transport sector policy, planning and programmes; aid to transport ministries; institution capacity building and advice; unspecified transport; activities that combine road, rail, water and/or air transport.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under code 32172.'),
-    (u'21020', u'Road transport', u'Road infrastructure, road vehicles; passenger road transport, motor passenger cars.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under code 32172.'),
-    (u'21030', u'Rail transport', u'Rail infrastructure, rail equipment, locomotives, other rolling stock; including light rail (tram) and underground systems.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under code 32172.'),
-    (u'21040', u'Water transport', u'Harbours and docks, harbour guidance systems, ships and boats; river and other inland water transport, inland barges and vessels.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under code 32172.'),
-    (u'21050', u'Air transport', u'Airports, airport guidance systems, aeroplanes, aeroplane maintenance equipment.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under code 32172.'),
-    (u'21061', u'Storage', u'Whether or not related to transportation.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under code 32172.'),
-    (u'21081', u'Education and training in transport and storage', u'', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under code 32172.'),
-    (u'22010', u'Communications policy and administrative management', u'Communications sector policy, planning and programmes; institution capacity building and advice; including postal services development; unspecified communications activities.', u'220', u'COMMUNICATION', u''),
+    (u'16062', u'Statistical capacity building', u'Both in national statistical offices and any other government            ministries.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
+    (u'16063', u'Narcotics control', u'In-country and customs controls including training of the police; educational            programmes and awareness campaigns to restrict narcotics traffic and in-country            distribution.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
+    (u'16064', u'Social mitigation of HIV/AIDS', u'Special programmes to address the consequences of HIV/AIDS, e.g. social, legal            and economic assistance to people living with HIV/AIDS including food security and            employment; support to vulnerable groups and children orphaned by HIV/AIDS; human rights            of HIV/AIDS affected people.', u'160', u'OTHER SOCIAL INFRASTRUCTURE AND SERVICES', u''),
+    (u'21010', u'Transport policy and administrative management', u'Transport sector policy, planning and programmes; aid to transport ministries;            institution capacity building and advice; unspecified transport; activities that combine            road, rail, water and/or air transport.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under            code 32172.'),
+    (u'21020', u'Road transport', u'Road infrastructure, road vehicles; passenger road transport, motor passenger            cars.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under            code 32172.'),
+    (u'21030', u'Rail transport', u'Rail infrastructure, rail equipment, locomotives, other rolling stock;            including light rail (tram) and underground systems.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under            code 32172.'),
+    (u'21040', u'Water transport', u'Harbours and docks, harbour guidance systems, ships and boats; river and other            inland water transport, inland barges and vessels.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under            code 32172.'),
+    (u'21050', u'Air transport', u'Airports, airport guidance systems, aeroplanes, aeroplane maintenance            equipment.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under            code 32172.'),
+    (u'21061', u'Storage', u'Whether or not related to transportation.', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under            code 32172.'),
+    (u'21081', u'Education and training in transport and storage', u'', u'210', u'TRANSPORT AND STORAGE', u'Note: Manufacturing of transport equipment should be included under            code 32172.'),
+    (u'22010', u'Communications policy and administrative management', u'Communications sector policy, planning and programmes; institution capacity            building and advice; including postal services development; unspecified communications            activities.', u'220', u'COMMUNICATION', u''),
     (u'22020', u'Telecommunications', u'Telephone networks, telecommunication satellites, earth stations.', u'220', u'COMMUNICATION', u''),
-    (u'22030', u'Radio/television/print media', u'Radio and TV links, equipment; newspapers; printing and publishing.', u'220', u'COMMUNICATION', u''),
-    (u'22040', u'Information and communication technology (ICT)', u'Computer hardware and software; internet access; IT training. When sector cannot be specified.', u'220', u'COMMUNICATION', u''),
-    (u'23010', u'Energy policy and administrative management', u'Energy sector policy, planning and programmes; aid to energy ministries; institution capacity building and advice; unspecified energy activities including energy conservation.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23020', u'Power generation/non-renewable sources', u'Thermal power plants including when heat source cannot be determined; combined gas-coal power plants.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23030', u'Power generation/renewable sources', u'Including policy, planning, development programmes, surveys and incentives. Fuelwood/ charcoal production should be included under forestry (31261).', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23040', u'Electrical transmission/ distribution', u'Distribution from power source to end user; transmission lines.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23050', u'Gas distribution', u'Delivery for use by ultimate consumer.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23061', u'Oil-fired power plants', u'Including diesel power plants.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23062', u'Gas-fired power plants', u'', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23063', u'Coal-fired power plants', u'', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23064', u'Nuclear power plants', u'Including nuclear safety.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23065', u'Hydro-electric power plants', u'Including power-generating river barges.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23066', u'Geothermal energy', u'', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23067', u'Solar energy', u'Including photo-voltaic cells, solar thermal applications and solar heating.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23068', u'Wind power', u'Wind energy for water lifting and electric power generation.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23069', u'Ocean power', u'Including ocean thermal energy conversion, tidal and wave power.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23070', u'Biomass', u'Densification technologies and use of biomass for direct power generation including biogas, gas obtained from sugar cane and other plant residues, anaerobic digesters.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23081', u'Energy education/training', u'Applies to all energy sub-sectors; all levels of training.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'23082', u'Energy research', u'Including general inventories, surveys.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be included in the mining sector. Energy manufacturing should be included in the industry sector.'),
-    (u'24010', u'Financial policy and administrative management', u'Finance sector policy, planning and programmes; institution capacity building and advice; financial markets and systems.', u'240', u'BANKING AND FINANCIAL SERVICES', u''),
+    (u'22030', u'Radio/television/print media', u'Radio and TV links, equipment; newspapers; printing and            publishing.', u'220', u'COMMUNICATION', u''),
+    (u'22040', u'Information and communication technology (ICT)', u'Computer hardware and software; internet access; IT training. When sector            cannot be specified.', u'220', u'COMMUNICATION', u''),
+    (u'23010', u'Energy policy and administrative management', u'Energy sector policy, planning and programmes; aid to energy ministries;            institution capacity building and advice; unspecified energy activities including energy            conservation.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23020', u'Power generation/non-renewable sources', u'Thermal power plants including when heat source cannot be determined; combined            gas-coal power plants.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23030', u'Power generation/renewable sources', u'Including policy, planning, development programmes, surveys and incentives.            Fuelwood/ charcoal production should be included under forestry (31261).', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23040', u'Electrical transmission/ distribution', u'Distribution from power source to end user; transmission lines.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23050', u'Gas distribution', u'Delivery for use by ultimate consumer.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23061', u'Oil-fired power plants', u'Including diesel power plants.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23062', u'Gas-fired power plants', u'', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23063', u'Coal-fired power plants', u'', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23064', u'Nuclear power plants', u'Including nuclear safety.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23065', u'Hydro-electric power plants', u'Including power-generating river barges.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23066', u'Geothermal energy', u'', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23067', u'Solar energy', u'Including photo-voltaic cells, solar thermal applications and solar            heating.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23068', u'Wind power', u'Wind energy for water lifting and electric power generation.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23069', u'Ocean power', u'Including ocean thermal energy conversion, tidal and wave power.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23070', u'Biomass', u'Densification technologies and use of biomass for direct power generation            including biogas, gas obtained from sugar cane and other plant residues, anaerobic            digesters.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23081', u'Energy education/training', u'Applies to all energy sub-sectors; all levels of training.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'23082', u'Energy research', u'Including general inventories, surveys.', u'230', u'ENERGY GENERATION AND SUPPLY', u'Note: Extraction of raw materials for power generation should be            included in the mining sector. Energy manufacturing should be included in the industry            sector.'),
+    (u'24010', u'Financial policy and administrative management', u'Finance sector policy, planning and programmes; institution capacity building            and advice; financial markets and systems.', u'240', u'BANKING AND FINANCIAL SERVICES', u''),
     (u'24020', u'Monetary institutions', u'Central banks.', u'240', u'BANKING AND FINANCIAL SERVICES', u''),
-    (u'24030', u'Formal sector financial intermediaries', u'All formal sector financial intermediaries; credit lines; insurance, leasing, venture capital, etc. (except when focused on only one sector).', u'240', u'BANKING AND FINANCIAL SERVICES', u''),
+    (u'24030', u'Formal sector financial intermediaries', u'All formal sector financial intermediaries; credit lines; insurance, leasing,            venture capital, etc. (except when focused on only one sector).', u'240', u'BANKING AND FINANCIAL SERVICES', u''),
     (u'24040', u'Informal/semi-formal financial intermediaries', u'Micro credit, savings and credit co-operatives etc.', u'240', u'BANKING AND FINANCIAL SERVICES', u''),
     (u'24081', u'Education/training in banking and financial services', u'', u'240', u'BANKING AND FINANCIAL SERVICES', u''),
-    (u'25010', u'Business support services and institutions', u'Support to trade and business associations, chambers of commerce; legal and regulatory reform aimed at improving business and investment climate; private sector institution capacity building and advice; trade information; public-private sector networking including trade fairs; e?commerce. Where sector cannot be specified: general support to private sector enterprises (in particular, use code 32130 for enterprises in the industrial sector).', u'250', u'BUSINESS AND OTHER SERVICES', u''),
-    (u'25020', u'Privatisation', u'When sector cannot be specified. Including general state enterprise restructuring or demonopolisation programmes; planning, programming, advice.', u'250', u'BUSINESS AND OTHER SERVICES', u''),
-    (u'31110', u'Agricultural policy and administrative management', u'Agricultural sector policy, planning and programmes; aid to agricultural ministries; institution capacity building and advice; unspecified agriculture.', u'311', u'AGRICULTURE', u''),
+    (u'25010', u'Business support services and institutions', u'Support to trade and business associations, chambers of commerce; legal and            regulatory reform aimed at improving business and investment climate; private sector            institution capacity building and advice; trade information; public-private sector            networking including trade fairs; e?commerce. Where sector cannot be specified: general            support to private sector enterprises (in particular, use code 32130 for enterprises in            the industrial sector).', u'250', u'BUSINESS AND OTHER SERVICES', u''),
+    (u'25020', u'Privatisation', u'When sector cannot be specified. Including general state enterprise            restructuring or demonopolisation programmes; planning, programming,            advice.', u'250', u'BUSINESS AND OTHER SERVICES', u''),
+    (u'31110', u'Agricultural policy and administrative management', u'Agricultural sector policy, planning and programmes; aid to agricultural            ministries; institution capacity building and advice; unspecified            agriculture.', u'311', u'AGRICULTURE', u''),
     (u'31120', u'Agricultural development', u'Integrated projects; farm development.', u'311', u'AGRICULTURE', u''),
-    (u'31130', u'Agricultural land resources', u'Including soil degradation control; soil improvement; drainage of water logged areas; soil desalination; agricultural land surveys; land reclamation; erosion control, desertification control.', u'311', u'AGRICULTURE', u''),
-    (u'31140', u'Agricultural water resources', u'Irrigation, reservoirs, hydraulic structures, ground water exploitation for agricultural use.', u'311', u'AGRICULTURE', u''),
+    (u'31130', u'Agricultural land resources', u'Including soil degradation control; soil improvement; drainage of water logged            areas; soil desalination; agricultural land surveys; land reclamation; erosion control,            desertification control.', u'311', u'AGRICULTURE', u''),
+    (u'31140', u'Agricultural water resources', u'Irrigation, reservoirs, hydraulic structures, ground water exploitation for            agricultural use.', u'311', u'AGRICULTURE', u''),
     (u'31150', u'Agricultural inputs', u'Supply of seeds, fertilizers, agricultural machinery/equipment.', u'311', u'AGRICULTURE', u''),
-    (u'31161', u'Food crop production', u'Including grains (wheat, rice, barley, maize, rye, oats, millet, sorghum); horticulture; vegetables; fruit and berries; other annual and perennial crops. [Use code 32161 for agro-industries.]', u'311', u'AGRICULTURE', u''),
-    (u'31162', u'Industrial crops/export crops', u'Including sugar; coffee, cocoa, tea; oil seeds, nuts, kernels; fibre crops; tobacco; rubber. [Use code 32161 for agro-industries.]', u'311', u'AGRICULTURE', u''),
+    (u'31161', u'Food crop production', u'Including grains (wheat, rice, barley, maize, rye, oats, millet, sorghum);            horticulture; vegetables; fruit and berries; other annual and perennial crops. [Use code            32161 for agro-industries.]', u'311', u'AGRICULTURE', u''),
+    (u'31162', u'Industrial crops/export crops', u'Including sugar; coffee, cocoa, tea; oil seeds, nuts, kernels; fibre crops;            tobacco; rubber. [Use code 32161 for agro-industries.]', u'311', u'AGRICULTURE', u''),
     (u'31163', u'Livestock', u'Animal husbandry; animal feed aid.', u'311', u'AGRICULTURE', u''),
     (u'31164', u'Agrarian reform', u'Including agricultural sector adjustment.', u'311', u'AGRICULTURE', u''),
-    (u'31165', u'Agricultural alternative development', u'Projects to reduce illicit drug cultivation through other agricultural marketing and production opportunities (see code 43050 for non-agricultural alternative development).', u'311', u'AGRICULTURE', u''),
+    (u'31165', u'Agricultural alternative development', u'Projects to reduce illicit drug cultivation through other agricultural            marketing and production opportunities (see code 43050 for non-agricultural alternative            development).', u'311', u'AGRICULTURE', u''),
     (u'31166', u'Agricultural extension', u'Non-formal training in agriculture.', u'311', u'AGRICULTURE', u''),
     (u'31181', u'Agricultural education/training', u'', u'311', u'AGRICULTURE', u''),
-    (u'31182', u'Agricultural research', u'Plant breeding, physiology, genetic resources, ecology, taxonomy, disease control, agricultural bio-technology; including livestock research (animal health, breeding and genetics, nutrition, physiology).', u'311', u'AGRICULTURE', u''),
-    (u'31191', u'Agricultural services', u'Marketing policies and organisation; storage and transportation, creation of strategic reserves.', u'311', u'AGRICULTURE', u''),
-    (u'31192', u'Plant and post-harvest protection and pest control', u'Including integrated plant protection, biological plant protection activities, supply and management of agrochemicals, supply of pesticides, plant protection policy and legislation.', u'311', u'AGRICULTURE', u''),
-    (u'31193', u'Agricultural financial services', u'Financial intermediaries for the agricultural sector including credit schemes; crop insurance.', u'311', u'AGRICULTURE', u''),
-    (u'31194', u'Agricultural co-operatives', u'Including farmersĂâ organisations.', u'311', u'AGRICULTURE', u''),
+    (u'31182', u'Agricultural research', u'Plant breeding, physiology, genetic resources, ecology, taxonomy, disease            control, agricultural bio-technology; including livestock research (animal health,            breeding and genetics, nutrition, physiology).', u'311', u'AGRICULTURE', u''),
+    (u'31191', u'Agricultural services', u'Marketing policies and organisation; storage and transportation, creation of            strategic reserves.', u'311', u'AGRICULTURE', u''),
+    (u'31192', u'Plant and post-harvest protection and pest control', u'Including integrated plant protection, biological plant protection activities,            supply and management of agrochemicals, supply of pesticides, plant protection policy            and legislation.', u'311', u'AGRICULTURE', u''),
+    (u'31193', u'Agricultural financial services', u'Financial intermediaries for the agricultural sector including credit schemes;            crop insurance.', u'311', u'AGRICULTURE', u''),
+    (u'31194', u'Agricultural co-operatives', u'Including farmersÂ’ organisations.', u'311', u'AGRICULTURE', u''),
     (u'31195', u'Livestock/veterinary services', u'Animal health and management, genetic resources, feed resources.', u'311', u'AGRICULTURE', u''),
-    (u'31210', u'Forestry policy and administrative management', u'Forestry sector policy, planning and programmes; institution capacity building and advice; forest surveys; unspecified forestry and agro-forestry activities.', u'312', u'FORESTRY', u''),
-    (u'31220', u'Forestry development', u'Afforestation for industrial and rural consumption; exploitation and utilisation; erosion control, desertification control; integrated forestry projects.', u'312', u'FORESTRY', u''),
-    (u'31261', u'Fuelwood/charcoal', u'Forestry development whose primary purpose is production of fuelwood and charcoal.', u'312', u'FORESTRY', u''),
+    (u'31210', u'Forestry policy and administrative management', u'Forestry sector policy, planning and programmes; institution capacity building            and advice; forest surveys; unspecified forestry and agro-forestry            activities.', u'312', u'FORESTRY', u''),
+    (u'31220', u'Forestry development', u'Afforestation for industrial and rural consumption; exploitation and            utilisation; erosion control, desertification control; integrated forestry            projects.', u'312', u'FORESTRY', u''),
+    (u'31261', u'Fuelwood/charcoal', u'Forestry development whose primary purpose is production of fuelwood and            charcoal.', u'312', u'FORESTRY', u''),
     (u'31281', u'Forestry education/training', u'', u'312', u'FORESTRY', u''),
-    (u'31282', u'Forestry research', u'Including artificial regeneration, genetic improvement, production methods, fertilizer, harvesting.', u'312', u'FORESTRY', u''),
+    (u'31282', u'Forestry research', u'Including artificial regeneration, genetic improvement, production methods,            fertilizer, harvesting.', u'312', u'FORESTRY', u''),
     (u'31291', u'Forestry services', u'', u'312', u'FORESTRY', u''),
-    (u'31310', u'Fishing policy and administrative management', u'Fishing sector policy, planning and programmes; institution capacity building and advice; ocean and coastal fishing; marine and freshwater fish surveys and prospecting; fishing boats/equipment; unspecified fishing activities.', u'313', u'FISHING', u''),
-    (u'31320', u'Fishery development', u'Exploitation and utilisation of fisheries; fish stock protection; aquaculture; integrated fishery projects.', u'313', u'FISHING', u''),
+    (u'31310', u'Fishing policy and administrative management', u'Fishing sector policy, planning and programmes; institution capacity building            and advice; ocean and coastal fishing; marine and freshwater fish surveys and            prospecting; fishing boats/equipment; unspecified fishing activities.', u'313', u'FISHING', u''),
+    (u'31320', u'Fishery development', u'Exploitation and utilisation of fisheries; fish stock protection; aquaculture;            integrated fishery projects.', u'313', u'FISHING', u''),
     (u'31381', u'Fishery education/training', u'', u'313', u'FISHING', u''),
     (u'31382', u'Fishery research', u'Pilot fish culture; marine/freshwater biological research.', u'313', u'FISHING', u''),
-    (u'31391', u'Fishery services', u'Fishing harbours; fish markets; fishery transport and cold storage.', u'313', u'FISHING', u''),
-    (u'32110', u'Industrial policy and administrative management', u'Industrial sector policy, planning and programmes; institution capacity building and advice; unspecified industrial activities; manufacturing of goods not specified below.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32120', u'Industrial development', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32130', u'Small and medium-sized enterprises (SME) development', u'Direct support to the development of small and medium-sized enterprises in the industrial sector, including accounting, auditing and advisory services.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32140', u'Cottage industries and handicraft', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32161', u'Agro-industries', u'Staple food processing, dairy products, slaughter houses and equipment, meat and fish processing and preserving, oils/fats, sugar refineries, beverages/tobacco, animal feeds production.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32162', u'Forest industries', u'Wood production, pulp/paper production.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32163', u'Textiles, leather and substitutes', u'Including knitting factories.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32164', u'Chemicals', u'Industrial and non-industrial production facilities; includes pesticides production.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32165', u'Fertilizer plants', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32166', u'Cement/lime/plaster', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32167', u'Energy manufacturing', u'Including gas liquefaction; petroleum refineries.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32168', u'Pharmaceutical production', u'Medical equipment/supplies; drugs, medicines, vaccines; hygienic products.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32169', u'Basic metal industries', u'Iron and steel, structural metal production.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32170', u'Non-ferrous metal industries', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32171', u'Engineering', u'Manufacturing of electrical and non-electrical machinery, engines/turbines.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32172', u'Transport equipment industry', u'Shipbuilding, fishing boats building; railroad equipment; motor vehicles and motor passenger cars; aircraft; navigation/guidance systems.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32182', u'Technological research and development', u'Including industrial standards; quality management; metrology; testing; accreditation; certification.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of finished products should be included under relevant sector.'),
-    (u'32210', u'Mineral/mining policy and administrative management', u'Mineral and mining sector policy, planning and programmes; mining legislation, mining cadastre, mineral resources inventory, information systems, institution capacity building and advice; unspecified mineral resources exploitation.', u'322', u'MINERAL RESOURCES AND MINING', u''),
-    (u'32220', u'Mineral prospection and exploration', u'Geology, geophysics, geochemistry; excluding hydrogeology (14010) and environmental geology (41010), mineral extraction and processing, infrastructure, technology, economics, safety and environment management.', u'322', u'MINERAL RESOURCES AND MINING', u''),
+    (u'31391', u'Fishery services', u'Fishing harbours; fish markets; fishery transport and cold            storage.', u'313', u'FISHING', u''),
+    (u'32110', u'Industrial policy and administrative management', u'Industrial sector policy, planning and programmes; institution capacity            building and advice; unspecified industrial activities; manufacturing of goods not            specified below.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32120', u'Industrial development', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32130', u'Small and medium-sized enterprises (SME) development', u'Direct support to the development of small and medium-sized enterprises in the            industrial sector, including accounting, auditing and advisory services.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32140', u'Cottage industries and handicraft', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32161', u'Agro-industries', u'Staple food processing, dairy products, slaughter houses and equipment, meat            and fish processing and preserving, oils/fats, sugar refineries, beverages/tobacco,            animal feeds production.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32162', u'Forest industries', u'Wood production, pulp/paper production.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32163', u'Textiles, leather and substitutes', u'Including knitting factories.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32164', u'Chemicals', u'Industrial and non-industrial production facilities; includes pesticides            production.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32165', u'Fertilizer plants', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32166', u'Cement/lime/plaster', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32167', u'Energy manufacturing', u'Including gas liquefaction; petroleum refineries.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32168', u'Pharmaceutical production', u'Medical equipment/supplies; drugs, medicines, vaccines; hygienic            products.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32169', u'Basic metal industries', u'Iron and steel, structural metal production.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32170', u'Non-ferrous metal industries', u'', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32171', u'Engineering', u'Manufacturing of electrical and non-electrical machinery,            engines/turbines.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32172', u'Transport equipment industry', u'Shipbuilding, fishing boats building; railroad equipment; motor vehicles and            motor passenger cars; aircraft; navigation/guidance systems.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32182', u'Technological research and development', u'Including industrial standards; quality management; metrology; testing;            accreditation; certification.', u'321', u'INDUSTRY', u'Only includes aid to production or manufacturing. Provision of            finished products should be included under relevant sector.'),
+    (u'32210', u'Mineral/mining policy and administrative management', u'Mineral and mining sector policy, planning and programmes; mining legislation,            mining cadastre, mineral resources inventory, information systems, institution capacity            building and advice; unspecified mineral resources exploitation.', u'322', u'MINERAL RESOURCES AND MINING', u''),
+    (u'32220', u'Mineral prospection and exploration', u'Geology, geophysics, geochemistry; excluding hydrogeology (14010) and            environmental geology (41010), mineral extraction and processing, infrastructure,            technology, economics, safety and environment management.', u'322', u'MINERAL RESOURCES AND MINING', u''),
     (u'32261', u'Coal', u'Including lignite and peat.', u'322', u'MINERAL RESOURCES AND MINING', u''),
-    (u'32262', u'Oil and gas', u'Petroleum, natural gas, condensates, liquefied petroleum gas (LPG), liquefied natural gas (LNG); including drilling and production.', u'322', u'MINERAL RESOURCES AND MINING', u''),
+    (u'32262', u'Oil and gas', u'Petroleum, natural gas, condensates, liquefied petroleum gas (LPG), liquefied            natural gas (LNG); including drilling and production.', u'322', u'MINERAL RESOURCES AND MINING', u''),
     (u'32263', u'Ferrous metals', u'Iron and ferro-alloy metals.', u'322', u'MINERAL RESOURCES AND MINING', u''),
     (u'32264', u'Nonferrous metals', u'Aluminium, copper, lead, nickel, tin, zinc.', u'322', u'MINERAL RESOURCES AND MINING', u''),
     (u'32265', u'Precious metals/materials', u'Gold, silver, platinum, diamonds, gemstones.', u'322', u'MINERAL RESOURCES AND MINING', u''),
-    (u'32266', u'Industrial minerals', u'Baryte, limestone, feldspar, kaolin, sand, gypsym, gravel, ornamental stones.', u'322', u'MINERAL RESOURCES AND MINING', u''),
+    (u'32266', u'Industrial minerals', u'Baryte, limestone, feldspar, kaolin, sand, gypsym, gravel, ornamental            stones.', u'322', u'MINERAL RESOURCES AND MINING', u''),
     (u'32267', u'Fertilizer minerals', u'Phosphates, potash.', u'322', u'MINERAL RESOURCES AND MINING', u''),
     (u'32268', u'Offshore minerals', u'Polymetallic nodules, phosphorites, marine placer deposits.', u'322', u'MINERAL RESOURCES AND MINING', u''),
-    (u'32310', u'Construction policy and administrative management', u'Construction sector policy and planning; excluding construction activities within specific sectors (e.g., hospital or school construction).', u'323', u'CONSTRUCTION', u''),
-    (u'33110', u'Trade policy and administrative management', u'Trade policy and planning; support to ministries and departments responsible for trade policy; trade-related legislation and regulatory reforms; policy analysis and implementation of multilateral trade agreements e.g. technical barriers to trade and sanitary and phytosanitary measures (TBT/SPS) except at regional level (see 33130); mainstreaming trade in national development strategies (e.g. poverty reduction strategy papers); wholesale/retail trade; unspecified trade and trade promotion activities.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
-    (u'33120', u'Trade facilitation', u'Simplification and harmonisation of international import and export procedures (e.g. customs valuation, licensing procedures, transport formalities, payments, insurance); support to customs departments; tariff reforms.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
-    (u'33130', u'Regional trade agreements (RTAs)', u'Support to regional trade arrangements [e.g. Southern African Development Community (SADC), Association of Southeast Asian Nations (ASEAN), Free Trade Area of the Americas (FTAA), African Caribbean Pacific/European Union (ACP/EU)], including work on technical barriers to trade and sanitary and phytosanitary measures (TBT/SPS) at regional level; elaboration of rules of origin and introduction of special and differential treatment in RTAs.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
-    (u'33140', u'Multilateral trade negotiations', u'Support developing countries effective participation in multilateral trade negotiations, including training of negotiators, assessing impacts of negotiations; accession to the World Trade Organisation (WTO) and other multilateral trade-related organisations.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
-    (u'33150', u'Trade-related adjustment', u'Contributions to the government budget to assist the implementation of recipients own trade reforms and adjustments to trade policy measures by other countries; assistance to manage shortfalls in the balance of payments due to changes in the world trading environment.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
-    (u'33181', u'Trade education/training', u'Human resources development in trade not included under any of the above codes. Includes university programmes in trade.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
+    (u'32310', u'Construction policy and administrative management', u'Construction sector policy and planning; excluding construction activities            within specific sectors (e.g., hospital or school construction).', u'323', u'CONSTRUCTION', u''),
+    (u'33110', u'Trade policy and administrative management', u'Trade policy and planning; support to ministries and departments responsible            for trade policy; trade-related legislation and regulatory reforms; policy analysis and            implementation of multilateral trade agreements e.g. technical barriers to trade and            sanitary and phytosanitary measures (TBT/SPS) except at regional level (see 33130);            mainstreaming trade in national development strategies (e.g. poverty reduction strategy            papers); wholesale/retail trade; unspecified trade and trade promotion            activities.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
+    (u'33120', u'Trade facilitation', u'Simplification and harmonisation of international import and export procedures            (e.g. customs valuation, licensing procedures, transport formalities, payments,            insurance); support to customs departments; tariff reforms.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
+    (u'33130', u'Regional trade agreements (RTAs)', u'Support to regional trade arrangements [e.g. Southern African Development            Community (SADC), Association of Southeast Asian Nations (ASEAN), Free Trade Area of the            Americas (FTAA), African Caribbean Pacific/European Union (ACP/EU)], including work on            technical barriers to trade and sanitary and phytosanitary measures (TBT/SPS) at            regional level; elaboration of rules of origin and introduction of special and            differential treatment in RTAs.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
+    (u'33140', u'Multilateral trade negotiations', u'Support developing countries effective participation in multilateral trade            negotiations, including training of negotiators, assessing impacts of negotiations;            accession to the World Trade Organisation (WTO) and other multilateral trade-related            organisations.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
+    (u'33150', u'Trade-related adjustment', u'Contributions to the government budget to assist the implementation of            recipients own trade reforms and adjustments to trade policy measures by other            countries; assistance to manage shortfalls in the balance of payments due to changes in            the world trading environment.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
+    (u'33181', u'Trade education/training', u'Human resources development in trade not included under any of the above codes.            Includes university programmes in trade.', u'331', u'TRADE POLICY AND REGULATIONS AND TRADE-RELATED ADJUSTMENT', u''),
     (u'33210', u'Tourism policy and administrative management', u'', u'332', u'TOURISM', u''),
-    (u'41010', u'Environmental policy and administrative management', u'Environmental policy, laws, regulations and economic instruments; administrational institutions and practices; environmental and land use planning and decision-making procedures; seminars, meetings; miscellaneous conservation and protection measures not specified below.', u'410', u'General environmental protection', u'Non-sector specific.'),
-    (u'41020', u'Biosphere protection', u'Air pollution control, ozone layer preservation; marine pollution control.', u'410', u'General environmental protection', u'Non-sector specific.'),
-    (u'41030', u'Bio-diversity', u'Including natural reserves and actions in the surrounding areas; other measures to protect endangered or vulnerable species and their habitats (e.g. wetlands preservation).', u'410', u'General environmental protection', u'Non-sector specific.'),
-    (u'41040', u'Site preservation', u'Applies to unique cultural landscape; including sites/objects of historical, archeological, aesthetic, scientific or educational value.', u'410', u'General environmental protection', u'Non-sector specific.'),
-    (u'41050', u'Flood prevention/control', u'Floods from rivers or the sea; including sea water intrusion control and sea level rise related activities.', u'410', u'General environmental protection', u'Non-sector specific.'),
+    (u'41010', u'Environmental policy and administrative management', u'Environmental policy, laws, regulations and economic instruments;            administrational institutions and practices; environmental and land use planning and            decision-making procedures; seminars, meetings; miscellaneous conservation and            protection measures not specified below.', u'410', u'General environmental protection', u'Non-sector specific.'),
+    (u'41020', u'Biosphere protection', u'Air pollution control, ozone layer preservation; marine pollution            control.', u'410', u'General environmental protection', u'Non-sector specific.'),
+    (u'41030', u'Bio-diversity', u'Including natural reserves and actions in the surrounding areas; other measures            to protect endangered or vulnerable species and their habitats (e.g. wetlands            preservation).', u'410', u'General environmental protection', u'Non-sector specific.'),
+    (u'41040', u'Site preservation', u'Applies to unique cultural landscape; including sites/objects of historical,            archeological, aesthetic, scientific or educational value.', u'410', u'General environmental protection', u'Non-sector specific.'),
+    (u'41050', u'Flood prevention/control', u'Floods from rivers or the sea; including sea water intrusion control and sea            level rise related activities.', u'410', u'General environmental protection', u'Non-sector specific.'),
     (u'41081', u'Environmental education/ training', u'', u'410', u'General environmental protection', u'Non-sector specific.'),
-    (u'41082', u'Environmental research', u'Including establishment of databases, inventories/accounts of physical and natural resources; environmental profiles and impact studies if not sector specific.', u'410', u'General environmental protection', u'Non-sector specific.'),
+    (u'41082', u'Environmental research', u'Including establishment of databases, inventories/accounts of physical and            natural resources; environmental profiles and impact studies if not sector            specific.', u'410', u'General environmental protection', u'Non-sector specific.'),
     (u'43010', u'Multisector aid', u'', u'430', u'Other multisector', u''),
-    (u'43030', u'Urban development and management', u'Integrated urban development projects; local development and urban management; urban infrastructure and services; municipal finances; urban environmental management; urban development and planning; urban renewal and urban housing; land information systems.', u'430', u'Other multisector', u''),
-    (u'43040', u'Rural development', u'Integrated rural development projects; e.g. regional development planning; promotion of decentralised and multi-sectoral competence for planning, co-ordination and management; implementation of regional development and measures (including natural reserve management); land management; land use planning; land settlement and resettlement activities [excluding resettlement of refugees and internally displaced persons (72010)]; functional integration of rural and urban areas; geographical information systems.', u'430', u'Other multisector', u''),
-    (u'43050', u'Non-agricultural alternative development', u'Projects to reduce illicit drug cultivation through, for example, non-agricultural income opportunities, social and physical infrastructure (see code 31165 for agricultural alternative development).', u'430', u'Other multisector', u''),
+    (u'43030', u'Urban development and management', u'Integrated urban development projects; local development and urban management;            urban infrastructure and services; municipal finances; urban environmental management;            urban development and planning; urban renewal and urban housing; land information            systems.', u'430', u'Other multisector', u''),
+    (u'43040', u'Rural development', u'Integrated rural development projects; e.g. regional development planning;            promotion of decentralised and multi-sectoral competence for planning, co-ordination and            management; implementation of regional development and measures (including natural            reserve management); land management; land use planning; land settlement and            resettlement activities [excluding resettlement of refugees and internally displaced            persons (72010)]; functional integration of rural and urban areas; geographical            information systems.', u'430', u'Other multisector', u''),
+    (u'43050', u'Non-agricultural alternative development', u'Projects to reduce illicit drug cultivation through, for example,            non-agricultural income opportunities, social and physical infrastructure (see code            31165 for agricultural alternative development).', u'430', u'Other multisector', u''),
     (u'43081', u'Multisector education/training', u'Including scholarships.', u'430', u'Other multisector', u''),
     (u'43082', u'Research/scientific institutions', u'When sector cannot be identified.', u'430', u'Other multisector', u''),
-    (u'51010', u'General budget support', u'Unearmarked contributions to the government budget; support for the implementation of macroeconomic reforms (structural adjustment programmes, poverty reduction strategies); general programme assistance (when not allocable by sector).', u'510', u'General budget support', u'Budget support in the form of sector-wide approaches (SWAps) should be included in the respective sectors.'),
-    (u'52010', u'Food aid/Food security programmes', u'Supply of edible human food under national or international programmes including transport costs; cash payments made for food supplies; project food aid and food aid for market sales when benefiting sector not specified; excluding emergency food aid.', u'520', u'Developmental food aid/Food security assistance', u''),
-    (u'53030', u'Import support (capital goods)', u'Capital goods and services; lines of credit.', u'530', u'Other commodity assistance', u'Non-food commodity assistance (when benefiting sector not specified).'),
-    (u'53040', u'Import support (commodities)', u'Commodities, general goods and services, oil imports.', u'530', u'Other commodity assistance', u'Non-food commodity assistance (when benefiting sector not specified).'),
-    (u'60010', u'Action relating to debt', u'Actions falling outside the code headings below; training in debt management.', u'600', u'ACTION RELATING TO DEBT', u''),
+    (u'51010', u'General budget support', u'Unearmarked contributions to the government budget; support for the            implementation of macroeconomic reforms (structural adjustment programmes, poverty            reduction strategies); general programme assistance (when not allocable by            sector).', u'510', u'General budget support', u'Budget support in the form of sector-wide approaches (SWAps) should be            included in the respective sectors.'),
+    (u'52010', u'Food aid/Food security programmes', u'Supply of edible human food under national or international programmes            including transport costs; cash payments made for food supplies; project food aid and            food aid for market sales when benefiting sector not specified; excluding emergency food            aid.', u'520', u'Developmental food aid/Food security assistance', u''),
+    (u'53030', u'Import support (capital goods)', u'Capital goods and services; lines of credit.', u'530', u'Other commodity assistance', u'Non-food commodity assistance (when benefiting sector not            specified).'),
+    (u'53040', u'Import support (commodities)', u'Commodities, general goods and services, oil imports.', u'530', u'Other commodity assistance', u'Non-food commodity assistance (when benefiting sector not            specified).'),
+    (u'60010', u'Action relating to debt', u'Actions falling outside the code headings below; training in debt            management.', u'600', u'ACTION RELATING TO DEBT', u''),
     (u'60020', u'Debt forgiveness', u'', u'600', u'ACTION RELATING TO DEBT', u''),
-    (u'60030', u'Relief of multilateral debt', u'Grants or credits to cover debt owed to multilateral financial institutions; including contributions to Heavily Indebted Poor Countries (HIPC) Trust Fund.', u'600', u'ACTION RELATING TO DEBT', u''),
+    (u'60030', u'Relief of multilateral debt', u'Grants or credits to cover debt owed to multilateral financial institutions;            including contributions to Heavily Indebted Poor Countries (HIPC) Trust            Fund.', u'600', u'ACTION RELATING TO DEBT', u''),
     (u'60040', u'Rescheduling and refinancing', u'', u'600', u'ACTION RELATING TO DEBT', u''),
-    (u'60061', u'Debt for development swap', u'Allocation of debt claims to use for development (e.g., debt for education, debt for environment).', u'600', u'ACTION RELATING TO DEBT', u''),
-    (u'60062', u'Other debt swap', u'Where the debt swap benefits an external agent i.e. is not specifically for development purposes.', u'600', u'ACTION RELATING TO DEBT', u''),
+    (u'60061', u'Debt for development swap', u'Allocation of debt claims to use for development (e.g., debt for education,            debt for environment).', u'600', u'ACTION RELATING TO DEBT', u''),
+    (u'60062', u'Other debt swap', u'Where the debt swap benefits an external agent i.e. is not specifically for            development purposes.', u'600', u'ACTION RELATING TO DEBT', u''),
     (u'60063', u'Debt buy-back', u'Purchase of debt for the purpose of cancellation.', u'600', u'ACTION RELATING TO DEBT', u''),
-    (u'72010', u'Material relief assistance and services', u'Shelter, water, sanitation and health services, supply of medicines and other non-food relief items; assistance to refugees and internally displaced people in developing countries other than for food (72040) or protection (72050).', u'720', u'Emergency Response', u'An emergency is a situation which results from man made crises and/or natural disasters.'),
-    (u'72040', u'Emergency food aid', u'Food aid normally for general free distribution or special supplementary feeding programmes; short-term relief to targeted population groups affected by emergency situations. Excludes non-emergency food security assistance programmes/food aid (52010).', u'720', u'Emergency Response', u'An emergency is a situation which results from man made crises and/or natural disasters.'),
-    (u'72050', u'Relief co-ordination; protection and support services', u'Measures to co-ordinate delivery of humanitarian aid, including logistics and communications systems; measures to promote and protect the safety, well-being, dignity and integrity of civilians and those no longer taking part in hostilities. (Activities designed to protect the security of persons or property through the use or display of force are not reportable as ODA.)', u'720', u'Emergency Response', u'An emergency is a situation which results from man made crises and/or natural disasters.'),
-    (u'73010', u'Reconstruction relief and rehabilitation', u'Short-term reconstruction work after emergency or conflict limited to restoring pre-existing infrastructure (e.g. repair or construction of roads, bridges and ports, restoration of essential facilities, such as water and sanitation, shelter, health care services); social and economic rehabilitation in the aftermath of emergencies to facilitate transition and enable populations to return to their previous livelihood or develop a new livelihood in the wake of an emergency situation (e.g. trauma counselling and treatment, employment programmes).', u'730', u'Reconstruction relief and rehabilitation', u'This relates to activities during and in the aftermath of an emergency situation. Longer-term activities to improve the level of infrastructure or social services should be reported under the relevant economic and social sector codes. See also guideline on distinguishing humanitarian from sector-allocable aid.'),
-    (u'74010', u'Disaster prevention and preparedness', u'Disaster risk reduction activities (e.g. developing knowledge, natural risks cartography, legal norms for construction); early warning systems; emergency contingency stocks and contingency planning including preparations for forced displacement.', u'740', u'Disaster prevention and preparedness', u'See codes 41050 and 15220 for prevention of floods and conflicts.'),
+    (u'72010', u'Material relief assistance and services', u'Shelter, water, sanitation and health services, supply of medicines and other            non-food relief items; assistance to refugees and internally displaced people in            developing countries other than for food (72040) or protection (72050).', u'720', u'Emergency Response', u'An emergency is a situation which results from man made crises and/or            natural disasters.'),
+    (u'72040', u'Emergency food aid', u'Food aid normally for general free distribution or special supplementary            feeding programmes; short-term relief to targeted population groups affected by            emergency situations. Excludes non-emergency food security assistance programmes/food            aid (52010).', u'720', u'Emergency Response', u'An emergency is a situation which results from man made crises and/or            natural disasters.'),
+    (u'72050', u'Relief co-ordination; protection and support services', u'Measures to co-ordinate delivery of humanitarian aid, including logistics and            communications systems; measures to promote and protect the safety, well-being, dignity            and integrity of civilians and those no longer taking part in hostilities. (Activities            designed to protect the security of persons or property through the use or display of            force are not reportable as ODA.)', u'720', u'Emergency Response', u'An emergency is a situation which results from man made crises and/or            natural disasters.'),
+    (u'73010', u'Reconstruction relief and rehabilitation', u'Short-term reconstruction work after emergency or conflict limited to restoring            pre-existing infrastructure (e.g. repair or construction of roads, bridges and ports,            restoration of essential facilities, such as water and sanitation, shelter, health care            services); social and economic rehabilitation in the aftermath of emergencies to            facilitate transition and enable populations to return to their previous livelihood or            develop a new livelihood in the wake of an emergency situation (e.g. trauma counselling            and treatment, employment programmes).', u'730', u'Reconstruction relief and rehabilitation', u'This relates to activities during and in the aftermath of an emergency            situation. Longer-term activities to improve the level of infrastructure or social            services should be reported under the relevant economic and social sector codes. See            also guideline on distinguishing humanitarian from sector-allocable            aid.'),
+    (u'74010', u'Disaster prevention and preparedness', u'Disaster risk reduction activities (e.g. developing knowledge, natural risks            cartography, legal norms for construction); early warning systems; emergency contingency            stocks and contingency planning including preparations for forced            displacement.', u'740', u'Disaster prevention and preparedness', u'See codes 41050 and 15220 for prevention of floods and            conflicts.'),
     (u'91010', u'Administrative costs', u'', u'910', u'ADMINISTRATIVE COSTS OF DONORS', u''),
     (u'92010', u'Support to national NGOs', u'In the donor country.', u'920', u'SUPPORT TO NON- GOVERNMENTAL ORGANISATIONS (NGOs)', u''),
     (u'92020', u'Support to international NGOs', u'', u'920', u'SUPPORT TO NON- GOVERNMENTAL ORGANISATIONS (NGOs)', u''),
     (u'92030', u'Support to local and regional NGOs', u'In the recipient country or region.', u'920', u'SUPPORT TO NON- GOVERNMENTAL ORGANISATIONS (NGOs)', u''),
     (u'93010', u'Refugees in donor countries', u'', u'930', u'REFUGEES IN DONOR COUNTRIES', u''),
-    (u'99810', u'Sectors not specified', u'Contributions to general development of the recipient should be included under programme assistance (51010).', u'998', u'UNALLOCATED/ UNSPECIFIED', u''),
-    (u'99820', u'Promotion of development awareness', u'Spending in donor country for heightened awareness/interest in development co-operation (brochures, lectures, special research projects, etc.).', u'998', u'UNALLOCATED/ UNSPECIFIED', u'')
+    (u'99810', u'Sectors not specified', u'Contributions to general development of the recipient should be included under            programme assistance (51010).', u'998', u'UNALLOCATED/ UNSPECIFIED', u''),
+    (u'99820', u'Promotion of development awareness', u'Spending in donor country for heightened awareness/interest in development            co-operation (brochures, lectures, special research projects, etc.).', u'998', u'UNALLOCATED/ UNSPECIFIED', u'')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/SectorCategory.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/SectorCategory.xml
 SECTOR_CATEGORY = (
+    (u'code', u'name', u'description'),
     (u'111', u'Education, level unspecified', u'Education sector policy, planning and programmes; aid to education ministries, administration and management systems; institution capacity building and advice; school management and governance; curriculum and materials development; unspecified education activities.'),
     (u'112', u'Basic education', u'Formal and non-formal primary education for children; all elementary and first cycle systematic instruction; provision of learning materials.'),
     (u'113', u'Secondary education', u'Second cycle systematic instruction at both junior and senior levels.'),
@@ -1638,19 +1850,17 @@ SECTOR_CATEGORY = (
     (u'998', u'UNALLOCATED/ UNSPECIFIED', u'Contributions to general development of the recipient should be included under programme assistance (51010).')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/TiedStatus.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/TiedStatus.xml
 TIED_STATUS = (
+    (u'code', u'name', u'description'),
     (u'3', u'Partially tied', u'Official Development Assistance for which the associated goods and services must be procured in the donor country or among a restricted group of other countries, which must however include substantially all aid recipient countries.'),
     (u'4', u'Tied', u'Official grants or loans where procurement of the goods or services involved is limited to the donor country or to a group of countries which does not include substantially all aid recipient countries.'),
     (u'5', u'Untied', u'Untied aid is defined as loans and grants whose proceeds are fully and freely available to finance procurement from all OECD countries and substantially all developing countries.')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/TransactionType.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/TransactionType.xml
 TRANSACTION_TYPE = (
+    (u'code', u'name', u'description'),
     (u'C', u'Commitment', u'A firm written obligation by the donor to provide resources of a specified amount under specified financial terms and conditions and for specified purposes for the benefit of the recipient'),
     (u'D', u'Disbursement', u'The amount placed at the disposal of a recipient country or agency (in the case of internal development-related expenditures, the outlay of funds)'),
     (u'E', u'Expenditure', u'The outlay by the implementing agency on goods and services for the activity'),
@@ -1663,10 +1873,9 @@ TRANSACTION_TYPE = (
     (u'CG', u'Credit Guarantee', u'A commitment made by a funding organisation to underwrite a loan or line of credit entered into by a third party.')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/ValueType.xml
-# Fields: code, name, description
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/ValueType.xml
 VALUE_TYPE = (
+    (u'code', u'name', u'description'),
     (u'C', u'Commitment', u'A firm written obligation by the donor to provide resources of a specified amount under specified financial terms and conditions and for specified purposes for the benefit of the recipient'),
     (u'D', u'Disbursement', u'The amount placed at the disposal of a recipient country or agency (in the case of internal development-related expenditures, the outlay of funds)'),
     (u'E', u'Expenditure', u'The outlay by the implementing agency on goods and services for the activity'),
@@ -1675,21 +1884,22 @@ VALUE_TYPE = (
     (u'LR', u'Loan Repayment', u'The actual amount of principal (amortisation) repaid, including any arrears.'),
     (u'R', u'Reimbursement', u'A disbursement that covers funds already spent by the recipient, as agreed in the terms of the loan or grant.'),
     (u'PD', u'Planned Disbursements', u''),
-    (u'TB', u'Total Budget', u'')
+    (u'TB', u'Total Budget', u''),
+    (u'QP', u'Purchase of Equity', u'The use of an activitys funds to purchase equity in a business.'),
+    (u'QS', u'Sale of Equity', u'The flow of funds into an activity from the sale of equity.'),
+    (u'CG', u'Credit Guarantee', u'A commitment made by a funding organisation to underwrite a loan or line of credit entered into by a third party.')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/VerificationStatus.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/VerificationStatus.xml
 VERIFICATION_STATUS = (
+    (u'code', u'name'),
     (u'0', u'Not verified'),
     (u'1', u'Verified')
 )
 
-# From http://codelists102.archive.iatistandard.org/data/codelist/Vocabulary.xml
-# Fields: code, name
-
+# From http://codelists103.archive.iatistandard.org/data/codelist/Vocabulary.xml
 VOCABULARY = (
+    (u'code', u'name'),
     (u'ADT', u'AidData'),
     (u'COFOG', u'Classification of the Functions of Government (UN)'),
     (u'DAC', u'OECD Development Assistance Committee'),

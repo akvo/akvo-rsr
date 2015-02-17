@@ -9,12 +9,14 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+
+from akvo.codelists.models import ContactType
+from akvo.utils import codelist_choices, codelist_value
 
 
 class ProjectContact(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='contacts')
-    type = ValidXMLCharField(_(u'type'), blank=True, max_length=1, choices=codelists.CONTACT_TYPE)
+    type = ValidXMLCharField(_(u'type'), blank=True, max_length=1, choices=codelist_choices(ContactType))
     person_name = ValidXMLCharField(
         _(u'name'), blank=True, max_length=100,
         help_text=_(u'This should be a contact person for the project. (100 characters)')
@@ -41,6 +43,9 @@ class ProjectContact(models.Model):
     country = models.ForeignKey('Country', blank=True, null=True, verbose_name=u'country', related_name='contacts')
     department = ValidXMLCharField(_(u'department'), blank=True, max_length=100, help_text=_(u'(100 characters)'))
     website = models.URLField(_(u'website'), blank=True)
+
+    def iati_type(self):
+        return codelist_value(ContactType, self, 'type')
 
     class Meta:
         app_label = 'rsr'

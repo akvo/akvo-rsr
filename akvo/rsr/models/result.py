@@ -9,7 +9,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+
+from akvo.codelists.models import DescriptionType, ResultType
+from akvo.utils import codelist_choices, codelist_value
 
 
 class Result(models.Model):
@@ -19,7 +21,7 @@ class Result(models.Model):
         help_text=_(u'Enter the title of the result for this project. (255 characters)')
     )
     type = ValidXMLCharField(
-        _(u'type'), blank=True, max_length=1, choices=codelists.RESULT_TYPE,
+        _(u'type'), blank=True, max_length=1, choices=codelist_choices(ResultType),
         help_text=_(u'Select whether the result is an output, outcome or impact. '
                     u'<a href="http://www.tacticalphilanthropy.com/2010/06/outputs-outcomes-impact-oh-my/" '
                     u'target="_blank">Further explanation on result types</a>')
@@ -30,14 +32,14 @@ class Result(models.Model):
         help_text=_(u'You can provide further information of the result here. (255 characters)')
     )
     description_type = ValidXMLCharField(
-        _(u'description type'), blank=True, max_length=1, choices=[code[:2] for code in codelists.DESCRIPTION_TYPE]
+        _(u'description type'), blank=True, max_length=1, choices=codelist_choices(DescriptionType)
     )
 
     def __unicode__(self):
         return self.title
 
     def iati_type(self):
-        return dict(codelists.RESULT_TYPE)[self.type] if self.type else ""
+        return codelist_value(ResultType, self, 'type')
 
     def has_info(self):
         if self.title or self.type or self.aggregation_status or self.description:

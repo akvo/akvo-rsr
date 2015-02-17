@@ -8,20 +8,21 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 
 import django_filters
+
 from .models import Project, Organisation, Category, ProjectUpdate
 from .iso3166 import CONTINENTS
-from .iati.codelists.codelists_v104 import SECTOR_CATEGORY
+
+from akvo.codelists.models import SectorCategory
+from akvo.utils import codelist_choices
 
 ANY_CHOICE = (('', 'All'), )
 
 
 def sectors():
     sectors_list = []
-    for code in SECTOR_CATEGORY:
-        if Project.objects.filter(sectors__sector_code=code[0]):
-            code_list = list(code[:2])
-            code_list[1] = code_list[1].title()
-            sectors_list.append(tuple(code_list))
+    for sector in codelist_choices(SectorCategory):
+        if Project.objects.filter(sectors__sector_code=sector[0]):
+            sectors_list.append(sector)
     return sectors_list
 
 
