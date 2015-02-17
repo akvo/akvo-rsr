@@ -165,8 +165,15 @@ def directory(request):
     if frozenset(qs.keys()).isdisjoint(available_filters):
         show_filters = ""
 
+    # Sorting of projects
+    available_sorting = ['last_modified_at', '-last_modified_at', 'title', '-title', 'budget', '-budget', ]
+    sort_param = request.GET.get('sort_by', '-last_modified_at')
+    sorting = sort_param if sort_param in available_sorting else '-last_modified_at'
+
+    sorted_projects = f.qs.distinct().order_by(sorting)
+
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, f.qs.distinct(), 10)
+    page, paginator, page_range = pagination(page, sorted_projects, 10)
 
     context = {
         'filter': f,
@@ -174,7 +181,8 @@ def directory(request):
         'page_range': page_range,
         'paginator': paginator,
         'show_filters': show_filters,
-        'q': filter_query_string(qs)
+        'q': filter_query_string(qs),
+        'sorting': sorting,
     }
     return render(request, 'project_directory.html', context)
 
