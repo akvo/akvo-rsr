@@ -102,7 +102,7 @@
                 <ul class="fa-ul">
                   {% for result in project.results.all %}
                   {% if result.has_info %}
-                  <li><i class="fa-li fa fa-circle-o"></i>{{result.title}}</li>
+                  <li><i class="fa-li fa fa-check"></i> {{result.title}}</li>
                   {% endif %}
                   {% endfor %}
                 </ul>
