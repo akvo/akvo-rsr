@@ -56,7 +56,7 @@
                 {% for transaction in project.transactions.all %}
                 <dt>{{transaction.description}}:</dt><dd><span class="currency">{% if transaction.currency = 'EUR' %}€{% elif project.currency = 'USD' %}${% endif %}</span>{{transaction.value}}</dd>
                 {% empty %}
-	    		<p class="small noInfoBlock">{% trans "No transactions for this project" %}</p>
+	    		<p class="small noInfoBlock"><i class="noItem">{% trans "No transactions for this project" %}</i></p>
                 {% endfor %}
 			</div>
 	    </div>
