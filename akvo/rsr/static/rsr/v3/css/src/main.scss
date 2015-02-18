@@ -1251,6 +1251,12 @@ div.textBlock {
     .organisationHeader {
         background: rgba($akvoBlack, 0.05);
     }
+    .orgDescr {
+        background-color: rgba(218,218,218, 0.4);
+        p {
+            padding-left: 20px;
+        }
+    }
     h1 {
         margin-top:0;
         margin-bottom:20px;
@@ -1271,7 +1277,7 @@ div.textBlock {
         }
     }
     .orgDetails {
-        background: rgba(white, 0.05);
+        background: rgba(white, 0.45);
         @include border-radius(5px);
     }
 }
