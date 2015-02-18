@@ -68,6 +68,9 @@ a, a:link, a:visited {
     color: #ff5500; }
 
 /****************** Miscellanous Typography ********************/
+img {
+  max-width: 100%; }
+
 .noItem {
   color: rgba(44, 42, 116, 0.2);
   font-weight: bold; }
@@ -1053,6 +1056,17 @@ div.textBlock {
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
+
+/* Update Page */
+.updateMain h1 {
+  color: #00a79d;
+  margin-top: 0; }
+.updateMain .asideUpList .row {
+  padding: 15px 0; }
+  .updateMain .asideUpList .row:nth-of-type(2n+1) {
+    background-color: rgba(0, 167, 157, 0.1); }
+  .updateMain .asideUpList .row h5 {
+    margin-top: 0; }
 
 /* Cookie */
 #cookie-law {

@@ -49,6 +49,7 @@ a, a:link, a:visited {
 }
 
 /****************** Miscellanous Typography ********************/
+img {max-width:100%;}
 .noItem {
     color: rgba($akvoPurple, 0.2);
     font-weight: bold;
@@ -1297,6 +1298,25 @@ div.textBlock {
     .orgDetails {
         background: rgba(white, 0.05);
         @include border-radius(5px);
+    }
+}
+
+/* Update Page */
+.updateMain {
+    h1 {
+        color: $rsrGreen;
+        margin-top: 0;
+    }
+    .asideUpList {
+        .row {
+            padding:15px 0;
+            &:nth-of-type(2n+1) {
+                background-color: rgba($rsrGreen,0.1);
+            }
+            h5 {
+                margin-top: 0;
+            }
+        }
     }
 }
 
