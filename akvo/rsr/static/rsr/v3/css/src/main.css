@@ -723,6 +723,9 @@ h4.detailedInfo {
   .main-list.updates ul li:hover {
     background: rgba(0, 167, 157, 0.1);
     border: thin solid rgba(0, 167, 157, 0.35); }
+  .main-list.updates ul li .excerpt {
+    max-height: 80px;
+    overflow: hidden; }
 .main-list.organisations ul li {
   border: thin solid rgba(238, 49, 36, 0);
   -moz-transition: all 0.2s ease-in;
