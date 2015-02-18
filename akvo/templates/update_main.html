@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-md-8">
                                 <h5><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h5>
-                                <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>
+                                <div><span class="userFullName"><em>by</em>{{update.user.first_name}} {{update.user.last_name}}</span>
                                     {% if u.user.approved_organisations %}
                                         {% with org=u.user.approved_organisations.0 %}
                                         ( <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a> )
