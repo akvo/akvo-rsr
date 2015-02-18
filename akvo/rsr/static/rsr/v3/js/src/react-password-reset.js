@@ -25,17 +25,17 @@ var ResetModal = React.createClass({displayName: 'ResetModal',
         var data = {
             email: $('#id_email').val()
         };
-        return data;
+        return data
     },
 
     render: function() {
         return this.transferPropsTo(
-            Modal( {title:"Reset your password"},
-              React.DOM.div( {className:"modal-body"},
+            Modal( {title:"Reset your password"}, 
+              React.DOM.div( {className:"modal-body"}, 
                 React.DOM.p(null, 'Fill in your email address in the field below. We will send you instructions on how to reset your password.'),
                 Input( {className:"form-control", id:"id_email", maxLength:"254", name:"email", placeholder:"Email", required:"required", title:"", type:"email"} )
               ),
-              React.DOM.div( {className:"modal-footer"},
+              React.DOM.div( {className:"modal-footer"}, 
                 Button( {onClick:this.resetPassword, bsStyle:"info"}, "Reset password")
               )
             )
