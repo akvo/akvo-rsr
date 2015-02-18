@@ -176,6 +176,7 @@ def directory(request):
     page, paginator, page_range = pagination(page, sorted_projects, 10)
 
     context = {
+        'project_count': sorted_projects.count(),
         'filter': f,
         'page': page,
         'page_range': page_range,

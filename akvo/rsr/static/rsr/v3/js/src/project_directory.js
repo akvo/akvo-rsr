@@ -19,7 +19,7 @@ function insertParam(key, value)
 }
 
 
-$(document).ready(function(){
+$(document).ready(function() {
 
   // Submit filter form on select change
   $('#filter select').change(function() {
@@ -38,6 +38,8 @@ $(document).ready(function(){
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
       url: '/rest/v1/project/?format=json&limit=10000',
+      cacheKey: 'akvoRsrProjects',
+      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfProjects,
       filter: function(response) {
         f = [
           'id',
@@ -54,11 +56,11 @@ $(document).ready(function(){
     }
   });
 
-  var focus_areas = new Bloodhound({
+  var sectors = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
-      url: '/rest/v1/focus_area/?format=json&limit=1000',
+      url: '/rest/v1/sector/?format=json&limit=1000',
       filter: function(response) {
         f = [
           'id',
@@ -71,7 +73,7 @@ $(document).ready(function(){
   });
 
   projects.initialize();
-  focus_areas.initialize();
+  sectors.initialize();
 
   $('#id_title').typeahead(
     {
