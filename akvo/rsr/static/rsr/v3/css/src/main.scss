@@ -139,15 +139,17 @@ a.btn-primary, button.btn-primary {
 
 .btn-group, .form-group {
     button {
-        @include border-radius(3px);
+        @include border-radius(5px);
     }
 }
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 .tt-input, .tt-hint {
-    border-radius: initial;
+    border-radius: 5px 0 0 5px;
 }
-
+.input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+    border-radius: 5px 0 0 5px;
+}
 span.twitter-typeahead .tt-dropdown-menu {
     position: absolute;
     top: 100%;
@@ -619,7 +621,7 @@ h4.detailedInfo {
 }
 
 .paginationWrap {
-    background: rgba($akvoBlack, 0.05);
+    background: rgba(58,58,58, 0.05);
     @include border-radius(3px);
     margin-bottom: 15px;
     .pagination {
@@ -635,7 +637,7 @@ h4.detailedInfo {
     .sortList {
         display: inline-block;
         padding-left: 0;
-        margin: 20px 0;
+        margin: 23px 0 0 0;
         text-align: left;
         @include responsive(small-max-screens) {
             text-align: center;
@@ -826,8 +828,8 @@ h4.detailedInfo {
                     color: rgba($akvoBlack, 0.5);
                 }
                 &:hover {
-                    background: darken(rgba($rsrBlue, 0.15), 0%);
-                    border:thin solid rgba($rsrBlue, 0.35);
+                    background: darken(rgba($rsrBlue, 0.10), 0%);
+                    border:thin solid rgba($rsrBlue, 0.30);
                 }
             }
         }
@@ -1229,11 +1231,13 @@ div.textBlock {
 
 /* Tooltips */
 .tooltip {
+    z-index: 99999;
     .tooltip-arrow {}
     .tooltip-inner {
         max-width: 350px;
         padding: 15px;
-        background: rgba($akvoBlack, 0.05);
+        background: rgba(white, 0.55);
+        border: thin solid rgba($akvoBlack, 0.15);
         color: $akvoBlack;
         box-shadow: 0 0 2px rgba($akvoBlack, 0.3);
         a {
@@ -1290,5 +1294,23 @@ div.textBlock {
         a {
             font-weight: bold;
         }
+    }
+}
+
+/*   Version Banner */
+.versionBanner {
+    box-sizing: border-box;
+    position:fixed;
+    max-height:50px;
+    bottom:0px;
+    right:0px;
+    background-color: red;
+    @include border-radius(3px 0 0 0);
+    background-color: lighten($anchorLinkHover, 40%);
+    border-top:1px solid rgba($anchorLinkHover,0.5);
+    border-left:1px solid rgba($anchorLinkHover,0.5);
+    box-shadow: -2px -3px 6px rgba($akvoBlack,0.2);
+    div {
+        padding:5px 10px;
     }
 }
