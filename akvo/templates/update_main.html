@@ -1,96 +1,96 @@
 {% extends "base.html" %}
-
 {% load i18n markup_tags rsr_utils bootstrap3 embed_video_tags %}
-
 {% block title %}{{update.title}}{% endblock %}
-
 {% block maincontent %}
+    <div class="touch-navbar updateMain">
+        {% include "partials/project_header.html" with project=update.project %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 col-xs-12">
+                    <h1><i class="fa fa-camera-retro"></i> {{update.title}}
+                    {% if user == update.user and not update.edit_window_has_expired %}
+                        <a href="{% url 'edit-update' project.pk update.pk %}" class="btn btn-primary">
+                        {% bootstrap_icon "pencil" %} Edit</a>
+                    {% endif %}
+                    </h1>
+                    <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{update.created_at|date:"d-M-Y"}}</div>
+                    <div class="post-info media">
+                        <div class="media-body">
+                            <p>
+                            {% if update.user.avatar %}
+                                {% img update.user 50 50 update.user.get_full_name %}
+                            {% endif %}
+                            <span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span> via {{update.get_update_method_display}}   
+                            </p>
+                        </div>
 
-<div class="touch-navbar">
-    {% include "partials/project_header.html" with project=update.project %}
-    <div class="container">
-        <div class="row">
-            <article class="col-md-12">
-                <div class="row">
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <hgroup>
-                          <h1>{{update.title}}
-                              {% if user == update.user and not update.edit_window_has_expired %}
-                              <a href="{% url 'edit-update' project.pk update.pk %}" class="btn btn-primary">
-                                  {% bootstrap_icon "pencil" %} Edit</a>
-                              {% endif %}
-                          </h1>
-                          <h4> {{update.created_at|date:"d-M-Y"}}</h4>
-                        </hgroup>
-                        <div class="post-info media">
-                            <div class="media-body">
-                                <p>
-                                    {% if update.user.avatar %}
-                                    {% img update.user 50 50 update.user.get_full_name %}
+                        {% if update.video %}
+                        <figure>
+                          {% video update.video '600x450' %}
+                          <figcaption>
+                            {% if update.video_caption %}
+                                <h6>"{{ update.video_caption }}"{% if update.video_credit %}</h6>
+                            {% endif %}
+                            {% endif %}
+
+                            {% if update.video_credit %}<em>{% trans 'Video credit' %}:</em> <h6 style="display:inline;"> {{ update.video_credit }}</h6>{% endif %}
+                          </figcaption>
+                        </figure>
+                        {% endif %}
+
+                        {% if update.photo %}
+                        <figure>
+                            <a href="{{update.photo.url}}" target="_blank">{% img update 600 450 update.title %}</a>                          
+                          <figcaption>
+                            {% if update.photo_caption %}
+                                <h6>"{{ update.photo_caption }}"{% if update.photo_credit %}</h6>{% endif %}
+                            {% endif %}
+                            {% if update.photo_credit %}<em>{% trans 'Photo credit' %}:</em> <h6 style="display:inline;">{{ update.photo_credit }}</h6>{% endif %}
+                          </figcaption>
+                        </figure>
+                        {% endif %}
+
+
+                        {% autoescape off %}
+                        <p class="topMargin">{{ update.text|force_escape|urlize|apply_markup:"markdown" }}</p>
+                    {% endautoescape %}
+                </div>
+            </div>
+            {% if other_updates %}
+                <aside class="col-md-4 col-md-offset-1 hidden-sm hidden-xs asideUpList">
+                    <h4>{% trans "Latest updates from this project" %}</h4>
+                    {% for u in other_updates %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a href="{% url 'update-main' u.project.id u.id %}">
+                                    {% if u.video %}
+                                        {% vid_img u 120 120 u.title %}
+                                    {% else %}
+                                        {% img u 120 120 u.title %}
                                     {% endif %}
-                                    by {{update.user.first_name}} {{update.user.last_name}} via {{update.get_update_method_display}}
-                                </p>
+                                </a>
                             </div>
-                            {% if update.video %}
-                            <p>{% video update.video '600x450' %}</p>
-                            <p class="small">
-                                {% if update.video_caption %}
-                                "{{ update.video_caption }}"{% if update.video_credit %}<br>{% endif %}
+                            <div class="col-md-8">
+                                <h5><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h5>
+                                <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>
+                                    {% if u.user.approved_organisations %}
+                                        {% with org=u.user.approved_organisations.0 %}
+                                        ( <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a> )
+                                    {% endwith %}
                                 {% endif %}
-                                {% if update.video_credit %}{% trans 'Video credit' %}: {{ update.video_credit }}{% endif %}
-                            </p>
-                            {% endif %}
-                            {% if update.photo %}
-                            <p><a href="{{update.photo.url}}" target="_blank">{% img update 600 450 update.title %}</a></p>
-                            <p class="small">
-                                {% if update.photo_caption %}
-                                "{{ update.photo_caption }}"{% if update.photo_credit %}<br>{% endif %}
+                            </div>
+                            <div  class="projectLocation">
+                                {% if u.primary_location.country %}
+                                    <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}}, {{u.primary_location.country.continent}}
                                 {% endif %}
-                                {% if update.photo_credit %}{% trans 'Photo credit' %}: {{ update.photo_credit }}{% endif %}
-                            </p>
-                            {% endif %}
-                            {% autoescape off %}
-                                <p>{{ update.text|force_escape|urlize|apply_markup:"markdown" }}</p>
-                            {% endautoescape %}
+                            </div>
+                            <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.created_at|date:"d-M-Y"}}</div>
                         </div>
                     </div>
-
-                    {% if other_updates %}
-                    <aside class="col-md-4 col-md-offset-1 hidden-sm hidden-xs">
-                        <h3>{% trans "Latest updates from this project" %}</h3>
-                        <div class="row">
-                            {% for u in other_updates %}
-                            <div class="row">
-                                <div class="col-lg-5 col-md-5">
-                                    <a href="{% url 'update-main' u.project.id u.id %}">
-                                        {% if u.video %}
-                                            {% vid_img u 120 120 u.title %}
-                                        {% else %}
-                                            {% img u 120 120 u.title %}
-                                        {% endif %}
-                                    </a>
-                                </div>
-                                <div class="col-lg-7 col-md-7">
-                                    <h4><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h4>
-                                    <p class="small">
-                                        <span class="glyphicon glyphicon-user"></span> {{u.user.first_name}} {{u.user.last_name}}<br>
-                                        {% if u.primary_location.country %}
-                                        <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}}, {{u.primary_location.country.continent}} <br>
-                                        {% endif %}
-                                        <span class="glyphicon glyphicon-calendar"></span> {{u.created_at|date:"d-M-Y"}}<br>
-                                    </p>
-                                </div>
-                            </div>
-                            <br>
-                            {% endfor %}
-                        </div>
-                    </aside>
-                    {% endif %}
-                </div>
-            </article>
-        </div>
+                {% endfor %}
+            </aside>
+        {% endif %}
     </div>
-
 </div>
-
+</div>
 {% endblock %}
