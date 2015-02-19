@@ -874,6 +874,12 @@ h4.detailedInfo {
                 &:hover {
                     background: darken(rgba($rsrGreen, 0.1), 0%);
                     border: thin solid rgba($rsrGreen, 0.35);
+<<<<<<< HEAD
+=======
+                }
+                .excerpt {
+
+>>>>>>> develop
                 }
                 .excerpt {}
             }
@@ -945,6 +951,7 @@ header {
         background: lighten($akvoPurple, 65%);
         border-bottom: 1px solid rgb(248, 248, 248);
         margin-bottom: 15px;
+        @include box-shadow(inset 0 2px 6px -5px rgba($akvoBlack, 0.5));
         h1 {
             margin-top: 10px;
             margin-bottom: 0;
@@ -1012,7 +1019,8 @@ div.projectTopRow {
     background: rgba(245, 245, 245, 0.5);
     margin-top: 1px;
     margin-bottom: 20px;
-    border-bottom: 1px solid rgba($akvoBlack, 0.1);
+    /*border-bottom: 1px solid rgba($akvoBlack, 0.1);*/
+    box-shadow: 0 3px 6px rgba($akvoBlack, 0.1);
     #carousel {
         padding: 15px 0;
         margin-left: -15px;
@@ -1021,7 +1029,7 @@ div.projectTopRow {
         }
 
         .carousel-indicators {
-            bottom: 35px;
+            bottom: -5px;
             li {
                 border-color: $anchorLink;
                 &.active {
@@ -1042,15 +1050,17 @@ div.projectTopRow {
                     background-color: rgba(255, 255, 255, 0.6);
                     border: thin solid rgba(255, 255, 255, 0.8);
                     bottom: 0px;
-                    padding-top: 10px;
-                    padding-bottom: 10px;
+                    padding-top: 5px;
+                    padding-bottom: 5px;
                     @include border-radius(5px 5px 0 0);
-                    h3 {
+                    h4 {
+                        margin-top: 0;
+                        margin-bottom: 0;
                         color: $rsrBlue;
                     }
                     p {
-                        padding-top: 20px;
-                        color: $rsrBlue;
+                        margin-bottom: 20px;
+                        color: $akvoBlack;
                     }
                 }
             }
@@ -1279,6 +1289,12 @@ div.textBlock {
     .organisationHeader {
         background: rgba($akvoBlack, 0.05);
     }
+    .orgDescr {
+        background-color: rgba(218,218,218, 0.4);
+        p {
+            padding-left: 20px;
+        }
+    }
     h1 {
         margin-top: 0;
         margin-bottom: 20px;
@@ -1299,7 +1315,7 @@ div.textBlock {
         }
     }
     .orgDetails {
-        background: rgba(white, 0.05);
+        background: rgba(white, 0.45);
         @include border-radius(5px);
     }
 }
@@ -1351,10 +1367,18 @@ div.textBlock {
     max-height: 50px;
     bottom: 0px;
     right: 0px;
+<<<<<<< HEAD
     @include border-radius(3px 0 0 0);
     background-color: rgba(white, 1);
     border-top: 1px solid rgba($anchorLinkHover, 0.6);
     border-left: 1px solid rgba($anchorLinkHover, 0.6);
+=======
+    background-color: red;
+    @include border-radius(3px 0 0 0);
+    background-color: lighten($anchorLinkHover, 40%);
+    border-top: 1px solid rgba($anchorLinkHover, 0.5);
+    border-left: 1px solid rgba($anchorLinkHover, 0.5);
+>>>>>>> develop
     box-shadow: -2px -3px 6px rgba($akvoBlack, 0.2);
     div {
         padding: 5px 10px;

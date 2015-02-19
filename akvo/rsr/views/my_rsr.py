@@ -10,6 +10,7 @@ import json
 
 from ..forms import PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm
 from ...utils import pagination
+from ..models import Country, Organisation
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -40,7 +41,12 @@ def my_details(request):
 
     json_data = json.dumps({'user': request.user.employments_dict([])})
 
+    organisation_count = Organisation.objects.all().count()
+    country_count = Country.objects.all().count()
+
     context = {
+        'organisation_count': organisation_count,
+        'country_count': country_count,
         'user_data': json_data,
         'profileform': profile_form,
         'organisationform': organisation_form,

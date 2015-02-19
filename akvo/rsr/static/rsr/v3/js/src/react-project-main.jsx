@@ -53,7 +53,7 @@ var CarouselInstance = React.createClass({
             <CarouselItem>
                 <a href={photo.original_url} target="_blank"><img src={photo.url} /></a>
                 <div className="carousel-caption">
-                    <h3>{photo.caption}</h3>
+                    <h4>{photo.caption}</h4>
                     <p>{photo.credit}</p>
                 </div>
             </CarouselItem>

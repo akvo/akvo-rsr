@@ -1,3 +1,8 @@
+// Akvo RSR is covered by the GNU Affero General Public License.
+// See more details in the license.txt file located at the root folder of the
+// Akvo RSR module. For additional details on the GNU license please see
+// < http://www.gnu.org/licenses/agpl.html >.
+
 function insertParam(key, value)
 {
     key = encodeURI(key); value = encodeURI(value);
@@ -19,7 +24,7 @@ function insertParam(key, value)
 }
 
 
-$(document).ready(function(){
+$(document).ready(function() {
 
   // Submit filter form on select change
   $('#filter select').change(function() {
@@ -27,6 +32,28 @@ $(document).ready(function(){
   });
 
   // setup Bloodhound for typeahead
+  var organisations = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name',
+                                                         'long_name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: '/rest/v1/typeaheads/organisations?format=json',
+      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfOrgs,
+      filter: function(response) {
+        return response.results;
+      }
+    }
+  });
+
+  var locations = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: '/static/rsr/v3/json/m49.json'
+    }
+
+  });
+
   var projects = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('background',
                                                          'current_image_credit',
@@ -37,41 +64,51 @@ $(document).ready(function(){
                                                          'title'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
-      url: '/rest/v1/project/?format=json&limit=10000',
+      url: '/rest/v1/typeaheads/projects?format=json',
+      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfProjects,
+
       filter: function(response) {
-        f = [
-          'id',
-          'background',
-          'current_image_credit',
-          'current_status',
-          'project_plan',
-          'project_plan_summary',
-          'subtitle',
-          'title'
-        ];
-        return _.map(response.results, _.partialRight(_.pick, f));
+        return response.results;
       }
+
+      // Do we need to filter client side to?
+      // filter: function(response) {
+      //   f = [ // Match fields in resource
+      //     'id',
+      //     'project_plan_summary',
+      //     'subtitle',
+      //     'title'
+      //   ];
+      //   return _.map(response.results, _.partialRight(_.pick, f));
+      // }
     }
   });
 
-  var focus_areas = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    prefetch: {
-      url: '/rest/v1/focus_area/?format=json&limit=1000',
-      filter: function(response) {
-        f = [
-          'id',
-          'name',
-          'slug'
-        ];
-        return _.map(response.results, _.partialRight(_.pick, f));
-      }
-    }
-  });
+  // var sectors = new Bloodhound({
+  //   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  //   queryTokenizer: Bloodhound.tokenizers.whitespace,
+  //   prefetch: {
+  //     url: '/rest/v1/typeaheads/sectors?format=json',
+  //     thumbprint: AKVO_RSR.typeahead.thumbs.numberOfSectors,
+  //     filter: function(response) {
+  //       return response.results;
+  //     }
 
+  //     // filter: function(response) {
+  //     //   f = [
+  //     //     'id',
+  //     //     'name',
+  //     //     'slug'
+  //     //   ];
+  //     //   return _.map(response.results, _.partialRight(_.pick, f));
+  //     // }
+  //   }
+  // });
+
+  organisations.initialize();
   projects.initialize();
-  focus_areas.initialize();
+  locations.initialize();
+  // sectors.initialize();
 
   $('#id_title').typeahead(
     {
@@ -83,18 +120,37 @@ $(document).ready(function(){
       source: projects.ttAdapter(),
       templates: {
         header: '<h3 class="dd-category">Projects</h3>',
-        suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %>!</p><p><%= subtitle %></p></a>')
+        suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %></p><p><%= subtitle %></p></a>')
        }
     },
     {
-      name: 'focus_areas',
+      name: 'organisations',
       displayKey: 'name',
-      source: focus_areas.ttAdapter(),
+      source: organisations.ttAdapter(),
       templates: {
-        header: '<h3 class="dd-category">Filter on focus area</h3>',
-        suggestion: _.template('<a class="filter_focus_area"><%= name %></a>')
+        header: '<h3 class="dd-category">Organisations</h3>',
+        suggestion: _.template('<a href="/projects/?organisation=<%= id %>"><p><%= name %></p></a>')
+       }
+    },
+    {
+      name: 'locations',
+      displayKey: 'name',
+      source: locations.ttAdapter(),
+      templates: {
+        header: '<h3 class="dd-category">Locations</h3>',
+        suggestion: _.template('<a href="/projects/?location=<%= code %>"><p><%= name %></p></a>')
        }
     }
+    // ,
+    // {
+    //   name: 'sectors',
+    //   displayKey: 'name',
+    //   source: sectors.ttAdapter(),
+    //   templates: {
+    //     header: '<h3 class="dd-category">Sectors</h3>',
+    //     suggestion: _.template('<a href="/project/?sector=<%= code %>"><p><%= name %></p></a>')
+    //    }
+    // }
   );
 
   $('#filterForm').on('click', '.filter_focus_area', function (event) {
@@ -120,83 +176,5 @@ $(document).ready(function(){
   $('#sortByDropdown').on('click', 'a', (function(event) {
     insertParam('sort_by', $(event.target).attr('param'));
   }));
-
-  // var googleMap = {
-  //   canvas: document.getElementById('haj'),
-  //   options: {
-  //     mapTypeId: google.maps.MapTypeId.ROADMAP,
-  //     streetViewControl: false,
-  //     scrollwheel: false
-  //   },
-  //   load: function() {
-  //     var map = new google.maps.Map(this.canvas, this.options);
-  //     var bounds = new google.maps.LatLngBounds();
-  //   }
-  // };
-  // googleMap.load();
-
-
-
-
-  // $('.akvo_map').each(function() {
-  //   var mapId = $(this).attr('id');
-  //   var domNode = document.getElementById("haj");
-  //   // var mapObj = window[mapId];
-
-  //   var googleMap = {
-  //     // canvas: document.getElementById($(this).attr('id')),
-  //     // mapObj: window[mapId],
-  //     mapObj: window[mapId],
-
-  //     options: {
-  //           mapTypeId: google.maps.MapTypeId.ROADMAP,
-  //           streetViewControl: false,
-  //           scrollwheel: false
-  //     },
-  //     // locations: this.mapObj["locations"],
-  //     // locations: this.mapObj["locations"],
-  //     load: function() {
-  //       // console.log(this.mapObj);
-  //       // console.log(this.domNode);
-  //       var map = new google.maps.Map(document.getElementById("haj"),
-  //                                     this.options);
-  //       //var bounds = new google.maps.LatLngBounds();
-  //       // $.each(this.mapObj["locations"], function(index, value) {
-  //       //   console.log(value);
-  //       //   var position = new google.maps.LatLng(value['latitude'], value['longitude']);
-  //       //   var marker = new google.maps.Marker({
-  //       //     icon: 'haj.png',
-  //       //     position: position,
-  //       //     map: map
-  //       //   });
-
-  //       //   // bounds.extend(marker.position);
-
-  //       //   // console.log(value);
-
-  //       //   // var position = new google.maps.LatLng(this.locations[i][0], this.locations[i][1]);
-  //       //   // var marker = new google.maps.Marker({
-  //       //   //   icon: '{{ marker_icon }}',
-  //       //   //   position: position,
-  //       //   //   map: map
-  //       //   // });
-  //       //   // map.fitBounds(bounds);
-  //       //   // map.panToBounds(bounds);
-
-  //       // });
-  //     }
-  //   };
-  //   googleMap.load();
-
-  //   // window.onload = function (){googleMap.load()};
-
-  //   // var map_data = window[$(this).attr('id')];
-  //   // console.log(map_data);
-
-  //   // $.each($(this).attr('id')  , function(index, value) {
-  //   //   alert(value);
-  //   // });
-  //   // alert($(this).attr('id'));
-  // });
 
 });
