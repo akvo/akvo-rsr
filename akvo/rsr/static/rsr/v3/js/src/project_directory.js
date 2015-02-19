@@ -45,6 +45,15 @@ $(document).ready(function() {
     }
   });
 
+  var locations = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: '/static/rsr/v3/json/m49.json'
+    }
+
+  });
+
   var projects = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('background',
                                                          'current_image_credit',
@@ -98,6 +107,7 @@ $(document).ready(function() {
 
   organisations.initialize();
   projects.initialize();
+  locations.initialize();
   // sectors.initialize();
 
   $('#id_title').typeahead(
@@ -105,21 +115,30 @@ $(document).ready(function() {
       highlight: true
     },
     {
-      name: 'organisations',
-      displayKey: 'name',
-      source: organisations.ttAdapter(),
-      templates: {
-        header: '<h3 class="dd-category">Organisations</h3>',
-        suggestion: _.template('<a href="/projects/?organisation=<%= id %>"><p><%= name %>!</p></a>')
-       }
-    },
-    {
       name: 'projects',
       displayKey: 'title',
       source: projects.ttAdapter(),
       templates: {
         header: '<h3 class="dd-category">Projects</h3>',
-        suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %>!</p><p><%= subtitle %></p></a>')
+        suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %></p><p><%= subtitle %></p></a>')
+       }
+    },
+    {
+      name: 'organisations',
+      displayKey: 'name',
+      source: organisations.ttAdapter(),
+      templates: {
+        header: '<h3 class="dd-category">Organisations</h3>',
+        suggestion: _.template('<a href="/projects/?organisation=<%= id %>"><p><%= name %></p></a>')
+       }
+    },
+    {
+      name: 'locations',
+      displayKey: 'name',
+      source: locations.ttAdapter(),
+      templates: {
+        header: '<h3 class="dd-category">Locations</h3>',
+        suggestion: _.template('<a href="/projects/?location=<%= code %>"><p><%= name %></p></a>')
        }
     }
     // ,
@@ -129,7 +148,7 @@ $(document).ready(function() {
     //   source: sectors.ttAdapter(),
     //   templates: {
     //     header: '<h3 class="dd-category">Sectors</h3>',
-    //     suggestion: _.template('<a href="/project/?sector=<%= code %>"><p><%= name %>!</p></a>')
+    //     suggestion: _.template('<a href="/project/?sector=<%= code %>"><p><%= name %></p></a>')
     //    }
     // }
   );

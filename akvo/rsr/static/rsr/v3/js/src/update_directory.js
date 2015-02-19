@@ -37,7 +37,7 @@ $(document).ready(function(){
       source: updates.ttAdapter(),
       templates: {
         header: '<h3 class="dd-category">Updates</h3>',
-        suggestion: _.template('<a href="/project/<%= project %>/update/<%= id %>"><p><%= title %>!</p></a>')
+        suggestion: _.template('<a href="/project/<%= project %>/update/<%= id %>"><p><%= title %></p></a>')
        }
     });
 
