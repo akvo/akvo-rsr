@@ -854,17 +854,19 @@ div.projectTopRow {
         background-color: rgba(255, 255, 255, 0.6);
         border: thin solid rgba(255, 255, 255, 0.8);
         bottom: 0px;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
         -moz-border-radius: 5px 5px 0 0;
         -o-border-radius: 5px 5px 0 0;
         -webkit-border-radius: 5px 5px 0 0;
         border-radius: 5px 5px 0 0; }
-        div.projectTopRow #carousel .carousel-inner .item .carousel-caption h3 {
+        div.projectTopRow #carousel .carousel-inner .item .carousel-caption h4 {
+          margin-top: 0;
+          margin-bottom: 0;
           color: #2c2a74; }
         div.projectTopRow #carousel .carousel-inner .item .carousel-caption p {
           margin-bottom: 20px;
-          color: #2c2a74; }
+          color: #202024; }
     div.projectTopRow #carousel .carousel-control.right {
       background-image: none; }
     div.projectTopRow #carousel .carousel-control.left {
