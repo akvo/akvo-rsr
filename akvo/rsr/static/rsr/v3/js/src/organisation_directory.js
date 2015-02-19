@@ -30,7 +30,7 @@ $(document).ready(function(){
       source: organisations.ttAdapter(),
       templates: {
         header: '<h3 class="dd-category">Organisations</h3>',
-        suggestion: _.template('<a href="/organisation/<%= id %>"><p><%= name %>!</p></a>')
+        suggestion: _.template('<a href="/organisation/<%= id %>"><p><%= name %></p></a>')
        }
     }
   )

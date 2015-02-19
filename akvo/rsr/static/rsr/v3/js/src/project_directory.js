@@ -49,8 +49,9 @@ $(document).ready(function() {
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
-        url: '/static/rsr/v3/json/m49.json'
+      url: '/static/rsr/v3/json/m49.json'
     }
+
   });
 
   var projects = new Bloodhound({
@@ -119,7 +120,7 @@ $(document).ready(function() {
       source: projects.ttAdapter(),
       templates: {
         header: '<h3 class="dd-category">Projects</h3>',
-        suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %>!</p><p><%= subtitle %></p></a>')
+        suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %></p><p><%= subtitle %></p></a>')
        }
     },
     {
@@ -128,7 +129,7 @@ $(document).ready(function() {
       source: organisations.ttAdapter(),
       templates: {
         header: '<h3 class="dd-category">Organisations</h3>',
-        suggestion: _.template('<a href="/projects/?organisation=<%= id %>"><p><%= name %>!</p></a>')
+        suggestion: _.template('<a href="/projects/?organisation=<%= id %>"><p><%= name %></p></a>')
        }
     },
     {
@@ -137,7 +138,7 @@ $(document).ready(function() {
       source: locations.ttAdapter(),
       templates: {
         header: '<h3 class="dd-category">Locations</h3>',
-        suggestion: _.template('<a href="/projects/?location=<%= code %>"><p><%= name %>!</p></a>')
+        suggestion: _.template('<a href="/projects/?location=<%= code %>"><p><%= name %></p></a>')
        }
     }
     // ,
@@ -147,7 +148,7 @@ $(document).ready(function() {
     //   source: sectors.ttAdapter(),
     //   templates: {
     //     header: '<h3 class="dd-category">Sectors</h3>',
-    //     suggestion: _.template('<a href="/project/?sector=<%= code %>"><p><%= name %>!</p></a>')
+    //     suggestion: _.template('<a href="/project/?sector=<%= code %>"><p><%= name %></p></a>')
     //    }
     // }
   );

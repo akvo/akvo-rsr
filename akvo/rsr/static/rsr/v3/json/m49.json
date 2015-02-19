@@ -1,11 +1,3 @@
-// Akvo RSR is covered by the GNU Affero General Public License.
-// See more details in the license.txt file located at the root folder of the
-// Akvo RSR module. For additional details on the GNU license please see
-// < http://www.gnu.org/licenses/agpl.html >.
-
-
-// Codes and names of the M.49 UN country and region codelist", for use in the filter suggestions
-
 [
     {
         "code": "1",
