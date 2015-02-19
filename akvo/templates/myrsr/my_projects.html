@@ -33,6 +33,7 @@
           <td>{% bootstrap_icon "globe" %} {{project.primary_location.country}}, {{project.primary_location.country.continent}}</td>
           <td>{{ project.show_status }}</td>
           <td>
+            <div class="twoColumns clearfix">
               <a href="{% url 'project-main' project.id %}">View</a>
               {% has_perm 'rsr.change_project' user project as can_edit_project %}
               {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
@@ -49,8 +50,8 @@
               </a>
               {% endif %}
               {% has_perm 'rsr.post_updates' project as can_add_update %}
-              <br>
               <a href="{% url 'add-update' project.pk %}">Add an update</a>
+            </div>
           </td>
       </tr>
     {% endfor %}
