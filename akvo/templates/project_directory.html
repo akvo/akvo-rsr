@@ -67,7 +67,7 @@
     <div class="row center-text">
       <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>    
     </div>
-      {% include 'navigation/pagination.html' %}
+      {% include 'navigation/pagination-sort.html' %}
 
   </div>
 
@@ -125,7 +125,7 @@
     </ul>
   </section>
   <div class="container">
-       {% include 'navigation/pagination.html' %}
+       {% include 'navigation/pagination-sort.html' %}
   </div>
 
 {% endblock %}
