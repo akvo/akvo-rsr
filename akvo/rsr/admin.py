@@ -28,18 +28,10 @@ from akvo.utils import custom_get_or_create_country
 from akvo.rsr.fields import ValidXMLCharField
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin
-from nested_inlines.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
+from nested_inlines.admin import NestedModelAdmin, NestedStackedInline
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
-
-
-class PermissionAdmin(admin.ModelAdmin):
-    list_display = (u'__unicode__', u'content_type', )
-    list_filter = (u'content_type', )
-    ordering = (u'content_type', )
-
-admin.site.register(get_model('auth', 'permission'), PermissionAdmin)
 
 
 class CountryAdmin(admin.ModelAdmin):
@@ -58,6 +50,7 @@ class CountryAdmin(admin.ModelAdmin):
 class OrganisationLocationInline(admin.StackedInline):
     model = get_model('rsr', 'organisationlocation')
     extra = 0
+    fields = ('id', 'latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode', 'country')
 
 
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
@@ -209,37 +202,9 @@ class PublishingStatusAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
 
 
-class FocusAreaAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'FocusArea')
-    list_display = ('name', 'slug', 'image',)
-
-admin.site.register(get_model('rsr', 'FocusArea'), FocusAreaAdmin)
-
-
 class BenchmarknameInline(admin.TabularInline):
     model = get_model('rsr', 'Category').benchmarknames.through
     extra = 3
-
-
-class CategoryAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'Category')
-    list_display = ('name', 'focus_areas_html', 'category_benchmarks_html', )
-
-admin.site.register(get_model('rsr', 'Category'), CategoryAdmin)
-
-
-class BenchmarknameAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'Benchmarkname')
-    list_display = ('name', 'order',)
-
-admin.site.register(get_model('rsr', 'Benchmarkname'), BenchmarknameAdmin)
-
-
-class MiniCMSAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'MiniCMS')
-    list_display = ('__unicode__', 'active', )
-
-admin.site.register(get_model('rsr', 'MiniCMS'), MiniCMSAdmin)
 
 
 class BenchmarkInline(NestedStackedInline):
@@ -839,9 +804,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
 admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
 
-class ApiKeyInline(admin.TabularInline):
+class ApiKeyInline(admin.StackedInline):
     model = get_model('tastypie', 'apikey')
-    fields = ('key',)
+    fields = ('id', 'key',)
     readonly_fields = ('key',)
 
     def has_delete_permission(self, request, obj=None, **kwargs):
@@ -905,6 +870,7 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 class ProjectUpdateLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectupdatelocation')
     extra = 0
+    fields = ('id', 'latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode', 'country')
 
 
 class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.ModelAdmin):
@@ -978,18 +944,6 @@ class InvoiceAdmin(admin.ModelAdmin):
     void_invoices.short_description = u'Mark selected invoices as void'
 
 admin.site.register(get_model('rsr', 'invoice'), InvoiceAdmin)
-
-
-class PayPalGatewayAdmin(admin.ModelAdmin):
-    list_display = ('name', 'account_email', 'description', 'currency', 'locale', 'notification_email')
-
-admin.site.register(get_model('rsr', 'paypalgateway'), PayPalGatewayAdmin)
-
-
-class MollieGatewayAdmin(admin.ModelAdmin):
-    list_display = ('name', 'partner_id', 'description', 'currency', 'notification_email')
-
-admin.site.register(get_model('rsr', 'molliegateway'), MollieGatewayAdmin)
 
 
 class PaymentGatewaySelectorAdmin(admin.ModelAdmin):
