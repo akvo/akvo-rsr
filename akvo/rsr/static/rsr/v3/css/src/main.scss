@@ -49,6 +49,7 @@ a, a:link, a:visited {
 }
 
 /****************** Miscellanous Typography ********************/
+img {max-width:100%;}
 .noItem {
     color: rgba($akvoPurple, 0.2);
     font-weight: bold;
@@ -106,7 +107,7 @@ a.moreLink {
 }
 
 .noInfoBlock {
-    background: rgba($akvoBlack, 0.1);
+    background: rgba($akvoBlack, 0.05);
     text-align: center;
     padding: 20px 0;
 }
@@ -139,15 +140,17 @@ a.btn-primary, button.btn-primary {
 
 .btn-group, .form-group {
     button {
-        @include border-radius(3px);
+        @include border-radius(5px);
     }
 }
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 .tt-input, .tt-hint {
-    border-radius: initial;
+    border-radius: 5px 0 0 5px;
 }
-
+.input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+    border-radius: 5px 0 0 5px;
+}
 span.twitter-typeahead .tt-dropdown-menu {
     position: absolute;
     top: 100%;
@@ -619,7 +622,7 @@ h4.detailedInfo {
 }
 
 .paginationWrap {
-    background: rgba($akvoBlack, 0.05);
+    background: rgba(58,58,58, 0.05);
     @include border-radius(3px);
     margin-bottom: 15px;
     .pagination {
@@ -635,7 +638,7 @@ h4.detailedInfo {
     .sortList {
         display: inline-block;
         padding-left: 0;
-        margin: 20px 0;
+        margin: 23px 0 0 0;
         text-align: left;
         @include responsive(small-max-screens) {
             text-align: center;
@@ -826,8 +829,8 @@ h4.detailedInfo {
                     color: rgba($akvoBlack, 0.5);
                 }
                 &:hover {
-                    background: darken(rgba($rsrBlue, 0.15), 0%);
-                    border:thin solid rgba($rsrBlue, 0.35);
+                    background: darken(rgba($rsrBlue, 0.10), 0%);
+                    border:thin solid rgba($rsrBlue, 0.30);
                 }
             }
         }
@@ -868,7 +871,7 @@ h4.detailedInfo {
                     border:thin solid rgba($rsrGreen, 0.35);
                 }
                 .excerpt {
-                    p {}
+
                 }
             }
         }
@@ -936,13 +939,19 @@ header {
     &.projectHeader {
         margin-bottom: 0;
         padding: 15px 0;
-        background: lighten($veryLightOrange, 25%);
-        border-bottom: 1px solid rgb(238, 238, 238);
+        background: lighten($akvoPurple, 65%);
+        border-bottom: 1px solid rgb(248, 248, 248);
         margin-bottom: 15px;
         h1 {
             margin-top: 10px;
             margin-bottom: 0;
             font-size: 1.5em;
+            a{
+                color: $rsrBlue;
+                &:hover {
+                    color: $rsrBlue;
+                }
+            }
         }
         .shareBlock {
             position: relative;
@@ -1003,7 +1012,6 @@ div.projectTopRow {
     border-bottom: 1px solid rgba($akvoBlack, 0.1);
     #carousel {
         padding: 15px 0;
-        /*background-color: rgb(230, 231, 232);*/
         margin-left: -15px;
         @include responsive(small-max-screens) {
             margin-left: inherit;
@@ -1012,9 +1020,9 @@ div.projectTopRow {
         .carousel-indicators {
             bottom: 35px;
             li {
-                border-color: $rsrGreen;
+                border-color: $anchorLink;
                 &.active {
-                    background-color: $rsrGreen;
+                    background-color: $anchorLink;
                 }
             }
         }
@@ -1028,15 +1036,18 @@ div.projectTopRow {
                     }
                 }
                 .carousel-caption {
-                    background-color: rgba(255, 255, 255, 0.1);
+                    background-color: rgba(255, 255, 255, 0.6);
+                    border:thin solid rgba(255, 255, 255, 0.8);
                     bottom: 0px;
                     padding-top: 10px;
                     padding-bottom: 10px;
+                    @include border-radius(5px 5px 0 0);
                     h3 {
-                        color: $lightOrange;
+                        color: $rsrBlue;
                     }
                     p {
                         padding-top: 20px;
+                        color:$rsrBlue;
                     }
                 }
             }
@@ -1100,7 +1111,9 @@ div.projectTopRow {
                 &.financeBlock {
                     border-top: none;
                     padding: 15px 0 15px 0;
-                    background: rgba($rsrBlue, 0.1);
+                    background: rgba(white, 0.1);
+                    border: thin solid rgba(230, 230, 230, 0.7);
+                    @include border-radius(5px);
                     span {
                         margin-left: 15px;
                     }
@@ -1171,19 +1184,33 @@ div.textBlock {
         padding-top: 10px;
         padding-bottom: 15px;
         background: lighten($veryLightOrange, 25%);
+        h4 {
+            margin-bottom: 10px;
+        }
+        .updateLinkTitle {
+            display: block;
+            color:$rsrGreen;
+            margin-bottom:5px;
+            i {
+                margin-right:5px;
+            }
+            &:hover {
+                color:$anchorLinkHover;
+            }
+        }
     }
 }
 
 #project-footer {
-    margin-bottom: -16px;
+    margin:25px auto -16px auto;
     padding-top: 30px;
     padding-bottom: 30px;
-    background: lighten($akvoPurple, 65%);
+    background: lighten($akvoBlack, 83%);
     .detailedInfo {
         color: rgba($akvoPurple, 1);
     }
     #project-footer-right {
-        background: rgba($akvoPurple, 0.1);
+        border:1px solid rgba($akvoBlack, 0.05);
         padding: 1.5em;
     }
 }
@@ -1229,11 +1256,13 @@ div.textBlock {
 
 /* Tooltips */
 .tooltip {
+    z-index: 99999;
     .tooltip-arrow {}
     .tooltip-inner {
         max-width: 350px;
         padding: 15px;
-        background: rgba($akvoBlack, 0.05);
+        background: rgba(white, 0.55);
+        border: thin solid rgba($akvoBlack, 0.15);
         color: $akvoBlack;
         box-shadow: 0 0 2px rgba($akvoBlack, 0.3);
         a {
@@ -1246,6 +1275,12 @@ div.textBlock {
 .organisationDetail {
     .organisationHeader {
         background: rgba($akvoBlack, 0.05);
+    }
+    .orgDescr {
+        background-color: rgba(218,218,218, 0.4);
+        p {
+            padding-left: 20px;
+        }
     }
     h1 {
         margin-top:0;
@@ -1267,8 +1302,27 @@ div.textBlock {
         }
     }
     .orgDetails {
-        background: rgba(white, 0.05);
+        background: rgba(white, 0.45);
         @include border-radius(5px);
+    }
+}
+
+/* Update Page */
+.updateMain {
+    h1 {
+        color: $rsrGreen;
+        margin-top: 0;
+    }
+    .asideUpList {
+        .row {
+            padding:15px 0;
+            &:nth-of-type(2n+1) {
+                background-color: rgba($rsrGreen,0.1);
+            }
+            h5 {
+                margin-top: 0;
+            }
+        }
     }
 }
 
@@ -1290,5 +1344,23 @@ div.textBlock {
         a {
             font-weight: bold;
         }
+    }
+}
+
+/*   Version Banner */
+.versionBanner {
+    box-sizing: border-box;
+    position:fixed;
+    max-height:50px;
+    bottom:0px;
+    right:0px;
+    background-color: red;
+    @include border-radius(3px 0 0 0);
+    background-color: lighten($anchorLinkHover, 40%);
+    border-top:1px solid rgba($anchorLinkHover,0.5);
+    border-left:1px solid rgba($anchorLinkHover,0.5);
+    box-shadow: -2px -3px 6px rgba($akvoBlack,0.2);
+    div {
+        padding:5px 10px;
     }
 }

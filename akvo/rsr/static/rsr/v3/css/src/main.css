@@ -68,6 +68,9 @@ a, a:link, a:visited {
     color: #ff5500; }
 
 /****************** Miscellanous Typography ********************/
+img {
+  max-width: 100%; }
+
 .noItem {
   color: rgba(44, 42, 116, 0.2);
   font-weight: bold; }
@@ -117,7 +120,7 @@ a.moreLink {
   padding: 20px 0; }
 
 .noInfoBlock {
-  background: rgba(32, 32, 36, 0.1);
+  background: rgba(32, 32, 36, 0.05);
   text-align: center;
   padding: 20px 0; }
 
@@ -142,14 +145,17 @@ a.btn-primary, button.btn-primary {
   text-align: left; }
 
 .btn-group button, .form-group button {
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px; }
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 .tt-input, .tt-hint {
-  border-radius: initial; }
+  border-radius: 5px 0 0 5px; }
+
+.input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+  border-radius: 5px 0 0 5px; }
 
 span.twitter-typeahead .tt-dropdown-menu {
   position: absolute;
@@ -544,7 +550,7 @@ h4.detailedInfo {
       color: #ff5500; }
 
 .paginationWrap {
-  background: rgba(32, 32, 36, 0.05);
+  background: rgba(58, 58, 58, 0.05);
   -moz-border-radius: 3px;
   -o-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -557,7 +563,7 @@ h4.detailedInfo {
   .paginationWrap .sortList {
     display: inline-block;
     padding-left: 0;
-    margin: 20px 0;
+    margin: 23px 0 0 0;
     text-align: left; }
     @media only screen and (max-width: 768px) {
       .paginationWrap .sortList {
@@ -696,8 +702,8 @@ h4.detailedInfo {
   .main-list.projects ul li .projectLocation {
     color: rgba(32, 32, 36, 0.5); }
   .main-list.projects ul li:hover {
-    background: rgba(44, 42, 116, 0.15);
-    border: thin solid rgba(44, 42, 116, 0.35); }
+    background: rgba(44, 42, 116, 0.1);
+    border: thin solid rgba(44, 42, 116, 0.3); }
 .main-list.updates ul li {
   border: thin solid rgba(0, 167, 157, 0);
   -moz-transition: all 0.2s ease-in;
@@ -768,13 +774,17 @@ h4.detailedInfo {
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
-  background: #fff6f1;
-  border-bottom: 1px solid #eeeeee;
+  background: #f0f0fa;
+  border-bottom: 1px solid #f8f8f8;
   margin-bottom: 15px; }
   header.projectHeader h1 {
     margin-top: 10px;
     margin-bottom: 0;
     font-size: 1.5em; }
+    header.projectHeader h1 a {
+      color: #2c2a74; }
+      header.projectHeader h1 a:hover {
+        color: #2c2a74; }
   header.projectHeader .shareBlock {
     position: relative;
     margin-top: 10px; }
@@ -823,7 +833,6 @@ div.projectTopRow {
   border-bottom: 1px solid rgba(32, 32, 36, 0.1); }
   div.projectTopRow #carousel {
     padding: 15px 0;
-    /*background-color: rgb(230, 231, 232);*/
     margin-left: -15px; }
     @media only screen and (max-width: 768px) {
       div.projectTopRow #carousel {
@@ -831,23 +840,29 @@ div.projectTopRow {
     div.projectTopRow #carousel .carousel-indicators {
       bottom: 35px; }
       div.projectTopRow #carousel .carousel-indicators li {
-        border-color: #00a79d; }
+        border-color: #00aaff; }
         div.projectTopRow #carousel .carousel-indicators li.active {
-          background-color: #00a79d; }
+          background-color: #00aaff; }
     div.projectTopRow #carousel .carousel-inner .item {
       text-align: center; }
       div.projectTopRow #carousel .carousel-inner .item a img {
         max-height: 400px;
         margin: auto; }
       div.projectTopRow #carousel .carousel-inner .item .carousel-caption {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.6);
+        border: thin solid rgba(255, 255, 255, 0.8);
         bottom: 0px;
         padding-top: 10px;
-        padding-bottom: 10px; }
+        padding-bottom: 10px;
+        -moz-border-radius: 5px 5px 0 0;
+        -o-border-radius: 5px 5px 0 0;
+        -webkit-border-radius: 5px 5px 0 0;
+        border-radius: 5px 5px 0 0; }
         div.projectTopRow #carousel .carousel-inner .item .carousel-caption h3 {
-          color: #fdf2e8; }
+          color: #2c2a74; }
         div.projectTopRow #carousel .carousel-inner .item .carousel-caption p {
-          padding-top: 20px; }
+          padding-top: 20px;
+          color: #2c2a74; }
     div.projectTopRow #carousel .carousel-control.right {
       background-image: none; }
     div.projectTopRow #carousel .carousel-control.left {
@@ -902,7 +917,12 @@ div.projectTopRow {
         div.projectTopRow .projectSideInfo ul li.financeBlock {
           border-top: none;
           padding: 15px 0 15px 0;
-          background: rgba(44, 42, 116, 0.1); }
+          background: rgba(255, 255, 255, 0.1);
+          border: thin solid rgba(230, 230, 230, 0.7);
+          -moz-border-radius: 5px;
+          -o-border-radius: 5px;
+          -webkit-border-radius: 5px;
+          border-radius: 5px; }
           div.projectTopRow .projectSideInfo ul li.financeBlock span {
             margin-left: 15px; }
           div.projectTopRow .projectSideInfo ul li.financeBlock a {
@@ -945,16 +965,26 @@ div.textBlock {
     padding-top: 10px;
     padding-bottom: 15px;
     background: #fff6f1; }
+    div.textBlock .udpateComponent h4 {
+      margin-bottom: 10px; }
+    div.textBlock .udpateComponent .updateLinkTitle {
+      display: block;
+      color: #00a79d;
+      margin-bottom: 5px; }
+      div.textBlock .udpateComponent .updateLinkTitle i {
+        margin-right: 5px; }
+      div.textBlock .udpateComponent .updateLinkTitle:hover {
+        color: #ff5500; }
 
 #project-footer {
-  margin-bottom: -16px;
+  margin: 25px auto -16px auto;
   padding-top: 30px;
   padding-bottom: 30px;
-  background: #f0f0fa; }
+  background: #f5f5f6; }
   #project-footer .detailedInfo {
     color: #2c2a74; }
   #project-footer #project-footer-right {
-    background: rgba(44, 42, 116, 0.1);
+    border: 1px solid rgba(32, 32, 36, 0.05);
     padding: 1.5em; }
 
 #draft {
@@ -990,18 +1020,25 @@ div.textBlock {
   margin: 30px; }
 
 /* Tooltips */
-.tooltip .tooltip-inner {
-  max-width: 350px;
-  padding: 15px;
-  background: rgba(32, 32, 36, 0.05);
-  color: #202024;
-  box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
-  .tooltip .tooltip-inner a {
-    font-weight: bold; }
+.tooltip {
+  z-index: 99999; }
+  .tooltip .tooltip-inner {
+    max-width: 350px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.55);
+    border: thin solid rgba(32, 32, 36, 0.15);
+    color: #202024;
+    box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
+    .tooltip .tooltip-inner a {
+      font-weight: bold; }
 
 /* Organisation Page */
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
+.organisationDetail .orgDescr {
+  background-color: rgba(218, 218, 218, 0.4); }
+  .organisationDetail .orgDescr p {
+    padding-left: 20px; }
 .organisationDetail h1 {
   margin-top: 0;
   margin-bottom: 20px;
@@ -1018,11 +1055,22 @@ div.textBlock {
     width: 35%;
     margin-left: 5px; }
 .organisationDetail .orgDetails {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.45);
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
+
+/* Update Page */
+.updateMain h1 {
+  color: #00a79d;
+  margin-top: 0; }
+.updateMain .asideUpList .row {
+  padding: 15px 0; }
+  .updateMain .asideUpList .row:nth-of-type(2n+1) {
+    background-color: rgba(0, 167, 157, 0.1); }
+  .updateMain .asideUpList .row h5 {
+    margin-top: 0; }
 
 /* Cookie */
 #cookie-law {
@@ -1040,3 +1088,22 @@ div.textBlock {
     font-size: 1.1em; }
     #cookie-law p a {
       font-weight: bold; }
+
+/*   Version Banner */
+.versionBanner {
+  box-sizing: border-box;
+  position: fixed;
+  max-height: 50px;
+  bottom: 0px;
+  right: 0px;
+  background-color: red;
+  -moz-border-radius: 3px 0 0 0;
+  -o-border-radius: 3px 0 0 0;
+  -webkit-border-radius: 3px 0 0 0;
+  border-radius: 3px 0 0 0;
+  background-color: #ffddcc;
+  border-top: 1px solid rgba(255, 85, 0, 0.5);
+  border-left: 1px solid rgba(255, 85, 0, 0.5);
+  box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2); }
+  .versionBanner div {
+    padding: 5px 10px; }

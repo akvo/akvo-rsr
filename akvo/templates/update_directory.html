@@ -2,6 +2,8 @@
 {% load i18n maps markup_tags rsr_utils bootstrap3 compressed %}
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
+{% load rsr_filters %}
+
 <section id="map" class="touch-navbar">
     {% coll_map page '100%' '100%' %}
 </section>
@@ -90,7 +92,7 @@
           </div>
           <div class="excerpt col-sm-5 col-md-5 col-xs-12 hidden-xs">
             {% autoescape off %}
-              {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+              {{ u.text|force_escape|urlize|apply_markup:"markdown"|smart_truncate:250 }}
             {% endautoescape %}
           </div>
         </li>
