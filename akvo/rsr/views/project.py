@@ -12,6 +12,7 @@ from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
+from akvo.codelists.models import SectorCategory
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -175,8 +176,11 @@ def directory(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, sorted_projects, 10)
 
+    # sector_count = SectorCategory.objects.all().count()
+
     context = {
         'project_count': sorted_projects.count(),
+        # 'sector_count': sector_count,
         'filter': f,
         'page': page,
         'page_range': page_range,

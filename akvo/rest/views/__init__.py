@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""Akvo RSR is covered by the GNU Affero General Public License.
+See more details in the license.txt file located at the root folder of the
+Akvo RSR module. For additional details on the GNU license please
+see < http://www.gnu.org/licenses/agpl.html >.
+"""
 
 
 from .benchmark import BenchmarkViewSet
@@ -42,7 +44,12 @@ from .region import RecipientRegionViewSet
 from .result import ResultViewSet
 from .sector import SectorViewSet
 from .transaction import TransactionViewSet
-from .user import UserViewSet, change_password, update_details, request_organisation
+from .typeahead import (typeahead_country,
+                        typeahead_organisation,
+                        typeahead_project,
+                        typeahead_projectupdate)
+from .user import (UserViewSet, change_password, update_details,
+                   request_organisation)
 
 __all__ = [
     'BenchmarkViewSet',
@@ -87,6 +94,11 @@ __all__ = [
     'ResultViewSet',
     'SectorViewSet',
     'TransactionViewSet',
+    'typeahead_country,',
+    'typeahead_project',
+    'typeahead_projectupdate',
+    'typeahead_organisation',
+    # 'typeahead_sector',
     'UserViewSet',
     'change_password',
     'update_details',

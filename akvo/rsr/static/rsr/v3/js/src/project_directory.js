@@ -1,3 +1,8 @@
+// Akvo RSR is covered by the GNU Affero General Public License.
+// See more details in the license.txt file located at the root folder of the
+// Akvo RSR module. For additional details on the GNU license please see
+// < http://www.gnu.org/licenses/agpl.html >.
+
 function insertParam(key, value)
 {
     key = encodeURI(key); value = encodeURI(value);
@@ -27,6 +32,19 @@ $(document).ready(function() {
   });
 
   // setup Bloodhound for typeahead
+  var organisations = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name',
+                                                         'long_name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: '/rest/v1/typeaheads/organisations?format=json',
+      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfOrgs,
+      filter: function(response) {
+        return response.results;
+      }
+    }
+  });
+
   var projects = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('background',
                                                          'current_image_credit',
@@ -37,47 +55,63 @@ $(document).ready(function() {
                                                          'title'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
-      url: '/rest/v1/project/?format=json&limit=10000',
-      cacheKey: 'akvoRsrProjects',
+      url: '/rest/v1/typeaheads/projects?format=json',
       thumbprint: AKVO_RSR.typeahead.thumbs.numberOfProjects,
+
       filter: function(response) {
-        f = [
-          'id',
-          'background',
-          'current_image_credit',
-          'current_status',
-          'project_plan',
-          'project_plan_summary',
-          'subtitle',
-          'title'
-        ];
-        return _.map(response.results, _.partialRight(_.pick, f));
+        return response.results;
       }
+
+      // Do we need to filter client side to?
+      // filter: function(response) {
+      //   f = [ // Match fields in resource
+      //     'id',
+      //     'project_plan_summary',
+      //     'subtitle',
+      //     'title'
+      //   ];
+      //   return _.map(response.results, _.partialRight(_.pick, f));
+      // }
     }
   });
 
-  var sectors = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    prefetch: {
-      url: '/rest/v1/sector/?format=json&limit=1000',
-      filter: function(response) {
-        f = [
-          'id',
-          'name',
-          'slug'
-        ];
-        return _.map(response.results, _.partialRight(_.pick, f));
-      }
-    }
-  });
+  // var sectors = new Bloodhound({
+  //   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  //   queryTokenizer: Bloodhound.tokenizers.whitespace,
+  //   prefetch: {
+  //     url: '/rest/v1/typeaheads/sectors?format=json',
+  //     thumbprint: AKVO_RSR.typeahead.thumbs.numberOfSectors,
+  //     filter: function(response) {
+  //       return response.results;
+  //     }
 
+  //     // filter: function(response) {
+  //     //   f = [
+  //     //     'id',
+  //     //     'name',
+  //     //     'slug'
+  //     //   ];
+  //     //   return _.map(response.results, _.partialRight(_.pick, f));
+  //     // }
+  //   }
+  // });
+
+  organisations.initialize();
   projects.initialize();
-  sectors.initialize();
+  // sectors.initialize();
 
   $('#id_title').typeahead(
     {
       highlight: true
+    },
+    {
+      name: 'organisations',
+      displayKey: 'name',
+      source: organisations.ttAdapter(),
+      templates: {
+        header: '<h3 class="dd-category">Organisations</h3>',
+        suggestion: _.template('<a href="/projects/?organisation=<%= id %>"><p><%= name %>!</p></a>')
+       }
     },
     {
       name: 'projects',
@@ -87,16 +121,17 @@ $(document).ready(function() {
         header: '<h3 class="dd-category">Projects</h3>',
         suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %>!</p><p><%= subtitle %></p></a>')
        }
-    },
-    {
-      name: 'focus_areas',
-      displayKey: 'name',
-      source: focus_areas.ttAdapter(),
-      templates: {
-        header: '<h3 class="dd-category">Filter on focus area</h3>',
-        suggestion: _.template('<a class="filter_focus_area"><%= name %></a>')
-       }
     }
+    // ,
+    // {
+    //   name: 'sectors',
+    //   displayKey: 'name',
+    //   source: sectors.ttAdapter(),
+    //   templates: {
+    //     header: '<h3 class="dd-category">Sectors</h3>',
+    //     suggestion: _.template('<a href="/project/?sector=<%= code %>"><p><%= name %>!</p></a>')
+    //    }
+    // }
   );
 
   $('#filterForm').on('click', '.filter_focus_area', function (event) {
