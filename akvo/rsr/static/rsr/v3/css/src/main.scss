@@ -149,11 +149,11 @@ a.btn-primary, button.btn-primary {
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 .tt-input, .tt-hint {
-    border-radius: 5px 0 0 5px;
+    @include border-radius(5px 0 0 5px);
 }
 
 .input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
-    border-radius: 5px 0 0 5px;
+    @include border-radius(5px 0 0 5px);
 }
 
 span.twitter-typeahead .tt-dropdown-menu {
@@ -256,8 +256,8 @@ nav.navbar-fixed-top {
     border: none;
     border-top: 3px solid rgba($rsrBlue, 0.5);
     padding: 5px 0;
-    box-shadow: 0 2px 3px rgba(132, 132, 136, 0.2);
-    border-radius: 0;
+    @include box-shadow(0 2px 3px rgba(132, 132, 136, 0.2));
+    @include border-radius(0);
     border-bottom: 1px solid rgb(228, 228, 228);
     button.navbar-toggle {
         background: $rsrBlue;
@@ -460,7 +460,21 @@ nav.navbar-fixed-top {
         padding: 10px 0 10px 0;
     }
 }
-
+.twoColumns {
+    a {
+        width:40%;
+        float:left;
+        text-align: center;
+        background:rgba($anchorLink,0.2);
+        color:$anchorLink;
+        margin:2px 5%;
+        @include border-radius(3px); 
+        &:hover {
+            background:$anchorLinkHover;
+            color:white;
+        }
+    }
+}
 #organisations {
     background: darken(rgba($anchorLinkHover, 0.05), 0);
     padding-bottom: 15px;
@@ -489,8 +503,8 @@ nav.navbar-fixed-top {
         background-color: #fff;
         border: 1px solid #ccc;
         border: 1px solid rgba(0, 0, 0, 0.2);
-        border-radius: 8px;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        @include border-radius(8px);
+        @include box-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
     }
     .tt-suggestion {
         padding: 3px 20px;
@@ -516,7 +530,7 @@ body > footer {
 footer {
     .navbar {
         background: $akvoBlack;
-        border-radius: 0;
+        @include border-radius(0);
         #footer-body {
             ul.nav {
                 li {
@@ -678,7 +692,7 @@ h4.detailedInfo {
     background: rgba(white, 0.9);
     @include border-radius(0 0 5px 0);
     @include transition(all 0.5s ease);
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    @include box-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
     .showFilters {
         &:hover {
             color: $anchorLinkHover;
@@ -755,11 +769,11 @@ h4.detailedInfo {
         margin-bottom: 30px;
         list-style-type: none;
         padding: 15px 0;
-        border-radius: 3px;
+        @include border-radius(3px);
         background: white;
         img {
             border: 1px solid rgba($akvoBlack, 0.05);
-            box-shadow: 0 0 2px rgba($anchorLinkHover, 0);
+            @include box-shadow(0 0 2px rgba($anchorLinkHover, 0));
         }
         &:nth-child(2n+1) {
             background: rgb(238, 238, 238);
@@ -1239,9 +1253,7 @@ div.textBlock {
     margin: 30px;
     padding: 10px;
     text-align: center;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+    @include border-radius(5px);
 }
 
 .project-hierarchy-window:hover,
@@ -1267,7 +1279,7 @@ div.textBlock {
         background: rgba(white, 0.55);
         border: thin solid rgba($akvoBlack, 0.15);
         color: $akvoBlack;
-        box-shadow: 0 0 2px rgba($akvoBlack, 0.3);
+        @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
         a {
             font-weight: bold;
         }
@@ -1329,7 +1341,7 @@ div.textBlock {
     position: fixed;
     bottom: 0;
     z-index: 9999;
-    box-shadow: 0px -2px 3px rgba($akvoBlack, 0.55);
+    @include box-shadow(0px -2px 3px rgba($akvoBlack, 0.55));
     width: 100%;
     background: darken($akvoPurple, 15%);
     p {
@@ -1355,7 +1367,7 @@ div.textBlock {
     background-color: rgba(white, 1);
     border-top: 1px solid rgba($anchorLinkHover, 0.6);
     border-left: 1px solid rgba($anchorLinkHover, 0.6);
-    box-shadow: -2px -3px 6px rgba($akvoBlack, 0.2);
+    @include box-shadow(-2px -3px 6px rgba($akvoBlack, 0.2));
     div {
         padding: 5px 10px;
     }
