@@ -25,7 +25,7 @@
                         <td>{{ update.title }}</td>
                         <td>{{ update.created_at }}</td>
                         <td>{{ update.project }}</td>
-                        <td><div class="twoColumns"<a href="{% url 'update-main' update.project.id update.id %}">View</a></div></td>
+                        <td><div class="twoColumns"><a href="{% url 'update-main' update.project.id update.id %}">View</a></div></td>
                     </tr>
                 {% endfor %}
                 </tbody>
