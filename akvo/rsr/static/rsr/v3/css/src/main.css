@@ -152,9 +152,15 @@ a.btn-primary, button.btn-primary {
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 .tt-input, .tt-hint {
+  -moz-border-radius: 5px 0 0 5px;
+  -o-border-radius: 5px 0 0 5px;
+  -webkit-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px; }
 
 .input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+  -moz-border-radius: 5px 0 0 5px;
+  -o-border-radius: 5px 0 0 5px;
+  -webkit-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px; }
 
 span.twitter-typeahead .tt-dropdown-menu {
@@ -239,7 +245,13 @@ nav.navbar-fixed-top {
   border: none;
   border-top: 3px solid rgba(44, 42, 116, 0.5);
   padding: 5px 0;
+  -moz-box-shadow: 0 2px 3px rgba(132, 132, 136, 0.2);
+  -o-box-shadow: 0 2px 3px rgba(132, 132, 136, 0.2);
+  -webkit-box-shadow: 0 2px 3px rgba(132, 132, 136, 0.2);
   box-shadow: 0 2px 3px rgba(132, 132, 136, 0.2);
+  -moz-border-radius: 0;
+  -o-border-radius: 0;
+  -webkit-border-radius: 0;
   border-radius: 0;
   border-bottom: 1px solid #e4e4e4; }
   nav.navbar-fixed-top button.navbar-toggle {
@@ -420,6 +432,21 @@ nav.navbar-fixed-top {
   background-color: rgba(32, 32, 36, 0);
   padding: 10px 0 10px 0; }
 
+.twoColumns a {
+  width: 40%;
+  float: left;
+  text-align: center;
+  background: rgba(0, 170, 255, 0.2);
+  color: #00aaff;
+  margin: 2px 5%;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px; }
+  .twoColumns a:hover {
+    background: #ff5500;
+    color: white; }
+
 #organisations {
   background: rgba(255, 85, 0, 0.05);
   padding-bottom: 15px;
@@ -446,7 +473,13 @@ nav.navbar-fixed-top {
     background-color: #fff;
     border: 1px solid #ccc;
     border: 1px solid rgba(0, 0, 0, 0.2);
+    -moz-border-radius: 8px;
+    -o-border-radius: 8px;
+    -webkit-border-radius: 8px;
     border-radius: 8px;
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -o-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); }
   #organisations .tt-suggestion {
     padding: 3px 20px;
@@ -465,6 +498,9 @@ body > footer {
 
 footer .navbar {
   background: #202024;
+  -moz-border-radius: 0;
+  -o-border-radius: 0;
+  -webkit-border-radius: 0;
   border-radius: 0; }
   footer .navbar #footer-body ul.nav li {
     padding-top: 10px;
@@ -591,6 +627,9 @@ h4.detailedInfo {
   -o-transition: all 0.5s ease;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
+  -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  -o-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); }
   #sidebar-wrapper .showFilters:hover {
     color: #ff5500; }
@@ -646,10 +685,16 @@ h4.detailedInfo {
   margin-bottom: 30px;
   list-style-type: none;
   padding: 15px 0;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
   border-radius: 3px;
   background: white; }
   .main-list li img {
     border: 1px solid rgba(32, 32, 36, 0.05);
+    -moz-box-shadow: 0 0 2px rgba(255, 85, 0, 0);
+    -o-box-shadow: 0 0 2px rgba(255, 85, 0, 0);
+    -webkit-box-shadow: 0 0 2px rgba(255, 85, 0, 0);
     box-shadow: 0 0 2px rgba(255, 85, 0, 0); }
   .main-list li:nth-child(2n+1) {
     background: #eeeeee; }
@@ -1013,8 +1058,9 @@ div.textBlock {
   margin: 30px;
   padding: 10px;
   text-align: center;
-  -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
   border-radius: 5px; }
 
 .project-hierarchy-window:hover, .project-hierarchy-window._jsPlumb_source_hover, .project-hierarchy-window._jsPlumb_target_hover {
@@ -1035,6 +1081,9 @@ div.textBlock {
     background: rgba(255, 255, 255, 0.55);
     border: thin solid rgba(32, 32, 36, 0.15);
     color: #202024;
+    -moz-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
+    -o-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
+    -webkit-box-shadow: 0 0 2px rgba(32, 32, 36, 0.3);
     box-shadow: 0 0 2px rgba(32, 32, 36, 0.3); }
     .tooltip .tooltip-inner a {
       font-weight: bold; }
@@ -1084,6 +1133,9 @@ div.textBlock {
   position: fixed;
   bottom: 0;
   z-index: 9999;
+  -moz-box-shadow: 0px -2px 3px rgba(32, 32, 36, 0.55);
+  -o-box-shadow: 0px -2px 3px rgba(32, 32, 36, 0.55);
+  -webkit-box-shadow: 0px -2px 3px rgba(32, 32, 36, 0.55);
   box-shadow: 0px -2px 3px rgba(32, 32, 36, 0.55);
   width: 100%;
   background: #17163c; }
@@ -1103,14 +1155,16 @@ div.textBlock {
   max-height: 50px;
   bottom: 0px;
   right: 0px;
-  background-color: red;
   -moz-border-radius: 3px 0 0 0;
   -o-border-radius: 3px 0 0 0;
   -webkit-border-radius: 3px 0 0 0;
   border-radius: 3px 0 0 0;
-  background-color: #ffddcc;
-  border-top: 1px solid rgba(255, 85, 0, 0.5);
-  border-left: 1px solid rgba(255, 85, 0, 0.5);
+  background-color: white;
+  border-top: 1px solid rgba(255, 85, 0, 0.6);
+  border-left: 1px solid rgba(255, 85, 0, 0.6);
+  -moz-box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2);
+  -o-box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2);
+  -webkit-box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2);
   box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2); }
   .versionBanner div {
     padding: 5px 10px; }
