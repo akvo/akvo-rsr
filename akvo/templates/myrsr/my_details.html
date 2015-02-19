@@ -45,6 +45,17 @@
 {% block js %}
   {{ block.super }}
 
+  <script type="application/json" id="akvo-rsr-typeahead-thumbs">
+    {
+     "numberOfCountries": {{ country_count }},
+     "numberOfOrganisations": {{ organisation_count }}
+   }
+  </script>
+  <script type="application/javascript">
+   AKVO_RSR.typeahead = {};
+   AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
+  </script>
+
   {# App data #}
   <script type="application/json" id="initial-data">
     {{ user_data|safe }}

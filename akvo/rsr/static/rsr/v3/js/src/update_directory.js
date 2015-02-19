@@ -1,3 +1,9 @@
+// Akvo RSR is covered by the GNU Affero General Public License.
+// See more details in the license.txt file located at the root folder of the
+// Akvo RSR module. For additional details on the GNU license please see
+// < http://www.gnu.org/licenses/agpl.html >.
+
+
 $(document).ready(function(){
 
   // Submit filter form on select change
@@ -5,29 +11,17 @@ $(document).ready(function(){
     $('#filterForm').submit();
   });
 
-  // setup Bloodhound for typeahead
+    // setup Bloodhound for typeahead
   var updates = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text',
-                                                         'notes',
-                                                         'photo_caption',
-                                                         'title',
-                                                         'video_caption'
-                                                        ),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
-      url: '/rest/v1/project_update/?format=json&limit=10000',
+      url: '/rest/v1/typeaheads/project_updates?format=json',
+      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfUpdates,
       filter: function(response) {
-        f = [
-          'id',
-          'notes',
-          'photo_caption',
-          'project',
-          'text',
-          'title',
-          'video_caption'
-        ];
-        return _.map(response.results, _.partialRight(_.pick, f));
+        return response.results;
       }
+
     }
   });
 
@@ -46,6 +40,5 @@ $(document).ready(function(){
         suggestion: _.template('<a href="/project/<%= project %>/update/<%= id %>"><p><%= title %>!</p></a>')
        }
     });
-
 
 });

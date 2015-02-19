@@ -5,22 +5,15 @@ $(document).ready(function(){
     $('#filterForm').submit();
   });
 
-  // setup Bloodhound for typeahead
   var organisations = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('description',
-                                                         'long_name',
-                                                         'name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name',
+                                                         'long_name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
-      url: '/rest/v1/organisation/?format=json&limit=10000',
+      url: '/rest/v1/typeaheads/organisations?format=json',
+      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfOrgs,
       filter: function(response) {
-        f = [
-          'id',
-          'description',
-          'long_name',
-          'name'
-        ];
-        return _.map(response.results, _.partialRight(_.pick, f));
+        return response.results;
       }
     }
   });
@@ -39,7 +32,8 @@ $(document).ready(function(){
         header: '<h3 class="dd-category">Organisations</h3>',
         suggestion: _.template('<a href="/organisation/<%= id %>"><p><%= name %>!</p></a>')
        }
-    });
-
+    }
+  )
+  ;
 
 });

@@ -2,6 +2,8 @@
 {% load i18n maps markup_tags rsr_utils bootstrap3 compressed %}
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
+{% load rsr_filters %}
+
 <section id="map" class="touch-navbar">
     {% coll_map page '100%' '100%' %}
 </section>
@@ -37,7 +39,7 @@
         <div class="btn-group">
           {% bootstrap_field filter.form.continent %}
         </div>
-      </div> 
+      </div>
       <div>
       <nav>
         <ul class="nav nav-pills nav-stacked">
@@ -53,7 +55,7 @@
 
 <div class="container">
   <div class="row center-text">
-        <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>    
+        <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
   </div>
         {% include 'navigation/pagination.html' %}
   </div>
@@ -74,7 +76,7 @@
           <div class="col-sm-4 col-md-4 col-xs-8">
             <h1><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h1>
             <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><i class="fa fa-folder-o"></i> {{u.project.title}}</a>
-            <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span> 
+            <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>
                 {% if u.user.approved_organisations %}
                   {% with org=u.user.approved_organisations.0 %}
                     ( <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a> )
@@ -90,7 +92,7 @@
           </div>
           <div class="excerpt col-sm-5 col-md-5 col-xs-12 hidden-xs">
             {% autoescape off %}
-              {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+              {{ u.text|force_escape|urlize|apply_markup:"markdown"|smart_truncate:250 }}
             {% endautoescape %}
           </div>
         </li>
@@ -106,6 +108,16 @@
 {% block js %}
   {{ block.super }}
   <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="application/json" id="akvo-rsr-typeahead-thumbs">
+   {
+     "numberOfUpdates": {{ updates_count }}
+   }
+  </script>
+  <script type="application/javascript">
+   AKVO_RSR.typeahead = {};
+   AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
+  </script>
+
   {% compressed_js 'rsr_v3_update_directory' %}
 {% endblock js %}
 
