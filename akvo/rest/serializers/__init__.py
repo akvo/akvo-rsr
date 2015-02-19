@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""Akvo RSR is covered by the GNU Affero General Public License.
+See more details in the license.txt file located at the root folder of the
+Akvo RSR module. For additional details on the GNU license please
+see < http://www.gnu.org/licenses/agpl.html >.
+"""
+
 
 from .benchmark import BenchmarkSerializer
 from .benchmark_name import BenchmarknameSerializer
@@ -32,7 +35,8 @@ from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
 from .project_document import ProjectDocumentSerializer
 from .project_location import ProjectLocationSerializer
-from .project_update import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
+from .project_update import (ProjectUpdateSerializer,
+                             ProjectUpdateExtraSerializer)
 from .project_update_location import ProjectUpdateLocationSerializer
 from .publishing_status import PublishingStatusSerializer
 from .recipient_country import RecipientCountrySerializer
@@ -41,14 +45,17 @@ from .related_project import RelatedProjectSerializer
 from .result import ResultSerializer
 from .sector import SectorSerializer
 from .transaction import TransactionSerializer
+from .typeahead import (TypeaheadCountrySerializer,
+                        TypeaheadOrganisationSerializer,
+                        TypeaheadProjectSerializer,
+                        TypeaheadProjectUpdateSerializer)
 from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
-from .project import ProjectSerializer, ProjectExtraSerializer
 
 __all__ = [
     'BenchmarkSerializer',
     'BenchmarknameSerializer',
-    'BudgetItemSerializer',
     'BudgetItemLabelSerializer',
+    'BudgetItemSerializer',
     'CategorySerializer',
     'CountrySerializer',
     'EmploymentSerializer',
@@ -61,23 +68,25 @@ __all__ = [
     'KeywordSerializer',
     'LegacyDataSerializer',
     'LinkSerializer',
-    'OrganisationSerializer',
     'OrganisationLocationSerializer',
+    'OrganisationSerializer',
     'PartnerSiteSerializer',
     'PartnerTypeSerializer',
     'PartnershipSerializer',
     'PlannedDisbursementSerializer',
     'PolicyMarkerSerializer',
-    'ProjectSerializer',
-    'ProjectExtraSerializer',
     'ProjectCommentSerializer',
     'ProjectConditionSerializer',
     'ProjectContactSerializer',
     'ProjectDocumentSerializer',
+    'ProjectExtraSerializer',
+    'ProjectExtraSerializer',
     'ProjectLocationSerializer',
-    'ProjectUpdateSerializer',
+    'ProjectSerializer',
+    'ProjectSerializer',
     'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',
+    'ProjectUpdateSerializer',
     'PublishingStatusSerializer',
     'RecipientCountrySerializer',
     'RecipientRegionSerializer',
@@ -85,9 +94,12 @@ __all__ = [
     'ResultSerializer',
     'SectorSerializer',
     'TransactionSerializer',
-    'UserSerializer',
+    'TypeaheadCountrySerializer',
+    'TypeaheadOrganisationSerializer',
+    'TypeaheadProjectSerializer',
+    'TypeaheadProjectUpdateSerializer',
+    # 'TypeaheadSectorSerializer',
     'UserDetailsSerializer',
     'UserPasswordSerializer',
-    'ProjectSerializer',
-    'ProjectExtraSerializer',
+    'UserSerializer',
 ]

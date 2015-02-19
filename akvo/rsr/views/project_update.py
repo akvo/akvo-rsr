@@ -25,6 +25,7 @@ def directory(request):
     page, paginator, page_range = pagination(page, f.qs.distinct(), 10)
 
     context = {
+        'updates_count': f.qs.distinct().count(),
         'filter': f,
         'page': page,
         'page_range': page_range,

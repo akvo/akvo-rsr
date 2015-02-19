@@ -40,12 +40,12 @@
                   <div class="btn-group">
                     {% bootstrap_field filter.form.status %}
                   </div>
-                </div>      
+                </div>
             <div>
                 <div class="btn-group">
                   {% bootstrap_field filter.form.organisation %}
                 </div>
-            </div>      
+            </div>
             <div>
               <div class="btn-group">
                 {% bootstrap_field filter.form.sector %}
@@ -65,9 +65,9 @@
 
   <div class="container">
     <div class="row center-text">
-      <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>    
+      <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
     </div>
-      {% include 'navigation/pagination.html' %}
+      {% include 'navigation/pagination-sort.html' %}
 
   </div>
 
@@ -125,13 +125,24 @@
     </ul>
   </section>
   <div class="container">
-       {% include 'navigation/pagination.html' %}
+       {% include 'navigation/pagination-sort.html' %}
   </div>
 
 {% endblock %}
 {% block js %}
   {{ block.super }}
   <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="application/json" id="akvo-rsr-typeahead-thumbs">
+   {
+     "numberOfProjects": {{ project_count }}
+     {# "numberOfSectors": {{ sector_count }} #}
+   }
+  </script>
+  <script type="application/javascript">
+   AKVO_RSR.typeahead = {};
+   AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
+  </script>
+
   {% compressed_js 'rsr_v3_project_directory' %}
 {% endblock js %}
 
