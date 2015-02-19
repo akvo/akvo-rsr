@@ -4,1083 +4,1083 @@
 // < http://www.gnu.org/licenses/agpl.html >.
 
 
-// Codes and names of the M.49 UN country and region codelist, for use in the filter suggestions
+// Codes and names of the M.49 UN country and region codelist", for use in the filter suggestions
 
 [
     {
-        "code": 1,
+        "code": "1",
         "name": "World"
     },
     {
-        "code": 2,
+        "code": "2",
         "name": "Africa"
     },
     {
-        "code": 3,
+        "code": "3",
         "name": "North America"
     },
     {
-        "code": 4,
+        "code": "4",
         "name": "Afghanistan"
     },
     {
-        "code": 5,
+        "code": "5",
         "name": "South America"
     },
     {
-        "code": 8,
+        "code": "8",
         "name": "Albania"
     },
     {
-        "code": 9,
+        "code": "9",
         "name": "Oceania"
     },
     {
-        "code": 11,
+        "code": "11",
         "name": "Western Africa"
     },
     {
-        "code": 12,
+        "code": "12",
         "name": "Algeria"
     },
     {
-        "code": 13,
+        "code": "13",
         "name": "Central America"
     },
     {
-        "code": 14,
+        "code": "14",
         "name": "Eastern Africa"
     },
     {
-        "code": 15,
+        "code": "15",
         "name": "Northern Africa"
     },
     {
-        "code": 16,
+        "code": "16",
         "name": "American Samoa"
     },
     {
-        "code": 17,
+        "code": "17",
         "name": "Middle Africa"
     },
     {
-        "code": 18,
+        "code": "18",
         "name": "Southern Africa"
     },
     {
-        "code": 19,
+        "code": "19",
         "name": "Americas"
     },
     {
-        "code": 20,
+        "code": "20",
         "name": "Andorra"
     },
     {
-        "code": 21,
+        "code": "21",
         "name": "Northern America"
     },
     {
-        "code": 24,
+        "code": "24",
         "name": "Angola"
     },
     {
-        "code": 28,
+        "code": "28",
         "name": "Antigua and Barbuda"
     },
     {
-        "code": 29,
+        "code": "29",
         "name": "Caribbean"
     },
     {
-        "code": 30,
+        "code": "30",
         "name": "Eastern Asia"
     },
     {
-        "code": 31,
+        "code": "31",
         "name": "Azerbaijan"
     },
     {
-        "code": 32,
+        "code": "32",
         "name": "Argentina"
     },
     {
-        "code": 34,
+        "code": "34",
         "name": "Southern Asia"
     },
     {
-        "code": 35,
+        "code": "35",
         "name": "South-Eastern Asia"
     },
     {
-        "code": 36,
+        "code": "36",
         "name": "Australia"
     },
     {
-        "code": 39,
+        "code": "39",
         "name": "Southern Europe"
     },
     {
-        "code": 40,
+        "code": "40",
         "name": "Austria"
     },
     {
-        "code": 44,
+        "code": "44",
         "name": "Bahamas"
     },
     {
-        "code": 48,
+        "code": "48",
         "name": "Bahrain"
     },
     {
-        "code": 50,
+        "code": "50",
         "name": "Bangladesh"
     },
     {
-        "code": 51,
+        "code": "51",
         "name": "Armenia"
     },
     {
-        "code": 52,
+        "code": "52",
         "name": "Barbados"
     },
     {
-        "code": 53,
+        "code": "53",
         "name": "Australia and New Zealand"
     },
     {
-        "code": 54,
+        "code": "54",
         "name": "Melanesia"
     },
     {
-        "code": 56,
+        "code": "56",
         "name": "Belgium"
     },
     {
-        "code": 57,
+        "code": "57",
         "name": "Micronesia"
     },
     {
-        "code": 60,
+        "code": "60",
         "name": "Bermuda"
     },
     {
-        "code": 61,
+        "code": "61",
         "name": "Polynesia"
     },
     {
-        "code": 64,
+        "code": "64",
         "name": "Bhutan"
     },
     {
-        "code": 68,
+        "code": "68",
         "name": "Bolivia (Plurinational State of)"
     },
     {
-        "code": 70,
+        "code": "70",
         "name": "Bosnia and Herzegovina"
     },
     {
-        "code": 72,
+        "code": "72",
         "name": "Botswana"
     },
     {
-        "code": 76,
+        "code": "76",
         "name": "Brazil"
     },
     {
-        "code": 84,
+        "code": "84",
         "name": "Belize"
     },
     {
-        "code": 90,
+        "code": "90",
         "name": "Solomon Islands"
     },
     {
-        "code": 92,
+        "code": "92",
         "name": "British Virgin Islands"
     },
     {
-        "code": 96,
+        "code": "96",
         "name": "Brunei Darussalam"
     },
     {
-        "code": 100,
+        "code": "100",
         "name": "Bulgaria"
     },
     {
-        "code": 104,
+        "code": "104",
         "name": "Myanmar"
     },
     {
-        "code": 108,
+        "code": "108",
         "name": "Burundi"
     },
     {
-        "code": 112,
+        "code": "112",
         "name": "Belarus"
     },
     {
-        "code": 116,
+        "code": "116",
         "name": "Cambodia"
     },
     {
-        "code": 120,
+        "code": "120",
         "name": "Cameroon"
     },
     {
-        "code": 124,
+        "code": "124",
         "name": "Canada"
     },
     {
-        "code": 132,
+        "code": "132",
         "name": "Cabo Verde"
     },
     {
-        "code": 136,
+        "code": "136",
         "name": "Cayman Islands"
     },
     {
-        "code": 140,
+        "code": "140",
         "name": "Central African Republic"
     },
     {
-        "code": 142,
+        "code": "142",
         "name": "Asia"
     },
     {
-        "code": 143,
+        "code": "143",
         "name": "Central Asia"
     },
     {
-        "code": 144,
+        "code": "144",
         "name": "Sri Lanka"
     },
     {
-        "code": 145,
+        "code": "145",
         "name": "Western Asia"
     },
     {
-        "code": 148,
+        "code": "148",
         "name": "Chad"
     },
     {
-        "code": 150,
+        "code": "150",
         "name": "Europe"
     },
     {
-        "code": 151,
+        "code": "151",
         "name": "Eastern Europe"
     },
     {
-        "code": 152,
+        "code": "152",
         "name": "Chile"
     },
     {
-        "code": 154,
+        "code": "154",
         "name": "Northern Europe"
     },
     {
-        "code": 155,
+        "code": "155",
         "name": "Western Europe"
     },
     {
-        "code": 156,
+        "code": "156",
         "name": "China"
     },
     {
-        "code": 170,
+        "code": "170",
         "name": "Colombia"
     },
     {
-        "code": 174,
+        "code": "174",
         "name": "Comoros"
     },
     {
-        "code": 175,
+        "code": "175",
         "name": "Mayotte"
     },
     {
-        "code": 178,
+        "code": "178",
         "name": "Congo"
     },
     {
-        "code": 180,
+        "code": "180",
         "name": "Democratic Republic of the Congo"
     },
     {
-        "code": 184,
+        "code": "184",
         "name": "Cook Islands"
     },
     {
-        "code": 188,
+        "code": "188",
         "name": "Costa Rica"
     },
     {
-        "code": 191,
+        "code": "191",
         "name": "Croatia"
     },
     {
-        "code": 192,
+        "code": "192",
         "name": "Cuba"
     },
     {
-        "code": 196,
+        "code": "196",
         "name": "Cyprus"
     },
     {
-        "code": 203,
+        "code": "203",
         "name": "Czech Republic"
     },
     {
-        "code": 204,
+        "code": "204",
         "name": "Benin"
     },
     {
-        "code": 208,
+        "code": "208",
         "name": "Denmark"
     },
     {
-        "code": 212,
+        "code": "212",
         "name": "Dominica"
     },
     {
-        "code": 214,
+        "code": "214",
         "name": "Dominican Republic"
     },
     {
-        "code": 218,
+        "code": "218",
         "name": "Ecuador"
     },
     {
-        "code": 222,
+        "code": "222",
         "name": "El Salvador"
     },
     {
-        "code": 226,
+        "code": "226",
         "name": "Equatorial Guinea"
     },
     {
-        "code": 231,
+        "code": "231",
         "name": "Ethiopia"
     },
     {
-        "code": 232,
+        "code": "232",
         "name": "Eritrea"
     },
     {
-        "code": 233,
+        "code": "233",
         "name": "Estonia"
     },
     {
-        "code": 234,
+        "code": "234",
         "name": "Faeroe Islands"
     },
     {
-        "code": 238,
+        "code": "238",
         "name": "Falkland Islands (Malvinas)"
     },
     {
-        "code": 242,
+        "code": "242",
         "name": "Fiji"
     },
     {
-        "code": 246,
+        "code": "246",
         "name": "Finland"
     },
     {
-        "code": 248,
+        "code": "248",
         "name": "Åland Islands"
     },
     {
-        "code": 250,
+        "code": "250",
         "name": "France"
     },
     {
-        "code": 254,
+        "code": "254",
         "name": "French Guiana"
     },
     {
-        "code": 258,
+        "code": "258",
         "name": "French Polynesia"
     },
     {
-        "code": 262,
+        "code": "262",
         "name": "Djibouti"
     },
     {
-        "code": 266,
+        "code": "266",
         "name": "Gabon"
     },
     {
-        "code": 268,
+        "code": "268",
         "name": "Georgia"
     },
     {
-        "code": 270,
+        "code": "270",
         "name": "Gambia"
     },
     {
-        "code": 275,
+        "code": "275",
         "name": "State of Palestine"
     },
     {
-        "code": 276,
+        "code": "276",
         "name": "Germany"
     },
     {
-        "code": 288,
+        "code": "288",
         "name": "Ghana"
     },
     {
-        "code": 292,
+        "code": "292",
         "name": "Gibraltar"
     },
     {
-        "code": 296,
+        "code": "296",
         "name": "Kiribati"
     },
     {
-        "code": 300,
+        "code": "300",
         "name": "Greece"
     },
     {
-        "code": 304,
+        "code": "304",
         "name": "Greenland"
     },
     {
-        "code": 308,
+        "code": "308",
         "name": "Grenada"
     },
     {
-        "code": 312,
+        "code": "312",
         "name": "Guadeloupe"
     },
     {
-        "code": 316,
+        "code": "316",
         "name": "Guam"
     },
     {
-        "code": 320,
+        "code": "320",
         "name": "Guatemala"
     },
     {
-        "code": 324,
+        "code": "324",
         "name": "Guinea"
     },
     {
-        "code": 328,
+        "code": "328",
         "name": "Guyana"
     },
     {
-        "code": 332,
+        "code": "332",
         "name": "Haiti"
     },
     {
-        "code": 336,
+        "code": "336",
         "name": "Holy See"
     },
     {
-        "code": 340,
+        "code": "340",
         "name": "Honduras"
     },
     {
-        "code": 344,
+        "code": "344",
         "name": "China, Hong Kong Special Administrative Region"
     },
     {
-        "code": 348,
+        "code": "348",
         "name": "Hungary"
     },
     {
-        "code": 352,
+        "code": "352",
         "name": "Iceland"
     },
     {
-        "code": 356,
+        "code": "356",
         "name": "India"
     },
     {
-        "code": 360,
+        "code": "360",
         "name": "Indonesia"
     },
     {
-        "code": 364,
+        "code": "364",
         "name": "Iran (Islamic Republic of)"
     },
     {
-        "code": 368,
+        "code": "368",
         "name": "Iraq"
     },
     {
-        "code": 372,
+        "code": "372",
         "name": "Ireland"
     },
     {
-        "code": 376,
+        "code": "376",
         "name": "Israel"
     },
     {
-        "code": 380,
+        "code": "380",
         "name": "Italy"
     },
     {
-        "code": 384,
+        "code": "384",
         "name": "Cote d'Ivoire"
     },
     {
-        "code": 388,
+        "code": "388",
         "name": "Jamaica"
     },
     {
-        "code": 392,
+        "code": "392",
         "name": "Japan"
     },
     {
-        "code": 398,
+        "code": "398",
         "name": "Kazakhstan"
     },
     {
-        "code": 400,
+        "code": "400",
         "name": "Jordan"
     },
     {
-        "code": 404,
+        "code": "404",
         "name": "Kenya"
     },
     {
-        "code": 408,
+        "code": "408",
         "name": "Democratic People's Republic of Korea"
     },
     {
-        "code": 410,
+        "code": "410",
         "name": "Republic of Korea"
     },
     {
-        "code": 414,
+        "code": "414",
         "name": "Kuwait"
     },
     {
-        "code": 417,
+        "code": "417",
         "name": "Kyrgyzstan"
     },
     {
-        "code": 418,
+        "code": "418",
         "name": "Lao People's Democratic Republic"
     },
     {
-        "code": 419,
+        "code": "419",
         "name": "Latin America and the Caribbean"
     },
     {
-        "code": 422,
+        "code": "422",
         "name": "Lebanon"
     },
     {
-        "code": 426,
+        "code": "426",
         "name": "Lesotho"
     },
     {
-        "code": 428,
+        "code": "428",
         "name": "Latvia"
     },
     {
-        "code": 430,
+        "code": "430",
         "name": "Liberia"
     },
     {
-        "code": 434,
+        "code": "434",
         "name": "Libya"
     },
     {
-        "code": 438,
+        "code": "438",
         "name": "Liechtenstein"
     },
     {
-        "code": 440,
+        "code": "440",
         "name": "Lithuania"
     },
     {
-        "code": 442,
+        "code": "442",
         "name": "Luxembourg"
     },
     {
-        "code": 446,
+        "code": "446",
         "name": "China, Macao Special Administrative Region"
     },
     {
-        "code": 450,
+        "code": "450",
         "name": "Madagascar"
     },
     {
-        "code": 454,
+        "code": "454",
         "name": "Malawi"
     },
     {
-        "code": 458,
+        "code": "458",
         "name": "Malaysia"
     },
     {
-        "code": 462,
+        "code": "462",
         "name": "Maldives"
     },
     {
-        "code": 466,
+        "code": "466",
         "name": "Mali"
     },
     {
-        "code": 470,
+        "code": "470",
         "name": "Malta"
     },
     {
-        "code": 474,
+        "code": "474",
         "name": "Martinique"
     },
     {
-        "code": 478,
+        "code": "478",
         "name": "Mauritania"
     },
     {
-        "code": 480,
+        "code": "480",
         "name": "Mauritius"
     },
     {
-        "code": 484,
+        "code": "484",
         "name": "Mexico"
     },
     {
-        "code": 492,
+        "code": "492",
         "name": "Monaco"
     },
     {
-        "code": 496,
+        "code": "496",
         "name": "Mongolia"
     },
     {
-        "code": 498,
+        "code": "498",
         "name": "Republic of Moldova"
     },
     {
-        "code": 499,
+        "code": "499",
         "name": "Montenegro"
     },
     {
-        "code": 500,
+        "code": "500",
         "name": "Montserrat"
     },
     {
-        "code": 504,
+        "code": "504",
         "name": "Morocco"
     },
     {
-        "code": 508,
+        "code": "508",
         "name": "Mozambique"
     },
     {
-        "code": 512,
+        "code": "512",
         "name": "Oman"
     },
     {
-        "code": 516,
+        "code": "516",
         "name": "Namibia"
     },
     {
-        "code": 520,
+        "code": "520",
         "name": "Nauru"
     },
     {
-        "code": 524,
+        "code": "524",
         "name": "Nepal"
     },
     {
-        "code": 528,
+        "code": "528",
         "name": "Netherlands"
     },
     {
-        "code": 531,
+        "code": "531",
         "name": "Curaçao"
     },
     {
-        "code": 533,
+        "code": "533",
         "name": "Aruba"
     },
     {
-        "code": 534,
+        "code": "534",
         "name": "Sint Maarten (Dutch part)"
     },
     {
-        "code": 535,
+        "code": "535",
         "name": "Bonaire, Sint Eustatius and Saba"
     },
     {
-        "code": 540,
+        "code": "540",
         "name": "New Caledonia"
     },
     {
-        "code": 548,
+        "code": "548",
         "name": "Vanuatu"
     },
     {
-        "code": 554,
+        "code": "554",
         "name": "New Zealand"
     },
     {
-        "code": 558,
+        "code": "558",
         "name": "Nicaragua"
     },
     {
-        "code": 562,
+        "code": "562",
         "name": "Niger"
     },
     {
-        "code": 566,
+        "code": "566",
         "name": "Nigeria"
     },
     {
-        "code": 570,
+        "code": "570",
         "name": "Niue"
     },
     {
-        "code": 574,
+        "code": "574",
         "name": "Norfolk Island"
     },
     {
-        "code": 578,
+        "code": "578",
         "name": "Norway"
     },
     {
-        "code": 580,
+        "code": "580",
         "name": "Northern Mariana Islands"
     },
     {
-        "code": 583,
+        "code": "583",
         "name": "Micronesia (Federated States of)"
     },
     {
-        "code": 584,
+        "code": "584",
         "name": "Marshall Islands"
     },
     {
-        "code": 585,
+        "code": "585",
         "name": "Palau"
     },
     {
-        "code": 586,
+        "code": "586",
         "name": "Pakistan"
     },
     {
-        "code": 591,
+        "code": "591",
         "name": "Panama"
     },
     {
-        "code": 598,
+        "code": "598",
         "name": "Papua New Guinea"
     },
     {
-        "code": 600,
+        "code": "600",
         "name": "Paraguay"
     },
     {
-        "code": 604,
+        "code": "604",
         "name": "Peru"
     },
     {
-        "code": 608,
+        "code": "608",
         "name": "Philippines"
     },
     {
-        "code": 612,
+        "code": "612",
         "name": "Pitcairn"
     },
     {
-        "code": 616,
+        "code": "616",
         "name": "Poland"
     },
     {
-        "code": 620,
+        "code": "620",
         "name": "Portugal"
     },
     {
-        "code": 624,
+        "code": "624",
         "name": "Guinea Bissau"
     },
     {
-        "code": 626,
+        "code": "626",
         "name": "Timor-Leste"
     },
     {
-        "code": 630,
+        "code": "630",
         "name": "Puerto Rico"
     },
     {
-        "code": 634,
+        "code": "634",
         "name": "Qatar"
     },
     {
-        "code": 638,
+        "code": "638",
         "name": "Réunion"
     },
     {
-        "code": 642,
+        "code": "642",
         "name": "Romania"
     },
     {
-        "code": 643,
+        "code": "643",
         "name": "Russian Federation"
     },
     {
-        "code": 646,
+        "code": "646",
         "name": "Rwanda"
     },
     {
-        "code": 652,
+        "code": "652",
         "name": "Saint-Barthélemy"
     },
     {
-        "code": 654,
+        "code": "654",
         "name": "Saint Helena"
     },
     {
-        "code": 659,
+        "code": "659",
         "name": "Saint Kitts and Nevis"
     },
     {
-        "code": 660,
+        "code": "660",
         "name": "Anguilla"
     },
     {
-        "code": 662,
+        "code": "662",
         "name": "Saint Lucia"
     },
     {
-        "code": 663,
+        "code": "663",
         "name": "Saint Martin (French part)"
     },
     {
-        "code": 666,
+        "code": "666",
         "name": "Saint Pierre and Miquelon"
     },
     {
-        "code": 670,
+        "code": "670",
         "name": "Saint Vincent and the Grenadines"
     },
     {
-        "code": 674,
+        "code": "674",
         "name": "San Marino"
     },
     {
-        "code": 678,
+        "code": "678",
         "name": "Sao Tome and Principe"
     },
     {
-        "code": 682,
+        "code": "682",
         "name": "Saudi Arabia"
     },
     {
-        "code": 686,
+        "code": "686",
         "name": "Senegal"
     },
     {
-        "code": 688,
+        "code": "688",
         "name": "Serbia"
     },
     {
-        "code": 690,
+        "code": "690",
         "name": "Seychelles"
     },
     {
-        "code": 694,
+        "code": "694",
         "name": "Sierra Leone"
     },
     {
-        "code": 702,
+        "code": "702",
         "name": "Singapore"
     },
     {
-        "code": 703,
+        "code": "703",
         "name": "Slovakia"
     },
     {
-        "code": 704,
+        "code": "704",
         "name": "Viet Nam"
     },
     {
-        "code": 705,
+        "code": "705",
         "name": "Slovenia"
     },
     {
-        "code": 706,
+        "code": "706",
         "name": "Somalia"
     },
     {
-        "code": 710,
+        "code": "710",
         "name": "South Africa"
     },
     {
-        "code": 716,
+        "code": "716",
         "name": "Zimbabwe"
     },
     {
-        "code": 724,
+        "code": "724",
         "name": "Spain"
     },
     {
-        "code": 728,
+        "code": "728",
         "name": "South Sudan"
     },
     {
-        "code": 729,
+        "code": "729",
         "name": "Sudan"
     },
     {
-        "code": 732,
+        "code": "732",
         "name": "Western Sahara"
     },
     {
-        "code": 740,
+        "code": "740",
         "name": "Suriname"
     },
     {
-        "code": 744,
+        "code": "744",
         "name": "Svalbard and Jan Mayen Islands"
     },
     {
-        "code": 748,
+        "code": "748",
         "name": "Swaziland"
     },
     {
-        "code": 752,
+        "code": "752",
         "name": "Sweden"
     },
     {
-        "code": 756,
+        "code": "756",
         "name": "Switzerland"
     },
     {
-        "code": 760,
+        "code": "760",
         "name": "Syrian Arab Republic"
     },
     {
-        "code": 762,
+        "code": "762",
         "name": "Tajikistan"
     },
     {
-        "code": 764,
+        "code": "764",
         "name": "Thailand"
     },
     {
-        "code": 768,
+        "code": "768",
         "name": "Togo"
     },
     {
-        "code": 772,
+        "code": "772",
         "name": "Tokelau"
     },
     {
-        "code": 776,
+        "code": "776",
         "name": "Tonga"
     },
     {
-        "code": 780,
+        "code": "780",
         "name": "Trinidad and Tobago"
     },
     {
-        "code": 784,
+        "code": "784",
         "name": "United Arab Emirates"
     },
     {
-        "code": 788,
+        "code": "788",
         "name": "Tunisia"
     },
     {
-        "code": 792,
+        "code": "792",
         "name": "Turkey"
     },
     {
-        "code": 795,
+        "code": "795",
         "name": "Turkmenistan"
     },
     {
-        "code": 796,
+        "code": "796",
         "name": "Turks and Caicos Islands"
     },
     {
-        "code": 798,
+        "code": "798",
         "name": "Tuvalu"
     },
     {
-        "code": 800,
+        "code": "800",
         "name": "Uganda"
     },
     {
-        "code": 804,
+        "code": "804",
         "name": "Ukraine"
     },
     {
-        "code": 807,
+        "code": "807",
         "name": "The former Yugoslav Republic of Macedonia"
     },
     {
-        "code": 818,
+        "code": "818",
         "name": "Egypt"
     },
     {
-        "code": 826,
+        "code": "826",
         "name": "United Kingdom of Great Britain and Northern Ireland"
     },
     {
-        "code": 831,
+        "code": "831",
         "name": "Guernsey"
     },
     {
-        "code": 832,
+        "code": "832",
         "name": "Jersey"
     },
     {
-        "code": 833,
+        "code": "833",
         "name": "Isle of Man"
     },
     {
-        "code": 834,
+        "code": "834",
         "name": "United Republic of Tanzania"
     },
     {
-        "code": 840,
+        "code": "840",
         "name": "United States of America"
     },
     {
-        "code": 850,
+        "code": "850",
         "name": "United States Virgin Islands"
     },
     {
-        "code": 854,
+        "code": "854",
         "name": "Burkina Faso"
     },
     {
-        "code": 858,
+        "code": "858",
         "name": "Uruguay"
     },
     {
-        "code": 860,
+        "code": "860",
         "name": "Uzbekistan"
     },
     {
-        "code": 862,
+        "code": "862",
         "name": "Venezuela (Bolivarian Republic of)"
     },
     {
-        "code": 876,
+        "code": "876",
         "name": "Wallis and Futuna Islands"
     },
     {
-        "code": 882,
+        "code": "882",
         "name": "Samoa"
     },
     {
-        "code": 887,
+        "code": "887",
         "name": "Yemen"
     },
     {
-        "code": 894,
+        "code": "894",
         "name": "Zambia"
     }
 ]

@@ -11,6 +11,7 @@ import django_filters
 
 from .models import Project, Organisation, Category, ProjectUpdate
 from .iso3166 import CONTINENTS
+from .m49 import M49_CODES, M49_HIERARCHY
 
 from akvo.codelists.models import SectorCategory
 from akvo.utils import codelist_choices
@@ -35,18 +36,34 @@ def remove_empty_querydict_items(request_get):
     return getvars
 
 
+def convert_m49(queryset, value):
+    if not value:
+        return queryset
+
+    list_of_countries = []
+    current_list = M49_HIERARCHY[int(value)]
+    while len(current_list) > 0:
+        element = current_list.pop(0)
+        if isinstance(element, basestring):
+            list_of_countries.append(element.lower())
+        else:
+            current_list = M49_HIERARCHY[int(element)] + current_list
+
+    return Project.objects.filter(primary_location__country__iso_code__in=list_of_countries)
+
+
 class ProjectFilter(django_filters.FilterSet):
-    category =  django_filters.ChoiceFilter(
+    category = django_filters.ChoiceFilter(
         choices=([('', 'All')] +
                  list(Category.objects.all().values_list('id', 'name',
                                                          flat=False)) ),
         label='category',
         name='categories__id')
 
-    continent = django_filters.ChoiceFilter(
-        choices=ANY_CHOICE + CONTINENTS,
+    location = django_filters.ChoiceFilter(
+        choices=M49_CODES,
         label='location',
-        name='primary_location__country__continent_code')
+        action=convert_m49)
 
     sector = django_filters.ChoiceFilter(
         initial='All',
@@ -76,7 +93,7 @@ class ProjectFilter(django_filters.FilterSet):
 
     class Meta:
         model = Project
-        fields = ['status', 'continent', 'organisation', 'category',
+        fields = ['status', 'location', 'organisation', 'category',
                   'sector', 'title', ]
 
 
