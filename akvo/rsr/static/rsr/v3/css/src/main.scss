@@ -148,9 +148,11 @@ a.btn-primary, button.btn-primary {
 .tt-input, .tt-hint {
     border-radius: 5px 0 0 5px;
 }
+
 .input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
     border-radius: 5px 0 0 5px;
 }
+
 span.twitter-typeahead .tt-dropdown-menu {
     position: absolute;
     top: 100%;
@@ -385,7 +387,7 @@ nav.navbar-fixed-top {
 
                     &.active {
                         background: none;
-                        color:$anchorLinkHover;
+                        color: $anchorLinkHover;
                     }
                 }
             }
@@ -451,8 +453,8 @@ nav.navbar-fixed-top {
 
 #profile {
     .usrAvatar {
-        background-color: rgba($akvoBlack,0);
-        padding:10px 0 10px 0;
+        background-color: rgba($akvoBlack, 0);
+        padding: 10px 0 10px 0;
     }
 }
 
@@ -622,7 +624,7 @@ h4.detailedInfo {
 }
 
 .paginationWrap {
-    background: rgba(58,58,58, 0.05);
+    background: rgba(58, 58, 58, 0.05);
     @include border-radius(3px);
     margin-bottom: 15px;
     .pagination {
@@ -829,8 +831,8 @@ h4.detailedInfo {
                     color: rgba($akvoBlack, 0.5);
                 }
                 &:hover {
-                    background: darken(rgba($rsrBlue, 0.10), 0%);
-                    border:thin solid rgba($rsrBlue, 0.30);
+                    background: darken(rgba($rsrBlue, 0.1), 0%);
+                    border: thin solid rgba($rsrBlue, 0.3);
                 }
             }
         }
@@ -867,8 +869,8 @@ h4.detailedInfo {
                     color: rgba($akvoBlack, 0.5);
                 }
                 &:hover {
-                    background: darken(rgba($rsrGreen, 0.10), 0%);
-                    border:thin solid rgba($rsrGreen, 0.35);
+                    background: darken(rgba($rsrGreen, 0.1), 0%);
+                    border: thin solid rgba($rsrGreen, 0.35);
                 }
                 .excerpt {
 
@@ -917,8 +919,8 @@ h4.detailedInfo {
                     border: thin solid rgba($akvoTvRed, 0.15);
                 }
                 &:hover {
-                    background: darken(rgba($akvoTvRed, 0.10), 0%);
-                    border:thin solid rgba($akvoTvRed, 0.35);
+                    background: darken(rgba($akvoTvRed, 0.1), 0%);
+                    border: thin solid rgba($akvoTvRed, 0.35);
                 }
                 img {
                     @include bw;
@@ -942,11 +944,12 @@ header {
         background: lighten($akvoPurple, 65%);
         border-bottom: 1px solid rgb(248, 248, 248);
         margin-bottom: 15px;
+        @include box-shadow(inset 0 2px 6px -5px rgba($akvoBlack, 0.5));
         h1 {
             margin-top: 10px;
             margin-bottom: 0;
             font-size: 1.5em;
-            a{
+            a {
                 color: $rsrBlue;
                 &:hover {
                     color: $rsrBlue;
@@ -1009,7 +1012,8 @@ div.projectTopRow {
     background: rgba(245, 245, 245, 0.5);
     margin-top: 1px;
     margin-bottom: 20px;
-    border-bottom: 1px solid rgba($akvoBlack, 0.1);
+    /*border-bottom: 1px solid rgba($akvoBlack, 0.1);*/
+    box-shadow: 0 3px 6px rgba($akvoBlack, 0.1);
     #carousel {
         padding: 15px 0;
         margin-left: -15px;
@@ -1018,7 +1022,7 @@ div.projectTopRow {
         }
 
         .carousel-indicators {
-            bottom: 35px;
+            bottom: -5px;
             li {
                 border-color: $anchorLink;
                 &.active {
@@ -1037,7 +1041,7 @@ div.projectTopRow {
                 }
                 .carousel-caption {
                     background-color: rgba(255, 255, 255, 0.6);
-                    border:thin solid rgba(255, 255, 255, 0.8);
+                    border: thin solid rgba(255, 255, 255, 0.8);
                     bottom: 0px;
                     padding-top: 10px;
                     padding-bottom: 10px;
@@ -1046,8 +1050,8 @@ div.projectTopRow {
                         color: $rsrBlue;
                     }
                     p {
-                        padding-top: 20px;
-                        color:$rsrBlue;
+                        margin-bottom: 20px;
+                        color: $rsrBlue;
                     }
                 }
             }
@@ -1155,14 +1159,14 @@ div.projectTopRow {
 
 div.timelineBlock {
     margin: 15px auto 25px;
-    display:none;
+    display: none;
     #timeline {
         height: 200px;
     }
 }
 
 div.textBlock {
-    margin:10px auto;
+    margin: 10px auto;
     .panel {
         border: 1px solid rgba(235, 235, 235, 0.5);
         .panel-heading {
@@ -1189,20 +1193,20 @@ div.textBlock {
         }
         .updateLinkTitle {
             display: block;
-            color:$rsrGreen;
-            margin-bottom:5px;
+            color: $rsrGreen;
+            margin-bottom: 5px;
             i {
-                margin-right:5px;
+                margin-right: 5px;
             }
             &:hover {
-                color:$anchorLinkHover;
+                color: $anchorLinkHover;
             }
         }
     }
 }
 
 #project-footer {
-    margin:25px auto -16px auto;
+    margin: 25px auto -16px auto;
     padding-top: 30px;
     padding-bottom: 30px;
     background: lighten($akvoBlack, 83%);
@@ -1210,7 +1214,7 @@ div.textBlock {
         color: rgba($akvoPurple, 1);
     }
     #project-footer-right {
-        border:1px solid rgba($akvoBlack, 0.05);
+        border: 1px solid rgba($akvoBlack, 0.05);
         padding: 1.5em;
     }
 }
@@ -1283,19 +1287,19 @@ div.textBlock {
         }
     }
     h1 {
-        margin-top:0;
-        margin-bottom:20px;
+        margin-top: 0;
+        margin-bottom: 20px;
         color: rgba($akvoTvRed, 1);
-        padding-bottom:10px;
-        border-bottom:1px solid rgba($akvoTvRed,0.05);
-        position:relative;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba($akvoTvRed, 0.05);
+        position: relative;
         i {
-            font-size:0.75em;
-            top:-5px;
+            font-size: 0.75em;
+            top: -5px;
         }
     }
     .orgLogo {
-        padding:10px 0;
+        padding: 10px 0;
         img {
             width: 35%;
             margin-left: 5px;
@@ -1350,17 +1354,17 @@ div.textBlock {
 /*   Version Banner */
 .versionBanner {
     box-sizing: border-box;
-    position:fixed;
-    max-height:50px;
-    bottom:0px;
-    right:0px;
+    position: fixed;
+    max-height: 50px;
+    bottom: 0px;
+    right: 0px;
     background-color: red;
     @include border-radius(3px 0 0 0);
     background-color: lighten($anchorLinkHover, 40%);
-    border-top:1px solid rgba($anchorLinkHover,0.5);
-    border-left:1px solid rgba($anchorLinkHover,0.5);
-    box-shadow: -2px -3px 6px rgba($akvoBlack,0.2);
+    border-top: 1px solid rgba($anchorLinkHover, 0.5);
+    border-left: 1px solid rgba($anchorLinkHover, 0.5);
+    box-shadow: -2px -3px 6px rgba($akvoBlack, 0.2);
     div {
-        padding:5px 10px;
+        padding: 5px 10px;
     }
 }
