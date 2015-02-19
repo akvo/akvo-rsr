@@ -10,7 +10,6 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import django_filters
 
 from .models import Project, Organisation, Category, ProjectUpdate
-from .iso3166 import CONTINENTS
 from .m49 import M49_CODES, M49_HIERARCHY
 
 from akvo.codelists.models import SectorCategory
@@ -49,7 +48,7 @@ def convert_m49(queryset, value):
         else:
             current_list = M49_HIERARCHY[int(element)] + current_list
 
-    return Project.objects.filter(primary_location__country__iso_code__in=list_of_countries)
+    return queryset.model.objects.filter(primary_location__country__iso_code__in=list_of_countries)
 
 
 class ProjectFilter(django_filters.FilterSet):
@@ -99,10 +98,10 @@ class ProjectFilter(django_filters.FilterSet):
 
 class ProjectUpdateFilter(django_filters.FilterSet):
 
-    continent = django_filters.ChoiceFilter(
-        choices=ANY_CHOICE + CONTINENTS,
+    location = django_filters.ChoiceFilter(
+        choices=M49_CODES,
         label='location',
-        name='primary_location__country__continent_code')
+        action=convert_m49)
 
     title = django_filters.CharFilter(
         lookup_type='icontains',
@@ -111,15 +110,15 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
     class Meta:
         model = ProjectUpdate
-        fields = ['continent', 'title', ]
+        fields = ['location', 'title', ]
 
 
 class OrganisationFilter(django_filters.FilterSet):
 
-    continent = django_filters.ChoiceFilter(
-        choices=ANY_CHOICE + CONTINENTS,
+    location = django_filters.ChoiceFilter(
+        choices=M49_CODES,
         label='location',
-        name='primary_location__country__continent_code')
+        action=convert_m49)
 
     name = django_filters.CharFilter(
         lookup_type='icontains',
@@ -128,4 +127,4 @@ class OrganisationFilter(django_filters.FilterSet):
 
     class Meta:
         model = ProjectUpdate
-        fields = ['continent', 'name', ]
+        fields = ['location', 'name', ]
