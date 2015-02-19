@@ -30,11 +30,12 @@
                 {% endfor %}
                 </tbody>
             </table>
-        </div>
-          <div class="row center-text">
+            <div class="row center-text">
               <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
               {% include 'navigation/pagination.html' %}
           </div>
+        </div>
+
     {% else %}
         <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">You have not placed any updates yet.</p>
     {% endif %}

@@ -55,12 +55,13 @@
       </tr>
     {% endfor %}
   </table>
-  </div>
-  <div class="container">
-  <div class="row center-text">
+    <div class="row center-text">
       <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
       {% include 'navigation/pagination.html' %}
   </div>
+
+  </div>
+  <div class="container">
   {% else %}
       <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
       {% if not organisations %}

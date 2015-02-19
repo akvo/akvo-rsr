@@ -1092,14 +1092,13 @@ div.textBlock {
   max-height: 50px;
   bottom: 0px;
   right: 0px;
-  background-color: red;
   -moz-border-radius: 3px 0 0 0;
   -o-border-radius: 3px 0 0 0;
   -webkit-border-radius: 3px 0 0 0;
   border-radius: 3px 0 0 0;
-  background-color: #ffddcc;
-  border-top: 1px solid rgba(255, 85, 0, 0.5);
-  border-left: 1px solid rgba(255, 85, 0, 0.5);
+  background-color: white;
+  border-top: 1px solid rgba(255, 85, 0, 0.6);
+  border-left: 1px solid rgba(255, 85, 0, 0.6);
   box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2); }
   .versionBanner div {
     padding: 5px 10px; }

@@ -1348,11 +1348,10 @@ div.textBlock {
     max-height:50px;
     bottom:0px;
     right:0px;
-    background-color: red;
     @include border-radius(3px 0 0 0);
-    background-color: lighten($anchorLinkHover, 40%);
-    border-top:1px solid rgba($anchorLinkHover,0.5);
-    border-left:1px solid rgba($anchorLinkHover,0.5);
+    background-color: rgba(white, 1);
+    border-top:1px solid rgba($anchorLinkHover,0.6);
+    border-left:1px solid rgba($anchorLinkHover,0.6);
     box-shadow: -2px -3px 6px rgba($akvoBlack,0.2);
     div {
         padding:5px 10px;
