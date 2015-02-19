@@ -145,10 +145,10 @@ a.btn-primary, button.btn-primary {
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 .tt-input, .tt-hint {
-    border-radius: 5px 0 0 5px;
+    border-radius: 6px 0 0 6px;
 }
 .input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
-    border-radius: 5px 0 0 5px;
+    border-radius: 6px 0 0 6px;
 }
 span.twitter-typeahead .tt-dropdown-menu {
     position: absolute;
@@ -1252,9 +1252,10 @@ div.textBlock {
         background: rgba($akvoBlack, 0.05);
     }
     .orgDescr {
-        background-color: rgba(218,218,218, 0.4);
+        background-color: rgba($akvoTvRed, 0.05);
         p {
             padding-left: 20px;
+            color: rgba($akvoBlack, 0.45);
         }
     }
     h1 {
@@ -1277,8 +1278,11 @@ div.textBlock {
         }
     }
     .orgDetails {
-        background: rgba(white, 0.45);
+        background: rgba(white, 0.65);
         @include border-radius(5px);
+        @include responsive(small-max-screens) {
+            padding: 10px 15px;
+        }
     }
 }
 
