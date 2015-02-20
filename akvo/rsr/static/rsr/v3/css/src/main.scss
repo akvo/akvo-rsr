@@ -466,7 +466,7 @@ nav.navbar-fixed-top {
         p{
         @include responsive(small-max-screens) {
             max-width:120px;
-                @include noWrapText;
+                @include noWrapTxt;
             }
         }
     }
@@ -493,7 +493,7 @@ nav.navbar-fixed-top {
             width: 95%;
             padding:2px 5%;
             float: none;
-            margin: 2px auto;
+            margin: 2px 0 2px 0;
             display: block;
         }
     }

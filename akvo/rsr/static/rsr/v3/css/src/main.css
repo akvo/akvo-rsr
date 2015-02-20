@@ -432,6 +432,13 @@ nav.navbar-fixed-top {
   background-color: rgba(32, 32, 36, 0);
   padding: 10px 0 10px 0; }
 
+@media only screen and (max-width: 768px) {
+  .table-responsive .media .media-body p {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; } }
+
 .twoColumns {
   width: 100%;
   display: block; }
@@ -458,7 +465,8 @@ nav.navbar-fixed-top {
         width: 95%;
         padding: 2px 5%;
         float: none;
-        margin: 2px auto; } }
+        margin: 2px 0 2px 0;
+        display: block; } }
 
 #organisations {
   background: rgba(255, 85, 0, 0.05);
