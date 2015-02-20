@@ -49,8 +49,12 @@ a, a:link, a:visited {
 }
 
 /****************** Miscellanous Typography ********************/
+
 img {
     max-width: 100%;
+    .gmnoprint  & {
+        max-width: none; 
+    }
 }
 
 .noItem {
@@ -701,6 +705,19 @@ h4.detailedInfo {
                             color: $anchorLinkHover;
                         }
                     }
+                    @include responsive(small-max-screens) {
+                        a {
+                            color: $anchorLink;
+                            padding-top:10px;
+                            padding-bottom:10px;
+                        }
+                        &.disabled {
+                            a {
+                                font-weight: bold;
+                                color: $anchorLinkHover;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -708,7 +725,7 @@ h4.detailedInfo {
 }
 
 #sidebar-wrapper {
-    z-index: 1000;
+    z-index: 99999;
     position: absolute;
     left: 200px;
     width: 0;
@@ -721,6 +738,10 @@ h4.detailedInfo {
     .showFilters {
         &:hover {
             color: $anchorLinkHover;
+        }
+        @include responsive(small-max-screens) {
+            padding-top:20px; 
+            padding-bottom:20px; 
         }
     }
     div#filter {
