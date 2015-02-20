@@ -30,7 +30,7 @@ class TypeaheadOrganisationSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            'long_name',
+            # 'long_name',
         )
 
 
@@ -40,8 +40,8 @@ class TypeaheadProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = (
             'id',
-            'project_plan_summary',
-            'subtitle',
+            # 'project_plan_summary',
+            # 'subtitle',
             'title',
         )
 
