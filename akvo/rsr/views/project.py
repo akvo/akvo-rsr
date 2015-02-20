@@ -317,7 +317,6 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
 
     return render(request, 'update_add.html', context)
 
-
 def search(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'project_search.html', context)
@@ -329,3 +328,28 @@ def finance(request, project_id):
         'project': project
     }
     return render(request, 'project_finance.html', context)
+
+
+def donations_disabled(project):
+    return not project.donate_button
+
+
+def can_accept_donations(project):
+    if project in Project.objects.active() and project.funds_needed > 0:
+        return True
+    else:
+        return False
+
+
+def donate(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    if donations_disabled(project):
+        raise Http404
+    if not can_accept_donations(project):
+        return redirect("project-main", project_id=project.id)
+
+    context = {
+        'project': project
+    }
+    return render(request, 'project_donate.html', context)
