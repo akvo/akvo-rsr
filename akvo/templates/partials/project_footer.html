@@ -29,7 +29,7 @@
             </div>
             <div class="col-sm-6 col-md-3" id="project-footer-right">
                 <p>
-                    <a href="#"><i class="fa fa-rss"></i> {% trans "Subscribe to RSS feed" %}</a>
+                    <a target="_blank" href="{% url 'rss_project_updates' project.id %}"><i class="fa fa-rss"></i> {% trans "Subscribe to RSS feed" %}</a>
                 </p>
             </div>
         </div>
