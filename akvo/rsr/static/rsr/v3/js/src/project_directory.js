@@ -33,11 +33,13 @@ $(document).ready(function() {
 
   // setup Bloodhound for typeahead
   var organisations = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name',
-                                                         'long_name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'
+                                                         // 'long_name'
+                                                        ),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
       url: '/rest/v1/typeaheads/organisations?format=json',
+      // url: '/static/rsr/v3/json/organisations.json',
       thumbprint: AKVO_RSR.typeahead.thumbs.numberOfOrgs,
       filter: function(response) {
         return response.results;
@@ -55,16 +57,17 @@ $(document).ready(function() {
   });
 
   var projects = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('background',
-                                                         'current_image_credit',
-                                                         'current_status',
-                                                         'project_plan',
-                                                         'project_plan_summary',
-                                                         'subtitle',
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace(// 'background',
+                                                         // 'current_image_credit',
+                                                         // 'current_status',
+                                                         // 'project_plan',
+                                                         // 'project_plan_summary',
+                                                         // 'subtitle',
                                                          'title'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
       url: '/rest/v1/typeaheads/projects?format=json',
+      // url: '/static/rsr/v3/json/projects.json',
       thumbprint: AKVO_RSR.typeahead.thumbs.numberOfProjects,
 
       filter: function(response) {
@@ -120,7 +123,8 @@ $(document).ready(function() {
       source: projects.ttAdapter(),
       templates: {
         header: '<h3 class="dd-category">Projects</h3>',
-        suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %></p><p><%= subtitle %></p></a>')
+        suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %></p></a>')
+        // suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %></p><p><%= subtitle %></p></a>')
        }
     },
     {
