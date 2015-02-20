@@ -48,6 +48,9 @@ urlpatterns = patterns(
     url(r'^project/(?P<project_id>\d+)/finance/$',
         'akvo.rsr.views.project.finance', name='project-finance'),
 
+    url(r'^project/(?P<project_id>\d+)/donate/$',
+        'akvo.rsr.views.project.donate', name='project-donate'),
+
     # Organisations
     url(r'^organisations/$',
         'akvo.rsr.views.organisation.directory',
