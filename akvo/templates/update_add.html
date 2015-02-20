@@ -7,18 +7,13 @@
 {% block maincontent %}
 <article class="touch-navbar">
     {% include "partials/project_header.html" %}
-
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-7 col-xs-12" id="update">
                 <h1>{% if edit_mode %}{% trans 'Edit an update' %}{% else %}{% trans 'Add an update' %}{% endif %}</h1>
                 {% if edit_mode %}
                     <p class="small">You posted this update at {{ update.time_gmt|date:"H:i T"}}. You have until {{ update.expires_at|date:"H:i T" }} to save your edits.</p>
                 {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12" id="update">
                 {% if update and update.photo and edit_mode %}
                     <p>{% img update 400 300 update.title %}</p>
                 {% endif %}
@@ -35,33 +30,22 @@
                 </form>
             </div>
             {% if updates %}
-            <div class="col-lg-5 col-md-5 hidden-sm hidden-xs">
-                <h2>Previous updates of this project</h2>
-                {% for u in updates %}
-                {% if update and not u.id = update.id %}
-                <div class="row">
-                    <div class="col-lg-5 col-md-5 thumbImg">
-                        <a href="{% url 'update-main' u.project.id u.id %}">
-                          {% img u 160 160 u.title %}
+            <div class="col-md-5 hidden-sm hidden-xs udpateComponent">
+                <h3>Previous updates of this project</h3>
+                {% for update in updates %}
+                <div class="row updateLine">
+                    <div class="col-lg-2 col-md-2 thumbImg">
+                        <a href="{% url 'update-main' update.project.id update.id %}">
+                          {% img update 80 80 update.title %}
                         </a>
                     </div>
-                    <div class="col-lg-7 col-md-7">
-                        <h4><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h4>
-                        <p class="small">
-                            <span class="glyphicon glyphicon-user"></span> {{u.user.first_name}} {{u.user.last_name}}<br>
-                            {% if u.primary_location.country %}
-                            <span class="glyphicon glyphicon-map-marker"></span> {{u.primary_location.country}}, {{u.primary_location.country.continent}} <br>
-                            {% endif %}
-                            <span class="glyphicon glyphicon-calendar"></span> {{u.created_at|date:"d-M-Y"}}<br>
-                        </p>
+                    <div class="col-lg-10 col-md-10">
+                      <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
                     </div>
                 </div>
-                <br>
-                {% endif %}
                 {% endfor %}
             </div>
             {% endif %}
-        </div>
     </div>
 </article>
 

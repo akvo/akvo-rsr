@@ -119,7 +119,7 @@ $titleFont:  'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 /* Media Queries
   ========================================================================== */
-
+$xtra-small: 568px;
 $width-small:  768px;
 $width-medium: 992px;
 $width-large:  1200px;
@@ -142,6 +142,9 @@ $width-large:  1200px;
   }
   @else if $width == small-max-screens {
     @media only screen and (max-width: $width-small) { @content; }
+  }
+  @else if $width == xtra-small-max-screens {
+    @media only screen and (max-width: $xtra-small) { @content; }
   }
 }
 

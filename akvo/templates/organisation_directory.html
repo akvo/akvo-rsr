@@ -56,7 +56,9 @@
   <div class="row center-text">
         <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} organisations</p>
   </div>
+  <div class="row">
         {% include 'navigation/pagination.html' %}
+  </div>
 </div>
 
 <section class="main-list organisations">
@@ -96,7 +98,9 @@
 </section>
 </div>
 <div class="container">
+  <div class="row">
     {% include 'navigation/pagination.html' %}
+  </div>
 </div>
 {% endblock %}
 

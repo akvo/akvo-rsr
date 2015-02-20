@@ -57,8 +57,10 @@
   <div class="row center-text">
         <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
   </div>
+  <div class="row">
         {% include 'navigation/pagination.html' %}
   </div>
+</div>
 
     <section class="main-list updates">
       <ul class="container">
@@ -101,7 +103,9 @@
     </section>
 
 <div class="container">
-            {% include 'navigation/pagination.html' %}
+    <div class="row">
+        {% include 'navigation/pagination.html' %}
+    </div>
 </div>
 {% endblock %}
 
