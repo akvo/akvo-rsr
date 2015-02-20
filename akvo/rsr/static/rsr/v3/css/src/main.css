@@ -432,6 +432,13 @@ nav.navbar-fixed-top {
   background-color: rgba(32, 32, 36, 0);
   padding: 10px 0 10px 0; }
 
+@media only screen and (max-width: 768px) {
+  .table-responsive .media .media-body p {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; } }
+
 .twoColumns {
   width: 100%;
   display: block; }
@@ -458,7 +465,8 @@ nav.navbar-fixed-top {
         width: 95%;
         padding: 2px 5%;
         float: none;
-        margin: 2px auto; } }
+        margin: 2px 0 2px 0;
+        display: block; } }
 
 #organisations {
   background: rgba(255, 85, 0, 0.05);
@@ -567,8 +575,7 @@ h4.detailedInfo {
   height: 400px; }
   @media only screen and (max-width: 768px) {
     #map {
-      height: 450px;
-      padding-top: 0px; } }
+      display: none; } }
 
 .searchContainer {
   position: relative; }
@@ -756,7 +763,7 @@ h4.detailedInfo {
     margin-bottom: 0; }
   .main-list.projects ul li:nth-child(2n+1) {
     background: rgba(30, 28, 79, 0.05);
-    border: thin solid rgba(44, 42, 116, 0.2); }
+    border: thin solid rgba(44, 42, 116, 0.05); }
   .main-list.projects ul li .projectLocation {
     color: rgba(32, 32, 36, 0.5); }
   .main-list.projects ul li:hover {
@@ -781,7 +788,7 @@ h4.detailedInfo {
       color: #ff5500; }
   .main-list.updates ul li:nth-child(2n+1) {
     background: rgba(0, 116, 109, 0.05);
-    border: thin solid rgba(0, 167, 157, 0.15); }
+    border: thin solid rgba(0, 167, 157, 0.1); }
   .main-list.updates ul li .projectLocation {
     color: rgba(32, 32, 36, 0.5); }
   .main-list.updates ul li:hover {
@@ -812,7 +819,7 @@ h4.detailedInfo {
       color: #ff5500; }
   .main-list.organisations ul li:nth-child(2n+1) {
     background: rgba(238, 49, 36, 0.05);
-    border: thin solid rgba(238, 49, 36, 0.15); }
+    border: thin solid rgba(238, 49, 36, 0.05); }
   .main-list.organisations ul li:hover {
     background: rgba(238, 49, 36, 0.1);
     border: thin solid rgba(238, 49, 36, 0.35); }
@@ -1041,6 +1048,23 @@ div.textBlock {
       div.textBlock .udpateComponent .updateLinkTitle:hover {
         color: #ff5500; }
 
+.udpateComponent {
+  padding-top: 10px;
+  padding-bottom: 15px;
+  background: #fff6f1; }
+  .udpateComponent h4 {
+    margin-bottom: 10px; }
+  .udpateComponent .updateLinkTitle {
+    display: block;
+    color: #00a79d;
+    margin-bottom: 5px; }
+    .udpateComponent .updateLinkTitle i {
+      margin-right: 5px; }
+    .udpateComponent .updateLinkTitle:hover {
+      color: #ff5500; }
+  .udpateComponent .updateLine {
+    margin-bottom: 5px; }
+
 #project-footer {
   margin: 25px auto -16px auto;
   padding-top: 30px;
@@ -1105,7 +1129,7 @@ div.textBlock {
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
 .organisationDetail .orgDescr {
-  background-color: rgba(218, 218, 218, 0.4); }
+  background-color: rgba(244, 116, 107, 0.1); }
   .organisationDetail .orgDescr p {
     padding-left: 20px; }
 .organisationDetail h1 {
