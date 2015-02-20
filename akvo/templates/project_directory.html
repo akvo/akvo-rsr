@@ -101,7 +101,9 @@
             {% endif %}
             <div class="visible-xs-block visible-sm">
               <p class="small">
-              <span class="detailedInfo">{% trans "Sectors" %}</span> ? <a href="#" class="small">+4 more</a><br>
+              {% if p.sector_categories %}
+              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}<br>
+              {% endif %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
               {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
