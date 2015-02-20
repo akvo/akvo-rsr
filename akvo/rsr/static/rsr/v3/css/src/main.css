@@ -70,6 +70,8 @@ a, a:link, a:visited {
 /****************** Miscellanous Typography ********************/
 img {
   max-width: 100%; }
+  .gmnoprint img {
+    max-width: none; }
 
 .noItem {
   color: rgba(44, 42, 116, 0.2);
@@ -635,9 +637,17 @@ h4.detailedInfo {
     .paginationWrap .sortList .dropdown .dropdown-menu li.disabled a {
       font-weight: bold;
       color: #ff5500; }
+    @media only screen and (max-width: 768px) {
+      .paginationWrap .sortList .dropdown .dropdown-menu li a {
+        color: #00aaff;
+        padding-top: 10px;
+        padding-bottom: 10px; }
+      .paginationWrap .sortList .dropdown .dropdown-menu li.disabled a {
+        font-weight: bold;
+        color: #ff5500; } }
 
 #sidebar-wrapper {
-  z-index: 1000;
+  z-index: 99999;
   position: absolute;
   left: 200px;
   width: 0;
@@ -658,6 +668,10 @@ h4.detailedInfo {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); }
   #sidebar-wrapper .showFilters:hover {
     color: #ff5500; }
+  @media only screen and (max-width: 768px) {
+    #sidebar-wrapper .showFilters {
+      padding-top: 20px;
+      padding-bottom: 20px; } }
   #sidebar-wrapper div#filter {
     padding: 5px 15px 15px 15px; }
     #sidebar-wrapper div#filter div .btn-group {
