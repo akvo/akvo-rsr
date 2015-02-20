@@ -344,10 +344,8 @@ def can_accept_donations(project):
 def donate(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
-    if donations_disabled(project):
+    if not project.accepts_donations():
         raise Http404
-    if not can_accept_donations(project):
-        return redirect("project-main", project_id=project.id)
 
     context = {
         'project': project
