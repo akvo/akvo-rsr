@@ -10,6 +10,8 @@ from akvo.api.urls import named_api
 from akvo.utils import check_auth_groups
 from .rsr.views import widgets as widget_views
 
+from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
+
 from django.conf import settings
 from django.conf.urls import (include, patterns, url)
 from django.contrib import admin
@@ -143,6 +145,20 @@ urlpatterns = patterns(
     url(r'^widgets/project-small/random/$',
         widget_views.RandomProjectSmallView.as_view(),
         name="widget_random_project_small"),
+
+    # RSS
+    url(r'^rss/updates/(?P<project_id>\d+)/$',
+        ProjectUpdates(),
+        name="rss_project_updates"),
+
+    url(r'^rss/org-updates/(?P<org_id>\d+)/$',
+        OrganisationUpdates(),
+        name="rss_org_updates"),
+
+    url(r'^rss/all-updates/$',
+        AllProjectUpdates(),
+        name="rss_all_updates"),
+
 )
 
 # TastyPie API
