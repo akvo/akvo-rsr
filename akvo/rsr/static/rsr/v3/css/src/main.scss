@@ -460,6 +460,18 @@ nav.navbar-fixed-top {
         padding: 10px 0 10px 0;
     }
 }
+.table-responsive {
+    .media {
+        .media-body {
+        p{
+        @include responsive(small-max-screens) {
+            max-width:120px;
+                @include noWrapText;
+            }
+        }
+    }
+    }
+}
 .twoColumns {
     width: 100%;
     display: block;
@@ -482,9 +494,9 @@ nav.navbar-fixed-top {
             padding:2px 5%;
             float: none;
             margin: 2px auto;
-            }
+            display: block;
         }
-    
+    }
 }
 
 #organisations {
