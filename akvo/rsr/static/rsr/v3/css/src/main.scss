@@ -461,20 +461,32 @@ nav.navbar-fixed-top {
     }
 }
 .twoColumns {
+    width: 100%;
+    display: block;
     a {
-        width:40%;
+        width:38%;
+        padding:2px 1%;
         float:left;
         text-align: center;
         background:rgba($anchorLink,0.2);
         color:$anchorLink;
         margin:2px 5%;
-        @include border-radius(3px); 
+        @include border-radius(3px);
+        @include noWrapTxt;
         &:hover {
             background:$anchorLinkHover;
             color:white;
         }
-    }
+        @include responsive(small-max-screens) {
+            width: 95%;
+            padding:2px 5%;
+            float: none;
+            margin: 2px auto;
+            }
+        }
+    
 }
+
 #organisations {
     background: darken(rgba($anchorLinkHover, 0.05), 0);
     padding-bottom: 15px;
