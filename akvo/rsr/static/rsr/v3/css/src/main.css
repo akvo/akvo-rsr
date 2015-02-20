@@ -432,12 +432,17 @@ nav.navbar-fixed-top {
   background-color: rgba(32, 32, 36, 0);
   padding: 10px 0 10px 0; }
 
-@media only screen and (max-width: 768px) {
-  .table-responsive .media .media-body p {
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap; } }
+.table-responsive .media .media-body p {
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+  @media only screen and (max-width: 768px) {
+    .table-responsive .media .media-body p {
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; } }
 
 .twoColumns {
   width: 100%;
