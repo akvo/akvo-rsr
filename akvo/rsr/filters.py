@@ -48,7 +48,7 @@ def convert_m49(queryset, value):
         else:
             current_list = M49_HIERARCHY[int(element)] + current_list
 
-    return queryset.model.objects.filter(primary_location__country__iso_code__in=list_of_countries)
+    return queryset.filter(primary_location__country__iso_code__in=list_of_countries)
 
 
 class ProjectFilter(django_filters.FilterSet):
@@ -103,6 +103,22 @@ class ProjectUpdateFilter(django_filters.FilterSet):
         label='location',
         action=convert_m49)
 
+    def get_orgs():
+        orgs = list(Organisation.objects.all().values_list('id', 'name',
+                                                           flat=False))
+        return ([('', 'All')] + orgs)
+
+    partner = django_filters.ChoiceFilter(
+        choices=get_orgs(),
+        label='partner',
+        name='user__organisations__id')
+
+    sector = django_filters.ChoiceFilter(
+        initial='All',
+        choices=([('', 'All')] + sectors()),
+        label='sector',
+        name='project__sectors__sector_code')
+
     title = django_filters.CharFilter(
         lookup_type='icontains',
         label='Search',
@@ -110,7 +126,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
     class Meta:
         model = ProjectUpdate
-        fields = ['location', 'title', ]
+        fields = ['location', 'partner', 'sector', 'title', ]
 
 
 class OrganisationFilter(django_filters.FilterSet):

@@ -8,7 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 M49_CODES = (
     (
-        u"1",
+        u"",
         u"World"
     ),
     (
