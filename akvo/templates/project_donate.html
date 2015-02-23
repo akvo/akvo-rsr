@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load compressed i18n rsr_utils %}
+
+{% block title %}{{project.title}}{% endblock title%}
+
+{% block maincontent %}
+<article class="touch-navbar project-container">
+    {% include "partials/project_header.html" %}
+    <section class="projectDonate">
+      <div class="container">
+	<div class="row verticalPadding">
+          <div class="col-sm-8">
+            <h4 class="">{% trans "Donate to project" %}</h4>
+            <p>
+                Automatic donations are temporarily switched off.<br>
+                If you want to make a donation, please download the
+                <a target="_blank" href="http://akvo.org/wp-content/uploads/2014/04/Akvo_donation3.pdf">PDF form</a>
+                and send it to <a href="mailto:partners@akvo.org">partners@akvo.org</a>.
+            </p>
+            <p>
+                For more information on the RSR policy on donations, please visit this link:<br>
+                <a target="_blank" href="http://akvo.org/help/akvo-donation-policy/">
+                    http://akvo.org/help/akvo-donation-policy/
+                </a>
+            </p>
+          </div>
+	</div>
+      </div>
+    </section>
+</article>
+{% endblock maincontent %}

@@ -11,10 +11,9 @@ from django.db.models import Sum
 from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 
 from akvo.utils import rsr_image_path
-from akvo.utils import RSR_LIMITED_CHANGE
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
@@ -86,20 +85,27 @@ class Organisation(TimestampsMixin, models.Model):
     internal_org_ids = models.ManyToManyField(
         'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
     )
-    logo = ImageWithThumbnailsField(
-        _(u'logo'), blank=True, upload_to=image_path, thumbnail={'size': (360, 270)},
-        extra_thumbnails={
-            'map_thumb': {'size': (160, 120), 'options': ('autocrop',)},
-            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-        },
-        help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
+    logo = ImageField(_(u'logo'),
+                      blank=True,
+                      upload_to=image_path,
+                      help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
     )
-
     url = models.URLField(
         blank=True,
         help_text=_(u'Enter the full address of your web site, beginning with http://.'),
     )
-
+    facebook = models.URLField(
+        blank=True,
+        help_text=_(u'Enter the full address of your Facebook page, beginning with http://.'),
+    )
+    twitter = models.URLField(
+        blank=True,
+        help_text=_(u'Enter the full address of your Twitter feed, beginning with http://.'),
+    )
+    linkedin = models.URLField(
+        blank=True,
+        help_text=_(u'Enter the full address of your LinkedIn page, beginning with http://.'),
+    )
     phone = ValidXMLCharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     mobile = ValidXMLCharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
     fax = ValidXMLCharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
@@ -112,17 +118,11 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'),
     )
     description = ValidXMLTextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'))
-
     notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
-
-    # old_locations = generic.GenericRelation(Location)
     primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
-
     content_owner = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.'),
     )
-
-    # Allowed to manually edit information on projects of this organisation
     allow_edit = models.BooleanField(
         _(u'Partner editors of this organisation are allowed to manually edit projects where this organisation is '
           u'support partner'),
@@ -137,7 +137,7 @@ class Organisation(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('organisation_main', (), {'org_id': self.pk})
+        return ('organisation-main', (), {'organisation_id': self.pk})
 
 
     class QuerySet(QuerySet):
@@ -190,8 +190,26 @@ class Organisation(TimestampsMixin, models.Model):
         def knowledge(self):
             return self.filter(organisation_type__exact=ORG_TYPE_KNO)
 
+        def all_projects(self):
+            "returns a queryset with all projects that has self as any kind of partner"
+            from .project import Project
+            return Project.objects.filter(partnerships__organisation__in=self)
+
+        def users(self):
+            "returns a queryset of all users belonging to the organisation(s)"
+            from .user import User
+            return User.objects.filter(employers__organisation__in=self).distinct()
+
+        def employments(self):
+            "returns a queryset of all employments belonging to the organisation(s)"
+            from .employment import Employment
+            return Employment.objects.filter(organisation__in=self).distinct()
+
     def __unicode__(self):
         return self.name
+
+    def iati_org_type(self):
+        return dict(IATI_LIST_ORGANISATION_TYPE)[self.new_organisation_type] if self.new_organisation_type else ""
 
     def is_partner_type(self, partner_type):
         "returns True if the organisation is a partner of type partner_type to at least one project"
@@ -221,6 +239,11 @@ class Organisation(TimestampsMixin, models.Model):
         return '<a href="%s">%s</a>' % (self.url, self.url,)
     website.allow_tags = True
 
+    def all_users(self):
+        "returns a queryset of all users belonging to the organisation"
+        from .user import User
+        return User.objects.filter(employers__organisation=self).distinct()
+
     def published_projects(self):
         "returns a queryset with published projects that has self as any kind of partner"
         return self.projects.published().distinct()
@@ -235,6 +258,15 @@ class Organisation(TimestampsMixin, models.Model):
     def partners(self):
         "returns a queryset of all organisations that self has at least one project in common with, excluding self"
         return self.published_projects().all_partners().exclude(id__exact=self.id)
+
+    def support_partners(self):
+        "returns a queryset of support partners that self has at least one project in common with, excluding self"
+        return self.published_projects().support_partners().exclude(id__exact=self.id)
+
+    def has_partner_types(self, project):
+        """Return a list of partner types of this organisation to the project"""
+        from .partnership import Partnership
+        return [ps.partner_type for ps in Partnership.objects.filter(project=project, organisation=self)]
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has published projects."""
@@ -282,13 +314,11 @@ class Organisation(TimestampsMixin, models.Model):
         # the ORM aggregate() doesn't work here since we may have multiple partnership relations to the same project
         return self._aggregate_funds_needed(self.published_projects().dollars().distinct())
 
-    # New API end
-
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'organisation')
         verbose_name_plural = _(u'organisations')
         ordering = ['name']
         permissions = (
-            ("%s_organisation" % RSR_LIMITED_CHANGE, u'RSR limited change organisation'),
+            ('user_management', u'Can manage users'),
         )

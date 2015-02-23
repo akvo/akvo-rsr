@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module. 
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
@@ -12,20 +12,16 @@ import os
 from datetime import datetime
 
 from django.contrib.admin.models import ADDITION, CHANGE
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
-from django.conf import settings
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail import ImageField
 
-from akvo.utils import send_donation_confirmation_emails, rsr_send_mail_to_users
-from akvo.utils import (
-    GROUP_RSR_EDITORS, GROUP_RSR_PARTNER_ADMINS
-)
-
+from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_send_mail_to_users
 
 
 def create_publishing_status(sender, **kwargs):
@@ -41,7 +37,8 @@ def create_publishing_status(sender, **kwargs):
         ps = get_model('rsr', 'publishingstatus')(status=PublishingStatus.STATUS_UNPUBLISHED)
         ps.project = new_project
         ps.save()
-        
+
+
 def create_organisation_account(sender, **kwargs):
     """
     called when a new organisation is saved so an associated org account is
@@ -59,6 +56,7 @@ def create_organisation_account(sender, **kwargs):
             new_acc = OrganisationAccount(organisation=new_org, account_level=OrganisationAccount.ACCOUNT_FREE)
             new_acc.save()
 
+
 def change_name_of_file_on_create(sender, **kwargs):
     """
     call to create a filename when creating a new model instance with the pattern
@@ -72,7 +70,7 @@ def change_name_of_file_on_create(sender, **kwargs):
         opts = instance._meta
         for f in opts.fields:
             # extend this list of fields if needed to catch other uploads
-            if isinstance(f, (ImageField, ImageWithThumbnailsField)):
+            if isinstance(f, (ImageField, )):
                 # the actual image sits directly on the instance of the model
                 img = getattr(instance, f.name)
                 if img:
@@ -97,7 +95,7 @@ def change_name_of_file_on_change(sender, **kwargs):
         opts = instance._meta
         for f in opts.fields:
             # extend this list of fields if needed to catch other uploads
-            if isinstance(f, (ImageField, ImageWithThumbnailsField)):
+            if isinstance(f, (ImageField, )):
                 img = getattr(instance, f.name)
                 #if a new image is uploaded it resides in a InMemoryUploadedFile
                 if img:
@@ -130,20 +128,24 @@ def donation_completed(instance, created, **kwargs):
     if not created and invoice.status == 3:
         send_donation_confirmation_emails(invoice.id)
 
+
 def set_active_cms(instance, created, **kwargs):
     MiniCMS = get_model('rsr', 'MiniCMS')
     if instance.active:
         MiniCMS.objects.exclude(pk=instance.pk).update(active=False)
+
 
 def set_showcase_project(instance, created, **kwargs):
     Project = get_model('rsr', 'Project')
     if instance.showcase:
         Project.objects.exclude(pk=instance.pk).update(showcase=False)
 
+
 def set_focus_org(instance, created, **kwargs):
     Organisation = get_model('rsr', 'Organisation')
     if instance.focus_org:
         Organisation.objects.exclude(pk=instance.pk).update(focus_org=False)
+
 
 def create_benchmark_objects(project):
     """
@@ -154,6 +156,7 @@ def create_benchmark_objects(project):
     for category in project.categories.all():
         for benchmarkname in category.benchmarknames.all():
             benchmark, created = Benchmark.objects.get_or_create(project=project, category=category, name=benchmarkname, defaults={'value': 0})
+
 
 def act_on_log_entry(sender, **kwargs):
     """
@@ -179,24 +182,81 @@ def act_on_log_entry(sender, **kwargs):
                 object = content_type.get_object_for_this_type(pk=log_entry.object_id)
                 criterion['call'](object)
 
-def user_activated_callback(sender, **kwargs):
-    if not getattr(settings, 'REGISTRATION_NOTIFICATION_EMAILS', True):
-        return
 
-    user = kwargs.get("user", False)
-    if user:
-        org = user.userprofile.organisation
-        users = User.objects.all()
-        #find all users that are 1) superusers 2) RSR editors
-        #3) org admins for the same org as the just activated user
-        notify = (users.filter(is_superuser=True) | users.filter(groups__name__in=[GROUP_RSR_EDITORS]) | \
-            users.filter(userprofile__organisation=org, groups__name__in=[GROUP_RSR_PARTNER_ADMINS])).distinct()
-        rsr_send_mail_to_users(notify,
-                               subject='email/new_user_registered_subject.txt',
-                               message='email/new_user_registered_message.txt',
-                               subject_context={'organisation': org},
-                               msg_context={'user': user, 'organisation': org}
-                              )
+def employment_pre_save(sender, **kwargs):
+    """
+    Send a mail to the user when his/her account has been approved.
+    """
+    employment = kwargs.get("instance", False)
+    try:
+        obj = sender.objects.get(pk=employment.pk)
+    except sender.DoesNotExist:
+        # Object is new
+        pass
+    else:
+        if not obj.is_approved and employment.is_approved:
+            # Employment is approved, send mail
+            rsr_send_mail(
+                [employment.user.email],
+                subject='registration/approved_email_subject.txt',
+                message='registration/approved_email_message.txt',
+                subject_context={
+                    'organisation': employment.organisation,
+                },
+                msg_context={
+                    'user': employment.user,
+                    'organisation': employment.organisation,
+                }
+            )
+
+def employment_post_save(sender, **kwargs):
+    """
+    If a new employment is created:
+    - Set 'Users' Group for this employment
+    - Inform superusers, admins, organisation admins and organisation user managers
+
+    If an existing employment is saved:
+    - Set User to is_staff (for admin access) when the employment is approved and the Group is set to 'Project Editors',
+    'User managers' or 'Admins', or when the user is a superuser or general admin.
+    """
+    users_group = Group.objects.get(name='Users')
+    project_editors_group = Group.objects.get(name='Project Editors')
+    user_managers_group = Group.objects.get(name='User Managers')
+    admins_group = Group.objects.get(name='Admins')
+    if kwargs['created']:
+        employment = kwargs.get("instance", False)
+        if employment:
+            employment.group = users_group
+            employment.save()
+            user = employment.user
+            organisation = employment.organisation
+            users = get_user_model().objects.all()
+            notify = (
+                users.filter(is_superuser=True) | users.filter(is_admin=True) | users.filter(
+                    employers__organisation=organisation, employers__group__in=[user_managers_group, admins_group]
+                )
+            ).distinct()
+            rsr_send_mail_to_users(
+                notify,
+                subject='registration/user_organisation_request_subject.txt',
+                message='registration/user_organisation_request_message.txt',
+                subject_context={
+                    'user': user,
+                    'organisation': organisation
+                },
+                msg_context={
+                    'user': user,
+                    'organisation': organisation
+                },
+            )
+    else:
+        employment = kwargs.get("instance", False)
+        user = employment.user
+        if (employment.group in [project_editors_group, user_managers_group, admins_group] and employment.is_approved) \
+                or user.is_superuser or user.is_admin:
+            user.is_staff = True
+            user.save()
+
 
 def update_project_budget(sender, **kwargs):
     """
@@ -211,6 +271,7 @@ def update_project_budget(sender, **kwargs):
         except ObjectDoesNotExist:
             # this happens when a project is deleted, and thus any invoices linked to it go the same way.
             pass
+
 
 def update_project_funding(sender, **kwargs):
     """

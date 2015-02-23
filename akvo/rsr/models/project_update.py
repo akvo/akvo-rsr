@@ -5,19 +5,16 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-import oembed
-
 from datetime import datetime, timedelta
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
+from embed_video.fields import EmbedVideoField
 
 from akvo.utils import rsr_image_path, to_gmt
 
@@ -39,27 +36,21 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         return rsr_image_path(instance, file_name, path)
 
     project = models.ForeignKey('Project', related_name='project_updates', verbose_name=_(u'project'))
-    user = models.ForeignKey(User, verbose_name=_(u'user'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))
     title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
     language = ValidXMLCharField(
         max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update'
     )
     primary_location = models.ForeignKey('ProjectUpdateLocation', null=True, blank=True, on_delete=models.SET_NULL)
-    photo = ImageWithThumbnailsField(
-        _(u'photo'),
-        blank=True,
-        upload_to=image_path,
-        thumbnail={'size': (300, 225), 'options': ('autocrop', 'sharpen', )},
-        extra_thumbnails = {
-            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},
-            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-        },
-        help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
+    photo = ImageField(_(u'photo'),
+                       blank=True,
+                       upload_to=image_path,
+                       help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
     )
     photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     photo_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
-    video = models.URLField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: Blip, Vimeo, YouTube'))
+    video = EmbedVideoField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: YouTube and Vimeo'))
     video_caption = ValidXMLCharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
     video_credit = ValidXMLCharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
     update_method = ValidXMLCharField(
@@ -84,30 +75,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         except:
             return value
     img.allow_tags = True
-
-    def get_video_thumbnail_url(self, url=''):
-        if self.video:
-            try:
-                data = oembed.site.embed(self.video).get_data()
-                url = data.get('thumbnail_url', '')
-            except:
-                pass
-        return url
-
-    def get_video_oembed(self, html=''):
-        """Render OEmbed HTML for the given video URL.
-        This is to workaround a but between Django 1.4 and djangoembed template tags.
-        A full solution is required."""
-        if self.video:
-            try:
-                data = oembed.site.embed(self.video).get_data()
-                html = data.get('html', '')
-                # Add 'rel=0' to the video link for not showing related Youtube videos
-                if "youtube" in html:
-                    html = html.replace("feature=oembed", "feature=oembed&rel=0")
-            except:
-                pass
-        return mark_safe(html)
 
     def edit_window_has_expired(self):
         """Determine whether or not update timeout window has expired.
@@ -144,7 +111,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('update_main', (), {'project_id': self.project.pk, 'update_id': self.pk})
+        return ('update-main', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
         return u'Project update for %(project_name)s' % {'project_name': self.project.title}

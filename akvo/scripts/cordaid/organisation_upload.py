@@ -49,7 +49,7 @@ ORGANISATIONS_UPLOAD_LOG_FILE = os.path.join(
 def user_org(user_cred):
     try:
         profile = Requester(
-            url_template="http://{domain}/api/{api_version}/user_profile/?"
+            url_template="http://{domain}/api/{api_version}/user/?"
                 "format=json&api_key={api_key}&username={username}&user__username={username}",
             url_args=user_cred
         )

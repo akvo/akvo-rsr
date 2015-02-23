@@ -1,0 +1,16 @@
+{% load i18n rsr_tags humanize piwik_tags %}
+<!doctype html>
+<html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Akvo widget</title>
+  {% block style %}{% endblock style %}
+  <link href='http://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'>
+  <base target="_top" />
+</head>
+<body>
+{% block body %}{% endblock body %}
+{#  Piwik #}
+{% tracking_code %}
+</body>
+</html>

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load i18n rsr_filters humanize rsr_utils maps %}
+{% block title %}{{organisation.name}}{% endblock %}
+{% block maincontent %}
+  <div class="container organisationDetail">
+    
+    <div class="row verticalPadding organisationHeader">
+
+      <div class="col-sm-6">
+        <div class="col-sm-12">
+          <h1><i class="fa fa-users"></i> {{organisation.name}}</h1>
+        </div>
+        <div class="col-sm-12 orgLogo">
+          {% if organisation.logo %}
+            <a href="{{organisation.logo.url}}" target="_blank">{% img organisation 350 250 organisation.name %}</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-sm-5 orgDetails">
+        <h4>Details</h4>
+
+        <ul class="noStyleUl">
+          <li>
+            {% if organisation.url %}<a href="{{organisation.url}}">{{organisation.url}}</a>{% endif %}
+          </li>
+          <li>
+            {% if organisation.primary_location.address_1 %}{{organisation.primary_location.address_1}}
+            {% endif %}
+          </li>
+          {% if organisation.primary_location.address_2 %}{{organisation.primary_location.address_2}}
+          {% endif %}
+        </li>
+        <li>
+          {% if organisation.primary_location.postcode %}{{organisation.primary_location.postcode}}
+          {% endif %}
+        </li>
+        <li>
+          {% if organisation.primary_location.city %}{{organisation.primary_location.city}}
+          {% endif %}
+        </li>
+        <li>
+          {% if organisation.primary_location.state %}{{organisation.primary_location.state}}
+          {% endif %}
+        </li>
+        <li>
+          {% if organisation.primary_location.country %}{{organisation.primary_location.country}}{% endif %}
+        </li>
+        <li>
+          {% if organisation.contact_email or organisation.phone %}
+          </li>
+        </ul>
+
+        <h4 class="topMargin">Contact information</h4>
+
+        <ul class="noStyleUl">
+          <li>
+            {% if organisation.contact_email %}
+              <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
+            {% endif %}
+          </li>
+          <li>
+            {% if organisation.phone %}
+              <p>{{organisation.phone}}</p>
+            {% endif %}
+          </li>
+        {% endif %}
+      </ul>
+
+    </div>
+
+  </div>
+  <div class="row orgDescr">
+      <div class="col-sm-8 verticalPadding">
+        <p>{{organisation.description|linebreaks}}</p>
+      </div>
+  </div>
+
+</div>
+
+<div class="container">
+  <div class="row verticalPadding">
+    <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2>{% trans 'Projects in RSR' %}</h2>
+      <dl class="dl-horizontal">
+        <dt>{% trans 'Active' %}</dt><dd>{{organisation.published_projects.status_active.count}}</dd>
+        <dt>{% trans 'Need funding' %}</dt><dd>{{organisation.published_projects.status_onhold.count}}</dd>
+        <dt>{% trans 'Complete' %}</dt><dd>{{organisation.published_projects.status_complete.count}}</dd>
+        <dt>{% trans 'Cancelled' %}</dt><dd>{{organisation.published_projects.status_cancelled.count}}</dd>
+        <dt>{% trans 'Total projects' %}</dt><dd>{{organisation.published_projects.count}}</dd>
+      </dl>
+    </div>
+    <div class="col-md-6">
+      {% if organisation.euro_projects_count or organisation.dollar_projects_count %}
+      <h2>{% trans 'Funding' %}</h2>
+      <dl class="org_statistics_table dl-horizontal">
+        {% if organisation.euro_projects_count %}
+          <dt>{% trans 'project' %}{{organisation.euro_projects_count|pluralize:"s"}}</dt>
+          <dd>{{organisation.euro_projects_count}}
+          {% trans 'in Euros' %}
+          </dd>
+          <dt>{% trans 'Pledged' %}</dt>
+          <dd>
+          € {{organisation.euros_pledged|round|intcomma}}
+          </dd>
+          <dt>{% trans 'Still needed' %}</dt>
+          <dd>
+          € {{organisation.euro_funds_needed|round|intcomma}}
+          </dd>
+        {% endif %}
+        {% if organisation.euro_projects_count and organisation.dollar_projects_count %}
+          <dt>
+          &nbsp;
+          </dt>
+          <dd></dd>
+        {% endif %}
+        {% if organisation.dollar_projects_count %}
+          <dt>
+          {% trans 'project' %}{{organisation.dollar_projects_count|pluralize:"s"}}
+          </dt>
+          <dd>{{organisation.dollar_projects_count}} {% trans 'in US Dollars' %}</dd>
+          <dt>{% trans 'Pledged' %}</dt>
+          <dd>
+          $ {{organisation.dollars_pledged|round|intcomma}}
+          </dd>
+          <dt>{% trans 'Still needed' %}</dt>
+          <dd>
+          $ {{organisation.dollar_funds_needed|round|intcomma}}
+          </dd>
+        {% endif %}
+      </dl>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 topMargin">
+      <p>
+      {% organisation_map organisation.id '100%' '300px' %}
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

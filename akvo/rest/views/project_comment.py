@@ -16,3 +16,4 @@ class ProjectCommentViewSet(BaseRSRViewSet):
     """
     queryset = ProjectComment.objects.all()
     serializer_class = ProjectCommentSerializer
+    filter_fields = ('project', 'user', )

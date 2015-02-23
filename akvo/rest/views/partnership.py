@@ -16,3 +16,4 @@ class PartnershipViewSet(BaseRSRViewSet):
     """
     queryset = Partnership.objects.all()
     serializer_class = PartnershipSerializer
+    filter_fields = ('project', 'organisation', 'partner_type', )

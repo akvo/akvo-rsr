@@ -1,0 +1,42 @@
+{% extends "myrsr/myrsr_base.html" %}
+
+{% load i18n bootstrap3 rsr_utils %}
+
+{% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
+
+{% block myrsr_main %}
+    <h3>My updates</h3>
+    {% if page %}
+        <div class="table-responsive" id="updates">
+            <table class="table table-striped">
+                <thead><tr><th>Media</th><th>Title</th><th>Date</th><th>Project</th><th>Actions</th></tr></thead>
+                <tbody>
+                {% for update in page %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'update-main' update.project.id update.id %}">
+                                {% if update.video %}
+                                    {% vid_img update 64 64 update.title %}
+                                {% else %}
+                                    {% img update 64 64 update.title %}
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td>{{ update.title }}</td>
+                        <td>{{ update.created_at }}</td>
+                        <td>{{ update.project }}</td>
+                        <td><div class="twoColumns"><a href="{% url 'update-main' update.project.id update.id %}">View</a></div></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="">
+              <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
+              {% include 'navigation/pagination.html' %}
+          </div>
+        </div>
+
+    {% else %}
+        <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">You have not placed any updates yet.</p>
+    {% endif %}
+{% endblock %}

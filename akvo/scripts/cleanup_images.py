@@ -28,7 +28,7 @@ def cleanup_images(queryset):
     for obj in queryset:
         opts = obj._meta
         for f in opts.fields:
-            if type(f).__name__ == 'ImageField' or type(f).__name__ == 'ImageWithThumbnailsField':
+            if type(f).__name__ == 'ImageField':
                 model_field = getattr(obj, f.name)
                 if hasattr(model_field, 'file'):
                     print "Temp saving:",  model_field.name
@@ -52,7 +52,7 @@ def cleanup_images(queryset):
             pass
         #time to reverse
         for f in opts.fields:
-            if type(f).__name__ == 'ImageField' or type(f).__name__ == 'ImageWithThumbnailsField':
+            if type(f).__name__ == 'ImageField':
                 model_field = getattr(obj, f.name)
                 if hasattr(model_field, 'file'):
                     current_name = os.path.split(model_field.name)[1]

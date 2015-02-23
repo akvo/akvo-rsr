@@ -9,10 +9,10 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.utils import RSR_LIMITED_CHANGE
-
 from ..fields import ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+
+from akvo.codelists.models import BudgetIdentifier, BudgetIdentifierVocabulary, BudgetType, Currency
+from akvo.utils import codelist_choices, codelist_value
 
 
 class BudgetItemLabel(models.Model):
@@ -34,7 +34,10 @@ class BudgetItem(models.Model):
     OTHER_LABELS = [u'other 1', u'other 2', u'other 3']
 
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='budget_items')
-    label = models.ForeignKey(BudgetItemLabel, verbose_name=_(u'label'),)
+    label = models.ForeignKey(
+        BudgetItemLabel, verbose_name=_(u'project budget'),
+        help_text=u'Select the budget item. Use the \'Other\' fields to custom budget items.'
+    )
     other_extra = ValidXMLCharField(
         max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
@@ -43,13 +46,17 @@ class BudgetItem(models.Model):
     amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
 
     # Extra IATI fields
-    type = ValidXMLCharField(_(u'budget type'), blank=True, max_length=1, choices=codelists.BUDGET_TYPE)
+    type = ValidXMLCharField(
+        _(u'budget type'), blank=True, max_length=1, choices=codelist_choices(BudgetType),
+        help_text=u'Select whether this is a planned or actual budget of the project.'
+    )
     period_start = models.DateField(_(u'period start'), null=True, blank=True)
     period_start_text = ValidXMLCharField(_(u'period start label'), max_length=50, blank=True)
     period_end = models.DateField(_(u'period end'), null=True, blank=True)
     period_end_text = ValidXMLCharField(_(u'period end label'), max_length=50, blank=True)
     value_date = models.DateField(_(u'value date'), null=True, blank=True)
-    currency = ValidXMLCharField(_(u'currency'), max_length=3, blank=True, choices=codelists.CURRENCY)
+    currency = ValidXMLCharField(_(u'currency'), max_length=3, blank=True,
+                                 choices=codelist_choices(Currency))
 
     def __unicode__(self):
         return self.label.__unicode__()
@@ -63,32 +70,38 @@ class BudgetItem(models.Model):
         else:
             return self.__unicode__()
 
+    def iati_type(self):
+        return codelist_value(BudgetType, self, 'type')
+
+    def iati_currency(self):
+        return codelist_value(Currency, self, 'currency')
+
     class Meta:
         app_label = 'rsr'
         ordering = ('label',)
         verbose_name = _(u'budget item')
         verbose_name_plural = _(u'budget items')
         unique_together = ('project', 'label')
-        permissions = (
-            ("%s_budget" % RSR_LIMITED_CHANGE, u'RSR limited change budget'),
-        )
 
 
 class CountryBudgetItem(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='country_budget_items')
-    code = ValidXMLCharField(
-        _(u'budget item'), max_length=6, choices=[code[:2] for code in codelists.BUDGET_IDENTIFIER], blank=True
-    )
+    code = ValidXMLCharField(_(u'budget item'), max_length=6, blank=True, choices=codelist_choices(BudgetIdentifier))
     description = ValidXMLCharField(
         _(u'description'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
     )
-    vocabulary = ValidXMLCharField(
-        _(u'country budget vocabulary'), blank=True, max_length=1, choices=codelists.BUDGET_IDENTIFIER_VOCABULARY
-    )
+    vocabulary = ValidXMLCharField(_(u'country budget vocabulary'), blank=True, max_length=1,
+                                   choices=codelist_choices(BudgetIdentifierVocabulary))
     percentage = models.DecimalField(
         _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
+
+    def iati_code(self):
+        return codelist_value(BudgetIdentifier, self, 'code')
+
+    def iati_vocabulary(self):
+        return codelist_value(BudgetIdentifierVocabulary, self, 'vocabulary')
 
     class Meta:
         app_label = 'rsr'

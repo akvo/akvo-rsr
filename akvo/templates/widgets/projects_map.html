@@ -1,0 +1,38 @@
+{% load cache maps humanize i18n rsr_tags piwik_tags %}
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Map widget</title>
+  <style type="text/css" media="screen">
+    body { margin:0; font-family: arial; font-size:14px;}
+    .small {font-size:0.875em;}
+    .grey {color:#888}
+    #footer {
+      width: {{width}}px;
+      max-width: {{width}}px;
+      background-color: {% if style == 'light' %}#FFFFFF{% else %}#000000{% endif %};
+      color: #fff;
+      text-align:right;
+      max-height:24px;
+      overflow:hidden;
+    }
+    #footer img { margin-top:3px; margin-right:3px;}
+    #footer a img { border:none;}
+  </style>
+  <base target="_top" />
+</head>
+<body>
+{% projects_map projects widthpx heightpx state %}
+  <div id="footer">
+    <a href="http://akvo.org">
+      <img src="{{ STATIC_URL }}rsr/widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
+    </a>
+  </div>
+  {#  Piwik #}
+  {% tracking_code %}
+</body>
+</html>

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load i18n markup_tags rsr_utils bootstrap3 %}
+
+{% block title %}{{project.title}}{% endblock %}
+
+{% block maincontent %}
+<article class="touch-navbar">
+    {% include "partials/project_header.html" %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-xs-12" id="update">
+                <h2>{% if edit_mode %}{% trans 'Edit an update' %}{% else %}{% trans 'Add an update' %}{% endif %}</h2>
+                {% if edit_mode %}
+                    <p class="small">You posted this update at {{ update.time_gmt|date:"H:i T"}}. You have until {{ update.expires_at|date:"H:i T" }} to save your edits.</p>
+                {% endif %}
+                {% if update and update.photo and edit_mode %}
+                    <p>{% img update 400 300 update.title %}</p>
+                {% endif %}
+                <form method="post" action="" id="updateForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in updateform %}
+                        {% bootstrap_field field %}
+                    {% endfor %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">
+                            {% if edit_mode %}{% trans 'Edit update' %}{% else %}{% trans 'Add update' %}{% endif %}
+                        </button>
+                    {% endbuttons %}
+                </form>
+            </div>
+            {% if updates %}
+            <div class="col-md-5 hidden-sm hidden-xs udpateComponent">
+                <h3>Previous updates of this project</h3>
+                {% for update in updates %}
+                <div class="row updateLine">
+                    <div class="col-lg-2 col-md-2 thumbImg">
+                        <a href="{% url 'update-main' update.project.id update.id %}">
+                          {% img update 80 80 update.title %}
+                        </a>
+                    </div>
+                    <div class="col-lg-10 col-md-10">
+                      <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+    </div>
+</article>
+
+{% endblock %}
+
+{% block jq %}
+  $( "#id_latitude").val(0);
+  $( "#id_longitude").val(0);
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(storePosition);
+  }
+  function storePosition(position) {
+    $( "#id_latitude").val(position.coords.latitude);
+    $( "#id_longitude").val(position.coords.longitude);
+  }
+{% endblock %}
