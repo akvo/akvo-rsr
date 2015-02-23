@@ -8,6 +8,189 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Models might be created already, try to delete
+        try:
+            # Deleting model 'ActivityDateType'
+            db.delete_table(u'codelists_activitydatetype')
+
+            # Deleting model 'ActivityScope'
+            db.delete_table(u'codelists_activityscope')
+
+            # Deleting model 'ActivityStatus'
+            db.delete_table(u'codelists_activitystatus')
+
+            # Deleting model 'AidType'
+            db.delete_table(u'codelists_aidtype')
+
+            # Deleting model 'AidTypeCategory'
+            db.delete_table(u'codelists_aidtypecategory')
+
+            # Deleting model 'AidTypeFlag'
+            db.delete_table(u'codelists_aidtypeflag')
+
+            # Deleting model 'BudgetIdentifier'
+            db.delete_table(u'codelists_budgetidentifier')
+
+            # Deleting model 'BudgetIdentifierSector'
+            db.delete_table(u'codelists_budgetidentifiersector')
+
+            # Deleting model 'BudgetIdentifierSectorCategory'
+            db.delete_table(u'codelists_budgetidentifiersectorcategory')
+
+            # Deleting model 'BudgetIdentifierVocabulary'
+            db.delete_table(u'codelists_budgetidentifiervocabulary')
+
+            # Deleting model 'BudgetType'
+            db.delete_table(u'codelists_budgettype')
+
+            # Deleting model 'CollaborationType'
+            db.delete_table(u'codelists_collaborationtype')
+
+            # Deleting model 'ConditionType'
+            db.delete_table(u'codelists_conditiontype')
+
+            # Deleting model 'ContactType'
+            db.delete_table(u'codelists_contacttype')
+
+            # Deleting model 'Country'
+            db.delete_table(u'codelists_country')
+
+            # Deleting model 'CRSAddOtherFlags'
+            db.delete_table(u'codelists_crsaddotherflags')
+
+            # Deleting model 'Currency'
+            db.delete_table(u'codelists_currency')
+
+            # Deleting model 'DescriptionType'
+            db.delete_table(u'codelists_descriptiontype')
+
+            # Deleting model 'DisbursementChannel'
+            db.delete_table(u'codelists_disbursementchannel')
+
+            # Deleting model 'DocumentCategory'
+            db.delete_table(u'codelists_documentcategory')
+
+            # Deleting model 'DocumentCategoryCategory'
+            db.delete_table(u'codelists_documentcategorycategory')
+
+            # Deleting model 'FileFormat'
+            db.delete_table(u'codelists_fileformat')
+
+            # Deleting model 'FinanceType'
+            db.delete_table(u'codelists_financetype')
+
+            # Deleting model 'FinanceTypeCategory'
+            db.delete_table(u'codelists_financetypecategory')
+
+            # Deleting model 'FlowType'
+            db.delete_table(u'codelists_flowtype')
+
+            # Deleting model 'GazetteerAgency'
+            db.delete_table(u'codelists_gazetteeragency')
+
+            # Deleting model 'GeographicExactness'
+            db.delete_table(u'codelists_geographicexactness')
+
+            # Deleting model 'GeographicLocationClass'
+            db.delete_table(u'codelists_geographiclocationclass')
+
+            # Deleting model 'GeographicLocationReach'
+            db.delete_table(u'codelists_geographiclocationreach')
+
+            # Deleting model 'GeographicVocabulary'
+            db.delete_table(u'codelists_geographicvocabulary')
+
+            # Deleting model 'GeographicalPrecision'
+            db.delete_table(u'codelists_geographicalprecision')
+
+            # Deleting model 'IndicatorMeasure'
+            db.delete_table(u'codelists_indicatormeasure')
+
+            # Deleting model 'Language'
+            db.delete_table(u'codelists_language')
+
+            # Deleting model 'LoanRepaymentPeriod'
+            db.delete_table(u'codelists_loanrepaymentperiod')
+
+            # Deleting model 'LoanRepaymentType'
+            db.delete_table(u'codelists_loanrepaymenttype')
+
+            # Deleting model 'LocationType'
+            db.delete_table(u'codelists_locationtype')
+
+            # Deleting model 'LocationTypeCategory'
+            db.delete_table(u'codelists_locationtypecategory')
+
+            # Deleting model 'OrganisationIdentifier'
+            db.delete_table(u'codelists_organisationidentifier')
+
+            # Deleting model 'OrganisationRegistrationAgency'
+            db.delete_table(u'codelists_organisationregistrationagency')
+
+            # Deleting model 'OrganisationRole'
+            db.delete_table(u'codelists_organisationrole')
+
+            # Deleting model 'OrganisationType'
+            db.delete_table(u'codelists_organisationtype')
+
+            # Deleting model 'OtherIdentifierType'
+            db.delete_table(u'codelists_otheridentifiertype')
+
+            # Deleting model 'PolicyMarker'
+            db.delete_table(u'codelists_policymarker')
+
+            # Deleting model 'PolicyMarkerVocabulary'
+            db.delete_table(u'codelists_policymarkervocabulary')
+
+            # Deleting model 'PolicySignificance'
+            db.delete_table(u'codelists_policysignificance')
+
+            # Deleting model 'PublisherType'
+            db.delete_table(u'codelists_publishertype')
+
+            # Deleting model 'Region'
+            db.delete_table(u'codelists_region')
+
+            # Deleting model 'RegionVocabulary'
+            db.delete_table(u'codelists_regionvocabulary')
+
+            # Deleting model 'RelatedActivityType'
+            db.delete_table(u'codelists_relatedactivitytype')
+
+            # Deleting model 'ResultType'
+            db.delete_table(u'codelists_resulttype')
+
+            # Deleting model 'Sector'
+            db.delete_table(u'codelists_sector')
+
+            # Deleting model 'SectorCategory'
+            db.delete_table(u'codelists_sectorcategory')
+
+            # Deleting model 'SectorVocabulary'
+            db.delete_table(u'codelists_sectorvocabulary')
+
+            # Deleting model 'TiedStatus'
+            db.delete_table(u'codelists_tiedstatus')
+
+            # Deleting model 'TransactionType'
+            db.delete_table(u'codelists_transactiontype')
+
+            # Deleting model 'ValueType'
+            db.delete_table(u'codelists_valuetype')
+
+            # Deleting model 'VerificationStatus'
+            db.delete_table(u'codelists_verificationstatus')
+
+            # Deleting model 'Version'
+            db.delete_table(u'codelists_version')
+
+            # Deleting model 'Vocabulary'
+            db.delete_table(u'codelists_vocabulary')
+
+        except:
+            pass
+
+
         # Adding model 'ActivityDateType'
         db.create_table(u'codelists_activitydatetype', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
