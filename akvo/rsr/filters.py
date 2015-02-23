@@ -9,6 +9,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import django_filters
 
+from copy import deepcopy
+
 from .models import Project, Organisation, Category, ProjectUpdate
 from .m49 import M49_CODES, M49_HIERARCHY
 
@@ -35,34 +37,43 @@ def remove_empty_querydict_items(request_get):
     return getvars
 
 
-def convert_m49(queryset, value):
+def walk(node):
+    """Walks the m49 tree and return countires"""
+
+    if isinstance(node, basestring):
+        return [node.lower()]
+    elif isinstance(node, int):
+        return walk(deepcopy(M49_HIERARCHY)[node])
+    else:
+        if node:
+            return (walk(node.pop()) + walk(node))
+        else:
+            return []
+
+
+def filter_m49(queryset, value):
+    """Filters countries from the m49 list"""
     if not value:
         return queryset
 
-    list_of_countries = []
-    current_list = M49_HIERARCHY[int(value)]
-    while len(current_list) > 0:
-        element = current_list.pop(0)
-        if isinstance(element, basestring):
-            list_of_countries.append(element.lower())
-        else:
-            current_list = M49_HIERARCHY[int(element)] + current_list
-
-    return queryset.filter(primary_location__country__iso_code__in=list_of_countries)
+    countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
+    return queryset.filter(primary_location__country__iso_code__in=countries)
 
 
 class ProjectFilter(django_filters.FilterSet):
     category = django_filters.ChoiceFilter(
         choices=([('', 'All')] +
                  list(Category.objects.all().values_list('id', 'name',
-                                                         flat=False)) ),
+                                                         flat=False))),
         label='category',
         name='categories__id')
 
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
         label='location',
-        action=convert_m49)
+        action=filter_m49
+        # action=convert_m49
+    )
 
     sector = django_filters.ChoiceFilter(
         initial='All',
@@ -101,7 +112,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
         label='location',
-        action=convert_m49)
+        action=filter_m49)
 
     def get_orgs():
         orgs = list(Organisation.objects.all().values_list('id', 'name',
@@ -134,7 +145,7 @@ class OrganisationFilter(django_filters.FilterSet):
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
         label='location',
-        action=convert_m49)
+        action=filter_m49)
 
     name = django_filters.CharFilter(
         lookup_type='icontains',
