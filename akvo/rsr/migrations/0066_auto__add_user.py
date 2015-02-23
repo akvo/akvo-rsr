@@ -31,6 +31,12 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('rsr', ['User'])
 
+        try:
+            # Removing M2M table for field organisation on 'User'
+            db.delete_table(db.shorten_name(u'rsr_user_organisations'))
+        except:
+            pass
+
         # Adding M2M table for field organisation on 'User'
         m2m_table_name = db.shorten_name(u'rsr_user_organisations')
         db.create_table(m2m_table_name, (
@@ -40,6 +46,12 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['user_id', 'organisation_id'])
 
+        try:
+            # Removing M2M table for field organisation on 'User'
+            db.delete_table(db.shorten_name(u'rsr_user_groups'))
+        except:
+            pass
+
         # Adding M2M table for field groups on 'User'
         m2m_table_name = db.shorten_name(u'rsr_user_groups')
         db.create_table(m2m_table_name, (
@@ -48,6 +60,12 @@ class Migration(SchemaMigration):
             ('group', models.ForeignKey(orm[u'auth.group'], null=False))
         ))
         db.create_unique(m2m_table_name, ['user_id', 'group_id'])
+
+        try:
+            # Removing M2M table for field organisation on 'User'
+            db.delete_table(db.shorten_name(u'rsr_user_user_permissions'))
+        except:
+            pass
 
         # Adding M2M table for field user_permissions on 'User'
         m2m_table_name = db.shorten_name(u'rsr_user_user_permissions')
