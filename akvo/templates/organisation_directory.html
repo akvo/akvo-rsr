@@ -106,10 +106,7 @@
 
 {% block js %}
   {{ block.super }}
-<<<<<<< HEAD
   {# <script src="http://maps.google.com/maps/api/js?sensor=false"></script> #}
-=======
-  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
   <script type="application/json" id="akvo-rsr-typeahead-thumbs">
    {
      "numberOfOrgs": {{ orgs_count }}
@@ -119,7 +116,6 @@
    AKVO_RSR.typeahead = {};
    AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
   </script>
->>>>>>> develop
   {% compressed_js 'rsr_v3_organisation_directory' %}
 {% endblock js %}
 
