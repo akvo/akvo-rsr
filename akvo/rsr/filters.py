@@ -72,7 +72,6 @@ class ProjectFilter(django_filters.FilterSet):
         choices=M49_CODES,
         label='location',
         action=filter_m49
-        # action=convert_m49
     )
 
     sector = django_filters.ChoiceFilter(
