@@ -234,6 +234,9 @@ dl {
             }
         }
         dd {
+            @include responsive(small-max-screens){
+                margin-left: 100px;
+            }
             &.totalFinance {
                 margin-top: 30px;
                 font-weight: bold;
