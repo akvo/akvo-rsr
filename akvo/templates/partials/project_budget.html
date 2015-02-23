@@ -14,6 +14,8 @@
 <dl class="dl-horizontal topMargin">
 	<dt>Total Budget:</dt><dd>{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</dd>
 </dl>
+{% if project.accepts_donations %}
 <div class="text-center ">
-	<a href="#" class="btn btn-primary">{% trans "Donate" %}</a>
+	<a href="{% url 'project-donate' project.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
 </div>
+{% endif %}

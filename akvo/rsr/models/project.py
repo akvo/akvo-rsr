@@ -264,6 +264,13 @@ class Project(TimestampsMixin, models.Model):
     def get_absolute_url(self):
         return ('project-main', (), {'project_id': self.pk})
 
+    def accepts_donations(self):
+        if not self.donate_button:
+            return False
+        if self in Project.objects.active() and self.funds_needed > 0:
+            return True
+        return False
+
     def all_donations(self):
         return Invoice.objects.filter(
             project__exact=self.id

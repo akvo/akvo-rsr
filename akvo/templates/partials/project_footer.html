@@ -3,7 +3,7 @@
 <footer id="project-footer">
     <div class="container">
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-6 col-md-3">
                 <p><span class="detailedInfo"><i class="fa fa-file-text"></i> {% trans "Related documents" %}:</span></p>
                 <p>
                     {% for doc in project.documents.all %}
@@ -13,23 +13,23 @@
                     {% endfor %}
                 </p>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-6 col-md-3">
                 <p><span class="detailedInfo"><i class="fa fa-external-link"></i> {% trans "Related links" %}:</span></p>
                 <p>
                     {% for link in project.links.all %}
                         {{link.show_link|safe}}<br>
                     {% empty %}
-                        <i>{% trans "No related documents" %}</i>
+                        <i class="noItem">{% trans "No related links" %}</i>
                     {% endfor %}
                 </p>
             </div>
-            <div class="col-sm-3">
-                <p><span class="detailedInfo">{% trans "Widgets" %}:</span></p>
-                <p></span> <a href="{% url 'project-widgets' project.pk %}"><i class="fa fa-tachometer"></i> Grab a widget</a></p>
+            <div class="col-sm-6 col-md-3">
+                <p><span class="detailedInfo"><i class="fa fa-tachometer"></i> {% trans "Widgets" %}:</span></p>
+                <p></span> <a href="{% url 'project-widgets' project.pk %}">Grab a widget</a></p>
             </div>
-            <div class="col-sm-3" id="project-footer-right">
+            <div class="col-sm-6 col-md-3" id="project-footer-right">
                 <p>
-                    <a href="#"><i class="fa fa-rss"></i> {% trans "Subscribe to RSS feed" %}</a>
+                    <a target="_blank" href="{% url 'rss_project_updates' project.id %}"><i class="fa fa-rss"></i> {% trans "Subscribe to RSS feed" %}</a>
                 </p>
             </div>
         </div>

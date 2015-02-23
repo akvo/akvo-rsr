@@ -7,15 +7,11 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        # First set the vocabulary for sectors where it is missing
         for sector in orm.Sector.objects.all():
-            if sector.vocabulary not in ['DAC', 'DAC-3']:
-                if len(sector.sector_code) == 5:
-                    sector.vocabulary = 'DAC'
-                    sector.save()
-                elif len(sector.sector_code) == 3:
-                    sector.vocabulary = 'DAC-3'
-                    sector.save()
+            if sector.percentage:
+                continue
+            elif orm.Sector.objects.filter(project=sector.project, sector_code=sector.sector_code).count() > 1:
+                sector.delete()
 
     def backwards(self, orm):
         pass
@@ -113,7 +109,7 @@ class Migration(DataMigration):
             'Meta': {'ordering': "['name']", 'object_name': 'FocusArea'},
             'description': ('akvo.rsr.fields.ValidXMLTextField', [], {'max_length': '500'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100'}),
+            'image': (u'sorl.thumbnail.fields.ImageField', [], {'max_length': '100'}),
             'link_to': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'})
@@ -232,7 +228,7 @@ class Migration(DataMigration):
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '2'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'linkedin': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
-            'logo': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'blank': 'True'}),
+            'logo': (u'sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'long_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75', 'blank': 'True'}),
             'mobile': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '20', 'blank': 'True'}),
             'name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '25', 'db_index': 'True'}),
@@ -352,11 +348,11 @@ class Migration(DataMigration):
             'background': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'budget': ('django.db.models.fields.DecimalField', [], {'decimal_places': '2', 'default': '0', 'max_digits': '10', 'blank': 'True', 'null': 'True', 'db_index': 'True'}),
             'capital_spend_percentage': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '4', 'decimal_places': '1', 'blank': 'True'}),
-            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
+            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'projects'", 'blank': 'True', 'to': "orm['rsr.Category']"}),
             'collaboration_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'currency': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'EUR'", 'max_length': '3'}),
-            'current_image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'blank': 'True'}),
+            'current_image': (u'sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'current_image_caption': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
             'current_image_credit': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
             'current_status': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
@@ -378,6 +374,7 @@ class Migration(DataMigration):
             'keywords': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'projects'", 'blank': 'True', 'to': "orm['rsr.Keyword']"}),
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '2'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'last_update': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'the_project'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': "orm['rsr.ProjectUpdate']"}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
             'partners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'through': "orm['rsr.Partnership']", 'to': "orm['rsr.Organisation']"}),
             'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.ProjectLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
@@ -429,13 +426,14 @@ class Migration(DataMigration):
         'rsr.projectdocument': {
             'Meta': {'ordering': "['-id']", 'object_name': 'ProjectDocument'},
             'category': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
+            'document': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
             'format': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'documents'", 'to': "orm['rsr.Project']"}),
             'title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'title_language': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
-            'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
+            'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
         'rsr.projectlocation': {
             'Meta': {'ordering': "['id']", 'object_name': 'ProjectLocation'},
@@ -470,7 +468,7 @@ class Migration(DataMigration):
             'language': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'en'", 'max_length': '2'}),
             'last_modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
-            'photo': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'blank': 'True'}),
+            'photo': (u'sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'photo_caption': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75', 'blank': 'True'}),
             'photo_credit': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '25', 'blank': 'True'}),
             'primary_location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.ProjectUpdateLocation']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
@@ -578,7 +576,7 @@ class Migration(DataMigration):
         },
         'rsr.user': {
             'Meta': {'ordering': "['username']", 'object_name': 'User'},
-            'avatar': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'null': 'True'}),
+            'avatar': (u'sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'null': 'True'}),
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '254'}),
             'first_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'}),

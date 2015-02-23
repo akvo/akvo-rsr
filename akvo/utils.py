@@ -425,6 +425,7 @@ def filter_query_string(qs):
     """
     q = dict(qs.iterlists())  # to Python dict
     q.pop('page', None)
+    q.pop('sort_by', None)
 
     if not bool(q):
         return ''

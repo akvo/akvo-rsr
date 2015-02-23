@@ -3,34 +3,38 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-// Typeahead for organisation and country input
-var organisations = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: {
-    url: '/rest/v1/organisation/?format=json&limit=3000',
-    filter: function(response) {
-      return response.results;
-    }
-  }
-});
-
-var countries = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: {
-    url: '/rest/v1/country/?format=json&limit=150',
-    filter: function(response) {
-      return response.results;
-    }
-  }
-});
-
-organisations.initialize();
-countries.initialize();
-
 // Jquery dependent code
 $(function() {
+
+  // Typeahead
+  var organisations = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name',
+                                                         'name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: '/rest/v1/typeaheads/organisations?format=json',
+      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfOrganisations,
+      filter: function(response) {
+        return response.results;
+      }
+    }
+  });
+
+  var countries  = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name',
+                                                         'name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: '/rest/v1/typeaheads/countries?format=json',
+      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfCountries,
+      filter: function(response) {
+        return response.results;
+      }
+    }
+  });
+
+  organisations.initialize();
+  countries.initialize();
 
   // When an avatar image is selected
   $("#id_avatar").change(function () {

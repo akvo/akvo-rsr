@@ -2,6 +2,8 @@
 {% load i18n maps markup_tags rsr_utils bootstrap3 compressed %}
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
+{% load rsr_filters %}
+
 <section id="map" class="touch-navbar">
     {% coll_map page '100%' '100%' %}
 </section>
@@ -33,7 +35,13 @@
     <div id="filter" class="">
       <div>
         <div class="btn-group">
-          {% bootstrap_field filter.form.continent %}
+          {% bootstrap_field filter.form.location %}
+        </div>
+        <div class="btn-group">
+          {% bootstrap_field filter.form.partner %}
+        </div>
+        <div class="btn-group">
+          {% bootstrap_field filter.form.sector %}
         </div>
       </div>
       <div>
@@ -53,8 +61,10 @@
   <div class="row center-text">
         <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
   </div>
+  <div class="row">
         {% include 'navigation/pagination.html' %}
   </div>
+</div>
 
     <section class="main-list updates">
       <ul class="container">
@@ -88,7 +98,7 @@
           </div>
           <div class="excerpt col-sm-5 col-md-5 col-xs-12 hidden-xs">
             {% autoescape off %}
-              {{ u.text|force_escape|urlize|apply_markup:"markdown" }}
+              {{ u.text|force_escape|urlize|apply_markup:"markdown"|smart_truncate:250 }}
             {% endautoescape %}
           </div>
         </li>
@@ -97,13 +107,29 @@
     </section>
 
 <div class="container">
-            {% include 'navigation/pagination.html' %}
+    <div class="row">
+        {% include 'navigation/pagination.html' %}
+    </div>
 </div>
 {% endblock %}
 
 {% block js %}
   {{ block.super }}
+<<<<<<< HEAD
   {# <script src="http://maps.google.com/maps/api/js?sensor=false"></script> #}
+=======
+  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="application/json" id="akvo-rsr-typeahead-thumbs">
+   {
+     "numberOfUpdates": {{ updates_count }}
+   }
+  </script>
+  <script type="application/javascript">
+   AKVO_RSR.typeahead = {};
+   AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
+  </script>
+
+>>>>>>> develop
   {% compressed_js 'rsr_v3_update_directory' %}
 {% endblock js %}
 

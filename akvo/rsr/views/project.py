@@ -12,6 +12,7 @@ from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
+from akvo.codelists.models import SectorCategory
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -161,7 +162,7 @@ def directory(request):
 
     # Instead of true or false, adhere to bootstrap3 class names to simplify
     show_filters = "in"
-    available_filters = ['continent', 'status', 'organisation', 'sector', ]
+    available_filters = ['location', 'status', 'organisation', 'sector', ]
     if frozenset(qs.keys()).isdisjoint(available_filters):
         show_filters = ""
 
@@ -175,7 +176,11 @@ def directory(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, sorted_projects, 10)
 
+    # sector_count = SectorCategory.objects.all().count()
+
     context = {
+        'project_count': sorted_projects.count(),
+        # 'sector_count': sector_count,
         'filter': f,
         'page': page,
         'page_range': page_range,
@@ -312,7 +317,6 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
 
     return render(request, 'update_add.html', context)
 
-
 def search(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'project_search.html', context)
@@ -324,3 +328,26 @@ def finance(request, project_id):
         'project': project
     }
     return render(request, 'project_finance.html', context)
+
+
+def donations_disabled(project):
+    return not project.donate_button
+
+
+def can_accept_donations(project):
+    if project in Project.objects.active() and project.funds_needed > 0:
+        return True
+    else:
+        return False
+
+
+def donate(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    if not project.accepts_donations():
+        raise Http404
+
+    context = {
+        'project': project
+    }
+    return render(request, 'project_donate.html', context)

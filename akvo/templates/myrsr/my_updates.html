@@ -25,16 +25,17 @@
                         <td>{{ update.title }}</td>
                         <td>{{ update.created_at }}</td>
                         <td>{{ update.project }}</td>
-                        <td><a href="{% url 'update-main' update.project.id update.id %}">View</a></td>
+                        <td><div class="twoColumns"><a href="{% url 'update-main' update.project.id update.id %}">View</a></div></td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-        </div>
-          <div class="row center-text">
+            <div class="">
               <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
               {% include 'navigation/pagination.html' %}
           </div>
+        </div>
+
     {% else %}
         <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">You have not placed any updates yet.</p>
     {% endif %}

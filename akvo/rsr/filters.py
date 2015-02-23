@@ -9,8 +9,10 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import django_filters
 
+from copy import deepcopy
+
 from .models import Project, Organisation, Category, ProjectUpdate
-from .iso3166 import CONTINENTS
+from .m49 import M49_CODES, M49_HIERARCHY
 
 from akvo.codelists.models import SectorCategory
 from akvo.utils import codelist_choices
@@ -35,18 +37,42 @@ def remove_empty_querydict_items(request_get):
     return getvars
 
 
+def walk(node):
+    """Walks the m49 tree and return countires"""
+
+    if isinstance(node, basestring):
+        return [node.lower()]
+    elif isinstance(node, int):
+        return walk(deepcopy(M49_HIERARCHY)[node])
+    else:
+        if node:
+            return (walk(node.pop()) + walk(node))
+        else:
+            return []
+
+
+def filter_m49(queryset, value):
+    """Filters countries from the m49 list"""
+    if not value:
+        return queryset
+
+    countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
+    return queryset.filter(primary_location__country__iso_code__in=countries)
+
+
 class ProjectFilter(django_filters.FilterSet):
-    category =  django_filters.ChoiceFilter(
+    category = django_filters.ChoiceFilter(
         choices=([('', 'All')] +
                  list(Category.objects.all().values_list('id', 'name',
-                                                         flat=False)) ),
+                                                         flat=False))),
         label='category',
         name='categories__id')
 
-    continent = django_filters.ChoiceFilter(
-        choices=ANY_CHOICE + CONTINENTS,
+    location = django_filters.ChoiceFilter(
+        choices=M49_CODES,
         label='location',
-        name='primary_location__country__continent_code')
+        action=filter_m49
+    )
 
     sector = django_filters.ChoiceFilter(
         initial='All',
@@ -76,16 +102,32 @@ class ProjectFilter(django_filters.FilterSet):
 
     class Meta:
         model = Project
-        fields = ['status', 'continent', 'organisation', 'category',
+        fields = ['status', 'location', 'organisation', 'category',
                   'sector', 'title', ]
 
 
 class ProjectUpdateFilter(django_filters.FilterSet):
 
-    continent = django_filters.ChoiceFilter(
-        choices=ANY_CHOICE + CONTINENTS,
+    location = django_filters.ChoiceFilter(
+        choices=M49_CODES,
         label='location',
-        name='primary_location__country__continent_code')
+        action=filter_m49)
+
+    def get_orgs():
+        orgs = list(Organisation.objects.all().values_list('id', 'name',
+                                                           flat=False))
+        return ([('', 'All')] + orgs)
+
+    partner = django_filters.ChoiceFilter(
+        choices=get_orgs(),
+        label='partner',
+        name='user__organisations__id')
+
+    sector = django_filters.ChoiceFilter(
+        initial='All',
+        choices=([('', 'All')] + sectors()),
+        label='sector',
+        name='project__sectors__sector_code')
 
     title = django_filters.CharFilter(
         lookup_type='icontains',
@@ -94,15 +136,15 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
     class Meta:
         model = ProjectUpdate
-        fields = ['continent', 'title', ]
+        fields = ['location', 'partner', 'sector', 'title', ]
 
 
 class OrganisationFilter(django_filters.FilterSet):
 
-    continent = django_filters.ChoiceFilter(
-        choices=ANY_CHOICE + CONTINENTS,
+    location = django_filters.ChoiceFilter(
+        choices=M49_CODES,
         label='location',
-        name='primary_location__country__continent_code')
+        action=filter_m49)
 
     name = django_filters.CharFilter(
         lookup_type='icontains',
@@ -111,4 +153,4 @@ class OrganisationFilter(django_filters.FilterSet):
 
     class Meta:
         model = ProjectUpdate
-        fields = ['continent', 'name', ]
+        fields = ['location', 'name', ]
