@@ -228,6 +228,9 @@ dl.dl-horizontal dt {
   dl.dl-horizontal dt.totalFinance {
     margin-top: 30px;
     font-weight: bold; }
+@media only screen and (max-width: 768px) {
+  dl.dl-horizontal dd {
+    margin-left: 100px; } }
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
