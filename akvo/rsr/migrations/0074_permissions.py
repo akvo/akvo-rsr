@@ -25,22 +25,28 @@ class Migration(DataMigration):
         group.delete()
 
         # Rename the 'Admin' Group
+        already_created_admins_group = orm['auth.Group'].objects.get(name='Admins')
+        already_created_admins_group.delete()
         admins_group = orm['auth.Group'].objects.get(name='RSR partner admins')
         admins_group.name = 'Admins'
         admins_group.save()
 
         # Rename the 'Project Editors' Group
+        already_created_project_editors_group = orm['auth.Group'].objects.get(name='Project Editors')
+        already_created_project_editors_group.delete()
         project_editors_group = orm['auth.Group'].objects.get(name='RSR partner editors')
         project_editors_group.name = 'Project Editors'
         project_editors_group.save()
 
         # Rename the 'Users' Group
+        already_created_users_group = orm['auth.Group'].objects.get(name='Users')
+        already_created_users_group.delete()
         users_group = orm['auth.Group'].objects.get(name='RSR users')
         users_group.name = 'Users'
         users_group.save()
 
-        # Create the new 'User Managers' Group
-        orm['auth.Group'].objects.create(name='User Managers')
+        # Create the new 'User Managers' Group (already done)
+        # orm['auth.Group'].objects.create(name='User Managers')
 
         # Approve all Employments and set their Group
         for employment in orm['rsr.Employment'].objects.all():
