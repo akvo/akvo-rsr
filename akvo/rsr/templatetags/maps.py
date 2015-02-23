@@ -107,6 +107,99 @@ def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
         'partnersite_widget': False}
 
 
+
+def get_location(item):
+    """..."""
+    try:
+        location = item.primary_location
+
+        if location.latitude == 0 and location.longitude == 0:
+            raise ValueError('latitude or longitude is 0')
+        if location.latitude > 80 or location.latitude < -80:
+            raise ValueError('lat over 80 or lat less than -80')
+
+        if isinstance(item, Project):
+            item_type = 'project'
+            icon = PROJECT_MARKER_ICON
+            text = item.title.encode('utf8')
+
+        elif isinstance(item, Organisation):
+            item_type = 'organisation'
+            icon = ORGANISATION_MARKER_ICON
+            text = item.name.encode('utf8')
+
+        elif isinstance(item, ProjectUpdate):
+            item_type = 'projectUpdate'
+            icon = PROJECT_UPDATE_MARKER_ICON
+            text = item.title.encode('utf8')
+
+        return {'type': item_type,
+                'image': avatar(item),
+                'latitude': location.latitude,
+                'longitude': location.longitude,
+                'url': item.get_absolute_url(),
+                'icon': icon,
+                'pk': str(item.pk),
+                'text': text}
+    except Exception, e:
+        print e
+        return []
+
+
+@register.inclusion_tag('inclusion_tags/map.html')
+def org_map(organisation, width='100%', height='100%', dynamic='dynamic'):
+    """
+    ...
+    """
+    if dynamic != 'dynamic':
+        dynamic = False
+    map_id = 'akvo_map_{}'.format(os.urandom(8).encode('hex'))
+
+    locations = []
+    locations.append(get_location(organisation))
+
+    template_context = {
+        'map_id': map_id,
+        'width': width,
+        'height': height,
+        'locations': locations,
+        'dynamic': dynamic,
+    }
+
+    return template_context
+
+
+
+
+    # for location in OrganisationLocation.objects.filter(location_target_id=organisation.id):
+    #     if location.latitude == 0 and location.longitude == 0:
+    #         continue
+    #     if location.latitude > 80 or location.latitude < -80:
+    #         continue
+    #     # locations.append([location.latitude, location.longitude])
+
+    #     locations.append({'image': avatar(organisation),
+    #                       'latitude': location.latitude,
+    #                       'longitude': location.longitude,
+    #                       # 'url': item.get_absolute_url(),
+    #                       'icon': ORGANISATION_MARKER_ICON,
+    #                       'pk': organisation.id,
+    #                   })
+
+    # template_context = {
+    #     'map_id': map_id,
+    #     'width': width,
+    #     'height': height,
+    #     'marker_icon': ORGANISATION_MARKER_ICON,
+    #     'locations': locations,
+    #     'dynamic': dynamic,
+    #     'infowindows': True,
+    #     'partnersite_widget': False
+    # }
+    # return template_context
+
+
+
 @register.inclusion_tag('inclusion_tags/maps.html')
 def project_map(id, width, height, dynamic='dynamic'):
     """
@@ -183,8 +276,8 @@ def organisation_map(id, width, height, dynamic='dynamic'):
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
 
     locations = []
-
     for location in OrganisationLocation.objects.filter(location_target_id=id):
+
         if location.latitude == 0 and location.longitude == 0:
             continue
         if location.latitude > 80 or location.latitude < -80:

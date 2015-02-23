@@ -68,11 +68,13 @@ $(document).ready(function() {
   // Find each element of class rsr_map (from the coll_map template tag)
   // and render map with data from related js object
   _.forEach(document.getElementsByClassName('rsr_map'), function( node ) {
+
     var mapId = node.id,
+        mapConfig = window[mapId],
         disableDefaultUI = false,
         draggable = true;
 
-    if ( node.dynamic === false ) {
+    if ( !mapConfig.dynamic ) {
       disableDefaultUI = true;
       draggable = false;
     }
@@ -120,9 +122,11 @@ $(document).ready(function() {
           infoWindow = new google.maps.InfoWindow({
             content: infoWinTempl(location)
           });
-          google.maps.event.addListener(marker, 'click', function() {
-            infoWindow.open(map, marker);
-          });
+          if (mapConfig.dynamic) {
+            google.maps.event.addListener(marker, 'click', function() {
+              infoWindow.open(map, marker);
+            });
+          }
 
           bounds.extend(marker.position);
         });

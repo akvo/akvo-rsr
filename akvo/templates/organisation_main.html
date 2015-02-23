@@ -3,7 +3,7 @@
 {% block title %}{{organisation.name}}{% endblock %}
 {% block maincontent %}
   <div class="container organisationDetail">
-    
+
     <div class="row verticalPadding organisationHeader">
 
       <div class="col-sm-6">
@@ -138,7 +138,7 @@
   </div>
   <div class="row">
     <div class="col-xs-12 topMargin">
-        {% organisation_map organisation.id '100%' '300px' %}
+      {% org_map organisation '100%' '300px' 'static' %}
     </div>
   </div>
 </div>
