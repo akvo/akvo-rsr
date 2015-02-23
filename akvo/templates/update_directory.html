@@ -11,7 +11,6 @@
       <div id="search" class="verticalPadding">
         <p>{% trans "Refine the update list below by searching by name, organisation or sector" %}</p>
         <div class="form-inline" role="form">
-          {#<form class="form-inline" role="form">#}
           <div class="form-group">
             <div class="input-group">
               {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
@@ -19,16 +18,15 @@
                 <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
               </span>
             </div>
-              <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
+            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
           </div>
-            {% if q %}
-            <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
-            {% endif %}
-          </div>
-          {#</form>#}
+          {% if q %}
+          <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
+          {% endif %}
         </div>
       </div>
     </div>
+  </form>
 </section>
 <div id="wrapper">
   <aside  id="sidebar-wrapper" class="{ show_filters }}">
@@ -37,7 +35,7 @@
         <div class="btn-group">
           {% bootstrap_field filter.form.continent %}
         </div>
-      </div> 
+      </div>
       <div>
       <nav>
         <ul class="nav nav-pills nav-stacked">
@@ -53,7 +51,7 @@
 
 <div class="container">
   <div class="row center-text">
-        <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>    
+        <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
   </div>
         {% include 'navigation/pagination.html' %}
   </div>
@@ -74,7 +72,7 @@
           <div class="col-sm-4 col-md-4 col-xs-8">
             <h1><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h1>
             <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><i class="fa fa-folder-o"></i> {{u.project.title}}</a>
-            <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span> 
+            <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>
                 {% if u.user.approved_organisations %}
                   {% with org=u.user.approved_organisations.0 %}
                     ( <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a> )
@@ -105,7 +103,7 @@
 
 {% block js %}
   {{ block.super }}
-  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  {# <script src="http://maps.google.com/maps/api/js?sensor=false"></script> #}
   {% compressed_js 'rsr_v3_update_directory' %}
 {% endblock js %}
 
