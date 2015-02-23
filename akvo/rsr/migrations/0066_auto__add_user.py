@@ -31,12 +31,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('rsr', ['User'])
 
-        try:
-            # Removing M2M table for field organisation on 'User'
-            db.delete_table(db.shorten_name(u'rsr_user_organisations'))
-        except:
-            pass
-
         # Adding M2M table for field organisation on 'User'
         m2m_table_name = db.shorten_name(u'rsr_user_organisations')
         db.create_table(m2m_table_name, (
