@@ -63,6 +63,8 @@ a, a:link, a:visited {
   color: #00aaff;
   text-decoration: none;
   cursor: pointer;
+  -moz-transition: color 0.2s linear;
+  -o-transition: color 0.2s linear;
   -webkit-transition: color 0.2s linear;
   transition: color 0.2s linear; }
   a:link, a:link:link, a:visited:link {
@@ -1225,20 +1227,32 @@ div.textBlock {
       font-weight: bold; }
 
 /*   Version Banner */
-.versionBanner {
+#versionBanner {
   box-sizing: border-box;
   position: fixed;
-  max-height: 50px;
+  max-height: 60px;
+  padding: 3px;
   bottom: 0px;
-  right: 0px;
-  background-color: red;
-  -moz-border-radius: 3px 0 0 0;
-  -o-border-radius: 3px 0 0 0;
-  -webkit-border-radius: 3px 0 0 0;
-  border-radius: 3px 0 0 0;
-  background-color: #ffddcc;
+  right: 0;
+  z-index: 21322;
+  -moz-border-radius: 3px 3px 0 0;
+  -o-border-radius: 3px 3px 0 0;
+  -webkit-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+  background-color: rgba(238, 49, 36, 0.9);
   border-top: 1px solid rgba(255, 85, 0, 0.5);
   border-left: 1px solid rgba(255, 85, 0, 0.5);
-  box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2); }
-  .versionBanner div {
-    padding: 5px 10px; }
+  box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2);
+  color: #ee3124;
+  font-weight: bold; }
+  #versionBanner div {
+    padding: 8px 15px 8px 5px;
+    background: rgba(255, 255, 255, 0.7); }
+    #versionBanner div .closeBtn {
+      padding: 5px 8px;
+      background: #202024;
+      -moz-border-radius: 3px;
+      -o-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      margin-right: 10px; }

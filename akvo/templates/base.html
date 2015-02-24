@@ -90,14 +90,20 @@
      $(document).ready(function() {
         {% block jq %}{% endblock %}
      });
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+          e.style.display = 'none';
+        }
     </script>
-
+    
     {# Piwik #}
-    {% tracking_code %}
-    <div class="versionBanner">
-      <div>
+    {% tracking_code %}      
+
+    <div id="versionBanner">
+      <div><a href="#" onclick="toggle_visibility('versionBanner');" class="closeBtn"><i class="fa fa-times"></i> close this</a>
         New: RSR v3.0 released: <a href="#">More details</a>
       </div>
     </div>
+    <div></div>
   </body>
 </html>
