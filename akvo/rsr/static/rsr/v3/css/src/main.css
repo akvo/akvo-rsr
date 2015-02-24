@@ -537,13 +537,22 @@ footer .navbar {
     padding-top: 10px;
     padding-bottom: 10px; }
     footer .navbar #footer-body ul.nav li a {
-      display: block; }
+      display: block;
+      -moz-border-radius: 5px;
+      -o-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px; }
+      footer .navbar #footer-body ul.nav li a:hover {
+        background-color: rgba(255, 255, 255, 0.1); }
       footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
         margin: 0;
         width: 70px;
         background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
         text-indent: -9999px;
         background-size: 70px 42px; }
+        footer .navbar #footer-body ul.nav li a[href="http://akvo.org"]:hover {
+          background: rgba(255, 255, 255, 0.1) url(../../img/akvo.orgLogo.svg) center center no-repeat;
+          background-size: 70px 42px; }
         @media only screen and (max-width: 768px) {
           footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
             width: 100%;
