@@ -99,8 +99,8 @@
               {% endif %}
               </p>
             {% endif %}
-            <div class="visible-xs-block visible-sm">
-              <p class="small">
+            <div class="visible-xs-block hidden-sm">
+              <p>
               {% if p.sector_categories %}
               <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}<br>
               {% endif %}
@@ -109,7 +109,17 @@
               {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
               </p>
             </div>
-            </div>
+          </div>
+          <div class="hidden-xs visible-sm">
+            <p>
+              {% if p.sector_categories %}
+              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}<br>
+              {% endif %}
+              <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
+              <span class="detailedInfo">{% trans "Finance" %}</span>
+              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+            </p>
+          </div>
           <div class="col-sm-3 hidden-xs hidden-sm">
             {% if p.sector_categories %}
               <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
@@ -133,7 +143,7 @@
 {% endblock %}
 {% block js %}
   {{ block.super }}
-  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  {<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
   <script type="application/json" id="akvo-rsr-typeahead-thumbs">
    {
      "numberOfProjects": {{ project_count }}

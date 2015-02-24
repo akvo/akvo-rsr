@@ -3,7 +3,7 @@
 {% block title %}{{organisation.name}}{% endblock %}
 {% block maincontent %}
   <div class="container organisationDetail">
-    
+
     <div class="row verticalPadding organisationHeader">
 
       <div class="col-sm-6">
@@ -137,11 +137,17 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-12 topMargin">
-      <p>
-      {% organisation_map organisation.id '100%' '300px' %}
-      </p>
+    <div class="col-xs-12 topMargin">
+      {% primary_location_map organisation '100%' '300px' 'dynamic' %}
+      {# org_map organisation '100%' '300px' 'static' #}
     </div>
   </div>
 </div>
 {% endblock %}
+
+{% block js %}
+  {{ block.super }}
+
+  {# Google Maps #}
+  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+{% endblock js %}
