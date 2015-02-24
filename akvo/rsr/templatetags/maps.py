@@ -147,18 +147,15 @@ def get_location(item):
 
 
 @register.inclusion_tag('inclusion_tags/map.html')
-def org_map(organisation, width='100%', height='100%', dynamic='dynamic'):
-    """
-    ...
-    """
+def primary_location_map(item, width='100%', height='100%', dynamic='dynamic'):
     if dynamic != 'dynamic':
         dynamic = False
     map_id = 'akvo_map_{}'.format(os.urandom(8).encode('hex'))
 
     locations = []
-    locations.append(get_location(organisation))
+    locations.append(get_location(item))
 
-    template_context = {
+    return {
         'map_id': map_id,
         'width': width,
         'height': height,
@@ -166,38 +163,26 @@ def org_map(organisation, width='100%', height='100%', dynamic='dynamic'):
         'dynamic': dynamic,
     }
 
-    return template_context
+
+@register.inclusion_tag('inclusion_tags/map.html')
+def locations_map(item, width='100%', height='100%', dynamic='dynamic'):
+    if dynamic != 'dynamic':
+        dynamic = False
+    map_id = 'akvo_map_{}'.format(os.urandom(8).encode('hex'))
+
+    locations = []
+
+    if isinstance(item, Project):
+        locations.append(get_location(item))
 
 
-
-
-    # for location in OrganisationLocation.objects.filter(location_target_id=organisation.id):
-    #     if location.latitude == 0 and location.longitude == 0:
-    #         continue
-    #     if location.latitude > 80 or location.latitude < -80:
-    #         continue
-    #     # locations.append([location.latitude, location.longitude])
-
-    #     locations.append({'image': avatar(organisation),
-    #                       'latitude': location.latitude,
-    #                       'longitude': location.longitude,
-    #                       # 'url': item.get_absolute_url(),
-    #                       'icon': ORGANISATION_MARKER_ICON,
-    #                       'pk': organisation.id,
-    #                   })
-
-    # template_context = {
-    #     'map_id': map_id,
-    #     'width': width,
-    #     'height': height,
-    #     'marker_icon': ORGANISATION_MARKER_ICON,
-    #     'locations': locations,
-    #     'dynamic': dynamic,
-    #     'infowindows': True,
-    #     'partnersite_widget': False
-    # }
-    # return template_context
-
+    return {
+        'map_id': map_id,
+        'width': width,
+        'height': height,
+        'locations': locations,
+        'dynamic': dynamic,
+    }
 
 
 @register.inclusion_tag('inclusion_tags/maps.html')
