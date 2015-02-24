@@ -34,11 +34,11 @@ var Employment = React.createClass({
     render: function() {
         if (this.props.employment.is_approved) {
             return this.state.visible
-                ? <li>{this.props.employment.organisation_full.long_name}</li>
+                ? <li>{this.props.employment.organisation_full.name}</li>
                 : <span/>;
         } else {
             return this.state.visible
-                ? <li>{this.props.employment.organisation_full.long_name} <i>(Not approved)</i></li>
+                ? <li>{this.props.employment.organisation_full.name} <i>(Not approved)</i></li>
                 : <span/>;
         }
     }
@@ -138,12 +138,12 @@ var AddEmploymentForm = React.createClass({
         );
     },
 
-    getOrgByLongName: function( serializedData ) {
+    getOrgByName: function( serializedData ) {
         this.setState({
             response: "Retrieving organisation information..."
         });
         var name = $('#organisationInput').val();
-        $.get(this.props.org_link + "?format=json&long_name=" + name, function( data ) {
+        $.get(this.props.org_link + "?format=json&name=" + name, function( data ) {
             if (data.count == 1) {
                 serializedData.organisation = data.results[0].id;
                 this.getCountryByName( serializedData );
@@ -176,7 +176,7 @@ var AddEmploymentForm = React.createClass({
         });
 
         var serializedData = this.getFormData();
-        this.getOrgByLongName( serializedData );
+        this.getOrgByName( serializedData );
     },
 
     getFormData: function() {
@@ -231,7 +231,7 @@ var EmploymentApp = React.createClass({
     render: function() {
         return (
             <span>
-                <h3><i class="fa fa-users"></i> My organisations</h3>
+                <h3><i className="fa fa-users"></i> My organisations</h3>
                 <EmploymentList employments={this.state.employments} />
                 <AddEmploymentForm link={this.props.link} org_link={this.props.org_link}
                     country_link={this.props.country_link} addEmployment={this.addEmployment} />
