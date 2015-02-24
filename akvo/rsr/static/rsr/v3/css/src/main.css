@@ -49,6 +49,9 @@ body {
   text-rendering: optimizelegibility;
   font-family: 'Open Sans', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 80px; }
+  @media only screen and (max-width: 768px) {
+    body {
+      padding-top: 65px; } }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;

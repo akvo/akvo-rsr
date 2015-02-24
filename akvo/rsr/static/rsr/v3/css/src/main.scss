@@ -20,6 +20,9 @@ body {
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
     padding-top: 80px;
+    @include responsive(small-max-screens) {
+        padding-top: 65px;
+    }
 }
 
 h1,
