@@ -7,13 +7,11 @@
 {% block maincontent %}
 <article class="touch-navbar project-container">
     {% include "partials/project_header.html" %}
-
     <div class="container">
-        <div class="col-sm-8">
             <div class="row">
                 <div class="col-sm-6">
                     <h4>{% trans "Identifiers" %}</h4>
-                    <table class="table table-striped table-bordered">
+                    <table class="table table-striped table-bordered table-responsive">
                         <tbody>
                             <tr>
                                 <th scope="row">{% trans "IATI Activity ID" %}</th>
@@ -36,7 +34,7 @@
                 </div>
                 <div class="col-sm-6">
                     <h4>{% trans "Activity Dates" %}</h4>
-                    <table class="table table-striped table-bordered">
+                    <table class="table table-striped table-bordered table-responsive">
                         <tbody>
                             <tr>
                                 <th scope="row">{% trans "Planned Start Date" %}</th>
@@ -57,10 +55,9 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
             {% if project.has_relations %}
             <h4>{% trans "Related activities" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Relation" %}</th>
@@ -98,7 +95,7 @@
             </table>
             {% endif %}
             <h4>{% trans "Descriptions" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <tbody>
                     <tr>
                         <th scope="row">{% trans "Project Plan" %}</th>
@@ -138,7 +135,7 @@
             </table>
             {% if project.recipient_countries.all %}
             <h4>{% trans "Recipient Countries" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Country" %}</th>
@@ -157,7 +154,7 @@
             {% endif %}
             {% if project.recipient_regions.all %}
             <h4>{% trans "Recipient Regions" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Code" %}</th>
@@ -180,8 +177,7 @@
             {% endif %}
             {% if project.locations.all %}
             <h4>{% trans "Locations" %}</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered table-responsive locationTab">
                     <thead>
                         <tr>
                             <th>{% trans "Reference" %}</th>
@@ -217,11 +213,10 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
             {% endif %}
             {% if project.sectors.all %}
             <h4>{% trans "Sectors" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Sector" %}</th>
@@ -244,7 +239,7 @@
             {% endif %}
             {% if project.policy_markers.all %}
             <h4>{% trans "Policy Markers" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Policy Marker" %}</th>
@@ -263,7 +258,7 @@
             {% endif %}
             {% if project.country_budget_items.all %}
             <h4>{% trans "Country Budget Items" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Description" %}</th>
@@ -286,8 +281,7 @@
             {% endif %}
             {% if project.budget_items.all %}
             <h4>{% trans "Product Budget Items" %}</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered table-responsive">
                     <thead>
                         <tr>
                             <th>{% trans "Label" %}</th>
@@ -315,12 +309,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
             {% endif %}
+            
             {% if project.planned_disbursements.all %}
             <h4>{% trans "Planned Disbursements" %}</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered table-responsive">
                     <thead>
                         <tr>
                             <th>{% trans "Value" %}</th>
@@ -344,12 +337,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
             {% endif %}
+            
             {% if project.transactions.all %}
             <h4>{% trans "Transactions" %}</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered table-responsive">
                     <thead>
                         <tr>
                             <th>{% trans "Reference" %}</th>
@@ -389,11 +381,10 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
             {% endif %}
             {% if project.documents.all %}
             <h4>{% trans "Activity Documents" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Title" %}</th>
@@ -414,9 +405,10 @@
                 </tbody>
             </table>
             {% endif %}
+            
             {% if project.conditions.all %}
             <h4>{% trans "Conditions" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Condition" %}</th>
@@ -437,7 +429,7 @@
             {% endif %}
             {% if project.has_results %}
             <h4>{% trans "Results" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th>{% trans "Result" %}</th>
@@ -460,10 +452,10 @@
                 </tbody>
             </table>
             {% endif%}
+            
             {% if project.has_indicators %}
             <h4>{% trans "Indicators" %}</h4>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered table-responsive">
                     <thead>
                         <tr>
                             <th>{% trans "Indicator" %}</th>
@@ -503,13 +495,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
             {% endif %}
-        </div>
-        <div class="col-sm-4">
+
             <h4>{% trans "Reporting Organisation" %}</h4>
             {% with reporting_org=project.reporting_org %}
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <tbody>
                     <tr>
                         <th scope="row">{% trans "Name" %}</th>
@@ -530,9 +520,10 @@
                 </tbody>
             </table>
             {% endwith %}
+            
             <h4>{% trans "Participating Organisations" %}</h4>
             {% for partner, info in project.partners_info.items %}
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <tbody>
                     <tr>
                         <th scope="row">{% trans "Name" %}</th>
@@ -563,10 +554,11 @@
                 </tbody>
             </table>
             {% endfor %}
+            
             {% if project.contacts.all %}
             <h4>{% trans "Contact Details" %}</h4>
             {% for contact in project.contacts.all %}
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <tbody>
                     <tr>
                         <th scope="row">{% trans "Organisation" %}</th>
@@ -604,9 +596,10 @@
             </table>
             {% endfor %}
             {% endif %}
+            
             {% if project.project_scope or project.collaboration_type or project.default_flow_type or project.default_finance_type or project.default_tied_status or project.default_aid_type %}
             <h4>{% trans "Additional Details" %}</h4>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered table-responsive">
                 <tbody>
                     <tr>
                         <th scope="row">{% trans "Activity Scope" %}</th>
@@ -635,7 +628,8 @@
                 </tbody>
             </table>
             {% endif %}
+
         </div>
-    </div>
+</div>
 </article>
 {% endblock %}

@@ -303,6 +303,16 @@ nav.navbar-fixed-top {
                 text-indent: -9999px;
                 margin-top: 0;
             }
+            @include responsive(ipadAir) {
+                width: 180px;
+                top: -5px;
+                height: inherit;
+                background: url(../../img/rsrLogo.svg) no-repeat 5px center;
+                -webkit-background-size: 175px auto;
+                background-size: 175px auto;
+                text-indent: -9999px;
+                margin-top: 0;
+            }            
         }
     }
     .navbar-nav {
@@ -321,7 +331,7 @@ nav.navbar-fixed-top {
                     font-weight: bold;
                     background: rgba($anchorLinkHover, 0.1);
                     @include border-radius(3px);
-                    @include responsive(small-max-screens) {
+                    @include responsive(tablets) {
                         background: rgba($anchorLinkHover, 0.1);
                     }
                 }
@@ -334,7 +344,7 @@ nav.navbar-fixed-top {
                         background-color: $anchorLinkHover;
                         border-color: $anchorLinkHover;
                     }
-                    @include responsive(small-max-screens) {
+                    @include responsive(tablets) {
                         width: 95%;
                         padding: 10px 5%;
                         margin: 0 auto 10px auto;
@@ -393,7 +403,7 @@ nav.navbar-fixed-top {
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
-                    @include responsive(small-max-screens) {
+                    @include responsive(tablets) {
                         padding: 10px 15px;
                     }
 
@@ -509,6 +519,25 @@ nav.navbar-fixed-top {
 }
 
 .table-responsive {
+    &.locationTab {
+        overflow: hidden;
+        thead{
+            th {
+                max-width: 8.33% !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+            }
+        }        
+        tbody{
+            td {
+                max-width: 8.33% !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+            }
+        }
+    }
     .media {
         .media-body {
             p {
@@ -667,6 +696,9 @@ footer {
     margin-top: -10px;
     @include responsive(small-max-screens) {
         margin-top: -15px;
+    }
+    @include responsive(ipadAir) {
+        margin-top: -20px;
     }
 }
 
