@@ -13,7 +13,6 @@
       <div id="search" class="verticalPadding">
         <p>{% trans "Refine the update list below by searching by name, organisation or sector" %}</p>
         <div class="form-inline" role="form">
-          {#<form class="form-inline" role="form">#}
           <div class="form-group">
             <div class="input-group">
               {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
@@ -21,16 +20,15 @@
                 <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
               </span>
             </div>
-              <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
+            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
           </div>
-            {% if q %}
-            <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
-            {% endif %}
-          </div>
-          {#</form>#}
+          {% if q %}
+          <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
+          {% endif %}
         </div>
       </div>
     </div>
+  </form>
 </section>
 <div id="wrapper">
   <aside  id="sidebar-wrapper" class="{ show_filters }}">

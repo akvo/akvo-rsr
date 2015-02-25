@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------
 
-            Title:   Akvo RSR v3 
+            Title:   Akvo RSR v3
             Author:  Loic Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
@@ -1391,6 +1391,7 @@ div.textBlock {
         background-color: rgba(lighten($akvoTvRed, 15%), 0.1);
         p {
             padding-left: 20px;
+            color: rgba($akvoBlack, 0.45);
         }
     }
     h1 {
@@ -1413,8 +1414,11 @@ div.textBlock {
         }
     }
     .orgDetails {
-        background: rgba(white, 0.45);
+        background: rgba(white, 0.65);
         @include border-radius(5px);
+        @include responsive(small-max-screens) {
+            padding: 10px 15px;
+        }
     }
 }
 

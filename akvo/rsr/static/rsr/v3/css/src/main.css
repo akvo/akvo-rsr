@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*---------------------------------------------------------------------------------
 
-            Title:   Akvo RSR v3 
+            Title:   Akvo RSR v3
             Author:  Loic Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
@@ -196,7 +196,7 @@ span.twitter-typeahead .tt-suggestion > p {
   padding: 3px 20px;
   clear: both;
   font-weight: normal;
-  line-height: 1.42857;
+  line-height: 1.42857143;
   color: #333333;
   white-space: nowrap; }
 
@@ -1172,7 +1172,8 @@ div.textBlock {
 .organisationDetail .orgDescr {
   background-color: rgba(244, 116, 107, 0.1); }
   .organisationDetail .orgDescr p {
-    padding-left: 20px; }
+    padding-left: 20px;
+    color: rgba(32, 32, 36, 0.45); }
 .organisationDetail h1 {
   margin-top: 0;
   margin-bottom: 20px;
@@ -1189,11 +1190,14 @@ div.textBlock {
     width: 35%;
     margin-left: 5px; }
 .organisationDetail .orgDetails {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.65);
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
+  @media only screen and (max-width: 768px) {
+    .organisationDetail .orgDetails {
+      padding: 10px 15px; } }
 
 /* Update Page */
 .updateMain h1 {

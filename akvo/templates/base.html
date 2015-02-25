@@ -51,6 +51,12 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
     {% compressed_css 'rsr_v3_style' %}
     {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+    <style type="text/css">
+        /** FIX for Bootstrap and Google Maps Info window styes problem **/
+        img[src*="gstatic.com/"], img[src*="googleapis.com/"] {
+        max-width: none;
+        }
+    </style>
 
     {% block head %}{% endblock head %}
 
@@ -97,13 +103,6 @@
     </script>
     
     {# Piwik #}
-    {% tracking_code %}      
-
-    <div id="versionBanner">
-      <div><button onclick="toggle_visibility('versionBanner');" class="closeBtn"><i class="fa fa-times"></i> close this</button>
-        New: RSR v3.0 released: <a href="#">Read more</a>
-      </div>
-    </div>
-    <div></div>
+    {% tracking_code %}
   </body>
 </html>
