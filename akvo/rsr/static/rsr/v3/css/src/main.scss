@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------
 
-            Title:   Akvo RSR v3
+            Title:   Akvo RSR v3 
             Author:  Loic Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
@@ -407,6 +407,43 @@ nav.navbar-fixed-top {
         }
     }
 }
+@include responsive (mediums-max-screens) {
+ .navbar-header {
+        float: none;
+    }
+    .navbar-left,.navbar-right {
+        float: none !important;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .navbar-fixed-top {
+        top: 0;
+        border-width: 0 0 1px;
+    }
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-nav {
+        float: none!important;
+        margin-top: 7.5px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .collapse.in{
+        display:block !important;
+    }
+}
+
 
 .navbar-inverse {
     .navbar-collapse {
@@ -816,6 +853,11 @@ h4.detailedInfo {
         text-align: center;
         @include responsive(small-max-screens) {
             padding-bottom: 0;
+        }
+
+        button {
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
     }
     background-color: #241F20;
@@ -1391,7 +1433,6 @@ div.textBlock {
         background-color: rgba(lighten($akvoTvRed, 15%), 0.1);
         p {
             padding-left: 20px;
-            color: rgba($akvoBlack, 0.45);
         }
     }
     h1 {
@@ -1414,11 +1455,8 @@ div.textBlock {
         }
     }
     .orgDetails {
-        background: rgba(white, 0.65);
+        background: rgba(white, 0.45);
         @include border-radius(5px);
-        @include responsive(small-max-screens) {
-            padding: 10px 15px;
-        }
     }
 }
 
@@ -1468,8 +1506,8 @@ div.textBlock {
     position: fixed;
     max-height: 60px;
     bottom: 0px;
-    right:0;
-    z-index:21322;
+    right: 0;
+    z-index: 21322;
     @include border-radius(3px 3px 0 0);
     background-color: rgba($akvoTvRed, 0.9);
     border-top: 1px solid rgba($anchorLinkHover, 0.5);
@@ -1478,15 +1516,16 @@ div.textBlock {
     color: $akvoTvRed;
     div {
         padding: 15px 15px 15px 8px;
-        background:rgba(white,0.95);
-        .closeBtn {
-            padding:5px 8px;
-            background:$anchorLink;
+        background: rgba(white, 0.95);
+        #closeBtn {
+            padding: 5px 8px;
+            background: $anchorLink;
             @include border-radius(3px);
-            margin-right:10px;
-            color:white;
+            margin-right: 10px;
+            color: white;
+            border: none;
             &:hover {
-                background:$anchorLinkHover;
+                background: $anchorLinkHover;
             }
         }
     }
