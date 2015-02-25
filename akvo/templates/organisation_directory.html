@@ -7,8 +7,8 @@
   {% coll_map page '100%' '100%' %}
 </section>
 
-<section id="search-filter">
-  <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
+<form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
+  <section id="search-filter">
     <div class="container-fluid">
       <div id="search" class="verticalPadding">
         <p>{% trans "Refine the organisation list below by searching by name, organisation or sector" %}</p>
@@ -20,36 +20,35 @@
                 <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
               </span>
             </div>
-              <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
+            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
           </div>
-          </div>
-          {% if q %}
-            <div><a href="{% url 'organisation-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
-          {% endif %}
-          </div>
-          {#</form>#}
         </div>
+        {% if q %}
+        <div><a href="{% url 'organisation-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
+        {% endif %}
       </div>
     </div>
-</section>
-<div id="wrapper">
-  <aside  id="sidebar-wrapper" class="{ show_filters }}">
-    <div id="filter" class="">
-      <div>
-        <div class="btn-group">
-          {% bootstrap_field filter.form.location %}
+    </div>
+    </div>
+  </section>
+  <div id="wrapper">
+    <aside  id="sidebar-wrapper" class="{ show_filters }}">
+      <div id="filter" class="">
+        <div>
+          <div class="btn-group">
+            {% bootstrap_field filter.form.location %}
+          </div>
+        </div>
+        <div>
+          <nav>
+            <ul class="nav nav-pills nav-stacked">
+              <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> Close this</a></li>
+            </ul>
+          </nav>
         </div>
       </div>
-      <div>
-        <nav>
-        <ul class="nav nav-pills nav-stacked">
-          <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> Close this</a></li>
-          </ul>
-        </nav>
-      </div>
-    </div>
-  </aside>
-</div>
+    </aside>
+  </div>
 </form>
 
 <div class="container">
