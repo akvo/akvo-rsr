@@ -162,6 +162,11 @@ urlpatterns = patterns(
         AllProjectUpdates(),
         name="rss_all_updates"),
 
+    # Auth token for mobile apps
+    url(r'^auth/token/$',
+        'akvo.rsr.views.account.get_api_key',
+        name="auth_token"),
+
 )
 
 # TastyPie API

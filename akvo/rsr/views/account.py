@@ -8,16 +8,21 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import re
 
+from lxml import etree
+
 from akvo.rsr.forms import RegisterForm
 
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from registration.models import RegistrationProfile
+
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 
 def register(request):
@@ -98,3 +103,35 @@ def sign_in(request):
 def sign_out(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+
+@require_POST
+@csrf_exempt
+def get_api_key(request):
+    username = request.POST.get("username", "")
+    password = request.POST.get("password", "")
+    if username and password:
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            user_id = user.id
+            projects = user.organisations.all_projects().published()
+            if not user.api_key:
+                user.save()
+            xml_root = etree.Element("credentials")
+            user_id_element = etree.SubElement(xml_root, "user_id")
+            user_id_element.text = str(user_id)
+            username_element = etree.SubElement(xml_root, "username")
+            username_element.text = username
+            org_id_element = etree.SubElement(xml_root, "org_id")
+            org_id_element.text = str(user.organisations[0].id)
+            api_key_element = etree.SubElement(xml_root, "api_key")
+            api_key_element.text = user.api_key
+            pub_projs_element = etree.SubElement(xml_root, "published_projects")
+            for proj in projects:
+                proj_id_element = etree.SubElement(pub_projs_element, "id")
+                proj_id_element.text = str(proj.id)
+            xml_tree = etree.ElementTree(xml_root)
+            xml_data = etree.tostring(xml_tree)
+            return HttpResponse(xml_data, content_type="text/xml")
+    return HttpResponseForbidden()

@@ -55,7 +55,6 @@ def filter_m49(queryset, value):
     """Filters countries from the m49 list"""
     if not value:
         return queryset
-
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
     return queryset.filter(primary_location__country__iso_code__in=countries)
 
@@ -121,7 +120,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),
         label='partner',
-        name='user__organisations__id')
+        name='project__partners__id')
 
     sector = django_filters.ChoiceFilter(
         initial='All',
