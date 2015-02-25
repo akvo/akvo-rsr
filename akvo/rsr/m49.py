@@ -13,1075 +13,1077 @@ M49_CODES = (
     ),
     (
         u"2",
-        u"Africa"
-    ),
-    (
-        u"3",
-        u"North America"
-    ),
-    (
-        u"4",
-        u"Afghanistan"
-    ),
-    (
-        u"5",
-        u"South America"
-    ),
-    (
-        u"8",
-        u"Albania"
-    ),
-    (
-        u"9",
-        u"Oceania"
-    ),
-    (
-        u"11",
-        u"Western Africa"
-    ),
-    (
-        u"12",
-        u"Algeria"
-    ),
-    (
-        u"13",
-        u"Central America"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Africa"
     ),
     (
         u"14",
-        u"Eastern Africa"
-    ),
-    (
-        u"15",
-        u"Northern Africa"
-    ),
-    (
-        u"16",
-        u"American Samoa"
-    ),
-    (
-        u"17",
-        u"Middle Africa"
-    ),
-    (
-        u"18",
-        u"Southern Africa"
-    ),
-    (
-        u"19",
-        u"Americas"
-    ),
-    (
-        u"20",
-        u"Andorra"
-    ),
-    (
-        u"21",
-        u"Northern America"
-    ),
-    (
-        u"24",
-        u"Angola"
-    ),
-    (
-        u"28",
-        u"Antigua and Barbuda"
-    ),
-    (
-        u"29",
-        u"Caribbean"
-    ),
-    (
-        u"30",
-        u"Eastern Asia"
-    ),
-    (
-        u"31",
-        u"Azerbaijan"
-    ),
-    (
-        u"32",
-        u"Argentina"
-    ),
-    (
-        u"34",
-        u"Southern Asia"
-    ),
-    (
-        u"35",
-        u"South-Eastern Asia"
-    ),
-    (
-        u"36",
-        u"Australia"
-    ),
-    (
-        u"39",
-        u"Southern Europe"
-    ),
-    (
-        u"40",
-        u"Austria"
-    ),
-    (
-        u"44",
-        u"Bahamas"
-    ),
-    (
-        u"48",
-        u"Bahrain"
-    ),
-    (
-        u"50",
-        u"Bangladesh"
-    ),
-    (
-        u"51",
-        u"Armenia"
-    ),
-    (
-        u"52",
-        u"Barbados"
-    ),
-    (
-        u"53",
-        u"Australia and New Zealand"
-    ),
-    (
-        u"54",
-        u"Melanesia"
-    ),
-    (
-        u"56",
-        u"Belgium"
-    ),
-    (
-        u"57",
-        u"Micronesia"
-    ),
-    (
-        u"60",
-        u"Bermuda"
-    ),
-    (
-        u"61",
-        u"Polynesia"
-    ),
-    (
-        u"64",
-        u"Bhutan"
-    ),
-    (
-        u"68",
-        u"Bolivia (Plurinational State of)"
-    ),
-    (
-        u"70",
-        u"Bosnia and Herzegovina"
-    ),
-    (
-        u"72",
-        u"Botswana"
-    ),
-    (
-        u"76",
-        u"Brazil"
-    ),
-    (
-        u"84",
-        u"Belize"
-    ),
-    (
-        u"90",
-        u"Solomon Islands"
-    ),
-    (
-        u"92",
-        u"British Virgin Islands"
-    ),
-    (
-        u"96",
-        u"Brunei Darussalam"
-    ),
-    (
-        u"100",
-        u"Bulgaria"
-    ),
-    (
-        u"104",
-        u"Myanmar"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Eastern Africa"
     ),
     (
         u"108",
-        u"Burundi"
-    ),
-    (
-        u"112",
-        u"Belarus"
-    ),
-    (
-        u"116",
-        u"Cambodia"
-    ),
-    (
-        u"120",
-        u"Cameroon"
-    ),
-    (
-        u"124",
-        u"Canada"
-    ),
-    (
-        u"132",
-        u"Cabo Verde"
-    ),
-    (
-        u"136",
-        u"Cayman Islands"
-    ),
-    (
-        u"140",
-        u"Central African Republic"
-    ),
-    (
-        u"142",
-        u"Asia"
-    ),
-    (
-        u"143",
-        u"Central Asia"
-    ),
-    (
-        u"144",
-        u"Sri Lanka"
-    ),
-    (
-        u"145",
-        u"Western Asia"
-    ),
-    (
-        u"148",
-        u"Chad"
-    ),
-    (
-        u"150",
-        u"Europe"
-    ),
-    (
-        u"151",
-        u"Eastern Europe"
-    ),
-    (
-        u"152",
-        u"Chile"
-    ),
-    (
-        u"154",
-        u"Northern Europe"
-    ),
-    (
-        u"155",
-        u"Western Europe"
-    ),
-    (
-        u"156",
-        u"China"
-    ),
-    (
-        u"170",
-        u"Colombia"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Burundi"
     ),
     (
         u"174",
-        u"Comoros"
-    ),
-    (
-        u"175",
-        u"Mayotte"
-    ),
-    (
-        u"178",
-        u"Congo"
-    ),
-    (
-        u"180",
-        u"Democratic Republic of the Congo"
-    ),
-    (
-        u"184",
-        u"Cook Islands"
-    ),
-    (
-        u"188",
-        u"Costa Rica"
-    ),
-    (
-        u"191",
-        u"Croatia"
-    ),
-    (
-        u"192",
-        u"Cuba"
-    ),
-    (
-        u"196",
-        u"Cyprus"
-    ),
-    (
-        u"203",
-        u"Czech Republic"
-    ),
-    (
-        u"204",
-        u"Benin"
-    ),
-    (
-        u"208",
-        u"Denmark"
-    ),
-    (
-        u"212",
-        u"Dominica"
-    ),
-    (
-        u"214",
-        u"Dominican Republic"
-    ),
-    (
-        u"218",
-        u"Ecuador"
-    ),
-    (
-        u"222",
-        u"El Salvador"
-    ),
-    (
-        u"226",
-        u"Equatorial Guinea"
-    ),
-    (
-        u"231",
-        u"Ethiopia"
-    ),
-    (
-        u"232",
-        u"Eritrea"
-    ),
-    (
-        u"233",
-        u"Estonia"
-    ),
-    (
-        u"234",
-        u"Faeroe Islands"
-    ),
-    (
-        u"238",
-        u"Falkland Islands (Malvinas)"
-    ),
-    (
-        u"242",
-        u"Fiji"
-    ),
-    (
-        u"246",
-        u"Finland"
-    ),
-    (
-        u"248",
-        u"Åland Islands"
-    ),
-    (
-        u"250",
-        u"France"
-    ),
-    (
-        u"254",
-        u"French Guiana"
-    ),
-    (
-        u"258",
-        u"French Polynesia"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Comoros"
     ),
     (
         u"262",
-        u"Djibouti"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Djibouti"
     ),
     (
-        u"266",
-        u"Gabon"
+        u"232",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Eritrea"
     ),
     (
-        u"268",
-        u"Georgia"
-    ),
-    (
-        u"270",
-        u"Gambia"
-    ),
-    (
-        u"275",
-        u"State of Palestine"
-    ),
-    (
-        u"276",
-        u"Germany"
-    ),
-    (
-        u"288",
-        u"Ghana"
-    ),
-    (
-        u"292",
-        u"Gibraltar"
-    ),
-    (
-        u"296",
-        u"Kiribati"
-    ),
-    (
-        u"300",
-        u"Greece"
-    ),
-    (
-        u"304",
-        u"Greenland"
-    ),
-    (
-        u"308",
-        u"Grenada"
-    ),
-    (
-        u"312",
-        u"Guadeloupe"
-    ),
-    (
-        u"316",
-        u"Guam"
-    ),
-    (
-        u"320",
-        u"Guatemala"
-    ),
-    (
-        u"324",
-        u"Guinea"
-    ),
-    (
-        u"328",
-        u"Guyana"
-    ),
-    (
-        u"332",
-        u"Haiti"
-    ),
-    (
-        u"336",
-        u"Holy See"
-    ),
-    (
-        u"340",
-        u"Honduras"
-    ),
-    (
-        u"344",
-        u"China, Hong Kong Special Administrative Region"
-    ),
-    (
-        u"348",
-        u"Hungary"
-    ),
-    (
-        u"352",
-        u"Iceland"
-    ),
-    (
-        u"356",
-        u"India"
-    ),
-    (
-        u"360",
-        u"Indonesia"
-    ),
-    (
-        u"364",
-        u"Iran (Islamic Republic of)"
-    ),
-    (
-        u"368",
-        u"Iraq"
-    ),
-    (
-        u"372",
-        u"Ireland"
-    ),
-    (
-        u"376",
-        u"Israel"
-    ),
-    (
-        u"380",
-        u"Italy"
-    ),
-    (
-        u"384",
-        u"Cote d'Ivoire"
-    ),
-    (
-        u"388",
-        u"Jamaica"
-    ),
-    (
-        u"392",
-        u"Japan"
-    ),
-    (
-        u"398",
-        u"Kazakhstan"
-    ),
-    (
-        u"400",
-        u"Jordan"
+        u"231",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Ethiopia"
     ),
     (
         u"404",
-        u"Kenya"
-    ),
-    (
-        u"408",
-        u"Democratic People's Republic of Korea"
-    ),
-    (
-        u"410",
-        u"Republic of Korea"
-    ),
-    (
-        u"414",
-        u"Kuwait"
-    ),
-    (
-        u"417",
-        u"Kyrgyzstan"
-    ),
-    (
-        u"418",
-        u"Lao People's Democratic Republic"
-    ),
-    (
-        u"419",
-        u"Latin America and the Caribbean"
-    ),
-    (
-        u"422",
-        u"Lebanon"
-    ),
-    (
-        u"426",
-        u"Lesotho"
-    ),
-    (
-        u"428",
-        u"Latvia"
-    ),
-    (
-        u"430",
-        u"Liberia"
-    ),
-    (
-        u"434",
-        u"Libya"
-    ),
-    (
-        u"438",
-        u"Liechtenstein"
-    ),
-    (
-        u"440",
-        u"Lithuania"
-    ),
-    (
-        u"442",
-        u"Luxembourg"
-    ),
-    (
-        u"446",
-        u"China, Macao Special Administrative Region"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Kenya"
     ),
     (
         u"450",
-        u"Madagascar"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Madagascar"
     ),
     (
         u"454",
-        u"Malawi"
-    ),
-    (
-        u"458",
-        u"Malaysia"
-    ),
-    (
-        u"462",
-        u"Maldives"
-    ),
-    (
-        u"466",
-        u"Mali"
-    ),
-    (
-        u"470",
-        u"Malta"
-    ),
-    (
-        u"474",
-        u"Martinique"
-    ),
-    (
-        u"478",
-        u"Mauritania"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Malawi"
     ),
     (
         u"480",
-        u"Mauritius"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Mauritius"
     ),
     (
-        u"484",
-        u"Mexico"
-    ),
-    (
-        u"492",
-        u"Monaco"
-    ),
-    (
-        u"496",
-        u"Mongolia"
-    ),
-    (
-        u"498",
-        u"Republic of Moldova"
-    ),
-    (
-        u"499",
-        u"Montenegro"
-    ),
-    (
-        u"500",
-        u"Montserrat"
-    ),
-    (
-        u"504",
-        u"Morocco"
+        u"175",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Mayotte"
     ),
     (
         u"508",
-        u"Mozambique"
-    ),
-    (
-        u"512",
-        u"Oman"
-    ),
-    (
-        u"516",
-        u"Namibia"
-    ),
-    (
-        u"520",
-        u"Nauru"
-    ),
-    (
-        u"524",
-        u"Nepal"
-    ),
-    (
-        u"528",
-        u"Netherlands"
-    ),
-    (
-        u"531",
-        u"Curaçao"
-    ),
-    (
-        u"533",
-        u"Aruba"
-    ),
-    (
-        u"534",
-        u"Sint Maarten (Dutch part)"
-    ),
-    (
-        u"535",
-        u"Bonaire, Sint Eustatius and Saba"
-    ),
-    (
-        u"540",
-        u"New Caledonia"
-    ),
-    (
-        u"548",
-        u"Vanuatu"
-    ),
-    (
-        u"554",
-        u"New Zealand"
-    ),
-    (
-        u"558",
-        u"Nicaragua"
-    ),
-    (
-        u"562",
-        u"Niger"
-    ),
-    (
-        u"566",
-        u"Nigeria"
-    ),
-    (
-        u"570",
-        u"Niue"
-    ),
-    (
-        u"574",
-        u"Norfolk Island"
-    ),
-    (
-        u"578",
-        u"Norway"
-    ),
-    (
-        u"580",
-        u"Northern Mariana Islands"
-    ),
-    (
-        u"583",
-        u"Micronesia (Federated States of)"
-    ),
-    (
-        u"584",
-        u"Marshall Islands"
-    ),
-    (
-        u"585",
-        u"Palau"
-    ),
-    (
-        u"586",
-        u"Pakistan"
-    ),
-    (
-        u"591",
-        u"Panama"
-    ),
-    (
-        u"598",
-        u"Papua New Guinea"
-    ),
-    (
-        u"600",
-        u"Paraguay"
-    ),
-    (
-        u"604",
-        u"Peru"
-    ),
-    (
-        u"608",
-        u"Philippines"
-    ),
-    (
-        u"612",
-        u"Pitcairn"
-    ),
-    (
-        u"616",
-        u"Poland"
-    ),
-    (
-        u"620",
-        u"Portugal"
-    ),
-    (
-        u"624",
-        u"Guinea Bissau"
-    ),
-    (
-        u"626",
-        u"Timor-Leste"
-    ),
-    (
-        u"630",
-        u"Puerto Rico"
-    ),
-    (
-        u"634",
-        u"Qatar"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Mozambique"
     ),
     (
         u"638",
-        u"Réunion"
-    ),
-    (
-        u"642",
-        u"Romania"
-    ),
-    (
-        u"643",
-        u"Russian Federation"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Réunion"
     ),
     (
         u"646",
-        u"Rwanda"
-    ),
-    (
-        u"652",
-        u"Saint-Barthélemy"
-    ),
-    (
-        u"654",
-        u"Saint Helena"
-    ),
-    (
-        u"659",
-        u"Saint Kitts and Nevis"
-    ),
-    (
-        u"660",
-        u"Anguilla"
-    ),
-    (
-        u"662",
-        u"Saint Lucia"
-    ),
-    (
-        u"663",
-        u"Saint Martin (French part)"
-    ),
-    (
-        u"666",
-        u"Saint Pierre and Miquelon"
-    ),
-    (
-        u"670",
-        u"Saint Vincent and the Grenadines"
-    ),
-    (
-        u"674",
-        u"San Marino"
-    ),
-    (
-        u"678",
-        u"Sao Tome and Principe"
-    ),
-    (
-        u"682",
-        u"Saudi Arabia"
-    ),
-    (
-        u"686",
-        u"Senegal"
-    ),
-    (
-        u"688",
-        u"Serbia"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Rwanda"
     ),
     (
         u"690",
-        u"Seychelles"
-    ),
-    (
-        u"694",
-        u"Sierra Leone"
-    ),
-    (
-        u"702",
-        u"Singapore"
-    ),
-    (
-        u"703",
-        u"Slovakia"
-    ),
-    (
-        u"704",
-        u"Viet Nam"
-    ),
-    (
-        u"705",
-        u"Slovenia"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Seychelles"
     ),
     (
         u"706",
-        u"Somalia"
-    ),
-    (
-        u"710",
-        u"South Africa"
-    ),
-    (
-        u"716",
-        u"Zimbabwe"
-    ),
-    (
-        u"724",
-        u"Spain"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Somalia"
     ),
     (
         u"728",
-        u"South Sudan"
-    ),
-    (
-        u"729",
-        u"Sudan"
-    ),
-    (
-        u"732",
-        u"Western Sahara"
-    ),
-    (
-        u"740",
-        u"Suriname"
-    ),
-    (
-        u"744",
-        u"Svalbard and Jan Mayen Islands"
-    ),
-    (
-        u"748",
-        u"Swaziland"
-    ),
-    (
-        u"752",
-        u"Sweden"
-    ),
-    (
-        u"756",
-        u"Switzerland"
-    ),
-    (
-        u"760",
-        u"Syrian Arab Republic"
-    ),
-    (
-        u"762",
-        u"Tajikistan"
-    ),
-    (
-        u"764",
-        u"Thailand"
-    ),
-    (
-        u"768",
-        u"Togo"
-    ),
-    (
-        u"772",
-        u"Tokelau"
-    ),
-    (
-        u"776",
-        u"Tonga"
-    ),
-    (
-        u"780",
-        u"Trinidad and Tobago"
-    ),
-    (
-        u"784",
-        u"United Arab Emirates"
-    ),
-    (
-        u"788",
-        u"Tunisia"
-    ),
-    (
-        u"792",
-        u"Turkey"
-    ),
-    (
-        u"795",
-        u"Turkmenistan"
-    ),
-    (
-        u"796",
-        u"Turks and Caicos Islands"
-    ),
-    (
-        u"798",
-        u"Tuvalu"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"South Sudan"
     ),
     (
         u"800",
-        u"Uganda"
-    ),
-    (
-        u"804",
-        u"Ukraine"
-    ),
-    (
-        u"807",
-        u"The former Yugoslav Republic of Macedonia"
-    ),
-    (
-        u"818",
-        u"Egypt"
-    ),
-    (
-        u"826",
-        u"United Kingdom of Great Britain and Northern Ireland"
-    ),
-    (
-        u"831",
-        u"Guernsey"
-    ),
-    (
-        u"832",
-        u"Jersey"
-    ),
-    (
-        u"833",
-        u"Isle of Man"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Uganda"
     ),
     (
         u"834",
-        u"United Republic of Tanzania"
-    ),
-    (
-        u"840",
-        u"United States of America"
-    ),
-    (
-        u"850",
-        u"United States Virgin Islands"
-    ),
-    (
-        u"854",
-        u"Burkina Faso"
-    ),
-    (
-        u"858",
-        u"Uruguay"
-    ),
-    (
-        u"860",
-        u"Uzbekistan"
-    ),
-    (
-        u"862",
-        u"Venezuela (Bolivarian Republic of)"
-    ),
-    (
-        u"876",
-        u"Wallis and Futuna Islands"
-    ),
-    (
-        u"882",
-        u"Samoa"
-    ),
-    (
-        u"887",
-        u"Yemen"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"United Republic of Tanzania"
     ),
     (
         u"894",
-        u"Zambia"
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Zambia"
+    ),
+    (
+        u"716",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Zimbabwe"
+    ),
+    (
+        u"17",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Middle Africa"
+    ),
+    (
+        u"24",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Angola"
+    ),
+    (
+        u"120",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Cameroon"
+    ),
+    (
+        u"140",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Central African Republic"
+    ),
+    (
+        u"148",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Chad"
+    ),
+    (
+        u"178",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Congo"
+    ),
+    (
+        u"180",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Democratic Republic of the Congo"
+    ),
+    (
+        u"226",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Equatorial Guinea"
+    ),
+    (
+        u"266",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Gabon"
+    ),
+    (
+        u"678",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Sao Tome and Principe"
+    ),
+    (
+        u"15",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Northern Africa"
+    ),
+    (
+        u"12",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Algeria"
+    ),
+    (
+        u"818",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Egypt"
+    ),
+    (
+        u"434",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Libya"
+    ),
+    (
+        u"504",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Morocco"
+    ),
+    (
+        u"729",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Sudan"
+    ),
+    (
+        u"788",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Tunisia"
+    ),
+    (
+        u"732",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Western Sahara"
+    ),
+    (
+        u"18",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Southern Africa"
+    ),
+    (
+        u"72",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Botswana"
+    ),
+    (
+        u"426",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Lesotho"
+    ),
+    (
+        u"516",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Namibia"
+    ),
+    (
+        u"710",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"South Africa"
+    ),
+    (
+        u"748",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Swaziland"
+    ),
+    (
+        u"11",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Western Africa"
+    ),
+    (
+        u"204",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Benin"
+    ),
+    (
+        u"854",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Burkina Faso"
+    ),
+    (
+        u"132",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Cabo Verde"
+    ),
+    (
+        u"384",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Cote d'Ivoire"
+    ),
+    (
+        u"270",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Gambia"
+    ),
+    (
+        u"288",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Ghana"
+    ),
+    (
+        u"324",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Guinea"
+    ),
+    (
+        u"624",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Guinea-Bissau"
+    ),
+    (
+        u"430",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Liberia"
+    ),
+    (
+        u"466",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Mali"
+    ),
+    (
+        u"478",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Mauritania"
+    ),
+    (
+        u"562",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Niger"
+    ),
+    (
+        u"566",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Nigeria"
+    ),
+    (
+        u"654",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Saint Helena"
+    ),
+    (
+        u"686",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Senegal"
+    ),
+    (
+        u"694",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Sierra Leone"
+    ),
+    (
+        u"768",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Togo"
+    ),
+    (
+        u"19",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Americas"
+    ),
+    # Continent of North America consists of the Caribbean and Northern America, doesn't fit in hierarchy
+    #
+    # (
+    #     u"3",
+    #     u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"North America"
+    # ),
+    (
+        u"419",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Latin America and the Caribbean"
+    ),
+    (
+        u"29",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Caribbean"
+    ),
+    (
+        u"660",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Anguilla"
+    ),
+    (
+        u"28",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Antigua and Barbuda"
+    ),
+    (
+        u"533",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Aruba"
+    ),
+    (
+        u"44",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bahamas"
+    ),
+    (
+        u"52",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Barbados"
+    ),
+    (
+        u"535",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bonaire, Sint Eustatius and Saba"
+    ),
+    (
+        u"92",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"British Virgin Islands"
+    ),
+    (
+        u"136",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Cayman Islands"
+    ),
+    (
+        u"192",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Cuba"
+    ),
+    (
+        u"531",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Curaçao"
+    ),
+    (
+        u"212",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Dominica"
+    ),
+    (
+        u"214",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Dominican Republic"
+    ),
+    (
+        u"308",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Grenada"
+    ),
+    (
+        u"312",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Guadeloupe"
+    ),
+    (
+        u"332",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Haiti"
+    ),
+    (
+        u"388",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Jamaica"
+    ),
+    (
+        u"474",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Martinique"
+    ),
+    (
+        u"500",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Montserrat"
+    ),
+    (
+        u"630",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Puerto Rico"
+    ),
+    (
+        u"652",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Saint-Barthélemy"
+    ),
+    (
+        u"659",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Saint Kitts and Nevis"
+    ),
+    (
+        u"662",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Saint Lucia"
+    ),
+    (
+        u"663",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Saint Martin (French part)"
+    ),
+    (
+        u"670",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Saint Vincent and the Grenadines"
+    ),
+    (
+        u"534",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Sint Maarten (Dutch part)"
+    ),
+    (
+        u"780",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Trinidad and Tobago"
+    ),
+    (
+        u"796",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Turks and Caicos Islands"
+    ),
+    (
+        u"850",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"United States Virgin Islands"
+    ),
+    (
+        u"13",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Central America"
+    ),
+    (
+        u"84",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Belize"
+    ),
+    (
+        u"188",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Costa Rica"
+    ),
+    (
+        u"222",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"El Salvador"
+    ),
+    (
+        u"320",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Guatemala"
+    ),
+    (
+        u"340",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Honduras"
+    ),
+    (
+        u"484",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Mexico"
+    ),
+    (
+        u"558",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Nicaragua"
+    ),
+    (
+        u"591",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Panama"
+    ),
+    (
+        u"5",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"South America"
+    ),
+    (
+        u"32",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Argentina"
+    ),
+    (
+        u"68",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bolivia (Plurinational State of)"
+    ),
+    (
+        u"76",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Brazil"
+    ),
+    (
+        u"152",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Chile"
+    ),
+    (
+        u"170",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Colombia"
+    ),
+    (
+        u"218",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Ecuador"
+    ),
+    (
+        u"238",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Falkland Islands (Malvinas)"
+    ),
+    (
+        u"254",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"French Guiana"
+    ),
+    (
+        u"328",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Guyana"
+    ),
+    (
+        u"600",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Paraguay"
+    ),
+    (
+        u"604",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Peru"
+    ),
+    (
+        u"740",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Suriname"
+    ),
+    (
+        u"858",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Uruguay"
+    ),
+    (
+        u"862",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Venezuela (Bolivarian Republic of)"
+    ),
+    (
+        u"21",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Northern America"
+    ),
+    (
+        u"60",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bermuda"
+    ),
+    (
+        u"124",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Canada"
+    ),
+    (
+        u"304",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Greenland"
+    ),
+    (
+        u"666",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Saint Pierre and Miquelon"
+    ),
+    (
+        u"840",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"United States of America"
+    ),
+    (
+        u"142",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Asia"
+    ),
+    (
+        u"143",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Central Asia"
+    ),
+    (
+        u"398",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Kazakhstan"
+    ),
+    (
+        u"417",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Kyrgyzstan"
+    ),
+    (
+        u"762",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Tajikistan"
+    ),
+    (
+        u"795",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Turkmenistan"
+    ),
+    (
+        u"860",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Uzbekistan"
+    ),
+    (
+        u"30",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Eastern Asia"
+    ),
+    (
+        u"156",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"China"
+    ),
+    (
+        u"344",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"China, Hong Kong Special Administrative Region"
+    ),
+    (
+        u"446",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"China, Macao Special Administrative Region"
+    ),
+    (
+        u"408",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Democratic People's Republic of Korea"
+    ),
+    (
+        u"392",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Japan"
+    ),
+    (
+        u"496",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Mongolia"
+    ),
+    (
+        u"410",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Republic of Korea"
+    ),
+    (
+        u"34",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Southern Asia"
+    ),
+    (
+        u"4",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Afghanistan"
+    ),
+    (
+        u"50",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bangladesh"
+    ),
+    (
+        u"64",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bhutan"
+    ),
+    (
+        u"356",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"India"
+    ),
+    (
+        u"364",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Iran (Islamic Republic of)"
+    ),
+    (
+        u"462",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Maldives"
+    ),
+    (
+        u"524",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Nepal"
+    ),
+    (
+        u"586",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Pakistan"
+    ),
+    (
+        u"144",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Sri Lanka"
+    ),
+    (
+        u"35",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"South-Eastern Asia"
+    ),
+    (
+        u"96",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Brunei Darussalam"
+    ),
+    (
+        u"116",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Cambodia"
+    ),
+    (
+        u"360",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Indonesia"
+    ),
+    (
+        u"418",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Lao People's Democratic Republic"
+    ),
+    (
+        u"458",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Malaysia"
+    ),
+    (
+        u"104",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Myanmar"
+    ),
+    (
+        u"608",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Philippines"
+    ),
+    (
+        u"702",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Singapore"
+    ),
+    (
+        u"764",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Thailand"
+    ),
+    (
+        u"626",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Timor-Leste"
+    ),
+    (
+        u"704",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Viet Nam"
+    ),
+    (
+        u"145",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Western Asia"
+    ),
+    (
+        u"51",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Armenia"
+    ),
+    (
+        u"31",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Azerbaijan"
+    ),
+    (
+        u"48",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bahrain"
+    ),
+    (
+        u"196",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Cyprus"
+    ),
+    (
+        u"268",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Georgia"
+    ),
+    (
+        u"368",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Iraq"
+    ),
+    (
+        u"376",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Israel"
+    ),
+    (
+        u"400",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Jordan"
+    ),
+    (
+        u"414",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Kuwait"
+    ),
+    (
+        u"422",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Lebanon"
+    ),
+    (
+        u"512",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Oman"
+    ),
+    (
+        u"634",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Qatar"
+    ),
+    (
+        u"682",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Saudi Arabia"
+    ),
+    (
+        u"275",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"State of Palestine"
+    ),
+    (
+        u"760",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Syrian Arab Republic"
+    ),
+    (
+        u"792",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Turkey"
+    ),
+    (
+        u"784",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"United Arab Emirates"
+    ),
+    (
+        u"887",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Yemen"
+    ),
+    (
+        u"150",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Europe"
+    ),
+    (
+        u"151",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Eastern Europe"
+    ),
+    (
+        u"112",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Belarus"
+    ),
+    (
+        u"100",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bulgaria"
+    ),
+    (
+        u"203",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Czech Republic"
+    ),
+    (
+        u"348",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Hungary"
+    ),
+    (
+        u"616",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Poland"
+    ),
+    (
+        u"498",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Republic of Moldova"
+    ),
+    (
+        u"642",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Romania"
+    ),
+    (
+        u"643",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Russian Federation"
+    ),
+    (
+        u"703",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Slovakia"
+    ),
+    (
+        u"804",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Ukraine"
+    ),
+    (
+        u"154",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Northern Europe"
+    ),
+    (
+        u"248",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Åland Islands"
+    ),
+    (
+        u"208",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Denmark"
+    ),
+    (
+        u"233",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Estonia"
+    ),
+    (
+        u"234",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Faeroe Islands"
+    ),
+    (
+        u"246",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Finland"
+    ),
+    (
+        u"831",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Guernsey"
+    ),
+    (
+        u"352",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Iceland"
+    ),
+    (
+        u"372",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Ireland"
+    ),
+    (
+        u"833",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Isle of Man"
+    ),
+    (
+        u"832",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Jersey"
+    ),
+    (
+        u"428",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Latvia"
+    ),
+    (
+        u"440",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Lithuania"
+    ),
+    (
+        u"578",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Norway"
+    ),
+    (
+        u"744",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Svalbard and Jan Mayen Islands"
+    ),
+    (
+        u"752",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Sweden"
+    ),
+    (
+        u"826",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"United Kingdom of Great Britain and Northern Ireland"
+    ),
+    (
+        u"39",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Southern Europe"
+    ),
+    (
+        u"8",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Albania"
+    ),
+    (
+        u"20",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Andorra"
+    ),
+    (
+        u"70",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Bosnia and Herzegovina"
+    ),
+    (
+        u"191",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Croatia"
+    ),
+    (
+        u"292",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Gibraltar"
+    ),
+    (
+        u"300",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Greece"
+    ),
+    (
+        u"336",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Holy See"
+    ),
+    (
+        u"380",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Italy"
+    ),
+    (
+        u"470",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Malta"
+    ),
+    (
+        u"499",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Montenegro"
+    ),
+    (
+        u"620",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Portugal"
+    ),
+    (
+        u"674",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"San Marino"
+    ),
+    (
+        u"688",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Serbia"
+    ),
+    (
+        u"705",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Slovenia"
+    ),
+    (
+        u"724",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Spain"
+    ),
+    (
+        u"807",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"The former Yugoslav Republic of Macedonia"
+    ),
+    (
+        u"155",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Western Europe"
+    ),
+    (
+        u"40",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Austria"
+    ),
+    (
+        u"56",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Belgium"
+    ),
+    (
+        u"250",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"France"
+    ),
+    (
+        u"276",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Germany"
+    ),
+    (
+        u"438",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Liechtenstein"
+    ),
+    (
+        u"442",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Luxembourg"
+    ),
+    (
+        u"492",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Monaco"
+    ),
+    (
+        u"528",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Netherlands"
+    ),
+    (
+        u"756",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Switzerland"
+    ),
+    (
+        u"9",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Oceania"
+    ),
+    (
+        u"53",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Australia and New Zealand"
+    ),
+    (
+        u"36",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Australia"
+    ),
+    (
+        u"554",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"New Zealand"
+    ),
+    (
+        u"574",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Norfolk Island"
+    ),
+    (
+        u"54",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Melanesia"
+    ),
+    (
+        u"242",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Fiji"
+    ),
+    (
+        u"540",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"New Caledonia"
+    ),
+    (
+        u"598",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Papua New Guinea"
+    ),
+    (
+        u"90",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Solomon Islands"
+    ),
+    (
+        u"548",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Vanuatu"
+    ),
+    (
+        u"57",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Micronesia"
+    ),
+    (
+        u"316",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Guam"
+    ),
+    (
+        u"296",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Kiribati"
+    ),
+    (
+        u"584",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Marshall Islands"
+    ),
+    (
+        u"583",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Micronesia (Federated States of)"
+    ),
+    (
+        u"520",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Nauru"
+    ),
+    (
+        u"580",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Northern Mariana Islands"
+    ),
+    (
+        u"585",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Palau"
+    ),
+    (
+        u"61",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Polynesia"
+    ),
+    (
+        u"16",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"American Samoa"
+    ),
+    (
+        u"184",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Cook Islands"
+    ),
+    (
+        u"258",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"French Polynesia"
+    ),
+    (
+        u"570",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Niue"
+    ),
+    (
+        u"612",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Pitcairn"
+    ),
+    (
+        u"882",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Samoa"
+    ),
+    (
+        u"772",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Tokelau"
+    ),
+    (
+        u"776",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Tonga"
+    ),
+    (
+        u"798",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Tuvalu"
+    ),
+    (
+        u"876",
+        u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"\u00A0" + u"Wallis and Futuna Islands"
     ),
 )
 
