@@ -10,11 +10,16 @@ from ..models import ProjectUpdate, Project
 from ...utils import pagination, filter_query_string
 
 from django.shortcuts import get_object_or_404, render
+from django.template import RequestContext
 
 
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
-    f = ProjectUpdateFilter(qs, queryset=ProjectUpdate.objects.all())
+    if request.rsr_page:
+        updates = RequestContext(request)['projects_qs'].all_updates()
+    else:
+        updates = ProjectUpdate.objects.published()
+    f = ProjectUpdateFilter(qs, queryset=updates)
 
     show_filters = "in"
     available_filters = ['continent', 'status', 'organisation', 'focus_area', ]
