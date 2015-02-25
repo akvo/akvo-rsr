@@ -96,14 +96,13 @@
      $(document).ready(function() {
         {% block jq %}{% endblock %}
      });
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+          e.style.display = 'none';
+        }
     </script>
-
+    
     {# Piwik #}
     {% tracking_code %}
-    <div class="versionBanner">
-      <div>
-        New: RSR v3.0 released: <a href="#">More details</a>
-      </div>
-    </div>
   </body>
 </html>

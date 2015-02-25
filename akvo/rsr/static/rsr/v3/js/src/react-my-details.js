@@ -34,11 +34,11 @@ var Employment = React.createClass({displayName: 'Employment',
     render: function() {
         if (this.props.employment.is_approved) {
             return this.state.visible
-                ? React.DOM.li(null, this.props.employment.organisation_full.long_name)
+                ? React.DOM.li(null, this.props.employment.organisation_full.name)
                 : React.DOM.span(null);
         } else {
             return this.state.visible
-                ? React.DOM.li(null, this.props.employment.organisation_full.long_name, " ", React.DOM.i(null, "(Not approved)"))
+                ? React.DOM.li(null, this.props.employment.organisation_full.name, " ", React.DOM.i(null, "(Not approved)"))
                 : React.DOM.span(null);
         }
     }
@@ -138,12 +138,12 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
         );
     },
 
-    getOrgByLongName: function( serializedData ) {
+    getOrgByName: function( serializedData ) {
         this.setState({
             response: "Retrieving organisation information..."
         });
         var name = $('#organisationInput').val();
-        $.get(this.props.org_link + "?format=json&long_name=" + name, function( data ) {
+        $.get(this.props.org_link + "?format=json&name=" + name, function( data ) {
             if (data.count == 1) {
                 serializedData.organisation = data.results[0].id;
                 this.getCountryByName( serializedData );
@@ -176,7 +176,7 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
         });
 
         var serializedData = this.getFormData();
-        this.getOrgByLongName( serializedData );
+        this.getOrgByName( serializedData );
     },
 
     getFormData: function() {
@@ -231,7 +231,7 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
     render: function() {
         return (
             React.DOM.span(null, 
-                React.DOM.h3(null, React.DOM.i( {class:"fa fa-users"}), " My organisations"),
+                React.DOM.h3(null, React.DOM.i( {className:"fa fa-users"}), " My organisations"),
                 EmploymentList( {employments:this.state.employments} ),
                 AddEmploymentForm( {link:this.props.link, org_link:this.props.org_link,
                     country_link:this.props.country_link, addEmployment:this.addEmployment} )

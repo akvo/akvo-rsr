@@ -8,8 +8,7 @@ $(function() {
 
   // Typeahead
   var organisations = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name',
-                                                         'name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
       url: '/rest/v1/typeaheads/organisations?format=json',
@@ -21,8 +20,7 @@ $(function() {
   });
 
   var countries  = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('long_name',
-                                                         'name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
       url: '/rest/v1/typeaheads/countries?format=json',
@@ -72,7 +70,6 @@ $(function() {
     $.ajax({
       type:"POST",
       url: JSON.parse(document.getElementById("akvo-rsr-ajax-url").innerHTML).ajaxUrl,
-      // url: "{% url 'user_update_details' user.id %}" + "?format=json",
       data : JSON.stringify(serializedData),
       contentType : 'application/json; charset=UTF-8',
       success: function(response){
@@ -109,7 +106,7 @@ $(function() {
     },
     {
       name: 'organisations',
-      displayKey: 'long_name',
+      displayKey: 'name',
       source: organisations.ttAdapter()
     });
 
