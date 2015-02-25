@@ -49,6 +49,9 @@ body {
   text-rendering: optimizelegibility;
   font-family: 'Open Sans', 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 80px; }
+  @media only screen and (max-width: 768px) {
+    body {
+      padding-top: 65px; } }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -60,6 +63,8 @@ a, a:link, a:visited {
   color: #00aaff;
   text-decoration: none;
   cursor: pointer;
+  -moz-transition: color 0.2s linear;
+  -o-transition: color 0.2s linear;
   -webkit-transition: color 0.2s linear;
   transition: color 0.2s linear; }
   a:link, a:link:link, a:visited:link {
@@ -537,17 +542,31 @@ footer .navbar {
     padding-top: 10px;
     padding-bottom: 10px; }
     footer .navbar #footer-body ul.nav li a {
-      display: block; }
+      display: block;
+      -moz-border-radius: 5px;
+      -o-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px; }
+      footer .navbar #footer-body ul.nav li a:hover {
+        background-color: rgba(255, 255, 255, 0.1); }
       footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
         margin: 0;
         width: 70px;
-        background: url(../../img/akvo.orgLogo.svg) center center no-repeat;
+        background: rgba(255, 255, 255, 0) url(../../img/akvo.orgLogo.svg) center center no-repeat;
         text-indent: -9999px;
         background-size: 70px 42px; }
+        footer .navbar #footer-body ul.nav li a[href="http://akvo.org"]:hover {
+          background: rgba(255, 255, 255, 0.1) url(../../img/akvo.orgLogo.svg) center center no-repeat;
+          text-indent: -9999px;
+          background-size: 70px 42px; }
         @media only screen and (max-width: 768px) {
           footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
             width: 100%;
-            background-size: 80px auto; } }
+            background: rgba(255, 255, 255, 0) url(../../img/akvo.orgLogo.svg) center center no-repeat;
+            background-size: 80px auto; }
+            footer .navbar #footer-body ul.nav li a[href="http://akvo.org"]:hover {
+              background: rgba(255, 255, 255, 0.1) url(../../img/akvo.orgLogo.svg) center center no-repeat;
+              background-size: 80px auto; } }
 
 #footer-body {
   text-align: center;
@@ -1212,20 +1231,33 @@ div.textBlock {
       font-weight: bold; }
 
 /*   Version Banner */
-.versionBanner {
+#versionBanner {
   box-sizing: border-box;
   position: fixed;
-  max-height: 50px;
+  max-height: 60px;
   bottom: 0px;
-  right: 0px;
-  background-color: red;
-  -moz-border-radius: 3px 0 0 0;
-  -o-border-radius: 3px 0 0 0;
-  -webkit-border-radius: 3px 0 0 0;
-  border-radius: 3px 0 0 0;
-  background-color: #ffddcc;
+  right: 0;
+  z-index: 21322;
+  -moz-border-radius: 3px 3px 0 0;
+  -o-border-radius: 3px 3px 0 0;
+  -webkit-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+  background-color: rgba(238, 49, 36, 0.9);
   border-top: 1px solid rgba(255, 85, 0, 0.5);
   border-left: 1px solid rgba(255, 85, 0, 0.5);
-  box-shadow: -2px -3px 6px rgba(32, 32, 36, 0.2); }
-  .versionBanner div {
-    padding: 5px 10px; }
+  box-shadow: -1px -5px 6px rgba(32, 32, 36, 0.4);
+  color: #ee3124; }
+  #versionBanner div {
+    padding: 15px 15px 15px 8px;
+    background: rgba(255, 255, 255, 0.95); }
+    #versionBanner div .closeBtn {
+      padding: 5px 8px;
+      background: #00aaff;
+      -moz-border-radius: 3px;
+      -o-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      margin-right: 10px;
+      color: white; }
+      #versionBanner div .closeBtn:hover {
+        background: #ff5500; }
