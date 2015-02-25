@@ -191,13 +191,16 @@ span.twitter-typeahead .tt-dropdown-menu {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box; }
 
+.tt-hint {
+  color: rgba(0, 167, 157, 0.5); }
+
 span.twitter-typeahead .tt-suggestion > p {
   display: block;
   padding: 3px 20px;
   clear: both;
   font-weight: normal;
   line-height: 1.42857;
-  color: #333333;
+  color: #333;
   white-space: nowrap; }
 
 span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
@@ -293,6 +296,16 @@ nav.navbar-fixed-top {
           background-size: 175px auto;
           text-indent: -9999px;
           margin-top: 0; } }
+      @media only screen and (min-width: 768px) and (max-width: 1024px) {
+        nav.navbar-fixed-top .navbar-brand h1 {
+          width: 180px;
+          top: -5px;
+          height: inherit;
+          background: url(../../img/rsrLogo.svg) no-repeat 5px center;
+          -webkit-background-size: 175px auto;
+          background-size: 175px auto;
+          text-indent: -9999px;
+          margin-top: 0; } }
   nav.navbar-fixed-top .navbar-nav li {
     padding-top: 3px; }
     nav.navbar-fixed-top .navbar-nav li a {
@@ -309,7 +322,7 @@ nav.navbar-fixed-top {
         -o-border-radius: 3px;
         -webkit-border-radius: 3px;
         border-radius: 3px; }
-        @media only screen and (max-width: 768px) {
+        @media only screen and (max-width: 1024px) {
           nav.navbar-fixed-top .navbar-nav li a.active {
             background: rgba(255, 85, 0, 0.1); } }
       nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
@@ -320,7 +333,7 @@ nav.navbar-fixed-top {
         nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn:hover {
           background-color: #ff5500;
           border-color: #ff5500; }
-        @media only screen and (max-width: 768px) {
+        @media only screen and (max-width: 1024px) {
           nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
             width: 95%;
             padding: 10px 5%;
@@ -390,7 +403,7 @@ nav.navbar-fixed-top {
     nav.navbar-fixed-top .navbar-nav.navbar-right li a {
       padding-left: 5px;
       padding-right: 5px; }
-      @media only screen and (max-width: 768px) {
+      @media only screen and (max-width: 1024px) {
         nav.navbar-fixed-top .navbar-nav.navbar-right li a {
           padding: 10px 15px; } }
       nav.navbar-fixed-top .navbar-nav.navbar-right li a.active {
@@ -465,6 +478,18 @@ nav.navbar-fixed-top {
   background-color: rgba(32, 32, 36, 0);
   padding: 10px 0 10px 0; }
 
+.table-responsive.locationTab {
+  overflow: hidden; }
+  .table-responsive.locationTab thead th {
+    max-width: 8.33% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important; }
+  .table-responsive.locationTab tbody td {
+    max-width: 8.33% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important; }
 .table-responsive .media .media-body p {
   max-width: 170px;
   overflow: hidden;
@@ -612,6 +637,9 @@ footer .navbar {
   @media only screen and (max-width: 768px) {
     .touch-navbar {
       margin-top: -15px; } }
+  @media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .touch-navbar {
+      margin-top: -20px; } }
 
 .center-text {
   text-align: center; }

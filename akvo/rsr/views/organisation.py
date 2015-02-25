@@ -11,11 +11,16 @@ from ..models import Organisation
 from ...utils import pagination, filter_query_string
 
 from django.shortcuts import get_object_or_404, render
+from django.template import RequestContext
 
 
 def directory(request):
     qs = remove_empty_querydict_items(request.GET)
-    f = OrganisationFilter(qs, queryset=Organisation.objects.all())
+    if request.rsr_page:
+        organisations = RequestContext(request)['projects_qs'].all_partners()
+    else:
+        organisations = Organisation.objects.all()
+    f = OrganisationFilter(qs, queryset=organisations)
 
     # Instead of true or false, adhere to bootstrap3 class names to simplify
     show_filters = "in"

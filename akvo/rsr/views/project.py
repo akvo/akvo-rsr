@@ -12,7 +12,6 @@ from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
-from akvo.codelists.models import SectorCategory
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -285,6 +284,11 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     if not project.is_published() and not request.user.has_perm('rsr.change_project', project):
         raise PermissionDenied
 
+    # Check if user is allowed to place updates for this project
+    allow_update = False
+    if request.user.has_perm('rsr.post_updates', project):
+        allow_update = True
+
     updates = project.updates_desc()[:5]
     update = None
 
@@ -313,6 +317,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         'update': update,
         'updateform': updateform,
         'edit_mode': edit_mode,
+        'allow_update': allow_update
     }
 
     return render(request, 'update_add.html', context)
