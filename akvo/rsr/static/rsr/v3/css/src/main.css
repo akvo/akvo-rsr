@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*---------------------------------------------------------------------------------
 
-            Title:   Akvo RSR v3
+            Title:   Akvo RSR v3 
             Author:  Loic Sans, loic@akvo.org
 
 /*---------------------------------------------------------------------------------*/
@@ -196,7 +196,7 @@ span.twitter-typeahead .tt-suggestion > p {
   padding: 3px 20px;
   clear: both;
   font-weight: normal;
-  line-height: 1.42857143;
+  line-height: 1.42857;
   color: #333333;
   white-space: nowrap; }
 
@@ -733,6 +733,9 @@ h4.detailedInfo {
     @media only screen and (max-width: 768px) {
       #search-filter #search {
         padding-bottom: 0; } }
+    #search-filter #search button {
+      padding-top: 5px;
+      padding-bottom: 5px; }
   #search-filter p {
     color: #a5dfff; }
   #search-filter div#filter {
@@ -1172,8 +1175,7 @@ div.textBlock {
 .organisationDetail .orgDescr {
   background-color: rgba(244, 116, 107, 0.1); }
   .organisationDetail .orgDescr p {
-    padding-left: 20px;
-    color: rgba(32, 32, 36, 0.45); }
+    padding-left: 20px; }
 .organisationDetail h1 {
   margin-top: 0;
   margin-bottom: 20px;
@@ -1190,14 +1192,11 @@ div.textBlock {
     width: 35%;
     margin-left: 5px; }
 .organisationDetail .orgDetails {
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.45);
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
-  @media only screen and (max-width: 768px) {
-    .organisationDetail .orgDetails {
-      padding: 10px 15px; } }
 
 /* Update Page */
 .updateMain h1 {
@@ -1250,7 +1249,7 @@ div.textBlock {
   #versionBanner div {
     padding: 15px 15px 15px 8px;
     background: rgba(255, 255, 255, 0.95); }
-    #versionBanner div .closeBtn {
+    #versionBanner div button.closeBtn {
       padding: 5px 8px;
       background: #00aaff;
       -moz-border-radius: 3px;
@@ -1258,6 +1257,7 @@ div.textBlock {
       -webkit-border-radius: 3px;
       border-radius: 3px;
       margin-right: 10px;
-      color: white; }
-      #versionBanner div .closeBtn:hover {
+      color: white;
+      border: none; }
+      #versionBanner div button.closeBtn:hover {
         background: #ff5500; }
