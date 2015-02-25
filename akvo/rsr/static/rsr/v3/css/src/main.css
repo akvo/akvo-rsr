@@ -233,9 +233,6 @@ dl.dl-horizontal dt {
   dl.dl-horizontal dt.totalFinance {
     margin-top: 30px;
     font-weight: bold; }
-@media only screen and (max-width: 768px) {
-  dl.dl-horizontal dd {
-    margin-left: 100px; } }
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
@@ -503,8 +500,15 @@ nav.navbar-fixed-top {
       color: white; }
     @media only screen and (max-width: 768px) {
       .twoColumns a {
-        width: 95%;
-        padding: 2px 5%;
+        width: 98%;
+        padding: 2px 1%;
+        float: none;
+        margin: 2px 0 2px 0;
+        display: block; } }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) {
+      .twoColumns a {
+        width: 98%;
+        padding: 2px 1%;
         float: none;
         margin: 2px 0 2px 0;
         display: block; } }
@@ -815,6 +819,12 @@ h4.detailedInfo {
     color: rgba(32, 32, 36, 0.5); }
   .main-list li .additionalInfo div span {
     margin-left: 5px; }
+  @media only screen and (max-width: 768px) {
+    .main-list li dl.dl-horizontal dd {
+      margin-left: 100px; } }
+  @media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .main-list li dl.dl-horizontal dd {
+      margin-left: 80px; } }
 .main-list .excerpt {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -963,6 +973,9 @@ header.projectHeader {
   #project-map div.akvo_map {
     width: calc(100%-2px);
     height: 300px; }
+
+.orgMap .mapInfoWindow img {
+  display: none; }
 
 div.projectTopRow {
   position: relative;
