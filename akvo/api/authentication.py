@@ -42,7 +42,7 @@ class ConditionalApiKeyAuthentication(ApiKeyAuthentication):
             return self._unauthorized()
 
         try:
-            user = get_user_model().objects.get(username=username)
+            user = get_user_model().objects.get(username__iexact=username)
         except (get_user_model().DoesNotExist, get_user_model().MultipleObjectsReturned):
             return self._unauthorized()
 

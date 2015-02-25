@@ -77,8 +77,8 @@ class RegisterForm(forms.Form):
         Verify that the email entered does not exist as an email or username.
         """
         email = self.cleaned_data['email']
-        if get_user_model().objects.filter(email=email).exists() \
-                or get_user_model().objects.filter(username=email).exists():
+        if get_user_model().objects.filter(email__iexact=email).exists() \
+                or get_user_model().objects.filter(username__iexact=email).exists():
             raise forms.ValidationError(_(u'A user with this email address already exists.'))
         return email
 
