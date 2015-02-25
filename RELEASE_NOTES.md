@@ -7,6 +7,131 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR version 3.0 Douglas
+---
+
+Thursday 26th February 2015, adriancollier
+
+New & Noteworthy
+---
+
+### New Visual Design
+The biggest change in this release and for sure the part you won't be able to miss is the new visual styling that has been applied throughout the platform. We've given all pages a new look, with an emphasis on making it easier for the user to find exactly what they're looking for.
+
+All pages have also been coded to be responsive to the device size that's being used, so now RSR is friendly for use on mobile and tablets.
+
+Github issue: [#733](https://github.com/akvo/akvo-rsr/issues/733), [#744](https://github.com/akvo/akvo-rsr/issues/744), [#759](https://github.com/akvo/akvo-rsr/issues/759), [#764](https://github.com/akvo/akvo-rsr/issues/764), [#786](https://github.com/akvo/akvo-rsr/issues/786), [#806](https://github.com/akvo/akvo-rsr/issues/806), [#807](https://github.com/akvo/akvo-rsr/issues/807), [#808](https://github.com/akvo/akvo-rsr/issues/808), [#811](https://github.com/akvo/akvo-rsr/issues/811), [#825](https://github.com/akvo/akvo-rsr/issues/825), [#839](https://github.com/akvo/akvo-rsr/issues/839), [#842](https://github.com/akvo/akvo-rsr/issues/842), [#843](https://github.com/akvo/akvo-rsr/issues/843), [#847](https://github.com/akvo/akvo-rsr/issues/847), [#856](https://github.com/akvo/akvo-rsr/issues/856), [#859](https://github.com/akvo/akvo-rsr/issues/859), [#866](https://github.com/akvo/akvo-rsr/issues/866), [#909](https://github.com/akvo/akvo-rsr/issues/909), [#914](https://github.com/akvo/akvo-rsr/issues/914), [#925](https://github.com/akvo/akvo-rsr/issues/925), [#926](https://github.com/akvo/akvo-rsr/issues/926), [#933](https://github.com/akvo/akvo-rsr/issues/933), [#947](https://github.com/akvo/akvo-rsr/issues/947), [#957](https://github.com/akvo/akvo-rsr/issues/957), [#969](https://github.com/akvo/akvo-rsr/issues/969), [#971](https://github.com/akvo/akvo-rsr/issues/971), [#976](https://github.com/akvo/akvo-rsr/issues/976), [#986](https://github.com/akvo/akvo-rsr/issues/986), [#987](https://github.com/akvo/akvo-rsr/issues/987), [#989](https://github.com/akvo/akvo-rsr/issues/989), [#996](https://github.com/akvo/akvo-rsr/issues/996), [#998](https://github.com/akvo/akvo-rsr/issues/998), [#1008](https://github.com/akvo/akvo-rsr/issues/1008), [#1009](https://github.com/akvo/akvo-rsr/issues/1009), [#1012](https://github.com/akvo/akvo-rsr/issues/1012), [#1028](https://github.com/akvo/akvo-rsr/issues/1028), [#1030](https://github.com/akvo/akvo-rsr/issues/1030), [#1031](https://github.com/akvo/akvo-rsr/issues/1031), [#1057](https://github.com/akvo/akvo-rsr/issues/1057), [#1082](https://github.com/akvo/akvo-rsr/issues/1082), [#1084](https://github.com/akvo/akvo-rsr/issues/1084), [#1087](https://github.com/akvo/akvo-rsr/issues/1087), [#1088](https://github.com/akvo/akvo-rsr/issues/1088), [#1118](https://github.com/akvo/akvo-rsr/issues/1118), [#1119](https://github.com/akvo/akvo-rsr/issues/1119), [#1123](https://github.com/akvo/akvo-rsr/issues/1123), [#1126](https://github.com/akvo/akvo-rsr/issues/1126), [#1130](https://github.com/akvo/akvo-rsr/issues/1130), [#1147](https://github.com/akvo/akvo-rsr/issues/1147), [#1150](https://github.com/akvo/akvo-rsr/issues/1150), [#1162](https://github.com/akvo/akvo-rsr/issues/1162), [#1164](https://github.com/akvo/akvo-rsr/issues/1164), [#1169](https://github.com/akvo/akvo-rsr/issues/1169), [#1180](https://github.com/akvo/akvo-rsr/issues/1180), [#1197](https://github.com/akvo/akvo-rsr/issues/1197), [#1198](https://github.com/akvo/akvo-rsr/issues/1198), [#1208](https://github.com/akvo/akvo-rsr/issues/1208) &  [#1212](https://github.com/akvo/akvo-rsr/issues/1212).
+
+### MyRSR Section
+A completely new section has been added into the platform called MyRSR. This is available for all users that are logged in to their accounts, and gives direct access to the content that is available to the user.
+
+This is the first big step towards bringing all actions that users need to be able to perform into the front end of the platform, with carefully crafted interfaces that provide exactyl the right functionality.
+
+In this release MyRSR contains areas for Projects, Updates and User Management. While some tasks still require the use of the RSR Admin, we've provided more direct links to the exact places in the Admin for ease of use, and we'll continue to work on replacing many of these Admin tasks with similar front end interfaces.
+
+Github issue: [#780](https://github.com/akvo/akvo-rsr/issues/780), [#781](https://github.com/akvo/akvo-rsr/issues/781), [#814](https://github.com/akvo/akvo-rsr/issues/814), [#835](https://github.com/akvo/akvo-rsr/issues/835), [#852](https://github.com/akvo/akvo-rsr/issues/852), [#873](https://github.com/akvo/akvo-rsr/issues/873), [#915](https://github.com/akvo/akvo-rsr/issues/915), [#970](https://github.com/akvo/akvo-rsr/issues/970), [#1026](https://github.com/akvo/akvo-rsr/issues/1026), [#1046](https://github.com/akvo/akvo-rsr/issues/1046), [#1125](https://github.com/akvo/akvo-rsr/issues/1125), [#1188](https://github.com/akvo/akvo-rsr/issues/1188), [#1193](https://github.com/akvo/akvo-rsr/issues/1193) & [#1204](https://github.com/akvo/akvo-rsr/issues/1204).
+
+### Site Navigation
+An important part of the new design is a new header that has been added to RSR. This gives access to different parts of the site as well as giving RSR a bit more of it's own brand identity.
+
+Github issue: [#942](https://github.com/akvo/akvo-rsr/issues/942), [#1111](https://github.com/akvo/akvo-rsr/issues/1111), [#1132](https://github.com/akvo/akvo-rsr/issues/1132) &  [#1163](https://github.com/akvo/akvo-rsr/issues/1163).
+
+### Project Hierarchy
+We've always been fond of the phrase "follow the money" here, and we think that it's an important element of visualising collaborative aid spending. To promote this, we have designed a new extension of the project page that called the Hierarchy. This page displays a visual representation of a project and all the projects that are related - either by funding, being funded, or coming from the same funding pool.
+
+We realise that initially there will not be a lot of data in this section, but we hope that partners will start populating this data and we'll start seeing some interesting mappings of projects.
+
+Github issue: [#904](https://github.com/akvo/akvo-rsr/issues/904), [#949](https://github.com/akvo/akvo-rsr/issues/949) &  [#1039](https://github.com/akvo/akvo-rsr/issues/1039).
+
+### Project Data Reports
+In previous releases we have made many changes to the data model of RSR to bring in more of the IATI standard into the data that we collect and hold on projects. So far, much of this data has remained hidden, but we now have a full data report for projects.
+
+From any project page it will now be possible to view the full project report containing all the available information we hold on a project. As an added benefit, you can also download this information in pdf format.
+
+Github issue: [#994](https://github.com/akvo/akvo-rsr/issues/994) &  [#1196](https://github.com/akvo/akvo-rsr/issues/1196).
+
+
+New or Improved Features
+---
+
+### User Registration Process
+We've completely overhauled the user regsitration process, making sure that it's clear and easy to follow in the hope to reduce the number of issues our users were having while siging up for an account.
+
+Github issue: [#766](https://github.com/akvo/akvo-rsr/issues/766), [#783](https://github.com/akvo/akvo-rsr/issues/783), [#790](https://github.com/akvo/akvo-rsr/issues/790), [#823](https://github.com/akvo/akvo-rsr/issues/823), [#824](https://github.com/akvo/akvo-rsr/issues/824), [#884](https://github.com/akvo/akvo-rsr/issues/884), [#905](https://github.com/akvo/akvo-rsr/issues/905), [#906](https://github.com/akvo/akvo-rsr/issues/906), [#1044](https://github.com/akvo/akvo-rsr/issues/1044), [#1045](https://github.com/akvo/akvo-rsr/issues/1045), [#1078](https://github.com/akvo/akvo-rsr/issues/1078), [#1092](https://github.com/akvo/akvo-rsr/issues/1092), [#1104](https://github.com/akvo/akvo-rsr/issues/1104), [#1145](https://github.com/akvo/akvo-rsr/issues/1145), [#1200](https://github.com/akvo/akvo-rsr/issues/1200) &  [#1201](https://github.com/akvo/akvo-rsr/issues/1201).
+
+### Password Reset
+There's now a new Password Reset process within the MyRSR section. We also tidied up the previous process for those users who are not logged in.
+
+Github issue: [#760](https://github.com/akvo/akvo-rsr/issues/760), [#797](https://github.com/akvo/akvo-rsr/issues/797) & [#952](https://github.com/akvo/akvo-rsr/issues/952).
+
+### Image Management
+We made some changes to the way images are managed. This includes increasing the upload size of images within updates, as well as a great new way to be able to access the original high resolution images.
+
+Github issue: [#893](https://github.com/akvo/akvo-rsr/issues/893), [#953](https://github.com/akvo/akvo-rsr/issues/953), [#968](https://github.com/akvo/akvo-rsr/issues/968),  [#1114](https://github.com/akvo/akvo-rsr/issues/1114) & [#901](*https://github.com/akvo/akvo-rsr/issues/901).
+
+### Searching and Filtering
+We made significant improvements to the search, filtering and sorting functionality for RSR. This is visible now within the listing pages and should give users all the tools they need to find the content they are looking for.
+
+Github issue: [#770](https://github.com/akvo/akvo-rsr/issues/770), [#812](https://github.com/akvo/akvo-rsr/issues/812), [#848](https://github.com/akvo/akvo-rsr/issues/848), [#939](https://github.com/akvo/akvo-rsr/issues/939), [#1041](https://github.com/akvo/akvo-rsr/issues/1041), [#1060](https://github.com/akvo/akvo-rsr/issues/1060), [#1073](https://github.com/akvo/akvo-rsr/issues/1073), [#1113](https://github.com/akvo/akvo-rsr/issues/1113), [#1120](https://github.com/akvo/akvo-rsr/issues/1120), [#1156](https://github.com/akvo/akvo-rsr/issues/1156), [#1191](https://github.com/akvo/akvo-rsr/issues/1191) &  [#1192](https://github.com/akvo/akvo-rsr/issues/1192).
+
+### Project Documents
+Added the ability to be able to upload project documents directly into RSR for them to be visible and downloadable from the project page.
+
+Github issue: [#1025](https://github.com/akvo/akvo-rsr/issues/1025).
+
+### Feedback Button
+Added a new Feedback Button in the footer of every page to make it easier for users to let us know what they think.
+
+Github issue: [#1049](https://github.com/akvo/akvo-rsr/issues/1049) & [#1144](https://github.com/akvo/akvo-rsr/issues/1144).
+
+### New in RSR Notice
+Created a new temporary box that informs users of the new changes and provides a link to give further information about what has changed.
+
+Github issue: [#1050](https://github.com/akvo/akvo-rsr/issues/1050) & [#1184](https://github.com/akvo/akvo-rsr/issues/1184).
+
+### Cookie Notification
+We have added a new banner to inform users about the Cookies that we use within RSR and a link to the cookie policy we hold.
+
+Github issue: [#1051](https://github.com/akvo/akvo-rsr/issues/1051). 
+
+### API Improvements
+We made some modifications to the API to align with the other changes in RSR.
+
+Github issue: [#776](https://github.com/akvo/akvo-rsr/issues/776) & [#955](https://github.com/akvo/akvo-rsr/issues/995). 
+
+### Data Model Modifications
+Following on from our previous changes to the data model to move towards the IATI standard, we have made a few more changes here to move the underlying data into this new structure. The old elements remain for now, and we will be working to tidy this up over the next few releases.
+
+Github issue: [#872](https://github.com/akvo/akvo-rsr/issues/872), [#945](https://github.com/akvo/akvo-rsr/issues/945), [#1001](https://github.com/akvo/akvo-rsr/issues/1001), [#1003](https://github.com/akvo/akvo-rsr/issues/1003), [#1032](https://github.com/akvo/akvo-rsr/issues/1032), [#1047](https://github.com/akvo/akvo-rsr/issues/1047), [#1075](https://github.com/akvo/akvo-rsr/issues/1075) &  [#1103](https://github.com/akvo/akvo-rsr/issues/1103).
+
+### Project Timeline
+We have created a new project timeline; however we were not fully happy with the way it was being displayed so this has not been released in this version. We will be looking at this and launching the project timeline as soon as we can.
+
+Github issue: [#890](https://github.com/akvo/akvo-rsr/issues/890).
+
+### Donations
+Due to the change in many of the existing processes, we have made the decision to temporarily disable the automated donation process. It is still possible to donate to a project by sending the funds in to Akvo directly, and we will be re-enabling the automated process as soon as possible.
+
+Github issue: [#1135](https://github.com/akvo/akvo-rsr/issues/1135).
+
+
+Backend and Structural Changes
+---
+
+### Development Environment
+In order to ensure that our developers can all work locally on RSR, we have needed to put some effort into getting the environment up and running with all the changes we have made.
+
+Github issue:
+[#804](https://github.com/akvo/akvo-rsr/issues/804), [#805](https://github.com/akvo/akvo-rsr/issues/805), [#844](https://github.com/akvo/akvo-rsr/issues/844), [#885](https://github.com/akvo/akvo-rsr/issues/885), [#889](https://github.com/akvo/akvo-rsr/issues/889) &  [#1187](https://github.com/akvo/akvo-rsr/issues/1187).
+
+### Other Backend Changes
+We also had to make a whole host of smaller invisible changes to the system to manage all the front end changes we made. These vary from modifications to python libraries to fixing minor issues in the workflow of the application.
+
+Github issue: [#747](https://github.com/akvo/akvo-rsr/issues/747), [#751](https://github.com/akvo/akvo-rsr/issues/751), [#753](https://github.com/akvo/akvo-rsr/issues/753), [#761](https://github.com/akvo/akvo-rsr/issues/761), [#810](https://github.com/akvo/akvo-rsr/issues/810), [#813](https://github.com/akvo/akvo-rsr/issues/813), [#817](https://github.com/akvo/akvo-rsr/issues/817), [#822](https://github.com/akvo/akvo-rsr/issues/822), [#832](https://github.com/akvo/akvo-rsr/issues/832), [#841](https://github.com/akvo/akvo-rsr/issues/841), [#845](https://github.com/akvo/akvo-rsr/issues/845), [#853](https://github.com/akvo/akvo-rsr/issues/853), [#882](https://github.com/akvo/akvo-rsr/issues/882), [#902](https://github.com/akvo/akvo-rsr/issues/902), [#912](https://github.com/akvo/akvo-rsr/issues/912), [#924](https://github.com/akvo/akvo-rsr/issues/924), [#982](https://github.com/akvo/akvo-rsr/issues/982), [#991](https://github.com/akvo/akvo-rsr/issues/991), [#1101](https://github.com/akvo/akvo-rsr/issues/1101), [#1105](https://github.com/akvo/akvo-rsr/issues/1105), [#1109](https://github.com/akvo/akvo-rsr/issues/1109), [#1148](https://github.com/akvo/akvo-rsr/issues/1148), [#1159](https://github.com/akvo/akvo-rsr/issues/1159), [#1170](https://github.com/akvo/akvo-rsr/issues/1170), [#1175](https://github.com/akvo/akvo-rsr/issues/1175) &  [#1178](https://github.com/akvo/akvo-rsr/issues/1178).
+
+
+--------
+
 Akvo RSR ver 2.6 Conakry
 ---
 
