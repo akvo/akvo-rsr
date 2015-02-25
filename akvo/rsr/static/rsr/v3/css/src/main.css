@@ -191,13 +191,16 @@ span.twitter-typeahead .tt-dropdown-menu {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box; }
 
+.tt-hint {
+  color: rgba(0, 167, 157, 0.5); }
+
 span.twitter-typeahead .tt-suggestion > p {
   display: block;
   padding: 3px 20px;
   clear: both;
   font-weight: normal;
   line-height: 1.42857;
-  color: #333333;
+  color: #333;
   white-space: nowrap; }
 
 span.twitter-typeahead .tt-suggestion > p:hover, span.twitter-typeahead .tt-suggestion > p:focus {
