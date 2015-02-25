@@ -1249,7 +1249,7 @@ div.textBlock {
   #versionBanner div {
     padding: 15px 15px 15px 8px;
     background: rgba(255, 255, 255, 0.95); }
-    #versionBanner div #closeBtn {
+    #versionBanner div button.closeBtn {
       padding: 5px 8px;
       background: #00aaff;
       -moz-border-radius: 3px;
@@ -1259,5 +1259,5 @@ div.textBlock {
       margin-right: 10px;
       color: white;
       border: none; }
-      #versionBanner div #closeBtn:hover {
+      #versionBanner div button.closeBtn:hover {
         background: #ff5500; }

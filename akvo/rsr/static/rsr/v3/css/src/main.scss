@@ -1517,7 +1517,7 @@ div.textBlock {
     div {
         padding: 15px 15px 15px 8px;
         background: rgba(white, 0.95);
-        #closeBtn {
+        button.closeBtn {
             padding: 5px 8px;
             background: $anchorLink;
             @include border-radius(3px);
