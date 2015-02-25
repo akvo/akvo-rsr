@@ -461,7 +461,6 @@ nav.navbar-fixed-top {
     }
 }
 
-
 /* My RSR stuff */
 .myRsrMenu {
     min-height: 100%;
@@ -509,6 +508,25 @@ nav.navbar-fixed-top {
 }
 
 .table-responsive {
+    &.locationTab {
+        overflow: hidden;
+        thead{
+            th {
+                max-width: 8.33% !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+            }
+        }        
+        tbody{
+            td {
+                max-width: 8.33% !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+            }
+        }
+    }
     .media {
         .media-body {
             p {

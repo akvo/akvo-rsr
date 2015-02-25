@@ -468,6 +468,18 @@ nav.navbar-fixed-top {
   background-color: rgba(32, 32, 36, 0);
   padding: 10px 0 10px 0; }
 
+.table-responsive.locationTab {
+  overflow: hidden; }
+  .table-responsive.locationTab thead th {
+    max-width: 8.33% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important; }
+  .table-responsive.locationTab tbody td {
+    max-width: 8.33% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important; }
 .table-responsive .media .media-body p {
   max-width: 170px;
   overflow: hidden;
