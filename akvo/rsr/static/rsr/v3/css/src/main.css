@@ -974,6 +974,9 @@ header.projectHeader {
     width: calc(100%-2px);
     height: 300px; }
 
+.orgMap .mapInfoWindow img {
+  display: none; }
+
 div.projectTopRow {
   position: relative;
   background: rgba(245, 245, 245, 0.5);
