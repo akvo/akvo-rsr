@@ -59,9 +59,6 @@ def activate(request, activation_key, extra_context=None):
                 user.is_active = True
                 user.save()
 
-                # TODO: send activation mail (check to whom)
-                # user_activated.send(sender=RegistrationProfile, user=user)
-
                 # Log in user without password, using custom backend
                 user = authenticate(username=user.username, no_password=True)
                 login(request, user)

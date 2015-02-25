@@ -24,10 +24,10 @@ class AuthBackend(ModelBackend):
         try:
             if email_regex.match(username):
                 # Get user by email
-                user = get_user_model().objects.get(email=username)
+                user = get_user_model().objects.get(email__iexact=username)
             else:
                 # Get user by username
-                user = get_user_model().objects.get(username=username)
+                user = get_user_model().objects.get(username__iexact=username)
         except get_user_model().DoesNotExist:
             return None
 
