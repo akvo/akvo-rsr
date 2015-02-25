@@ -18,7 +18,7 @@ def directory(request):
     if request.rsr_page:
         updates = RequestContext(request)['projects_qs'].all_updates()
     else:
-        updates = ProjectUpdate.objects.published()
+        updates = ProjectUpdate.objects.all()
     f = ProjectUpdateFilter(qs, queryset=updates)
 
     show_filters = "in"
