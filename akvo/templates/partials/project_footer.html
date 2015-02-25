@@ -27,7 +27,7 @@
                 <p><span class="detailedInfo"><i class="fa fa-tachometer"></i> {% trans "Widgets" %}:</span></p>
                 <p></span> <a href="{% url 'project-widgets' project.pk %}">Grab a widget</a></p>
             </div>
-            <div class="col-sm-6 col-md-3" id="project-footer-right">
+            <div class="hidden-xs col-sm-6 col-md-3" id="project-footer-right">
                 <p>
                     <a target="_blank" href="{% url 'rss_project_updates' project.id %}"><i class="fa fa-rss"></i> {% trans "Subscribe to RSS feed" %}</a>
                 </p>
