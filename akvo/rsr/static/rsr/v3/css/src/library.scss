@@ -122,6 +122,7 @@ $titleFont:  'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
 $xtra-small: 568px;
 $width-small:  768px;
 $width-medium: 992px;
+$width-middle: 1024px;
 $width-large:  1200px;
  
 @mixin responsive($width) {
@@ -146,6 +147,13 @@ $width-large:  1200px;
   @else if $width == xtra-small-max-screens {
     @media only screen and (max-width: $xtra-small) { @content; }
   }
+  @else if $width == ipadAir {
+    @media only screen and (min-width: $width-small) and (max-width: $width-middle) { @content; }
+  }
+  @else if $width == retina {
+    @media only screen and (-webkit-min-device-pixel-ratio: 2) { @content; }
+  }
+
 }
 
 /* Placeholder

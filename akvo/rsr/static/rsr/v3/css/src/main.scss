@@ -407,7 +407,7 @@ nav.navbar-fixed-top {
         }
     }
 }
-@include responsive (mediums-max-screens) {
+@include responsive (ipadAir) {
  .navbar-header {
         float: none;
     }
