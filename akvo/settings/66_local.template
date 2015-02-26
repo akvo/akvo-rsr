@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+    Akvo RSR is covered by the GNU Affero General Public License.
+    See more details in the license.txt file located at the root folder of the
+    Akvo RSR module. For additional details on the GNU license please
+    see < http://www.gnu.org/licenses/agpl.html >.
+"""
+
+DEBUG = TEMPLATE_DEBUG = True
+PIPELINE_ENABLED = False
+
+# STATIC_URL = '/static/' # For production collectstatic behaviour
+
+# The console email backend will print emails to console, useful for dev server
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

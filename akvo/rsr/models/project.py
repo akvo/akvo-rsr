@@ -21,12 +21,12 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django_counter.models import ViewCounter
 
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail.fields import ImageField
 
-from akvo.utils import rsr_image_path, rsr_show_keywords, RSR_LIMITED_CHANGE
+from akvo.codelists.models import AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus
+from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
-from ..iati.codelists import codelists_v104 as codelists
 from ..mixins import TimestampsMixin
 
 from .budget_item import BudgetItem, BudgetItemLabel
@@ -38,7 +38,6 @@ from .organisation import Organisation
 from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
-from .user_profile import UserProfile
 
 
 class Project(TimestampsMixin, models.Model):
@@ -82,131 +81,167 @@ class Project(TimestampsMixin, models.Model):
 
     title = ValidXMLCharField(
         _(u'title'), max_length=45, db_index=True,
-        help_text=_(u'A short descriptive title for your project (45 characters).')
+        help_text=_(u'The title and subtitle fields are the newspaper headline for your project. Use them to attract '
+                    u'attention to what you are doing. (45 characters)')
     )
     subtitle = ValidXMLCharField(
         _(u'subtitle'), max_length=75,
-        help_text=_(u'A subtitle with more information on the project (75 characters).')
+        help_text=_(u'The title and subtitle fields are the newspaper headline for your project. Use them to attract '
+                    u'attention to what you are doing. (75 characters)')
     )
     status = ValidXMLCharField(
         _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE,
-        help_text=_(u'Current project state.')
+        help_text=_(u'There are four different project statuses:<br>'
+                    u'1) Needs funding: projects that still need funding.<br>'
+                    u'2) Active: projects that started with the implementation phase.<br>'
+                    u'3) Completed: projects that have been finished.<br>'
+                    u'4) Cancelled: projects that were never fully implemented or carried out.')
     )
-    categories = models.ManyToManyField('Category', verbose_name=_(u'categories'), related_name='projects',)
+    categories = models.ManyToManyField('Category', verbose_name=_(u'categories'), related_name='projects', blank=True)
     partners = models.ManyToManyField(
         'Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',
     )
     project_plan_summary = ProjectLimitedTextField(
         _(u'summary of project plan'), max_length=400,
-        help_text=_(u'Briefly summarize the project (400 characters).')
+        help_text=_(u'Enter a brief summary. The summary should explain: (400 characters)<br>'
+                    u'- Why the project is being carried out;<br>'
+                    u'- Where it is taking place;<br>'
+                    u'- Who will benefit and/or participate;<br>'
+                    u'- What it specifically hopes to accomplish;<br>'
+                    u'- How those specific goals will be reached')
     )
 
-    current_image = ImageWithThumbnailsField(
-        _(u'project photo'), blank=True, upload_to=image_path,
-        thumbnail={'size': (240, 180), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-        extra_thumbnails={
-            'map_thumb': {'size': (160, 120), 'options': ('autocrop', 'detail', )},  # detail is a mild sharpen
-            'fb_thumb': {'size': (200, 200), 'options': ('pad', )}
-        },
-        help_text=_(
-            u'The project image looks best in landscape format (4:3 width:height ratio), '
-            u'and should be less than 3.5 mb in size.'
-        ),
+    current_image = ImageField(
+        _('project photo'), blank=True, upload_to=image_path,
+        help_text=_(u'Add your project photo here. You can only add one photo. If you have more, you can add them '
+                    u'via RSR updates when your project is published.<br>'
+                    u'The photo should be about 1 MB in size, and should preferably be in JPG format.'),
     )
     current_image_caption = ValidXMLCharField(
         _(u'photo caption'), blank=True, max_length=50,
-        help_text=_(u'Enter a caption for your project picture (50 characters).')
+        help_text=_(u'Briefly describe what is happening in the photo. (50 characters)')
     )
     current_image_credit = ValidXMLCharField(
         _(u'photo credit'), blank=True, max_length=50,
-        help_text=_(u'Enter a credit for your project picture (50 characters).')
+        help_text=_(u'Who took the photo? (50 characters)')
     )
 
     goals_overview = ProjectLimitedTextField(
-        _(u'overview of goals'), max_length=600,
-        help_text=_(u'Describe what the project hopes to accomplish (600 characters).')
+        _(u'goals overview'), max_length=600,
+        help_text=_(u'Provide a brief description of the overall project goals. (600 characters)')
     )
     current_status = ProjectLimitedTextField(
-        _(u'current status'), blank=True, max_length=600,
-        help_text=_(u'Description of current phase of project. (600 characters).')
+        _(u'current situation'), blank=True, max_length=600,
+        help_text=_(u'Describe the current situation of the project: (600 characters)<br>'
+                    u'- What is the starting point of the project?<br>'
+                    u'- What is happening at the moment?')
     )
     project_plan = ValidXMLTextField(
         _(u'project plan'), blank=True,
         help_text=_(
-            u'Detailed information about the project and plans for implementing: '
-            u'the what, how, who and when. (unlimited).'
+            u'This should include detailed information about the project and plans for implementing: '
+            u'the what, how, who and when. (unlimited)'
         )
     )
     sustainability = ValidXMLTextField(
         _(u'sustainability'),
-        help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete (unlimited).')
+        help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete. (unlimited)')
     )
     background = ProjectLimitedTextField(
         _(u'background'), blank=True, max_length=1000,
         help_text=_(
-            u'Relevant background information, including geographic, political, environmental, social and/or cultural '
-            u'issues (1000 characters).'
+            u'Include relevant background information, including geographic, political, environmental, social and/or '
+            u'cultural issues. (1000 characters)'
         )
     )
     target_group = ProjectLimitedTextField(
         _(u'target group'), blank=True, max_length=600,
         help_text=_(
-            u'Information about the people, organisations or resources that are being impacted by this project '
-            u'(600 characters).'
+            u'This should include information about the people, organisations or resources that are being impacted by '
+            u'this project. (600 characters)'
         )
     )
 
     # project meta info
     language = ValidXMLCharField(
-        max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project'
+        max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project.'
     )
     project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = ValidXMLTextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
     keywords = models.ManyToManyField('Keyword', verbose_name=_(u'keywords'), related_name='projects', blank=True)
 
     # budget
-    currency = ValidXMLCharField(_(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR')
-    date_start_planned = models.DateField(_(u'start date (planned)'), default=date.today)
-    date_start_actual = models.DateField(_(u'start date (actual)'), null=True, blank=True)
-    date_end_planned = models.DateField(_(u'end date (planned)'), null=True, blank=True)
-    date_end_actual = models.DateField(_(u'end date (actual)'), null=True, blank=True)
+    currency = ValidXMLCharField(
+        _(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR',
+        help_text=_(u'The default currency for this project. Used in all financial aspects of the project.')
+    )
+    date_start_planned = models.DateField(
+        _(u'start date (planned)'), default=date.today, help_text=_(u'Enter the planned start date of the project.')
+    )
+    date_start_actual = models.DateField(
+        _(u'start date (actual)'), null=True, blank=True, help_text=_(u'Enter the actual start date of the project.')
+    )
+    date_end_planned = models.DateField(
+        _(u'end date (planned)'), null=True, blank=True, help_text=_(u'Enter the planned end date of the project.')
+    )
+    date_end_actual = models.DateField(
+        _(u'end date (actual)'), null=True, blank=True, help_text=_(u'Enter the actual end date of the project.')
+    )
 
     primary_location = models.ForeignKey('ProjectLocation', null=True, on_delete=models.SET_NULL)
 
     # donate button
     donate_button = models.BooleanField(
-        _(u'donate button'), default=True, help_text=(u'Show donate button for this project.')
+        _(u'donate button'), default=True,
+        help_text=_(u'Show donate button for this project. If not selected, it is not possible to donate to this '
+                    u'project and the donate button will not be shown.')
     )
 
     # synced projects
-    sync_owner = models.ForeignKey('Organisation', null=True, on_delete=models.SET_NULL)
+    sync_owner = models.ForeignKey(
+        'Organisation', verbose_name=_(u'reporting organisation'), null=True, on_delete=models.SET_NULL,
+        help_text=_(u'Select the reporting organisation of the project.')
+    )
+    sync_owner_secondary_reporter = models.NullBooleanField(
+        _(u'secondary reporter'),
+        help_text=_(u'This indicates whether the reporting organisation is a secondary publisher: publishing data for '
+                    u'which it is not directly responsible.')
+    )
 
     # extra IATI fields
+    iati_activity_id = ValidXMLCharField(
+        _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True,
+        help_text=_(u'This should be the official unique IATI Identifier for the project. The identifier consists of '
+                    u'the IATI organisation identifier and the (organisations internal) project identifier, e.g. '
+                    u'NL-KVK-31156201-TZ1234. (100 characters)<br>'
+                    u'Note that \'projects\' in this form are the same as \'activities\' in IATI.<br>'
+                    u'<a href="http://iatistandard.org/activity-standard/iati-activities/iati-activity/iati-identifier"'
+                    u' target="_blank">How to create</a>')
+    )
     hierarchy = models.PositiveIntegerField(
-        _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS
+        _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS,
+        help_text=_(u'If you are reporting multiple levels of projects in RSR, you can specify whether this is a core '
+                    u'or sub-project here.<br>'
+                    u'So for example: is this project part of a larger project or programme.')
     )
     project_scope = ValidXMLCharField(
-        _(u'project scope'), blank=True, max_length=2, choices=codelists.ACTIVITY_SCOPE
+        _(u'project scope'), blank=True, max_length=2, choices=codelist_choices(ActivityScope),
+        help_text=_(u'Select the geographical scope of the project.')
     )
     capital_spend_percentage = models.DecimalField(
         _(u'capital spend percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
-    collaboration_type = ValidXMLCharField(
-        _(u'collaboration type'), blank=True, max_length=1, choices=[code[:2] for code in codelists.COLLABORATION_TYPE]
-    )
-    default_aid_type = ValidXMLCharField(
-        _(u'default aid type'), blank=True, max_length=3, choices=[code[:2] for code in codelists.AID_TYPE]
-    )
-    default_finance_type = ValidXMLCharField(
-        _(u'default finance type'), blank=True, max_length=3, choices=[code[:2] for code in codelists.FINANCE_TYPE]
-    )
-    default_flow_type = ValidXMLCharField(
-        _(u'default flow type'), blank=True, max_length=2, choices=[code[:2] for code in codelists.FLOW_TYPE]
-    )
-    default_tied_status = ValidXMLCharField(
-        _(u'default tied status'), blank=True, max_length=1, choices=[code[:2] for code in codelists.TIED_STATUS]
-    )
+    collaboration_type = ValidXMLCharField(_(u'collaboration type'), blank=True, max_length=1,
+                                           choices=codelist_choices(CollaborationType))
+    default_aid_type = ValidXMLCharField(_(u'default aid type'), blank=True, max_length=3,
+                                         choices=codelist_choices(AidType))
+    default_finance_type = ValidXMLCharField(_(u'default finance type'), blank=True, max_length=3,
+                                             choices=codelist_choices(FinanceType))
+    default_flow_type = ValidXMLCharField(_(u'default flow type'), blank=True, max_length=2,
+                                          choices=codelist_choices(FlowType))
+    default_tied_status = ValidXMLCharField(_(u'default tied status'), blank=True, max_length=1,
+                                            choices=codelist_choices(TiedStatus))
 
 
     # denormalized data
@@ -227,27 +262,38 @@ class Project(TimestampsMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('project_main', (), {'project_id': self.pk})
+        return ('project-main', (), {'project_id': self.pk})
+
+    def accepts_donations(self):
+        if not self.donate_button:
+            return False
+        if self in Project.objects.active() and self.funds_needed > 0:
+            return True
+        return False
 
     def all_donations(self):
         return Invoice.objects.filter(
-            project__exact=self.id).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-        )
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True)
 
     def public_donations(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-                status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-            ).exclude(is_anonymous=True)
+        return Invoice.objects.filter(
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).exclude(is_anonymous=True)
 
     def all_donations_amount(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-                status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-            ).aggregate(all_donations_sum=Sum('amount'))['all_donations_sum']
+        return Invoice.objects.filter(
+            project__exact=self.id
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).aggregate(
+            all_donations_sum=Sum('amount')
+        )['all_donations_sum']
 
     def all_donations_amount_received(self):
-        return Invoice.objects.filter(project__exact=self.id).filter(
-            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE
-        ).aggregate(all_donations_sum=Sum('amount_received'))['all_donations_sum']
+        return Invoice.objects.filter(
+            project__exact=self.id).filter(
+            status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).aggregate(
+            all_donations_sum=Sum('amount_received')
+        )['all_donations_sum']
 
     def amount_needed_to_fully_fund_via_paypal(self):
         if self.currency == 'USD':
@@ -331,6 +377,10 @@ class Project(TimestampsMixin, models.Model):
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
             return self.filter(partners__exact=organisation)
+
+        def of_partners(self, organisations):
+            "return projects that have one of the organisations as partner"
+            return self.filter(partners__in=organisations)
 
         def has_location(self):
             return self.filter(primary_location__isnull=False)
@@ -458,6 +508,11 @@ class Project(TimestampsMixin, models.Model):
                 latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at')
             )
 
+        def all_updates(self):
+            "return ProjectUpdates for self, newest first"
+            from .project_update import ProjectUpdate
+            return ProjectUpdate.objects.filter(project__in=self)
+
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
             orgs = Organisation.objects.filter(partnerships__project__in=self)
@@ -489,6 +544,9 @@ class Project(TimestampsMixin, models.Model):
 
             country_ids = list(set(country_ids))
             return Country.objects.filter(id__in=country_ids).distinct()
+
+        def publishingstatuses(self):
+            return PublishingStatus.objects.filter(project__in=self)
 
 
     def __unicode__(self):
@@ -572,12 +630,13 @@ class Project(TimestampsMixin, models.Model):
         '''
         Test if a user is connected to self through an organisation
         '''
-        is_connected = False
         try:
-            is_connected = self in UserProfile.objects.get(user=user).organisation.all_projects()
+            for organisation in user.organisations.all():
+                if self in organisation.all_projects():
+                    return True
         except:
             pass
-        return is_connected
+        return False
 
     def is_published(self):
         if self.publishingstatus:
@@ -624,6 +683,16 @@ class Project(TimestampsMixin, models.Model):
         else:
             return orgs.distinct()
 
+    def reporting_org(self):
+        if self.sync_owner:
+            return self.sync_owner
+        elif self.support_partners():
+            return self.support_partners()[0]
+        elif self.all_partners():
+            return self.all_partners()[0]
+        else:
+            return None
+
     def field_partners(self):
         return self._partners(Partnership.FIELD_PARTNER)
 
@@ -639,6 +708,27 @@ class Project(TimestampsMixin, models.Model):
     def all_partners(self):
         return self._partners()
 
+    def partners_info(self):
+        """
+        Return a dict of the distinct partners with the organisation as key and as content:
+        1. The partnerships of the organisation
+        2. The (added up) funding amount, if available. Otherwise None.
+        E.g. {<Organisation 1>: [[<Partnership 1>,], 10000], <Organisation 2>: [[<Partnership 2>,], None]]}
+        """
+        partners_info = {}
+        for partnership in Partnership.objects.filter(project=self):
+            funding_amount = partnership.funding_amount if partnership.funding_amount else None
+            if not partnership.organisation in partners_info.keys():
+                partners_info[partnership.organisation] = [[partnership], funding_amount]
+            else:
+                partners_info[partnership.organisation][0].append(partnership)
+                existing_funding_amount = partners_info[partnership.organisation][1]
+                if funding_amount and existing_funding_amount:
+                    partners_info[partnership.organisation][1] += funding_amount
+                elif funding_amount:
+                    partners_info[partnership.organisation][1] = funding_amount
+        return partners_info
+
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
@@ -651,14 +741,71 @@ class Project(TimestampsMixin, models.Model):
             )
         )
 
+    def iati_project_scope(self):
+        return codelist_value(ActivityScope, self, 'project_scope')
+
+    def iati_collaboration_type(self):
+        return codelist_value(CollaborationType, self, 'collaboration_type')
+
+    def iati_default_flow_type(self):
+        return codelist_value(FlowType, self, 'default_flow_type')
+
+    def iati_default_finance_type(self):
+        return codelist_value(FinanceType, self, 'default_finance_type')
+
+    def iati_default_aid_type(self):
+        return codelist_value(AidType, self, 'default_aid_type')
+
+    def iati_default_tied_status(self):
+        return codelist_value(TiedStatus, self, 'default_tied_status')
+
+    def sector_categories_codes(self):
+        from .sector import Sector
+        sector_categories = Sector.objects.filter(project=self, vocabulary='2') | \
+            Sector.objects.filter(project=self, vocabulary='DAC-3')
+        return [sector.iati_sector_codes for sector in sector_categories]
+
+    def sector_categories(self):
+        from .sector import Sector
+        sector_categories = Sector.objects.filter(project=self, vocabulary='2') | \
+            Sector.objects.filter(project=self, vocabulary='DAC-3')
+        return [sector.iati_sector for sector in sector_categories]
+
+    def has_relations(self):
+        return self.parents() or self.children() or self.siblings()
+
+    def parents(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=1) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=2)).distinct()
+
+    def children(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=2) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=1)).distinct()
+
+    def siblings(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=3)).distinct()
+
+    def has_results(self):
+        for result in self.results.all():
+            if result.title or result.type or result.aggregation_status or result.description:
+                return True
+        return False
+
+    def has_indicators(self):
+        for result in self.results.all():
+            if result.indicators.all():
+                return True
+        return False
+
     class Meta:
         app_label = 'rsr'
-        permissions = (
-            ("%s_project" % RSR_LIMITED_CHANGE, u'RSR limited change project'),
-        )
         verbose_name = _(u'project')
         verbose_name_plural = _(u'projects')
         ordering = ['-id', ]
+        permissions = (
+            ('post_updates', u'Can post updates'),
+        )
 
 
 @receiver(post_save, sender=ProjectUpdate)

@@ -10,17 +10,25 @@ akvo/mediaroot/admin
 akvo/mediaroot/db
 akvo/mollie_banklist.xml
 akvo/rebuild_db.py
+avko/rsr/static/rsr/v3/css/src/*.codekit
 akvo/settings/5*.conf
 akvo/settings/6*.conf
 akvo/settings/backup
 akvo/testing.py
 scripts/dev-vm/
+data/*
+!data/README.md
+!data/dump.sh
+!data/load.sh
 
 # Dev environment
 .vagrant
 dev-env
 venv
 scripts/dev-vm
+scripts/devhelpers/node_modules
+vagrant/vagrant-ssh-conf.*
+
 
 # PG migration
 pg_migrate_conf.yml
@@ -105,3 +113,7 @@ tramp
 .vagrant
 
 *.hp6rKR
+
+# SASS
+akvo/rsr/static/rsr/v3/css/src/.sass-cache
+akvo/rsr/static/rsr/v3/css/src/*.map

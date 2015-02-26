@@ -12,17 +12,15 @@ from datetime import datetime
 
 logger = logging.getLogger('akvo.rsr')
 
-import sys
-
-# embedly imports json directly
-import json
 import pytz
 
 from workflows.models import State
 from workflows.utils import get_state
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail, EmailMessage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.http import HttpResponse
@@ -39,97 +37,13 @@ from notification.models import (
 )
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, ISO_3166_COUNTRIES, CONTINENTS
-#from akvo.rsr.models import Country
 
-RSR_LIMITED_CHANGE          = u'rsr_limited_change'
-RSR_REST = u'rsr_rest'
-GROUP_RSR_PARTNER_ADMINS    = u'RSR partner admins'#can edit organisation info
-GROUP_RSR_PARTNER_EDITORS   = u'RSR partner editors' #can edit an org's projects
-GROUP_RSR_EDITORS           = u'RSR editors'
-GROUP_RSR_USERS             = u'RSR users'
+
+RSR_LIMITED_CHANGE = u'rsr_limited_change'
+
 
 class HttpResponseNoContent(HttpResponse):
     status_code = 204
-
-def permissions(self):
-    """
-    Function that displays the permissions for all RSR models for a given Group. Used in the admin list view for Group
-    """
-    NO_PERMS = dict(
-        add='no',
-        change='no',
-        delete='no',
-        rsr_limited_change='no',
-        admin_media=settings.STATIC_URL+'admin/'
-    )
-
-    def table_row(row):
-        """
-        row is a dict that looks something like:
-        {
-            'delete': 'no',
-            'add': 'yes',
-            'rsr_limited_change': 'no',
-            'change': 'yes',
-            'admin_media': '/media/admin/'
-        }
-        resulting the src paths pointing to icon-yes.gif and icon-no.gif images
-        """
-        return '''
-            <tr>
-                <td style="border:none;">%(model)s</td>
-                <td style="border:none;"><img src="%(admin_media)simg/icon-%(add)s.gif"></td>
-                <td style="border:none;"><img src="%(admin_media)simg/icon-%(change)s.gif"></td>
-                <td style="border:none;"><img src="%(admin_media)simg/icon-%(delete)s.gif"></td>
-                <td style="border:none;"><img src="%(admin_media)simg/icon-%(rsr_limited_change)s.gif"></td>
-            <tr>
-        ''' % row
-
-    perms = self.permissions.all().order_by('content_type__name')
-    perms_data = []
-    old_model_name = ''
-    model_perms = NO_PERMS.copy()
-    for perm in perms:
-        model_name = perm.content_type.__unicode__()
-        # have we changed to a new model?
-        if model_name != old_model_name:
-            # append previous model's perms to list, but only if any perms were actually added
-            if model_perms.get('model', False):
-                perms_data.append(model_perms)
-                # reset to no perms
-            model_perms = NO_PERMS.copy()
-            model_perms['model'] = model_name.capitalize()
-            old_model_name = model_name
-            # generate key for model_perms by removing the model name from the codename
-        # and set the value to 'yes'
-        model_perms['_'.join(perm.codename.split('_')[:-1])] = 'yes'
-        # append last model's perms to list
-    if model_perms.get('model', False):
-        perms_data.append(model_perms)
-    if perms_data:
-        return '''
-        <table style="border:none; width:600px;">
-            <tr>
-                <th style="border:none; width:180px;">RSR Model</th>
-                <th style="border:none; width:50px;">Add</th>
-                <th style="border:none; width:50px;">Change</th>
-                <th style="border:none; width:50px;">Delete</th>
-                <th style="border:none; width:150px;">RSR limited change</th>
-            </tr>
-            %s
-        </table>''' % ''.join([table_row(row) for row in perms_data])
-    else:
-        return 'No permissions'
-
-permissions.short_description = 'permissions'
-permissions.allow_tags = True
-
-
-def groups_from_user(user):
-    """
-    Return a list with the groups the current user belongs to.
-    """
-    return [group.name for group in user.groups.all()]
 
 
 def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
@@ -186,6 +100,7 @@ def qs_column_sum(qs, col):
     #Workoaround:
     return sum([row[col] for row in qs.values()])
 
+
 def model_and_instance_based_filename(object_name, pk, field_name, img_name):
     """ Create a file name for an image based on the model name, the current object's pk,
     the field name of the model and the current date and time"""
@@ -219,7 +134,7 @@ def send_donation_confirmation_emails(invoice_id):
         msg = EmailMessage(subject_field, message_body, from_field, to_field, bcc_field)
         msg.content_subtype = "html"
         msg.send(fail_silently=True)
-    
+
 
 def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
     """get a number of blog posts from wordpress
@@ -282,15 +197,18 @@ def wordpress_get_lastest_posts(connection='wpdb', category_id=None, limit=2):
 
     return posts
 
+
 def get_random_from_qs(qs, count):
     "used as replacement for qs.order_by('?')[:count] since that 'freezes' the result when using johnny-cache"
     qs_list = list(qs.values_list('pk', flat=True))
     random.shuffle(qs_list)
     return qs.filter(pk__in=qs_list[:count])
 
+
 def who_am_i():
     "introspecting function returning the name of the function where who_am_i is called"
     return inspect.stack()[1][3]
+
 
 def who_is_parent():
     """
@@ -470,3 +388,86 @@ def rsr_show_keywords(instance):
         return keyword_str
     else:
         return 'None'
+
+
+def pagination(page, object_list, objects_per_page):
+    paginator = Paginator(object_list, objects_per_page)
+
+    try:
+        page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
+
+    page_range = paginator.page_range
+    active = page.number
+
+    if not len(page_range) < 10:
+        if active > 4:
+            page_range[1] = '...'
+            del page_range[2:active-2]
+        if (page_range[-1] - active) > 3:
+            page_range[-2] = '...'
+            active_index = page_range.index(active)
+            del page_range[active_index+2:-2]
+
+    return page, paginator, page_range
+
+
+def filter_query_string(qs):
+    """
+    Takes a QueryDict and returns a string that can be prepended to paginated
+    links. Since pagination is handled outside of this function we pop the page
+    item.
+    """
+    q = dict(qs.iterlists())  # to Python dict
+    q.pop('page', None)
+    q.pop('sort_by', None)
+
+    if not bool(q):
+        return ''
+
+    return '&{}'.format(
+        '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))
+
+
+def codelist_choices(model, version=settings.IATI_VERSION):
+    """
+    Based on a model from the codelists app and a version, returns a list of tuples with the available choices.
+    :param model: Model from codelists app
+    :param version: String of version (optional)
+    :return: List of tuples with available choices, tuples in the form of (code, name)
+    """
+    try:
+        return [(cl.code, cl) for cl in model.objects.filter(version__code=version)]
+    except:
+        return []
+
+
+def codelist_value(model, instance, field, version=settings.IATI_VERSION):
+    """
+    Looks up the value of a codelist
+    :param model: Model from codelists app
+    :param instance: Instance from model
+    :param field: String of the lookup field (e.g. 'type')
+    :param version: String of version (optional)
+    :return: String of the codelist instance
+    """
+    value = getattr(instance, field, None)
+    if value:
+        try:
+            objects = getattr(model, 'objects')
+            return objects.get(code=value, version__code=version)
+        except model.DoesNotExist:
+            return 'Unknown code'
+    return ''
+
+
+def check_auth_groups(group_names):
+    for group_name in group_names:
+        group, created = Group.objects.get_or_create(name=group_name)
+        if created:
+            print "Created group => {}".format(group)

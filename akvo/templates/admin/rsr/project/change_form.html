@@ -5,6 +5,11 @@
 {% block extrastyle %}
   {{block.super}}
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}rsr/admin/css/akvo_admin.css" />
+  <style>
+      .field-id {
+          display: none;
+      }
+  </style>
 {% endblock %}
 
 {% block pretitle %}
@@ -38,7 +43,7 @@
             <ul class="messagelist">
                 <li class="warning">
                     {% blocktrans with org_name=original.sync_owner.name org_url=original.sync_owner.get_absolute_url %}
-                        The information about this project is automatically updated by <a href="{{org_url}}">{{ org_name }}</a>.
+                        The information about this project is updated by <a href="{{org_url}}">{{ org_name }}</a>.
                     {% endblocktrans %}
                     {% if original.sync_owner.contact_email %}
                         {% blocktrans with org_contact_email=original.sync_owner.contact_email %}
@@ -65,32 +70,32 @@
 
           {% for fieldset in adminform %}
               {% include "admin/includes/fieldset.html" %}
-              {% if forloop.counter == 3 %}
+              {% if forloop.counter == 2 %}
                 {% with inline_admin_formset=inline_admin_formsets.0 %}
                   {% include inline_admin_formset.opts.template %}
                 {% endwith %}
               {% endif %}
-              {% if forloop.counter == 5 %}
+              {% if forloop.counter == 4 %}
                   {% with inline_admin_formset=inline_admin_formsets.1 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}
-              {% if forloop.counter == 6 %}
+              {% if forloop.counter == 7 %}
                   {% with inline_admin_formset=inline_admin_formsets.2 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}
-              {% if forloop.counter == 7 %}
+              {% if forloop.counter == 8 %}
                   {% with inline_admin_formset=inline_admin_formsets.3 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}
-              {% if forloop.counter == 8 %}
+              {% if forloop.counter == 9 %}
                   {% with inline_admin_formset=inline_admin_formsets.4 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}
-              {% if forloop.counter == 9 %}
+              {% if forloop.counter == 10 %}
                   {% with inline_admin_formset=inline_admin_formsets.5 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
@@ -99,12 +104,18 @@
                   {% with inline_admin_formset=inline_admin_formsets.6 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
+              {% endif %}
+              {% if forloop.counter == 12 %}
                   {% with inline_admin_formset=inline_admin_formsets.7 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
+              {% endif %}
+              {% if forloop.counter == 13 %}
                   {% with inline_admin_formset=inline_admin_formsets.8 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
+              {% endif %}
+              {% if forloop.counter == 15 %}
                   {% with inline_admin_formset=inline_admin_formsets.9 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
@@ -126,7 +137,12 @@
                   {% with inline_admin_formset=inline_admin_formsets.15 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
+              {% endif %}
+              {% if forloop.counter == 16 %}
                   {% with inline_admin_formset=inline_admin_formsets.16 %}
+                      {% include inline_admin_formset.opts.template %}
+                  {% endwith %}
+                  {% with inline_admin_formset=inline_admin_formsets.17 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}

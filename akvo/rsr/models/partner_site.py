@@ -70,8 +70,8 @@ class PartnerSite(TimestampsMixin, models.Model):
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
     custom_logo = models.FileField(_(u'organisation banner logo'), blank=True, upload_to=custom_logo_path,
         help_text=_(
-            u'<p>Upload a logo file for the banner at the top of the partner site page. '
-            u'By default the logo currently used by akvo.org will be displayed.</p>'
+            u'<p>Upload a logo file for the logo at the top of the partner site page. '
+            u'By default logo of the organisation belonging to the Akvo Page will be displayed.</p>'
         )
     )
     custom_favicon = models.FileField(_(u'favicon'), blank=True, upload_to=custom_favicon_path,
@@ -120,8 +120,8 @@ class PartnerSite(TimestampsMixin, models.Model):
     )
     ui_translation = models.BooleanField(_(u'Translate user interface'), default=False)
     google_translation = models.BooleanField(_(u'Google translation widget'), default=False)
-    facebook_button = models.BooleanField(_(u'Facebook Like button'), default=False)
-    twitter_button = models.BooleanField(_(u'Twitter button'), default=False)
+    facebook_button = models.BooleanField(_(u'Facebook share button'), default=False)
+    twitter_button = models.BooleanField(_(u'Twitter share button'), default=False)
     facebook_app_id = ValidXMLCharField(_(u'Facebook App Id'), max_length=40, blank=True, null=True,
         help_text=_(
             u'<p>Your FaceBook app id is used when sharing pages from your partner site. '
@@ -147,7 +147,7 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     @property
     def return_url(self):
-        return self.custom_return_url or self.organisation.url
+        return self.custom_return_url or "/"
 
     @property
     def stylesheet(self):

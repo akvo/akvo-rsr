@@ -117,7 +117,6 @@ def project_thumb(context, project, width, height, style='',):
         'style': style,
     }
 
-
 @register.inclusion_tag('inclusion_tags/org_logo.html', takes_context=True)
 def org_logo(context, org, width, height, style=''):
     return {

@@ -9,7 +9,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import LatitudeField, LongitudeField, ValidXMLCharField
-from ..iati.codelists import codelists_v104 as codelists
+from akvo.codelists.models import (GeographicExactness, GeographicLocationClass, GeographicLocationReach,
+                                   GeographicVocabulary, LocationType)
+from akvo.utils import codelist_choices, codelist_value
 
 
 class BaseLocation(models.Model):
@@ -17,11 +19,23 @@ class BaseLocation(models.Model):
                    u'to get the decimal coordinates of your project.')
     latitude = LatitudeField(_(u'latitude'), db_index=True, default=0, help_text=_help_text)
     longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
-    city = ValidXMLCharField(_(u'city'), blank=True, max_length=255, help_text=_('(255 characters).'))
-    state = ValidXMLCharField(_(u'state'), blank=True, max_length=255, help_text=_('(255 characters).'))
-    address_1 = ValidXMLCharField(_(u'address 1'), max_length=255, blank=True, help_text=_('(255 characters).'))
-    address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True, help_text=_('(255 characters).'))
-    postcode = ValidXMLCharField(_(u'postcode'), max_length=10, blank=True, help_text=_('(10 characters).'))
+    city = ValidXMLCharField(
+        _(u'city'), blank=True, max_length=255, help_text=_(u'Select the city. (255 characters)')
+    )
+    state = ValidXMLCharField(
+        _(u'state'), blank=True, max_length=255, help_text=_(u'Select the state. (255 characters)')
+    )
+    address_1 = ValidXMLCharField(
+        _(u'address 1'), max_length=255, blank=True,
+        help_text=_(u'Enter the street and house number. (255 characters)')
+    )
+    address_2 = ValidXMLCharField(
+        _(u'address 2'), max_length=255, blank=True,
+        help_text=_(u'Add additional address information, if needed. (255 characters)')
+    )
+    postcode = ValidXMLCharField(
+        _(u'postal code'), max_length=10, blank=True, help_text=_(u'Enter the postal/area code. (10 characters)')
+    )
 
     def delete(self, *args, **kwargs):
         super(BaseLocation, self).delete(*args, **kwargs)
@@ -61,37 +75,49 @@ class OrganisationLocation(BaseLocation):
 class ProjectLocation(BaseLocation):
     # the project that's related to this location
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
-    country = models.ForeignKey('Country', verbose_name=_(u'country'))
+    country = models.ForeignKey(
+        'Country', verbose_name=_(u'country'), help_text=_(u'Select the country.')
+    )
 
     # Extra IATI fields
     reference = ValidXMLCharField(_(u'reference'), blank=True, max_length=50)
     location_code = ValidXMLCharField(_(u'code'), blank=True, max_length=25)
-    vocabulary = ValidXMLCharField(
-        _(u'vocabulary'), blank=True, max_length=2, choices=[code[:2] for code in codelists.GEOGRAPHIC_VOCABULARY]
-    )
+    vocabulary = ValidXMLCharField(_(u'vocabulary'), blank=True, max_length=2,
+                                   choices=codelist_choices(GeographicVocabulary))
     name = ValidXMLCharField(_(u'name'), blank=True, max_length=100)
     description = ValidXMLCharField(_(u'description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)'))
     activity_description = ValidXMLCharField(
         _(u'activity description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)')
     )
     administrative_code = ValidXMLCharField(_(u'administrative code'), blank=True, max_length=25)
-    administrative_vocabulary = ValidXMLCharField(
-        _(u'administrative vocabulary'), blank=True, max_length=2,
-        choices=[code[:2] for code in codelists.GEOGRAPHIC_VOCABULARY]
-    )
+    administrative_vocabulary = ValidXMLCharField(_(u'administrative vocabulary'), blank=True, max_length=2,
+                                                  choices=codelist_choices(GeographicVocabulary))
     administrative_level = models.PositiveSmallIntegerField(
         _(u'administrative level'), blank=True, null=True, max_length=1
     )
-    exactness = ValidXMLCharField(_(u'exactness'), blank=True, max_length=1, choices=codelists.GEOGRAPHIC_EXACTNESS)
-    location_reach = ValidXMLCharField(
-        _(u'reach'), blank=True, max_length=1, choices=codelists.GEOGRAPHIC_LOCATION_REACH
-    )
-    location_class = ValidXMLCharField(
-        _(u'class'), blank=True, max_length=1, choices=codelists.GEOGRAPHIC_LOCATION_CLASS
-    )
-    feature_designation = ValidXMLCharField(
-        _(u'feature designation'), blank=True, max_length=5, choices=[code[:2] for code in codelists.LOCATION_TYPE]
-    )
+    exactness = ValidXMLCharField(_(u'exactness'), blank=True, max_length=1,
+                                  choices=codelist_choices(GeographicExactness))
+    location_reach = ValidXMLCharField(_(u'reach'), blank=True, max_length=1,
+                                       choices=codelist_choices(GeographicLocationReach))
+    location_class = ValidXMLCharField(_(u'class'), blank=True, max_length=1,
+                                       choices=codelist_choices(GeographicLocationClass))
+    feature_designation = ValidXMLCharField(_(u'feature designation'), blank=True, max_length=5,
+                                            choices=codelist_choices(LocationType))
+
+    def iati_vocabulary(self):
+        return codelist_value(GeographicVocabulary, self, 'vocabulary')
+
+    def iati_exactness(self):
+        return codelist_value(GeographicExactness, self, 'exactness')
+
+    def iati_reach(self):
+        return codelist_value(GeographicLocationReach, self, 'location_reach')
+
+    def iati_class(self):
+        return codelist_value(GeographicLocationClass, self, 'location_class')
+
+    def iati_designation(self):
+        return codelist_value(LocationType, self, 'feature_designation')
 
 
 class ProjectUpdateLocation(BaseLocation):

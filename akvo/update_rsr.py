@@ -70,7 +70,7 @@ def resave_images(queryset):
         #brk(host="localhost", port=9000)
         opts = record._meta
         for f in opts.fields:
-            if type(f).__name__ == 'ImageField' or type(f).__name__ == 'ImageWithThumbnailsField':
+            if type(f).__name__ == 'ImageField':
                 model_field = getattr(record, f.name)
                 if hasattr(model_field, 'file'):
                     #name = basename(model_field.name)

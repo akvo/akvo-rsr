@@ -2,13 +2,15 @@
 Django==1.6.5
 
 # Django apps
-django-filter==0.7
+django-filter==0.9
 django-markup==0.4
 django-pagination==1.0.7
 django-paypal==0.1.3
 django-templatetag-handlebars==1.2.0
+django-vanilla-views==1.0.3
 
-sorl-thumbnail==3.2.5
+# Bootstrap
+django-bootstrap3==4.11.0
 
 # API framework
 mimeparse==0.1.3
@@ -21,7 +23,6 @@ django-tastypie==0.11.1
 # Django apps from VCS web services
 -e git://github.com/akvo/django-counter.git@3b38f45a243970fda1a61124fd6ec8b9bd352c35#egg=django-counter
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
--e git://github.com/akvo/djangoembed.git@3a1d6b955bcff4b2ec04eefca79a0b2ebb31289a#egg=djangoembed
 -e git://github.com/akvo/django-registration.git@d1ff9eba18854fc41892de5a16562db77b93a25a#egg=registration
 
 # Akvonaut apps
@@ -40,10 +41,14 @@ django-smtp-ssl==1.0
 
 # RSR requirements
 Markdown==2.4
-Pillow==2.4.0
+Pillow==2.6.1
 python-memcached==1.53
 template-utils==0.4p2
 django-pipeline==1.3.26
+
+# Images and videos
+sorl-thumbnail==12.2
+django-embed-video==0.11
 
 # Database requirements
 MySQL-python==1.2.5
@@ -67,3 +72,9 @@ statsd==3.0
 
 # Sentry integration
 raven==4.2.3
+
+# Permission rules
+rules==0.3
+
+# Nested inlines in admin
+-e git+git://github.com/Soaa-/django-nested-inlines.git#egg=django-nested-inlines

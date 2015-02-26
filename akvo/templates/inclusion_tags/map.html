@@ -1,0 +1,12 @@
+<div class= "rsr_map" id="{{ map_id }}" style="width:{{width}};height:{{height}};"></div>
+<script>
+ var {{ map_id }} = {
+   locations: {{ locations|safe }},
+   {# icon: '{{ marker_icon }}', #}
+   {% if dynamic %}
+   dynamic: true,
+   {% else %}
+   dynamic: false,
+   {% endif %}
+ };
+</script>

@@ -1,0 +1,78 @@
+{% load i18n bootstrap3 rsr_utils %}
+
+{% url 'project-directory' as project_url %}
+{% url 'update-directory' as update_url %}
+{% url 'update-directory' as update_url %}
+{% url 'organisation-directory' as organisation_url %}
+{% url 'my_details' as myrsr_url %}
+
+{% with current_path=request.path|slice:":6" project_path=project_url|slice:":6" organisation_path=organisation_url|slice:":6" update_path=update_url|slice:":6" myrsr_path=myrsr_url|slice:":6" %}
+<style>.navbar .active {color: #2A6297;}</style>
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapsed">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <a class="navbar-brand" href="{% firstof rsr_page.return_url '/' %}">
+        {% if rsr_page.logo %}
+          {% img rsr_page 125 60 organisation.name %}
+        {% elif rsr_page.organisation %}
+          {% img rsr_page.organisation 125 60 rsr_page.organisation.name %}
+        {% else %}
+          <h1>Akvo RSR</h1> {# Text is just a placeholder, svg from css #}
+        {% endif %}
+      </a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="navbar-collapsed">
+      <ul class="nav navbar-nav">
+        <li class="navProject">
+          <a class="{% if current_path == project_path %}active{% endif %}"
+             href="{% url 'project-directory' %}">
+            {% trans "Projects" %}
+          </a>
+        </li>
+        <li class="navUpdate">
+          <a class="{% if current_path == update_path %}active{% endif %}"
+             href="{% url 'update-directory' %}">
+            {% trans "Updates" %}
+          </a>
+        </li>
+        <li class="navOrganisation">
+          <a class="{% if current_path  == organisation_path %}active{% endif %}"
+             href="{% url 'organisation-directory' %}">
+            {% trans "Organisations" %}
+          </a>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="{% if project %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
+               class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
+              <i class="fa fa-camera-retro"></i> Add an update
+            </a>
+        </li>
+        {% if not user.username %}
+        <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> Register</a></li>
+        <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> Sign in</a></li>
+        {% else %}
+        <li>
+          <a class="{% if current_path == myrsr_path %}active{% endif %}"
+             href="{% url 'my_details' %}"><i class="fa fa-user"></i> MyRSR</a>
+        </li>
+        <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> Sign out</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endwith %}
