@@ -124,7 +124,7 @@ def get_api_key(request):
             username_element = etree.SubElement(xml_root, "username")
             username_element.text = username
             org_id_element = etree.SubElement(xml_root, "org_id")
-            org_id_element.text = str(user.organisations[0].id)
+            org_id_element.text = str(user.organisations.all()[0].id)
             api_key_element = etree.SubElement(xml_root, "api_key")
             api_key_element.text = user.api_key
             pub_projs_element = etree.SubElement(xml_root, "published_projects")
