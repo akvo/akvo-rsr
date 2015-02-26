@@ -288,7 +288,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return False
 
     @property
-    def api_key(self, key=""):
+    def get_api_key(self, key=""):
         try:
             api_key = ApiKey.objects.get(user=self)
             key = api_key.key
