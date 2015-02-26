@@ -24,7 +24,7 @@ from .partner_site import PartnerSiteResource
 from .partnership import PartnershipResource, IATIPartnershipResource
 from .project import ProjectResource, IATIProjectResource
 from .project_comment import ProjectCommentResource
-from .project_update import ProjectUpdateResource
+from .project_update import ProjectUpdateResource, ProjectUpdateResourceExtra
 from .right_now_in_akvo import RightNowInAkvoResource
 from .user import UserResource
 
@@ -54,6 +54,7 @@ __all__ = [
     'PartnerSiteResource',
     'PartnershipResource',
     'ProjectResource',
+    'ProjectUpdateResourceExtra',
     'ProjectCommentResource',
     'ProjectLocationResource',
     'ProjectMapLocationResource',
@@ -62,4 +63,3 @@ __all__ = [
     'RightNowInAkvoResource',
     'UserResource',
 ]
-
