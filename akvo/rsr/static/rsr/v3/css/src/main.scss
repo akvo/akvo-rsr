@@ -977,6 +977,9 @@ h4.detailedInfo {
                     }
                     @include responsive(ipadAir) {
                         margin-left: 80px;
+                    }                  
+                    @include responsive(bigTablets) {
+                        margin-left: 80px;
                     }
                 }
             }
