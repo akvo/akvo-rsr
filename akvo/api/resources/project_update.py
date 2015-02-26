@@ -124,8 +124,7 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
             )
 
         bundle = super(ProjectUpdateResourceExtra, self).dehydrate(bundle)
-
-        organisation = bundle.obj.user.userprofile.organisation
+        organisation = bundle.obj.user.approved_organisations()[0]
         org_dict = org_data_for_update(organisation)
         user_resource_uri = bundle.data['user']
         bundle.data['user'] = user_data_for_update(bundle.obj.user)
