@@ -112,9 +112,11 @@ def get_api_key(request):
     password = request.POST.get("password", "")
     if username and password:
         user = authenticate(username=username, password=password)
-        if user is not None:
+        orgs = user.approved_organisations()
+        if user is not None and orgs:
             login(request, user)
             user_id = user.id
+            org_id = orgs[0].id
             projects = user.organisations.all_projects().published()
             if not user.api_key:
                 user.save()
@@ -124,9 +126,9 @@ def get_api_key(request):
             username_element = etree.SubElement(xml_root, "username")
             username_element.text = username
             org_id_element = etree.SubElement(xml_root, "org_id")
-            org_id_element.text = str(user.organisations[0].id)
+            org_id_element.text = str(org_id)
             api_key_element = etree.SubElement(xml_root, "api_key")
-            api_key_element.text = user.api_key
+            api_key_element.text = user.get_api_key
             pub_projs_element = etree.SubElement(xml_root, "published_projects")
             for proj in projects:
                 proj_id_element = etree.SubElement(pub_projs_element, "id")
@@ -134,4 +136,5 @@ def get_api_key(request):
             xml_tree = etree.ElementTree(xml_root)
             xml_data = etree.tostring(xml_tree)
             return HttpResponse(xml_data, content_type="text/xml")
+
     return HttpResponseForbidden()
