@@ -112,11 +112,11 @@ def get_api_key(request):
     password = request.POST.get("password", "")
     if username and password:
         user = authenticate(username=username, password=password)
-        orgs = user.organisations.all()
+        orgs = user.approved_organisations
         if user is not None and orgs:
             login(request, user)
             user_id = user.id
-            org_id = user.organisations.all()[0].id
+            org_id = orgs[0].id
             projects = user.organisations.all_projects().published()
             if not user.api_key:
                 user.save()
