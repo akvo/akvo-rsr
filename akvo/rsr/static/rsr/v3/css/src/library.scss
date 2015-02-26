@@ -156,9 +156,7 @@ $width-large:  1200px;
   @else if $width == tablets {
     @media only screen and (max-width: $width-middle) { @content; }
   }
-  @else if $width == bigTablets {
-    @media only screen and (max-width: $width-large) { @content; }
-  }
+
 }
 
 /* Placeholder

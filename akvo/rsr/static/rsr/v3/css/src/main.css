@@ -850,9 +850,10 @@ h4.detailedInfo {
   @media only screen and (max-width: 768px) {
     .main-list li dl.dl-horizontal dd {
       margin-left: 100px; } }
-  @media only screen and (min-width: 768px) and (max-width: 1024px) {
+  @media only screen and (max-width: 1200px) {
     .main-list li dl.dl-horizontal dd {
-      margin-left: 80px; } }
+      margin-left: 0px;
+      display: block; } }
 .main-list .excerpt {
   overflow: hidden;
   text-overflow: ellipsis;
