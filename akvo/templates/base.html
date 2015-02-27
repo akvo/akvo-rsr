@@ -1,4 +1,4 @@
-{% load i18n rsr_tags webdesign piwik_tags %}
+{% load i18n rsr_filters rsr_tags webdesign piwik_tags %}
 {% load url from future %}
 {% load compressed %}
 
@@ -11,7 +11,7 @@
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{{request.path}}"/>
     {% if update %}
     <meta property="og:title" content="{{update.title}} - {{project.title}}"/>
-    <meta property="og:description" content="{{update.text|force_escape|urlize}}"/>
+    <meta property="og:description" content="{{update.text|smart_truncate:500}}"/>
     {% if update.photo %}
     <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{update.photo.url}}"/>
     {% else %}
@@ -101,7 +101,7 @@
           e.style.display = 'none';
         }
     </script>
-    
+
     {# Piwik #}
     {% tracking_code %}
   </body>
