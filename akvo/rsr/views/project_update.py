@@ -55,8 +55,16 @@ def main(request, project_id, update_id):
 
 def project_updates(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+    updates = ProjectUpdate.objects.filter(project=project)
+
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, updates, 10)
+
     context = {
-        'updates': ProjectUpdate.objects.filter(project=project),
-        'project': project
+        'updates': updates,
+        'project': project,
+        'page': page,
+        'page_range': page_range,
+        'paginator': paginator,
     }
     return render(request, 'project_updates.html', context)
