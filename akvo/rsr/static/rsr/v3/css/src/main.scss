@@ -473,6 +473,9 @@ nav.navbar-fixed-top {
 
 
 /* My RSR stuff */
+.btnHeader {
+    padding:15px 0 25px 0;
+}
 .myRsrMenu {
     min-height: 100%;
     bottom: 0;
@@ -1374,6 +1377,7 @@ div.textBlock {
         padding-top: 10px;
         padding-bottom: 15px;
         background: lighten($veryLightOrange, 25%);
+
         h4 {
             margin-bottom: 10px;
         }
@@ -1390,7 +1394,9 @@ div.textBlock {
         }
     }
 }
-
+.allUpdates {
+    margin-top:25px;
+}
 .udpateComponent {
     padding-top: 10px;
     padding-bottom: 15px;
@@ -1520,7 +1526,7 @@ div.textBlock {
 
 /* Update Page */
 .updateMain {
-    h1 {
+    h2 {
         color: $rsrGreen;
         margin-top: 0;
     }

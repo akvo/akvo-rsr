@@ -14,7 +14,6 @@ class ProjectUpdateLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectUpdateLocation
-        exclude = ('location_target',)
 
 
 class ProjectUpdateLocationExtraSerializer(ProjectUpdateLocationSerializer):
