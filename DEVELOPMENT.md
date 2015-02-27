@@ -19,7 +19,7 @@ Now open a browser and visist [http://rsr.localdev.akvo.org/](http://rsr.localde
 To run the Django devserver with code reloading and getting prints
 ```shell
 $ cd scripts/devhelpers
-$ ./supervisord.sh stop rsr && ./manage.sh runserver
+$ ./supervisorctl.sh stop rsr && ./manage.sh runserver
 ```
 
 ## Make sure assets are rebuilt on change (WIP)

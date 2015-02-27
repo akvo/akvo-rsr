@@ -447,6 +447,9 @@ nav.navbar-fixed-top {
     margin-left: 0; } }
 
 /* My RSR stuff */
+.btnHeader {
+  padding: 15px 0 25px 0; }
+
 .myRsrMenu {
   min-height: 100%;
   bottom: 0;
