@@ -130,6 +130,7 @@
               {% for update in updates %}
               <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
               {% endfor %}
+              <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> See all updates for this project.</a></div>
             </div>
         </div>
     </div>

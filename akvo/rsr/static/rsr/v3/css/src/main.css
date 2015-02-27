@@ -1160,6 +1160,9 @@ div.textBlock {
       div.textBlock .udpateComponent .updateLinkTitle:hover {
         color: #ff5500; }
 
+.allUpdates {
+  margin-top: 25px; }
+
 .udpateComponent {
   padding-top: 10px;
   padding-bottom: 15px;
@@ -1267,7 +1270,7 @@ div.textBlock {
   border-radius: 5px; }
 
 /* Update Page */
-.updateMain h1 {
+.updateMain h2 {
   color: #00a79d;
   margin-top: 0; }
 .updateMain .asideUpList .row {
