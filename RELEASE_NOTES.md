@@ -7,6 +7,31 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 --------
 
+Akvo RSR version 3.0.1 Hotfix for Douglas
+---
+
+Friday 27th February 2015, adriancollier
+
+Included Fixes
+---
+
+### All Updates for a Project
+We noticed that in the new designs there was a missing view showing all project updates belonging to a single project. We have now added this in to the project page and given it a new style to match the other pages.
+
+Github issue: [#1260](https://github.com/akvo/akvo-rsr/issues/1260)
+
+### Update Text with Links
+We noticed a bug where project updates that included links were breaking the layout of the page with text ending up in the header of the page. This has now been resolved.
+
+Github issue: [#1257](https://github.com/akvo/akvo-rsr/issues/1257)
+
+### Location Target in API
+We have modified the location API resource within the Django REST Framework API implementation as the lack of locationn  target was causing errors.
+
+Github issue: [#1266](https://github.com/akvo/akvo-rsr/issues/1266)
+
+--------
+
 Akvo RSR version 3.0 Douglas
 ---
 
