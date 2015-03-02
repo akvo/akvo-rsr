@@ -29,6 +29,7 @@ def _get_accordion_data(project):
     accordion_data['project_plan'] = project.project_plan
     accordion_data['target_group'] = project.target_group
     accordion_data['sustainability'] = project.sustainability
+    accordion_data['goals_overview'] = project.goals_overview
     return accordion_data
 
 

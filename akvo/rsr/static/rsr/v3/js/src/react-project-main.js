@@ -33,6 +33,11 @@ var AccordionInstance = React.createClass({displayName: 'AccordionInstance',
         } else {
             sustainability = null;
         }
+        if (this.props.source.goals_overview != "") {
+            goals_overview = Panel(  {className:"goals_overview", header:"Goals overview", key:'goals_overview'}, this.props.source.goals_overview);
+        } else {
+            goals_overview = null;
+        }
 
         return (
             Accordion(null, 
@@ -40,7 +45,8 @@ var AccordionInstance = React.createClass({displayName: 'AccordionInstance',
                 current_status,
                 project_plan,
                 target_group,
-                sustainability
+                sustainability,
+                goals_overview
             )
             );
     }
