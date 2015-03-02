@@ -145,6 +145,18 @@
   {{ block.super }}
 
   {# App data #}
+        {% comment %}
+  <script type="application/json" id="akvo-rsr-accordion">
+    {
+        "target_group": "{{project.target_group|safe}}",
+        "background": "{{project.background|safe}}",
+        "current_status": "{{project.current_status|safe}}",
+        "project_plan": "{{project.project_plan|safe}}",
+        "sustainability": "{{project.sustainability|safe}}",
+        "goals_overview": "{{project.goals_overview|safe}}"
+    }
+  </script>
+        {% endcomment %}
   <script type="application/json" id="akvo-rsr-accordion">
     {{ accordion_data|safe }}
   </script>
