@@ -23,7 +23,7 @@
     </div>
         <section class="main-list updates">
           <ul class="container">
-            {% for u in updates %}
+            {% for u in page %}
             <li class="row updateAsset">
               <div class="col-sm-3 col-md-2 col-xs-4">
                   <a href="{% url 'update-main' u.project.id u.id %}">
