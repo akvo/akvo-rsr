@@ -324,7 +324,7 @@ class ProjectResource(ConditionalFullResource):
         # projects. So we call ApiKeyAuthentication.is_authenticated() (using super() which returns True if there is an
         # identified user holding an api key, AND is_authenticated() also sets request.user to the User object which we
         # need to be able to call request.user.has_perm() correctly.
-        if super(ConditionalApiKeyAuthentication, self.Meta.authentication).is_authenticated(request) is True:
+        if self.Meta.authentication.is_authenticated(request) is True:
             opts = Project._meta
             if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
                 return object_list
