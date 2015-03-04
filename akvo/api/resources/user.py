@@ -45,7 +45,6 @@ class UserResource(ConditionalFullResource):
         """
         bundle = super(UserResource, self).dehydrate(bundle)
         if self._meta.authentication.is_authenticated(bundle.request):
-            # AnonymousUser is apparently also seen as authenticated, but it does not have an organisation
             try:
                 organisations = bundle.request.user.organisations.all()
             except:

@@ -7,6 +7,7 @@
 
 from decimal import Decimal
 
+from django.contrib.auth import get_permission_codename, get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import ModelForm
 
@@ -15,6 +16,7 @@ from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import NotFound
+from tastypie.http import HttpUnauthorized
 from tastypie.resources import ModelResource
 
 from akvo import settings
@@ -23,8 +25,9 @@ from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToManyField
 from akvo.api.serializers import IATISerializer
 from akvo.rsr.models import (
-    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark
+    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark, Organisation
 )
+from akvo.utils import RSR_LIMITED_CHANGE
 
 from .resources import ConditionalFullResource, get_extra_thumbnails
 from .partnership import FIELD_NAME, FIELD_LONG_NAME
@@ -220,6 +223,46 @@ class IATIProjectResource(ModelResource):
             bundle.data['date_request_posted'] = bundle.data.pop('date_start_planned')
         return bundle
 
+    # def hydrate_categories(self, bundle):
+    #     if bundle.data['categories']:
+    #         bundle.data['categories'] = [
+    #             reverse('api_dispatch_detail', kwargs={
+    #                 'resource_name': 'category',
+    #                 'api_name': 'v1',
+    #                 'pk': bundle.data['categories'][0]
+    #             })
+    #         ]
+    #     return bundle
+
+
+    # def hydrate_partnerships(self, bundle):
+    #     import pdb
+    #     pdb.set_trace()
+    #     return bundle
+
+    # def hydrate_current_image(self, bundle):
+    #     import requests
+    #
+    #     from django.core.files import File
+    #     from django.core.files.temp import NamedTemporaryFile
+    #     return bundle
+    #
+    #     def save_image_from_url(model, url):
+    #         r = requests.get(url)
+    #
+    #         img_temp = NamedTemporaryFile(delete=True)
+    #         img_temp.write(r.content)
+    #         img_temp.flush()
+    #
+    #         img_name = "%s_%s_%s_%s%s" % (
+    #             bundle.obj._meta.object_name,
+    #             bundle.obj.pk or '',
+    #             'current_image',
+    #             datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
+    #             os.path.splitext(img_temp.name)[1],
+    #         )
+    #         Project.current_image.save("image.jpg", File(img_temp), save=True)
+
 
 class ProjectResource(ConditionalFullResource):
     benchmarks = ConditionalFullToManyField('akvo.api.resources.BenchmarkResource', 'benchmarks',)
@@ -238,7 +281,7 @@ class ProjectResource(ConditionalFullResource):
     class Meta:
         allowed_methods         = ['get']
         authentication          = ConditionalApiKeyAuthentication(methods_requiring_key=['POST', 'PUT'])
-        queryset                = Project.objects.published()
+        queryset                = Project.objects.all() #Note: this is modified in get_object_list()
         resource_name           = 'project'
         include_absolute_url    = True
 
@@ -264,6 +307,31 @@ class ProjectResource(ConditionalFullResource):
             project_comments    = ALL_WITH_RELATIONS,
             project_updates     = ALL_WITH_RELATIONS,
         )
+
+    def get_object_list(self, request):
+        """ The Project queryset is filtered depending on the user accessing the API
+            All users get Project.objects.published()
+            If the user is authenticated via an API key additional projects are added similarly to the access in the
+            admin:
+                Superusers get access to ALL projects
+                Users with "change_project" perm (currently Akvo staff users) also get access to ALL projects
+                Users with "rsr_limited_change_project" perm get access to all projects linked to their organisation
+                regardless of publishing status
+        """
+        object_list = super(ProjectResource, self).get_object_list(request)
+        # The whole point of ConditionalApiKeyAuthentication is to allow some access even for unauthorised requests,
+        # but here we need to figure out if the request contains a name/key pair and if so allow access to unpublished
+        # projects. So we call ApiKeyAuthentication.is_authenticated() (using super() which returns True if there is an
+        # identified user holding an api key, AND is_authenticated() also sets request.user to the User object which we
+        # need to be able to call request.user.has_perm() correctly.
+        if self.Meta.authentication.is_authenticated(request) is True:
+            opts = Project._meta
+            if request.user.has_perm(opts.app_label + '.' + get_permission_codename('change', opts)):
+                return object_list
+            elif request.user.has_perm(opts.app_label + '.' + get_permission_codename(RSR_LIMITED_CHANGE, opts)):
+                object_list = object_list.published() | object_list.of_partners(request.user.organisations.all())
+                return object_list.distinct()
+        return object_list.published()
 
     def dehydrate(self, bundle):
         """ add thumbnails inline info for Project.current_image
