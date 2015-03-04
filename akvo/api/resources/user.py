@@ -45,7 +45,11 @@ class UserResource(ConditionalFullResource):
         """
         bundle = super(UserResource, self).dehydrate(bundle)
         if self._meta.authentication.is_authenticated(bundle.request):
-            organisations = bundle.request.user.organisations.all()
+            # AnonymousUser is apparently also seen as authenticated, but it does not have an organisation
+            try:
+                organisations = bundle.request.user.organisations.all()
+            except:
+                organisations = []
 
             # find out if the user has a profile that's associated with the API key owner org
             profile = get_user_model().objects.filter(organisations__in=organisations, id=bundle.obj.id)

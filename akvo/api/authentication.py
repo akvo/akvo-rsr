@@ -5,13 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 
 from tastypie.authentication import ApiKeyAuthentication
-from tastypie.http import HttpUnauthorized
 
-#from models import AkvoApiKey
-from akvo.rsr.models import Organisation
 
 class ConditionalApiKeyAuthentication(ApiKeyAuthentication):
     """ Allows for requiring API key authentication only for selected request methods
