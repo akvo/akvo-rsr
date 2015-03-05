@@ -1,0 +1,44 @@
+{% extends "donate/donate_base.html" %}
+{% load i18n %}
+
+{% block donatecontent %}
+<div class="results verticalPadding">
+  {% trans "Complete the following steps to donate to this project" %}:
+  <ul class="fa-ul">
+    <li><i class="fa-li fa fa-minus"></i> {% trans 'Select payment system' %}</li>
+    <li><i class="fa-li fa fa-minus"></i> {% trans 'Enter donation details' %}</li>
+    <li><i class="fa-li fa fa-minus"></i> {% trans 'Confirm donation' %}</li>
+  </ul>
+</div>
+<h3 class="">{% trans 'Select a payment system to use' %}</h3>
+<div class="col-sm-4">
+  <h4>{% trans 'For all users' %}</h4>
+  <a href="{% url 'complete_donation' project_id=project.id engine='paypal' %}">
+    <img src="{{STATIC_URL}}rsr/main/img/donate/horizontal_solution_PPeCheck.gif"/>
+  </a>
+  <br/><br/><br/><br/>
+  <p class="small">
+    {% trans 'Akvo offers the Paypal Secure Payment&trade; system for donations in 24 currencies from 190 countries, whether or not you have a PayPal account.' %}
+  </p>
+</div>
+{% if project.currency = 'EUR' %}
+<div class="col-sm-4">
+  <h4>{% trans 'For Dutch users only' %}</h4>
+  <a href="{% url 'complete_donation' project_id=project.id engine='ideal' %}">
+    <img src="{{STATIC_URL}}rsr/main/img/donate/ideal-small.png"/>
+  </a>
+  <p class="small">
+    {% trans 'In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.' %}
+  </p>
+</div>
+{% endif %}
+<div class="col-sm-4">
+  <h4>{% trans "For organisations" %}</h4>
+  <p class="small">
+    {% trans "Do you represent an institution or company interested in funding or sponsoring this project?" %}
+    {% blocktrans with funding_url="http://akvo.org/criteria-roles-and-procedures-for-akvo-partners/#fundingPartner" %}
+      Become an <a target="_blank" href="{{funding_url}}">Akvo funding partner</a>.
+    {% endblocktrans %}
+  </p>
+</div>
+{% endblock donatecontent %}
