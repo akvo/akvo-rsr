@@ -5,6 +5,21 @@ We provide Akvo RSR as a service on your own URL and with your own branding, as 
 Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rsr/).
 Read more about [Akvo Products](http://akvo.org/products/).
 
+________
+
+Akvo RSR version 3.0.2 Hotfix 2 for Douglas
+---
+
+Thursday 5th March 2015, adriancollier
+
+Included Fixes
+---
+
+### Correction to API Authentication issue
+We noticed that since the RSR v3 release, we were experiencing an issue with certain API calls that were requiring authentication where previously these were open. This change is to fix this to allow these resources to be fully accessible again.
+
+Github issue: [#1289](https://github.com/akvo/akvo-rsr/issues/1289)
+
 --------
 
 Akvo RSR version 3.0.1 Hotfix for Douglas
