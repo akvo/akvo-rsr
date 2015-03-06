@@ -1016,6 +1016,17 @@ h4.detailedInfo {
                     background: darken(rgba($rsrBlue, 0.1), 0%);
                     border: thin solid rgba($rsrBlue, 0.3);
                 }
+                .donateButton {
+                    text-align: left;
+                    a {
+                        @include responsive(medium-max-screens) {
+                            margin-top: 0.6em;
+                        }
+                        @include responsive(small-max-screens) {
+                            margin-top: 1em;
+                        }
+                    } 
+                }
             }
         }
     }
