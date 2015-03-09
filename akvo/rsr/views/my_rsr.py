@@ -104,7 +104,7 @@ def user_management(request):
         raise PermissionDenied
 
     if user.is_support and user.is_admin:
-        users = User.objects.filter(is_active=True)
+        users = User.objects.filter(is_active=True).order_by('-date_joined')
         org_actions = Organisation.objects.all()
     else:
         organisations = user.employers.approved().organisations()
