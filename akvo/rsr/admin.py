@@ -521,13 +521,25 @@ class LegacyDataInline(NestedStackedInline):
     )
 
 
+class RelatedProjectInline(NestedStackedInline):
+    model = get_model('rsr', 'RelatedProject')
+    fields = ('id', 'related_project', 'relation')
+    fk_name = 'project'
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.related_projects.count() == 0 else 0
+        else:
+            return 1
+
+
 class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        ProjectContactInline, PartnershipInline, ProjectDocumentInline, ProjectLocationInline, SectorInline,
-        BudgetItemAdminInLine, TransactionInline, ResultInline, LinkInline, ProjectConditionInline, CountryBudgetInline,
-        PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline, RecipientRegionInline, LegacyDataInline,
-        BenchmarkInline, GoalInline,
+        RelatedProjectInline, ProjectContactInline, PartnershipInline, ProjectDocumentInline, ProjectLocationInline,
+        SectorInline, BudgetItemAdminInLine, TransactionInline, ResultInline, LinkInline, ProjectConditionInline,
+        CountryBudgetInline, PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline,
+        RecipientRegionInline, LegacyDataInline, BenchmarkInline, GoalInline,
     )
     save_as = True
 
@@ -537,9 +549,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'This section should contain the top-level information about your project which will be publicly '
                 u'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'hierarchy', 'date_start_planned',
-                       'date_start_actual', 'date_end_planned', 'date_end_actual', 'language', 'currency',
-                       'donate_button'),
+            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned', 'date_start_actual',
+                       'date_end_planned', 'date_end_actual', 'language', 'currency', 'donate_button', 'hierarchy'),
         }),
         (_(u'Contact Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -1047,10 +1058,3 @@ class EmploymentAdmin(admin.ModelAdmin):
         return super(EmploymentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(get_model('rsr', 'Employment'), EmploymentAdmin)
-
-
-class RelatedProjectAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'RelatedProject')
-    list_display = ('project', 'related_project', 'relation')
-
-admin.site.register(get_model('rsr', 'RelatedProject'), RelatedProjectAdmin)
