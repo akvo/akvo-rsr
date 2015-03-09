@@ -819,7 +819,7 @@ class UserAdmin(UserAdmin):
         (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_admin', 'is_superuser')
+            'fields': ('is_active', 'is_staff', 'is_admin', 'is_support', 'is_superuser')
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
@@ -834,7 +834,7 @@ class UserAdmin(UserAdmin):
     )
     list_display = (
         'username', 'email', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_admin',
-        'latest_update_date'
+        'get_is_support', 'latest_update_date'
     )
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('username',)
@@ -843,7 +843,7 @@ class UserAdmin(UserAdmin):
         if request.user.is_superuser:
             return ['last_login', 'date_joined']
         else:
-            return ['is_admin', 'is_superuser', 'last_login', 'date_joined']
+            return ['is_admin', 'is_support', 'is_superuser', 'last_login', 'date_joined']
 
     def get_queryset(self, request):
         if request.user.is_superuser or request.user.is_admin:
