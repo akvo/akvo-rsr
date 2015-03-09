@@ -24,8 +24,16 @@
     </p>
 
     {% bootstrap_form_errors donate_form type='non_fields' %}
-
+    {% comment %}
     {% bootstrap_field donate_form.amount %}
+    {% endcomment %}
+    <div class="form-group">
+        <label class="control-label" for="id_amount">Amount</label>
+        <div class="input-group">
+            <span class="input-group-addon">{{project.get_currency_display|safe}}</span>
+            <input class="form-control" id="id_amount" min="2" name="amount" placeholder="Amount" required="required" title="" type="number">
+        </div>
+    </div>
     <p class="small">
         {% blocktrans with project.get_currency_display|safe as currency %}The amount is in {{currency}} and should be whole numbers without decimals or commas.{% endblocktrans %}
     </p>
