@@ -1305,6 +1305,34 @@ div.textBlock {
   .updateMain .asideUpList .row h5 {
     margin-top: 0; }
 
+/* Donate Page*/
+.projectDonate {
+  max-width: 95%;
+  margin-left: auto;
+  margin-right: auto; }
+  .projectDonate .donateButton {
+    width: 100%;
+    margin-bottom: 1em; }
+  .projectDonate .donateStep2Image {
+    margin-top: 0.5em;
+    margin-bottom: 1em; }
+  .projectDonate .editDonation {
+    margin-top: 1em;
+    background-color: #999999;
+    border-color: #999999; }
+  .projectDonate .clear {
+    clear: both; }
+  @media only screen and (max-width: 768px) {
+    .projectDonate .paymentOption {
+      margin-top: 3em; }
+    .projectDonate .paymentSystemInfo {
+      margin-top: 4em;
+      padding-top: 1.25em;
+      padding-bottom: 1.25em;
+      clear: both; }
+    .projectDonate .donateButton {
+      width: initial; } }
+
 /* Cookie */
 #cookie-law {
   position: fixed;

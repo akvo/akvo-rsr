@@ -2,16 +2,7 @@
 {% load i18n rsr_tags thumbnail bootstrap3 %}
 
 {% block donatecontent %}
-<div class="results verticalPadding">
-  {% trans "Complete the following steps to donate to this project" %}:
-  <ul class="fa-ul">
-    <li><i class="fa-li fa fa-check"></i> {% trans 'Select payment system' %}</li>
-    <li><i class="fa-li fa fa-check"></i> {% trans 'Enter donation details' %}</li>
-    <li><i class="fa-li fa fa-minus"></i> {% trans 'Confirm donation' %}</li>
-  </ul>
-</div>
-
-<h3>{% trans 'Confirm your donation' %} <a class="btn btn-primary" href="{% url 'void_invoice' invoice_id=invoice.id action='back' %}">{% bootstrap_icon "pencil" %} Edit</a></h3>
+<h3>{% trans 'Confirm your donation' %}</h3>
     <div class="col-sm-7">
       <p>{% trans 'Amount' %}: {{project.get_currency_display|safe}}{{invoice.amount}}</p>
       <p>{% trans 'Your name' %}: {{invoice.get_name}}</p>
@@ -37,6 +28,9 @@
         {{ pp_button }}
       {% endif %}
       </p>
+      <p class="clear">
+        <a class="btn btn-primary editDonation" href="{% url 'void_invoice' invoice_id=invoice.id action='back' %}">{% bootstrap_icon "pencil" %} {% trans 'Change the details of your donation' %}</a>
+      </p>      
     </div>
 
     <div class="col-sm-5" style="background: rgba(255, 85, 0, 0.05); border-radius: 5px;">
