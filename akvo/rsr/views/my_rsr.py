@@ -10,8 +10,9 @@ import json
 
 from ..forms import PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm
 from ...utils import pagination
-from ..models import Country, Organisation, User
+from ..models import Country, Organisation
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -104,7 +105,7 @@ def user_management(request):
         raise PermissionDenied
 
     if user.is_support and user.is_admin:
-        users = User.objects.filter(is_active=True).order_by('-date_joined')
+        users = get_user_model().objects.filter(is_active=True).order_by('-date_joined')
         org_actions = Organisation.objects.all()
     else:
         organisations = user.employers.approved().organisations()
@@ -122,5 +123,4 @@ def user_management(request):
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range
-    # context = {'user_data': json.dumps({'users': users_array, }), } if users_array else {}
     return render(request, 'myrsr/user_management.html', context)
