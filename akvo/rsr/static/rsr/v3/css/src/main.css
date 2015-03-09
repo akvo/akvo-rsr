@@ -1134,6 +1134,8 @@ div.projectTopRow {
             margin-left: 15px; }
           div.projectTopRow .projectSideInfo ul li.financeBlock a {
             margin-left: 15px; }
+        div.projectTopRow .projectSideInfo ul li .donateButton {
+          margin-right: 15px; }
 
 .results ul {
   padding: 5px 0 5px 5px; }
