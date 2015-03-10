@@ -24,12 +24,17 @@
     </p>
 
     {% bootstrap_form_errors donate_form type='non_fields' %}
-    <div class="form-group">
+    <div class="form-group{% if donate_form.amount.errors %} has-error{% endif %}">
         <label class="control-label" for="id_amount">Amount</label>
         <div class="input-group">
             <span class="input-group-addon">{{project.get_currency_display|safe}}</span>
             <input class="form-control" id="id_amount" min="2" name="amount" placeholder="Amount" required="required" title="" type="number" value="{{donate_form.amount.value}}">
         </div>
+        {% if donate_form.amount.errors %}
+        {% for error in donate_form.amount.errors %}
+        <span class="help-block">{{error|escape}}</span>
+        {% endfor %}
+        {% endif %}
     </div>
     <p class="small">
         {% blocktrans with project.get_currency_display|safe as currency %}The amount is in {{currency}} and should be whole numbers without decimals or commas.{% endblocktrans %}
