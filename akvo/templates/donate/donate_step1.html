@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block donatecontent %}
-<div class="col-sm-4 paymentOption">
+<div class="col-sm-4 paymentOption step1">
   <h3>{% trans 'For all users' %}</h3>
   <div class="img-wrapper">
     <a href="{% url 'complete_donation' project_id=project.id engine='paypal' %}">
@@ -10,13 +10,17 @@
     </a>
   </div>
   <br>
-  <a class="btn btn-primary donateButton" href="{% url 'complete_donation' project_id=project.id engine='paypal' %}">{% trans 'Donate with PayPal' %}</a>
-  <p class="small">
-    {% trans 'Akvo offers the PayPal Secure Payment&trade; system for donations in 24 currencies from 190 countries, whether or not you have a PayPal account.' %}
-  </p>
+  <div class="methodInfo">
+    <div class="donateButtonContainer">
+      <a class="btn btn-primary donateButton" href="{% url 'complete_donation' project_id=project.id engine='paypal' %}">{% trans 'Donate with PayPal' %}</a>
+    </div>
+    <p class="small">
+      {% trans 'Akvo offers the PayPal Secure Payment&trade; system for donations in 24 currencies from 190 countries, whether or not you have a PayPal account.' %}
+    </p>
+  </div>
 </div>
 {% if project.currency = 'EUR' %}
-<div class="col-sm-4 paymentOption">
+<div class="col-sm-4 paymentOption step1">
   <h3>{% trans 'For Dutch users only' %}</h3>
   <div class="img-wrapper">
   <a href="{% url 'complete_donation' project_id=project.id engine='ideal' %}">
@@ -24,10 +28,14 @@
   </a>
   </div>
   <br>
-  <a class="btn btn btn-primary donateButton" href="{% url 'complete_donation' project_id=project.id engine='ideal' %}">{% trans 'Donate with iDeal' %}</a>
-  <p class="small">
-    {% trans 'In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.' %}
-  </p>
+  <div class="methodInfo">
+    <div class="donateButtonContainer">
+      <a class="btn btn btn-primary donateButton" href="{% url 'complete_donation' project_id=project.id engine='ideal' %}">{% trans 'Donate with iDeal' %}</a>
+    </div>
+    <p class="small">
+      {% trans 'In the Netherlands, Akvo offers the iDeal system for payments directly from your bank account.' %}
+    </p>
+  </div>
 </div>
 {% endif %}
 <div class="col-sm-4 paymentOption">

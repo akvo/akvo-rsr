@@ -10,11 +10,8 @@
     <section class="projectDonate">
       <div class="container">
         <div class="row verticalPadding">
-          <h2>{% trans "Donate to " %}{{project.title}}</h2>
+          <h2 class="donateTitle">{% trans "Donate to " %}{{project.title}}</h2>
           {% block donatecontent %}{% endblock donatecontent %}
-        </div>
-        <div class="row verticalPadding">
-          <a class="btn btn-primary" href="{% url 'project-main' project.id %}">{% trans 'Return to Project' %}</a>
         </div>
       </div>
     </section>

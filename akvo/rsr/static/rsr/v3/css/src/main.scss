@@ -1573,9 +1573,27 @@ div.textBlock {
     max-width: 95%;
     margin-left: auto;
     margin-right: auto;
+    @include responsive (small-max-screens) {
+        width: 95%;
+        max-width: 450px;
+        text-align: justify;
+
+        .paymentOption,
+        .donateTitle,
+        h3 {
+            text-align: center;
+        }
+    }
     .donateButton {
-        width: 100%;
-        margin-bottom: 1em;
+        margin-bottom: 2em;
+    }
+    .donateButtonContainer {
+        text-align: center;
+    }
+    .methodInfo {
+        min-height: 15em;
+        padding: 2.5em 1em 1em 1em;
+        background-color: $secondary8;
     }
     .donateStep2Image {
         margin-top: 0.5em;
@@ -1589,6 +1607,19 @@ div.textBlock {
     .clear {
         clear: both;
     }
+    .paymentSystemInfo {
+        background-color: $secondary8;
+    }
+    .step3 {
+
+    }  
+    @include responsive(small-screens) {
+        @include responsive(medium-max-screens) {
+            h3 {
+                font-size: 1.3em;
+            }
+        }
+    }
     @include responsive(small-max-screens) {
         .paymentOption {
             margin-top: 3em;
@@ -1601,6 +1632,10 @@ div.textBlock {
         }
         .donateButton {
             width: initial;
+        }
+        h3 {
+            margin-top: 1.25em;
+            margin-bottom: 1em;
         }
     }
 }
