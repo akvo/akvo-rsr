@@ -539,7 +539,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
         RelatedProjectInline, ProjectContactInline, PartnershipInline, ProjectDocumentInline, ProjectLocationInline,
         SectorInline, BudgetItemAdminInLine, TransactionInline, ResultInline, LinkInline, ProjectConditionInline,
         CountryBudgetInline, PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline,
-        RecipientRegionInline, LegacyDataInline, BenchmarkInline, GoalInline,
+        RecipientRegionInline, LegacyDataInline,
     )
     save_as = True
 
@@ -551,6 +551,13 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned', 'date_start_actual',
                        'date_end_planned', 'date_end_actual', 'language', 'currency', 'donate_button', 'hierarchy'),
+        }),
+        (_(u'IATI defaults'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Optionally, you can add default information based on the IATI standard.'
+            ),
+            'fields': ('default_aid_type', 'default_flow_type', 'default_tied_status','collaboration_type',
+                       'default_finance_type'),
         }),
         (_(u'Contact Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -616,7 +623,12 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'The project focus aims to define the broad areas of the project activities. This ensures that the '
                 u'project can be collectively grouped with other similar projects to help make the most out of the '
-                u'project resources.'
+                u'project resources.<br><br>'
+                u'Enter the sector code of the sectors that the project is working within. See these lists for the '
+                u'DAC-5 and DAC-3 sector codes:<br>'
+                u'- <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">DAC-5 sector codes</a><br>'
+                u'- <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">DAC-3 sector '
+                u'codes</a>'
             ),
             'fields': (),
         }),
@@ -625,7 +637,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'You can define the budget information as a total for the whole project or within sections and '
                 u'periods to provide more granular information about where the project funds are being spent.'
             ),
-            'fields': (),
+            'fields': ('capital_spend_percentage', ),
         }),
         (_(u'Project Financials - Transactions'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -661,6 +673,12 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('notes',),
         }),
+        (_(u'Additional IATI Information'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Optionally, you can add additional information based on the IATI standard.'
+            ),
+            'fields': (),
+        }),
         (_(u'Keywords'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Add keywords belonging to your project. These keywords must be existing already in Akvo RSR. If '
@@ -669,25 +687,10 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('keywords',),
         }),
-        (_(u'Additional IATI information'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Optionally, you can add additional information based on the IATI standard.'
-            ),
-            'classes': ('collapse',),
-            'fields': ('capital_spend_percentage', 'default_aid_type', 'default_flow_type', 'default_tied_status',
-                       'collaboration_type', 'default_finance_type',),
-        }),
-        (_(u'Legacy RSR Data'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Data that was used in RSR v2, but is currently not used anymore. This is still available in order '
-                u'to see the old data.'
-            ),
-            'classes': ('collapse',),
-            'fields': ('categories', ),
-        }),
     )
     filter_horizontal = ('keywords',)
-    list_display = ('title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published', 'show_keywords')
+    list_display = ('title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',
+                    'show_keywords')
     search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
