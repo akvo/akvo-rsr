@@ -1573,17 +1573,17 @@ div.textBlock {
     max-width: 95%;
     margin-left: auto;
     margin-right: auto;
-    @include responsive (small-max-screens) {
+    @include responsive(small-max-screens) {
         width: 95%;
         max-width: 450px;
         text-align: justify;
-
         .paymentOption,
         .donateTitle,
         h3 {
             text-align: center;
         }
     }
+
     .donateButton {
         margin-bottom: 2em;
     }
@@ -1610,9 +1610,6 @@ div.textBlock {
     .paymentSystemInfo {
         background-color: $secondary8;
     }
-    .step3 {
-
-    }  
     @include responsive(small-screens) {
         @include responsive(medium-max-screens) {
             h3 {
@@ -1620,6 +1617,7 @@ div.textBlock {
             }
         }
     }
+
     @include responsive(small-max-screens) {
         .paymentOption {
             margin-top: 3em;
