@@ -297,7 +297,7 @@ class RSR_PartnershipInlineForm(forms.ModelForm):
 
 class PartnershipInline(NestedTabularInline):
     model = get_model('rsr', 'Partnership')
-    fields = ('organisation', 'partner_type', 'funding_amount', 'internal_id', 'partner_type_extra')
+    fields = ('organisation', 'partner_type', 'funding_amount', 'internal_id')
     extra = 0
     form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
