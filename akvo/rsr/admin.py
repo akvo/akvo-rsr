@@ -497,10 +497,9 @@ class TransactionInline(NestedStackedInline):
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
             'fields': ('currency',  'value_date', 'transaction_type_text', 'provider_organisation',
-                       'provider_organisation_ref', 'provider_organisation_activity', 'receiver_organisation',
-                       'receiver_organisation_ref', 'receiver_organisation_activity', 'aid_type', 'aid_type_text',
-                       'disbursement_channel', 'disbursement_channel_text', 'finance_type', 'finance_type_text',
-                       'flow_type', 'flow_type_text', 'tied_status', 'tied_status_text', )
+                       'provider_organisation_activity', 'receiver_organisation', 'receiver_organisation_activity',
+                       'aid_type', 'aid_type_text', 'disbursement_channel', 'disbursement_channel_text', 'finance_type',
+                       'finance_type_text', 'flow_type', 'flow_type_text', 'tied_status', 'tied_status_text', )
         }),
     )
 
