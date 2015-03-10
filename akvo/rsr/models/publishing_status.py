@@ -24,7 +24,9 @@ class PublishingStatus(models.Model):
     )
 
     project = models.OneToOneField('Project',)
-    status = ValidXMLCharField(max_length=30, choices=PUBLISHING_STATUS, default=STATUS_UNPUBLISHED)
+    status = ValidXMLCharField(max_length=30,
+                               choices=PUBLISHING_STATUS,
+                               db_index=True, default=STATUS_UNPUBLISHED)
 
     class Meta:
         app_label = 'rsr'

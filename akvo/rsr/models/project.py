@@ -265,6 +265,7 @@ class Project(TimestampsMixin, models.Model):
         return ('project-main', (), {'project_id': self.pk})
 
     def accepts_donations(self):
+        """This is slow."""
         if not self.donate_button:
             return False
         if self in Project.objects.active() and self.funds_needed > 0:
