@@ -129,12 +129,6 @@ def donation_completed(instance, created, **kwargs):
         send_donation_confirmation_emails(invoice.id)
 
 
-def set_active_cms(instance, created, **kwargs):
-    MiniCMS = get_model('rsr', 'MiniCMS')
-    if instance.active:
-        MiniCMS.objects.exclude(pk=instance.pk).update(active=False)
-
-
 def set_showcase_project(instance, created, **kwargs):
     Project = get_model('rsr', 'Project')
     if instance.showcase:
