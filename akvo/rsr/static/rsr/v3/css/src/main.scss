@@ -183,6 +183,7 @@ span.twitter-typeahead .tt-dropdown-menu {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     background-clip: padding-box;
 }
+
 .tt-hint {
     color: rgba($rsrGreen, 0.5);
 }
@@ -303,6 +304,7 @@ nav.navbar-fixed-top {
                 text-indent: -9999px;
                 margin-top: 0;
             }
+
             @include responsive(ipadAir) {
                 width: 180px;
                 top: -5px;
@@ -312,7 +314,7 @@ nav.navbar-fixed-top {
                 background-size: 175px auto;
                 text-indent: -9999px;
                 margin-top: 0;
-            }            
+            }
         }
     }
     .navbar-nav {
@@ -474,8 +476,9 @@ nav.navbar-fixed-top {
 
 /* My RSR stuff */
 .btnHeader {
-    padding:15px 0 25px 0;
+    padding: 15px 0 25px 0;
 }
+
 .myRsrMenu {
     min-height: 100%;
     bottom: 0;
@@ -524,15 +527,15 @@ nav.navbar-fixed-top {
 .table-responsive {
     &.locationTab {
         overflow: hidden;
-        thead{
+        thead {
             th {
                 max-width: 8.33% !important;
                 overflow: hidden !important;
                 text-overflow: ellipsis !important;
                 white-space: nowrap !important;
             }
-        }        
-        tbody{
+        }
+        tbody {
             td {
                 max-width: 8.33% !important;
                 overflow: hidden !important;
@@ -579,6 +582,7 @@ nav.navbar-fixed-top {
             margin: 2px 0 2px 0;
             display: block;
         }
+
         @include responsive(ipadAir) {
             width: 98%;
             padding: 2px 1%;
@@ -700,6 +704,7 @@ footer {
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
+
     @include responsive(ipadAir) {
         margin-top: -20px;
     }
@@ -977,7 +982,8 @@ h4.detailedInfo {
                 dd {
                     @include responsive(small-max-screens) {
                         margin-left: 100px;
-                    }           
+                    }
+
                     @include responsive(wide-max-screens) {
                         margin-left: 0px;
                         display: block;
@@ -1015,6 +1021,9 @@ h4.detailedInfo {
                 &:hover {
                     background: darken(rgba($rsrBlue, 0.1), 0%);
                     border: thin solid rgba($rsrBlue, 0.3);
+                }
+                .totalBudgetLabel {
+                    width: initial;
                 }
             }
         }
@@ -1187,6 +1196,7 @@ header {
         height: 300px;
     }
 }
+
 .orgMap {
     .mapInfoWindow {
         img {
@@ -1194,6 +1204,7 @@ header {
         }
     }
 }
+
 div.projectTopRow {
     position: relative;
     background: rgba(245, 245, 245, 0.5);
@@ -1377,7 +1388,6 @@ div.textBlock {
         padding-top: 10px;
         padding-bottom: 15px;
         background: lighten($veryLightOrange, 25%);
-
         h4 {
             margin-bottom: 10px;
         }
@@ -1394,9 +1404,11 @@ div.textBlock {
         }
     }
 }
+
 .allUpdates {
-    margin-top:25px;
+    margin-top: 25px;
 }
+
 .udpateComponent {
     padding-top: 10px;
     padding-bottom: 15px;
@@ -1540,6 +1552,43 @@ div.textBlock {
                 margin-top: 0;
             }
         }
+    }
+}
+
+/* Financial details page */
+
+section.projectFinancial {
+    @include responsive(small-max-screens) {
+        width: 95%;
+        max-width: 450px;
+        margin-left: auto;
+        margin-right: auto;
+        .dl-horizontal {
+            dt {
+                float: left;
+            }
+        }
+    }
+
+    @include responsive(medium-max-screens) {
+        @include responsive(small-screens) {
+            .dl-horizontal {
+                dt {
+                    width: initial;
+                }
+            }
+        }
+    }
+}
+
+/* Display currency totals right-aligned */
+.currencyAmount {
+    text-align: right;
+}
+
+dd {
+    &.currencyAmount {
+        margin-left: auto;
     }
 }
 
