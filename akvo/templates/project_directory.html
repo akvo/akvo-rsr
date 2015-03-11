@@ -106,7 +106,7 @@
               {% endif %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}} {{p.budget|floatformat|intcomma}}
               </p>
             </div>
           </div>
@@ -117,7 +117,7 @@
               {% endif %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}} {{p.budget|floatformat|intcomma}}
             </p>
           </div>
           <div class="col-sm-3 hidden-xs hidden-sm">

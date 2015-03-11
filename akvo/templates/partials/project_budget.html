@@ -6,13 +6,13 @@
 </div>
 <div class="row hidden">
 		<div class="col-xs-3 text-left">
-			<span class="progress-label-start">{{project.get_currency_display}}{{project.funds|floatformat|intcomma}}</span></div>
+			<span class="progress-label-start">{{project.get_currency_display}} {{project.funds|floatformat|intcomma}}</span></div>
 		<div class="col-xs-3 col-xs-offset-5 text-right">
-			<span class="progress-label-end">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</span>
+			<span class="progress-label-end">{{project.get_currency_display}} {{project.budget|floatformat|intcomma}}</span>
 		</div>
 </div>
 <dl class="dl-horizontal topMargin">
-	<dt>Total Budget:</dt><dd>{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</dd>
+	<dt>Total Budget:</dt><dd>{{project.get_currency_display}} {{project.budget|floatformat|intcomma}}</dd>
 </dl>
 {% if project.accepts_donations %}
 <div class="text-center ">
