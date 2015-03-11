@@ -45,20 +45,6 @@ def extra_pages_context(request):
     """Add context information of an RSR Page."""
     if request.rsr_page:
         page = request.rsr_page
-
-        # Check if only projects of the partner should be shown or all projects
-        # if page.partner_projects:
-        #     projects = page.organisation.published_projects().prefetch_related('locations')
-        # else:
-        #     projects = Project.objects.all().published().prefetch_related('locations')
-        #
-        # # Check if keywords have been specified for the partner site and filter projects based on keywords if so
-        # if page.keywords.all():
-        #     if page.exclude_keywords:
-        #         projects = projects.exclude(keywords__in=page.keywords.all())
-        #     else:
-        #         projects = projects.filter(keywords__in=page.keywords.all())
-
         return {
             'rsr_page': page,
             'favicon': page.favicon,
@@ -69,7 +55,6 @@ def extra_pages_context(request):
             'stylesheet': page.stylesheet,
             'akvoapp_root_url': request.akvoapp_root_url,
             'domain_url': request.domain_url,
-            # 'projects_qs': projects.latest_update_fields().order_by('-id'),
             'no_facebook': not page.facebook_button,
             'facebook_app_id': page.facebook_app_id,
             'no_twitter': not page.twitter_button,

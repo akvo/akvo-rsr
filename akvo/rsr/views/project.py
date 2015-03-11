@@ -19,6 +19,7 @@ from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
+from .utils import apply_keywords, org_projects
 
 
 ###############################################################################
@@ -28,48 +29,17 @@ from ...utils import pagination, filter_query_string
 
 def _all_projects():
     """Return all active projects."""
-    print "_all_projects"
-    return Project.objects.select_related(
-        'partners',
-        'categories',
-        'primary_location',
-        'primary_location__country',
-        'sync_owner').active().prefetch_related('categories',
-                                                'partners').order_by('-id')
-
-
-def _orgs_projects(organisation):
-    """Return active projects from organisation."""
-    print "_orgs_projects"
-    return organisation.active_projects().select_related(
-        'partners',
-        'categories',
-        'primary_location',
-        'primary_location__country',
-        'sync_owner').active().prefetch_related('categories',
-                                                'partners').order_by('-id')
-
-
-def _apply_keywords(page, projects):
-    """Apply keywords.
-
-    If keywords exist, check if they should be used for filtering or exclusion.
-    """
-    print "_apply_keywords"
-    if not page.keywords.all():
-        return projects
-
-    if page.exclude_keywords:
-        return projects.exclude(keywords__in=page.keywords.all())
-    else:
-        return projects.filter(keywords__in=page.keywords.all())
-
+    return Project.objects.published().select_related().prefetch_related(
+        'partners').order_by('-id')
 
 def _page_projects(page):
-    """Dig out the list of projects to use."""
-    print "_page_projects"
-    projects = _orgs_projects() if page.partner_projects else _all_projects()
-    return _apply_keywords(projects)
+    """Dig out the list of projects to use.
+    First get a list based on page settings (orgs or all projects). Then apply
+    keywords filtering / exclusion.
+    """
+    org = page.organisation
+    projects = org_projects(org) if page.partner_projects else _all_projects()
+    return apply_keywords(page, projects)
 
 
 def _project_directory_coll(request):
