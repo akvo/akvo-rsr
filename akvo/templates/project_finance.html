@@ -34,7 +34,9 @@
                         <dt><a href="{% url 'organisation-main' partnership.organisation.pk %}">{% img partnership.organisation 80 60 partnership.organisation.name %}</a></dt>
                         <dd>
                             <a href="{% url 'organisation-main' partnership.organisation.pk %}">{{partnership.organisation}}</a>
+                            {% if partnership.funding_amount %}
                             <br><span class="currency">{{project.get_currency_display}}</span> {{partnership.funding_amount|floatformat:2|intcomma}}
+                            {% endif %}
                         </dd>
                     </dl>
                     {% endfor %}
@@ -53,11 +55,15 @@
 			</div>
 			<div class="row verticalPadding">
 	    		<h4 class="">{% trans "Project transactions" %}:</h4>
-                {% for transaction in project.transactions.all %}
-                <dt>{{transaction.description}}:</dt><dd><span class="currency">{{project.get_currency_display}}</span> {{transaction.value|floatformat:2|intcomma}}</dd>
-                {% empty %}
+                {% if project.transactions.all %}
+                <dl class="dl-horizontal">
+                    {% for transaction in project.transactions.all %}
+                    <dt>{% if transaction.description %}{{transaction.description}}{% else %}{{transaction.iati_transaction_type}}{% endif %}:</dt><dd><span class="currency">{{project.get_currency_display}}</span> {{transaction.value|floatformat:2|intcomma}}</dd>
+                    {% endfor %}
+                </dl>
+                {% else %}
 	    		<p class="small noInfoBlock"><i class="noItem">{% trans "No transactions for this project" %}</i></p>
-                {% endfor %}
+                {% endif %}
 			</div>
 	    </div>
 	</section>
