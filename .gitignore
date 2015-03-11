@@ -117,3 +117,6 @@ tramp
 # SASS
 akvo/rsr/static/rsr/v3/css/src/.sass-cache
 akvo/rsr/static/rsr/v3/css/src/*.map
+
+# Landscape
+!.landscape.yaml
