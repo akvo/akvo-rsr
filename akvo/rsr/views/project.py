@@ -151,24 +151,30 @@ def _get_timeline_data(project):
 def _get_carousel_data(project):
     photos = []
     if project.current_image:
-        im = get_thumbnail(project.current_image, '750x400', quality=99)
-        photos.append({
-            "url": im.url,
-            "caption": project.current_image_caption,
-            "credit": project.current_image_credit,
-            "original_url": project.current_image.url,
-        })
+        try:
+            im = get_thumbnail(project.current_image, '750x400', quality=99)
+            photos.append({
+                "url": im.url,
+                "caption": project.current_image_caption,
+                "credit": project.current_image_credit,
+                "original_url": project.current_image.url,
+            })
+        except IOError:
+            pass
     for update in project.updates_desc():
         if len(photos) > 9:
             break
         if update.photo:
-            im = get_thumbnail(update.photo, '750x400', quality=99)
-            photos.append({
-                "url": im.url,
-                "caption": update.photo_caption,
-                "credit": update.photo_credit,
-                "original_url": update.photo.url,
-            })
+            try:
+                im = get_thumbnail(update.photo, '750x400', quality=99)
+                photos.append({
+                    "url": im.url,
+                    "caption": update.photo_caption,
+                    "credit": update.photo_credit,
+                    "original_url": update.photo.url,
+                })
+            except IOError:
+                continue
     return {"photos": photos}
 
 

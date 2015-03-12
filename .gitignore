@@ -96,7 +96,7 @@ tmtags
 *.kpf
 *.templatec
 
-#PyCharm
+# PyCharm
 .idea
 
 # Emacs
@@ -120,3 +120,6 @@ akvo/rsr/static/rsr/v3/css/src/*.map
 
 # Landscape
 !.landscape.yaml
+
+# Codekit
+*.codekit

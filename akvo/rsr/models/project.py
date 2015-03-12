@@ -199,7 +199,7 @@ class Project(TimestampsMixin, models.Model):
 
     # synced projects
     sync_owner = models.ForeignKey(
-        'Organisation', verbose_name=_(u'reporting organisation'), null=True, on_delete=models.SET_NULL,
+        'Organisation', verbose_name=_(u'reporting organisation'), null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Select the reporting organisation of the project.')
     )
     sync_owner_secondary_reporter = models.NullBooleanField(

@@ -52,7 +52,7 @@ class Transaction(models.Model):
         _(u'tied status text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
     )
     transaction_date = models.DateField(
-        _(u'transaction date'), blank=True,
+        _(u'transaction date'), blank=True, null=True,
         help_text=u'Enter the financial reporting date that the transaction was/will be undertaken.'
     )
     transaction_type = ValidXMLCharField(
@@ -63,18 +63,22 @@ class Transaction(models.Model):
         _(u'transaction type text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
     )
     value = models.DecimalField(
-        _(u'value'), blank=True, null=True, max_digits=11, decimal_places=1,
+        _(u'value'), blank=True, null=True, max_digits=11, decimal_places=2,
         help_text=u'Enter the transaction amount.'
     )
     value_date = models.DateField(_(u'value date'), blank=True, null=True)
     currency = ValidXMLCharField(_(u'currency'), blank=True, max_length=3, choices=codelist_choices(Currency))
-    provider_organisation = ValidXMLCharField(_(u'provider organisation'), blank=True, max_length=100)
-    provider_organisation_ref = ValidXMLCharField(_(u'provider organisation reference'), blank=True, max_length=50)
+    provider_organisation = models.ForeignKey(
+        'Organisation', verbose_name=_(u'provider organisation'), related_name='providing_transactions', blank=True,
+        null=True, on_delete=models.SET_NULL
+    )
     provider_organisation_activity = ValidXMLCharField(
         _(u'provider organisation activity id'), blank=True, max_length=50
     )
-    receiver_organisation = ValidXMLCharField(_(u'receiver organisation'), blank=True, max_length=100)
-    receiver_organisation_ref = ValidXMLCharField(_(u'receiver organisation reference'), blank=True, max_length=50)
+    receiver_organisation = models.ForeignKey(
+        'Organisation', verbose_name=_(u'receiver organisation'), related_name='receiving_transactions', blank=True,
+        null=True, on_delete=models.SET_NULL
+    )
     receiver_organisation_activity = ValidXMLCharField(
         _(u'receiver organisation activity id'), blank=True, max_length=50
     )

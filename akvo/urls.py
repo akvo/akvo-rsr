@@ -16,6 +16,10 @@ from django.conf import settings
 from django.conf.urls import (include, patterns, url)
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
+
+from paypal.standard.ipn.views import ipn as paypal_ipn
 
 admin.autodiscover()
 
@@ -47,9 +51,6 @@ urlpatterns = patterns(
 
     url(r'^project/(?P<project_id>\d+)/finance/$',
         'akvo.rsr.views.project.finance', name='project-finance'),
-
-    url(r'^project/(?P<project_id>\d+)/donate/$',
-        'akvo.rsr.views.project.donate', name='project-donate'),
 
     # Organisations
     url(r'^organisations/$',
@@ -108,6 +109,35 @@ urlpatterns = patterns(
 
     url(r'^myrsr/password_change/$',
         'akvo.rsr.views.my_rsr.password_change', name='password_change'),
+
+    # Donations
+    url(r'^mollie/report/$',
+        'akvo.rsr.views.donate.mollie_report',
+        name='mollie_report'),
+
+    url(r'^invoice/(?P<invoice_id>\d+)/(?P<action>\w+)/$',
+        'akvo.rsr.views.donate.void_invoice',
+        name='void_invoice'),
+
+    url(r'^project/(?P<project_id>\d+)/donate/(?P<engine>\w+)/$',
+        'akvo.rsr.views.donate.donate',
+        name='complete_donation'),
+
+    url(r'^project/(?P<project_id>\d+)/donate/$',
+        'akvo.rsr.views.donate.setup_donation',
+        name='project-donate'),
+
+    url(r'^donate/thanks/$',
+        'akvo.rsr.views.donate.donate_thanks',
+        name='donate_thanks'),
+
+    url(r'^donate/500/$',
+        TemplateView.as_view(template_name="donate/donate_500.html"),
+        name='donate_500'),
+
+    url(r'^donate/paypal/ipn/$',
+        csrf_exempt(paypal_ipn),
+        name='paypal_ipn'),
 
     # Admin
     (r'^admin/', include(admin.site.urls)),
