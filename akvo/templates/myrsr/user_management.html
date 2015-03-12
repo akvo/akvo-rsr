@@ -16,7 +16,13 @@
         {% endif %}
     </p>
     {% endif %}
+    {% if can_change_employments and user_data %}
     <div id="user_table"></div>
+    <div>
+      <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} users</p>
+      {% include 'navigation/pagination.html' %}
+    </div>
+    {% endif %}
 {% endblock %}
 
 {% block js %}

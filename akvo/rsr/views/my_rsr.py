@@ -12,6 +12,7 @@ from ..forms import PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarF
 from ...utils import pagination
 from ..models import Country, Organisation
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -99,13 +100,27 @@ def my_projects(request):
 @login_required
 def user_management(request):
     user = request.user
-    organisations = user.employers.approved().organisations()
 
     if not user.has_perm('rsr.user_management'):
         raise PermissionDenied
 
-    org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
-    users_array = [user.employments_dict(org_actions) for user in organisations.users().exclude(pk=user.pk).order_by('-date_joined')]
+    if user.is_support and user.is_admin:
+        users = get_user_model().objects.filter(is_active=True).order_by('-date_joined')
+        org_actions = Organisation.objects.all()
+    else:
+        organisations = user.employers.approved().organisations()
+        users = organisations.users().exclude(pk=user.pk).order_by('-date_joined')
+        org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
 
-    context = {'user_data': json.dumps({'users': users_array, }), } if users_array else {}
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, users, 10)
+
+    users_array = [user.employments_dict(org_actions) for user in page]
+
+    context = {}
+    if users_array:
+        context['user_data'] = json.dumps({'users': users_array, })
+    context['page'] = page
+    context['paginator'] = paginator
+    context['page_range'] = page_range
     return render(request, 'myrsr/user_management.html', context)
