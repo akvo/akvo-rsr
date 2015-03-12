@@ -51,10 +51,9 @@ sorl-thumbnail==12.2
 django-embed-video==0.11
 
 # Database requirements
-MySQL-python==1.2.5
 South==0.8.4
 psycopg2
-py-mysql2pgsql
+
 
 # App container
 gunicorn==18.0

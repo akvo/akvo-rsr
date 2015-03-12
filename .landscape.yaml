@@ -1,6 +1,7 @@
 # doc-warnings: yes
 test-warnings: no
+strictness: verylow
 # strictness: veryhigh
-max-line-length: 80
+# max-line-length: 80
 requirements:
     - scripts/deployment/pip/requirements/2_rsr.txt
