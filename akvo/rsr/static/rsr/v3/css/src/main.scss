@@ -1022,103 +1022,115 @@ h4.detailedInfo {
                     background: darken(rgba($rsrBlue, 0.1), 0%);
                     border: thin solid rgba($rsrBlue, 0.3);
                 }
-                .totalBudgetLabel {
-                    width: initial;
+                .donateButton {
+                    text-align: left;
+                    a {
+                        @include responsive(medium-max-screens) {
+                            margin-top: 0.6em;
+                        }
+
+                        @include responsive(small-max-screens) {
+                            margin-top: 1em;
+                        }
+                    }
+                    .totalBudgetLabel {
+                        width: initial;
+                    }
                 }
             }
         }
-    }
-    &.updates {
-        ul {
-            li {
-                border: thin solid rgba($rsrGreen, 0);
-                @include transition(all 0.2s ease-in);
-                .orgName {}
-                .projectTitle {
-                    color: rgba($anchorLink, 1);
-                    i {
-                        font-size: 1.1em;
+        &.updates {
+            ul {
+                li {
+                    border: thin solid rgba($rsrGreen, 0);
+                    @include transition(all 0.2s ease-in);
+                    .orgName {}
+                    .projectTitle {
                         color: rgba($anchorLink, 1);
+                        i {
+                            font-size: 1.1em;
+                            color: rgba($anchorLink, 1);
+                        }
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                    h1 {
+                        a {
+                            color: $rsrGreen;
+                            &:hover {
+                                color: $anchorLinkHover;
+                            }
+                        }
+                    }
+                    &:nth-child(2n+1) {
+                        background: darken(rgba($rsrGreen, 0.05), 10%);
+                        border: thin solid rgba($rsrGreen, 0.1);
+                    }
+                    .projectLocation {
+                        color: rgba($akvoBlack, 0.5);
                     }
                     &:hover {
-                        color: $anchorLinkHover;
+                        background: darken(rgba($rsrGreen, 0.1), 0%);
+                        border: thin solid rgba($rsrGreen, 0.35);
                     }
+                    .excerpt {}
+                    .excerpt {}
                 }
-                h1 {
-                    a {
-                        color: $rsrGreen;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrGreen, 0.05), 10%);
-                    border: thin solid rgba($rsrGreen, 0.1);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrGreen, 0.1), 0%);
-                    border: thin solid rgba($rsrGreen, 0.35);
-                }
-                .excerpt {}
-                .excerpt {}
             }
         }
-    }
-    &.organisations {
-        ul {
-            li {
-                border: thin solid rgba($akvoTvRed, 0);
-                @include transition(all 0.2s ease-in);
-                i {
-                    font-size: 1.1em;
-                }
-                .projectLocation {}
-                .projectTitle {
-                    display: block;
-                    margin: 0 0 3px 0;
-                }
-                span.userFullName {
-                    margin: 0 0 0px 0;
-                }
-                .upDateTime {
-                    margin-top: 10px;
-                }
-                .orgType {}
-                .additionalInfo {
-                    div {
-                        color: rgba($akvoBlack, 0.5);
-                        span {
-                            margin-left: 5px;
+        &.organisations {
+            ul {
+                li {
+                    border: thin solid rgba($akvoTvRed, 0);
+                    @include transition(all 0.2s ease-in);
+                    i {
+                        font-size: 1.1em;
+                    }
+                    .projectLocation {}
+                    .projectTitle {
+                        display: block;
+                        margin: 0 0 3px 0;
+                    }
+                    span.userFullName {
+                        margin: 0 0 0px 0;
+                    }
+                    .upDateTime {
+                        margin-top: 10px;
+                    }
+                    .orgType {}
+                    .additionalInfo {
+                        div {
+                            color: rgba($akvoBlack, 0.5);
+                            span {
+                                margin-left: 5px;
+                            }
                         }
                     }
-                }
-                h1 {
-                    a {
-                        color: $akvoTvRed;
-                        &:hover {
-                            color: $anchorLinkHover;
+                    h1 {
+                        a {
+                            color: $akvoTvRed;
+                            &:hover {
+                                color: $anchorLinkHover;
+                            }
                         }
                     }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($akvoTvRed, 0.05), 0);
-                    border: thin solid rgba($akvoTvRed, 0.05);
-                }
-                &:hover {
-                    background: darken(rgba($akvoTvRed, 0.1), 0%);
-                    border: thin solid rgba($akvoTvRed, 0.35);
-                }
-                img {
-                    @include bw;
-                    transition: all 0.2s ease-in;
-                }
-                &:hover {
+                    &:nth-child(2n+1) {
+                        background: darken(rgba($akvoTvRed, 0.05), 0);
+                        border: thin solid rgba($akvoTvRed, 0.05);
+                    }
+                    &:hover {
+                        background: darken(rgba($akvoTvRed, 0.1), 0%);
+                        border: thin solid rgba($akvoTvRed, 0.35);
+                    }
                     img {
-                        @include colour;
+                        @include bw;
+                        transition: all 0.2s ease-in;
+                    }
+                    &:hover {
+                        img {
+                            @include colour;
+                        }
                     }
                 }
             }
@@ -1324,6 +1336,9 @@ div.projectTopRow {
                     a {
                         margin-left: 15px;
                     }
+                }
+                .donateButton {
+                    margin-right: 15px;
                 }
             }
         }
@@ -1551,6 +1566,77 @@ div.textBlock {
             h5 {
                 margin-top: 0;
             }
+        }
+    }
+}
+
+/* Donate Page*/
+
+.projectDonate {
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    @include responsive(small-max-screens) {
+        width: 95%;
+        max-width: 450px;
+        text-align: justify;
+        .paymentOption,
+        .donateTitle,
+        h3 {
+            text-align: center;
+        }
+    }
+
+    .donateButton {
+        margin-bottom: 2em;
+    }
+    .donateButtonContainer {
+        text-align: center;
+    }
+    .methodInfo {
+        min-height: 15em;
+        padding: 2.5em 1em 1em 1em;
+        background-color: $secondary8;
+    }
+    .donateStep2Image {
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+    }
+    .editDonation {
+        margin-top: 1em;
+        background-color: $primary4;
+        border-color: $primary4;
+    }
+    .clear {
+        clear: both;
+    }
+    .paymentSystemInfo {
+        background-color: $secondary8;
+    }
+    @include responsive(small-screens) {
+        @include responsive(medium-max-screens) {
+            h3 {
+                font-size: 1.3em;
+            }
+        }
+    }
+
+    @include responsive(small-max-screens) {
+        .paymentOption {
+            margin-top: 3em;
+        }
+        .paymentSystemInfo {
+            margin-top: 4em;
+            padding-top: 1.25em;
+            padding-bottom: 1.25em;
+            clear: both;
+        }
+        .donateButton {
+            width: initial;
+        }
+        h3 {
+            margin-top: 1.25em;
+            margin-bottom: 1em;
         }
     }
 }
