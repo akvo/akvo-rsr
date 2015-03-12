@@ -5,7 +5,4 @@
 
 set -e
 
-sudo -H -u rsr <<EOF
-. /var/akvo/rsr/venv/bin/activate
-pip install -r /var/akvo/rsr/code/scripts/deployment/pip/requirements/5_dev.txt
-EOF
+sudo -H -u rsr /var/akvo/rsr/venv/bin/pip install -r /var/akvo/rsr/code/scripts/deployment/pip/requirements/5_dev.txt
