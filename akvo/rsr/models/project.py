@@ -265,10 +265,11 @@ class Project(TimestampsMixin, models.Model):
         return ('project-main', (), {'project_id': self.pk})
 
     def accepts_donations(self):
-        """This is slow."""
-        if not self.donate_button:
-            return False
-        if self in Project.objects.active() and self.funds_needed > 0:
+        """Returns True if a project accepts donations, otherwise False.
+        A project accepts donations when the donate button settings is True, the project is published,
+        the project needs funding and is not cancelled or archived."""
+        if self.donate_button and self.is_published() and self.funds_needed > 0 and \
+                self.status in [Project.STATUS_NEEDS_FUNDING, Project.STATUS_ACTIVE, Project.STATUS_COMPLETE]:
             return True
         return False
 
@@ -420,7 +421,7 @@ class Project(TimestampsMixin, models.Model):
             return self.exclude(status__exact=Project.STATUS_ARCHIVED)
 
         def active(self):
-            """Return projects that are publushed and not cancelled or archived"""
+            """Return projects that are published and not cancelled or archived"""
             return self.published().status_not_cancelled().status_not_archived()
 
         def euros(self):
