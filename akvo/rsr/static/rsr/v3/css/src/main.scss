@@ -183,6 +183,7 @@ span.twitter-typeahead .tt-dropdown-menu {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     background-clip: padding-box;
 }
+
 .tt-hint {
     color: rgba($rsrGreen, 0.5);
 }
@@ -303,6 +304,7 @@ nav.navbar-fixed-top {
                 text-indent: -9999px;
                 margin-top: 0;
             }
+
             @include responsive(ipadAir) {
                 width: 180px;
                 top: -5px;
@@ -312,7 +314,7 @@ nav.navbar-fixed-top {
                 background-size: 175px auto;
                 text-indent: -9999px;
                 margin-top: 0;
-            }            
+            }
         }
     }
     .navbar-nav {
@@ -474,8 +476,9 @@ nav.navbar-fixed-top {
 
 /* My RSR stuff */
 .btnHeader {
-    padding:15px 0 25px 0;
+    padding: 15px 0 25px 0;
 }
+
 .myRsrMenu {
     min-height: 100%;
     bottom: 0;
@@ -524,15 +527,15 @@ nav.navbar-fixed-top {
 .table-responsive {
     &.locationTab {
         overflow: hidden;
-        thead{
+        thead {
             th {
                 max-width: 8.33% !important;
                 overflow: hidden !important;
                 text-overflow: ellipsis !important;
                 white-space: nowrap !important;
             }
-        }        
-        tbody{
+        }
+        tbody {
             td {
                 max-width: 8.33% !important;
                 overflow: hidden !important;
@@ -579,6 +582,7 @@ nav.navbar-fixed-top {
             margin: 2px 0 2px 0;
             display: block;
         }
+
         @include responsive(ipadAir) {
             width: 98%;
             padding: 2px 1%;
@@ -700,6 +704,7 @@ footer {
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
+
     @include responsive(ipadAir) {
         margin-top: -20px;
     }
@@ -977,7 +982,8 @@ h4.detailedInfo {
                 dd {
                     @include responsive(small-max-screens) {
                         margin-left: 100px;
-                    }           
+                    }
+
                     @include responsive(wide-max-screens) {
                         margin-left: 0px;
                         display: block;
@@ -1016,100 +1022,115 @@ h4.detailedInfo {
                     background: darken(rgba($rsrBlue, 0.1), 0%);
                     border: thin solid rgba($rsrBlue, 0.3);
                 }
+                .donateButton {
+                    text-align: left;
+                    a {
+                        @include responsive(medium-max-screens) {
+                            margin-top: 0.6em;
+                        }
+
+                        @include responsive(small-max-screens) {
+                            margin-top: 1em;
+                        }
+                    }
+                    .totalBudgetLabel {
+                        width: initial;
+                    }
+                }
             }
         }
-    }
-    &.updates {
-        ul {
-            li {
-                border: thin solid rgba($rsrGreen, 0);
-                @include transition(all 0.2s ease-in);
-                .orgName {}
-                .projectTitle {
-                    color: rgba($anchorLink, 1);
-                    i {
-                        font-size: 1.1em;
+        &.updates {
+            ul {
+                li {
+                    border: thin solid rgba($rsrGreen, 0);
+                    @include transition(all 0.2s ease-in);
+                    .orgName {}
+                    .projectTitle {
                         color: rgba($anchorLink, 1);
+                        i {
+                            font-size: 1.1em;
+                            color: rgba($anchorLink, 1);
+                        }
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                    h1 {
+                        a {
+                            color: $rsrGreen;
+                            &:hover {
+                                color: $anchorLinkHover;
+                            }
+                        }
+                    }
+                    &:nth-child(2n+1) {
+                        background: darken(rgba($rsrGreen, 0.05), 10%);
+                        border: thin solid rgba($rsrGreen, 0.1);
+                    }
+                    .projectLocation {
+                        color: rgba($akvoBlack, 0.5);
                     }
                     &:hover {
-                        color: $anchorLinkHover;
+                        background: darken(rgba($rsrGreen, 0.1), 0%);
+                        border: thin solid rgba($rsrGreen, 0.35);
                     }
+                    .excerpt {}
+                    .excerpt {}
                 }
-                h1 {
-                    a {
-                        color: $rsrGreen;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrGreen, 0.05), 10%);
-                    border: thin solid rgba($rsrGreen, 0.1);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrGreen, 0.1), 0%);
-                    border: thin solid rgba($rsrGreen, 0.35);
-                }
-                .excerpt {}
-                .excerpt {}
             }
         }
-    }
-    &.organisations {
-        ul {
-            li {
-                border: thin solid rgba($akvoTvRed, 0);
-                @include transition(all 0.2s ease-in);
-                i {
-                    font-size: 1.1em;
-                }
-                .projectLocation {}
-                .projectTitle {
-                    display: block;
-                    margin: 0 0 3px 0;
-                }
-                span.userFullName {
-                    margin: 0 0 0px 0;
-                }
-                .upDateTime {
-                    margin-top: 10px;
-                }
-                .orgType {}
-                .additionalInfo {
-                    div {
-                        color: rgba($akvoBlack, 0.5);
-                        span {
-                            margin-left: 5px;
+        &.organisations {
+            ul {
+                li {
+                    border: thin solid rgba($akvoTvRed, 0);
+                    @include transition(all 0.2s ease-in);
+                    i {
+                        font-size: 1.1em;
+                    }
+                    .projectLocation {}
+                    .projectTitle {
+                        display: block;
+                        margin: 0 0 3px 0;
+                    }
+                    span.userFullName {
+                        margin: 0 0 0px 0;
+                    }
+                    .upDateTime {
+                        margin-top: 10px;
+                    }
+                    .orgType {}
+                    .additionalInfo {
+                        div {
+                            color: rgba($akvoBlack, 0.5);
+                            span {
+                                margin-left: 5px;
+                            }
                         }
                     }
-                }
-                h1 {
-                    a {
-                        color: $akvoTvRed;
-                        &:hover {
-                            color: $anchorLinkHover;
+                    h1 {
+                        a {
+                            color: $akvoTvRed;
+                            &:hover {
+                                color: $anchorLinkHover;
+                            }
                         }
                     }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($akvoTvRed, 0.05), 0);
-                    border: thin solid rgba($akvoTvRed, 0.05);
-                }
-                &:hover {
-                    background: darken(rgba($akvoTvRed, 0.1), 0%);
-                    border: thin solid rgba($akvoTvRed, 0.35);
-                }
-                img {
-                    @include bw;
-                    transition: all 0.2s ease-in;
-                }
-                &:hover {
+                    &:nth-child(2n+1) {
+                        background: darken(rgba($akvoTvRed, 0.05), 0);
+                        border: thin solid rgba($akvoTvRed, 0.05);
+                    }
+                    &:hover {
+                        background: darken(rgba($akvoTvRed, 0.1), 0%);
+                        border: thin solid rgba($akvoTvRed, 0.35);
+                    }
                     img {
-                        @include colour;
+                        @include bw;
+                        transition: all 0.2s ease-in;
+                    }
+                    &:hover {
+                        img {
+                            @include colour;
+                        }
                     }
                 }
             }
@@ -1187,6 +1208,7 @@ header {
         height: 300px;
     }
 }
+
 .orgMap {
     .mapInfoWindow {
         img {
@@ -1194,6 +1216,7 @@ header {
         }
     }
 }
+
 div.projectTopRow {
     position: relative;
     background: rgba(245, 245, 245, 0.5);
@@ -1314,6 +1337,9 @@ div.projectTopRow {
                         margin-left: 15px;
                     }
                 }
+                .donateButton {
+                    margin-right: 15px;
+                }
             }
         }
     }
@@ -1377,7 +1403,6 @@ div.textBlock {
         padding-top: 10px;
         padding-bottom: 15px;
         background: lighten($veryLightOrange, 25%);
-
         h4 {
             margin-bottom: 10px;
         }
@@ -1394,9 +1419,11 @@ div.textBlock {
         }
     }
 }
+
 .allUpdates {
-    margin-top:25px;
+    margin-top: 25px;
 }
+
 .udpateComponent {
     padding-top: 10px;
     padding-bottom: 15px;
@@ -1540,6 +1567,114 @@ div.textBlock {
                 margin-top: 0;
             }
         }
+    }
+}
+
+/* Donate Page*/
+
+.projectDonate {
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    @include responsive(small-max-screens) {
+        width: 95%;
+        max-width: 450px;
+        text-align: justify;
+        .paymentOption,
+        .donateTitle,
+        h3 {
+            text-align: center;
+        }
+    }
+
+    .donateButton {
+        margin-bottom: 2em;
+    }
+    .donateButtonContainer {
+        text-align: center;
+    }
+    .methodInfo {
+        min-height: 15em;
+        padding: 2.5em 1em 1em 1em;
+        background-color: $secondary8;
+    }
+    .donateStep2Image {
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+    }
+    .editDonation {
+        margin-top: 1em;
+        background-color: $primary4;
+        border-color: $primary4;
+    }
+    .clear {
+        clear: both;
+    }
+    .paymentSystemInfo {
+        background-color: $secondary8;
+    }
+    @include responsive(small-screens) {
+        @include responsive(medium-max-screens) {
+            h3 {
+                font-size: 1.3em;
+            }
+        }
+    }
+
+    @include responsive(small-max-screens) {
+        .paymentOption {
+            margin-top: 3em;
+        }
+        .paymentSystemInfo {
+            margin-top: 4em;
+            padding-top: 1.25em;
+            padding-bottom: 1.25em;
+            clear: both;
+        }
+        .donateButton {
+            width: initial;
+        }
+        h3 {
+            margin-top: 1.25em;
+            margin-bottom: 1em;
+        }
+    }
+}
+
+/* Financial details page */
+
+section.projectFinancial {
+    @include responsive(small-max-screens) {
+        width: 95%;
+        max-width: 450px;
+        margin-left: auto;
+        margin-right: auto;
+        .dl-horizontal {
+            dt {
+                float: left;
+            }
+        }
+    }
+
+    @include responsive(medium-max-screens) {
+        @include responsive(small-screens) {
+            .dl-horizontal {
+                dt {
+                    width: initial;
+                }
+            }
+        }
+    }
+}
+
+/* Display currency totals right-aligned */
+.currencyAmount {
+    text-align: right;
+}
+
+dd {
+    &.currencyAmount {
+        margin-left: auto;
     }
 }
 
