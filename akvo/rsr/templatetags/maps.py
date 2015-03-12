@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import logging
 import os
 from django import template
 from django.conf import settings
@@ -17,6 +18,7 @@ from akvo.rsr.models import (Project, Organisation, ProjectUpdate,
                              ProjectUpdateLocation)
 
 register = template.Library()
+logger = logging.getLogger(__name__)
 
 PROJECT_MARKER_ICON = getattr(settings,
                               'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
@@ -49,8 +51,8 @@ def avatar(item, geometry='60x60', quality=99):
         elif isinstance(item, ProjectUpdate):
             url = get_thumbnail(item.photo, geometry,
                                 crop='center', quality=quality).url
-    except Exception:  # , e:
-        # print e
+    except Exception, e:
+        logger.warning(e)
         pass
 
     return url
@@ -95,7 +97,7 @@ def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
                  'pk': str(item.pk),
                  'text': text})
         except Exception, e:
-            print e
+            logger.warning(e)
             pass
 
     return {
@@ -143,7 +145,7 @@ def get_location(item):
                 'pk': str(item.pk),
                 'text': text}
     except Exception, e:
-        print e
+        logger.warning(e)
         return []
 
 

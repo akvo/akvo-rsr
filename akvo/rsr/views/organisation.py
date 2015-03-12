@@ -77,7 +77,3 @@ def main(request, organisation_id):
     """The organisation main view."""
     return render(request, 'organisation_main.html', {
         'organisation': get_object_or_404(Organisation, pk=organisation_id)})
-
-# def main(request, organisation_id):
-#     context = {'organisation': get_object_or_404(Organisation, pk=organisation_id)}
-#     return render(request, 'organisation_main.html', context)
