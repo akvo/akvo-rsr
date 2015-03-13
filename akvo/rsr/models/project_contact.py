@@ -34,8 +34,8 @@ class ProjectContact(models.Model):
                     u'reporting organisation of the project. (100 characters)')
     )
     telephone = ValidXMLCharField(
-        _(u'telephone'), blank=True, max_length=15,
-        help_text=_(u'Contact number for the contact. (15 characters)'))
+        _(u'telephone'), blank=True, max_length=30,
+        help_text=_(u'Contact number for the contact. (30 characters)'))
     mailing_address = ValidXMLCharField(
         _(u'address'), max_length=255, blank=True, help_text=_(u'Address of the contact. (255 characters)')
     )
