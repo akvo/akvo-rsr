@@ -3,7 +3,7 @@ For local development Vagrant is used. The development env is loaded with a smal
 
 ## Setup local settings
 ```shell
-$ cp akvo/settings//66_local.template akvo/settings/66_local.conf
+$ cp akvo/settings/66_local.template akvo/settings/66_local.conf
 ```
 
 ## Boot vagrant environment
@@ -23,7 +23,15 @@ $ ./supervisorctl.sh stop rsr && ./manage.sh runserver
 ```
 
 ## Make sure assets are rebuilt on change (WIP)
-To build assets we're relying on node.js and gulp. So with node and gulp available: 
+To build assets we're relying on [Node.js](http://nodejs.org) and [Gulp](http://gulpjs.com). 
+Verify that you have node and gulp installed (paths will depend on install method and OS):
+```shell
+$ which node
+/usr/local/bin/node
+$ which gulp
+/usr/local/bin/gulp
+```
+Then install required node modules and set gulp to build assets on file changes:
 ```shell
 $ cd scripts/devhelpers
 $ npm install
