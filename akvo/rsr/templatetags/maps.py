@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-    Akvo RSR is covered by the GNU Affero General Public License.
-    See more details in the license.txt file located at the root folder of the
-    Akvo RSR module. For additional details on the GNU license please
-    see < http://www.gnu.org/licenses/agpl.html >.
+Akvo RSR is covered by the GNU Affero General Public License.
+
+See more details in the license.txt file located at the root folder of the
+Akvo RSR module. For additional details on the GNU license please see
+< http://www.gnu.org/licenses/agpl.html >.
 """
 
+import logging
 import os
 from django import template
 from django.conf import settings
@@ -16,10 +18,15 @@ from akvo.rsr.models import (Project, Organisation, ProjectUpdate,
                              ProjectUpdateLocation)
 
 register = template.Library()
+logger = logging.getLogger(__name__)
 
-PROJECT_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
-PROJECT_UPDATE_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_PROJECT_UPDATE_MARKER_ICON', '')
-ORGANISATION_MARKER_ICON = getattr(settings, 'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
+PROJECT_MARKER_ICON = getattr(settings,
+                              'GOOGLE_MAPS_PROJECT_MARKER_ICON', '')
+PROJECT_UPDATE_MARKER_ICON = getattr(settings,
+                                     'GOOGLE_MAPS_PROJECT_UPDATE_MARKER_ICON',
+                                     '')
+ORGANISATION_MARKER_ICON = getattr(settings,
+                                   'GOOGLE_MAPS_ORGANISATION_MARKER_ICON', '')
 MEDIA_URL = getattr(settings, 'MEDIA_URL', '/media/')
 
 
@@ -28,7 +35,8 @@ HOST = 'http://%s' % getattr(settings, 'RSR_DOMAIN', 'akvo.org')
 
 
 def avatar(item, geometry='60x60', quality=99):
-    """
+    """Build user avatar.
+
     Digs out the url to the visual representation from object. If no one exists
     defaults to empty string.
     """
@@ -36,7 +44,7 @@ def avatar(item, geometry='60x60', quality=99):
     try:
         if isinstance(item, Project):
             url = get_thumbnail(item.current_image, geometry,
-                                 crop='center', quality=quality).url
+                                crop='center', quality=quality).url
         elif isinstance(item, Organisation):
             url = get_thumbnail(item.logo, geometry,
                                 crop='center', quality=quality).url
@@ -44,7 +52,7 @@ def avatar(item, geometry='60x60', quality=99):
             url = get_thumbnail(item.photo, geometry,
                                 crop='center', quality=quality).url
     except Exception, e:
-        print e
+        logger.warning(e)
         pass
 
     return url
@@ -52,9 +60,7 @@ def avatar(item, geometry='60x60', quality=99):
 
 @register.inclusion_tag('inclusion_tags/map.html')
 def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
-    """
-    ...
-    """
+    """."""
     if dynamic != 'dynamic':
         dynamic = False
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
@@ -72,12 +78,10 @@ def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
                 item_type = 'project'
                 icon = PROJECT_MARKER_ICON
                 text = item.title.encode('utf8')
-
             elif isinstance(item, Organisation):
                 item_type = 'organisation'
                 icon = ORGANISATION_MARKER_ICON
                 text = item.name.encode('utf8')
-
             elif isinstance(item, ProjectUpdate):
                 item_type = 'projectUpdate'
                 icon = PROJECT_UPDATE_MARKER_ICON
@@ -93,7 +97,7 @@ def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
                  'pk': str(item.pk),
                  'text': text})
         except Exception, e:
-            # print e
+            logger.warning(e)
             pass
 
     return {
@@ -105,7 +109,6 @@ def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
         'dynamic': dynamic,
         'infowindows': True,
         'partnersite_widget': False}
-
 
 
 def get_location(item):
@@ -142,12 +145,13 @@ def get_location(item):
                 'pk': str(item.pk),
                 'text': text}
     except Exception, e:
-        print e
+        logger.warning(e)
         return []
 
 
 @register.inclusion_tag('inclusion_tags/map.html')
 def primary_location_map(item, width='100%', height='100%', dynamic='dynamic'):
+    """."""
     if dynamic != 'dynamic':
         dynamic = False
     map_id = 'akvo_map_{}'.format(os.urandom(8).encode('hex'))
@@ -166,6 +170,7 @@ def primary_location_map(item, width='100%', height='100%', dynamic='dynamic'):
 
 @register.inclusion_tag('inclusion_tags/map.html')
 def locations_map(item, width='100%', height='100%', dynamic='dynamic'):
+    """."""
     if dynamic != 'dynamic':
         dynamic = False
     map_id = 'akvo_map_{}'.format(os.urandom(8).encode('hex'))
@@ -174,7 +179,6 @@ def locations_map(item, width='100%', height='100%', dynamic='dynamic'):
 
     if isinstance(item, Project):
         locations.append(get_location(item))
-
 
     return {
         'map_id': map_id,
@@ -187,13 +191,14 @@ def locations_map(item, width='100%', height='100%', dynamic='dynamic'):
 
 @register.inclusion_tag('inclusion_tags/maps.html')
 def project_map(id, width, height, dynamic='dynamic'):
-    """
+    """Project map.
+
     params:
         id: integer, id of project or organisation.
         width, height: the dimensions of the map.
-        dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
+        dynamic: 'dynamic' (default) or 'static', map is scrollable and
+        clickable if 'dynamic'.
     """
-
     if dynamic != 'dynamic':
         dynamic = False
 
@@ -248,13 +253,14 @@ def project_map(id, width, height, dynamic='dynamic'):
 
 @register.inclusion_tag('inclusion_tags/maps.html')
 def organisation_map(id, width, height, dynamic='dynamic'):
-    """
+    """Organisation map.
+
     params:
         id: integer, id of project or organisation.
         width, height: the dimensions of the map.
-        dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
+        dynamic: 'dynamic' (default) or 'static', map is scrollable and
+        clickable if 'dynamic'.
     """
-
     if dynamic != 'dynamic':
         dynamic = False
 
@@ -285,12 +291,13 @@ def organisation_map(id, width, height, dynamic='dynamic'):
 
 @register.inclusion_tag('inclusion_tags/maps.html')
 def global_project_map(width, height, dynamic='dynamic'):
-    """
+    """Global project map.
+
     params:
         width, height: the dimensions of the map.
-        dynamic: 'dynamic' (default) or 'static', map is scrollable and clickable if 'dynamic'.
+        dynamic: 'dynamic' (default) or 'static', map is scrollable and
+        clickable if 'dynamic'.
     """
-
     if dynamic != 'dynamic':
         dynamic = False
 

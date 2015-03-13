@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-
 """
-    Akvo RSR is covered by the GNU Affero General Public License.
-    See more details in the license.txt file located at the root folder of the
-    Akvo RSR module. For additional details on the GNU license please
-    see < http://www.gnu.org/licenses/agpl.html >.
+Akvo RSR is covered by the GNU Affero General Public License.
 
+See more details in the license.txt file located at the root folder of the
+Akvo RSR module. For additional details on the GNU license please see
+< http://www.gnu.org/licenses/agpl.html >.
 """
 
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import (LocaleRegexURLResolver, is_valid_path,
-                                      get_resolver, set_urlconf)
+                                      get_resolver)
 from django.http import HttpResponseRedirect
 from django.middleware.locale import LocaleMiddleware
 from django.shortcuts import redirect
@@ -29,13 +28,12 @@ __all__ = ["PagesLocaleMiddleware",
            "PagesRouterMiddleware",
            "get_domain",
            "get_or_create_site",
-           "is_partner_site_instance",
            "is_rsr_instance",
            "make_tls_property"]
 
 
 def make_tls_property(default=None):
-    "Creates a class-wide instance property with a thread-specific value."
+    """Create a class-wide instance property with a thread-specific value."""
     class TLSProperty(object):
         def __init__(self):
             from threading import local
@@ -60,17 +58,16 @@ def make_tls_property(default=None):
 
 
 def _patch_setattr(obj):
-    """Purpose of this is to allow changes to settings object again after it is
-    changed to tls property.
+    """Allow changes to tls property objects.
 
     Without this patch the following is not possible::
 
-        settings.SITE_ID = 1
-        settings.SITE_ID = 42
-        assert settings.SITE_ID == 42 # this fails without this patch
-
+    settings.SITE_ID = 1
+    settings.SITE_ID = 42
+    assert settings.SITE_ID == 42 # this fails without this patch
     """
     old_setattr = obj.__setattr__
+
     def wrap_setattr(self, name, value):
         try:
             getattr(self.__class__, name).value = value
@@ -92,6 +89,7 @@ PARTNER_SITE_REGEXPS = map(re.compile, settings.PARTNER_SITE_REGEXPS)
 
 
 def get_domain(request):
+    """Get domain from request."""
     original_domain = request.get_host().split(":")[0]
     if original_domain == "rsr.akvo.org":
         domain = original_domain
@@ -102,24 +100,31 @@ def get_domain(request):
 
 
 def is_rsr_instance(hostname):
+    """."""
     return any([site.search(hostname) for site in RSR_SITE_REGEXPS])
 
 
 def is_rsr_page_instance(hostname):
+    """."""
     return any([site.search(hostname) for site in PARTNER_SITE_REGEXPS])
 
 
 def get_or_create_site(domain):
+    """Make sure we have a matching SITE object.
+
+    As a result of an issue(1) we need to ensure that we don't
+    delete the fixture should we find duplicates
+    There is no guaranteed ordering(2) we should explicitly order them in such
+    a way that the fixture would appear first, i.e. by ensuring 'ORDER BY id
+    ASC'.
+
+    (1) https://github.com/akvo/akvo-provisioning/issues/29
+    (2) http://stackoverflow.com/questions/7163640/
+        what-is-the-default-order-of-a-list-returned-from-a-django-filter-call
+    """
     if domain.startswith('www.'):
         domain = domain[4:]
 
-    # As a result of an issue(1) we need to ensure that we don't
-    # delete the fixture should we find duplicates
-    # There is no guaranteed ordering(2) we should explicitly order them in such
-    # a way that the fixture would appear first, i.e. by ensuring 'ORDER BY id ASC'
-    #
-    # (1) https://github.com/akvo/akvo-provisioning/issues/29
-    # (2) http://stackoverflow.com/questions/7163640/what-is-the-default-order-of-a-list-returned-from-a-django-filter-call
     sites = Site.objects.filter(domain=domain).order_by('id')
     if sites.count() >= 1:
         site, duplicates = sites[0], sites[1:]
@@ -134,8 +139,10 @@ def get_or_create_site(domain):
 
 class PagesRouterMiddleware(object):
 
-    def process_request(self, request, cname_domain=False, rsr_page=None):
+    """Dispatch to normal or RSR page based on request domain."""
 
+    def process_request(self, request, cname_domain=False, rsr_page=None):
+        """."""
         domain = get_domain(request)
 
         if is_rsr_instance(domain):
@@ -163,7 +170,8 @@ class PagesRouterMiddleware(object):
 
         if rsr_page is not None and rsr_page.enabled:
             if cname_domain:
-                rsr_page_domain = getattr(settings, 'AKVOAPP_DOMAIN', 'akvoapp.org')
+                rsr_page_domain = getattr(
+                    settings, 'AKVOAPP_DOMAIN', 'akvoapp.org')
             else:
                 rsr_page_domain = ".".join(domain.split(".")[1:])
             request.rsr_page = settings.RSR_PAGE = rsr_page
@@ -178,18 +186,20 @@ class PagesRouterMiddleware(object):
         request.domain_url = "http://%s" % settings.RSR_DOMAIN
         site = get_or_create_site(domain)
         settings.SITE_ID = site.id
-        return
+        return None
 
 
 class PagesLocaleMiddleware(LocaleMiddleware):
-    """
-    Partner sites aware version of Django's LocaleMiddleware. Since we
-    swap out the root urlconf for a partner sites specific one, and the
-    original Django LocaleMiddleware didn't like that.
 
+    """
+    Partner sites aware version of Django's LocaleMiddleware.
+
+    Since we swap out the root urlconf for a partner sites specific one, and
+    the original Django LocaleMiddleware didn't like that.
     """
 
     def process_request(self, request):
+        """."""
         check_path = self.is_language_prefix_patterns_used(request)
         language = translation.get_language_from_request(
             request, check_path=check_path)
@@ -197,6 +207,7 @@ class PagesLocaleMiddleware(LocaleMiddleware):
         request.LANGUAGE_CODE = translation.get_language()
 
     def process_response(self, request, response):
+        """."""
         # First set the default language, this will be used if there is none
         # in the path
         default_language = getattr(request, 'default_language', '')
@@ -224,8 +235,11 @@ class PagesLocaleMiddleware(LocaleMiddleware):
         return response
 
     def is_language_prefix_patterns_used(self, request):
-        """Returns `True` if the `LocaleRegexURLResolver` is used
-        at root level of the urlpatterns, else it returns `False`."""
+        """Return True if languge prefix is used.
+
+        Return `True` if the `LocaleRegexURLResolver` is used
+        at root level of the urlpatterns, else it returns `False`.
+        """
         urlconf = getattr(request, 'urlconf', None)
         for url_pattern in get_resolver(urlconf).url_patterns:
             if isinstance(url_pattern, LocaleRegexURLResolver):
@@ -234,21 +248,22 @@ class PagesLocaleMiddleware(LocaleMiddleware):
 
 
 class ExceptionLoggingMiddleware(object):
-    """ Used to log exceptions on production systems
-    """
-    def process_exception(self, request, exception):
 
+    """Used to log exceptions on production systems."""
+
+    def process_exception(self, request, exception):
         logging.exception('Exception handling request for ' + request.path)
 
 
 class RSRVersionHeaderMiddleware(object):
-    """ Add a response header with RSR version info
-    """
+
+    """Add a response header with RSR version info."""
+
     def process_response(self, request, response):
         context = extra_context(request)
-        response['X-RSR-Version'] = "Tag:{deploy_tag} Commit:{deploy_commit_id} Branch:{deploy_branch}".format(
-                deploy_tag=context['deploy_tag'],
-                deploy_commit_id=context['deploy_commit_id'],
-                deploy_branch=context['deploy_branch'],
-            )
+
+        response['X-RSR-Version'] = "tag={}, commit={}, branch={}".format(
+            context['deploy_tag'],
+            context['deploy_commit_id'],
+            context['deploy_branch'])
         return response
