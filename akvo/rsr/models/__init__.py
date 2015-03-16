@@ -34,7 +34,6 @@ from .keyword import Keyword
 from .legacy_data import LegacyData
 from .link import Link
 from .location import OrganisationLocation, ProjectLocation, ProjectUpdateLocation
-from .mini_cms import MiniCMS
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
 from .partner_site import PartnerSite
@@ -79,7 +78,6 @@ __all__ = [
     'OrganisationLocation',
     'ProjectLocation',
     'ProjectUpdateLocation',
-    'MiniCMS',
     'Organisation',
     'OrganisationAccount',
     'PartnerSite',
