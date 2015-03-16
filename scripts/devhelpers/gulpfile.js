@@ -20,7 +20,7 @@ gulp.task('jsx', function () {
 
 gulp.task('sass', function() {
     return gulp.src('../../akvo/rsr/static/rsr/v3/**/*.scss')
-          .pipe(sass())
+    .pipe(sass({errLogToConsole: true}))
           .pipe(gulp.dest('../../akvo/rsr/static/rsr/v3'));
 });
 
