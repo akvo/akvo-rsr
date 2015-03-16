@@ -12,6 +12,7 @@
       <xsl:apply-templates select="title" />
       <xsl:apply-templates select="@default-currency" />
       <xsl:apply-templates select="@akvo:image-caption" />
+      <xsl:apply-templates select="@hierarchy" />
       
       <xsl:apply-templates select="activity-status" />
       
@@ -195,6 +196,13 @@
   <!-- project_rating Currently not used-->
 
   <!-- notes Currently not used -->
+
+  <!-- hierarchy -->
+  <xsl:template match="@hierarchy">
+    <hierarchy>
+      <xsl:value-of select="normalize-space(.)" />
+    </hierarchy>
+  </xsl:template>
 
   <!-- currency -->
   <xsl:template match="@default-currency">
