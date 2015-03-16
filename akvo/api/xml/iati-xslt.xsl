@@ -8,9 +8,11 @@
 
   <xsl:template match="iati-activity">
     <object>
+      <xsl:apply-templates select="iati-identifier" />
       <xsl:apply-templates select="title" />
       <xsl:apply-templates select="@default-currency" />
       <xsl:apply-templates select="@akvo:image-caption" />
+      <xsl:apply-templates select="@hierarchy" />
       
       <xsl:apply-templates select="activity-status" />
       
@@ -51,14 +53,31 @@
       <partnerships type="list">
         <xsl:apply-templates select="participating-org" />
       </partnerships>
-      
-      <!-- 
-      <business_unit>
-        <xsl:value-of select="normalize-space(//iati-activity/@akvo:business-unit-id)"/>
-      </business_unit>
-       -->
-      
+
+      <sectors type="list">
+        <xsl:apply-templates select="sector" />
+      </sectors>
+
+      <contacts type="list">
+        <xsl:apply-templates select="contact-info" />
+      </contacts>
+
+      <recipient_countries type="list">
+        <xsl:apply-templates select="recipient-country" />
+      </recipient_countries>
+
+      <recipient_regions type="list">
+        <xsl:apply-templates select="recipient-region" />
+      </recipient_regions>
+
     </object>
+  </xsl:template>
+
+  <!-- IATI activity id -->
+  <xsl:template match="iati-identifier">
+    <iati_activity_id>
+      <xsl:value-of select="normalize-space(.)" />
+    </iati_activity_id>
   </xsl:template>
 
   <!-- title -->
@@ -177,6 +196,13 @@
   <!-- project_rating Currently not used-->
 
   <!-- notes Currently not used -->
+
+  <!-- hierarchy -->
+  <xsl:template match="@hierarchy">
+    <hierarchy>
+      <xsl:value-of select="normalize-space(.)" />
+    </hierarchy>
+  </xsl:template>
 
   <!-- currency -->
   <xsl:template match="@default-currency">
@@ -422,6 +448,21 @@
       <other_extra>
         <xsl:value-of select="normalize-space(@akvo:label)" />
       </other_extra>
+      <type>
+        <xsl:value-of select="normalize-space(../@type)" />
+      </type>
+      <period_start>
+        <xsl:value-of select="normalize-space(../period-start/@iso-date)" />
+      </period_start>
+      <period_end>
+        <xsl:value-of select="normalize-space(../period-end/@iso-date)" />
+      </period_end>
+      <value_date>
+        <xsl:value-of select="normalize-space(@value-date)" />
+      </value_date>
+      <currency>
+        <xsl:value-of select="normalize-space(@currency)" />
+      </currency>
     </object>
   </xsl:template>
 
@@ -499,4 +540,88 @@
       </xsl:if>
     </object>
   </xsl:template>
+
+    <!-- sector -->
+  <xsl:template match="sector">
+    <object>
+        <sector_code>
+            <xsl:value-of select="normalize-space(@code)" />
+        </sector_code>
+        <text>
+            <xsl:value-of select="normalize-space(.)" />
+        </text>
+        <vocabulary>
+            <xsl:value-of select="normalize-space(@vocabulary)" />
+        </vocabulary>
+        <percentage>
+            <xsl:value-of select="normalize-space(@percentage)" />
+        </percentage>
+    </object>
+  </xsl:template>
+
+    <!-- contact information -->
+  <xsl:template match="contact-info">
+    <object>
+        <type>
+            <xsl:value-of select="normalize-space(@type)" />
+        </type>
+        <person_name>
+            <xsl:value-of select="normalize-space(person-name)" />
+        </person_name>
+        <email>
+            <xsl:value-of select="normalize-space(email)" />
+        </email>
+        <job_title>
+            <xsl:value-of select="normalize-space(job-title)" />
+        </job_title>
+        <organisation>
+            <xsl:value-of select="normalize-space(organisation)" />
+        </organisation>
+        <department>
+            <xsl:value-of select="normalize-space(department)" />
+        </department>
+        <telephone>
+            <xsl:value-of select="normalize-space(telephone)" />
+        </telephone>
+        <website>
+            <xsl:value-of select="normalize-space(website)" />
+        </website>
+        <mailing_address>
+            <xsl:value-of select="normalize-space(mailing-address)" />
+        </mailing_address>
+    </object>
+  </xsl:template>
+
+    <!-- recipient country -->
+    <xsl:template match="recipient-country">
+      <object>
+          <country>
+              <xsl:value-of select="normalize-space(@code)" />
+          </country>
+          <percentage>
+              <xsl:value-of select="normalize-space(@percentage)" />
+          </percentage>
+          <text>
+              <xsl:value-of select="normalize-space(.)" />
+          </text>
+      </object>
+    </xsl:template>
+
+    <!-- recipient region -->
+    <xsl:template match="recipient-region">
+      <object>
+          <region>
+              <xsl:value-of select="normalize-space(@code)" />
+          </region>
+          <region_vocabulary>
+              <xsl:value-of select="normalize-space(@vocabulary)" />
+          </region_vocabulary>
+          <percentage>
+              <xsl:value-of select="normalize-space(@percentage)" />
+          </percentage>
+          <text>
+              <xsl:value-of select="normalize-space(.)" />
+          </text>
+      </object>
+    </xsl:template>
 </xsl:stylesheet>

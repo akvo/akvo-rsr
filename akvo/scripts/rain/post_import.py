@@ -56,8 +56,8 @@ class ProjectSaver():
                     partnerships__internal_id=activity.internal_id(), partnerships__organisation=RAIN_ORG_ID
                 )
                 return
-            except Project.DoesNotExist, e:
-                msg = "Could not find project with RAIN internal ID: {internal_id}"
+            except:
+                msg = "Could not find project or multiple projects found with RAIN internal ID: {internal_id}"
                 log(
                     msg,
                     dict(
@@ -71,11 +71,11 @@ class ProjectSaver():
         elif activity.iati_id():
             try:
                 self.project = Project.objects.get(
-                    partnerships__iati_activity_id = activity.iati_id(), partnerships__organisation=RAIN_ORG_ID
+                    iati_activity_id=activity.iati_id(), partnerships__organisation=RAIN_ORG_ID
                 )
                 return
-            except Project.DoesNotExist, e:
-                msg = "Could not find project with IATI ID: {iati_id}"
+            except:
+                msg = "Could not find project or multiple projects found with IATI ID: {iati_id}"
                 log(
                     msg,
                     dict(

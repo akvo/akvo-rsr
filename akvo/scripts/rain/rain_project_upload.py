@@ -196,7 +196,7 @@ def identify_rsr_project(user, rsr_id, iati_id, internal_id):
         if not ok:
             raise AssertionError, "Project with ID {} not found".format(rsr_id)
     if iati_id:
-        ok, project = get_project_count(user, **dict(partnerships__iati_activity_id=iati_id))
+        ok, project = get_project_count(user, **dict(iati_activity_id=iati_id))
         if ok:
             iati_project_count = project.response.json()['meta']['total_count']
             # More than one project with the same IATI activity ID is not good
