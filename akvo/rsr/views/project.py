@@ -1,25 +1,95 @@
 # -*- coding: utf-8 -*-
+"""
+Akvo RSR is covered by the GNU Affero General Public License.
 
-"""Akvo RSR is covered by the GNU Affero General Public License.
 See more details in the license.txt file located at the root folder of the
-Akvo RSR module. For additional details on the GNU license please
-see < http://www.gnu.org/licenses/agpl.html >.
+Akvo RSR module. For additional details on the GNU license please see
+< http://www.gnu.org/licenses/agpl.html >.
 """
 
 import json
+
+from sorl.thumbnail import get_thumbnail
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
 from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
+from .utils import apply_keywords, org_projects
 
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
-from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect, render
-from django.template import RequestContext
 
-from sorl.thumbnail import get_thumbnail
+###############################################################################
+# Project directory
+###############################################################################
+
+
+def _all_projects():
+    """Return all active projects."""
+    return Project.objects.published().select_related().prefetch_related(
+        'partners').order_by('-id')
+
+def _page_projects(page):
+    """Dig out the list of projects to use.
+    First get a list based on page settings (orgs or all projects). Then apply
+    keywords filtering / exclusion.
+    """
+    org = page.organisation
+    projects = org_projects(org) if page.partner_projects else _all_projects()
+    return apply_keywords(page, projects)
+
+
+def _project_directory_coll(request):
+    """Dig out and pass correct projects to the view."""
+    page = request.rsr_page
+    if not page:
+        return _all_projects()
+    return _page_projects(page)
+
+
+def directory(request):
+    """The project list view."""
+    qs = remove_empty_querydict_items(request.GET)
+
+    # Set show_filters to "in" if any filter is selected
+    show_filters = "in"  # To simplify template use bootstrap class
+    available_filters = ['location', 'status', 'organisation', 'sector', ]
+    if frozenset(qs.keys()).isdisjoint(available_filters):
+        show_filters = ""
+
+    # Prepare sorting
+    available_sorting = ['last_modified_at', '-last_modified_at', 'title',
+                         '-title', 'budget', '-budget', ]
+    sort_by = request.GET.get('sort_by', '-last_modified_at')
+    sorting = sort_by if sort_by in available_sorting else '-last_modified_at'
+
+    # Yank project collection
+    f = ProjectFilter(qs, queryset=_project_directory_coll(request))
+    sorted_projects = f.qs.distinct().order_by(sorting)
+
+    # Build page
+    page = request.GET.get('page')
+    page, paginator, page_range = pagination(page, sorted_projects, 10)
+
+    context = {
+        'project_count': sorted_projects.count(),
+        'filter': f,
+        'page': page,
+        'page_range': page_range,
+        'paginator': paginator,
+        'show_filters': show_filters,
+        'q': filter_query_string(qs),
+        'sorting': sorting,
+    }
+    return render(request, 'project_directory.html', context)
+
+
+###############################################################################
+# Project main
+###############################################################################
 
 
 def _get_accordion_data(project):
@@ -29,6 +99,7 @@ def _get_accordion_data(project):
     accordion_data['project_plan'] = project.project_plan
     accordion_data['target_group'] = project.target_group
     accordion_data['sustainability'] = project.sustainability
+    accordion_data['goals_overview'] = project.goals_overview
     return accordion_data
 
 
@@ -80,29 +151,39 @@ def _get_timeline_data(project):
 def _get_carousel_data(project):
     photos = []
     if project.current_image:
-        im = get_thumbnail(project.current_image, '750x400', quality=99)
-        photos.append({
-            "url": im.url,
-            "caption": project.current_image_caption,
-            "credit": project.current_image_credit,
-            "original_url": project.current_image.url,
-        })
+        try:
+            im = get_thumbnail(project.current_image, '750x400', quality=99)
+            photos.append({
+                "url": im.url,
+                "caption": project.current_image_caption,
+                "credit": project.current_image_credit,
+                "original_url": project.current_image.url,
+            })
+        except IOError:
+            pass
     for update in project.updates_desc():
         if len(photos) > 9:
             break
         if update.photo:
-            im = get_thumbnail(update.photo, '750x400', quality=99)
-            photos.append({
-                "url": im.url,
-                "caption": update.photo_caption,
-                "credit": update.photo_credit,
-                "original_url": update.photo.url,
-            })
+            try:
+                im = get_thumbnail(update.photo, '750x400', quality=99)
+                photos.append({
+                    "url": im.url,
+                    "caption": update.photo_caption,
+                    "credit": update.photo_credit,
+                    "original_url": update.photo.url,
+                })
+            except IOError:
+                continue
     return {"photos": photos}
 
+
 def _get_hierarchy_row(max_rows, projects):
-    """Returns a column for the project hierarchy with a division.
-    E.g. with a max_rows of 4 and one project, it will return [False, <Project>, False, False]."""
+    """Return a column for the project hierarchy with a division.
+
+    E.g. with a max_rows of 4 and one project, it will return [False,
+    <Project>, False, False].
+    """
     project_count = projects.count()
     if max_rows == project_count:
         return [project for project in projects]
@@ -154,44 +235,8 @@ def _get_project_partners(project):
     return partners
 
 
-def directory(request):
-    qs = remove_empty_querydict_items(request.GET)
-    projects = RequestContext(request)['projects_qs'] if request.rsr_page else Project.objects.published()
-    f = ProjectFilter(qs, queryset=projects)
-
-    # Instead of true or false, adhere to bootstrap3 class names to simplify
-    show_filters = "in"
-    available_filters = ['location', 'status', 'organisation', 'sector', ]
-    if frozenset(qs.keys()).isdisjoint(available_filters):
-        show_filters = ""
-
-    # Sorting of projects
-    available_sorting = ['last_modified_at', '-last_modified_at', 'title', '-title', 'budget', '-budget', ]
-    sort_param = request.GET.get('sort_by', '-last_modified_at')
-    sorting = sort_param if sort_param in available_sorting else '-last_modified_at'
-
-    sorted_projects = f.qs.distinct().order_by(sorting)
-
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, sorted_projects, 10)
-
-    # sector_count = SectorCategory.objects.all().count()
-
-    context = {
-        'project_count': sorted_projects.count(),
-        # 'sector_count': sector_count,
-        'filter': f,
-        'page': page,
-        'page_range': page_range,
-        'paginator': paginator,
-        'show_filters': show_filters,
-        'q': filter_query_string(qs),
-        'sorting': sorting,
-    }
-    return render(request, 'project_directory.html', context)
-
-
 def main(request, project_id):
+    """."""
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
@@ -220,7 +265,13 @@ def main(request, project_id):
     return render(request, 'project_main.html', context)
 
 
+###############################################################################
+# Project hierarchy
+###############################################################################
+
+
 def hierarchy(request, project_id):
+    """."""
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
@@ -240,7 +291,13 @@ def hierarchy(request, project_id):
     return render(request, 'project_hierarchy.html', context)
 
 
+###############################################################################
+# Project report
+###############################################################################
+
+
 def report(request, project_id):
+    """."""
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
@@ -254,7 +311,13 @@ def report(request, project_id):
     return render(request, 'project_report.html', context)
 
 
+###############################################################################
+# Project widgets
+###############################################################################
+
+
 def widgets(request, project_id):
+    """."""
     project = get_object_or_404(Project, pk=project_id)
     selected_widget = request.GET.get('widget', None)
 
@@ -278,6 +341,7 @@ def widgets(request, project_id):
 
 @login_required()
 def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateForm, update_id=None):
+    """."""
     project = get_object_or_404(Project, id=project_id)
 
     # Non-editors are not allowed to view unpublished projects
@@ -322,12 +386,15 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
 
     return render(request, 'update_add.html', context)
 
+
 def search(request):
+    """."""
     context = {'projects': Project.objects.published()}
     return render(request, 'project_search.html', context)
 
 
 def finance(request, project_id):
+    """."""
     project = get_object_or_404(Project, pk=project_id)
     context = {
         'project': project
@@ -336,10 +403,12 @@ def finance(request, project_id):
 
 
 def donations_disabled(project):
+    """."""
     return not project.donate_button
 
 
 def can_accept_donations(project):
+    """."""
     if project in Project.objects.active() and project.funds_needed > 0:
         return True
     else:
@@ -347,6 +416,7 @@ def can_accept_donations(project):
 
 
 def donate(request, project_id):
+    """."""
     project = get_object_or_404(Project, pk=project_id)
 
     if not project.accepts_donations():

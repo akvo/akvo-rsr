@@ -25,7 +25,8 @@ from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToManyField
 from akvo.api.serializers import IATISerializer
 from akvo.rsr.models import (
-    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark, Organisation
+    Project, Benchmarkname, Category, Goal, Partnership, BudgetItem, ProjectLocation, Benchmark, Sector, ProjectContact,
+    RecipientCountry, RecipientRegion
 )
 from akvo.utils import RSR_LIMITED_CHANGE
 
@@ -41,7 +42,7 @@ class IATIProjectModelForm(ModelForm):
 
 class IATIProjectResource(ModelResource):
 
-    benchmarks =  fields.ToManyField(
+    benchmarks = fields.ToManyField(
         'akvo.api.resources.IATIBenchmarkResource',
         'benchmarks', full=True, related_name='project'
     )
@@ -49,7 +50,7 @@ class IATIProjectResource(ModelResource):
         'akvo.api.resources.IATIBudgetItemResource',
         'budget_items', full=True, related_name='project'
     )
-    categories =  fields.ToManyField(
+    categories = fields.ToManyField(
         'akvo.api.resources.IATICategoryResource',
         'categories', full=True, null=True, related_name='project'
     )
@@ -64,6 +65,25 @@ class IATIProjectResource(ModelResource):
     partnerships = fields.ToManyField(
         'akvo.api.resources.IATIPartnershipResource',
         'partnerships', full=True, related_name='project'
+    )
+    sectors = fields.ToManyField(
+        'akvo.api.resources.IATISectorResource',
+        'sectors', full=True, related_name='project'
+    )
+
+    contacts = fields.ToManyField(
+        'akvo.api.resources.IATIContactInfoResource',
+        'contacts', full=True, related_name='project'
+    )
+
+    recipient_countries = fields.ToManyField(
+        'akvo.api.resources.IATIRecipientCountryResource',
+        'recipient_countries', full=True, related_name='project'
+    )
+
+    recipient_regions = fields.ToManyField(
+        'akvo.api.resources.IATIRecipientRegionResource',
+        'recipient_regions', full=True, related_name='project'
     )
 
     # This field makes the Cordaid import dismally slow, and isn't used for anything else,
@@ -111,6 +131,10 @@ class IATIProjectResource(ModelResource):
             Goal.objects.filter(project=bundle.obj).delete()
             BudgetItem.objects.filter(project=bundle.obj).delete()
             ProjectLocation.objects.filter(location_target=bundle.obj).delete()
+            Sector.objects.filter(project=bundle.obj).delete()
+            ProjectContact.objects.filter(project=bundle.obj).delete()
+            RecipientCountry.objects.filter(project=bundle.obj).delete()
+            RecipientRegion.objects.filter(project=bundle.obj).delete()
             # Since all locations for the project are deleted we need to make sure Project.primary_location is set to None
             bundle.obj.primary_location = None
             bundle.obj.save()
@@ -161,8 +185,10 @@ class IATIProjectResource(ModelResource):
                     benchmarks.append(new_benchmark)
             data['benchmarks'] = benchmarks
         if reporting_iati_org_id == getattr(settings, 'RAIN_IATI_ID', 'NL-KVK-34200988'):
-            # remove benchmarks, as they currently have no category
+            # remove benchmarks, goals and target group
             data['benchmarks'] = []
+            data['goals'] = []
+            data['target_group'] = ''
 
         # hack to set the first location as primary
         if data.get('locations'):
@@ -211,57 +237,13 @@ class IATIProjectResource(ModelResource):
         date_end_planned = bundle.data.get('date_end_planned')
         if date_end_planned and date_end_planned[-1] == 'Z':
             bundle.data['date_end_planned'] = date_end_planned[:-1]
-        if date_end_planned:
-            bundle.data['date_complete'] = bundle.data.pop('date_end_planned')
         return bundle
 
     def hydrate_date_start_planned(self, bundle):
         date_start_planned = bundle.data.get('date_start_planned')
         if date_start_planned and date_start_planned[-1] == 'Z':
             bundle.data['date_start_planned'] = date_start_planned[:-1]
-        if date_start_planned:
-            bundle.data['date_request_posted'] = bundle.data.pop('date_start_planned')
         return bundle
-
-    # def hydrate_categories(self, bundle):
-    #     if bundle.data['categories']:
-    #         bundle.data['categories'] = [
-    #             reverse('api_dispatch_detail', kwargs={
-    #                 'resource_name': 'category',
-    #                 'api_name': 'v1',
-    #                 'pk': bundle.data['categories'][0]
-    #             })
-    #         ]
-    #     return bundle
-
-
-    # def hydrate_partnerships(self, bundle):
-    #     import pdb
-    #     pdb.set_trace()
-    #     return bundle
-
-    # def hydrate_current_image(self, bundle):
-    #     import requests
-    #
-    #     from django.core.files import File
-    #     from django.core.files.temp import NamedTemporaryFile
-    #     return bundle
-    #
-    #     def save_image_from_url(model, url):
-    #         r = requests.get(url)
-    #
-    #         img_temp = NamedTemporaryFile(delete=True)
-    #         img_temp.write(r.content)
-    #         img_temp.flush()
-    #
-    #         img_name = "%s_%s_%s_%s%s" % (
-    #             bundle.obj._meta.object_name,
-    #             bundle.obj.pk or '',
-    #             'current_image',
-    #             datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
-    #             os.path.splitext(img_temp.name)[1],
-    #         )
-    #         Project.current_image.save("image.jpg", File(img_temp), save=True)
 
 
 class ProjectResource(ConditionalFullResource):
@@ -288,6 +270,7 @@ class ProjectResource(ConditionalFullResource):
         filtering               = dict(
             # other fields
             id                  = ALL,
+            iati_activity_id    = ALL,
             status              = ALL,
             title               = ALL,
             budget              = ALL,

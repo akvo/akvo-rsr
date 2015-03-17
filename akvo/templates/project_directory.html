@@ -107,6 +107,12 @@
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
               {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% if p.accepts_donations %}
+              <br>
+              <span class="donateButton">
+                <a href="{% url 'project-donate' p.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+              </span>
+              {% endif %}
               </p>
             </div>
           </div>
@@ -118,6 +124,12 @@
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
               {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% if p.accepts_donations %}
+              <br>
+              <span class="donateButton">
+                <a href="{% url 'project-donate' p.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+              </span>
+              {% endif %}
             </p>
           </div>
           <div class="col-sm-3 hidden-xs hidden-sm">
@@ -137,7 +149,7 @@
     </ul>
   </section>
   <div class="container">
-       {% include 'navigation/pagination-sort.html' %}
+       {% include 'navigation/pagination.html' %}
   </div>
 <div id="versionBanner">
   <div><button onclick="toggle_visibility('versionBanner');" class="closeBtn"><i class="fa fa-times"></i> close this</button>

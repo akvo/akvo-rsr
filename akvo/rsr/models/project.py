@@ -176,7 +176,7 @@ class Project(TimestampsMixin, models.Model):
         help_text=_(u'The default currency for this project. Used in all financial aspects of the project.')
     )
     date_start_planned = models.DateField(
-        _(u'start date (planned)'), default=date.today, help_text=_(u'Enter the planned start date of the project.')
+        _(u'start date (planned)'), null=True, blank=True, help_text=_(u'Enter the planned start date of the project.')
     )
     date_start_actual = models.DateField(
         _(u'start date (actual)'), null=True, blank=True, help_text=_(u'Enter the actual start date of the project.')
@@ -199,7 +199,7 @@ class Project(TimestampsMixin, models.Model):
 
     # synced projects
     sync_owner = models.ForeignKey(
-        'Organisation', verbose_name=_(u'reporting organisation'), null=True, on_delete=models.SET_NULL,
+        'Organisation', verbose_name=_(u'reporting organisation'), null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Select the reporting organisation of the project.')
     )
     sync_owner_secondary_reporter = models.NullBooleanField(
@@ -265,9 +265,11 @@ class Project(TimestampsMixin, models.Model):
         return ('project-main', (), {'project_id': self.pk})
 
     def accepts_donations(self):
-        if not self.donate_button:
-            return False
-        if self in Project.objects.active() and self.funds_needed > 0:
+        """Returns True if a project accepts donations, otherwise False.
+        A project accepts donations when the donate button settings is True, the project is published,
+        the project needs funding and is not cancelled or archived."""
+        if self.donate_button and self.is_published() and self.funds_needed > 0 and \
+                self.status in [Project.STATUS_NEEDS_FUNDING, Project.STATUS_ACTIVE, Project.STATUS_COMPLETE]:
             return True
         return False
 
@@ -419,7 +421,7 @@ class Project(TimestampsMixin, models.Model):
             return self.exclude(status__exact=Project.STATUS_ARCHIVED)
 
         def active(self):
-            """Return projects that are publushed and not cancelled or archived"""
+            """Return projects that are published and not cancelled or archived"""
             return self.published().status_not_cancelled().status_not_archived()
 
         def euros(self):
