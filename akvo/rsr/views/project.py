@@ -108,6 +108,7 @@ def _get_timeline_data(project):
     timeline_dates = []
 
     # Project start and end dates
+    # TODO: fix when no planned start date
     date_start = (project.date_start_actual, 'Start', 'actual') if project.date_start_actual else \
         (project.date_start_planned, 'Start', 'planned')
     date_end = (project.date_end_actual, 'End', 'actual') if project.date_end_actual else \
@@ -246,7 +247,7 @@ def main(request, project_id):
     carousel_data = _get_carousel_data(project)
     updates = project.project_updates.all().order_by('-created_at')[:5]
     accordion_data = _get_accordion_data(project)
-    timeline_data = _get_timeline_data(project)
+    # timeline_data = _get_timeline_data(project)
 
     reporting_org = project.reporting_org()
     reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
@@ -256,7 +257,7 @@ def main(request, project_id):
         'accordion_data': json.dumps(accordion_data),
         'carousel_data': json.dumps(carousel_data),
         'project': project,
-        'timeline_data': json.dumps(timeline_data),
+        # 'timeline_data': json.dumps(timeline_data),
         'updates': updates,
         'reporting_org': reporting_org_info,
         'partners': partners,

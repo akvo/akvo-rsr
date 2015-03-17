@@ -102,7 +102,7 @@
             <div class="visible-xs-block hidden-sm">
               <p>
               {% if p.sector_categories %}
-              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}<br>
+              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}<br>
               {% endif %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
@@ -119,7 +119,7 @@
           <div class="hidden-xs visible-sm">
             <p>
               {% if p.sector_categories %}
-              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}<br>
+              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}<br>
               {% endif %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
@@ -135,7 +135,7 @@
           <div class="col-sm-3 hidden-xs hidden-sm">
             {% if p.sector_categories %}
               <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
-              <p>{% for sector in p.sector_categories_codes %}{% if not forloop.first %}<br>{% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}</p>
+              <p>{% for sector in p.sector_categories_codes %}{% if not forloop.first %}<br>{% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}</p>
             {% endif %}
             <h4 class="detailedInfo">{% trans "Status" %}</h4>
             <p class="complete">{{p.get_status_display}}</p>

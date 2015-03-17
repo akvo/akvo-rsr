@@ -44,7 +44,7 @@
                       {% endif %}
                       {% if project.sectors.all %}
                       <li><span class="detailedInfo">{% trans "Sectors" %}</span>
-                      {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector|title}}{% endfor %}
+                      {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector}}{% endfor %}
                       </li>
                       {% endif %}
                       <li class="projectPartners"><span class="detailedInfo">{% trans "Reporting organisation" %}</span>
