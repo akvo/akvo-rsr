@@ -199,7 +199,7 @@ span.twitter-typeahead .tt-suggestion > p {
   padding: 3px 20px;
   clear: both;
   font-weight: normal;
-  line-height: 1.42857;
+  line-height: 1.42857143;
   color: #333;
   white-space: nowrap; }
 
@@ -1283,6 +1283,9 @@ div.textBlock {
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
+.organisationDetail .orgUrl, .organisationDetail .orgIati, .organisationDetail .orgEmail {
+  display: block;
+  padding-bottom: 0.75em; }
 
 /* Update Page */
 .updateMain h2 {
