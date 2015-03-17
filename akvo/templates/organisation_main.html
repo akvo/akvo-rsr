@@ -22,7 +22,12 @@
 
         <ul class="noStyleUl">
           <li>
-            {% if organisation.url %}<a href="{{organisation.url}}">{{organisation.url}}</a>{% endif %}
+            {% if organisation.url %}<a class="orgUrl" href="{{organisation.url}}">{{organisation.url}}</a>{% endif %}
+          </li>
+          <li>
+            {% if organisation.iati_org_id %}
+            <span class="orgIati">IATI: {{organisation.iati_org_id}}</span>
+            {% endif %}
           </li>
           <li>
             {% if organisation.primary_location.address_1 %}{{organisation.primary_location.address_1}}
@@ -56,7 +61,7 @@
         <ul class="noStyleUl">
           <li>
             {% if organisation.contact_email %}
-              <a href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
+              <a class="orgEmail" href="mailto:{{organisation.contact_email}}">{{organisation.contact_email}}</a>
             {% endif %}
           </li>
           <li>
