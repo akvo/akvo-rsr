@@ -15,7 +15,7 @@
     {% if update.photo %}
     <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{update.photo.url}}"/>
     {% else %}
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/v3/img/rsrLogo.svg"/>
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
     {% endif %}
     {% elif project %}
     <meta property="og:title" content="{{project.title}}"/>
@@ -23,11 +23,11 @@
     {% if project.current_image %}
     <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{project.current_image.url}}"/>
     {% else %}
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/v3/img/rsrLogo.svg"/>
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
     {% endif %}
     {% else %}
     <meta property="og:title" content="Akvo RSR"/>
-    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/v3/img/rsrLogo.svg"/>
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
     <meta property="og:description" content="{% trans 'Akvo Really Simple Reporting is a web and Android-based system that makes it easy for development aid teams to bring complex networks of projects online and instantly share progress with everyone involved and interested.' %}"/>
     {% endif %}
     {% if facebook_app_id %}
@@ -39,7 +39,7 @@
     {% if favicon %}
         <link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">
     {% else %}
-        <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/main/img/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.ico" type="image/x-icon">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -84,11 +84,12 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
     {# React #}
+    {#<script src="http://fb.me/react-0.13.1.js"></script>#}
     <script src="//fb.me/react-0.10.0.js"></script>
 
-    {% compressed_js 'rsr_v3_script' %}
-    {% compressed_js 'rsr_v3_libraries' %}
-    <script src="{{ STATIC_URL }}lib/js/cookie.js"></script>
+    {% compressed_js 'rsr' %}
+    {% compressed_js 'rsr_lib' %}
+    <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
 
     {% block js %}{% endblock js %}
 

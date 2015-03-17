@@ -3,6 +3,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
+asdf
 
 // AKVO_RSR is defined in base.html
 window.AKVO_RSR.utils = {

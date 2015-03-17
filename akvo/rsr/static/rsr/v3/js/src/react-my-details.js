@@ -11,18 +11,18 @@ var Button = ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
 var Input = ReactBootstrap.Input;
 
-var ResponseModal = React.createClass({displayName: 'ResponseModal',
+var ResponseModal = React.createClass({displayName: "ResponseModal",
     render: function () {
         return this.transferPropsTo(
-        Modal( {title:this.props.title}, 
-          React.DOM.div( {className:"modal-body"}, this.props.response),
-          React.DOM.div( {className:"modal-footer"}, Button( {onClick:this.props.onRequestHide}, "Close"))
+        React.createElement(Modal, {title: this.props.title}, 
+          React.createElement("div", {className: "modal-body"}, this.props.response), 
+          React.createElement("div", {className: "modal-footer"}, React.createElement(Button, {onClick: this.props.onRequestHide}, "Close"))
         )
             );
     }
 });
 
-var Employment = React.createClass({displayName: 'Employment',
+var Employment = React.createClass({displayName: "Employment",
     getInitialState: function() {
         return {visible: true};
     },
@@ -34,54 +34,54 @@ var Employment = React.createClass({displayName: 'Employment',
     render: function() {
         if (this.props.employment.is_approved) {
             return this.state.visible
-                ? React.DOM.li(null, this.props.employment.organisation_full.name)
-                : React.DOM.span(null);
+                ? React.createElement("li", null, this.props.employment.organisation_full.name)
+                : React.createElement("span", null);
         } else {
             return this.state.visible
-                ? React.DOM.li(null, this.props.employment.organisation_full.name, " ", React.DOM.i(null, "(Not approved)"))
-                : React.DOM.span(null);
+                ? React.createElement("li", null, this.props.employment.organisation_full.name, " ", React.createElement("i", null, "(Not approved)"))
+                : React.createElement("span", null);
         }
     }
 });
 
-var EmploymentList = React.createClass({displayName: 'EmploymentList',
+var EmploymentList = React.createClass({displayName: "EmploymentList",
     render: function () {
         var employments = this.props.employments.map(function(employment) {
             return (
-                Employment( {employment:employment})
+                React.createElement(Employment, {employment: employment})
                 )
         });
         return (
-            React.DOM.ul(null, employments)
+            React.createElement("ul", null, employments)
             );
     }
 });
 
-var OrganisationInput = React.createClass({displayName: 'OrganisationInput',
+var OrganisationInput = React.createClass({displayName: "OrganisationInput",
     render: function() {
         return (
-                Input( {type:"text", placeholder:"Organisation", id:"organisationInput"} )
+                React.createElement(Input, {type: "text", placeholder: "Organisation", id: "organisationInput"})
             );
     }
 });
 
-var CountryInput = React.createClass({displayName: 'CountryInput',
+var CountryInput = React.createClass({displayName: "CountryInput",
     render: function() {
         return (
-                Input( {type:"text", placeholder:"Country (optional)", id:"countriesInput"} )
+                React.createElement(Input, {type: "text", placeholder: "Country (optional)", id: "countriesInput"})
             );
     }
 });
 
-var JobTitleInput = React.createClass({displayName: 'JobTitleInput',
+var JobTitleInput = React.createClass({displayName: "JobTitleInput",
     render: function() {
         return (
-                Input( {type:"text", placeholder:"Job title (optional)", id:"jobtitleInput"} )
+                React.createElement(Input, {type: "text", placeholder: "Job title (optional)", id: "jobtitleInput"})
             );
     }
 });
 
-var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
+var AddEmploymentForm = React.createClass({displayName: "AddEmploymentForm",
     getInitialState: function() {
         return {
             title: "",
@@ -193,14 +193,14 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
 
     render: function() {
         return (
-            React.DOM.span(null, 
-                React.DOM.h4(null, "Connect with your employer"),
-                React.DOM.form(null, 
-                    OrganisationInput( {ref:"organisationInput"} ),
-                    CountryInput( {ref:"countryInput"} ),
-                    JobTitleInput( {ref:"jobtitleInput"} ),
-                    ModalTrigger( {modal:ResponseModal( {title:this.state.title, response:this.state.response} )}, 
-                        Button( {onClick:this.addEmployment, bsStyle:"primary"}, "Request to join")
+            React.createElement("span", null, 
+                React.createElement("h4", null, "Connect with your employer"), 
+                React.createElement("form", null, 
+                    React.createElement(OrganisationInput, {ref: "organisationInput"}), 
+                    React.createElement(CountryInput, {ref: "countryInput"}), 
+                    React.createElement(JobTitleInput, {ref: "jobtitleInput"}), 
+                    React.createElement(ModalTrigger, {modal: React.createElement(ResponseModal, {title: this.state.title, response: this.state.response})}, 
+                        React.createElement(Button, {onClick: this.addEmployment, bsStyle: "primary"}, "Request to join")
                     )
                 )
             )
@@ -208,7 +208,7 @@ var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
     }
 });
 
-var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
+var EmploymentApp = React.createClass({displayName: "EmploymentApp",
     getInitialState: function() {
         return { employments: [] }
     },
@@ -230,11 +230,11 @@ var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
 
     render: function() {
         return (
-            React.DOM.span(null, 
-                React.DOM.h3(null, React.DOM.i( {className:"fa fa-users"}), " My organisations"),
-                EmploymentList( {employments:this.state.employments} ),
-                AddEmploymentForm( {link:this.props.link, org_link:this.props.org_link,
-                    country_link:this.props.country_link, addEmployment:this.addEmployment} )
+            React.createElement("span", null, 
+                React.createElement("h3", null, React.createElement("i", {className: "fa fa-users"}), " My organisations"), 
+                React.createElement(EmploymentList, {employments: this.state.employments}), 
+                React.createElement(AddEmploymentForm, {link: this.props.link, org_link: this.props.org_link, 
+                    country_link: this.props.country_link, addEmployment: this.addEmployment})
             )
             );
     }
@@ -244,7 +244,7 @@ var initial_data = JSON.parse(document.getElementById("initial-data").innerHTML)
 var request_link = JSON.parse(document.getElementById("user-request-link").innerHTML);
 
 React.renderComponent(
-    EmploymentApp( {source:initial_data, link:request_link.link, org_link:request_link.org_rest_link,
-        country_link:request_link.country_rest_link}),
+    React.createElement(EmploymentApp, {source: initial_data, link: request_link.link, org_link: request_link.org_rest_link, 
+        country_link: request_link.country_rest_link}),
     document.getElementById('organisations')
 );
