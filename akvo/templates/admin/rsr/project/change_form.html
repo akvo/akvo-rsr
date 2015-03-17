@@ -5,11 +5,6 @@
 {% block extrastyle %}
   {{block.super}}
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}rsr/admin/css/akvo_admin.css" />
-  <style>
-      .field-id {
-          display: none;
-      }
-  </style>
 {% endblock %}
 
 {% block pretitle %}
@@ -70,17 +65,17 @@
 
           {% for fieldset in adminform %}
               {% include "admin/includes/fieldset.html" %}
-              {% if forloop.counter == 2 %}
+              {% if forloop.counter == 1 %}
                 {% with inline_admin_formset=inline_admin_formsets.0 %}
                   {% include inline_admin_formset.opts.template %}
                 {% endwith %}
               {% endif %}
-              {% if forloop.counter == 4 %}
-                  {% with inline_admin_formset=inline_admin_formsets.1 %}
-                      {% include inline_admin_formset.opts.template %}
-                  {% endwith %}
+              {% if forloop.counter == 3 %}
+                {% with inline_admin_formset=inline_admin_formsets.1 %}
+                  {% include inline_admin_formset.opts.template %}
+                {% endwith %}
               {% endif %}
-              {% if forloop.counter == 7 %}
+              {% if forloop.counter == 5 %}
                   {% with inline_admin_formset=inline_admin_formsets.2 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
@@ -115,10 +110,12 @@
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}
-              {% if forloop.counter == 15 %}
+              {% if forloop.counter == 14 %}
                   {% with inline_admin_formset=inline_admin_formsets.9 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
+              {% endif %}
+              {% if forloop.counter == 15 %}
                   {% with inline_admin_formset=inline_admin_formsets.10 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
@@ -137,12 +134,7 @@
                   {% with inline_admin_formset=inline_admin_formsets.15 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
-              {% endif %}
-              {% if forloop.counter == 16 %}
                   {% with inline_admin_formset=inline_admin_formsets.16 %}
-                      {% include inline_admin_formset.opts.template %}
-                  {% endwith %}
-                  {% with inline_admin_formset=inline_admin_formsets.17 %}
                       {% include inline_admin_formset.opts.template %}
                   {% endwith %}
               {% endif %}
@@ -159,9 +151,11 @@
           {# JavaScript for prepopulated fields #}
           {% prepopulated_fields_js %}
 
+          {# remove colspan="2" on table headers #}
           {# Disable save buttons after they have been clicked #}
           <script type="text/javascript">
               (function($) {
+                  $("th").removeAttr("colspan");
                   var buttons = $(".submit-row").find("input:submit");
                   buttons.click(function(){
                     buttons.fadeTo("fast", 0.3);
