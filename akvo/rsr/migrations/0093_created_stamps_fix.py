@@ -76,7 +76,6 @@ class Migration(DataMigration):
     def backwards(self, orm):
         "Can't reverse this data migration, sorry..."
 
-
     models = {
         u'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -254,16 +253,6 @@ class Migration(DataMigration):
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'links'", 'to': "orm['rsr.Project']"}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
         },
-        'rsr.minicms': {
-            'Meta': {'ordering': "['-active', '-id']", 'object_name': 'MiniCMS'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'feature_box': ('akvo.rsr.fields.ValidXMLTextField', [], {'max_length': '350'}),
-            'feature_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50'}),
-            'lower_height': ('django.db.models.fields.IntegerField', [], {'default': '500'}),
-            'top_right_box': ('akvo.rsr.fields.ValidXMLTextField', [], {'max_length': '350'})
-        },
         'rsr.molliegateway': {
             'Meta': {'object_name': 'MollieGateway'},
             'currency': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'EUR'", 'max_length': '3'}),
@@ -420,7 +409,7 @@ class Migration(DataMigration):
             'date_end_actual': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_end_planned': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'date_start_actual': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'date_start_planned': ('django.db.models.fields.DateField', [], {'default': 'datetime.date.today'}),
+            'date_start_planned': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'default_aid_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
             'default_finance_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '3', 'blank': 'True'}),
             'default_flow_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
@@ -446,7 +435,7 @@ class Migration(DataMigration):
             'status': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'N'", 'max_length': '1', 'db_index': 'True'}),
             'subtitle': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '75'}),
             'sustainability': ('akvo.rsr.fields.ValidXMLTextField', [], {}),
-            'sync_owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
+            'sync_owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'sync_owner_secondary_reporter': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
             'target_group': ('akvo.rsr.fields.ProjectLimitedTextField', [], {'blank': 'True'}),
             'title': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '45', 'db_index': 'True'})
@@ -480,7 +469,7 @@ class Migration(DataMigration):
             'person_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'contacts'", 'to': "orm['rsr.Project']"}),
             'state': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
-            'telephone': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '15', 'blank': 'True'}),
+            'telephone': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'}),
             'type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
@@ -561,7 +550,7 @@ class Migration(DataMigration):
             'Meta': {'ordering': "('-status', 'project')", 'object_name': 'PublishingStatus'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'project': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['rsr.Project']", 'unique': 'True'}),
-            'status': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'unpublished'", 'max_length': '30'})
+            'status': ('akvo.rsr.fields.ValidXMLCharField', [], {'default': "'unpublished'", 'max_length': '30', 'db_index': 'True'})
         },
         'rsr.recipientcountry': {
             'Meta': {'object_name': 'RecipientCountry'},
@@ -620,19 +609,17 @@ class Migration(DataMigration):
             'flow_type_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'transactions'", 'to': "orm['rsr.Project']"}),
-            'provider_organisation': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
+            'provider_organisation': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'providing_transactions'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': "orm['rsr.Organisation']"}),
             'provider_organisation_activity': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
-            'provider_organisation_ref': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
-            'receiver_organisation': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
+            'receiver_organisation': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'receiving_transactions'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': "orm['rsr.Organisation']"}),
             'receiver_organisation_activity': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
-            'receiver_organisation_ref': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '50', 'blank': 'True'}),
             'reference': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '25', 'blank': 'True'}),
             'tied_status': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '1', 'blank': 'True'}),
             'tied_status_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
-            'transaction_date': ('django.db.models.fields.DateField', [], {'blank': 'True'}),
+            'transaction_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'transaction_type': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '2', 'blank': 'True'}),
             'transaction_type_text': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '100', 'blank': 'True'}),
-            'value': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '11', 'decimal_places': '1', 'blank': 'True'}),
+            'value': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '11', 'decimal_places': '2', 'blank': 'True'}),
             'value_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'})
         },
         'rsr.user': {
@@ -647,6 +634,7 @@ class Migration(DataMigration):
             'is_admin': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_support': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('akvo.rsr.fields.ValidXMLCharField', [], {'max_length': '30', 'blank': 'True'}),
             'notes': ('akvo.rsr.fields.ValidXMLTextField', [], {'default': "''", 'blank': 'True'}),
