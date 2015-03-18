@@ -110,14 +110,18 @@ def sign_out(request):
 def get_api_key(request):
     username = request.POST.get("username", "")
     password = request.POST.get("password", "")
+    handles_unemployed = boolean(request.POST.get("handles_unemployed", False))
     if username and password:
         user = authenticate(username=username, password=password)
         if user is not None:
             orgs = user.approved_organisations()
-            if orgs:
+            if orgs or handles_unemployed:
                 login(request, user)
                 user_id = user.id
-                org_id = orgs[0].id
+                if orgs:
+                    org_id = [org.id for org in orgs]
+                else:
+                    org_id = []
                 projects = user.organisations.all_projects().published()
                 if not user.api_key:
                     user.save()
@@ -126,8 +130,9 @@ def get_api_key(request):
                 user_id_element.text = str(user_id)
                 username_element = etree.SubElement(xml_root, "username")
                 username_element.text = username
-                org_id_element = etree.SubElement(xml_root, "org_id")
-                org_id_element.text = str(org_id)
+                for id in org_id:
+                    org_id_element = etree.SubElement(xml_root, "org_id")
+                    org_id_element.text = str(id)
                 api_key_element = etree.SubElement(xml_root, "api_key")
                 api_key_element.text = user.get_api_key
                 pub_projs_element = etree.SubElement(xml_root, "published_projects")
