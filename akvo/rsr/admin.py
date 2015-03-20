@@ -163,7 +163,8 @@ class BudgetItemAdminInLine(NestedTabularInline):
     formset = BudgetItemAdminInLineFormSet
     fieldsets = (
         (None, {
-            'fields': ('label', 'other_extra', 'type', 'amount', 'period_start', 'period_end', 'value_date')
+            'fields': ('label', 'other_extra', 'type', 'amount',
+                       'period_start', 'period_end', 'value_date')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
@@ -178,8 +179,12 @@ class BudgetItemAdminInLine(NestedTabularInline):
             return 1
 
     class Media:
-        css = {'all': (os.path.join(settings.STATIC_URL, 'rsr/main/css/src/rsr_admin.css').replace('\\', '/'),)}
-        js = (os.path.join(settings.STATIC_URL, 'rsr/main/js/src/rsr_admin.js').replace('\\', '/'),)
+        css = {'all': (os.path.join(
+            settings.STATIC_URL,
+            'styles-src/admin/budget_item.css').replace('\\', '/'),)}
+        js = (os.path.join(
+            settings.STATIC_URL,
+            'scripts-src/admin/budget_item.js').replace('\\', '/'),)
 
 
 class PublishingStatusAdmin(admin.ModelAdmin):

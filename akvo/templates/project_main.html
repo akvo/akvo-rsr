@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% load compressed i18n rsr_utils %}
-{% load rsr_filters %} 
+{% load rsr_filters %}
 {% block title %}{{project.title}}{% endblock title%}
 
 {% block head_js %}
@@ -156,7 +156,7 @@
   </script>
 
   <script src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
-  {% compressed_js 'rsr_v3_react_project_main' %}
+  {% compressed_js 'project_main' %}
 {% endblock js %}
 
 {% block jq %}

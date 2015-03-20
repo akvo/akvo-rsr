@@ -6,7 +6,7 @@ var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 var Input = ReactBootstrap.Input;
 
-var ResetModal = React.createClass({displayName: "ResetModal",
+var ResetModal = React.createClass({displayName: 'ResetModal',
     resetPassword: function() {
         form_data = this.getFormData();
         $.ajax({
@@ -31,25 +31,25 @@ var ResetModal = React.createClass({displayName: "ResetModal",
 
     render: function() {
         return this.transferPropsTo(
-            React.createElement(Modal, {title: "Reset your password"}, 
-              React.createElement("div", {className: "modal-body"}, 
-                React.createElement("p", null, 'Fill in your email address in the field below. We will send you instructions on how to reset your password.'), 
-                React.createElement(Input, {className: "form-control", id: "id_email", maxLength: "254", name: "email", placeholder: "Email", required: "required", title: "", type: "email"})
-              ), 
-              React.createElement("div", {className: "modal-footer"}, 
-                React.createElement(Button, {onClick: this.resetPassword, bsStyle: "info"}, "Reset password")
+            Modal( {title:"Reset your password"}, 
+              React.DOM.div( {className:"modal-body"}, 
+                React.DOM.p(null, 'Fill in your email address in the field below. We will send you instructions on how to reset your password.'),
+                Input( {className:"form-control", id:"id_email", maxLength:"254", name:"email", placeholder:"Email", required:"required", title:"", type:"email"} )
+              ),
+              React.DOM.div( {className:"modal-footer"}, 
+                Button( {onClick:this.resetPassword, bsStyle:"info"}, "Reset password")
               )
             )
           );
     }
 });
 
-var TriggerModal = React.createClass({displayName: "TriggerModal",
+var TriggerModal = React.createClass({displayName: 'TriggerModal',
     render: function () {
         return (
-            React.createElement(ModalTrigger, {modal: React.createElement(ResetModal, null)}, React.createElement("a", {href: "#"}, "I forgot my password"))
+            ModalTrigger( {modal:ResetModal(null )}, React.DOM.a( {href:"#"}, "I forgot my password"))
         );
     }
 });
 
-var resetPW = React.renderComponent(React.createElement(TriggerModal, null), document.getElementById('reset-pw'));
+var resetPW = React.renderComponent(TriggerModal(null ), document.getElementById('reset-pw'));
