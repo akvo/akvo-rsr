@@ -1549,6 +1549,12 @@ div.textBlock {
         background: rgba(white, 0.45);
         @include border-radius(5px);
     }
+    .orgUrl,
+    .orgIati,
+    .orgEmail {
+        display: block;
+        padding-bottom: 0.75em;
+    }
 }
 
 /* Update Page */

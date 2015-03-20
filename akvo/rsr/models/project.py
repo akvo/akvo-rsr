@@ -176,7 +176,7 @@ class Project(TimestampsMixin, models.Model):
         help_text=_(u'The default currency for this project. Used in all financial aspects of the project.')
     )
     date_start_planned = models.DateField(
-        _(u'start date (planned)'), default=date.today, help_text=_(u'Enter the planned start date of the project.')
+        _(u'start date (planned)'), null=True, blank=True, help_text=_(u'Enter the planned start date of the project.')
     )
     date_start_actual = models.DateField(
         _(u'start date (actual)'), null=True, blank=True, help_text=_(u'Enter the actual start date of the project.')

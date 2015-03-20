@@ -15,11 +15,10 @@
                     <dl class="dl-horizontal">
                         {% for budget_item in project.budget_items.all %}
                         {% if 'other' in budget_item.label.label and budget_item.other_extra %}
-                        <dt>{{budget_item.other_extra}}:</dt><dd><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat|intcomma}}</dd>
+                        <dt>{{budget_item.other_extra}}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat:2|intcomma}}</dd>
                         {% else %}
-                        <dt>{{budget_item.label.label}}:</dt><dd><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat|intcomma}}</dd>
-                        {% endif %}
                         <dt>{{budget_item.label.label}}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat:2|intcomma}}</dd>
+                        {% endif %}
                         {% endfor %}
                         <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.budget|floatformat:2|intcomma}}</dd>
                     </dl>
@@ -48,12 +47,12 @@
                     <h4>{% trans "Donations" %}:</h4>
                     <dl class="dl-horizontal">
                         {% for donation in project.all_donations %}
-                        <dt>{% if donation.is_anonymous %}{% trans "Anonymous" %}{% else %}{{donation.name}}{% endif %}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{donation.amount|floatformat:2|intcomma}}</dd>
+                        <dt>{% if donation.is_anonymous %}{% trans "Anonymous" %}{% else %}{{donation.name}}{% endif %}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{donation.amount_received|floatformat:2|intcomma}}</dd>
                         {% empty %}
                         <dt>{% trans "No donations" %}</dt><dd></dd>
                         {% endfor %}
                         {% if project.all_donations %}
-                        <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.all_donations_amount|floatformat:2|intcomma}}</dd>
+                        <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.all_donations_amount_received|floatformat:2|intcomma}}</dd>
                         {% endif %}
                     </dl>
                 </div>

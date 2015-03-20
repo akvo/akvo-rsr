@@ -1283,6 +1283,9 @@ div.textBlock {
   -o-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; }
+.organisationDetail .orgUrl, .organisationDetail .orgIati, .organisationDetail .orgEmail {
+  display: block;
+  padding-bottom: 0.75em; }
 
 /* Update Page */
 .updateMain h2 {
