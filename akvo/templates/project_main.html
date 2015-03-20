@@ -175,6 +175,7 @@
     )
   });
 
+{% comment %}
   {# Timeline #}
   var timeline_data = {{ timeline_data|safe }};
   createStoryJS({
@@ -184,6 +185,8 @@
     source: timeline_data,
     embed_id: 'timeline'
   });
+{% endcomment %}
+        
   $('.logoImg > img').css('margin','inherit');
 
 {% endblock jq %}
