@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Akvo RSR is covered by the GNU Affero General Public License.
+
 See more details in the license.txt file located at the root folder of the
 Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
@@ -9,13 +10,15 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import re
 
 from lxml import etree
+from tastypie.models import ApiKey
 
 from akvo.rsr.forms import RegisterForm
 
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http import (HttpResponse, HttpResponseRedirect,
+                         HttpResponseForbidden)
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -26,6 +29,7 @@ from django.views.decorators.http import require_POST
 
 
 def register(request):
+    """Register form."""
     context = RequestContext(request)
     if request.method == 'POST':
         form = RegisterForm(data=request.POST, files=request.FILES)
@@ -41,7 +45,8 @@ def register(request):
 
 
 def activate(request, activation_key, extra_context=None):
-    """
+    """Activate resouce.
+
     Activate a User's account, if their key is valid and hasn't expired.
     Any values passed in the keyword argument "extra_context"
     (which must be a dictionary) will be added to the context.
@@ -53,7 +58,8 @@ def activate(request, activation_key, extra_context=None):
 
     if sha.search(activation_key):
         try:
-            registration_profile = RegistrationProfile.objects.get(activation_key=activation_key)
+            registration_profile = RegistrationProfile.objects.get(
+                activation_key=activation_key)
         except RegistrationProfile.DoesNotExist:
             user = False
         else:
@@ -101,41 +107,61 @@ def sign_in(request):
 
 
 def sign_out(request):
+    """Log out resouce."""
     logout(request)
     return HttpResponseRedirect('/')
 
 
+def api_key_xml_response(user, orgs):
+    """Build the XML response.
+
+    This is used by the Up app - so make sure they match on change.
+    """
+    xml_root = etree.Element("credentials")
+
+    # User
+    user_id_element = etree.SubElement(xml_root, "user_id")
+    user_id_element.text = str(user.id)
+    user_username_element = etree.SubElement(xml_root, "username")
+    user_username_element.text = user.username
+
+    # Organisationss
+    for org in orgs:
+        org_id_element = etree.SubElement(xml_root, "org_id")
+        org_id_element.text = str(org.id)
+
+    # API key
+    api_key_element = etree.SubElement(xml_root, "api_key")
+    api_key_element.text = ApiKey.objects.get_or_create(user=user)[0].key
+
+    # Published projects
+    projects = user.organisations.all_projects().published()
+    pub_projs_element = etree.SubElement(xml_root, "published_projects")
+    for project in projects:
+        project_id_element = etree.SubElement(pub_projs_element, "id")
+        project_id_element.text = str(project.id)
+
+    return etree.tostring(etree.ElementTree(xml_root))
+
+
 @require_POST
 @csrf_exempt
-def get_api_key(request):
-    username = request.POST.get("username", "")
-    password = request.POST.get("password", "")
+def api_key(request):
+    """On successful user credentials returns an auth token for API usage.
+
+    Since RSR changed in v3 to allow users without an organiation we need to
+    introduce a way to make old Up apps work as before but new ones support
+    users without any connected organisations.
+    """
+    username = request.POST.get('username', False)
+    password = request.POST.get('password', False)
+    handles_unemployed = bool(request.POST.get("handles_unemployed", False))
+
     if username and password:
         user = authenticate(username=username, password=password)
-        if user is not None:
+        if user is not None and user.is_active:
             orgs = user.approved_organisations()
-            if orgs:
-                login(request, user)
-                user_id = user.id
-                org_id = orgs[0].id
-                projects = user.organisations.all_projects().published()
-                if not user.api_key:
-                    user.save()
-                xml_root = etree.Element("credentials")
-                user_id_element = etree.SubElement(xml_root, "user_id")
-                user_id_element.text = str(user_id)
-                username_element = etree.SubElement(xml_root, "username")
-                username_element.text = username
-                org_id_element = etree.SubElement(xml_root, "org_id")
-                org_id_element.text = str(org_id)
-                api_key_element = etree.SubElement(xml_root, "api_key")
-                api_key_element.text = user.get_api_key
-                pub_projs_element = etree.SubElement(xml_root, "published_projects")
-                for proj in projects:
-                    proj_id_element = etree.SubElement(pub_projs_element, "id")
-                    proj_id_element.text = str(proj.id)
-                xml_tree = etree.ElementTree(xml_root)
-                xml_data = etree.tostring(xml_tree)
-                return HttpResponse(xml_data, content_type="text/xml")
-
+            if orgs or handles_unemployed:
+                return HttpResponse(api_key_xml_response(user, orgs),
+                                    content_type="text/xml")
     return HttpResponseForbidden()
