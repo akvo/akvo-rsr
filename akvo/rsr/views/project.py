@@ -12,13 +12,15 @@ import json
 from sorl.thumbnail import get_thumbnail
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from lxml import etree
 
 from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
+from ...iati.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
 
 
@@ -310,6 +312,17 @@ def report(request, project_id):
     }
 
     return render(request, 'project_report.html', context)
+
+###############################################################################
+# Project IATI file
+###############################################################################
+
+
+def iati(request, project_id):
+    """Generate the IATI file on-the-fly and return the XML."""
+    iati_activities = IatiXML(Project.objects.filter(pk=project_id)).iati_activities
+    xml_data = etree.tostring(etree.ElementTree(iati_activities))
+    return HttpResponse(xml_data, content_type="text/xml")
 
 
 ###############################################################################

@@ -43,6 +43,9 @@ urlpatterns = patterns(
     url(r'^project/(?P<project_id>\d+)/report/$',
         'akvo.rsr.views.project.report', name='project-report'),
 
+    url(r'^project/(?P<project_id>\d+)/iati/$',
+        'akvo.rsr.views.project.iati', name='project-iati'),
+
     url(r'^project/(?P<project_id>\d+)/widgets/$',
         'akvo.rsr.views.project.widgets', name='project-widgets'),
 

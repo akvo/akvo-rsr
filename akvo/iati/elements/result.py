@@ -60,7 +60,7 @@ def result(project):
                 baseline_element.attrib['value'] = indicator.baseline_value
 
                 if indicator.baseline_comment:
-                    comment_element = etree.SubElement(indicator_element, "comment")
+                    comment_element = etree.SubElement(baseline_element, "comment")
                     narrative_element = etree.SubElement(comment_element, "narrative")
                     narrative_element.text = indicator.baseline_comment
 
