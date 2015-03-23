@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import (AidType, Currency, DisbursementChannel, FinanceType, FlowType, TiedStatus,
-                                   TransactionType)
+                                   TransactionType, Country, Region, RegionVocabulary, Sector, SectorCategory)
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -24,9 +24,6 @@ class Transaction(models.Model):
     aid_type = ValidXMLCharField(
         _(u'aid type'), blank=True, max_length=3, choices=codelist_choices(AidType)
     )
-    aid_type_text = ValidXMLCharField(
-        _(u'aid type text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
-    )
     description = ValidXMLCharField(
         _(u'description'), max_length=255, blank=True,
         help_text=_(u'Enter a description for the transaction. (255 characters)')
@@ -34,23 +31,11 @@ class Transaction(models.Model):
     disbursement_channel = ValidXMLCharField(
         _(u'disbursement channel'), blank=True, max_length=1, choices=codelist_choices(DisbursementChannel)
     )
-    disbursement_channel_text = ValidXMLCharField(
-        _(u'disbursement channel text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
-    )
     finance_type = ValidXMLCharField(
         _(u'finance type'), max_length=3, blank=True, choices=codelist_choices(FinanceType)
     )
-    finance_type_text = ValidXMLCharField(
-        _(u'finance type text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
-    )
     flow_type = ValidXMLCharField(_(u'flow type'), max_length=2, blank=True, choices=codelist_choices(FlowType))
-    flow_type_text = ValidXMLCharField(
-        _(u'flow type text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
-    )
     tied_status = ValidXMLCharField(_(u'tied status'), blank=True, max_length=1, choices=codelist_choices(TiedStatus))
-    tied_status_text = ValidXMLCharField(
-        _(u'tied status text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
-    )
     transaction_date = models.DateField(
         _(u'transaction date'), blank=True, null=True,
         help_text=u'Enter the financial reporting date that the transaction was/will be undertaken.'
@@ -58,9 +43,6 @@ class Transaction(models.Model):
     transaction_type = ValidXMLCharField(
         _(u'transaction type'), blank=True, max_length=2, choices=codelist_choices(TransactionType),
         help_text=_(u'Select the type of transaction from the list.')
-    )
-    transaction_type_text = ValidXMLCharField(
-        _(u'transaction type text'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
     )
     value = models.DecimalField(
         _(u'value'), blank=True, null=True, max_digits=11, decimal_places=2,
@@ -82,6 +64,20 @@ class Transaction(models.Model):
     receiver_organisation_activity = ValidXMLCharField(
         _(u'receiver organisation activity id'), blank=True, max_length=50
     )
+    recipient_country = ValidXMLCharField(_(u'recipient country'), blank=True, max_length=2,
+                                          choices=codelist_choices(Country))
+    recipient_region = ValidXMLCharField(
+        _(u'recipient region'), blank=True, max_length=3, choices=codelist_choices(Region)
+    )
+    recipient_region_vocabulary = ValidXMLCharField(_(u'recipient region vocabulary'), blank=True, max_length=1,
+                                                    choices=codelist_choices(RegionVocabulary))
+    sector = ValidXMLCharField(_(u'sector'), blank=True, max_length=5, choices=codelist_choices(Sector))
+    sector_category = ValidXMLCharField(
+        _(u'sector category'), blank=True, max_length=3, choices=codelist_choices(SectorCategory)
+    )
+    sector_other = ValidXMLCharField(
+        _(u'other sector'), blank=True, max_length=50
+    )
 
     def __unicode__(self):
         return self.value
@@ -94,6 +90,21 @@ class Transaction(models.Model):
 
     def iati_disbursement_channel(self):
         return codelist_value(DisbursementChannel, self, 'disbursement_channel')
+
+    def iati_recipient_country(self):
+        return codelist_value(Country, self, 'recipient_country')
+
+    def iati_recipient_region(self):
+        return codelist_value(Region, self, 'recipient_region')
+
+    def iati_recipient_region_vocabulary(self):
+        return codelist_value(RegionVocabulary, self, 'recipient_region_vocabulary')
+
+    def iati_sector(self):
+        return codelist_value(Sector, self, 'sector')
+
+    def iati_sector_category(self):
+        return codelist_value(SectorCategory, self, 'sector_category')
 
     class Meta:
         app_label = 'rsr'

@@ -361,7 +361,7 @@ class CountryBudgetInline(NestedTabularInline):
     fieldsets = (
         ('Country Budget Item', {
             'classes': ('collapse',),
-            'fields': ('code', 'description', 'vocabulary', 'percentage')
+            'fields': ('code', 'description', 'percentage')
         }),
     )
 
@@ -430,7 +430,7 @@ class ProjectConditionInline(NestedTabularInline):
     fieldsets = (
         ('Project Condition', {
             'classes': ('collapse',),
-            'fields': ('type', 'text', 'attached')
+            'fields': ('type', 'text')
         }),
     )
 
@@ -496,10 +496,10 @@ class TransactionInline(NestedStackedInline):
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
-            'fields': ('currency',  'value_date', 'transaction_type_text', 'provider_organisation',
-                       'provider_organisation_activity', 'receiver_organisation', 'receiver_organisation_activity',
-                       'aid_type', 'aid_type_text', 'disbursement_channel', 'disbursement_channel_text', 'finance_type',
-                       'finance_type_text', 'flow_type', 'flow_type_text', 'tied_status', 'tied_status_text', )
+            'fields': ('currency',  'value_date', 'provider_organisation', 'provider_organisation_activity',
+                       'receiver_organisation', 'receiver_organisation_activity', 'aid_type', 'disbursement_channel',
+                       'finance_type', 'flow_type', 'tied_status', 'recipient_country', 'recipient_region',
+                       'recipient_region_vocabulary', 'sector', 'sector_category', 'sector_other')
         }),
     )
 
@@ -556,7 +556,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'Optionally, you can add default information based on the IATI standard.'
             ),
             'fields': ('default_aid_type', 'default_flow_type', 'default_tied_status','collaboration_type',
-                       'default_finance_type'),
+                       'default_finance_type', 'country_budget_vocabulary'),
         }),
         (_(u'Contact Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -676,7 +676,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Optionally, you can add additional information based on the IATI standard.'
             ),
-            'fields': (),
+            'fields': ('conditions_attached',),
         }),
         (_(u'Keywords'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(

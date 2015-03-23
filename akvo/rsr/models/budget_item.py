@@ -90,8 +90,6 @@ class CountryBudgetItem(models.Model):
     description = ValidXMLCharField(
         _(u'description'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
     )
-    vocabulary = ValidXMLCharField(_(u'country budget vocabulary'), blank=True, max_length=1,
-                                   choices=codelist_choices(BudgetIdentifierVocabulary))
     percentage = models.DecimalField(
         _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]

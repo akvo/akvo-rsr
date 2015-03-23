@@ -23,9 +23,11 @@ from ..signals import (
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
+from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
 from .focus_area import FocusArea
+from .fss import Fss, FssForecast
 from .goal import Goal
 from .indicator import Indicator, IndicatorPeriod
 from .invoice import Invoice
@@ -65,8 +67,12 @@ __all__ = [
     'Country',
     'RecipientCountry',
     'Category',
+    'CrsAdd',
+    'CrsAddOtherFlag',
     'Employment',
     'FocusArea',
+    'Fss',
+    'FssForecast',
     'Goal',
     'Indicator',
     'IndicatorPeriod',

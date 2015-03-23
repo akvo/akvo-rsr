@@ -31,9 +31,6 @@ class Result(models.Model):
         _(u'description'), blank=True, max_length=255,
         help_text=_(u'You can provide further information of the result here. (255 characters)')
     )
-    description_type = ValidXMLCharField(
-        _(u'description type'), blank=True, max_length=1, choices=codelist_choices(DescriptionType)
-    )
 
     def __unicode__(self):
         return self.title

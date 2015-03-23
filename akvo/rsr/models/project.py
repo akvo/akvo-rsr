@@ -7,8 +7,6 @@
 
 import math
 
-from datetime import date
-
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -23,7 +21,8 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus
+from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus,
+                                   BudgetIdentifierVocabulary)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
@@ -242,6 +241,9 @@ class Project(TimestampsMixin, models.Model):
                                           choices=codelist_choices(FlowType))
     default_tied_status = ValidXMLCharField(_(u'default tied status'), blank=True, max_length=1,
                                             choices=codelist_choices(TiedStatus))
+    conditions_attached = models.NullBooleanField(_(u'attached conditions'), blank=True)
+    country_budget_vocabulary = ValidXMLCharField(_(u'country budget vocabulary'), blank=True, max_length=1,
+                                                  choices=codelist_choices(BudgetIdentifierVocabulary))
 
 
     # denormalized data
@@ -777,12 +779,12 @@ class Project(TimestampsMixin, models.Model):
         return self.parents() or self.children() or self.siblings()
 
     def parents(self):
-        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=1) |
-                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=2)).distinct()
-
-    def children(self):
         return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=2) |
                 Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=1)).distinct()
+
+    def children(self):
+        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=1) |
+                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=2)).distinct()
 
     def siblings(self):
         return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |

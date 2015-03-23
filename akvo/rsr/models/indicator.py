@@ -30,9 +30,6 @@ class Indicator(models.Model):
         _(u'description'), blank=True, max_length=255,
         help_text=_(u'You can further define the indicator here. (255 characters)')
     )
-    description_type = ValidXMLCharField(
-        _(u'description type'), blank=True, max_length=1, choices=codelist_choices(DescriptionType)
-    )
     baseline_year = models.PositiveIntegerField(
         _(u'baseline year'), blank=True, null=True, max_length=4,
         help_text=_(u'Enter the year that the baseline information was obtained.')
