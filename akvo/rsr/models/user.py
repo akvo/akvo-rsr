@@ -22,6 +22,10 @@ from .project_update import ProjectUpdate
 from ..fields import ValidXMLCharField, ValidXMLTextField
 
 
+def image_path(instance, file_name):
+    return rsr_image_path(instance, file_name, 'db/user/%(instance_pk)s/%(file_name)s')
+
+
 class CustomUserManager(BaseUserManager):
 
     def _create_user(self, username, email, password,
@@ -79,10 +83,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         'Organisation', verbose_name=_(u'organisations'), through=Employment, related_name='users', blank=True
     )
     notes = ValidXMLTextField(verbose_name=_('Notes and comments'), blank=True, default='')
-
-    def image_path(instance, file_name):
-        return rsr_image_path(instance, file_name, 'db/user/%(instance_pk)s/%(file_name)s')
-
     avatar = ImageField(_(u'avatar'),
                         null=True,
                         upload_to=image_path,

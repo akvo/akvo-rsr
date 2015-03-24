@@ -1,766 +1,1078 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
-
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'Country'
-        db.create_table('rsr_country', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50, db_index=True)),
-            ('iso_code', self.gf('django.db.models.fields.CharField')(unique=True, max_length=2)),
-            ('continent', self.gf('django.db.models.fields.CharField')(max_length=20, db_index=True)),
-            ('continent_code', self.gf('django.db.models.fields.CharField')(max_length=2)),
-        ))
-        db.send_create_signal('rsr', ['Country'])
-
-        # Adding model 'Location'
-        db.create_table('rsr_location', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('latitude', self.gf('akvo.rsr.fields.LatitudeField')(default=0)),
-            ('longitude', self.gf('akvo.rsr.fields.LongitudeField')(default=0)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('state', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('country', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Country'])),
-            ('address_1', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('address_2', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('postcode', self.gf('django.db.models.fields.CharField')(max_length=10, blank=True)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
-            ('object_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('primary', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal('rsr', ['Location'])
-
-        # Adding model 'Organisation'
-        db.create_table('rsr_organisation', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('field_partner', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('support_partner', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('funding_partner', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('sponsor_partner', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=25)),
-            ('long_name', self.gf('django.db.models.fields.CharField')(max_length=75, blank=True)),
-            ('organisation_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
-            ('logo', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
-            ('url', self.gf('django.db.models.fields.URLField')(max_length=200, blank=True)),
-            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('mobile', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('fax', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('contact_person', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('contact_email', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal('rsr', ['Organisation'])
-
-        # Adding model 'OrganisationAccount'
-        db.create_table('rsr_organisationaccount', (
-            ('organisation', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['rsr.Organisation'], unique=True, primary_key=True)),
-            ('account_level', self.gf('django.db.models.fields.CharField')(default='free', max_length=12)),
-        ))
-        db.send_create_signal('rsr', ['OrganisationAccount'])
-
-        # Adding model 'FocusArea'
-        db.create_table('rsr_focusarea', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50, db_index=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(max_length=500)),
-            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
-            ('link_to', self.gf('django.db.models.fields.URLField')(max_length=200, blank=True)),
-        ))
-        db.send_create_signal('rsr', ['FocusArea'])
-
-        # Adding model 'Benchmarkname'
-        db.create_table('rsr_benchmarkname', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('order', self.gf('django.db.models.fields.IntegerField')(default=0)),
-        ))
-        db.send_create_signal('rsr', ['Benchmarkname'])
-
-        # Adding model 'Category'
-        db.create_table('rsr_category', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-        ))
-        db.send_create_signal('rsr', ['Category'])
-
-        # Adding M2M table for field focus_area on 'Category'
-        db.create_table('rsr_category_focus_area', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('category', models.ForeignKey(orm['rsr.category'], null=False)),
-            ('focusarea', models.ForeignKey(orm['rsr.focusarea'], null=False))
-        ))
-        db.create_unique('rsr_category_focus_area', ['category_id', 'focusarea_id'])
-
-        # Adding M2M table for field benchmarknames on 'Category'
-        db.create_table('rsr_category_benchmarknames', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('category', models.ForeignKey(orm['rsr.category'], null=False)),
-            ('benchmarkname', models.ForeignKey(orm['rsr.benchmarkname'], null=False))
-        ))
-        db.create_unique('rsr_category_benchmarknames', ['category_id', 'benchmarkname_id'])
-
-        # Adding model 'MiniCMS'
-        db.create_table('rsr_minicms', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('label', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('feature_box', self.gf('django.db.models.fields.TextField')(max_length=350)),
-            ('feature_image', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
-            ('top_right_box', self.gf('django.db.models.fields.TextField')(max_length=350)),
-            ('lower_height', self.gf('django.db.models.fields.IntegerField')(default=500)),
-            ('active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('rsr', ['MiniCMS'])
-
-        # Adding model 'Project'
-        db.create_table('rsr_project', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=45)),
-            ('subtitle', self.gf('django.db.models.fields.CharField')(max_length=75)),
-            ('status', self.gf('django.db.models.fields.CharField')(default='N', max_length=1)),
-            ('project_plan_summary', self.gf('django.db.models.fields.TextField')(max_length=220)),
-            ('current_image', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
-            ('current_image_caption', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('goals_overview', self.gf('django.db.models.fields.TextField')(max_length=500)),
-            ('goal_1', self.gf('django.db.models.fields.CharField')(max_length=60, blank=True)),
-            ('goal_2', self.gf('django.db.models.fields.CharField')(max_length=60, blank=True)),
-            ('goal_3', self.gf('django.db.models.fields.CharField')(max_length=60, blank=True)),
-            ('goal_4', self.gf('django.db.models.fields.CharField')(max_length=60, blank=True)),
-            ('goal_5', self.gf('django.db.models.fields.CharField')(max_length=60, blank=True)),
-            ('current_status_detail', self.gf('django.db.models.fields.TextField')(max_length=600, blank=True)),
-            ('project_plan_detail', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('sustainability', self.gf('django.db.models.fields.TextField')()),
-            ('context', self.gf('django.db.models.fields.TextField')(max_length=500, blank=True)),
-            ('project_rating', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('notes', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('currency', self.gf('django.db.models.fields.CharField')(default='EUR', max_length=3)),
-            ('date_request_posted', self.gf('django.db.models.fields.DateField')(default=datetime.date.today)),
-            ('date_complete', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-        ))
-        db.send_create_signal('rsr', ['Project'])
-
-        # Adding M2M table for field categories on 'Project'
-        db.create_table('rsr_project_categories', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('project', models.ForeignKey(orm['rsr.project'], null=False)),
-            ('category', models.ForeignKey(orm['rsr.category'], null=False))
-        ))
-        db.create_unique('rsr_project_categories', ['project_id', 'category_id'])
-
-        # Adding model 'Benchmark'
-        db.create_table('rsr_benchmark', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'benchmarks', to=orm['rsr.Project'])),
-            ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Category'])),
-            ('name', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Benchmarkname'])),
-            ('value', self.gf('django.db.models.fields.IntegerField')()),
-        ))
-        db.send_create_signal('rsr', ['Benchmark'])
-
-        # Adding model 'BudgetItem'
-        db.create_table('rsr_budgetitem', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Project'])),
-            ('item', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('amount', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-        ))
-        db.send_create_signal('rsr', ['BudgetItem'])
-
-        # Adding unique constraint on 'BudgetItem', fields ['project', 'item']
-        db.create_unique('rsr_budgetitem', ['project_id', 'item'])
-
-        # Adding model 'PublishingStatus'
-        db.create_table('rsr_publishingstatus', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['rsr.Project'], unique=True)),
-            ('status', self.gf('django.db.models.fields.CharField')(default='unpublished', max_length=30)),
-        ))
-        db.send_create_signal('rsr', ['PublishingStatus'])
-
-        # Adding model 'Link'
-        db.create_table('rsr_link', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('kind', self.gf('django.db.models.fields.CharField')(max_length=1)),
-            ('url', self.gf('django.db.models.fields.URLField')(max_length=200)),
-            ('caption', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='links', to=orm['rsr.Project'])),
-        ))
-        db.send_create_signal('rsr', ['Link'])
-
-        # Adding model 'FundingPartner'
-        db.create_table('rsr_fundingpartner', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('funding_organisation', self.gf('django.db.models.fields.related.ForeignKey')(related_name='funding_partners', to=orm['rsr.Organisation'])),
-            ('funding_amount', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Project'])),
-        ))
-        db.send_create_signal('rsr', ['FundingPartner'])
-
-        # Adding model 'SponsorPartner'
-        db.create_table('rsr_sponsorpartner', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('sponsor_organisation', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sponsor_partners', to=orm['rsr.Organisation'])),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Project'])),
-        ))
-        db.send_create_signal('rsr', ['SponsorPartner'])
-
-        # Adding model 'SupportPartner'
-        db.create_table('rsr_supportpartner', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('support_organisation', self.gf('django.db.models.fields.related.ForeignKey')(related_name='support_partners', to=orm['rsr.Organisation'])),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Project'])),
-        ))
-        db.send_create_signal('rsr', ['SupportPartner'])
-
-        # Adding model 'FieldPartner'
-        db.create_table('rsr_fieldpartner', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('field_organisation', self.gf('django.db.models.fields.related.ForeignKey')(related_name='field_partners', to=orm['rsr.Organisation'])),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Project'])),
-        ))
-        db.send_create_signal('rsr', ['FieldPartner'])
-
-        # Adding model 'UserProfile'
-        db.create_table('rsr_userprofile', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
-            ('organisation', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Organisation'])),
-            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-            ('validation', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-        ))
-        db.send_create_signal('rsr', ['UserProfile'])
-
-        # Adding model 'SmsReporter'
-        db.create_table('rsr_smsreporter', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('userprofile', self.gf('django.db.models.fields.related.ForeignKey')(related_name='reporters', to=orm['rsr.UserProfile'])),
-            ('gw_number', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gateway.GatewayNumber'])),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Project'], null=True, blank=True)),
-        ))
-        db.send_create_signal('rsr', ['SmsReporter'])
-
-        # Adding unique constraint on 'SmsReporter', fields ['userprofile', 'gw_number', 'project']
-        db.create_unique('rsr_smsreporter', ['userprofile_id', 'gw_number_id', 'project_id'])
-
-        # Adding model 'ProjectUpdate'
-        db.create_table('rsr_projectupdate', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(related_name='project_updates', to=orm['rsr.Project'])),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('text', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('photo', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
-            ('photo_location', self.gf('django.db.models.fields.CharField')(max_length=1)),
-            ('photo_caption', self.gf('django.db.models.fields.CharField')(max_length=75, blank=True)),
-            ('photo_credit', self.gf('django.db.models.fields.CharField')(max_length=25, blank=True)),
-            ('video', self.gf('django.db.models.fields.URLField')(max_length=200, blank=True)),
-            ('video_caption', self.gf('django.db.models.fields.CharField')(max_length=75, blank=True)),
-            ('video_credit', self.gf('django.db.models.fields.CharField')(max_length=25, blank=True)),
-            ('update_method', self.gf('django.db.models.fields.CharField')(default='W', max_length=1, blank=True)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('time_last_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('featured', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('rsr', ['ProjectUpdate'])
-
-        # Adding model 'ProjectComment'
-        db.create_table('rsr_projectcomment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Project'])),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('comment', self.gf('django.db.models.fields.TextField')()),
-            ('time', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal('rsr', ['ProjectComment'])
-
-        # Adding model 'PayPalGateway'
-        db.create_table('rsr_paypalgateway', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('currency', self.gf('django.db.models.fields.CharField')(default='EUR', max_length=3)),
-            ('notification_email', self.gf('django.db.models.fields.EmailField')(max_length=75)),
-            ('account_email', self.gf('django.db.models.fields.EmailField')(max_length=75)),
-            ('locale', self.gf('django.db.models.fields.CharField')(default='US', max_length=2)),
-        ))
-        db.send_create_signal('rsr', ['PayPalGateway'])
-
-        # Adding model 'MollieGateway'
-        db.create_table('rsr_molliegateway', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('currency', self.gf('django.db.models.fields.CharField')(default='EUR', max_length=3)),
-            ('notification_email', self.gf('django.db.models.fields.EmailField')(max_length=75)),
-            ('partner_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
-        ))
-        db.send_create_signal('rsr', ['MollieGateway'])
-
-        # Adding model 'PaymentGatewaySelector'
-        db.create_table('rsr_paymentgatewayselector', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['rsr.Project'], unique=True)),
-            ('paypal_gateway', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['rsr.PayPalGateway'])),
-            ('mollie_gateway', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['rsr.MollieGateway'])),
-        ))
-        db.send_create_signal('rsr', ['PaymentGatewaySelector'])
-
-        # Adding model 'Invoice'
-        db.create_table('rsr_invoice', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('test', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('engine', self.gf('django.db.models.fields.CharField')(default='paypal', max_length=10)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Project'])),
-            ('amount', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('amount_received', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=10, decimal_places=2, blank=True)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=75, null=True, blank=True)),
-            ('email', self.gf('django.db.models.fields.EmailField')(max_length=75, null=True, blank=True)),
-            ('status', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=1)),
-            ('http_referer', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('campaign_code', self.gf('django.db.models.fields.CharField')(max_length=15, blank=True)),
-            ('is_anonymous', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('ipn', self.gf('django.db.models.fields.CharField')(max_length=75, null=True, blank=True)),
-            ('bank', self.gf('django.db.models.fields.CharField')(max_length=4, blank=True)),
-            ('transaction_id', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-        ))
-        db.send_create_signal('rsr', ['Invoice'])
-
-        # Adding model 'PartnerSite'
-        db.create_table('rsr_partnersite', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('organisation', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rsr.Organisation'])),
-            ('hostname', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
-            ('cname', self.gf('akvo.rsr.fields.NullCharField')(max_length=100, unique=True, null=True, blank=True)),
-            ('custom_return_url', self.gf('django.db.models.fields.URLField')(max_length=200, blank=True)),
-            ('custom_css', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
-            ('custom_logo', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
-            ('custom_favicon', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
-            ('about_box', self.gf('django.db.models.fields.TextField')(max_length=500, blank=True)),
-            ('about_image', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
-            ('enabled', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal('rsr', ['PartnerSite'])
-
-
-    def backwards(self, orm):
-        
-        # Removing unique constraint on 'SmsReporter', fields ['userprofile', 'gw_number', 'project']
-        db.delete_unique('rsr_smsreporter', ['userprofile_id', 'gw_number_id', 'project_id'])
-
-        # Removing unique constraint on 'BudgetItem', fields ['project', 'item']
-        db.delete_unique('rsr_budgetitem', ['project_id', 'item'])
-
-        # Deleting model 'Country'
-        db.delete_table('rsr_country')
-
-        # Deleting model 'Location'
-        db.delete_table('rsr_location')
-
-        # Deleting model 'Organisation'
-        db.delete_table('rsr_organisation')
-
-        # Deleting model 'OrganisationAccount'
-        db.delete_table('rsr_organisationaccount')
-
-        # Deleting model 'FocusArea'
-        db.delete_table('rsr_focusarea')
-
-        # Deleting model 'Benchmarkname'
-        db.delete_table('rsr_benchmarkname')
-
-        # Deleting model 'Category'
-        db.delete_table('rsr_category')
-
-        # Removing M2M table for field focus_area on 'Category'
-        db.delete_table('rsr_category_focus_area')
-
-        # Removing M2M table for field benchmarknames on 'Category'
-        db.delete_table('rsr_category_benchmarknames')
-
-        # Deleting model 'MiniCMS'
-        db.delete_table('rsr_minicms')
-
-        # Deleting model 'Project'
-        db.delete_table('rsr_project')
-
-        # Removing M2M table for field categories on 'Project'
-        db.delete_table('rsr_project_categories')
-
-        # Deleting model 'Benchmark'
-        db.delete_table('rsr_benchmark')
-
-        # Deleting model 'BudgetItem'
-        db.delete_table('rsr_budgetitem')
-
-        # Deleting model 'PublishingStatus'
-        db.delete_table('rsr_publishingstatus')
-
-        # Deleting model 'Link'
-        db.delete_table('rsr_link')
-
-        # Deleting model 'FundingPartner'
-        db.delete_table('rsr_fundingpartner')
-
-        # Deleting model 'SponsorPartner'
-        db.delete_table('rsr_sponsorpartner')
-
-        # Deleting model 'SupportPartner'
-        db.delete_table('rsr_supportpartner')
-
-        # Deleting model 'FieldPartner'
-        db.delete_table('rsr_fieldpartner')
-
-        # Deleting model 'UserProfile'
-        db.delete_table('rsr_userprofile')
-
-        # Deleting model 'SmsReporter'
-        db.delete_table('rsr_smsreporter')
-
-        # Deleting model 'ProjectUpdate'
-        db.delete_table('rsr_projectupdate')
-
-        # Deleting model 'ProjectComment'
-        db.delete_table('rsr_projectcomment')
-
-        # Deleting model 'PayPalGateway'
-        db.delete_table('rsr_paypalgateway')
-
-        # Deleting model 'MollieGateway'
-        db.delete_table('rsr_molliegateway')
-
-        # Deleting model 'PaymentGatewaySelector'
-        db.delete_table('rsr_paymentgatewayselector')
-
-        # Deleting model 'Invoice'
-        db.delete_table('rsr_invoice')
-
-        # Deleting model 'PartnerSite'
-        db.delete_table('rsr_partnersite')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'gateway.gateway': {
-            'Meta': {'object_name': 'Gateway'},
-            'host_name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            'msg_id': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            'name': ('django.db.models.fields.SlugField', [], {'max_length': '30', 'db_index': 'True'}),
-            'receiver': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            'send_path': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'sender': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            'timestamp': ('django.db.models.fields.CharField', [], {'max_length': '30'})
-        },
-        'gateway.gatewaynumber': {
-            'Meta': {'object_name': 'GatewayNumber'},
-            'gateway': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['gateway.Gateway']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'number': ('django.db.models.fields.CharField', [], {'max_length': '30'})
-        },
-        'rsr.benchmark': {
-            'Meta': {'ordering': "['category__name', 'name__order']", 'object_name': 'Benchmark'},
-            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Category']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Benchmarkname']"}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'benchmarks'", 'to': "orm['rsr.Project']"}),
-            'value': ('django.db.models.fields.IntegerField', [], {})
-        },
-        'rsr.benchmarkname': {
-            'Meta': {'ordering': "['order', 'name']", 'object_name': 'Benchmarkname'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
-        },
-        'rsr.budgetitem': {
-            'Meta': {'unique_together': "(('project', 'item'),)", 'object_name': 'BudgetItem'},
-            'amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'item': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"})
-        },
-        'rsr.category': {
-            'Meta': {'object_name': 'Category'},
-            'benchmarknames': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['rsr.Benchmarkname']", 'symmetrical': 'False', 'blank': 'True'}),
-            'focus_area': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'categories'", 'symmetrical': 'False', 'to': "orm['rsr.FocusArea']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'rsr.country': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Country'},
-            'continent': ('django.db.models.fields.CharField', [], {'max_length': '20', 'db_index': 'True'}),
-            'continent_code': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'iso_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '2'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'})
-        },
-        'rsr.fieldpartner': {
-            'Meta': {'object_name': 'FieldPartner'},
-            'field_organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'field_partners'", 'to': "orm['rsr.Organisation']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"})
-        },
-        'rsr.focusarea': {
-            'Meta': {'object_name': 'FocusArea'},
-            'description': ('django.db.models.fields.TextField', [], {'max_length': '500'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'}),
-            'link_to': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'})
-        },
-        'rsr.fundingpartner': {
-            'Meta': {'object_name': 'FundingPartner'},
-            'funding_amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'}),
-            'funding_organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'funding_partners'", 'to': "orm['rsr.Organisation']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"})
-        },
-        'rsr.invoice': {
-            'Meta': {'object_name': 'Invoice'},
-            'amount': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'amount_received': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
-            'bank': ('django.db.models.fields.CharField', [], {'max_length': '4', 'blank': 'True'}),
-            'campaign_code': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
-            'engine': ('django.db.models.fields.CharField', [], {'default': "'paypal'", 'max_length': '10'}),
-            'http_referer': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ipn': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
-            'is_anonymous': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
-            'status': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
-            'test': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})
-        },
-        'rsr.link': {
-            'Meta': {'object_name': 'Link'},
-            'caption': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'kind': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'links'", 'to': "orm['rsr.Project']"}),
-            'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
-        },
-        'rsr.location': {
-            'Meta': {'object_name': 'Location'},
-            'address_1': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'address_2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'country': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Country']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'latitude': ('akvo.rsr.fields.LatitudeField', [], {'default': '0'}),
-            'longitude': ('akvo.rsr.fields.LongitudeField', [], {'default': '0'}),
-            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'postcode': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
-            'primary': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'state': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'})
-        },
-        'rsr.minicms': {
-            'Meta': {'object_name': 'MiniCMS'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'feature_box': ('django.db.models.fields.TextField', [], {'max_length': '350'}),
-            'feature_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'lower_height': ('django.db.models.fields.IntegerField', [], {'default': '500'}),
-            'top_right_box': ('django.db.models.fields.TextField', [], {'max_length': '350'})
-        },
-        'rsr.molliegateway': {
-            'Meta': {'object_name': 'MollieGateway'},
-            'currency': ('django.db.models.fields.CharField', [], {'default': "'EUR'", 'max_length': '3'}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'notification_email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
-            'partner_id': ('django.db.models.fields.CharField', [], {'max_length': '10'})
-        },
-        'rsr.organisation': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Organisation'},
-            'contact_email': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'contact_person': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'fax': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'field_partner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'funding_partner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'logo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'long_name': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
-            'mobile': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
-            'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'sponsor_partner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'support_partner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
-        },
-        'rsr.organisationaccount': {
-            'Meta': {'object_name': 'OrganisationAccount'},
-            'account_level': ('django.db.models.fields.CharField', [], {'default': "'free'", 'max_length': '12'}),
-            'organisation': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['rsr.Organisation']", 'unique': 'True', 'primary_key': 'True'})
-        },
-        'rsr.partnersite': {
-            'Meta': {'object_name': 'PartnerSite'},
-            'about_box': ('django.db.models.fields.TextField', [], {'max_length': '500', 'blank': 'True'}),
-            'about_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'cname': ('akvo.rsr.fields.NullCharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'custom_css': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
-            'custom_favicon': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
-            'custom_logo': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
-            'custom_return_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
-            'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'hostname': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"})
-        },
-        'rsr.paymentgatewayselector': {
-            'Meta': {'object_name': 'PaymentGatewaySelector'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mollie_gateway': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': "orm['rsr.MollieGateway']"}),
-            'paypal_gateway': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': "orm['rsr.PayPalGateway']"}),
-            'project': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['rsr.Project']", 'unique': 'True'})
-        },
-        'rsr.paypalgateway': {
-            'Meta': {'object_name': 'PayPalGateway'},
-            'account_email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
-            'currency': ('django.db.models.fields.CharField', [], {'default': "'EUR'", 'max_length': '3'}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'locale': ('django.db.models.fields.CharField', [], {'default': "'US'", 'max_length': '2'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'notification_email': ('django.db.models.fields.EmailField', [], {'max_length': '75'})
-        },
-        'rsr.project': {
-            'Meta': {'object_name': 'Project'},
-            'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'projects'", 'symmetrical': 'False', 'to': "orm['rsr.Category']"}),
-            'context': ('django.db.models.fields.TextField', [], {'max_length': '500', 'blank': 'True'}),
-            'currency': ('django.db.models.fields.CharField', [], {'default': "'EUR'", 'max_length': '3'}),
-            'current_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'current_image_caption': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'current_status_detail': ('django.db.models.fields.TextField', [], {'max_length': '600', 'blank': 'True'}),
-            'date_complete': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'date_request_posted': ('django.db.models.fields.DateField', [], {'default': 'datetime.date.today'}),
-            'goal_1': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goal_2': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goal_3': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goal_4': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goal_5': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
-            'goals_overview': ('django.db.models.fields.TextField', [], {'max_length': '500'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '45'}),
-            'notes': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'project_plan_detail': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'project_plan_summary': ('django.db.models.fields.TextField', [], {'max_length': '220'}),
-            'project_rating': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'status': ('django.db.models.fields.CharField', [], {'default': "'N'", 'max_length': '1'}),
-            'subtitle': ('django.db.models.fields.CharField', [], {'max_length': '75'}),
-            'sustainability': ('django.db.models.fields.TextField', [], {})
-        },
-        'rsr.projectcomment': {
-            'Meta': {'object_name': 'ProjectComment'},
-            'comment': ('django.db.models.fields.TextField', [], {}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
-            'time': ('django.db.models.fields.DateTimeField', [], {}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
-        },
-        'rsr.projectupdate': {
-            'Meta': {'object_name': 'ProjectUpdate'},
-            'featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'photo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'photo_caption': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
-            'photo_credit': ('django.db.models.fields.CharField', [], {'max_length': '25', 'blank': 'True'}),
-            'photo_location': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'project_updates'", 'to': "orm['rsr.Project']"}),
-            'text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'time_last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'update_method': ('django.db.models.fields.CharField', [], {'default': "'W'", 'max_length': '1', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'video': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
-            'video_caption': ('django.db.models.fields.CharField', [], {'max_length': '75', 'blank': 'True'}),
-            'video_credit': ('django.db.models.fields.CharField', [], {'max_length': '25', 'blank': 'True'})
-        },
-        'rsr.publishingstatus': {
-            'Meta': {'object_name': 'PublishingStatus'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['rsr.Project']", 'unique': 'True'}),
-            'status': ('django.db.models.fields.CharField', [], {'default': "'unpublished'", 'max_length': '30'})
-        },
-        'rsr.smsreporter': {
-            'Meta': {'unique_together': "(('userprofile', 'gw_number', 'project'),)", 'object_name': 'SmsReporter'},
-            'gw_number': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['gateway.GatewayNumber']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']", 'null': 'True', 'blank': 'True'}),
-            'userprofile': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reporters'", 'to': "orm['rsr.UserProfile']"})
-        },
-        'rsr.sponsorpartner': {
-            'Meta': {'object_name': 'SponsorPartner'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
-            'sponsor_organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sponsor_partners'", 'to': "orm['rsr.Organisation']"})
-        },
-        'rsr.supportpartner': {
-            'Meta': {'object_name': 'SupportPartner'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Project']"}),
-            'support_organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'support_partners'", 'to': "orm['rsr.Organisation']"})
-        },
-        'rsr.userprofile': {
-            'Meta': {'object_name': 'UserProfile'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['rsr.Organisation']"}),
-            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'}),
-            'validation': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['rsr']
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import sorl.thumbnail.fields
+import akvo.rsr.models.organisation
+import akvo.rsr.fields
+import akvo.rsr.models.focus_area
+import akvo.rsr.models.project_document
+import embed_video.fields
+import django.utils.timezone
+import akvo.rsr.models.project
+import akvo.rsr.models.project_update
+import akvo.rsr.models.user
+import django.db.models.deletion
+from django.conf import settings
+import django.core.validators
+import akvo.rsr.models.partner_site
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('auth', '0001_initial'),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='User',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(default=django.utils.timezone.now, verbose_name='last login')),
+                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
+                ('username', akvo.rsr.fields.ValidXMLCharField(unique=True, max_length=254, verbose_name='username')),
+                ('email', models.EmailField(unique=True, max_length=254, verbose_name='email address')),
+                ('first_name', akvo.rsr.fields.ValidXMLCharField(max_length=30, verbose_name='first name', blank=True)),
+                ('last_name', akvo.rsr.fields.ValidXMLCharField(max_length=30, verbose_name='last name', blank=True)),
+                ('is_active', models.BooleanField(default=False, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
+                ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff')),
+                ('is_admin', models.BooleanField(default=False, help_text='Designates whether the user is a general RSR admin. To be used only for Akvo employees.', verbose_name='admin')),
+                ('is_support', models.BooleanField(default=False, help_text='Designates whether the user is a support user. To be used for users willing to receive notifications when a new user registers for their organisation.', verbose_name='support user')),
+                ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
+                ('notes', akvo.rsr.fields.ValidXMLTextField(default=b'', verbose_name='Notes and comments', blank=True)),
+                ('avatar', sorl.thumbnail.fields.ImageField(help_text='The avatar should be less than 500 kb in size.', upload_to=akvo.rsr.models.user.image_path, null=True, verbose_name='avatar')),
+                ('groups', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of his/her group.', verbose_name='groups')),
+            ],
+            options={
+                'ordering': ['username'],
+                'verbose_name': 'user',
+                'verbose_name_plural': 'users',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Benchmark',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.IntegerField(verbose_name='benchmark value')),
+            ],
+            options={
+                'ordering': ('category__name', 'name__order'),
+                'verbose_name': 'benchmark',
+                'verbose_name_plural': 'benchmarks',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Benchmarkname',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(help_text='Enter a name for the benchmark. (80 characters).', max_length=80, verbose_name='benchmark name')),
+                ('order', models.IntegerField(default=0, help_text='Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.', verbose_name='order')),
+            ],
+            options={
+                'ordering': ['order', 'name'],
+                'verbose_name': 'benchmark name',
+                'verbose_name_plural': 'benchmark names',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='BudgetItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('other_extra', akvo.rsr.fields.ValidXMLCharField(help_text='Extra information about the exact nature of an "other" budget item.', max_length=20, null=True, verbose_name='"Other" labels extra info', blank=True)),
+                ('amount', models.DecimalField(verbose_name='amount', max_digits=10, decimal_places=2)),
+                ('type', akvo.rsr.fields.ValidXMLCharField(help_text='Select whether this is a planned or actual budget of the project.', max_length=1, verbose_name='budget type', blank=True)),
+                ('period_start', models.DateField(null=True, verbose_name='period start', blank=True)),
+                ('period_start_text', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='period start label', blank=True)),
+                ('period_end', models.DateField(null=True, verbose_name='period end', blank=True)),
+                ('period_end_text', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='period end label', blank=True)),
+                ('value_date', models.DateField(null=True, verbose_name='value date', blank=True)),
+                ('currency', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='currency', blank=True)),
+            ],
+            options={
+                'ordering': ('label',),
+                'verbose_name': 'budget item',
+                'verbose_name_plural': 'budget items',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='BudgetItemLabel',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('label', akvo.rsr.fields.ValidXMLCharField(unique=True, max_length=20, verbose_name='label', db_index=True)),
+            ],
+            options={
+                'ordering': ('label',),
+                'verbose_name': 'budget item label',
+                'verbose_name_plural': 'budget item labels',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Category',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(help_text='Enter a name for the category. (50 characters).', max_length=50, verbose_name='category name', db_index=True)),
+                ('benchmarknames', models.ManyToManyField(help_text='Select the benchmark names for the category.', to='rsr.Benchmarkname', verbose_name='benchmark names', blank=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'category',
+                'verbose_name_plural': 'categories',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Country',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(unique=True, max_length=50, verbose_name='country name', db_index=True)),
+                ('iso_code', akvo.rsr.fields.ValidXMLCharField(db_index=True, unique=True, max_length=2, verbose_name='ISO 3166 code', choices=[('af', 'Afghanistan'), ('ax', '\xc5land Islands'), ('al', 'Albania'), ('dz', 'Algeria'), ('as', 'American Samoa'), ('ad', 'Andorra'), ('ao', 'Angola'), ('ai', 'Anguilla'), ('aq', 'Antarctica'), ('ag', 'Antigua and Barbuda'), ('ar', 'Argentina'), ('am', 'Armenia'), ('aw', 'Aruba'), ('au', 'Australia'), ('at', 'Austria'), ('az', 'Azerbaijan'), ('bs', 'Bahamas'), ('bh', 'Bahrain'), ('bd', 'Bangladesh'), ('bb', 'Barbados'), ('by', 'Belarus'), ('be', 'Belgium'), ('bz', 'Belize'), ('bj', 'Benin'), ('bm', 'Bermuda'), ('bt', 'Bhutan'), ('bo', 'Bolivia, Plurinational State of'), ('bq', 'Bonaire, Sint Eustatius and Saba'), ('ba', 'Bosnia and Herzegovina'), ('bw', 'Botswana'), ('bv', 'Bouvet Island'), ('br', 'Brazil'), ('io', 'British Indian Ocean Territory'), ('bn', 'Brunei Darussalam'), ('bg', 'Bulgaria'), ('bf', 'Burkina Faso'), ('bi', 'Burundi'), ('kh', 'Cambodia'), ('cm', 'Cameroon'), ('ca', 'Canada'), ('cv', 'Cape Verde'), ('ky', 'Cayman Islands'), ('cf', 'Central African Republic'), ('td', 'Chad'), ('cl', 'Chile'), ('cn', 'China'), ('cx', 'Christmas Island'), ('cc', 'Cocos (keeling) Islands'), ('co', 'Colombia'), ('km', 'Comoros'), ('cg', 'Congo'), ('cd', 'Congo, The Democratic Republic of the'), ('ck', 'Cook Islands'), ('cr', 'Costa Rica'), ('ci', "C\xf4te D'ivoire"), ('hr', 'Croatia'), ('cu', 'Cuba'), ('cw', 'Cura\xe7ao'), ('cy', 'Cyprus'), ('cz', 'Czech Republic'), ('dk', 'Denmark'), ('dj', 'Djibouti'), ('dm', 'Dominica'), ('do', 'Dominican Republic'), ('ec', 'Ecuador'), ('eg', 'Egypt'), ('sv', 'El Salvador'), ('gq', 'Equatorial Guinea'), ('er', 'Eritrea'), ('ee', 'Estonia'), ('et', 'Ethiopia'), ('fk', 'Falkland Islands (Malvinas)'), ('fo', 'Faroe Islands'), ('fj', 'Fiji'), ('fi', 'Finland'), ('fr', 'France'), ('gf', 'French Guiana'), ('pf', 'French Polynesia'), ('tf', 'French Southern Territories'), ('ga', 'Gabon'), ('gm', 'Gambia'), ('ge', 'Georgia'), ('de', 'Germany'), ('gh', 'Ghana'), ('gi', 'Gibraltar'), ('gr', 'Greece'), ('gl', 'Greenland'), ('gd', 'Grenada'), ('gp', 'Guadeloupe'), ('gu', 'Guam'), ('gt', 'Guatemala'), ('gg', 'Guernsey'), ('gn', 'Guinea'), ('gw', 'Guinea-bissau'), ('gy', 'Guyana'), ('ht', 'Haiti'), ('hm', 'Heard Island and Mcdonald Islands'), ('va', 'Holy See (Vatican City State)'), ('hn', 'Honduras'), ('hk', 'Hong Kong'), ('hu', 'Hungary'), ('is', 'Iceland'), ('in', 'India'), ('id', 'Indonesia'), ('ir', 'Iran, Islamic Republic of'), ('iq', 'Iraq'), ('ie', 'Ireland'), ('im', 'Isle of Man'), ('il', 'Israel'), ('it', 'Italy'), ('jm', 'Jamaica'), ('jp', 'Japan'), ('je', 'Jersey'), ('jo', 'Jordan'), ('kz', 'Kazakhstan'), ('ke', 'Kenya'), ('ki', 'Kiribati'), ('kp', "Korea, Democratic People's Republic of"), ('kr', 'Korea, Republic of'), ('xk', 'Kosovo'), ('kw', 'Kuwait'), ('kg', 'Kyrgyzstan'), ('la', "Lao People's Democratic Republic"), ('lv', 'Latvia'), ('lb', 'Lebanon'), ('ls', 'Lesotho'), ('lr', 'Liberia'), ('ly', 'Libyan Arab Jamahiriya'), ('li', 'Liechtenstein'), ('lt', 'Lithuania'), ('lu', 'Luxembourg'), ('mo', 'Macao'), ('mk', 'Macedonia, The Former Yugoslav Republic of'), ('mg', 'Madagascar'), ('mw', 'Malawi'), ('my', 'Malaysia'), ('mv', 'Maldives'), ('ml', 'Mali'), ('mt', 'Malta'), ('mh', 'Marshall Islands'), ('mq', 'Martinique'), ('mr', 'Mauritania'), ('mu', 'Mauritius'), ('yt', 'Mayotte'), ('mx', 'Mexico'), ('fm', 'Micronesia, Federated States of'), ('md', 'Moldova, Republic of'), ('mc', 'Monaco'), ('mn', 'Mongolia'), ('me', 'Montenegro'), ('ms', 'Montserrat'), ('ma', 'Morocco'), ('mz', 'Mozambique'), ('mm', 'Myanmar'), ('na', 'Namibia'), ('nr', 'Nauru'), ('np', 'Nepal'), ('nl', 'Netherlands'), ('nc', 'New Caledonia'), ('nz', 'New Zealand'), ('ni', 'Nicaragua'), ('ne', 'Niger'), ('ng', 'Nigeria'), ('nu', 'Niue'), ('nf', 'Norfolk Island'), ('mp', 'Northern Mariana Islands'), ('no', 'Norway'), ('om', 'Oman'), ('pk', 'Pakistan'), ('pw', 'Palau'), ('ps', 'Palestine, State of'), ('pa', 'Panama'), ('pg', 'Papua New Guinea'), ('py', 'Paraguay'), ('pe', 'Peru'), ('ph', 'Philippines'), ('pn', 'Pitcairn'), ('pl', 'Poland'), ('pt', 'Portugal'), ('pr', 'Puerto Rico'), ('qa', 'Qatar'), ('re', 'R\xe9union'), ('ro', 'Romania'), ('ru', 'Russian Federation'), ('rw', 'Rwanda'), ('bl', 'Saint Barth\xe9lemy'), ('sh', 'Saint Helena, Ascension and Tristan Da Cunha'), ('kn', 'Saint Kitts and Nevis'), ('lc', 'Saint Lucia'), ('mf', 'Saint Martin (French part)'), ('pm', 'Saint Pierre and Miquelon'), ('vc', 'Saint Vincent and the Grenadines'), ('ws', 'Samoa'), ('sm', 'San Marino'), ('st', 'Sao Tome and Principe'), ('sa', 'Saudi Arabia'), ('sn', 'Senegal'), ('rs', 'Serbia'), ('sc', 'Seychelles'), ('sl', 'Sierra Leone'), ('sg', 'Singapore'), ('sx', 'Sint Maarten (Dutch part)'), ('sk', 'Slovakia'), ('si', 'Slovenia'), ('sb', 'Solomon Islands'), ('so', 'Somalia'), ('za', 'South Africa'), ('gs', 'South Georgia and the South Sandwich Islands'), ('ss', 'South Sudan'), ('es', 'Spain'), ('lk', 'Sri Lanka'), ('sd', 'Sudan'), ('sr', 'Suriname'), ('sj', 'Svalbard and Jan Mayen'), ('sz', 'Swaziland'), ('se', 'Sweden'), ('ch', 'Switzerland'), ('sy', 'Syrian Arab Republic'), ('tw', 'Taiwan, Province of China'), ('tj', 'Tajikistan'), ('tz', 'Tanzania, United Republic of'), ('th', 'Thailand'), ('tl', 'Timor-leste'), ('tg', 'Togo'), ('tk', 'Tokelau'), ('to', 'Tonga'), ('tt', 'Trinidad and Tobago'), ('tn', 'Tunisia'), ('tr', 'Turkey'), ('tm', 'Turkmenistan'), ('tc', 'Turks and Caicos Islands'), ('tv', 'Tuvalu'), ('ug', 'Uganda'), ('ua', 'Ukraine'), ('ae', 'United Arab Emirates'), ('gb', 'United Kingdom'), ('us', 'United States'), ('um', 'United States Minor Outlying Islands'), ('uy', 'Uruguay'), ('uz', 'Uzbekistan'), ('vu', 'Vanuatu'), ('ve', 'Venezuela, Bolivarian Republic of'), ('vn', 'Vietnam'), ('vg', 'Virgin Islands, British'), ('vi', 'Virgin Islands, U.S.'), ('wf', 'Wallis and Futuna'), ('eh', 'Western Sahara'), ('ye', 'Yemen'), ('zm', 'Zambia'), ('zw', 'Zimbabwe')])),
+                ('continent', akvo.rsr.fields.ValidXMLCharField(max_length=20, verbose_name='continent name', db_index=True)),
+                ('continent_code', akvo.rsr.fields.ValidXMLCharField(db_index=True, max_length=2, verbose_name='continent code', choices=[('af', 'Africa'), ('as', 'Asia'), ('eu', 'Europe'), ('na', 'North America'), ('sa', 'South America'), ('oc', 'Oceania'), ('an', 'Antarctica')])),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'country',
+                'verbose_name_plural': 'countries',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CountryBudgetItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', akvo.rsr.fields.ValidXMLCharField(max_length=6, verbose_name='budget item', blank=True)),
+                ('description', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='description', blank=True)),
+                ('vocabulary', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='country budget vocabulary', blank=True)),
+                ('percentage', models.DecimalField(decimal_places=1, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], max_digits=4, blank=True, null=True, verbose_name='percentage')),
+            ],
+            options={
+                'verbose_name': 'country budget item',
+                'verbose_name_plural': 'country budget items',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Employment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_approved', models.BooleanField(default=False, help_text='Designates whether this employment is approved by an administrator.', verbose_name='approved')),
+                ('job_title', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='job title', blank=True)),
+                ('country', models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True)),
+                ('group', models.ForeignKey(related_query_name=b'employment', related_name='employments', on_delete=django.db.models.deletion.SET_NULL, verbose_name='group', to='auth.Group', help_text="The permissions group for this user's employment.", null=True)),
+            ],
+            options={
+                'verbose_name': 'user employment',
+                'verbose_name_plural': 'user employments',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='FocusArea',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(help_text='The name of the focus area. This will show as the title of the focus area project listing page. (30 characters).', max_length=50, verbose_name='focus area name')),
+                ('slug', models.SlugField(help_text='Enter the "slug" i.e. a short word or hyphenated-words. This will be used in the URL of the focus area project listing page. (20 characters, only lower case letters, numbers, hyphen and underscore allowed.).', verbose_name='slug')),
+                ('description', akvo.rsr.fields.ValidXMLTextField(help_text='Enter the text that will appear on the focus area project listing page. (500 characters).', max_length=500, verbose_name='description')),
+                ('image', sorl.thumbnail.fields.ImageField(help_text='The image that will appear on the focus area project listing page.', upload_to=akvo.rsr.models.focus_area.image_path, verbose_name='focus area image')),
+                ('link_to', models.URLField(help_text='Where the link in the accordion for the focus area points if other than the focus area project listing.', verbose_name='accordion link', blank=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'focus area',
+                'verbose_name_plural': 'focus areas',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Goal',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters)', max_length=100, verbose_name='goal', blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Indicator',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the title for the indicator from the project result. (255 characters)', max_length=255, verbose_name='title', blank=True)),
+                ('measure', akvo.rsr.fields.ValidXMLCharField(help_text='Select whether the indicator counts units or evaluates a percentage.', max_length=1, verbose_name='measure', blank=True)),
+                ('ascending', models.NullBooleanField(help_text='Is the aim of the project to increase or decrease the value of the indicator?', verbose_name='ascending')),
+                ('description', akvo.rsr.fields.ValidXMLCharField(help_text='You can further define the indicator here. (255 characters)', max_length=255, verbose_name='description', blank=True)),
+                ('description_type', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='description type', blank=True)),
+                ('baseline_year', models.PositiveIntegerField(help_text='Enter the year that the baseline information was obtained.', max_length=4, null=True, verbose_name='baseline year', blank=True)),
+                ('baseline_value', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the value of the baseline indicator. (50 characters)', max_length=50, verbose_name='baseline value', blank=True)),
+                ('baseline_comment', akvo.rsr.fields.ValidXMLCharField(help_text='You can further define the baseline here. (255 characters)', max_length=255, verbose_name='baseline comment', blank=True)),
+            ],
+            options={
+                'verbose_name': 'indicator',
+                'verbose_name_plural': 'indicators',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='IndicatorPeriod',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('period_start', models.DateField(help_text='Enter the start date of the period the indicator is being tracked within.', null=True, verbose_name='period start', blank=True)),
+                ('period_end', models.DateField(help_text='Enter the end date of the period the indicator is being tracked within.', null=True, verbose_name='period end', blank=True)),
+                ('target_value', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the value of the indicator that the project is intending to reach. (50 characters)', max_length=50, verbose_name='target value', blank=True)),
+                ('target_comment', akvo.rsr.fields.ValidXMLCharField(help_text='You can comment on the target value here. (255 characters)', max_length=255, verbose_name='target comment', blank=True)),
+                ('actual_value', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the value of the indicator that the project has reached. (50 characters)', max_length=50, verbose_name='actual value', blank=True)),
+                ('actual_comment', akvo.rsr.fields.ValidXMLCharField(help_text='You can comment on the actual value here. (255 characters)', max_length=255, verbose_name='actual comment', blank=True)),
+                ('indicator', models.ForeignKey(related_name='periods', verbose_name='indicator', to='rsr.Indicator')),
+            ],
+            options={
+                'verbose_name': 'indicator period',
+                'verbose_name_plural': 'indicator periods',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='InternalOrganisationID',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('identifier', akvo.rsr.fields.ValidXMLCharField(max_length=200, verbose_name='internal ID of referenced organisation')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Invoice',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('test', models.BooleanField(default=False, help_text='This flag is set if the donation was made in test mode.', verbose_name='test donation')),
+                ('engine', akvo.rsr.fields.ValidXMLCharField(default=b'paypal', max_length=10, verbose_name='payment engine', choices=[(b'paypal', 'PayPal'), (b'ideal', 'iDEAL')])),
+                ('amount', models.PositiveIntegerField(help_text='Amount requested by user.')),
+                ('amount_received', models.DecimalField(help_text='Amount actually received after charges have been applied.', null=True, max_digits=10, decimal_places=2, blank=True)),
+                ('time', models.DateTimeField(auto_now_add=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(max_length=75, null=True, blank=True)),
+                ('email', models.EmailField(max_length=75, null=True, blank=True)),
+                ('status', models.PositiveSmallIntegerField(default=1, verbose_name=b'status', choices=[(1, b'Pending'), (2, b'Void'), (3, b'Complete'), (4, b'Stale')])),
+                ('http_referer', akvo.rsr.fields.ValidXMLCharField(max_length=255, verbose_name='HTTP referer', blank=True)),
+                ('campaign_code', akvo.rsr.fields.ValidXMLCharField(max_length=15, verbose_name='Campaign code', blank=True)),
+                ('is_anonymous', models.BooleanField(default=False, verbose_name='anonymous donation')),
+                ('ipn', akvo.rsr.fields.ValidXMLCharField(max_length=75, null=True, verbose_name='PayPal IPN', blank=True)),
+                ('bank', akvo.rsr.fields.ValidXMLCharField(blank=True, max_length=4, verbose_name='mollie.nl bank ID', choices=[(b'', 'Please select your bank'), (b'0031', b'ABN AMRO'), (b'0761', b'ASN Bank'), (b'0081', b'Fortis'), (b'0091', b'Friesland Bank'), (b'0721', b'ING/Postbank'), (b'0021', b'Rabobank'), (b'0751', b'SNS Bank'), (b'0771', b'SNS Regio Bank'), (b'0511', b'Triodos Bank')])),
+                ('transaction_id', akvo.rsr.fields.ValidXMLCharField(max_length=100, verbose_name='mollie.nl transaction ID', blank=True)),
+                ('notes', akvo.rsr.fields.ValidXMLTextField(default=b'', verbose_name='Notes and comments', blank=True)),
+            ],
+            options={
+                'ordering': ['-id'],
+                'verbose_name': 'invoice',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Keyword',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('label', akvo.rsr.fields.ValidXMLCharField(unique=True, max_length=30, verbose_name='label', db_index=True)),
+            ],
+            options={
+                'ordering': ('label',),
+                'verbose_name': 'keyword',
+                'verbose_name_plural': 'keywords',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='LegacyData',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters).', max_length=100, verbose_name='name', blank=True)),
+                ('value', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters).', max_length=100, verbose_name='value', blank=True)),
+                ('iati_equivalent', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters).', max_length=100, verbose_name='iati equivalent', blank=True)),
+            ],
+            options={
+                'verbose_name': 'legacy data',
+                'verbose_name_plural': 'legacy data',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Link',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('kind', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='kind', choices=[(b'A', 'Akvopedia entry'), (b'E', 'External link')])),
+                ('url', models.URLField(verbose_name='URL')),
+                ('caption', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='caption')),
+            ],
+            options={
+                'verbose_name': 'link',
+                'verbose_name_plural': 'links',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='MollieGateway',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(help_text='Use a short, descriptive name.', max_length=255)),
+                ('description', akvo.rsr.fields.ValidXMLTextField(blank=True)),
+                ('currency', akvo.rsr.fields.ValidXMLCharField(default=b'EUR', max_length=3, choices=[(b'USD', b'$'), (b'EUR', b'\xe2\x82\xac')])),
+                ('notification_email', models.EmailField(help_text='When a donation is completed successfully, notification emails will be sent to the donor and to this address.', max_length=75, verbose_name='notification email')),
+                ('partner_id', akvo.rsr.fields.ValidXMLCharField(max_length=10)),
+            ],
+            options={
+                'verbose_name': 'Mollie/iDEAL gateway',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Organisation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
+                ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(help_text='Short name which will appear in organisation and partner listings (25 characters).', max_length=25, verbose_name='name', db_index=True)),
+                ('long_name', akvo.rsr.fields.ValidXMLCharField(help_text='Full name of organisation (75 characters).', max_length=75, verbose_name='long name', blank=True)),
+                ('language', akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The main language of the organisation', max_length=2, choices=[(b'de', b'German'), (b'en', b'English'), (b'nl', b'Dutch'), (b'es', b'Spanish'), (b'fr', b'French'), (b'ru', b'Russian')])),
+                ('organisation_type', akvo.rsr.fields.ValidXMLCharField(db_index=True, max_length=1, verbose_name='organisation type', choices=[(b'N', 'NGO'), (b'G', 'Governmental'), (b'C', 'Commercial'), (b'K', 'Knowledge institution')])),
+                ('new_organisation_type', models.IntegerField(default=22, help_text='Check that this field is set to an organisation type that matches your organisation.', db_index=True, verbose_name='IATI organisation type', choices=[(10, 'Government'), (15, 'Other Public Sector'), (21, 'International NGO'), (22, 'National NGO'), (23, 'Regional NGO'), (30, 'Public Private Partnership'), (40, 'Multilateral'), (60, 'Foundation'), (70, 'Private Sector'), (80, 'Academic, Training and Research')])),
+                ('iati_org_id', akvo.rsr.fields.ValidXMLCharField(null=True, max_length=75, blank=True, unique=True, verbose_name='IATI organisation ID', db_index=True)),
+                ('logo', sorl.thumbnail.fields.ImageField(help_text='Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.', upload_to=akvo.rsr.models.organisation.image_path, verbose_name='logo', blank=True)),
+                ('url', models.URLField(help_text='Enter the full address of your web site, beginning with http://.', blank=True)),
+                ('facebook', models.URLField(help_text='Enter the full address of your Facebook page, beginning with http://.', blank=True)),
+                ('twitter', models.URLField(help_text='Enter the full address of your Twitter feed, beginning with http://.', blank=True)),
+                ('linkedin', models.URLField(help_text='Enter the full address of your LinkedIn page, beginning with http://.', blank=True)),
+                ('phone', akvo.rsr.fields.ValidXMLCharField(help_text='(20 characters).', max_length=20, verbose_name='phone', blank=True)),
+                ('mobile', akvo.rsr.fields.ValidXMLCharField(help_text='(20 characters).', max_length=20, verbose_name='mobile', blank=True)),
+                ('fax', akvo.rsr.fields.ValidXMLCharField(help_text='(20 characters).', max_length=20, verbose_name='fax', blank=True)),
+                ('contact_person', akvo.rsr.fields.ValidXMLCharField(help_text='Name of external contact person for your organisation (30 characters).', max_length=30, verbose_name='contact person', blank=True)),
+                ('contact_email', akvo.rsr.fields.ValidXMLCharField(help_text='Email to which inquiries about your organisation should be sent (50 characters).', max_length=50, verbose_name='contact email', blank=True)),
+                ('description', akvo.rsr.fields.ValidXMLTextField(help_text='Describe your organisation.', verbose_name='description', blank=True)),
+                ('notes', akvo.rsr.fields.ValidXMLTextField(default=b'', verbose_name='Notes and comments', blank=True)),
+                ('allow_edit', models.BooleanField(default=True, help_text='When manual edits are disallowed, partner admins and editors of other organisations are also not allowed to edit these projects.', verbose_name='Partner editors of this organisation are allowed to manually edit projects where this organisation is support partner')),
+            ],
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'organisation',
+                'verbose_name_plural': 'organisations',
+                'permissions': (('user_management', 'Can manage users'),),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OrganisationAccount',
+            fields=[
+                ('organisation', models.OneToOneField(primary_key=True, serialize=False, to='rsr.Organisation', verbose_name='organisation')),
+                ('account_level', akvo.rsr.fields.ValidXMLCharField(default=b'archived', max_length=12, verbose_name='account level', choices=[(b'archived', 'Free'), (b'freemium', 'Freemium'), (b'premium', 'Premium'), (b'plus', 'Premium Plus'), (b'archived', 'Archived')])),
+            ],
+            options={
+                'verbose_name': 'organisation account',
+                'verbose_name_plural': 'organisation accounts',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OrganisationLocation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('latitude', akvo.rsr.fields.LatitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", verbose_name='latitude', db_index=True)),
+                ('longitude', akvo.rsr.fields.LongitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", verbose_name='longitude', db_index=True)),
+                ('city', akvo.rsr.fields.ValidXMLCharField(help_text='Select the city. (255 characters)', max_length=255, verbose_name='city', blank=True)),
+                ('state', akvo.rsr.fields.ValidXMLCharField(help_text='Select the state. (255 characters)', max_length=255, verbose_name='state', blank=True)),
+                ('address_1', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the street and house number. (255 characters)', max_length=255, verbose_name='address 1', blank=True)),
+                ('address_2', akvo.rsr.fields.ValidXMLCharField(help_text='Add additional address information, if needed. (255 characters)', max_length=255, verbose_name='address 2', blank=True)),
+                ('postcode', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the postal/area code. (10 characters)', max_length=10, verbose_name='postal code', blank=True)),
+                ('country', models.ForeignKey(verbose_name='country', to='rsr.Country')),
+                ('location_target', models.ForeignKey(related_name='locations', to='rsr.Organisation', null=True)),
+            ],
+            options={
+                'ordering': ['id'],
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Partnership',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('partner_type', akvo.rsr.fields.ValidXMLCharField(help_text='Select the role that the organisation is taking within the project.', max_length=8, verbose_name='partner type', db_index=True, choices=[('field', 'Field partner'), ('funding', 'Funding partner'), ('sponsor', 'Sponsor partner'), ('support', 'Support partner')])),
+                ('funding_amount', models.DecimalField(decimal_places=2, max_digits=10, blank=True, help_text="The funding amount of the partner.<br>Note that it's only possible to indicate a funding amount for funding partners.", null=True, verbose_name='funding amount', db_index=True)),
+                ('partner_type_extra', akvo.rsr.fields.ValidXMLCharField(choices=[('alliance', 'Alliance'), ('knowledge', 'Knowledge'), ('network', 'Network')], max_length=30, blank=True, help_text='RSR specific partner type.', null=True, verbose_name='partner type extra')),
+                ('iati_activity_id', akvo.rsr.fields.ValidXMLCharField(db_index=True, max_length=75, null=True, verbose_name='IATI activity ID', blank=True)),
+                ('internal_id', akvo.rsr.fields.ValidXMLCharField(max_length=75, blank=True, help_text='This field can be used to indicate an internal identifier that is used by the organisation for this project. (75 characters)', null=True, verbose_name='Internal ID', db_index=True)),
+                ('iati_url', models.URLField(help_text='Please enter the URL for where the IATI Activity Id Funding details are published. For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. For other projects, an alternative URL can be used.', blank=True)),
+                ('related_activity_id', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='related IATI activity ID', blank=True)),
+                ('organisation', models.ForeignKey(related_name='partnerships', verbose_name='organisation', to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.')),
+            ],
+            options={
+                'ordering': ['partner_type'],
+                'verbose_name': 'project partner',
+                'verbose_name_plural': 'project partners',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PartnerSite',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
+                ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
+                ('notes', akvo.rsr.fields.ValidXMLTextField(default=b'', verbose_name='Akvo partner site notes', blank=True)),
+                ('hostname', akvo.rsr.fields.ValidXMLCharField(help_text='<p>Your hostname is used in the default web address of your partner site. The web address created from  the hostname <em>myorganisation</em> would be <em>http://myorganisation.akvoapp.org/</em>.</p>', unique=True, max_length=50, verbose_name='hostname')),
+                ('cname', akvo.rsr.fields.NullCharField(null=True, max_length=100, blank=True, help_text='<p>Enter a custom domain name for accessing the partner site, for example <i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>', unique=True, verbose_name='CNAME')),
+                ('custom_return_url', models.URLField(help_text='<p>Enter the full URL (including http://) for the page to which users should be returned when leaving the partner site.</p>', verbose_name='Return URL', blank=True)),
+                ('custom_return_url_text', akvo.rsr.fields.ValidXMLCharField(default=b'', help_text='<p>Enter a text for the back button and return URL. Leave empty to display "Back to <em>myorganisation</em>".</p>', max_length=50, verbose_name='Return URL text', blank=True)),
+                ('piwik_id', models.PositiveIntegerField(null=True, verbose_name='Piwik analytics ID', blank=True)),
+                ('custom_css', models.FileField(upload_to=akvo.rsr.models.partner_site.custom_css_path, verbose_name='stylesheet', blank=True)),
+                ('custom_logo', models.FileField(help_text='<p>Upload a logo file for the logo at the top of the partner site page. By default logo of the organisation belonging to the Akvo Page will be displayed.</p>', upload_to=akvo.rsr.models.partner_site.custom_logo_path, verbose_name='organisation banner logo', blank=True)),
+                ('custom_favicon', models.FileField(help_text="<p>A favicon (.ico file) is the 16x16 pixel image shown inside the browser's location bar, on tabs and in the bookmark menu.</p>", upload_to=akvo.rsr.models.partner_site.custom_favicon_path, verbose_name='favicon', blank=True)),
+                ('about_box', akvo.rsr.fields.ValidXMLTextField(help_text='Enter HTML that will make up the top left box of the home page. (500 characters)<p>    Any text added should be wrapped in 2 &lt;div&gt; tags, an outer one specifying position and width    of the text, and an inner for formatting of the text .</p><p>    The Outer &lt;div&gt; tag can use the classes <code>quarter, half, three_quarters and full</code> to    specify the    width of the text. It can use the classes <code>bottom</code> and <code>right</code> to specify a     position other than top left.</p><p>    The Inner &lt;div&gt; tag can use the class <code>text_bg</code> to create a semi-transparent text    background if a background image will be uploaded. Any other inline styles can also be used within     the inner &lt;div&gt;. The tags &lt;h1&gt;, &lt;h3&gt;, &lt;h5&gt; and &lt;a&gt; are blue, while    &lt;p&gt; tags are black by default. Use the classes <code>first</code> and <code>last</code> with     &lt;p&gt; tags to reduce the margins above or below respectively.</p><p>    Add additional styling inline, or upload a .css stylesheet in the Stylesheet setting above.    <em>Tip:</em> When using a .css file, use the #about_box ID selector to apply a style only to    the About box.</p>', max_length=500, verbose_name='about box text', blank=True)),
+                ('about_image', models.ImageField(help_text='<p>The optional background image for the About box <em>must</em> be 470 pixels wide and 250 pixels tall.</p>', upload_to=akvo.rsr.models.partner_site.about_image_path, verbose_name='about box image', blank=True)),
+                ('enabled', models.BooleanField(default=True, verbose_name='enabled')),
+                ('default_language', akvo.rsr.fields.ValidXMLCharField(default=b'en', max_length=5, verbose_name='Site UI default language', choices=[(b'de', b'German'), (b'en', b'English'), (b'nl', b'Dutch'), (b'es', b'Spanish'), (b'fr', b'French'), (b'ru', b'Russian')])),
+                ('ui_translation', models.BooleanField(default=False, verbose_name='Translate user interface')),
+                ('google_translation', models.BooleanField(default=False, verbose_name='Google translation widget')),
+                ('facebook_button', models.BooleanField(default=False, verbose_name='Facebook share button')),
+                ('twitter_button', models.BooleanField(default=False, verbose_name='Twitter share button')),
+                ('facebook_app_id', akvo.rsr.fields.ValidXMLCharField(help_text='<p>Your FaceBook app id is used when sharing pages from your partner site. It can be obtained by creating a Facebook app, which will let you monitor when your pages are referenced. Follow the instructions <a href="http://help.yahoo.com/l/us/yahoo/smallbusiness/store/edit/social/social-06.html">here</a>', max_length=40, null=True, verbose_name='Facebook App Id', blank=True)),
+                ('partner_projects', models.BooleanField(default=True, help_text='Uncheck to list all projects on this partnersite.', verbose_name='Show only projects of partner')),
+                ('exclude_keywords', models.BooleanField(default=False, verbose_name='Exclude projects with selected keyword(s)')),
+                ('keywords', models.ManyToManyField(related_name='partnersites', verbose_name='keywords', to='rsr.Keyword', blank=True)),
+                ('organisation', models.ForeignKey(verbose_name='organisation', to='rsr.Organisation', help_text='Select your organisation from the drop-down list.')),
+            ],
+            options={
+                'ordering': ('organisation__name',),
+                'verbose_name': 'partner site',
+                'verbose_name_plural': 'partner sites',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PartnerType',
+            fields=[
+                ('id', akvo.rsr.fields.ValidXMLCharField(max_length=8, unique=True, serialize=False, primary_key=True)),
+                ('label', akvo.rsr.fields.ValidXMLCharField(unique=True, max_length=30)),
+            ],
+            options={
+                'ordering': ('label',),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PaymentGatewaySelector',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('mollie_gateway', models.ForeignKey(default=1, to='rsr.MollieGateway')),
+            ],
+            options={
+                'verbose_name': 'Project payment gateway configuration',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PayPalGateway',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(help_text='Use a short, descriptive name.', max_length=255)),
+                ('description', akvo.rsr.fields.ValidXMLTextField(blank=True)),
+                ('currency', akvo.rsr.fields.ValidXMLCharField(default=b'EUR', max_length=3, choices=[(b'USD', b'$'), (b'EUR', b'\xe2\x82\xac')])),
+                ('notification_email', models.EmailField(help_text='When a donation is completed successfully, notification emails will be sent to the donor and to this address.', max_length=75, verbose_name='notification email')),
+                ('account_email', models.EmailField(max_length=75)),
+                ('locale', akvo.rsr.fields.ValidXMLCharField(default=b'US', max_length=2, choices=[(b'US', 'US English')])),
+            ],
+            options={
+                'verbose_name': 'PayPal gateway',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PlannedDisbursement',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.DecimalField(verbose_name='value', max_digits=10, decimal_places=2, blank=True)),
+                ('value_date', models.DateField(null=True, verbose_name='value date', blank=True)),
+                ('currency', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='currency', blank=True)),
+                ('updated', models.DateField(null=True, verbose_name='updated', blank=True)),
+                ('period_start', models.DateField(null=True, verbose_name='period start', blank=True)),
+                ('period_end', models.DateField(null=True, verbose_name='period end', blank=True)),
+                ('type', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='type', blank=True)),
+            ],
+            options={
+                'verbose_name': 'planned disbursement',
+                'verbose_name_plural': 'planned disbursements',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PolicyMarker',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('policy_marker', akvo.rsr.fields.ValidXMLCharField(max_length=2, verbose_name='policy marker', blank=True)),
+                ('significance', akvo.rsr.fields.ValidXMLCharField(max_length=2, verbose_name='significance', blank=True)),
+                ('vocabulary', akvo.rsr.fields.ValidXMLCharField(max_length=5, verbose_name='vocabulary', blank=True)),
+                ('description', akvo.rsr.fields.ValidXMLCharField(help_text='(max 255 characters)', max_length=255, verbose_name='description', blank=True)),
+            ],
+            options={
+                'verbose_name': 'policy marker',
+                'verbose_name_plural': 'policy markers',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Project',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
+                ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
+                ('title', akvo.rsr.fields.ValidXMLCharField(help_text='The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)', max_length=45, verbose_name='title', db_index=True)),
+                ('subtitle', akvo.rsr.fields.ValidXMLCharField(help_text='The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)', max_length=75, verbose_name='subtitle')),
+                ('status', akvo.rsr.fields.ValidXMLCharField(default=b'N', choices=[(b'N', 'None'), (b'H', 'Needs funding'), (b'A', 'Active'), (b'C', 'Complete'), (b'L', 'Cancelled'), (b'R', 'Archived')], max_length=1, help_text='There are four different project statuses:<br>1) Needs funding: projects that still need funding.<br>2) Active: projects that started with the implementation phase.<br>3) Completed: projects that have been finished.<br>4) Cancelled: projects that were never fully implemented or carried out.', verbose_name='status', db_index=True)),
+                ('project_plan_summary', akvo.rsr.fields.ProjectLimitedTextField(help_text='Enter a brief summary. The summary should explain: (400 characters)<br>- Why the project is being carried out;<br>- Where it is taking place;<br>- Who will benefit and/or participate;<br>- What it specifically hopes to accomplish;<br>- How those specific goals will be reached', verbose_name='summary of project plan')),
+                ('current_image', sorl.thumbnail.fields.ImageField(help_text='Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published.<br>The photo should be about 1 MB in size, and should preferably be in JPG format.', upload_to=akvo.rsr.models.project.image_path, verbose_name='project photo', blank=True)),
+                ('current_image_caption', akvo.rsr.fields.ValidXMLCharField(help_text='Briefly describe what is happening in the photo. (50 characters)', max_length=50, verbose_name='photo caption', blank=True)),
+                ('current_image_credit', akvo.rsr.fields.ValidXMLCharField(help_text='Who took the photo? (50 characters)', max_length=50, verbose_name='photo credit', blank=True)),
+                ('goals_overview', akvo.rsr.fields.ProjectLimitedTextField(help_text='Provide a brief description of the overall project goals. (600 characters)', verbose_name='goals overview')),
+                ('current_status', akvo.rsr.fields.ProjectLimitedTextField(help_text='Describe the current situation of the project: (600 characters)<br>- What is the starting point of the project?<br>- What is happening at the moment?', verbose_name='current situation', blank=True)),
+                ('project_plan', akvo.rsr.fields.ValidXMLTextField(help_text='This should include detailed information about the project and plans for implementing: the what, how, who and when. (unlimited)', verbose_name='project plan', blank=True)),
+                ('sustainability', akvo.rsr.fields.ValidXMLTextField(help_text='Describe plans for sustaining/maintaining results after implementation is complete. (unlimited)', verbose_name='sustainability')),
+                ('background', akvo.rsr.fields.ProjectLimitedTextField(help_text='Include relevant background information, including geographic, political, environmental, social and/or cultural issues. (1000 characters)', verbose_name='background', blank=True)),
+                ('target_group', akvo.rsr.fields.ProjectLimitedTextField(help_text='This should include information about the people, organisations or resources that are being impacted by this project. (600 characters)', verbose_name='target group', blank=True)),
+                ('language', akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The main language of the project.', max_length=2, choices=[(b'de', b'German'), (b'en', b'English'), (b'nl', b'Dutch'), (b'es', b'Spanish'), (b'fr', b'French'), (b'ru', b'Russian')])),
+                ('project_rating', models.IntegerField(default=0, verbose_name='project rating')),
+                ('notes', akvo.rsr.fields.ValidXMLTextField(default=b'', help_text='(Unlimited number of characters).', verbose_name='notes', blank=True)),
+                ('currency', akvo.rsr.fields.ValidXMLCharField(default=b'EUR', help_text='The default currency for this project. Used in all financial aspects of the project.', max_length=3, verbose_name='currency', choices=[(b'USD', b'$'), (b'EUR', b'\xe2\x82\xac')])),
+                ('date_start_planned', models.DateField(help_text='Enter the planned start date of the project.', null=True, verbose_name='start date (planned)', blank=True)),
+                ('date_start_actual', models.DateField(help_text='Enter the actual start date of the project.', null=True, verbose_name='start date (actual)', blank=True)),
+                ('date_end_planned', models.DateField(help_text='Enter the planned end date of the project.', null=True, verbose_name='end date (planned)', blank=True)),
+                ('date_end_actual', models.DateField(help_text='Enter the actual end date of the project.', null=True, verbose_name='end date (actual)', blank=True)),
+                ('donate_button', models.BooleanField(default=True, help_text='Show donate button for this project. If not selected, it is not possible to donate to this project and the donate button will not be shown.', verbose_name='donate button')),
+                ('sync_owner_secondary_reporter', models.NullBooleanField(help_text='This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.', verbose_name='secondary reporter')),
+                ('iati_activity_id', akvo.rsr.fields.ValidXMLCharField(help_text='This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br>Note that \'projects\' in this form are the same as \'activities\' in IATI.<br><a href="http://iatistandard.org/activity-standard/iati-activities/iati-activity/iati-identifier" target="_blank">How to create</a>', max_length=100, verbose_name='IATI Project Identifier', db_index=True, blank=True)),
+                ('hierarchy', models.PositiveIntegerField(choices=[(1, 'Core Activity'), (2, 'Sub Activity'), (3, 'Lower Sub Activity')], max_length=1, blank=True, help_text='If you are reporting multiple levels of projects in RSR, you can specify whether this is a core or sub-project here.<br>So for example: is this project part of a larger project or programme.', null=True, verbose_name='hierarchy')),
+                ('project_scope', akvo.rsr.fields.ValidXMLCharField(help_text='Select the geographical scope of the project.', max_length=2, verbose_name='project scope', blank=True)),
+                ('capital_spend_percentage', models.DecimalField(decimal_places=1, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], max_digits=4, blank=True, null=True, verbose_name='capital spend percentage')),
+                ('collaboration_type', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='collaboration type', blank=True)),
+                ('default_aid_type', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='default aid type', blank=True)),
+                ('default_finance_type', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='default finance type', blank=True)),
+                ('default_flow_type', akvo.rsr.fields.ValidXMLCharField(max_length=2, verbose_name='default flow type', blank=True)),
+                ('default_tied_status', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='default tied status', blank=True)),
+                ('budget', models.DecimalField(decimal_places=2, default=0, max_digits=10, blank=True, null=True, verbose_name='project budget', db_index=True)),
+                ('funds', models.DecimalField(decimal_places=2, default=0, max_digits=10, blank=True, null=True, db_index=True)),
+                ('funds_needed', models.DecimalField(decimal_places=2, default=0, max_digits=10, blank=True, null=True, db_index=True)),
+                ('categories', models.ManyToManyField(related_name='projects', verbose_name='categories', to='rsr.Category', blank=True)),
+                ('keywords', models.ManyToManyField(related_name='projects', verbose_name='keywords', to='rsr.Keyword', blank=True)),
+            ],
+            options={
+                'ordering': ['-id'],
+                'verbose_name': 'project',
+                'verbose_name_plural': 'projects',
+                'permissions': (('post_updates', 'Can post updates'),),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectComment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
+                ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
+                ('comment', akvo.rsr.fields.ValidXMLTextField(verbose_name='comment')),
+                ('project', models.ForeignKey(related_name='comments', verbose_name='project', to='rsr.Project')),
+                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'ordering': ('-id',),
+                'verbose_name': 'project comment',
+                'verbose_name_plural': 'project comments',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectCondition',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters)', max_length=100, verbose_name='condition', blank=True)),
+                ('type', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='condition type', blank=True)),
+                ('attached', models.NullBooleanField(verbose_name='attached')),
+                ('project', models.ForeignKey(related_name='conditions', verbose_name='project', to='rsr.Project')),
+            ],
+            options={
+                'verbose_name': 'condition',
+                'verbose_name_plural': 'conditions',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectContact',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='type', blank=True)),
+                ('person_name', akvo.rsr.fields.ValidXMLCharField(help_text='This should be a contact person for the project. (100 characters)', max_length=100, verbose_name='name', blank=True)),
+                ('email', models.EmailField(help_text='This should be the email address for the contact person of the project.', max_length=75, verbose_name='email', blank=True)),
+                ('job_title', akvo.rsr.fields.ValidXMLCharField(help_text='Job title of the contact. (100 characters)', max_length=100, verbose_name='job title', blank=True)),
+                ('organisation', akvo.rsr.fields.ValidXMLCharField(help_text='The organisation that the contact person works for - this may differ from the reporting organisation of the project. (100 characters)', max_length=100, verbose_name='organisation', blank=True)),
+                ('telephone', akvo.rsr.fields.ValidXMLCharField(help_text='Contact number for the contact. (30 characters)', max_length=30, verbose_name='telephone', blank=True)),
+                ('mailing_address', akvo.rsr.fields.ValidXMLCharField(help_text='Address of the contact. (255 characters)', max_length=255, verbose_name='address', blank=True)),
+                ('state', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters)', max_length=100, verbose_name='state', blank=True)),
+                ('department', akvo.rsr.fields.ValidXMLCharField(help_text='(100 characters)', max_length=100, verbose_name='department', blank=True)),
+                ('website', models.URLField(verbose_name='website', blank=True)),
+                ('country', models.ForeignKey(related_name='contacts', verbose_name='country', blank=True, to='rsr.Country', null=True)),
+                ('project', models.ForeignKey(related_name='contacts', verbose_name='project', to='rsr.Project')),
+            ],
+            options={
+                'verbose_name': 'contact',
+                'verbose_name_plural': 'contacts',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectDocument',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('url', models.URLField(help_text='You can indicate an URL of a document of the project. These documents will allow users to download and view to gain further insight in the project activities.', verbose_name='url', blank=True)),
+                ('document', models.FileField(help_text="You can upload a document to your project. To upload multiple documents, press the 'Add another Project Document' link.<br>These documents will be stored on the RSR server and will be publicly available for users to download and view to gain further insight in the project activities.", upload_to=akvo.rsr.models.project_document.document_path, verbose_name='document', blank=True)),
+                ('format', akvo.rsr.fields.ValidXMLCharField(help_text='Indicate the IATI format code of the document. <a href="http://iatistandard.org/codelists/FileFormat/" target="_blank">Full list of IATI format codes</a>', max_length=75, verbose_name='format', blank=True)),
+                ('title', akvo.rsr.fields.ValidXMLCharField(help_text='Indicate the document title. (100 characters)', max_length=100, verbose_name='title', blank=True)),
+                ('title_language', akvo.rsr.fields.ValidXMLCharField(help_text='Select the language of the document title.', max_length=2, verbose_name='title language', blank=True)),
+                ('category', akvo.rsr.fields.ValidXMLCharField(help_text='Select a document category.', max_length=3, verbose_name='category', blank=True)),
+                ('language', akvo.rsr.fields.ValidXMLCharField(help_text='Select the language that the document is written in.', max_length=2, verbose_name='language', blank=True)),
+                ('project', models.ForeignKey(related_name='documents', verbose_name='project', to='rsr.Project')),
+            ],
+            options={
+                'ordering': ['-id'],
+                'verbose_name': 'project document',
+                'verbose_name_plural': 'project documents',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectLocation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('latitude', akvo.rsr.fields.LatitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", verbose_name='latitude', db_index=True)),
+                ('longitude', akvo.rsr.fields.LongitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", verbose_name='longitude', db_index=True)),
+                ('city', akvo.rsr.fields.ValidXMLCharField(help_text='Select the city. (255 characters)', max_length=255, verbose_name='city', blank=True)),
+                ('state', akvo.rsr.fields.ValidXMLCharField(help_text='Select the state. (255 characters)', max_length=255, verbose_name='state', blank=True)),
+                ('address_1', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the street and house number. (255 characters)', max_length=255, verbose_name='address 1', blank=True)),
+                ('address_2', akvo.rsr.fields.ValidXMLCharField(help_text='Add additional address information, if needed. (255 characters)', max_length=255, verbose_name='address 2', blank=True)),
+                ('postcode', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the postal/area code. (10 characters)', max_length=10, verbose_name='postal code', blank=True)),
+                ('reference', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='reference', blank=True)),
+                ('location_code', akvo.rsr.fields.ValidXMLCharField(max_length=25, verbose_name='code', blank=True)),
+                ('vocabulary', akvo.rsr.fields.ValidXMLCharField(max_length=2, verbose_name='vocabulary', blank=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(max_length=100, verbose_name='name', blank=True)),
+                ('description', akvo.rsr.fields.ValidXMLCharField(help_text='(max 255 characters)', max_length=255, verbose_name='description', blank=True)),
+                ('activity_description', akvo.rsr.fields.ValidXMLCharField(help_text='(max 255 characters)', max_length=255, verbose_name='activity description', blank=True)),
+                ('administrative_code', akvo.rsr.fields.ValidXMLCharField(max_length=25, verbose_name='administrative code', blank=True)),
+                ('administrative_vocabulary', akvo.rsr.fields.ValidXMLCharField(max_length=2, verbose_name='administrative vocabulary', blank=True)),
+                ('administrative_level', models.PositiveSmallIntegerField(max_length=1, null=True, verbose_name='administrative level', blank=True)),
+                ('exactness', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='exactness', blank=True)),
+                ('location_reach', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='reach', blank=True)),
+                ('location_class', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='class', blank=True)),
+                ('feature_designation', akvo.rsr.fields.ValidXMLCharField(max_length=5, verbose_name='feature designation', blank=True)),
+                ('country', models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='Select the country.')),
+                ('location_target', models.ForeignKey(related_name='locations', to='rsr.Project', null=True)),
+            ],
+            options={
+                'ordering': ['id'],
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectUpdate',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
+                ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
+                ('title', akvo.rsr.fields.ValidXMLCharField(help_text='50 characters', max_length=50, verbose_name='title', db_index=True)),
+                ('text', akvo.rsr.fields.ValidXMLTextField(verbose_name='text', blank=True)),
+                ('language', akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The language of the update', max_length=2, choices=[(b'de', b'German'), (b'en', b'English'), (b'nl', b'Dutch'), (b'es', b'Spanish'), (b'fr', b'French'), (b'ru', b'Russian')])),
+                ('photo', sorl.thumbnail.fields.ImageField(help_text='The image should have 4:3 height:width ratio for best displaying result', upload_to=akvo.rsr.models.project_update.image_path, verbose_name='photo', blank=True)),
+                ('photo_caption', akvo.rsr.fields.ValidXMLCharField(help_text='75 characters', max_length=75, verbose_name='photo caption', blank=True)),
+                ('photo_credit', akvo.rsr.fields.ValidXMLCharField(help_text='25 characters', max_length=25, verbose_name='photo credit', blank=True)),
+                ('video', embed_video.fields.EmbedVideoField(help_text='Supported providers: YouTube and Vimeo', verbose_name='video URL', blank=True)),
+                ('video_caption', akvo.rsr.fields.ValidXMLCharField(help_text='75 characters', max_length=75, verbose_name='video caption', blank=True)),
+                ('video_credit', akvo.rsr.fields.ValidXMLCharField(help_text='25 characters', max_length=25, verbose_name='video credit', blank=True)),
+                ('update_method', akvo.rsr.fields.ValidXMLCharField(default=b'W', choices=[(b'W', 'web'), (b'E', 'e-mail'), (b'S', 'SMS'), (b'M', 'mobile')], max_length=1, blank=True, verbose_name='update method', db_index=True)),
+                ('user_agent', akvo.rsr.fields.ValidXMLCharField(default=b'', max_length=200, verbose_name='user agent', blank=True)),
+                ('uuid', akvo.rsr.fields.ValidXMLCharField(default=b'', max_length=40, blank=True, help_text='Universally unique ID set by creating user agent', verbose_name='uuid', db_index=True)),
+                ('notes', akvo.rsr.fields.ValidXMLTextField(default=b'', verbose_name='Notes and comments', blank=True)),
+            ],
+            options={
+                'ordering': ['-id'],
+                'get_latest_by': 'created_at',
+                'verbose_name': 'project update',
+                'verbose_name_plural': 'project updates',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProjectUpdateLocation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('latitude', akvo.rsr.fields.LatitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", verbose_name='latitude', db_index=True)),
+                ('longitude', akvo.rsr.fields.LongitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", verbose_name='longitude', db_index=True)),
+                ('city', akvo.rsr.fields.ValidXMLCharField(help_text='Select the city. (255 characters)', max_length=255, verbose_name='city', blank=True)),
+                ('state', akvo.rsr.fields.ValidXMLCharField(help_text='Select the state. (255 characters)', max_length=255, verbose_name='state', blank=True)),
+                ('address_1', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the street and house number. (255 characters)', max_length=255, verbose_name='address 1', blank=True)),
+                ('address_2', akvo.rsr.fields.ValidXMLCharField(help_text='Add additional address information, if needed. (255 characters)', max_length=255, verbose_name='address 2', blank=True)),
+                ('postcode', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the postal/area code. (10 characters)', max_length=10, verbose_name='postal code', blank=True)),
+                ('country', models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', null=True)),
+                ('location_target', models.ForeignKey(related_name='locations', to='rsr.ProjectUpdate', null=True)),
+            ],
+            options={
+                'ordering': ['id'],
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PublishingStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('status', akvo.rsr.fields.ValidXMLCharField(default=b'unpublished', max_length=30, db_index=True, choices=[(b'unpublished', 'Unpublished'), (b'published', 'Published')])),
+                ('project', models.OneToOneField(to='rsr.Project')),
+            ],
+            options={
+                'ordering': ('-status', 'project'),
+                'verbose_name': 'publishing status',
+                'verbose_name_plural': 'publishing statuses',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='RecipientCountry',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('country', akvo.rsr.fields.ValidXMLCharField(max_length=2, verbose_name='country', blank=True)),
+                ('percentage', models.DecimalField(decimal_places=1, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], max_digits=4, blank=True, null=True, verbose_name='percentage')),
+                ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 50 characters)', max_length=50, verbose_name='country description', blank=True)),
+                ('project', models.ForeignKey(related_name='recipient_countries', verbose_name='project', to='rsr.Project')),
+            ],
+            options={
+                'verbose_name': 'recipient country',
+                'verbose_name_plural': 'recipient countries',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='RecipientRegion',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('region', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='region', blank=True)),
+                ('region_vocabulary', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='region vocabulary', blank=True)),
+                ('percentage', models.DecimalField(decimal_places=1, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], max_digits=4, blank=True, null=True, verbose_name='percentage')),
+                ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 50 characters)', max_length=50, verbose_name='region description', blank=True)),
+                ('project', models.ForeignKey(related_name='recipient_regions', verbose_name='project', to='rsr.Project')),
+            ],
+            options={
+                'verbose_name': 'recipient region',
+                'verbose_name_plural': 'recipient regions',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='RelatedProject',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('relation', akvo.rsr.fields.ValidXMLCharField(help_text="The relation between a project and related project. (E.g. select the 'Parent' relation when the project is a parent of the related project).", max_length=1, verbose_name='relation')),
+                ('project', models.ForeignKey(related_name='related_projects', to='rsr.Project')),
+                ('related_project', models.ForeignKey(related_name='related_to_projects', to='rsr.Project')),
+            ],
+            options={
+                'ordering': ['project'],
+                'verbose_name': 'related project',
+                'verbose_name_plural': 'related projects',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Result',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the title of the result for this project. (255 characters)', max_length=255, verbose_name='title', blank=True)),
+                ('type', akvo.rsr.fields.ValidXMLCharField(help_text='Select whether the result is an output, outcome or impact. <a href="http://www.tacticalphilanthropy.com/2010/06/outputs-outcomes-impact-oh-my/" target="_blank">Further explanation on result types</a>', max_length=1, verbose_name='type', blank=True)),
+                ('aggregation_status', models.NullBooleanField(verbose_name='aggregation status')),
+                ('description', akvo.rsr.fields.ValidXMLCharField(help_text='You can provide further information of the result here. (255 characters)', max_length=255, verbose_name='description', blank=True)),
+                ('description_type', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='description type', blank=True)),
+                ('project', models.ForeignKey(related_name='results', verbose_name='project', to='rsr.Project')),
+            ],
+            options={
+                'verbose_name': 'result',
+                'verbose_name_plural': 'results',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Sector',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('sector_code', akvo.rsr.fields.ValidXMLCharField(help_text='Enter the sector code of the sectors that the project is working within.<br>See these lists for the DAC-5 and DAC-3 sector codes:<br>- <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">DAC-5 sector codes</a><br>- <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">DAC-3 sector codes</a>', max_length=5, verbose_name='sector code', blank=True)),
+                ('text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='description', blank=True)),
+                ('vocabulary', akvo.rsr.fields.ValidXMLCharField(max_length=5, verbose_name='vocabulary', blank=True)),
+                ('percentage', models.DecimalField(decimal_places=1, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)], max_digits=4, blank=True, help_text='You can set the percentage of the project that is relevant for this sector here.', null=True, verbose_name='sector percentage')),
+                ('project', models.ForeignKey(related_name='sectors', verbose_name='project', to='rsr.Project')),
+            ],
+            options={
+                'verbose_name': 'sector',
+                'verbose_name_plural': 'sectors',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Transaction',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('reference', akvo.rsr.fields.ValidXMLCharField(help_text='Enter a reference for the transaction. (25 characters)', max_length=25, verbose_name='reference', blank=True)),
+                ('aid_type', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='aid type', blank=True)),
+                ('aid_type_text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='aid type text', blank=True)),
+                ('description', akvo.rsr.fields.ValidXMLCharField(help_text='Enter a description for the transaction. (255 characters)', max_length=255, verbose_name='description', blank=True)),
+                ('disbursement_channel', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='disbursement channel', blank=True)),
+                ('disbursement_channel_text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='disbursement channel text', blank=True)),
+                ('finance_type', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='finance type', blank=True)),
+                ('finance_type_text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='finance type text', blank=True)),
+                ('flow_type', akvo.rsr.fields.ValidXMLCharField(max_length=2, verbose_name='flow type', blank=True)),
+                ('flow_type_text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='flow type text', blank=True)),
+                ('tied_status', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='tied status', blank=True)),
+                ('tied_status_text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='tied status text', blank=True)),
+                ('transaction_date', models.DateField(help_text='Enter the financial reporting date that the transaction was/will be undertaken.', null=True, verbose_name='transaction date', blank=True)),
+                ('transaction_type', akvo.rsr.fields.ValidXMLCharField(help_text='Select the type of transaction from the list.', max_length=2, verbose_name='transaction type', blank=True)),
+                ('transaction_type_text', akvo.rsr.fields.ValidXMLCharField(help_text='(max 100 characters)', max_length=100, verbose_name='transaction type text', blank=True)),
+                ('value', models.DecimalField(decimal_places=2, max_digits=11, blank=True, help_text='Enter the transaction amount.', null=True, verbose_name='value')),
+                ('value_date', models.DateField(null=True, verbose_name='value date', blank=True)),
+                ('currency', akvo.rsr.fields.ValidXMLCharField(max_length=3, verbose_name='currency', blank=True)),
+                ('provider_organisation_activity', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='provider organisation activity id', blank=True)),
+                ('receiver_organisation_activity', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='receiver organisation activity id', blank=True)),
+                ('project', models.ForeignKey(related_name='transactions', verbose_name='project', to='rsr.Project')),
+                ('provider_organisation', models.ForeignKey(related_name='providing_transactions', on_delete=django.db.models.deletion.SET_NULL, verbose_name='provider organisation', blank=True, to='rsr.Organisation', null=True)),
+                ('receiver_organisation', models.ForeignKey(related_name='receiving_transactions', on_delete=django.db.models.deletion.SET_NULL, verbose_name='receiver organisation', blank=True, to='rsr.Organisation', null=True)),
+            ],
+            options={
+                'verbose_name': 'transaction',
+                'verbose_name_plural': 'transactions',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='projectupdate',
+            name='primary_location',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='rsr.ProjectUpdateLocation', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='projectupdate',
+            name='project',
+            field=models.ForeignKey(related_name='project_updates', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='projectupdate',
+            name='user',
+            field=models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='last_update',
+            field=models.ForeignKey(related_name='the_project', on_delete=django.db.models.deletion.SET_NULL, to='rsr.ProjectUpdate', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='partners',
+            field=models.ManyToManyField(related_name='projects', verbose_name='partners', through='rsr.Partnership', to='rsr.Organisation'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='primary_location',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, to='rsr.ProjectLocation', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='sync_owner',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='rsr.Organisation', help_text='Select the reporting organisation of the project.', null=True, verbose_name='reporting organisation'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='policymarker',
+            name='project',
+            field=models.ForeignKey(related_name='policy_markers', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='planneddisbursement',
+            name='project',
+            field=models.ForeignKey(related_name='planned_disbursements', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='paymentgatewayselector',
+            name='paypal_gateway',
+            field=models.ForeignKey(default=1, to='rsr.PayPalGateway'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='paymentgatewayselector',
+            name='project',
+            field=models.OneToOneField(to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='partnership',
+            name='project',
+            field=models.ForeignKey(related_name='partnerships', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='organisation',
+            name='content_owner',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='rsr.Organisation', help_text='Organisation that maintains content for this organisation through the API.', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='organisation',
+            name='internal_org_ids',
+            field=models.ManyToManyField(related_name='recording_organisation', through='rsr.InternalOrganisationID', to='rsr.Organisation'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='organisation',
+            name='partner_types',
+            field=models.ManyToManyField(to='rsr.PartnerType'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='organisation',
+            name='primary_location',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, to='rsr.OrganisationLocation', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='link',
+            name='project',
+            field=models.ForeignKey(related_name='links', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='legacydata',
+            name='project',
+            field=models.ForeignKey(related_name='legacy_data', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='invoice',
+            name='project',
+            field=models.ForeignKey(related_name='invoices', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='invoice',
+            name='user',
+            field=models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='internalorganisationid',
+            name='recording_org',
+            field=models.ForeignKey(related_name='internal_ids', verbose_name='recording organisation', to='rsr.Organisation'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='internalorganisationid',
+            name='referenced_org',
+            field=models.ForeignKey(related_name='reference_ids', verbose_name='referenced organisation', to='rsr.Organisation'),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='internalorganisationid',
+            unique_together=set([('recording_org', 'referenced_org')]),
+        ),
+        migrations.AddField(
+            model_name='indicator',
+            name='result',
+            field=models.ForeignKey(related_name='indicators', verbose_name='result', to='rsr.Result'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='goal',
+            name='project',
+            field=models.ForeignKey(related_name='goals', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='employment',
+            name='organisation',
+            field=models.ForeignKey(related_name='employees', verbose_name='organisation', to='rsr.Organisation'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='employment',
+            name='user',
+            field=models.ForeignKey(related_name='employers', verbose_name='user', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='countrybudgetitem',
+            name='project',
+            field=models.ForeignKey(related_name='country_budget_items', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='category',
+            name='focus_area',
+            field=models.ManyToManyField(help_text='Select the Focus area(s) the category belongs to.', related_name='categories', verbose_name='focus area', to='rsr.FocusArea'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='budgetitem',
+            name='label',
+            field=models.ForeignKey(verbose_name='project budget', to='rsr.BudgetItemLabel', help_text="Select the budget item. Use the 'Other' fields to custom budget items."),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='budgetitem',
+            name='project',
+            field=models.ForeignKey(related_name='budget_items', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='budgetitem',
+            unique_together=set([('project', 'label')]),
+        ),
+        migrations.AddField(
+            model_name='benchmark',
+            name='category',
+            field=models.ForeignKey(verbose_name='category', to='rsr.Category'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='benchmark',
+            name='name',
+            field=models.ForeignKey(verbose_name='benchmark name', to='rsr.Benchmarkname'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='benchmark',
+            name='project',
+            field=models.ForeignKey(related_name='benchmarks', verbose_name='project', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='user',
+            name='organisations',
+            field=models.ManyToManyField(related_name='users', verbose_name='organisations', to='rsr.Organisation', through='rsr.Employment', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='user',
+            name='user_permissions',
+            field=models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Permission', blank=True, help_text='Specific permissions for this user.', verbose_name='user permissions'),
+            preserve_default=True,
+        ),
+    ]

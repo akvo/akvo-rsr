@@ -6,7 +6,6 @@ manage='sudo -H -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/manage.p
 # if we have already done the loading, don't do it again
 if [ -e /etc/localdev_rsr_provisioned ]
 then
-    $manage syncdb --noinput
     $manage migrate
     $manage collectstatic --noinput
     exit 0

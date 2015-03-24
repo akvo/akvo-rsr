@@ -38,6 +38,10 @@ ORG_TYPES = (
 )
 
 
+def image_path(instance, file_name):
+    return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
+
+
 class Organisation(TimestampsMixin, models.Model):
     """
     There are four types of organisations in RSR, called Field,
@@ -56,9 +60,6 @@ class Organisation(TimestampsMixin, models.Model):
             cls.NEW_TO_OLD_TYPES
         ))
         return types[iati_type]
-
-    def image_path(instance, file_name):
-        return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
     # TODO: make name unique
     name = ValidXMLCharField(
