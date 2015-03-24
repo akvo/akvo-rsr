@@ -22,6 +22,12 @@ from ..fields import ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
 
+def image_path(instance, file_name):
+    "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
+    path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
+    return rsr_image_path(instance, file_name, path)
+
+
 class ProjectUpdate(TimestampsMixin, models.Model):
     UPDATE_METHODS = (
         ('W', _(u'web')),
@@ -29,11 +35,6 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ('S', _(u'SMS')),
         ('M', _(u'mobile')),
     )
-
-    def image_path(instance, file_name):
-        "Create a path like 'db/project/<update.project.id>/update/<update.id>/image_name.ext'"
-        path = 'db/project/%d/update/%%(instance_pk)s/%%(file_name)s' % instance.project.pk
-        return rsr_image_path(instance, file_name, path)
 
     project = models.ForeignKey('Project', related_name='project_updates', verbose_name=_(u'project'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))

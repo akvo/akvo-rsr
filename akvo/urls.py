@@ -197,7 +197,7 @@ urlpatterns = patterns(
 
     # Auth token for mobile apps
     url(r'^auth/token/$',
-        'akvo.rsr.views.account.get_api_key',
+        'akvo.rsr.views.account.api_key',
         name="auth_token"),
 
 )

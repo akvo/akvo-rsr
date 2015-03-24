@@ -17,20 +17,23 @@ from ..fields import NullCharField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
 
+def about_image_path(instance, file_name):
+    return 'db/partner_sites/%s/image/%s' % (instance.hostname, file_name)
+
+
+def custom_css_path(instance, filename):
+    return 'db/partner_sites/%s/custom.css' % instance.hostname
+
+
+def custom_favicon_path(instance, filename):
+    return 'db/partner_sites/%s/favicon.ico' % instance.hostname
+
+
+def custom_logo_path(instance, filename):
+    return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
+
+
 class PartnerSite(TimestampsMixin, models.Model):
-
-    def about_image_path(instance, file_name):
-        return 'db/partner_sites/%s/image/%s' % (instance.hostname, file_name)
-
-    def custom_css_path(instance, filename):
-        return 'db/partner_sites/%s/custom.css' % instance.hostname
-
-    def custom_favicon_path(instance, filename):
-        return 'db/partner_sites/%s/favicon.ico' % instance.hostname
-
-    def custom_logo_path(instance, filename):
-        return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
-
     def show_keywords(self):
         return rsr_show_keywords(self)
     show_keywords.short_description = 'Keywords'
