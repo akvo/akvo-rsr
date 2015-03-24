@@ -7,6 +7,197 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
 
+Akvo RSR version 3.1 Episkopi
+---
+
+Thursday 18th March 2015, adriancollier
+
+New & Noteworthy
+---
+
+### Reintroduction of Project Donations
+Within the v3 release we disabled project donations as there were some issues with the process that was not possible to resolve in a short enough time period. We have now had enough time to look at this and we are pleased to be able to reinstate the donation functionality.
+
+It will be possible again to donate to a project using iDeal or Paypal.
+
+Github issue: [#1265](https://github.com/akvo/akvo-rsr/issues/1265)
+
+### New User Process
+Following on from the changes to registration and approval made in v3, we have now added some further functionality to assist Akvo users to approve and have access to all the right users.
+
+These changes include a new option for Akvo staff to be labelled as Support user and this means that they can make the necessary changes for all users.
+
+Akvo staff that are not tagged as being support staff will not receive new user notfiications any more.
+
+Github issue: [#1042](https://github.com/akvo/akvo-rsr/issues/1042)
+
+Introduced Changes
+---
+
+### IATI Organisation ID on Organisation Page
+We have added the IATI Organisation ID to the Organisation page.
+
+Github issue: [#1293](https://github.com/akvo/akvo-rsr/issues/1293)
+
+### Link to Organisation in Transactions
+As Transactions on a project can be linked to a partner, we have now enabled the option for users to select an existing organisation in RSR as the linked partner for transactions. This should help with better data quality and an improved ability to follow the chain.
+
+Github issue: [#1317](https://github.com/akvo/akvo-rsr/issues/13117)
+
+### Removed Goals and Categories from Project Admin
+Since we have made a replacement of Goals and Categories within the RSR data model for Results and Sectors. Now that this is the new model, we have removed the older ones from the Admin. We will retain the data for some time just to be safe, but this will not be publicly accessible for now.
+
+Github issue: [#1316](https://github.com/akvo/akvo-rsr/issues/1316)
+
+### Reporting Organisation Requirement
+Due to the changes in the domain model in v3, it was unclear to many partners on the new partner types and in particular who is the reporting organisation on a project. We will be working to take our existing data and specify who is the Reporting organisation for our entire portfolio of projects shortly. In the meantime we have removed the need for this field to be filled in.
+
+Github issue: [#1299](https://github.com/akvo/akvo-rsr/issues/1299)
+
+### Related Projects to the Project Admin Form
+Previously it was possible to specify related projects and their relationship, but this was done independently from the project data. We have now moved this into the project form so it's possible to specify this information at the same time as completing a project.
+
+Github issue: [#1290](https://github.com/akvo/akvo-rsr/issues/1290)
+
+Bug Fixes
+---
+
+### Budget Label
+When users entered a custom budget item label this was not being displayed on the financial screen as it did before the v3 release. This has been fixed and now the custom label is being correctly displayed.
+
+Github issue: [#1261](https://github.com/akvo/akvo-rsr/issues/1261)
+
+### Markup on Project Descriptions
+When users included markup within the text on description fields, this was not being rendered correctly on the project pages. We have now resolved this, so the markup is now correctly rendered.
+
+Github issue: [#1262](https://github.com/akvo/akvo-rsr/issues/1262)
+
+### Goals Overview
+The Goals Overview section was missing from the project page despite being part of the project data set. So we've added this back in.
+
+Github issue: [#1264](https://github.com/akvo/akvo-rsr/issues/1264)
+
+### Currency amounts
+We have satndardised the currency display to ensure that the alignment and presence of 2 decimal places on all financial figures is correctly visualised.
+
+Github issue: [#1292](https://github.com/akvo/akvo-rsr/issues/1292)
+
+### Budgets Shown Twice
+We noticed that some budget items were being displayed twice in the Financial overview page for projects. We have now resolved this so the budget only shows up once per entry.
+
+Github issue: [#1347](https://github.com/akvo/akvo-rsr/issues/1347)
+
+### Tidying of Font Case for Sectors
+We have unified the case of text for sectors within RSR. Previously some sectors were listed with all capitals, or all small letters and the subsequent order in lists was being affected.
+
+We have resoled this to now generate the sectors in a normalised manner and so the lists will all be truly alphabetical and it should be much easier to find the sector you are looking for.
+
+Github issue: [#1330](https://github.com/akvo/akvo-rsr/issues/1330)
+
+### Removed Partner Type Extra
+We had an additional partner type field to take into account additional options within the IATI Standard that were not part of RSR. We have now pulled this data into RSR, so we have now removed the additional field.
+
+Github issue: [#1321](https://github.com/akvo/akvo-rsr/issues/1321)
+
+### Show amount received for Donations
+We noticed that we were displaying the amount sent for donations, which due to transaction costs, can be lower than the amount that is received by Akvo and passed on to the project.
+
+To make it clear for users reading the project, we have swapped this back to displaying the amount received.
+
+Github issue: [#1318](https://github.com/akvo/akvo-rsr/issues/1318)
+
+### API Errors for Partner Website
+After the v3 changes, we found an error in the API resources that made some certain calls inaccessible without implementing an API authentication key. Seeing as the information being called here has no reason to remain private we made a fix that put the resource back into the public domain that then resolved the issue.
+
+Github issue: [#1259](https://github.com/akvo/akvo-rsr/issues/1259)
+
+### Link from /update/
+We used to have a link from a project to add an update that sat at /update. In the v3 upgrade, this got changed to /add_update, so we have added a redirect to ensure that existing workflows remain working.
+
+Github issue: [#1308](https://github.com/akvo/akvo-rsr/issues/1308)
+
+### Pagination on empty lists
+We discovered a bug that visually displayed a double set of results and sorting options on the listing pages even when no results were displayed.
+
+Github issue: [#1283](https://github.com/akvo/akvo-rsr/issues/1283) & [#1280](https://github.com/akvo/akvo-rsr/issues/1280)
+
+### Pagination on All Project Updates Page
+We introduced a new page to display all project updates for a particular project, but we noticed that all were displayed on a single page and the pagination options displayed were not responding. This has been resolved to show a set of updates at a time and made it possible to navigate to the next page and back again.
+
+Github issue: [#1276](https://github.com/akvo/akvo-rsr/issues/1276)
+
+### Project Image Encoding Error
+When project images are not able to be correctly displayed within RSR these were causing the entire page to stop loading. We have modified this function so that now the image is skipped from the carousel but the page still renders.
+
+Github issue: [#1312](https://github.com/akvo/akvo-rsr/issues/1312)
+
+Under the Hood
+---
+
+### Upgrade Django to v1.6.9
+A new version of Django has some security changes we wanted to include within RSR so we have updated the version we are using.
+
+Github issue: [#1011](https://github.com/akvo/akvo-rsr/issues/1011)
+
+### Upgrade Pillow for Security Release
+We upgraded our version of pillow to take into account a recent security improvmeent.
+
+Github issue: [#1010](https://github.com/akvo/akvo-rsr/issues/1010)
+
+### Enable Debug Toolbar
+We use the Django Debug Toolbar for assisting with development of RSR. We have now added this to the Vagrant setup so all developers on RSR will have access to this.
+
+Github issue: [#1018](https://github.com/akvo/akvo-rsr/issues/1018)
+
+### Add created_at timestamps to all Projects and Organisations
+Some time ago we added created_at timestamps to Projects and Organisations that are now being populated when new items are created. We have now run a script that populates these values for all previously existing items to improve data quality.
+
+Github issue: [#1116](https://github.com/akvo/akvo-rsr/issues/1116)
+
+### Page Load Time Improvements
+We have made many changes to the frrequency and efficiency of database calls within RSR in an attempt to improve the overall responsiveness and speed of the system.
+
+With these changes we are seeing a vast improvement when view list pages loading up to 6 times faster, and a moderate improvement across the rest of the system.
+
+Github issue: [#1258](https://github.com/akvo/akvo-rsr/issues/1258)
+
+### Update of API Import Scripts
+Since the v3 changes in RSR, many more fields from the IATI Standard are now available to be stored within RSR. We have taken a look at the API Import processes we have in place and updated these to include all the newly available information. We will start to notice going forwards that projects populated through this import will have a much richer data set.
+
+Github issue: [#1331](https://github.com/akvo/akvo-rsr/issues/1331) & [#879](https://github.com/akvo/akvo-rsr/issues/879)
+
+### Github Wiki Tidy
+We have made an effort towards unifying the documentation for RSR. We have now removed all documentation that used to sit directly within the repository, and now this resides within the Github Wiki for RSR.
+
+Github issue: [#1334](https://github.com/akvo/akvo-rsr/issues/1334)
+
+### Gulp Errors
+The errors that were being generated by Gulp out of the box were not very informative and so made trouble shooting more complicated. With the addition of Gulp Plumber, we have been able to make these errors more intuitive to assist the development.
+
+Github issue: [#1333](https://github.com/akvo/akvo-rsr/issues/1333)
+
+### Django Nest Inlines Library
+We use a library within RSR called django_nested_inlines. The version we were using was out of date and not maintained, but we located a version that has been updated, so we have switched to this new version.
+
+Github issue: [#1309](https://github.com/akvo/akvo-rsr/issues/1309)
+
+### Add Landscape Badge to Github
+A tool we use called landscape has a feature that provides code quality information when making changes to the repository. We have added the code that automates this process, giving us hints on the quality changes we make while we make them.
+
+Github issue: [#1297](https://github.com/akvo/akvo-rsr/issues/1297)
+
+### Added RSR Version Number to API Responses
+To better assist with troubleshooting and to provide more information to people and services connecting to RSR, we have added the version number to the header of responses.
+
+Github issue: [#749](https://github.com/akvo/akvo-rsr/issues/749)
+
+### Remove MiniCMS Model
+We used to use a model within RSR called MiniCMS. This was to populate and manage the content on the Akvo.org website before we split this out from RSR. Now that the website is independently managed through the Wordpress installation, we can remove this model from RSR.
+
+Github issue: [#727](https://github.com/akvo/akvo-rsr/issues/727)
+
+________
+
 Akvo RSR version 3.0.2 Hotfix 2 for Douglas
 ---
 
@@ -41,7 +232,7 @@ We noticed a bug where project updates that included links were breaking the lay
 Github issue: [#1257](https://github.com/akvo/akvo-rsr/issues/1257)
 
 ### Location Target in API
-We have modified the location API resource within the Django REST Framework API implementation as the lack of locationn  target was causing errors.
+We have modified the location API resource within the Django REST Framework API implementation as the lack of location target was causing errors.
 
 Github issue: [#1266](https://github.com/akvo/akvo-rsr/issues/1266)
 

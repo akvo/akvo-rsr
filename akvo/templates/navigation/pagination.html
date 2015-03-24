@@ -1,5 +1,6 @@
 {% load i18n %}
 
+{% if page %}
 <div class="center-text paginationWrap">
         <ul class="pagination">
             {% if page.has_previous %}
@@ -21,3 +22,4 @@
             {% endif %}
         </ul>
 </div>
+{% endif %}

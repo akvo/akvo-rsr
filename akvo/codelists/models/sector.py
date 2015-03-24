@@ -19,7 +19,7 @@ class Sector(BaseCodelist):
     category_description = models.TextField(_(u'category description'), blank=True, null=False)
 
     def __unicode__(self):
-        return self.code + ' - ' + self.name
+        return self.code + ' - ' + self.name.capitalize()
 
     class Meta:
         app_label = 'codelists'

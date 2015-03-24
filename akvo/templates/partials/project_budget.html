@@ -12,10 +12,10 @@
 		</div>
 </div>
 <dl class="dl-horizontal topMargin">
-	<dt>Total Budget:</dt><dd>{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</dd>
+	<dt class="totalBudgetLabel">Total Budget:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.budget|floatformat:2|intcomma}}</dd>
 </dl>
 {% if project.accepts_donations %}
-<div class="text-center ">
+<div class="text-center donateButton">
 	<a href="{% url 'project-donate' project.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
 </div>
 {% endif %}

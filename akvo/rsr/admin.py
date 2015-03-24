@@ -28,7 +28,7 @@ from akvo.utils import custom_get_or_create_country
 from akvo.rsr.fields import ValidXMLCharField
 
 from rules.contrib.admin import ObjectPermissionsModelAdmin
-from nested_inlines.admin import NestedModelAdmin, NestedStackedInline
+from nested_inlines.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
 NON_FIELD_ERRORS = '__all__'
 csrf_protect_m = method_decorator(csrf_protect)
@@ -50,7 +50,7 @@ class CountryAdmin(admin.ModelAdmin):
 class OrganisationLocationInline(admin.StackedInline):
     model = get_model('rsr', 'organisationlocation')
     extra = 0
-    fields = ('id', 'latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode', 'country')
+    fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode', 'country')
 
 
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
@@ -122,9 +122,9 @@ class OrganisationAccountAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'organisationaccount'), OrganisationAccountAdmin)
 
 
-class LinkInline(NestedStackedInline):
+class LinkInline(NestedTabularInline):
     model = get_model('rsr', 'link')
-    fields = ('id', 'kind', 'url', 'caption')
+    fields = ('kind', 'url', 'caption')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -157,13 +157,13 @@ class BudgetItemAdminInLineFormSet(forms.models.BaseInlineFormSet):
             raise forms.ValidationError(_("The 'total' budget item cannot be used in combination with other budget items."))
 
 
-class BudgetItemAdminInLine(NestedStackedInline):
+class BudgetItemAdminInLine(NestedTabularInline):
     model = get_model('rsr', 'budgetitem')
     extra = 1
     formset = BudgetItemAdminInLineFormSet
     fieldsets = (
         (None, {
-            'fields': ('id', 'label', 'other_extra', 'type', 'amount', 'period_start', 'period_end', 'value_date')
+            'fields': ('label', 'other_extra', 'type', 'amount', 'period_start', 'period_end', 'value_date')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
@@ -207,25 +207,25 @@ class BenchmarknameInline(admin.TabularInline):
     extra = 3
 
 
-class BenchmarkInline(NestedStackedInline):
+class BenchmarkInline(NestedTabularInline):
     model = get_model('rsr', 'benchmark')
     # only show the value, category and benchmark are not to be edited here
     fieldsets = (
         (None, {
             'classes': ('collapse',),
-            'fields': ('id', 'value',)
+            'fields': ('value',)
         }),
     )
     extra = 0
     max_num = 0
 
 
-class GoalInline(NestedStackedInline):
+class GoalInline(NestedTabularInline):
     model = get_model('rsr', 'goal')
     fieldsets = (
         (None, {
             'classes': ('collapse',),
-            'fields': ('id', 'text',)
+            'fields': ('text',)
         }),
     )
     extra = 0
@@ -295,9 +295,9 @@ class RSR_PartnershipInlineForm(forms.ModelForm):
         return data
 
 
-class PartnershipInline(NestedStackedInline):
+class PartnershipInline(NestedTabularInline):
     model = get_model('rsr', 'Partnership')
-    fields = ('id', 'organisation', 'partner_type', 'funding_amount', 'internal_id', 'partner_type_extra')
+    fields = ('organisation', 'partner_type', 'funding_amount', 'internal_id')
     extra = 0
     form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
@@ -323,7 +323,7 @@ class ProjectLocationInline(NestedStackedInline):
     model = get_model('rsr', 'projectlocation')
     fieldsets = (
         (None, {
-            'fields': ('id', 'latitude', 'longitude', 'country', 'city', 'state', 'address_1', 'address_2', 'postcode')
+            'fields': ('latitude', 'longitude', 'country', 'city', 'state', 'address_1', 'address_2', 'postcode')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
@@ -344,7 +344,7 @@ class ProjectDocumentInline(NestedStackedInline):
     model = get_model('rsr', 'ProjectDocument')
     fieldsets = (
         (None, {
-            'fields': ('id', 'url', 'document', 'title', 'format', 'category', 'language')
+            'fields': ('url', 'document', 'title', 'format', 'category', 'language')
         }),
     )
 
@@ -355,20 +355,20 @@ class ProjectDocumentInline(NestedStackedInline):
             return 1
 
 
-class CountryBudgetInline(NestedStackedInline):
+class CountryBudgetInline(NestedTabularInline):
     model = get_model('rsr', 'CountryBudgetItem')
     extra = 0
     fieldsets = (
         ('Country Budget Item', {
             'classes': ('collapse',),
-            'fields': ('id', 'code', 'description', 'vocabulary', 'percentage')
+            'fields': ('code', 'description', 'vocabulary', 'percentage')
         }),
     )
 
 
-class IndicatorPeriodInline(NestedStackedInline):
+class IndicatorPeriodInline(NestedTabularInline):
     model = get_model('rsr', 'IndicatorPeriod')
-    fields = ('id', 'period_start', 'period_end', 'target_value', 'target_comment', 'actual_value', 'actual_comment')
+    fields = ('period_start', 'period_end', 'target_value', 'target_comment', 'actual_value', 'actual_comment')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -377,9 +377,9 @@ class IndicatorPeriodInline(NestedStackedInline):
             return 1
 
 
-class IndicatorInline(NestedStackedInline):
+class IndicatorInline(NestedTabularInline):
     model = get_model('rsr', 'Indicator')
-    fields = ('id', 'title', 'description', 'measure', 'ascending', 'baseline_year', 'baseline_value',
+    fields = ('title', 'description', 'measure', 'ascending', 'baseline_year', 'baseline_value',
               'baseline_comment')
     inlines = (IndicatorPeriodInline,)
 
@@ -390,10 +390,10 @@ class IndicatorInline(NestedStackedInline):
             return 1
 
 
-class ResultInline(NestedStackedInline):
+class ResultInline(NestedTabularInline):
     model = get_model('rsr', 'Result')
     inlines = (IndicatorInline,)
-    fields = ('id', 'title', 'description', 'type', 'aggregation_status')
+    fields = ('title', 'description', 'type', 'aggregation_status')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -402,35 +402,35 @@ class ResultInline(NestedStackedInline):
             return 1
 
 
-class PlannedDisbursementInline(NestedStackedInline):
+class PlannedDisbursementInline(NestedTabularInline):
     model = get_model('rsr', 'PlannedDisbursement')
     extra = 0
     fieldsets = (
         ('Planned Disbursement', {
             'classes': ('collapse',),
-            'fields': ('id', 'currency', 'value', 'value_date', 'period_start', 'period_end', 'type', 'updated')
+            'fields': ('currency', 'value', 'value_date', 'period_start', 'period_end', 'type', 'updated')
         }),
     )
 
 
-class PolicyMarkerInline(NestedStackedInline):
+class PolicyMarkerInline(NestedTabularInline):
     model = get_model('rsr', 'PolicyMarker')
     extra = 0
     fieldsets = (
         ('Policy Marker', {
             'classes': ('collapse',),
-            'fields': ('id', 'policy_marker', 'significance', 'vocabulary', 'description')
+            'fields': ('policy_marker', 'significance', 'vocabulary', 'description')
         }),
     )
 
 
-class ProjectConditionInline(NestedStackedInline):
+class ProjectConditionInline(NestedTabularInline):
     model = get_model('rsr', 'ProjectCondition')
     extra = 0
     fieldsets = (
         ('Project Condition', {
             'classes': ('collapse',),
-            'fields': ('id', 'type', 'text', 'attached')
+            'fields': ('type', 'text', 'attached')
         }),
     )
 
@@ -439,7 +439,7 @@ class ProjectContactInline(NestedStackedInline):
     model = get_model('rsr', 'ProjectContact')
     fieldsets = (
         (None, {
-            'fields': ('id', 'type', 'person_name', 'email', 'job_title', 'organisation', 'telephone',
+            'fields': ('type', 'person_name', 'email', 'job_title', 'organisation', 'telephone',
                        'mailing_address',)
         }),
         ('Additional fields', {
@@ -455,31 +455,31 @@ class ProjectContactInline(NestedStackedInline):
             return 1
 
 
-class RecipientCountryInline(NestedStackedInline):
+class RecipientCountryInline(NestedTabularInline):
     model = get_model('rsr', 'RecipientCountry')
     extra = 0
     fieldsets = (
         ('Recipient Country', {
             'classes': ('collapse',),
-            'fields': ('id', 'country', 'percentage', 'text')
+            'fields': ('country', 'percentage', 'text')
         }),
     )
 
 
-class RecipientRegionInline(NestedStackedInline):
+class RecipientRegionInline(NestedTabularInline):
     model = get_model('rsr', 'RecipientRegion')
     extra = 0
     fieldsets = (
         ('Recipient Region', {
             'classes': ('collapse',),
-            'fields': ('id', 'region', 'region_vocabulary', 'percentage', 'text')
+            'fields': ('region', 'region_vocabulary', 'percentage', 'text')
         }),
     )
 
 
-class SectorInline(NestedStackedInline):
+class SectorInline(NestedTabularInline):
     model = get_model('rsr', 'Sector')
-    fields = ('id', 'sector_code', 'vocabulary', 'percentage', 'text')
+    fields = ('sector_code', 'vocabulary', 'percentage', 'text')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -492,15 +492,14 @@ class TransactionInline(NestedStackedInline):
     model = get_model('rsr', 'Transaction')
     fieldsets = (
         (None, {
-            'fields': ('id', 'reference', 'transaction_type', 'value', 'transaction_date', 'description')
+            'fields': ('reference', 'transaction_type', 'value', 'transaction_date', 'description')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
             'fields': ('currency',  'value_date', 'transaction_type_text', 'provider_organisation',
-                       'provider_organisation_ref', 'provider_organisation_activity', 'receiver_organisation',
-                       'receiver_organisation_ref', 'receiver_organisation_activity', 'aid_type', 'aid_type_text',
-                       'disbursement_channel', 'disbursement_channel_text', 'finance_type', 'finance_type_text',
-                       'flow_type', 'flow_type_text', 'tied_status', 'tied_status_text', )
+                       'provider_organisation_activity', 'receiver_organisation', 'receiver_organisation_activity',
+                       'aid_type', 'aid_type_text', 'disbursement_channel', 'disbursement_channel_text', 'finance_type',
+                       'finance_type_text', 'flow_type', 'flow_type_text', 'tied_status', 'tied_status_text', )
         }),
     )
 
@@ -510,24 +509,36 @@ class TransactionInline(NestedStackedInline):
         else:
             return 1
 
-class LegacyDataInline(NestedStackedInline):
+class LegacyDataInline(NestedTabularInline):
     model = get_model('rsr', 'LegacyData')
     extra = 0
     fieldsets = (
         ('Legacy Data', {
             'classes': ('collapse',),
-            'fields': ('id', 'name', 'value', 'iati_equivalent')
+            'fields': ('name', 'value', 'iati_equivalent')
         }),
     )
+
+
+class RelatedProjectInline(NestedStackedInline):
+    model = get_model('rsr', 'RelatedProject')
+    fields = ('related_project', 'relation')
+    fk_name = 'project'
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.related_projects.count() == 0 else 0
+        else:
+            return 1
 
 
 class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        ProjectContactInline, PartnershipInline, ProjectDocumentInline, ProjectLocationInline, SectorInline,
-        BudgetItemAdminInLine, TransactionInline, ResultInline, LinkInline, ProjectConditionInline, CountryBudgetInline,
-        PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline, RecipientRegionInline, LegacyDataInline,
-        BenchmarkInline, GoalInline,
+        RelatedProjectInline, ProjectContactInline, PartnershipInline, ProjectDocumentInline, ProjectLocationInline,
+        SectorInline, BudgetItemAdminInLine, TransactionInline, ResultInline, LinkInline, ProjectConditionInline,
+        CountryBudgetInline, PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline,
+        RecipientRegionInline, LegacyDataInline,
     )
     save_as = True
 
@@ -537,9 +548,15 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'This section should contain the top-level information about your project which will be publicly '
                 u'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'hierarchy', 'date_start_planned',
-                       'date_start_actual', 'date_end_planned', 'date_end_actual', 'language', 'currency',
-                       'donate_button'),
+            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned', 'date_start_actual',
+                       'date_end_planned', 'date_end_actual', 'language', 'currency', 'donate_button', 'hierarchy'),
+        }),
+        (_(u'IATI defaults'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Optionally, you can add default information based on the IATI standard.'
+            ),
+            'fields': ('default_aid_type', 'default_flow_type', 'default_tied_status','collaboration_type',
+                       'default_finance_type'),
         }),
         (_(u'Contact Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -605,7 +622,12 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'The project focus aims to define the broad areas of the project activities. This ensures that the '
                 u'project can be collectively grouped with other similar projects to help make the most out of the '
-                u'project resources.'
+                u'project resources.<br><br>'
+                u'Enter the sector code of the sectors that the project is working within. See these lists for the '
+                u'DAC-5 and DAC-3 sector codes:<br>'
+                u'- <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">DAC-5 sector codes</a><br>'
+                u'- <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">DAC-3 sector '
+                u'codes</a>'
             ),
             'fields': (),
         }),
@@ -614,7 +636,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'You can define the budget information as a total for the whole project or within sections and '
                 u'periods to provide more granular information about where the project funds are being spent.'
             ),
-            'fields': (),
+            'fields': ('capital_spend_percentage', ),
         }),
         (_(u'Project Financials - Transactions'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -650,6 +672,12 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('notes',),
         }),
+        (_(u'Additional IATI Information'), {
+            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
+                u'Optionally, you can add additional information based on the IATI standard.'
+            ),
+            'fields': (),
+        }),
         (_(u'Keywords'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Add keywords belonging to your project. These keywords must be existing already in Akvo RSR. If '
@@ -658,25 +686,10 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             ),
             'fields': ('keywords',),
         }),
-        (_(u'Additional IATI information'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Optionally, you can add additional information based on the IATI standard.'
-            ),
-            'classes': ('collapse',),
-            'fields': ('capital_spend_percentage', 'default_aid_type', 'default_flow_type', 'default_tied_status',
-                       'collaboration_type', 'default_finance_type',),
-        }),
-        (_(u'Legacy RSR Data'), {
-            'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
-                u'Data that was used in RSR v2, but is currently not used anymore. This is still available in order '
-                u'to see the old data.'
-            ),
-            'classes': ('collapse',),
-            'fields': ('categories', ),
-        }),
     )
     filter_horizontal = ('keywords',)
-    list_display = ('id', 'title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published', 'show_keywords')
+    list_display = ('title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',
+                    'show_keywords')
     search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
@@ -806,7 +819,7 @@ admin.site.register(get_model('rsr', 'project'), ProjectAdmin)
 
 class ApiKeyInline(admin.StackedInline):
     model = get_model('tastypie', 'apikey')
-    fields = ('id', 'key',)
+    fields = ('key',)
     readonly_fields = ('key',)
 
     def has_delete_permission(self, request, obj=None, **kwargs):
@@ -819,7 +832,7 @@ class UserAdmin(UserAdmin):
         (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_admin', 'is_superuser')
+            'fields': ('is_active', 'is_staff', 'is_admin', 'is_support', 'is_superuser')
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
@@ -834,7 +847,7 @@ class UserAdmin(UserAdmin):
     )
     list_display = (
         'username', 'email', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_admin',
-        'latest_update_date'
+        'get_is_support', 'latest_update_date'
     )
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('username',)
@@ -843,7 +856,7 @@ class UserAdmin(UserAdmin):
         if request.user.is_superuser:
             return ['last_login', 'date_joined']
         else:
-            return ['is_admin', 'is_superuser', 'last_login', 'date_joined']
+            return ['is_admin', 'is_support', 'is_superuser', 'last_login', 'date_joined']
 
     def get_queryset(self, request):
         if request.user.is_superuser or request.user.is_admin:
@@ -870,12 +883,12 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 class ProjectUpdateLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectupdatelocation')
     extra = 0
-    fields = ('id', 'latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode', 'country')
+    fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode', 'country')
 
 
 class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.ModelAdmin):
 
-    list_display = ('id', 'project', 'user', 'text', 'language', 'created_at', 'img',)
+    list_display = ('project', 'user', 'text', 'language', 'created_at', 'img',)
     list_filter = ('created_at', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
     inlines = (ProjectUpdateLocationInline,)
@@ -906,7 +919,7 @@ admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project', 'user', 'name', 'email', 'time', 'engine', 'status', 'test', 'is_anonymous')
+    list_display = ('project', 'user', 'name', 'email', 'time', 'engine', 'status', 'test', 'is_anonymous')
     list_filter = ('engine', 'status', 'test', 'is_anonymous')
     actions = ('void_invoices',)
 
@@ -1047,10 +1060,3 @@ class EmploymentAdmin(admin.ModelAdmin):
         return super(EmploymentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(get_model('rsr', 'Employment'), EmploymentAdmin)
-
-
-class RelatedProjectAdmin(admin.ModelAdmin):
-    model = get_model('rsr', 'RelatedProject')
-    list_display = ('project', 'related_project', 'relation')
-
-admin.site.register(get_model('rsr', 'RelatedProject'), RelatedProjectAdmin)
