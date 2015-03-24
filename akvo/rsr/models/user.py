@@ -314,12 +314,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email])
         pass
 
-    def get_profile(self):
-        """
-        Needed to replicate the old user profile behaviour.
-        """
-        return self
-
     @property
     def user(self):
         """
