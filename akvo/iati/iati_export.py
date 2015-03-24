@@ -73,6 +73,19 @@ class IatiXML(object):
         :param project: Project object
         """
         project_element = etree.SubElement(self.iati_activities, "iati-activity")
+
+        if project.last_modified_at:
+            project_element.attrib['last-updated-datetime'] = project.last_modified_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        if project.language:
+            project_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'] = project.language
+
+        if project.currency:
+            project_element.attrib['default-currency'] = project.currency
+
+        if project.hierarchy:
+            project_element.attrib['hierarchy'] = str(project.hierarchy)
+
         for element in ELEMENTS:
             tree_elements = getattr(elements, element)(project)
             for tree_element in tree_elements:
