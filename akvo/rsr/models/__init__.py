@@ -15,10 +15,11 @@ from django.contrib.admin.models import LogEntry
 from akvo.api.models import create_api_key
 
 from ..signals import (
-    change_name_of_file_on_change, change_name_of_file_on_create, create_publishing_status, create_organisation_account,
-    create_payment_gateway_selector, donation_completed, act_on_log_entry, employment_post_save, employment_pre_save,
-    update_project_budget, update_project_funding
-)
+    change_name_of_file_on_change, change_name_of_file_on_create,
+    create_publishing_status, create_organisation_account,
+    create_payment_gateway_selector, donation_completed, act_on_log_entry,
+    employment_post_save, employment_pre_save, update_project_budget,
+    update_project_funding)
 
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
@@ -34,7 +35,6 @@ from .keyword import Keyword
 from .legacy_data import LegacyData
 from .link import Link
 from .location import OrganisationLocation, ProjectLocation, ProjectUpdateLocation
-from .mini_cms import MiniCMS
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
 from .partner_site import PartnerSite
@@ -79,7 +79,6 @@ __all__ = [
     'OrganisationLocation',
     'ProjectLocation',
     'ProjectUpdateLocation',
-    'MiniCMS',
     'Organisation',
     'OrganisationAccount',
     'PartnerSite',
@@ -107,7 +106,8 @@ __all__ = [
 
 # Permission rules
 import rules
-from ..permissions import is_rsr_admin, is_org_admin, is_org_user_manager, is_org_project_editor, is_org_user, is_self
+from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager,
+                           is_org_project_editor, is_org_user, is_self)
 
 rules.add_perm('rsr', rules.always_allow)
 

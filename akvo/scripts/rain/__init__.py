@@ -235,7 +235,7 @@ class RainActivity():
 
     def current_image_caption(self):
         img_caption = self.tree.xpath("document-link['akvo:photo-id']/title", namespaces=self.ns_map)
-        if img_caption:
+        if len(img_caption) > 0 and img_caption[0].text:
             return img_caption[0].text.strip()
         return ''
 

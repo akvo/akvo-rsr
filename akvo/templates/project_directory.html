@@ -102,28 +102,40 @@
             <div class="visible-xs-block hidden-sm">
               <p>
               {% if p.sector_categories %}
-              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}<br>
+              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}<br>
               {% endif %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
               {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% if p.accepts_donations %}
+              <br>
+              <span class="donateButton">
+                <a href="{% url 'project-donate' p.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+              </span>
+              {% endif %}
               </p>
             </div>
           </div>
           <div class="hidden-xs visible-sm">
             <p>
               {% if p.sector_categories %}
-              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}<br>
+              <span class="detailedInfo">{% trans "Sectors" %}</span> {% for sector in p.sector_categories_codes %}{% if not forloop.first %}, {% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}<br>
               {% endif %}
               <span class="detailedInfo">{% trans "Status" %}</span> {{p.get_status_display}}<br>
               <span class="detailedInfo">{% trans "Finance" %}</span>
               {% widthratio p.funds p.budget 100 %}% {% trans "of" %} {{p.get_currency_display}}{{p.budget|floatformat|intcomma}}
+              {% if p.accepts_donations %}
+              <br>
+              <span class="donateButton">
+                <a href="{% url 'project-donate' p.id %}" class="btn btn-primary">{% trans "Donate" %}</a>
+              </span>
+              {% endif %}
             </p>
           </div>
           <div class="col-sm-3 hidden-xs hidden-sm">
             {% if p.sector_categories %}
               <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
-              <p>{% for sector in p.sector_categories_codes %}{% if not forloop.first %}<br>{% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1|title}}</a>{% endfor %}</p>
+              <p>{% for sector in p.sector_categories_codes %}{% if not forloop.first %}<br>{% endif %}<a href="{% url 'project-directory' %}?sector={{sector.0}}">{{sector.1}}</a>{% endfor %}</p>
             {% endif %}
             <h4 class="detailedInfo">{% trans "Status" %}</h4>
             <p class="complete">{{p.get_status_display}}</p>
@@ -137,7 +149,7 @@
     </ul>
   </section>
   <div class="container">
-       {% include 'navigation/pagination-sort.html' %}
+       {% include 'navigation/pagination.html' %}
   </div>
 <div id="versionBanner">
   <div><button onclick="toggle_visibility('versionBanner');" class="closeBtn"><i class="fa fa-times"></i> close this</button>

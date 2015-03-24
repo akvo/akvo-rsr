@@ -8,6 +8,7 @@
 from .benchmark import BenchmarknameResource, BenchmarkResource, IATIBenchmarkResource
 from .budget_item import BudgetItemLabelResource, BudgetItemResource, IATIBudgetItemResource
 from .category import CategoryResource, IATICategoryResource
+from .contact_info import IATIContactInfoResource
 from .country import CountryResource
 from .focus_area import FocusAreaResource
 from .goal import GoalResource, IATIGoalResource
@@ -25,7 +26,10 @@ from .partnership import PartnershipResource, IATIPartnershipResource
 from .project import ProjectResource, IATIProjectResource
 from .project_comment import ProjectCommentResource
 from .project_update import ProjectUpdateResource, ProjectUpdateResourceExtra
+from .recipient_country import IATIRecipientCountryResource
+from .recipient_region import IATIRecipientRegionResource
 from .right_now_in_akvo import RightNowInAkvoResource
+from .sector import IATISectorResource
 from .user import UserResource
 
 __all__ = [
@@ -40,10 +44,14 @@ __all__ = [
     'IATIBenchmarkResource',
     'IATIBudgetItemResource',
     'IATICategoryResource',
+    'IATIContactInfoResource',
     'IATIGoalResource',
     'IATIPartnershipResource',
     'IATIProjectLocationResource',
     'IATIProjectResource',
+    'IATIRecipientCountryResource',
+    'IATIRecipientRegionResource',
+    'IATISectorResource',
     'InvoiceResource',
     'KeywordResource',
     'LinkResource',

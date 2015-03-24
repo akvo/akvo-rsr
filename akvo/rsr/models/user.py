@@ -69,6 +69,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         _('admin'), default=False, help_text=_('Designates whether the user is a general RSR admin. '
                                                'To be used only for Akvo employees.')
     )
+    is_support = models.BooleanField(
+        _('support user'), default=False, help_text=_('Designates whether the user is a support user. To be used for '
+                                                      'users willing to receive notifications when a new user '
+                                                      'registers for their organisation.')
+    )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     organisations = models.ManyToManyField(
         'Organisation', verbose_name=_(u'organisations'), through=Employment, related_name='users', blank=True
@@ -163,6 +168,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_is_admin(self):
         return self.is_admin
     get_is_admin.boolean = True  # make pretty icons in the admin list view
+    get_is_admin.short_description = _(u'rsr admin')
+
+    def get_is_support(self):
+        return self.is_support
+    get_is_support.boolean = True  # make pretty icons in the admin list view
+    get_is_support.short_description = _(u'support user')
 
     def set_is_admin(self, set_it):
         self.is_admin = set_it

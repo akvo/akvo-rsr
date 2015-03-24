@@ -129,12 +129,6 @@ def donation_completed(instance, created, **kwargs):
         send_donation_confirmation_emails(invoice.id)
 
 
-def set_active_cms(instance, created, **kwargs):
-    MiniCMS = get_model('rsr', 'MiniCMS')
-    if instance.active:
-        MiniCMS.objects.exclude(pk=instance.pk).update(active=False)
-
-
 def set_showcase_project(instance, created, **kwargs):
     Project = get_model('rsr', 'Project')
     if instance.showcase:
@@ -212,8 +206,8 @@ def employment_pre_save(sender, **kwargs):
 def employment_post_save(sender, **kwargs):
     """
     If a new employment is created:
-    - Set 'Users' Group for this employment
-    - Inform superusers, admins, organisation admins and organisation user managers
+    - Set 'Users' Group for this employment if no group has been set
+    - Inform RSR support users, organisation admins and organisation user managers
 
     If an existing employment is saved:
     - Set User to is_staff (for admin access) when the employment is approved and the Group is set to 'Project Editors',
@@ -223,17 +217,21 @@ def employment_post_save(sender, **kwargs):
     project_editors_group = Group.objects.get(name='Project Editors')
     user_managers_group = Group.objects.get(name='User Managers')
     admins_group = Group.objects.get(name='Admins')
-    if kwargs['created']:
-        employment = kwargs.get("instance", False)
-        if employment:
-            employment.group = users_group
-            employment.save()
-            user = employment.user
+    employment = kwargs.get("instance", None)
+    if employment:
+        user = employment.user
+        if kwargs['created']:
+            if not employment.group:
+                employment.group = users_group
+                employment.save()
             organisation = employment.organisation
             users = get_user_model().objects.all()
             notify = (
-                users.filter(is_superuser=True) | users.filter(is_admin=True) | users.filter(
-                    employers__organisation=organisation, employers__group__in=[user_managers_group, admins_group]
+                users.filter(is_admin=True, is_support=True) |
+                users.filter(
+                    employers__organisation=organisation,
+                    employers__group__in=[user_managers_group, admins_group],
+                    is_support=True
                 )
             ).distinct()
             rsr_send_mail_to_users(
@@ -249,13 +247,11 @@ def employment_post_save(sender, **kwargs):
                     'organisation': organisation
                 },
             )
-    else:
-        employment = kwargs.get("instance", False)
-        user = employment.user
-        if (employment.group in [project_editors_group, user_managers_group, admins_group] and employment.is_approved) \
-                or user.is_superuser or user.is_admin:
-            user.is_staff = True
-            user.save()
+        else:
+            if (employment.group in [project_editors_group, user_managers_group, admins_group] and
+                    employment.is_approved) or user.is_superuser or user.is_admin:
+                user.is_staff = True
+                user.save()
 
 
 def update_project_budget(sender, **kwargs):
