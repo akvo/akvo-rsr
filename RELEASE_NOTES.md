@@ -23,7 +23,7 @@ It will be possible again to donate to a project using iDeal or Paypal.
 Github issue: [#1265](https://github.com/akvo/akvo-rsr/issues/1265)
 
 ### New User Process
-Following on from the changes to registration and approval made in v3, we have now added some further functionality to asdsist Akvo users to approve and have access to all the right users.
+Following on from the changes to registration and approval made in v3, we have now added some further functionality to assist Akvo users to approve and have access to all the right users.
 
 These changes include a new option for Akvo staff to be labelled as Support user and this means that they can make the necessary changes for all users.
 
@@ -35,7 +35,7 @@ Introduced Changes
 ---
 
 ### IATI Organisation ID on Organisation Page
-We have added the IATI ORganisation ID to the Organisation page.
+We have added the IATI Organisation ID to the Organisation page.
 
 Github issue: [#1293](https://github.com/akvo/akvo-rsr/issues/1293)
 
@@ -55,7 +55,7 @@ Due to the changes in the domain model in v3, it was unclear to many partners on
 Github issue: [#1299](https://github.com/akvo/akvo-rsr/issues/1299)
 
 ### Related Projects to the Project Admin Form
-PReviously it was possible to specify related projects and thei9r relationship, but this was done independently from the project data. We have now moved this into the project form so it's possible to specify this information at the same time as completing a project.
+Previously it was possible to specify related projects and their relationship, but this was done independently from the project data. We have now moved this into the project form so it's possible to specify this information at the same time as completing a project.
 
 Github issue: [#1290](https://github.com/akvo/akvo-rsr/issues/1290)
 
@@ -90,7 +90,7 @@ Github issue: [#1347](https://github.com/akvo/akvo-rsr/issues/1347)
 ### Tidying of Font Case for Sectors
 We have unified the case of text for sectors within RSR. Previously some sectors were listed with all capitals, or all small letters and the subsequent order in lists was being affected.
 
-We hve resoled this to now generate the sectors in a normalised manner and so the lists will all be truly alphabetical and it should be much easier to find the sector you are looking for.
+We have resoled this to now generate the sectors in a normalised manner and so the lists will all be truly alphabetical and it should be much easier to find the sector you are looking for.
 
 Github issue: [#1330](https://github.com/akvo/akvo-rsr/issues/1330)
 
@@ -145,7 +145,7 @@ We upgraded our version of pillow to take into account a recent security improvm
 Github issue: [#1010](https://github.com/akvo/akvo-rsr/issues/1010)
 
 ### Enable Debug Toolbar
-We use the Django Debug Toolbar for assisting with development of RSR. We have now addedthis to the Vagrant setup so all developers on RSR will have access to this.
+We use the Django Debug Toolbar for assisting with development of RSR. We have now added this to the Vagrant setup so all developers on RSR will have access to this.
 
 Github issue: [#1018](https://github.com/akvo/akvo-rsr/issues/1018)
 
