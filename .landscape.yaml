@@ -6,3 +6,4 @@ requirements:
     - scripts/deployment/pip/requirements/2_rsr.txt
 ignore-paths:
     - akvo/rsr/migrations
+    - akvo/codelists/migrations
