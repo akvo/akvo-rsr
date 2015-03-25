@@ -12,8 +12,7 @@ then
 fi
 
 # For new data update the DUMP_URL
-DUMP_URL='http://files.support.akvo-ops.org/devdbs/rsr_dump.20150224_135110.tar.gz'
-# DUMP_URL='http://files.support.akvo-ops.org/devdbs/rsr_dump.20150211_191922.tar.gz'
+DUMP_URL='http://files.support.akvo-ops.org/devdbs/rsr_dump.20150325_102257.tar.gz'
 DUMPDIR='/var/akvo/rsr/code/data/dump'
 mkdir -p $DUMPDIR
 cd $DUMPDIR
