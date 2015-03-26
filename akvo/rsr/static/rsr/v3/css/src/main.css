@@ -1239,6 +1239,28 @@ div.textBlock {
   float: left;
   margin: 30px; }
 
+.extra-partner-tooltip div.extra-partner-entry {
+  margin-bottom: 0.75em; }
+  .extra-partner-tooltip div.extra-partner-entry:last-child {
+    margin-bottom: 0;
+    border-bottom: none; }
+    .extra-partner-tooltip div.extra-partner-entry:last-child hr {
+      display: none; }
+  .extra-partner-tooltip div.extra-partner-entry hr {
+    margin: 0.5em 0 0 0;
+    padding: 0; }
+  .extra-partner-tooltip div.extra-partner-entry img {
+    display: block;
+    width: 160px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 0;
+    padding-bottom: 0.25em; }
+
+.project-container .tooltip .tooltip-inner {
+  background: rgba(255, 255, 255, 0.9); }
+
 /* Tooltips */
 .tooltip {
   z-index: 99999; }
