@@ -1498,6 +1498,40 @@ div.textBlock {
     margin: 30px;
 }
 
+.extra-partner-tooltip {
+    div.extra-partner-entry {
+        margin-bottom: 0.75em;
+        &:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            hr {
+                display: none;
+            }
+        }
+        hr {
+            margin: 0.5em 0 0 0;
+            padding: 0;
+        }
+        img {
+            display: block;
+            width: 80px;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 0;
+            padding-bottom: 0.25em;
+        }
+    }
+}
+
+.project-container {
+    .tooltip {
+        .tooltip-inner {
+            background: rgba(white, 0.9);
+        }
+    }
+}
+
 /* Tooltips */
 .tooltip {
     z-index: 99999;
