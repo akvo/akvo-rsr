@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """ Akvo RSR is covered by the GNU Affero General Public License.
+
 See more details in the license.txt file located at the root folder of the
 Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 
-This script is a tool to validate the transfer of data between mysql and
-postgres using the Django ORM.
+This script is a tool to validate the transfer of data between mysql and postgres using the Django
+ORM.
 """
 
 from __future__ import print_function
@@ -28,6 +29,7 @@ DATABASE_NAME_PG = 'default'
 
 
 def is_float_equal(x, y):
+    """Float is float."""
     if abs(x - y) < 0.000000001:
         return True
     return False
@@ -35,6 +37,8 @@ def is_float_equal(x, y):
 
 def pgDataType(field_type):
     """
+    Match Django to Postgres field.
+
     With the help of a Django field type, dig out the postgres counterpart.
     We also make sure to only return the column type description before (
     or empty space. So we exclude the legnth of fields!

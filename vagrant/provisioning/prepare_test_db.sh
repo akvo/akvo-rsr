@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Make sure rsr user can create the test database
+sudo -u postgres psql --command 'ALTER USER rsr CREATEDB;'
+
 manage='sudo -H -u rsr /var/akvo/rsr/venv/bin/python /var/akvo/rsr/code/manage.py'
 
 # if we have already done the loading, don't do it again
