@@ -51,9 +51,7 @@ class BudgetItem(models.Model):
         help_text=u'Select whether this is a planned or actual budget of the project.'
     )
     period_start = models.DateField(_(u'period start'), null=True, blank=True)
-    period_start_text = ValidXMLCharField(_(u'period start label'), max_length=50, blank=True)
     period_end = models.DateField(_(u'period end'), null=True, blank=True)
-    period_end_text = ValidXMLCharField(_(u'period end label'), max_length=50, blank=True)
     value_date = models.DateField(_(u'value date'), null=True, blank=True)
     currency = ValidXMLCharField(_(u'currency'), max_length=3, blank=True,
                                  choices=codelist_choices(Currency))

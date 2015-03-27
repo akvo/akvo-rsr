@@ -10,8 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import (AidType, Currency, DisbursementChannel, FinanceType, FlowType, TiedStatus,
-                                   TransactionType, Country, Region, RegionVocabulary, Sector, SectorCategory)
+from akvo.codelists.models import (AidType, Currency, DisbursementChannel, FinanceType, FlowType,
+                                   TiedStatus, TransactionType, Country, Region, RegionVocabulary,
+                                   Sector, SectorCategory, SectorVocabulary)
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -71,13 +72,6 @@ class Transaction(models.Model):
     )
     recipient_region_vocabulary = ValidXMLCharField(_(u'recipient region vocabulary'), blank=True, max_length=1,
                                                     choices=codelist_choices(RegionVocabulary))
-    sector = ValidXMLCharField(_(u'sector'), blank=True, max_length=5, choices=codelist_choices(Sector))
-    sector_category = ValidXMLCharField(
-        _(u'sector category'), blank=True, max_length=3, choices=codelist_choices(SectorCategory)
-    )
-    sector_other = ValidXMLCharField(
-        _(u'other sector'), blank=True, max_length=50
-    )
 
     def __unicode__(self):
         return self.value
@@ -100,13 +94,31 @@ class Transaction(models.Model):
     def iati_recipient_region_vocabulary(self):
         return codelist_value(RegionVocabulary, self, 'recipient_region_vocabulary')
 
-    def iati_sector(self):
-        return codelist_value(Sector, self, 'sector')
-
-    def iati_sector_category(self):
-        return codelist_value(SectorCategory, self, 'sector_category')
-
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'transaction')
         verbose_name_plural = _(u'transactions')
+
+
+class TransactionSector(models.Model):
+    project = models.ForeignKey(
+        'Transaction', verbose_name=_(u'transaction'), related_name='sectors'
+    )
+    code = ValidXMLCharField(_(u'sector'), blank=True, max_length=5)
+    text = ValidXMLCharField(
+        _(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)')
+    )
+    vocabulary = ValidXMLCharField(
+        _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(SectorVocabulary)
+    )
+
+    def iati_sector(self):
+        return codelist_value(Sector, self, 'code')
+
+    def iati_vocabulary(self):
+        return codelist_value(SectorVocabulary, self, 'vocabulary')
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'transaction sector')
+        verbose_name_plural = _(u'transaction sectors')

@@ -25,6 +25,8 @@ from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, Fi
                                    BudgetIdentifierVocabulary)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
+from ...iati.mandatory_fields import check_export_fields
+
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
@@ -242,10 +244,10 @@ class Project(TimestampsMixin, models.Model):
                                           choices=codelist_choices(FlowType))
     default_tied_status = ValidXMLCharField(_(u'default tied status'), blank=True, max_length=1,
                                             choices=codelist_choices(TiedStatus))
-    conditions_attached = models.NullBooleanField(_(u'attached conditions'), blank=True)
-    country_budget_vocabulary = ValidXMLCharField(_(u'country budget vocabulary'), blank=True, max_length=1,
-                                                  choices=codelist_choices(BudgetIdentifierVocabulary))
-
+    country_budget_vocabulary = ValidXMLCharField(
+        _(u'country budget vocabulary'), blank=True, max_length=1,
+        choices=codelist_choices(BudgetIdentifierVocabulary)
+    )
 
     # denormalized data
     # =================
@@ -802,6 +804,9 @@ class Project(TimestampsMixin, models.Model):
             if result.indicators.all():
                 return True
         return False
+
+    def check_mandatory_fields(self, version='2.01'):
+        return check_export_fields(self, version)
 
     class Meta:
         app_label = 'rsr'

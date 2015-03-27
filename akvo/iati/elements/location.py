@@ -46,13 +46,14 @@ def location(project):
             narrative_element = etree.SubElement(activity_description_element, "narrative")
             narrative_element.text = loc.activity_description
 
-        if loc.administrative_code and loc.administrative_vocabulary:
-            administrative_element = etree.SubElement(element, "administrative")
-            administrative_element.attrib['vocabulary'] = loc.administrative_vocabulary
-            administrative_element.attrib['code'] = loc.administrative_code
+        for administrative in loc.administratives.all():
+            if administrative.code and administrative.vocabulary:
+                administrative_element = etree.SubElement(element, "administrative")
+                administrative_element.attrib['vocabulary'] = administrative.vocabulary
+                administrative_element.attrib['code'] = administrative.code
 
-            if loc.administrative_level:
-                administrative_element.attrib['level'] = str(loc.administrative_code)
+                if administrative.level:
+                    administrative_element.attrib['level'] = str(administrative.level)
 
         if loc.latitude and loc.longitude:
             point_element = etree.SubElement(element, "point")

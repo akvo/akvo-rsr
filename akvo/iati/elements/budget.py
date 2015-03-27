@@ -17,19 +17,17 @@ def budget(project):
     budget_elements = []
 
     for budget_item in project.budget_items.all():
-        if budget_item.amount:
+        if budget_item.amount and budget_item.period_start and budget_item.period_end:
             element = etree.Element("budget")
 
             if budget_item.type:
                 element.attrib['type'] = budget_item.type
 
-            if budget_item.period_start:
-                period_start_element = etree.SubElement(element, "period-start")
-                period_start_element.attrib['iso-date'] = str(budget_item.period_start)
+            period_start_element = etree.SubElement(element, "period-start")
+            period_start_element.attrib['iso-date'] = str(budget_item.period_start)
 
-            if budget_item.period_end:
-                period_end_element = etree.SubElement(element, "period-end")
-                period_end_element.attrib['iso-date'] = str(budget_item.period_end)
+            period_end_element = etree.SubElement(element, "period-end")
+            period_end_element.attrib['iso-date'] = str(budget_item.period_end)
 
             value_element = etree.SubElement(element, "value")
             value_element.text = str(budget_item.amount)

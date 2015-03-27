@@ -161,15 +161,7 @@ class BudgetItemAdminInLine(NestedTabularInline):
     model = get_model('rsr', 'budgetitem')
     extra = 1
     formset = BudgetItemAdminInLineFormSet
-    fieldsets = (
-        (None, {
-            'fields': ('label', 'other_extra', 'type', 'amount', 'period_start', 'period_end', 'value_date')
-        }),
-        ('IATI fields (advanced)', {
-            'classes': ('collapse',),
-            'fields': ('period_start_text', 'period_end_text', )
-        })
-    )
+    fields = ('label', 'other_extra', 'type', 'amount', 'period_start', 'period_end', 'value_date')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -319,17 +311,24 @@ class PartnershipInline(NestedTabularInline):
             return 1
 
 
+class LocationAdministrativeInline(NestedTabularInline):
+    model = get_model('rsr', 'administrativelocation')
+    fields = ('code', 'vocabulary', 'level')
+    extra = 0
+
+
 class ProjectLocationInline(NestedStackedInline):
     model = get_model('rsr', 'projectlocation')
+    inlines = (LocationAdministrativeInline,)
     fieldsets = (
         (None, {
-            'fields': ('latitude', 'longitude', 'country', 'city', 'state', 'address_1', 'address_2', 'postcode')
+            'fields': ('latitude', 'longitude', 'country', 'city', 'state', 'address_1',
+                       'address_2', 'postcode')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
             'fields': ('reference', 'location_code', 'name', 'description', 'activity_description',
-                       'administrative_code', 'administrative_vocabulary', 'administrative_level', 'exactness',
-                       'location_reach', 'location_class', 'feature_designation')
+                       'exactness', 'location_reach', 'location_class', 'feature_designation')
         }),
     )
 
@@ -488,18 +487,26 @@ class SectorInline(NestedTabularInline):
             return 1
 
 
+class TransactionSectorInline(NestedTabularInline):
+    model = get_model('rsr', 'TransactionSector')
+    fields = ('code', 'vocabulary', 'text')
+    extra = 0
+
+
 class TransactionInline(NestedStackedInline):
     model = get_model('rsr', 'Transaction')
+    inlines = (TransactionSectorInline, )
     fieldsets = (
         (None, {
             'fields': ('reference', 'transaction_type', 'value', 'transaction_date', 'description')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
-            'fields': ('currency',  'value_date', 'provider_organisation', 'provider_organisation_activity',
-                       'receiver_organisation', 'receiver_organisation_activity', 'aid_type', 'disbursement_channel',
-                       'finance_type', 'flow_type', 'tied_status', 'recipient_country', 'recipient_region',
-                       'recipient_region_vocabulary', 'sector', 'sector_category', 'sector_other')
+            'fields': ('currency',  'value_date', 'provider_organisation',
+                       'provider_organisation_activity', 'receiver_organisation',
+                       'receiver_organisation_activity', 'aid_type', 'disbursement_channel',
+                       'finance_type', 'flow_type', 'tied_status', 'recipient_country',
+                       'recipient_region', 'recipient_region_vocabulary')
         }),
     )
 
@@ -676,7 +683,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Optionally, you can add additional information based on the IATI standard.'
             ),
-            'fields': ('conditions_attached',),
+            'fields': (),
         }),
         (_(u'Keywords'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(

@@ -89,12 +89,6 @@ class ProjectLocation(BaseLocation):
     activity_description = ValidXMLCharField(
         _(u'activity description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)')
     )
-    administrative_code = ValidXMLCharField(_(u'administrative code'), blank=True, max_length=25)
-    administrative_vocabulary = ValidXMLCharField(_(u'administrative vocabulary'), blank=True, max_length=2,
-                                                  choices=codelist_choices(GeographicVocabulary))
-    administrative_level = models.PositiveSmallIntegerField(
-        _(u'administrative level'), blank=True, null=True, max_length=1
-    )
     exactness = ValidXMLCharField(_(u'exactness'), blank=True, max_length=1,
                                   choices=codelist_choices(GeographicExactness))
     location_reach = ValidXMLCharField(_(u'reach'), blank=True, max_length=1,
@@ -118,6 +112,28 @@ class ProjectLocation(BaseLocation):
 
     def iati_designation(self):
         return codelist_value(LocationType, self, 'feature_designation')
+
+
+class AdministrativeLocation(models.Model):
+    location = models.ForeignKey(
+        'ProjectLocation', verbose_name=_(u'location'), related_name='administratives'
+    )
+    code = ValidXMLCharField(_(u'administrative code'), blank=True, max_length=25)
+    vocabulary = ValidXMLCharField(
+        _(u'administrative vocabulary'), blank=True, max_length=2,
+        choices=codelist_choices(GeographicVocabulary)
+    )
+    level = models.PositiveSmallIntegerField(
+        _(u'administrative level'), blank=True, null=True, max_length=1
+    )
+
+    def iati_vocabulary(self):
+        return codelist_value(GeographicVocabulary, self, 'vocabulary')
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'location administrative')
+        verbose_name_plural = _(u'location administratives')
 
 
 class ProjectUpdateLocation(BaseLocation):

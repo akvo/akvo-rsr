@@ -36,7 +36,8 @@ from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
 from .link import Link
-from .location import OrganisationLocation, ProjectLocation, ProjectUpdateLocation
+from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocation,
+                       AdministrativeLocation)
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
 from .partner_site import PartnerSite
@@ -56,7 +57,7 @@ from .region import RecipientRegion
 from .related_project import RelatedProject
 from .result import Result
 from .sector import Sector
-from .transaction import Transaction
+from .transaction import Transaction, TransactionSector
 from .user import User
 
 __all__ = [
@@ -84,6 +85,7 @@ __all__ = [
     'Link',
     'OrganisationLocation',
     'ProjectLocation',
+    'AdministrativeLocation',
     'ProjectUpdateLocation',
     'Organisation',
     'OrganisationAccount',
@@ -107,6 +109,7 @@ __all__ = [
     'Result',
     'Sector',
     'Transaction',
+    'TransactionSector',
     'User',
 ]
 

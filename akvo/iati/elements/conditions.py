@@ -14,13 +14,12 @@ def conditions(project):
     :param project: Project object
     :return: A list of Etree elements
     """
-    if project.conditions.all():
-        conditions_element = etree.Element("conditions")
-    else:
-        return []
+    conditions_element = etree.Element("conditions")
 
-    if project.conditions_attached is not None:
-        conditions_element.attrib['attached'] = '1' if project.conditions_attached else '0'
+    if project.conditions.all():
+        conditions_element.attrib['attached'] = '1'
+    else:
+        conditions_element.attrib['attached'] = '0'
 
     for condition in project.conditions.all():
         if condition.type:

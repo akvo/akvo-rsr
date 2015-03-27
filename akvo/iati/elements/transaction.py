@@ -84,21 +84,23 @@ def transaction(project):
             disbursement_channel_element = etree.SubElement(element, "disbursement-channel")
             disbursement_channel_element.attrib['code'] = trans.disbursement_channel
 
-        if trans.sector:
-            sector_element = etree.SubElement(element, "sector")
-            sector_element.attrib['code'] = trans.sector
-            sector_element.attrib['vocabulary'] = '1'
+        for sector in trans.sectors.all():
+            if sector.code:
+                sector_element = etree.SubElement(element, "sector")
+                sector_element.attrib['code'] = sector.code
 
-        if trans.sector_category:
-            sector_category_element = etree.SubElement(element, "sector")
-            sector_category_element.attrib['code'] = trans.sector_category
-            sector_category_element.attrib['vocabulary'] = '2'
+                if not sector.vocabulary or sector.vocabulary == 'DAC':
+                    sector_element.attrib['vocabulary'] = '1'
+                elif sector.vocabulary == 'DAC-3':
+                    sector_element.attrib['vocabulary'] = '2'
+                else:
+                    sector_element.attrib['vocabulary'] = sector.vocabulary
 
-        if trans.sector_other:
-            sector_other_element = etree.SubElement(element, "sector")
-            sector_other_element.attrib['vocabulary'] = '99'
-            narrative_element = etree.SubElement(sector_other_element, "narrative")
-            narrative_element.text = trans.sector_other
+                if sector.percentage:
+                    sector_element.attrib['percentage'] = str(sector.percentage)
+
+                if sector.text:
+                    sector_element.text = sector.text
 
         if trans.recipient_country:
             recipient_country_element = etree.SubElement(element, "recipient-country")

@@ -39,7 +39,7 @@ class Sector(models.Model):
     )
 
     def __unicode__(self):
-        return self.iati_sector()
+        return self.sector_code
 
     def iati_sector_codes(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
