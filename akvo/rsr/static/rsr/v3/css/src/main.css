@@ -1383,6 +1383,53 @@ div.textBlock {
     section.projectFinancial .dl-horizontal dt {
       width: initial; } } }
 
+/* Project Partners details page */
+section.projectPartners .title {
+  margin-bottom: 1em; }
+section.projectPartners .row {
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 1.5em;
+  background: rgba(245, 245, 245, 0.5);
+  border: thin solid rgba(44, 42, 116, 0.1);
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px; }
+  section.projectPartners .row h2, section.projectPartners .row h3, section.projectPartners .row h4 {
+    margin-top: 0; }
+  section.projectPartners .row img {
+    max-height: 120px;
+    margin: 0 auto;
+    display: block; }
+  @media only screen and (max-width: 768px) {
+    section.projectPartners .row img {
+      max-height: 150px;
+      margin-bottom: 1em;
+      max-width: 60%; } }
+  section.projectPartners .row h2 {
+    display: inline-block;
+    font-size: 1.3em; }
+  section.projectPartners .row .fa {
+    font-size: 1.3em;
+    color: #2c2a74; }
+  section.projectPartners .row a.org-link:hover i, section.projectPartners .row a.org-link:hover h2 {
+    color: #ff5500; }
+  section.projectPartners .row ul {
+    margin: 0;
+    padding: 0; }
+  section.projectPartners .row li {
+    list-style: none; }
+@media only screen and (max-width: 768px) {
+  section.projectPartners .container {
+    padding-left: 0;
+    padding-right: 0; }
+  section.projectPartners.projectPartners {
+    max-width: 95%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto; } }
+
 /* Display currency totals right-aligned */
 .currencyAmount {
   text-align: right; }
