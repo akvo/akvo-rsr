@@ -15,10 +15,11 @@ from akvo.codelists.models import DocumentCategory, Language
 from akvo.utils import codelist_choices, codelist_value
 
 
-class ProjectDocument(models.Model):
-    def document_path(self, filename):
-        return 'db/project/%s/document/%s' % (str(self.project.pk), filename)
+def document_path(self, filename):
+    return 'db/project/%s/document/%s' % (str(self.project.pk), filename)
 
+
+class ProjectDocument(models.Model):
     project = models.ForeignKey('Project', related_name='documents', verbose_name=_(u'project'))
     url = models.URLField(
         _(u'url'), blank=True,

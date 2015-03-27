@@ -17,10 +17,11 @@ from ..fields import ValidXMLCharField, ValidXMLTextField
 from .project import Project
 
 
-class FocusArea(models.Model):
-    def image_path(instance, file_name):
-        return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
+def image_path(instance, file_name):
+    return rsr_image_path(instance, file_name, 'db/focus_area/%(file_name)s')
 
+
+class FocusArea(models.Model):
     name = ValidXMLCharField(
         u'focus area name', max_length=50,
         help_text=_(
