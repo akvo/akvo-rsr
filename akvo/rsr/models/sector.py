@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists import models as codelist_models
+from akvo.codelists.store.codelists_v201 import SECTOR_VOCABULARY
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -30,7 +31,7 @@ class Sector(models.Model):
     )
     text = ValidXMLCharField(_(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)'))
     vocabulary = ValidXMLCharField(
-        _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(codelist_models.SectorVocabulary)
+        _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(SECTOR_VOCABULARY)
     )
     percentage = models.DecimalField(
         _(u'sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
@@ -39,7 +40,7 @@ class Sector(models.Model):
     )
 
     def __unicode__(self):
-        return self.sector_code
+        return self.iati_sector()
 
     def iati_sector_codes(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):

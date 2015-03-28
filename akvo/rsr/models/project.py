@@ -23,6 +23,9 @@ from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus,
                                    BudgetIdentifierVocabulary)
+from akvo.codelists.store.codelists_v201 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
+                                                 FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
+                                                 BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
 from ...iati.mandatory_fields import check_export_fields
@@ -227,7 +230,7 @@ class Project(TimestampsMixin, models.Model):
                     u'So for example: is this project part of a larger project or programme.')
     )
     project_scope = ValidXMLCharField(
-        _(u'project scope'), blank=True, max_length=2, choices=codelist_choices(ActivityScope),
+        _(u'project scope'), blank=True, max_length=2, choices=codelist_choices(ACTIVITY_SCOPE),
         help_text=_(u'Select the geographical scope of the project.')
     )
     capital_spend_percentage = models.DecimalField(
@@ -235,18 +238,18 @@ class Project(TimestampsMixin, models.Model):
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
     collaboration_type = ValidXMLCharField(_(u'collaboration type'), blank=True, max_length=1,
-                                           choices=codelist_choices(CollaborationType))
+                                           choices=codelist_choices(COLLABORATION_TYPE))
     default_aid_type = ValidXMLCharField(_(u'default aid type'), blank=True, max_length=3,
-                                         choices=codelist_choices(AidType))
+                                         choices=codelist_choices(AID_TYPE))
     default_finance_type = ValidXMLCharField(_(u'default finance type'), blank=True, max_length=3,
-                                             choices=codelist_choices(FinanceType))
+                                             choices=codelist_choices(FINANCE_TYPE))
     default_flow_type = ValidXMLCharField(_(u'default flow type'), blank=True, max_length=2,
-                                          choices=codelist_choices(FlowType))
+                                          choices=codelist_choices(FLOW_TYPE))
     default_tied_status = ValidXMLCharField(_(u'default tied status'), blank=True, max_length=1,
-                                            choices=codelist_choices(TiedStatus))
+                                            choices=codelist_choices(TIED_STATUS))
     country_budget_vocabulary = ValidXMLCharField(
         _(u'country budget vocabulary'), blank=True, max_length=1,
-        choices=codelist_choices(BudgetIdentifierVocabulary)
+        choices=codelist_choices(BUDGET_IDENTIFIER_VOCABULARY)
     )
 
     # denormalized data

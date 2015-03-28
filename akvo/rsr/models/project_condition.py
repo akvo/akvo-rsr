@@ -11,13 +11,16 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import ConditionType
+from akvo.codelists.store.codelists_v201 import CONDITION_TYPE
 from akvo.utils import codelist_choices, codelist_value
 
 
 class ProjectCondition(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='conditions')
-    text = ValidXMLCharField(_(u'condition'), blank=True, max_length=100, help_text=_(u'(100 characters)'))
-    type = ValidXMLCharField(_(u'condition type'), blank=True, max_length=1, choices=codelist_choices(ConditionType))
+    text = ValidXMLCharField(_(u'condition'), blank=True, max_length=100,
+                             help_text=_(u'(100 characters)'))
+    type = ValidXMLCharField(_(u'condition type'), blank=True, max_length=1,
+                             choices=codelist_choices(CONDITION_TYPE))
 
     def iati_type(self):
         return codelist_value(ConditionType, self, 'type')

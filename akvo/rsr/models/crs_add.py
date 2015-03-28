@@ -12,6 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import CRSAddOtherFlags, LoanRepaymentType, LoanRepaymentPeriod, Currency
+from akvo.codelists.store.codelists_v201 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
+                                                 LOAN_REPAYMENT_PERIOD, CURRENCY)
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -28,16 +30,20 @@ class CrsAdd(models.Model):
         _(u'rate 2'), blank=True, null=True, max_digits=5, decimal_places=2,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
-    repayment_type = ValidXMLCharField(_(u'repayment type'), max_length=1, choices=codelist_choices(LoanRepaymentType))
+    repayment_type = ValidXMLCharField(
+        _(u'repayment type'), max_length=1, choices=codelist_choices(LOAN_REPAYMENT_TYPE)
+    )
     repayment_plan = ValidXMLCharField(
-        _(u'repayment plan'), max_length=2, choices=codelist_choices(LoanRepaymentPeriod)
+        _(u'repayment plan'), max_length=2, choices=codelist_choices(LOAN_REPAYMENT_PERIOD)
     )
     commitment_date = models.DateField(_(u'commitment date'), null=True, blank=True)
     repayment_first_date = models.DateField(_(u'first repayment date'), null=True, blank=True)
     repayment_final_date = models.DateField(_(u'final repayment date'), null=True, blank=True)
-    loan_status_year = models.PositiveIntegerField(_(u'loan status year'), blank=True, null=True, max_length=4)
+    loan_status_year = models.PositiveIntegerField(
+        _(u'loan status year'), blank=True, null=True, max_length=4
+    )
     loan_status_currency = ValidXMLCharField(
-        _(u'currency'), blank=True, max_length=3, choices=codelist_choices(Currency)
+        _(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
     )
     loan_status_value_date = models.DateField(_(u'loan status value date'), blank=True, null=True)
     interest_received = models.DecimalField(
@@ -73,7 +79,9 @@ class CrsAddOtherFlag(models.Model):
     Other flag of CRS++ reporting.
     """
     crs = models.ForeignKey('CrsAdd', verbose_name=u'crs', related_name='other_flags')
-    code = ValidXMLCharField(_(u'code'), max_length=1, choices=codelist_choices(CRSAddOtherFlags))
+    code = ValidXMLCharField(
+        _(u'code'), max_length=1, choices=codelist_choices(C_R_S_ADD_OTHER_FLAGS)
+    )
     significance = models.NullBooleanField(_(u'significance'), blank=True)
 
     def iati_code(self):

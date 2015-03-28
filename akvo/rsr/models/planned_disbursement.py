@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 from akvo.codelists.models import BudgetType, Currency
+from akvo.codelists.store.codelists_v201 import BUDGET_TYPE, CURRENCY
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -17,11 +18,13 @@ class PlannedDisbursement(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='planned_disbursements')
     value = models.DecimalField(_(u'value'), blank=True, max_digits=10, decimal_places=2)
     value_date = models.DateField(_(u'value date'), null=True, blank=True)
-    currency = ValidXMLCharField(_(u'currency'), blank=True, max_length=3, choices=codelist_choices(Currency))
+    currency = ValidXMLCharField(_(u'currency'), blank=True, max_length=3,
+                                 choices=codelist_choices(CURRENCY))
     updated = models.DateField(_(u'updated'), null=True, blank=True)
     period_start = models.DateField(_(u'period start'), null=True, blank=True)
     period_end = models.DateField(_(u'period end'), null=True, blank=True)
-    type = ValidXMLCharField(_(u'type'), blank=True, max_length=1, choices=codelist_choices(BudgetType))
+    type = ValidXMLCharField(_(u'type'), blank=True, max_length=1,
+                             choices=codelist_choices(BUDGET_TYPE))
 
     def __unicode__(self):
         return self.value

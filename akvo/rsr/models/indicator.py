@@ -9,7 +9,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
-from akvo.codelists.models import DescriptionType, IndicatorMeasure
+from akvo.codelists.models import IndicatorMeasure
+from akvo.codelists.store.codelists_v201 import INDICATOR_MEASURE
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -20,12 +21,13 @@ class Indicator(models.Model):
         help_text=_(u'Enter the title for the indicator from the project result. (255 characters)')
     )
     measure = ValidXMLCharField(
-        _(u'measure'), blank=True, max_length=1, choices=codelist_choices(IndicatorMeasure),
+        _(u'measure'), blank=True, max_length=1, choices=codelist_choices(INDICATOR_MEASURE),
         help_text=_(u'Select whether the indicator counts units or evaluates a percentage.')
     )
     ascending = models.NullBooleanField(
         _(u'ascending'), blank=True,
-        help_text=_(u'Is the aim of the project to increase or decrease the value of the indicator?'))
+        help_text=_(u'Is the aim of the project to increase or decrease the value of the '
+                    u'indicator?'))
     description = ValidXMLCharField(
         _(u'description'), blank=True, max_length=255,
         help_text=_(u'You can further define the indicator here. (255 characters)')
@@ -67,7 +69,8 @@ class IndicatorPeriod(models.Model):
     )
     target_value = ValidXMLCharField(
         _(u'target value'), blank=True, max_length=50,
-        help_text=_(u'Enter the value of the indicator that the project is intending to reach. (50 characters)')
+        help_text=_(u'Enter the value of the indicator that the project is intending to reach. '
+                    u'(50 characters)')
     )
     target_comment = ValidXMLCharField(
         _(u'target comment'), blank=True, max_length=255,
@@ -75,7 +78,8 @@ class IndicatorPeriod(models.Model):
     )
     actual_value = ValidXMLCharField(
         _(u'actual value'), blank=True, max_length=50,
-        help_text=_(u'Enter the value of the indicator that the project has reached. (50 characters)')
+        help_text=_(u'Enter the value of the indicator that the project has reached. '
+                    u'(50 characters)')
     )
     actual_comment = ValidXMLCharField(
         _(u'actual comment'), blank=True, max_length=255,

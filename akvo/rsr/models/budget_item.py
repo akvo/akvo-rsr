@@ -11,7 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import BudgetIdentifier, BudgetIdentifierVocabulary, BudgetType, Currency
+from akvo.codelists.models import BudgetIdentifier, BudgetType, Currency
+from akvo.codelists.store.codelists_v201 import BUDGET_IDENTIFIER,BUDGET_TYPE, CURRENCY
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -47,14 +48,14 @@ class BudgetItem(models.Model):
 
     # Extra IATI fields
     type = ValidXMLCharField(
-        _(u'budget type'), blank=True, max_length=1, choices=codelist_choices(BudgetType),
+        _(u'budget type'), blank=True, max_length=1, choices=codelist_choices(BUDGET_TYPE),
         help_text=u'Select whether this is a planned or actual budget of the project.'
     )
     period_start = models.DateField(_(u'period start'), null=True, blank=True)
     period_end = models.DateField(_(u'period end'), null=True, blank=True)
     value_date = models.DateField(_(u'value date'), null=True, blank=True)
     currency = ValidXMLCharField(_(u'currency'), max_length=3, blank=True,
-                                 choices=codelist_choices(Currency))
+                                 choices=codelist_choices(CURRENCY))
 
     def __unicode__(self):
         return self.label.__unicode__()
@@ -84,7 +85,9 @@ class BudgetItem(models.Model):
 
 class CountryBudgetItem(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='country_budget_items')
-    code = ValidXMLCharField(_(u'budget item'), max_length=6, blank=True, choices=codelist_choices(BudgetIdentifier))
+    code = ValidXMLCharField(
+        _(u'budget item'), max_length=6, blank=True, choices=codelist_choices(BUDGET_IDENTIFIER)
+    )
     description = ValidXMLCharField(
         _(u'description'), max_length=100, blank=True, help_text=_(u'(max 100 characters)')
     )
@@ -95,9 +98,6 @@ class CountryBudgetItem(models.Model):
 
     def iati_code(self):
         return codelist_value(BudgetIdentifier, self, 'code')
-
-    def iati_vocabulary(self):
-        return codelist_value(BudgetIdentifierVocabulary, self, 'vocabulary')
 
     class Meta:
         app_label = 'rsr'

@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import RelatedActivityType
+from akvo.codelists.store.codelists_v201 import RELATED_ACTIVITY_TYPE
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -24,7 +25,7 @@ class RelatedProject(models.Model):
                     u'Fill this in if the related project does not exist in RSR')
     )
     relation = ValidXMLCharField(
-        _(u'relation'), max_length=1, choices=codelist_choices(RelatedActivityType),
+        _(u'relation'), max_length=1, choices=codelist_choices(RELATED_ACTIVITY_TYPE),
         help_text=_(u'The relation between a project and related project. '
         u'(E.g. select the \'Parent\' relation when the selected project here is the parent of this project).')
     )
