@@ -104,7 +104,7 @@
       <h2>{% trans 'Funding' %}</h2>
       <dl class="org_statistics_table dl-horizontal">
         {% if organisation.euro_projects_count %}
-          <dt>{% trans 'Project' %}{{organisation.euro_projects_count|pluralize:"s"}}</dt>
+          <dt>{% trans 'Projects' %}</dt>
           <dd>{{organisation.euro_projects_count}}</dd>
           <dt>{% trans 'Currency used' %}</dt>
           <dd>{% trans 'Euros' %}</dd>
@@ -124,9 +124,7 @@
           <dd></dd>
         {% endif %}
         {% if organisation.dollar_projects_count %}
-          <dt>
-          {% trans 'Project' %}{{organisation.dollar_projects_count|pluralize:"s"}}
-          </dt>
+          <dt>{% trans 'Projects' %}</dt>
           <dd>{{organisation.dollar_projects_count}}</dd>
           <dt>{% trans 'Currency used' %}</dt>
           <dd>{% trans 'US Dollars' %}</dd>          
