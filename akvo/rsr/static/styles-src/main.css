@@ -1239,6 +1239,28 @@ div.textBlock {
   float: left;
   margin: 30px; }
 
+.extra-partner-tooltip div.extra-partner-entry {
+  margin-bottom: 0.75em; }
+  .extra-partner-tooltip div.extra-partner-entry:last-child {
+    margin-bottom: 0;
+    border-bottom: none; }
+    .extra-partner-tooltip div.extra-partner-entry:last-child hr {
+      display: none; }
+  .extra-partner-tooltip div.extra-partner-entry hr {
+    margin: 0.5em 0 0 0;
+    padding: 0; }
+  .extra-partner-tooltip div.extra-partner-entry img {
+    display: block;
+    width: 80px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 0;
+    padding-bottom: 0.25em; }
+
+.project-container .tooltip .tooltip-inner {
+  background: rgba(255, 255, 255, 0.9); }
+
 /* Tooltips */
 .tooltip {
   z-index: 99999; }
@@ -1360,6 +1382,53 @@ div.textBlock {
   @media only screen and (min-width: 768px) {
     section.projectFinancial .dl-horizontal dt {
       width: initial; } } }
+
+/* Project Partners details page */
+section.projectPartners .title {
+  margin-bottom: 1em; }
+section.projectPartners .row {
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 1.5em;
+  background: rgba(245, 245, 245, 0.5);
+  border: thin solid rgba(44, 42, 116, 0.1);
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px; }
+  section.projectPartners .row h2, section.projectPartners .row h3, section.projectPartners .row h4 {
+    margin-top: 0; }
+  section.projectPartners .row img {
+    max-height: 120px;
+    margin: 0 auto;
+    display: block; }
+  @media only screen and (max-width: 768px) {
+    section.projectPartners .row img {
+      max-height: 150px;
+      margin-bottom: 1em;
+      max-width: 60%; } }
+  section.projectPartners .row h2 {
+    display: inline-block;
+    font-size: 1.3em; }
+  section.projectPartners .row .fa {
+    font-size: 1.3em;
+    color: #2c2a74; }
+  section.projectPartners .row a.org-link:hover i, section.projectPartners .row a.org-link:hover h2 {
+    color: #ff5500; }
+  section.projectPartners .row ul {
+    margin: 0;
+    padding: 0; }
+  section.projectPartners .row li {
+    list-style: none; }
+@media only screen and (max-width: 768px) {
+  section.projectPartners .container {
+    padding-left: 0;
+    padding-right: 0; }
+  section.projectPartners.projectPartners {
+    max-width: 95%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto; } }
 
 /* Display currency totals right-aligned */
 .currencyAmount {

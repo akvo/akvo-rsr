@@ -40,6 +40,10 @@ from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 
 
+def image_path(instance, file_name):
+    return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
+
+
 class Project(TimestampsMixin, models.Model):
     CURRENCY_CHOICES = (
         ('USD', '$'),
@@ -75,9 +79,6 @@ class Project(TimestampsMixin, models.Model):
         STATUS_CANCELLED: 'red',
         STATUS_ARCHIVED: 'grey',
     }
-
-    def image_path(instance, file_name):
-        return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
     title = ValidXMLCharField(
         _(u'title'), max_length=45, db_index=True,

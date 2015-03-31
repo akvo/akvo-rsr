@@ -1498,6 +1498,40 @@ div.textBlock {
     margin: 30px;
 }
 
+.extra-partner-tooltip {
+    div.extra-partner-entry {
+        margin-bottom: 0.75em;
+        &:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            hr {
+                display: none;
+            }
+        }
+        hr {
+            margin: 0.5em 0 0 0;
+            padding: 0;
+        }
+        img {
+            display: block;
+            width: 80px;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 0;
+            padding-bottom: 0.25em;
+        }
+    }
+}
+
+.project-container {
+    .tooltip {
+        .tooltip-inner {
+            background: rgba(white, 0.9);
+        }
+    }
+}
+
 /* Tooltips */
 .tooltip {
     z-index: 99999;
@@ -1669,6 +1703,72 @@ section.projectFinancial {
                     width: initial;
                 }
             }
+        }
+    }
+}
+
+/* Project Partners details page */
+
+section.projectPartners {
+    .title {
+        margin-bottom: 1em;
+    }
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 1.5em;
+        background: rgba(245, 245, 245, 0.5);
+        border: thin solid rgba($rsrBlue, 0.1);
+        @include border-radius(3px);
+        h2, h3, h4 {
+            margin-top: 0;
+        }
+        img {
+            max-height: 120px;
+            margin: 0 auto;
+            display: block;
+        }
+        @include responsive(small-max-screens) {
+            img {
+                max-height: 150px;
+                margin-bottom: 1em;
+                max-width: 60%;
+            }
+        }
+
+        h2 {
+            display: inline-block;
+            font-size: 1.3em;
+        }
+        .fa {
+            font-size: 1.3em;
+            color: $akvoPurple;
+        }
+        a.org-link {
+            &:hover {
+                i, h2 {
+                    color: rgb(255, 85, 0);
+                }
+            }
+        }
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+    }
+    @include responsive(small-max-screens) {
+        .container {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        &.projectPartners {
+            max-width: 95%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
     }
 }

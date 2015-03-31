@@ -26,7 +26,7 @@ cp -rv $WORKDIR/db /var/akvo/rsr/mediaroot/db
 cd /var/akvo/rsr
 . venv/bin/activate
 cd ./code
-python ./manage.py syncdb
+python ./manage.py migrate
 # python ./manage.py thumbnail clear_delete_all
 deactivate
 EOF

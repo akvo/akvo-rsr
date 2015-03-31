@@ -55,12 +55,9 @@
                               </a>
                               <div class="media-body">
                                   <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
-                                  <a href="javascript:;" class="small moreLink" data-toggle="tooltip"
-                                   title="{% for partner, types in partners.items %}
-                                              {% if not forloop.first %}<br>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
-                                              ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)
-                                          {% endfor %}"
-                                   data-placement="right" data-container="body">+ {{partners|length}} partners</a>
+                                  <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
+                                   title="<div class='extra-partner-tooltip'>{% for partner, types in partners.items %}<div class='extra-partner-entry'>{% if partner.logo %}<a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a> ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)<hr></div>{% endfor %}</div>"
+                                   data-placement="right" data-container="article" data-class="foo">+ {{partners|length}} partners</a>
                                   {% if project.reporting_org.primary_location.country %}
                                   <div class="projectLocation"><i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}</div>
                               </div>

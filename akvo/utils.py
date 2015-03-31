@@ -308,7 +308,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
                     getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
                     recipients
                 )
-            if should_send(user, notice_type, "sms") and user.get_profile().phone_number: # SMS
+            if should_send(user, notice_type, "sms") and user.phone_number: # SMS
                 # strip newlines
                 sms = ''.join(render_to_string('notification/email_subject.txt', {
                     'message': messages['sms.txt'],
