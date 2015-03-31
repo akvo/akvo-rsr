@@ -6,8 +6,6 @@
 
 from lxml import etree
 
-from akvo.rsr.models import CrsAdd
-
 
 def crs_add(project):
     """
@@ -18,7 +16,7 @@ def crs_add(project):
     """
     try:
         crs = project.crsadd
-    except CrsAdd.DoesNotExist:
+    except:
         return []
 
     element = etree.Element("crs-add")

@@ -6,8 +6,6 @@
 
 from lxml import etree
 
-from akvo.rsr.models import Fss
-
 
 def fss(project):
     """
@@ -18,7 +16,7 @@ def fss(project):
     """
     try:
         fss_object = project.fss
-    except Fss.DoesNotExist:
+    except:
         return []
 
     element = etree.Element("fss")

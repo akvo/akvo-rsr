@@ -133,6 +133,9 @@ class Organisation(TimestampsMixin, models.Model):
         ),
         default=True
     )
+    public_iati_file = models.BooleanField(
+        _(u'Show latest exported IATI file on organisation page.'), default=True
+    )
 
     objects = QuerySetManager()
 
@@ -275,6 +278,17 @@ class Organisation(TimestampsMixin, models.Model):
             projectlocation__project__partnerships__organisation=self,
             projectlocation__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
         ).distinct()
+
+    def iati_file(self):
+        """
+        Looks up the latest public IATI file of this organisation.
+
+        :return: String of IATI file or None
+        """
+        for export in self.iati_exports.all().order_by('-last_modified_at'):
+            if export.is_public and export.status == 3 and export.iati_file:
+                return export.iati_file
+        return None
 
     # New API
 

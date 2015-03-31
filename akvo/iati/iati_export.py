@@ -5,8 +5,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import elements
+import os
 
 from datetime import datetime
+from io import BytesIO
 from lxml import etree
 
 ELEMENTS = [
@@ -53,18 +55,24 @@ ELEMENTS = [
 
 
 class IatiXML(object):
-    def print_file(self, file_path):
+    def save_file(self, org_id, filename):
         """
         Export the etree to a file.
 
-        :param file_path: String of the file location
+        :param org: String of Organisation id
+        :param filename: String of the file name
         :return: File object
         """
-        f = open(file_path, 'w')
+        media_root = '/var/akvo/rsr/mediaroot/'
+        directory = 'db/org/%s/iati/' % org_id
+        if not os.path.exists(media_root + directory):
+            os.makedirs(media_root + directory)
+
+        f = open(media_root + directory + filename, 'w')
         f.write(etree.tostring(self.iati_activities, pretty_print=True))
         f.close()
-        print "Done."
-        return f
+
+        return directory + filename
 
     def add_project(self, project):
         """

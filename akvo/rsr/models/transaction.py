@@ -130,3 +130,4 @@ class TransactionSector(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'transaction sector')
         verbose_name_plural = _(u'transaction sectors')
+        unique_together = ('project', 'vocabulary')

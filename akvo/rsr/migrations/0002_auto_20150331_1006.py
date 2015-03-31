@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import akvo.rsr.models.iati_export
 import django.db.models.deletion
+from django.conf import settings
 import akvo.rsr.fields
 import django.core.validators
 
@@ -99,6 +101,26 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='IatiExport',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(db_index=True, auto_now_add=True, null=True)),
+                ('last_modified_at', models.DateTimeField(db_index=True, auto_now=True, null=True)),
+                ('version', akvo.rsr.fields.ValidXMLCharField(default=b'2.01', max_length=4, verbose_name='version')),
+                ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status')),
+                ('iati_file', models.FileField(upload_to=akvo.rsr.models.iati_export.file_path, verbose_name='IATI file', blank=True)),
+                ('is_public', models.BooleanField(default=True, verbose_name='public')),
+                ('projects', models.ManyToManyField(to='rsr.Project', verbose_name='projects')),
+                ('reporting_organisation', models.ForeignKey(related_name='iati_exports', verbose_name='reporting organisation', to='rsr.Organisation')),
+                ('user', models.ForeignKey(related_name='iati_exports', verbose_name='user', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'IATI export',
+                'verbose_name_plural': 'IATI exports',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='TransactionSector',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -112,6 +134,10 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'transaction sectors',
             },
             bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='transactionsector',
+            unique_together=set([('project', 'vocabulary')]),
         ),
         migrations.RemoveField(
             model_name='budgetitem',
@@ -172,6 +198,12 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='transaction',
             name='transaction_type_text',
+        ),
+        migrations.AddField(
+            model_name='organisation',
+            name='public_iati_file',
+            field=models.BooleanField(default=True, verbose_name='Show latest exported IATI file on organisation page.'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='project',
@@ -291,6 +323,12 @@ class Migration(migrations.Migration):
             model_name='project',
             name='project_scope',
             field=akvo.rsr.fields.ValidXMLCharField(blank=True, help_text='Select the geographical scope of the project.', max_length=2, verbose_name='project scope', choices=[('1', '1 - Global'), ('2', '2 - Regional'), ('3', '3 - Multi-national'), ('4', '4 - National'), ('5', '5 - Sub-national: Multi-first-level administrative areas'), ('6', '6 - Sub-national: Single first-level administrative area'), ('7', '7 - Sub-national: Single second-level administrative area'), ('8', '8 - Single location')]),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='project',
+            name='sync_owner',
+            field=models.ForeignKey(related_name='reporting_projects', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='rsr.Organisation', help_text='Select the reporting organisation of the project.', null=True, verbose_name='reporting organisation'),
             preserve_default=True,
         ),
         migrations.AlterField(
