@@ -1804,34 +1804,3 @@ dd {
         }
     }
 }
-
-/*   Version Banner */
-#versionBanner {
-    box-sizing: border-box;
-    position: fixed;
-    max-height: 60px;
-    bottom: 0px;
-    right: 0;
-    z-index: 21322;
-    @include border-radius(3px 3px 0 0);
-    background-color: rgba($akvoTvRed, 0.9);
-    border-top: 1px solid rgba($anchorLinkHover, 0.5);
-    border-left: 1px solid rgba($anchorLinkHover, 0.5);
-    box-shadow: -1px -5px 6px rgba($akvoBlack, 0.4);
-    color: $akvoTvRed;
-    div {
-        padding: 15px 15px 15px 8px;
-        background: rgba(white, 0.95);
-        button.closeBtn {
-            padding: 5px 8px;
-            background: $anchorLink;
-            @include border-radius(3px);
-            margin-right: 10px;
-            color: white;
-            border: none;
-            &:hover {
-                background: $anchorLinkHover;
-            }
-        }
-    }
-}
