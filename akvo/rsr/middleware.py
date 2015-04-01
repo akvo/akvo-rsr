@@ -18,7 +18,7 @@ from akvo.rsr.models import PartnerSite
 def _is_rsr_host(hostname):
     """Predicate function that checks if request is made to the RSR_DOMAIN."""
     rsr_hosts = ['127.0.0.1', 'localhost', settings.RSR_DOMAIN]
-    return True if hostname in rsr_hosts else False
+    return hostname in rsr_hosts
 
 
 def _partner_site(netloc):
