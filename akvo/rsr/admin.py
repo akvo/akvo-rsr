@@ -1031,6 +1031,18 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
             return list(self.list_display) + ['notes']
         return super(PartnerSiteAdmin, self).get_list_display(request)
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(PartnerSiteAdmin, self).get_queryset(request)
+
+        from .models import PartnerSite
+        qs = PartnerSite.objects.none()
+        for employment in request.user.employers.approved():
+            if employment.group in Group.objects.filter(name='Admins'):
+                ps_pks = (ps.pk for ps in employment.organisation.partnersites())
+                qs = qs | PartnerSite.objects.filter(pk__in=ps_pks)
+        return qs.distinct()
+
 admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
 
 
