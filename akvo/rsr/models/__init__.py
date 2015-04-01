@@ -133,7 +133,7 @@ rules.add_perm('rsr.add_keyword', is_rsr_admin)
 rules.add_perm('rsr.change_keyword', is_rsr_admin)
 
 rules.add_perm('rsr.add_partnersite', is_rsr_admin)
-rules.add_perm('rsr.change_partnersite', is_rsr_admin)
+rules.add_perm('rsr.change_partnersite', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_partnertype', is_rsr_admin)
 rules.add_perm('rsr.change_partnertype', is_rsr_admin)
