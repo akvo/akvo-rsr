@@ -9,7 +9,7 @@ import rules
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from .models import Employment, Organisation, Project, PublishingStatus
+from .models import Employment, Organisation, PartnerSite, Project, PublishingStatus
 
 
 @rules.predicate
@@ -20,6 +20,7 @@ def is_rsr_admin(user):
 
 @rules.predicate
 def is_org_admin(user, obj):
+    # obj + 1
     if not user.is_authenticated():
         return False
     for employment in user.employers.approved():
@@ -35,6 +36,8 @@ def is_org_admin(user, obj):
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True
             elif isinstance(obj, PublishingStatus) and obj in employment.organisation.all_projects().publishingstatuses():
+                return True
+            elif isinstance(obj, PartnerSite) and obj in employment.organisation.partnersites():
                 return True
             else:
                 try:

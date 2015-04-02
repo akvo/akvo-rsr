@@ -42,6 +42,21 @@ def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
 
+class OrgManager(models.Manager):
+    def get_queryset(self):
+        return super(OrgManager, self).get_queryset().extra(
+            select={
+                'lower_name': 'lower(name)'
+            }
+        ).order_by('lower_name')
+
+    def __getattr__(self, attr, *args):
+        try:
+            return getattr(self.__class__, attr, *args)
+        except AttributeError:
+            return getattr(self.get_queryset(), attr, *args)
+
+
 class Organisation(TimestampsMixin, models.Model):
     """
     There are four types of organisations in RSR, called Field,
@@ -137,12 +152,11 @@ class Organisation(TimestampsMixin, models.Model):
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )
 
-    objects = QuerySetManager()
+    objects = OrgManager()
 
     @models.permalink
     def get_absolute_url(self):
         return ('organisation-main', (), {'organisation_id': self.pk})
-
 
     class QuerySet(QuerySet):
         def has_location(self):
@@ -333,7 +347,6 @@ class Organisation(TimestampsMixin, models.Model):
         app_label = 'rsr'
         verbose_name = _(u'organisation')
         verbose_name_plural = _(u'organisations')
-        ordering = ['name']
         permissions = (
             ('user_management', u'Can manage users'),
         )

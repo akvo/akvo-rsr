@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load compressed i18n rsr_utils humanize %}
+
+{% block title %}{{project.title}}{% endblock title%}
+
+{% block maincontent %}
+<article class="touch-navbar project-container">
+    {% include "partials/project_header.html" %}
+    <section class="projectPartners">
+	    <div class="container">
+    		<h2 class="title">{% trans "Project partners" %}</h2>
+            {% for partner, types in partners.items %}
+            <div class="row verticalPadding projectPartners">
+            {% if partner.logo %}
+                <div class="col-sm-2 img">
+                    <a href='{% url 'organisation-main' partner.pk %}'>
+                    <img src='{{partner.logo.url}}' class='extra-partner-entry'>
+                    </a>
+                </div>
+                <div class="col-sm-6">
+            {% else %}
+                <div class="col-sm-8">
+            {% endif %}
+                    <a href='{% url 'organisation-main' partner.pk %}' class="org-link">
+                        <i class="fa fa-users"></i>
+                        <h2>{{partner}}</h2>
+                    </a>
+                </div>
+                <div class="col-sm-4">
+                    <h4 class="detailedInfo">{% trans "Roles" %}</h4>
+                    <ul>
+                    {% for type in types %}                  
+                    {% if forloop.first %}
+                        <li>{{type|title}} {% trans "partner" %}</li>
+                    {% else %}
+                        <li>{{type}} {% trans "partner" %}</li>
+                    {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+	    </div>
+	</section>
+    {% include "partials/project_footer.html" %}
+</article>
+{% endblock maincontent %}

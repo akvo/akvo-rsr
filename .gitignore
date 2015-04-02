@@ -10,7 +10,6 @@ akvo/mediaroot/admin
 akvo/mediaroot/db
 akvo/mollie_banklist.xml
 akvo/rebuild_db.py
-avko/rsr/static/rsr/v3/css/src/*.codekit
 akvo/settings/5*.conf
 akvo/settings/6*.conf
 akvo/settings/backup
@@ -84,7 +83,6 @@ Session.vim
 /*.sublime-project
 /*.sublime-workspace
 
-
 ## Textmate
 *.tmproj
 *.tmproject
@@ -115,8 +113,8 @@ tramp
 *.hp6rKR
 
 # SASS
-akvo/rsr/static/rsr/v3/css/src/.sass-cache
-akvo/rsr/static/rsr/v3/css/src/*.map
+akvo/rsr/static/styles-src/.sass-cache
+akvo/rsr/static/styles-src/*.map
 
 # Landscape
 !.landscape.yaml
