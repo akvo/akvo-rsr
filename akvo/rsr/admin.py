@@ -533,7 +533,7 @@ class LegacyDataInline(NestedTabularInline):
 
 class RelatedProjectInline(NestedStackedInline):
     model = get_model('rsr', 'RelatedProject')
-    fields = ('related_project', 'relation')
+    fields = ('related_project', 'related_iati_id', 'relation')
     fk_name = 'project'
 
     def get_extra(self, request, obj=None, **kwargs):
