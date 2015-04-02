@@ -406,6 +406,16 @@ def search(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'project_search.html', context)
 
+def partners(request, project_id):
+    """."""
+    project = get_object_or_404(Project, pk=project_id)
+    partners = _get_project_partners(project)    
+    context = {
+        'project': project,
+        'partners': partners
+    }
+    return render(request, 'project_partners.html', context)    
+
 
 def finance(request, project_id):
     """."""
