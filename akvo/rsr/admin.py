@@ -1056,6 +1056,8 @@ admin.site.register(get_model('rsr', 'Keyword'), KeywordAdmin)
 class EmploymentAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Employment')
     list_display = ('__unicode__', 'user', 'organisation', 'is_approved', 'country', 'job_title')
+    list_filter = ('is_approved', 'organisation')
+    search_fields = ('organisation__name', 'organisation__long_name', 'user__username')
 
     def get_queryset(self, request):
         if request.user.is_superuser or request.user.is_admin:
