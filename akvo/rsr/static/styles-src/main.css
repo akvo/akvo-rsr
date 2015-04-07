@@ -1127,21 +1127,27 @@ div.projectTopRow {
         div.projectTopRow .projectSideInfo ul li .donateButton {
           margin-right: 15px; }
 
-.results ul {
-  padding: 5px 0 5px 5px; }
-
-.indicators, .results {
+.results {
   padding: 0 0 0 15px; }
-  .indicators dl, .results dl {
+  .results dl {
     padding: 5px 0 5px 10px; }
-    .indicators dl dt, .indicators dl dd, .results dl dt, .results dl dd {
+    .results dl dt, .results dl dd {
       display: inline-block; }
-    .indicators dl dd, .results dl dd {
+    .results dl dd {
       width: 15%; }
-    .indicators dl dt, .results dl dt {
+    .results dl dt {
       width: 85%;
-      color: rgba(32, 32, 36, 0.4);
       font-weight: normal; }
+    .results dl .indicators {
+      padding: 0 0 0 35px; }
+      .results dl .indicators dt, .results dl .indicators dd {
+        display: inline-block; }
+      .results dl .indicators dd {
+        width: 15%; }
+      .results dl .indicators dt {
+        width: 80%;
+        color: rgba(32, 32, 36, 0.4);
+        font-weight: normal; }
 
 div.timelineBlock {
   margin: 15px auto 25px;

@@ -1346,15 +1346,6 @@ div.projectTopRow {
 }
 
 .results {
-    ul {
-        padding: 5px 0 5px 5px;
-        li {
-            i {}
-        }
-    }
-}
-
-.indicators, .results {
     padding: 0 0 0 15px;
     dl {
         padding: 5px 0 5px 10px;
@@ -1366,8 +1357,21 @@ div.projectTopRow {
         }
         dt {
             width: 85%;
-            color: rgba($akvoBlack, 0.4);
             font-weight: normal;
+        }
+        .indicators {
+            padding: 0 0 0 35px;
+            dt, dd {
+                display: inline-block;
+            }
+            dd {
+                width: 15%;
+            }
+            dt {
+                width: 80%;
+                color: rgba($akvoBlack, 0.4);
+                font-weight: normal;
+            }
         }
     }
 }

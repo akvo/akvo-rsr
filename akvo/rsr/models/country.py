@@ -13,6 +13,7 @@ from ..fields import ValidXMLCharField
 from ..iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
 
 from akvo.codelists import models as codelist_models
+from akvo.codelists.store.codelists_v201 import COUNTRY
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -44,7 +45,7 @@ class Country(models.Model):
 class RecipientCountry(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='recipient_countries')
     country = ValidXMLCharField(_(u'country'), blank=True, max_length=2,
-                                choices=codelist_choices(codelist_models.Country))
+                                choices=codelist_choices(COUNTRY))
     percentage = models.DecimalField(
         _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]

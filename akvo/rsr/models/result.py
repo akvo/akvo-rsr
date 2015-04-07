@@ -10,7 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from akvo.codelists.models import DescriptionType, ResultType
+from akvo.codelists.models import ResultType
+from akvo.codelists.store.codelists_v201 import RESULT_TYPE
 from akvo.utils import codelist_choices, codelist_value
 
 
@@ -21,7 +22,7 @@ class Result(models.Model):
         help_text=_(u'Enter the title of the result for this project. (255 characters)')
     )
     type = ValidXMLCharField(
-        _(u'type'), blank=True, max_length=1, choices=codelist_choices(ResultType),
+        _(u'type'), blank=True, max_length=1, choices=codelist_choices(RESULT_TYPE),
         help_text=_(u'Select whether the result is an output, outcome or impact. '
                     u'<a href="http://www.tacticalphilanthropy.com/2010/06/outputs-outcomes-impact-oh-my/" '
                     u'target="_blank">Further explanation on result types</a>')
@@ -30,9 +31,6 @@ class Result(models.Model):
     description = ValidXMLCharField(
         _(u'description'), blank=True, max_length=255,
         help_text=_(u'You can provide further information of the result here. (255 characters)')
-    )
-    description_type = ValidXMLCharField(
-        _(u'description type'), blank=True, max_length=1, choices=codelist_choices(DescriptionType)
     )
 
     def __unicode__(self):

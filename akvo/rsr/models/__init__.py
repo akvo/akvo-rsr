@@ -19,22 +19,26 @@ from ..signals import (
     create_publishing_status, create_organisation_account,
     create_payment_gateway_selector, donation_completed, act_on_log_entry,
     employment_post_save, employment_pre_save, update_project_budget,
-    update_project_funding)
+    update_project_funding, create_iati_file)
 
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
+from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
 from .focus_area import FocusArea
+from .fss import Fss, FssForecast
 from .goal import Goal
+from .iati_export import IatiExport
 from .indicator import Indicator, IndicatorPeriod
 from .invoice import Invoice
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
 from .link import Link
-from .location import OrganisationLocation, ProjectLocation, ProjectUpdateLocation
+from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocation,
+                       AdministrativeLocation)
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
 from .partner_site import PartnerSite
@@ -54,7 +58,7 @@ from .region import RecipientRegion
 from .related_project import RelatedProject
 from .result import Result
 from .sector import Sector
-from .transaction import Transaction
+from .transaction import Transaction, TransactionSector
 from .user import User
 
 __all__ = [
@@ -66,9 +70,14 @@ __all__ = [
     'Country',
     'RecipientCountry',
     'Category',
+    'CrsAdd',
+    'CrsAddOtherFlag',
     'Employment',
     'FocusArea',
+    'Fss',
+    'FssForecast',
     'Goal',
+    'IatiExport',
     'Indicator',
     'IndicatorPeriod',
     'Invoice',
@@ -78,6 +87,7 @@ __all__ = [
     'Link',
     'OrganisationLocation',
     'ProjectLocation',
+    'AdministrativeLocation',
     'ProjectUpdateLocation',
     'Organisation',
     'OrganisationAccount',
@@ -101,6 +111,7 @@ __all__ = [
     'Result',
     'Sector',
     'Transaction',
+    'TransactionSector',
     'User',
 ]
 
@@ -246,6 +257,8 @@ rules.add_perm('tastypie.change_apikey', is_rsr_admin | is_org_admin | is_org_us
 rules.add_perm('rsr.add_employment', is_rsr_admin)
 rules.add_perm('rsr.change_employment', is_rsr_admin | is_org_admin | is_org_user_manager)
 
+rules.add_perm('rsr.iati_management', is_rsr_admin | is_org_admin | is_org_project_editor)
+
 rules.add_perm('rsr.user_management', is_rsr_admin | is_org_admin | is_org_user_manager)
 
 rules.add_perm('rsr.post_updates', is_rsr_admin | is_org_admin | is_org_user_manager | is_org_project_editor | is_org_user)
@@ -281,3 +294,5 @@ post_delete.connect(update_project_funding, sender=Invoice)
 post_delete.connect(update_project_funding, sender=Partnership)
 
 post_save.connect(create_api_key, sender=User)
+
+post_save.connect(create_iati_file, sender=IatiExport)
