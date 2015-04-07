@@ -96,7 +96,7 @@ class ProjectFilter(django_filters.FilterSet):
 
     organisation = django_filters.ChoiceFilter(
         choices=get_orgs(),
-        label='partner',
+        label='organisation',
         name='partners__id')
 
     class Meta:
@@ -119,7 +119,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),
-        label='partner',
+        label='organisation',
         name='project__partners__id')
 
     sector = django_filters.ChoiceFilter(
