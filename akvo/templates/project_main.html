@@ -96,32 +96,43 @@
         <div class="row">
             <div class="col-sm-8">
               <div id="accordion"></div>
-              {% if project.has_results %}
+              {% if project.results.all %}
               <div class="results verticalPadding">
                 <h4 class="">Results</h4>
-                <ul class="fa-ul">
+                <dl>
                   {% for result in project.results.all %}
-                  {% if result.has_info %}
-                  <li><i class="fa-li fa fa-check"></i> {{result.title}}</li>
+                  <dt><i class="fa fa-check"></i> {{result.title}}</dt><dd></dd>
+                  {% if result.indicators.all %}
+                    <div class="indicators">
+                    {% for indicator in result.indicators.all %}
+                        {% for period in indicator.periods.all %}
+                            <dt>{{indicator.title}}
+                                {% if period.period_start or period.period_end %}
+                                ({% if period.period_start %}{{period.period_start|date:"d-M-Y"}}
+                                {% else %}
+                                {% trans 'Start date unknown' %}
+                                {% endif %}
+                                -
+                                {% if period.period_end %}
+                                {{period.period_end|date:"d-M-Y"}}
+                                {% else %}
+                                {% trans 'End date unknown' %}{% endif %})
+                                {% endif %}</dt>
+                            {% if period.actual_value %}
+                                <dd>{{period.actual_value}} ({% trans 'actual' %})</dd>
+                            {% elif period.target_value %}
+                                <dd>{{period.target_value}} ({% trans 'target' %})</dd>
+                            {% else %}
+                                <dd></dd>
+                            {% endif %}
+                        {% empty %}
+                            <dt>{{indicator.title}}</dt><dd></dd>
+                        {% endfor %}
+                    {% endfor %}
+                    </div>
                   {% endif %}
                   {% endfor %}
-                </ul>
-              </div>
-              {% endif %}
-              {% if project.has_indicators %}
-              <div class="indicators">
-                <h4 class="">Indicators</h4>
-                    <dl class="">
-                        {% for result in project.results.all %}
-                        {% for indicator in result.indicators.all %}
-                        {% for period in indicator.periods.all %}
-                        <dt>{{indicator.title}}</dt><dd>{{period.actual_value}}</dd>
-                        {% empty %}
-                        <dt>{{indicator.title}}</dt><dd></dd>
-                        {% endfor %}
-                        {% endfor %}
-                        {% endfor %}
-                    </dl>
+                </dl>
               </div>
               {% endif %}
             </div>

@@ -36,14 +36,12 @@ def reverse_hierarchy(apps, schema_editor):
     RelatedProject = apps.get_model("rsr", "RelatedProject")
     print ""
     for related_project in RelatedProject.objects.all():
-        print "Related project (pk %s), relation: %s" % (str(related_project.pk), str(related_project.relation))
         if related_project.relation == '1':
             related_project.relation = '2'
             related_project.save()
         elif related_project.relation == '2':
             related_project.relation = '1'
             related_project.save()
-        print "Related project (pk %s), relation: %s" % (str(related_project.pk), str(related_project.relation))
 
 
 class Migration(migrations.Migration):
