@@ -105,12 +105,18 @@ def user_management(request):
         raise PermissionDenied
 
     if user.is_support and user.is_admin:
-        users = get_user_model().objects.filter(is_active=True).order_by('-date_joined')
+        users = get_user_model().objects.filter(is_active=True)\
+            .order_by('-date_joined').have_employments()
         org_actions = Organisation.objects.all()
     else:
         organisations = user.employers.approved().organisations()
-        users = organisations.users().exclude(pk=user.pk).order_by('-date_joined')
+        users = organisations.users().exclude(pk=user.pk)\
+            .order_by('-date_joined').have_employments()
         org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
+
+    q = request.GET.get('q')
+    if q:
+        users = users.filter(username__icontains=q)
 
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, users, 10)
