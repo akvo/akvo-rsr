@@ -116,7 +116,11 @@ def user_management(request):
 
     q = request.GET.get('q')
     if q:
-        users = users.filter(username__icontains=q)
+        q_list = q.split()
+        for q_item in q_list:
+            users = users.filter(username__icontains=q_item) | \
+                users.filter(first_name__icontains=q_item) | \
+                users.filter(last_name__icontains=q_item)
 
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, users, 10)
@@ -129,4 +133,6 @@ def user_management(request):
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range
+    if q:
+        context['q'] = q
     return render(request, 'myrsr/user_management.html', context)
