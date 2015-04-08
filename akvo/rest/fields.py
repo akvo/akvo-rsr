@@ -82,15 +82,15 @@ class Base64ImageField(ImageField):
         The names must not be "default" or "original".
 
         For each thumb thus specified a size must be supplied as a query param on the form
-            image_thumb_<dimension>_<name>
-        where <dimension> is one of "width, "height" or "size". width and height must be an integer
+            image_thumb_<name>_<dimension>
+        where <name> is the name of the thumb specified as one of the values for image_thumb_name
+        and <dimension> is one of "width, "height" or "size". width and height must be an integer
         specifying that dimension in pixels. The image will be scaled correctly in the other
         dimension. size is width and height concatenated with an "x".
-        <name> is the name of the thumb specified as one of the values for image_thumb_name
 
         Example:
         the querystring
-            ?image_thumb_name=big,small&image_thumb_width_small=90&image_thumb_size_big=300x200
+            ?image_thumb_name=big,small&image_thumb_small_width=90&image_thumb_big_size=300x200
         results in the following dict being returned:
         {
             'original': '/full/path/to/original/image.png',
@@ -106,22 +106,22 @@ class Base64ImageField(ImageField):
         """
         def get_thumb(request, name):
             if name not in [u'original', u'default']:
-                width = request.GET.get('image_thumb_width_{}'.format(name))
+                width = request.GET.get('image_thumb_{}_width'.format(name))
                 if width:
                     return get_thumbnail(value, '{}'.format(width), quality=99)
-                height = request.GET.get('image_thumb_heigth_{}'.format(name))
+                height = request.GET.get('image_thumb_{}_heigth'.format(name))
                 if width:
                     return get_thumbnail(value, 'x{}'.format(height), quality=99)
                 # yes this is redundant...code is nearly identical with the width code above
                 # but for clarity of function we keep them separate
-                size = request.GET.get('image_thumb_size_{}'.format(name))
+                size = request.GET.get('image_thumb_{}_size'.format(name))
                 if size:
                     return get_thumbnail(value, '{}'.format(size), quality=99)
             # no size specification matching the name found; give up
             return None
 
         if value:
-            default_width = '200'
+            default_width = '191' # width of update images on akvo.org/seeithappen
             default_thumb = get_thumbnail(value, default_width, quality=99)
             request = self.context['request']
             # look for name(s) of thumb(s)
