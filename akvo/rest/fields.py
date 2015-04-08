@@ -37,6 +37,7 @@ class NonNullURLField(NonNullCharField, serializers.URLField):
 class Base64ImageField(ImageField):
     """ A django-rest-framework field for handling image-uploads through raw post data.
         It uses base64 for en-/decoding the contents of the file.
+        Now also supports thumbnails of different sizes. See to_native() for more info.
     """
     ALLOWED_IMAGE_TYPES = (
         'gif',
@@ -69,47 +70,71 @@ class Base64ImageField(ImageField):
     def to_native(self, value):
         """
         :param value: A Base64ImageField object
-        :return: The full path to the image. If the request includes a special query string param a thumbnail is
-            generated and returned along with the original
+        :return: a path to a thumbnail with a predetermined size, the default thumb
+        OR
+        a dict with a number of thumbnails, one of which is the default, the others being generated
+        from the query string parameters, and finally the path to the original image keyed to
+        "original".
 
-        If the querystring part of the request includes the query param "image_thumb_name" a thumbnail is generated,
-        provided that at least one of "width" and "height" parameters is also supplied. The image_thumb_name value is
-        used as the key for the thumbnail in the dict returned.
-        If a thumbnail is included a dict with two members is returned:
+        The extended functionality, allowing the generation of one or more thumbnails from the
+        original image is triggered by including "image_thumb_name" in the query string. The value
+        for image_thumb_name is a comma separated list of identifiers for the generated thumbs.
+        The names must not be "default" or "original".
+
+        For each thumb thus specified a size must be supplied as a query param on the form
+            image_thumb_<dimension>_<name>
+        where <dimension> is one of "width, "height" or "size". width and height must be an integer
+        specifying that dimension in pixels. The image will be scaled correctly in the other
+        dimension. size is width and height concatenated with an "x".
+        <name> is the name of the thumb specified as one of the values for image_thumb_name
+
+        Example:
+        the querystring
+            ?image_thumb_name=big,small&image_thumb_width_small=90&image_thumb_size_big=300x200
+        results in the following dict being returned:
         {
             'original': '/full/path/to/original/image.png',
-            '<value of image_thumb_name QS param>': '/full/path/to/thumbnail/image.png'
+            'default': '/full/path/to/default/thumbnail/image.png',
+            'small': '/full/path/to/small/thumbnail/image.png',
+            'big': '/full/path/to/big/thumbnail/image.png',
         }
         This dict will be converted as appropriate to JSON or XML
 
-        NOTE: This special functionality works best when there is only one image field in a model. If there are more,
-        things will still work (I think), but all thumbs returned will have the same dimensions
+        NOTE: This special functionality works best when there is only one image field in a model.
+        If there are more, things will still work (I think), but for each image all thumbs returned
+        will have the same dimensions
         """
-        ORIGINAL_KEY = u'original'
+        def get_thumb(request, name):
+            if name not in [u'original', u'default']:
+                width = request.GET.get('image_thumb_width_{}'.format(name))
+                if width:
+                    return get_thumbnail(value, '{}'.format(width), quality=99)
+                height = request.GET.get('image_thumb_heigth_{}'.format(name))
+                if width:
+                    return get_thumbnail(value, 'x{}'.format(height), quality=99)
+                # yes this is redundant...code is nearly identical with the width code above
+                # but for clarity of function we keep them separate
+                size = request.GET.get('image_thumb_size_{}'.format(name))
+                if size:
+                    return get_thumbnail(value, '{}'.format(size), quality=99)
+            # no size specification matching the name found; give up
+            return None
+
         if value:
-            # get the full path of original image
-            image_url = value.url
-            image_thumb_name = self.context['request'].GET.get('image_thumb_name')
-            # do we have a request for a thumbnail?
-            # also make sure the thumb isn't named "original"!
-            if image_thumb_name and image_thumb_name.lower() != ORIGINAL_KEY:
-                width = self.context['request'].GET.get('width')
-                height = self.context['request'].GET.get('height')
-                # set thumb size according to what data we got
-                if width and height:
-                    thumb = get_thumbnail(value, '{}x{}'.format(width, height), quality=99)
-                elif width:
-                    thumb = get_thumbnail(value, '{}'.format(width), quality=99)
-                elif height:
-                    thumb = get_thumbnail(value, 'x{}'.format(height), quality=99)
-                else:
-                    # bail if we get neither width nor heigth
-                    return image_url
-                # populate dict with original and thumb paths
-                image_dict = {ORIGINAL_KEY: image_url}
-                image_dict[image_thumb_name] = thumb.url
-                return image_dict
-            return image_url
+            default_width = '200'
+            default_thumb = get_thumbnail(value, default_width, quality=99)
+            request = self.context['request']
+            # look for name(s) of thumb(s)
+            image_thumb_name = request.GET.get('image_thumb_name')
+            if image_thumb_name:
+                names = image_thumb_name.split(',')
+                thumbs = {u'original': value.url, u'default': default_thumb.url}
+                for name in names:
+                    thumb = get_thumb(request, name)
+                    if thumb is not None:
+                        thumbs[name] = thumb.url
+                return thumbs
+            return default_thumb.url
 
     def get_file_extension(self, filename, decoded_file):
         extension = imghdr.what(filename, decoded_file)
