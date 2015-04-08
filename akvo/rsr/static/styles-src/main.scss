@@ -1345,33 +1345,28 @@ div.projectTopRow {
     }
 }
 
-.results {
-    padding: 0 0 0 15px;
-    dl {
-        padding: 5px 0 5px 10px;
-        dt, dd {
-            display: inline-block;
-        }
+ul.results {
+//    padding: 0 0 0 15px;
+    padding: 5px 0 5px 10px;
+    span li {
+        display: inline-block;
+        font-weight: normal;
+    }
+    dl.indicators {
+        display: inline-block;
+        padding: 0 0 0 35px;
+        width: 100%;
+        overflow: hidden;
         dd {
-            width: 15%;
+            width: 30%;
+            float: left;
+            text-align: right;
         }
         dt {
-            width: 85%;
+            width: 70%;
+            color: rgba($akvoBlack, 0.4);
             font-weight: normal;
-        }
-        .indicators {
-            padding: 0 0 0 35px;
-            dt, dd {
-                display: inline-block;
-            }
-            dd {
-                width: 15%;
-            }
-            dt {
-                width: 80%;
-                color: rgba($akvoBlack, 0.4);
-                font-weight: normal;
-            }
+            float: left;
         }
     }
 }
