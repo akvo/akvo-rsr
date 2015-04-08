@@ -22,7 +22,11 @@
                                 {% endif %}
                             </a>
                         </td>
-                        <td>{{ update.title }}</td>
+                        <td>
+                            <a href="{% url 'update-main' update.project.id update.id %}">
+                                {{ update.title }}
+                            </a>
+                        </td>
                         <td>{{ update.created_at }}</td>
                         <td>{{ update.project }}</td>
                         <td><div class="twoColumns"><a href="{% url 'update-main' update.project.id update.id %}">View</a></div></td>
