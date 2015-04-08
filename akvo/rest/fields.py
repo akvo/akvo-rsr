@@ -16,6 +16,7 @@ from django.utils.encoding import smart_text
 from rest_framework import serializers
 from rest_framework.fields import ImageField
 from sorl.thumbnail import get_thumbnail
+from sorl.thumbnail.parsers import ThumbnailParseError
 
 
 class NonNullCharField(serializers.CharField):
@@ -84,13 +85,15 @@ class Base64ImageField(ImageField):
         For each thumb thus specified a size must be supplied as a query param on the form
             image_thumb_<name>_<dimension>
         where <name> is the name of the thumb specified as one of the values for image_thumb_name
-        and <dimension> is one of "width, "height" or "size". width and height must be an integer
+        and <dimension> is one of "width, "height" or "max_size". width and height must be an integer
         specifying that dimension in pixels. The image will be scaled correctly in the other
-        dimension. size is width and height concatenated with an "x".
+        dimension. max_size is width and height concatenated with an "x" and sets the maximum size
+        allowed for the respective dimensions, while still maintaining the correct aspect ratio of
+        the image.
 
         Example:
         the querystring
-            ?image_thumb_name=big,small&image_thumb_small_width=90&image_thumb_big_size=300x200
+            ?image_thumb_name=big,small&image_thumb_small_width=90&image_thumb_big_max_size=300x200
         results in the following dict being returned:
         {
             'original': '/full/path/to/original/image.png',
@@ -106,17 +109,20 @@ class Base64ImageField(ImageField):
         """
         def get_thumb(request, name):
             if name not in [u'original', u'default']:
-                width = request.GET.get('image_thumb_{}_width'.format(name))
-                if width:
-                    return get_thumbnail(value, '{}'.format(width), quality=99)
-                height = request.GET.get('image_thumb_{}_heigth'.format(name))
-                if width:
-                    return get_thumbnail(value, 'x{}'.format(height), quality=99)
-                # yes this is redundant...code is nearly identical with the width code above
-                # but for clarity of function we keep them separate
-                size = request.GET.get('image_thumb_{}_size'.format(name))
-                if size:
-                    return get_thumbnail(value, '{}'.format(size), quality=99)
+                try:
+                    width = request.GET.get('image_thumb_{}_width'.format(name))
+                    if width:
+                        return get_thumbnail(value, '{}'.format(width), quality=99)
+                    height = request.GET.get('image_thumb_{}_height'.format(name))
+                    if height:
+                        return get_thumbnail(value, 'x{}'.format(height), quality=99)
+                    # yes this is redundant...code is nearly identical with the width code above
+                    # but for clarity of function we keep them separate
+                    max_size = request.GET.get('image_thumb_{}_max_size'.format(name))
+                    if max_size:
+                        return get_thumbnail(value, '{}'.format(max_size), quality=99)
+                except ThumbnailParseError:
+                    return None
             # no size specification matching the name found; give up
             return None
 
