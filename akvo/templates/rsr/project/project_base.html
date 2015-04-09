@@ -25,7 +25,7 @@
   </a>
   <div style="float:right; width:100px; text-align:right;">
     <a href="{%  url 'rss_project_updates' project.id %}">
-      <img src="{{ STATIC_URL }}common/img/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
+      <img src="{{ STATIC_URL }}images/icon_rss.gif" width="12" height="12" alt="RSS" title="RSS">
     </a>
   </div>
   <p class="grey" style="font-weight:bold;">{{project.subtitle}}</p>
@@ -95,7 +95,7 @@
               <div style="float:right; width:116px;">
                 <a class="video_thumb" href="{{ update.get_absolute_url }}">
                     <img src="{{ update.get_video_thumbnail_url }}" alt="" style="width:116px;">
-                    <i style="background-image: url({{ STATIC_URL }}common/img/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
+                    <i style="background-image: url({{ STATIC_URL }}images/play_button_small.png); bottom:7px; cursor:pointer; left:5px;  width:50px; height:50px; position: absolute"></i>
                 </a>
               </div>
               <div class="clear"></div>

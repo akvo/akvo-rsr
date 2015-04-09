@@ -5,11 +5,14 @@
     Akvo RSR module. For additional details on the GNU license please
     see < http://www.gnu.org/licenses/agpl.html >.
 """
-SITE_ID = 1
+# Development mode
 DEBUG = TEMPLATE_DEBUG = True
 PIPELINE_ENABLED = False
 
-# STATIC_URL = '/static/' # For production collectstatic behaviour
+# Production mode
+# DEBUG = TEMPLATE_DEBUG = False
+# PIPELINE_ENABLED = True
+# STATIC_URL = '/static/'  # Collectstatic
 
 # The console email backend will print emails to console, useful for dev server
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
