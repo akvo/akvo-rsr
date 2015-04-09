@@ -48,7 +48,9 @@
                       {% img project 64 64 project.title %}
                     </a>
                     <div class="media-body">
-                      <h4 class="media-heading">{{ project.title }}</h4>
+                      <a href="{% url 'project-main' project.id %}">
+                        <h4 class="media-heading">{{ project.title }}</h4>
+                      </a>
                       <p class="small">{{ project.subtitle }}</p>
                     </div>
                   </td>
