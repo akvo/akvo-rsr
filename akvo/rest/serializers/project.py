@@ -18,7 +18,7 @@ from .planned_disbursement import PlannedDisbursementSerializer
 from .policy_marker import PolicyMarkerSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_document import ProjectDocumentSerializer
-from .project_location import ProjectLocationExtraSerializer
+from .project_location import ProjectLocationExtraSerializer, ProjectLocationSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
 from .project_update import ProjectUpdateSerializer
@@ -71,6 +71,15 @@ class ProjectExtraSerializer(ProjectSerializer):
     sectors = SectorSerializer(source='sectors', many=True, required=False, allow_add_remove=True)
     transactions = TransactionSerializer(source='transactions', many=True, required=False, allow_add_remove=True)
     partnerships = PartnershipSerializer(source='partnerships', many=True)
+
+    class Meta(ProjectSerializer.Meta):
+        pass
+
+
+class ProjectUpSerializer(ProjectSerializer):
+    """ Custom endpoint for RSR Up
+    """
+    primary_location = ProjectLocationSerializer(source='primary_location', many=False, required=False)
 
     class Meta(ProjectSerializer.Meta):
         pass

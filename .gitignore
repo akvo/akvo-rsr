@@ -121,3 +121,5 @@ akvo/rsr/static/styles-src/*.map
 
 # Codekit
 *.codekit
+
+*.scssc
