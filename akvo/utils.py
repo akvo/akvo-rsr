@@ -430,8 +430,8 @@ def filter_query_string(qs):
     if not bool(q):
         return ''
 
-    return '&{}'.format(
-        '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))
+    return u'&{}'.format(
+        u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8')
 
 
 def codelist_choices(model, version=settings.IATI_VERSION):
