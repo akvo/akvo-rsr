@@ -22,6 +22,8 @@ def piwik_tracking_code(context):
     """Try and use configured partner site Piwik values otherwise pull from settings."""
     try:
         piwik_id = settings.PIWIK_SITE_ID,
+        if isinstance(piwik_id, tuple):
+            piwik_id = piwik_id[0]
     except AttributeError:
         raise ImproperlyConfigured('PIWIK_SITE_ID does not exist.')
 
@@ -30,11 +32,10 @@ def piwik_tracking_code(context):
     except AttributeError:
         raise ImproperlyConfigured('PIWIK_URL does not exist.')
 
-    try:
+    if context['request'].rsr_page and context['request'].rsr_page.piwik_id:
         return {
             'id': context['request'].rsr_page.piwik_id,
-            'url': piwik_url}
-    except AttributeError:
-        pass
+            'url': piwik_url
+            }
 
     return {'id': piwik_id, 'url': piwik_url}
