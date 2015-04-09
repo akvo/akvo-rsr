@@ -9,6 +9,7 @@ Akvo RSR module. For additional details on the GNU license please see
 
 import logging
 from django.conf import settings
+from django.core.exceptions import DisallowedHost
 from django.db.models import Q
 from django.shortcuts import redirect
 from akvo.rsr.context_processors import extra_context
@@ -19,6 +20,13 @@ def _is_rsr_host(hostname):
     """Predicate function that checks if request is made to the RSR_DOMAIN."""
     rsr_hosts = ['127.0.0.1', 'localhost', settings.RSR_DOMAIN]
     return hostname in rsr_hosts
+
+
+def _is_naked_app_host(hostname):
+    """Predicate function that checks if request is made to the RSR_DOMAIN."""
+    if hostname == settings.AKVOAPP_DOMAIN:
+        return True
+    return False
 
 
 def _partner_site(netloc):
@@ -38,19 +46,27 @@ class HostDispatchMiddleware(object):
         request.rsr_page = None
         host = request.get_host()
 
-        # Do nothing if called on "normal" RSR host
-        if _is_rsr_host(host):
-            return None
+        # Make sure host is valid - otherwise redirect to RSR_DOMAIN.
+        # Do nothing if called on "normal" RSR host.
+        try:
+            if _is_rsr_host(host):
+                return None
+        except DisallowedHost:
+            return redirect("http://{}".format(settings.RSR_DOMAIN))
+
+        # Check if called on naked app domain - if so redirect
+        if _is_naked_app_host(host):
+            return redirect("http://{}".format(settings.RSR_DOMAIN))
 
         # Check if site exists
         try:
             site = _partner_site(host)
         except PartnerSite.DoesNotExist:
-            return redirect(settings.RSR_DOMAIN)
+            return redirect("http://{}".format(settings.RSR_DOMAIN))
 
         # Check if site is enabled
         if not site.enabled:
-            return redirect(settings.RSR_DOMAIN)
+            return redirect("http://{}".format(settings.RSR_DOMAIN))
 
         # Set site to request object
         request.rsr_page = site

@@ -12,15 +12,13 @@ from django.test import Client, TestCase
 
 class PingTest(TestCase):
 
-    """Simple ping test."""
+    """Simple ping."""
 
     def setUp(self):
         """Setup."""
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
-    def test_redirect(self):
-        """Ping /."""
-        response = self.c.get('/', follow=True)
-        expected_host = settings.RSR_DOMAIN
-        self.assertRedirects(response=response, expected_url='/projects/', status_code=302,
-                             target_status_code=200, host=expected_host)
+    def test_ping(self):
+        """Ping /updates/."""
+        response = self.c.get('/updates/')
+        self.assertEqual(response.status_code, 200)
