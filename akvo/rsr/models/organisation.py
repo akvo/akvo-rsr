@@ -44,7 +44,7 @@ def image_path(instance, file_name):
 
 class OrgManager(models.Manager):
     def get_queryset(self):
-        return super(OrgManager, self).get_queryset().extra(
+        return self.model.QuerySet(self.model).extra(
             select={
                 'lower_name': 'lower(name)'
             }

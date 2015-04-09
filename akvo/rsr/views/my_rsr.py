@@ -67,14 +67,21 @@ def password_change(request):
 @login_required
 def my_updates(request):
     updates = request.user.updates()
-    page = request.GET.get('page')
 
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            updates = updates.filter(title__icontains=q_item)
+
+    page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
     context = {
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
+        'q': q,
     }
 
     return render(request, 'myrsr/my_updates.html', context)
@@ -84,8 +91,15 @@ def my_updates(request):
 def my_projects(request):
     organisations = request.user.employers.approved().organisations()
     projects = organisations.all_projects().distinct()
-    page = request.GET.get('page')
 
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            projects = projects.filter(title__icontains=q_item) | \
+                projects.filter(subtitle__icontains=q_item)
+
+    page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
 
     context = {
@@ -93,6 +107,7 @@ def my_projects(request):
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
+        'q': q,
     }
 
     return render(request, 'myrsr/my_projects.html', context)
@@ -105,12 +120,22 @@ def user_management(request):
         raise PermissionDenied
 
     if user.is_support and user.is_admin:
-        users = get_user_model().objects.filter(is_active=True).order_by('-date_joined')
+        users = get_user_model().objects.filter(is_active=True)\
+            .order_by('-date_joined').have_employments()
         org_actions = Organisation.objects.all()
     else:
         organisations = user.employers.approved().organisations()
-        users = organisations.users().exclude(pk=user.pk).order_by('-date_joined')
+        users = organisations.users().exclude(pk=user.pk)\
+            .order_by('-date_joined').have_employments()
         org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
+
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            users = users.filter(username__icontains=q_item) | \
+                users.filter(first_name__icontains=q_item) | \
+                users.filter(last_name__icontains=q_item)
 
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, users, 10)
@@ -123,4 +148,6 @@ def user_management(request):
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range
+    if q:
+        context['q'] = q
     return render(request, 'myrsr/user_management.html', context)
