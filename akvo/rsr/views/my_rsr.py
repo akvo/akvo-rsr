@@ -67,14 +67,21 @@ def password_change(request):
 @login_required
 def my_updates(request):
     updates = request.user.updates()
-    page = request.GET.get('page')
 
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            updates = updates.filter(title__icontains=q_item)
+
+    page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
     context = {
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
+        'q': q,
     }
 
     return render(request, 'myrsr/my_updates.html', context)
@@ -84,8 +91,15 @@ def my_updates(request):
 def my_projects(request):
     organisations = request.user.employers.approved().organisations()
     projects = organisations.all_projects().distinct()
-    page = request.GET.get('page')
 
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            projects = projects.filter(title__icontains=q_item) | \
+                projects.filter(subtitle__icontains=q_item)
+
+    page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
 
     context = {
@@ -93,6 +107,7 @@ def my_projects(request):
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
+        'q': q,
     }
 
     return render(request, 'myrsr/my_projects.html', context)
