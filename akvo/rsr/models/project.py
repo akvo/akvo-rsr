@@ -785,16 +785,37 @@ class Project(TimestampsMixin, models.Model):
         return self.parents() or self.children() or self.siblings()
 
     def parents(self):
-        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=2) |
-                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=1)).distinct()
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=1
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=2
+            )
+        ).distinct()
 
     def children(self):
-        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=1) |
-                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=2)).distinct()
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=2
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=1
+            )
+        ).distinct()
 
     def siblings(self):
-        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |
-                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=3)).distinct()
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=3
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=3
+            )
+        ).distinct()
 
     def has_results(self):
         for result in self.results.all():

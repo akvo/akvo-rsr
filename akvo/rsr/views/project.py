@@ -104,6 +104,33 @@ def _get_accordion_data(project):
     accordion_data['target_group'] = project.target_group
     accordion_data['sustainability'] = project.sustainability
     accordion_data['goals_overview'] = project.goals_overview
+    if project.results.all():
+        results_data = []
+        for result in project.results.all():
+            result_data = dict()
+            result_data['id'] = str(result.pk)
+            result_data['title'] = result.title
+            indicators_data = []
+            for indicator in result.indicators.all():
+                for period in indicator.periods.all():
+                    indicator_data = dict()
+                    indicator_data['id'] = str(period.pk)
+                    indicator_data['title'] = indicator.title
+                    if period.period_start:
+                        indicator_data['period_start'] = period.period_start.strftime("%d-%m-%Y")
+                    if period.period_end:
+                        indicator_data['period_end'] = period.period_end.strftime("%d-%m-%Y")
+                    indicator_data['target_value'] = period.target_value
+                    indicator_data['actual_value'] = period.actual_value
+                    indicators_data.append(indicator_data)
+                if not indicator.periods.all():
+                    indicator_data = dict()
+                    indicator_data['id'] = str(indicator.pk)
+                    indicator_data['title'] = indicator.title
+                    indicators_data.append(indicator_data)
+            result_data['indicators'] = indicators_data
+            results_data.append(result_data)
+        accordion_data['results'] = results_data
     return accordion_data
 
 
