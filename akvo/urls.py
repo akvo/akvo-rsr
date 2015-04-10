@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-    Akvo RSR is covered by the GNU Affero General Public License.
-    See more details in the license.txt file located at the root folder of the
-    Akvo RSR module. For additional details on the GNU license please
-    see < http://www.gnu.org/licenses/agpl.html >.
+"""Akvo RSR is covered by the GNU Affero General Public License.
+
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 from akvo.api.urls import named_api
@@ -42,6 +41,9 @@ urlpatterns = patterns(
 
     url(r'^project/(?P<project_id>\d+)/report/$',
         'akvo.rsr.views.project.report', name='project-report'),
+
+    url(r'^project/(?P<project_id>\d+)/iati/$',
+        'akvo.rsr.views.project.iati', name='project-iati'),
 
     url(r'^project/(?P<project_id>\d+)/widgets/$',
         'akvo.rsr.views.project.widgets', name='project-widgets'),
@@ -106,6 +108,9 @@ urlpatterns = patterns(
 
     url(r'^myrsr/projects/$',
         'akvo.rsr.views.my_rsr.my_projects', name='my_projects'),
+
+    url(r'^myrsr/iati/$',
+        'akvo.rsr.views.my_rsr.my_iati', name='my_iati'),
 
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),

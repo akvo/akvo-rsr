@@ -1,0 +1,84 @@
+{% extends "myrsr/myrsr_base.html" %}
+
+{% load bootstrap3 compressed i18n rules %}
+
+{% block title %}{% trans 'MyRSR - My IATI' %}{% endblock %}
+
+{% block head %}
+{{block.super}}
+<style>
+    #id_projects label span.error {
+        color: indianred;
+    }
+    #id_projects label span.success {
+        color: darkseagreen;
+    }
+</style>
+{% endblock head %}
+
+{% block myrsr_main %}
+    <h3>{% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{selected_org.long_name}}{% endif %}</h3>
+    <div class="col-sm-7 col-xs-12">
+        {% if export_added %}
+            <div class="alert alert-success" role="alert">
+                <strong>{% trans 'Successfully added an IATI file export! ' %}</strong><br/>
+                {% trans 'When the IATI file is generated, it will be shown in the overview on the right.' %}
+            </div>
+        {% endif %}
+        {% trans 'On this page it is possible to export an IATI file of the projects of your organisation or view previously exported files. ' %}
+        {% if not selected_org %}
+        {% trans 'Since your account is connected to multiple organisations, please select an organisation first.' %}
+        <p>
+            <form method="" action="" id="select_org_form">
+                {% for field in select_org_form %}
+                    {% bootstrap_field field %}
+                {% endfor %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% trans 'Select organisation' %}
+                    </button>
+                {% endbuttons %}
+            </form>
+        </p>
+        {% elif project_count > 0 %}
+        <p>
+            <form method="POST" action="" id="iati_export_form">
+                {% csrf_token %}
+                {% for field in iati_export_form %}
+                    {% bootstrap_field field %}
+                {% endfor %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-success">
+                        {% trans 'Create IATI file' %}
+                    </button>
+                {% endbuttons %}
+            </form>
+        </p>
+        {% else %}
+        <br/><br/>
+            <p class="noItem text-center">
+                {% trans "Your organisation does not report any projects yet. " %}
+                {% trans "Set your organisation to reporting organisation of a project to create an IATI file for the project." %}<br/>
+                {% trans "Go to the projects admin" %} <a href="/admin/rsr/project/">{% trans "here" %}</a>.
+            </p>
+        {% endif %}
+    </div>
+    {% if exports %}
+    <div class="col-sm-5 col-xs-12 udpateComponent">
+        <h4 class="detailedInfo">{% trans 'Existing IATI export' %}{{exports.count|pluralize}}</h4>
+        <ul class="noStyleUl">
+        {% for export in exports %}
+            <li>
+                {{export.last_modified_at|date:"d-M-Y"}}:
+                {% if export.iati_file %}
+                    <a href="{{MEDIA_URL}}{{export.iati_file}}">{% trans 'View IATI file' %}</a>
+                    ({{export.projects.count}} project{{export.projects.count|pluralize}})
+                {% else %}
+                    {% trans 'No IATI file' %} ({{export.show_status}})
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endblock %}

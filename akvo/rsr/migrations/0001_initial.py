@@ -848,8 +848,8 @@ class Migration(migrations.Migration):
                 ('provider_organisation_activity', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='provider organisation activity id', blank=True)),
                 ('receiver_organisation_activity', akvo.rsr.fields.ValidXMLCharField(max_length=50, verbose_name='receiver organisation activity id', blank=True)),
                 ('project', models.ForeignKey(related_name='transactions', verbose_name='project', to='rsr.Project')),
-                ('provider_organisation', models.ForeignKey(related_name='providing_transactions', on_delete=django.db.models.deletion.SET_NULL, verbose_name='provider organisation', blank=True, to='rsr.Organisation', null=True)),
-                ('receiver_organisation', models.ForeignKey(related_name='receiving_transactions', on_delete=django.db.models.deletion.SET_NULL, verbose_name='receiver organisation', blank=True, to='rsr.Organisation', null=True)),
+                ('provider_organisation', models.ForeignKey(related_name='providing_transactions', verbose_name='provider organisation', blank=True, to='rsr.Organisation')),
+                ('receiver_organisation', models.ForeignKey(related_name='receiving_transactions', verbose_name='receiver organisation', blank=True, to='rsr.Organisation')),
             ],
             options={
                 'verbose_name': 'transaction',

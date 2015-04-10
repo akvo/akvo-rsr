@@ -8,9 +8,10 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
-from ..forms import PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm
+from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
+                     SelectOrgForm, IatiExportForm)
 from ...utils import pagination
-from ..models import Country, Organisation
+from ..models import Country, Organisation, Project
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -67,14 +68,21 @@ def password_change(request):
 @login_required
 def my_updates(request):
     updates = request.user.updates()
-    page = request.GET.get('page')
 
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            updates = updates.filter(title__icontains=q_item)
+
+    page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
     context = {
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
+        'q': q,
     }
 
     return render(request, 'myrsr/my_updates.html', context)
@@ -84,8 +92,15 @@ def my_updates(request):
 def my_projects(request):
     organisations = request.user.employers.approved().organisations()
     projects = organisations.all_projects().distinct()
-    page = request.GET.get('page')
 
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            projects = projects.filter(title__icontains=q_item) | \
+                projects.filter(subtitle__icontains=q_item)
+
+    page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
 
     context = {
@@ -93,9 +108,63 @@ def my_projects(request):
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
+        'q': q,
     }
 
     return render(request, 'myrsr/my_projects.html', context)
+
+
+@login_required
+def my_iati(request):
+    user = request.user
+
+    if not user.has_perm('rsr.iati_management'):
+        raise PermissionDenied
+
+    org = request.GET.get('org')
+    selected_org, iati_exports, export_added, project_count = None, None, False, 0
+
+    select_org_form = SelectOrgForm(user)
+    iati_export_form = None
+
+    if not org and not (user.is_superuser or user.is_admin) \
+            and user.approved_organisations().count() == 1:
+        selected_org = user.approved_organisations()[0]
+
+    elif org:
+        try:
+            selected_org = Organisation.objects.get(pk=int(org))
+        except Organisation.DoesNotExist:
+            raise PermissionDenied
+        if not (user.is_superuser or user.is_admin) \
+                and not user.has_perm('rsr.change_organisation', selected_org):
+            raise PermissionDenied
+
+    if selected_org:
+        iati_exports = selected_org.iati_exports.all().order_by('-last_modified_at')
+        project_count = selected_org.reporting_projects.all().count()
+        initial = {
+            'is_public': True,
+            'projects': [p.pk for p in selected_org.reporting_projects.all()]
+        }
+        iati_export_form = IatiExportForm(initial=initial, org=selected_org)
+
+    if request.method == 'POST':
+        iati_export_form = IatiExportForm(selected_org, request.POST)
+        if iati_export_form.is_valid():
+            iati_export_form.save(reporting_organisation=selected_org, user=user)
+            export_added = True
+
+    context = {
+        'select_org_form': select_org_form,
+        'iati_export_form': iati_export_form,
+        'selected_org': selected_org,
+        'exports': iati_exports,
+        'export_added': export_added,
+        'project_count': project_count,
+    }
+
+    return render(request, 'myrsr/my_iati.html', context)
 
 @login_required
 def user_management(request):
@@ -105,12 +174,22 @@ def user_management(request):
         raise PermissionDenied
 
     if user.is_support and user.is_admin:
-        users = get_user_model().objects.filter(is_active=True).order_by('-date_joined')
+        users = get_user_model().objects.filter(is_active=True)\
+            .order_by('-date_joined').have_employments()
         org_actions = Organisation.objects.all()
     else:
         organisations = user.employers.approved().organisations()
-        users = organisations.users().exclude(pk=user.pk).order_by('-date_joined')
+        users = organisations.users().exclude(pk=user.pk)\
+            .order_by('-date_joined').have_employments()
         org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
+
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            users = users.filter(username__icontains=q_item) | \
+                users.filter(first_name__icontains=q_item) | \
+                users.filter(last_name__icontains=q_item)
 
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, users, 10)
@@ -123,4 +202,6 @@ def user_management(request):
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range
+    if q:
+        context['q'] = q
     return render(request, 'myrsr/user_management.html', context)
