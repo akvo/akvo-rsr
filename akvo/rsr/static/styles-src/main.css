@@ -1012,6 +1012,17 @@ header.projectHeader {
         font-size: 0.875em;
         font-weight: bold; }
 
+.donateSection {
+  background: rgba(255, 164, 114, 0.2);
+  padding: 10px 15px;
+  box-shadow: 1px 1px 0 rgba(255, 164, 114, 0.5);
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
+  .donateSection a {
+    margin: -10px auto 5px auto; }
+
 #project-map {
   border: 1px solid #f9d7b9; }
   #project-map div.akvo_map {

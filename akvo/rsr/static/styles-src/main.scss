@@ -1205,7 +1205,15 @@ header {
         }
     }
 }
-
+.donateSection {
+    background: rgba(complement($rsrBlue2),0.2);
+    padding:10px 15px;
+    box-shadow: 1px 1px 0 rgba(complement($rsrBlue2),0.5);
+    @include border-radius(5px);
+    a {
+        margin: -10px auto 5px auto;
+    }
+}
 #project-map {
     border: 1px solid darken($lightOrange, 10%);
     div.akvo_map {
