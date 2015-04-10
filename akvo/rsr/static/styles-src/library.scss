@@ -129,7 +129,7 @@ $width-large:  1200px;
   @if $width == wide-screens {
     @media only screen and (min-width: $width-large) { @content; }
   }
-  @else if $width == medium-screens {
+  @else if $width == mediums-screens {
     @media only screen and (min-width: $width-medium) {@content; }
   }
   @else if $width == small-screens {
@@ -138,7 +138,7 @@ $width-large:  1200px;
   @else if $width == wide-max-screens {
     @media only screen and (max-width: $width-large) { @content; }
   }
-  @else if $width == medium-max-screens {
+  @else if $width == mediums-max-screens {
     @media only screen and (max-width: $width-medium) { @content; }
   }
   @else if $width == small-max-screens {
