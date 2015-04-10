@@ -38,6 +38,25 @@ ORG_TYPES = (
 )
 
 
+def image_path(instance, file_name):
+    return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
+
+
+class OrgManager(models.Manager):
+    def get_queryset(self):
+        return self.model.QuerySet(self.model).extra(
+            select={
+                'lower_name': 'lower(name)'
+            }
+        ).order_by('lower_name')
+
+    def __getattr__(self, attr, *args):
+        try:
+            return getattr(self.__class__, attr, *args)
+        except AttributeError:
+            return getattr(self.get_queryset(), attr, *args)
+
+
 class Organisation(TimestampsMixin, models.Model):
     """
     There are four types of organisations in RSR, called Field,
@@ -56,9 +75,6 @@ class Organisation(TimestampsMixin, models.Model):
             cls.NEW_TO_OLD_TYPES
         ))
         return types[iati_type]
-
-    def image_path(instance, file_name):
-        return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
     # TODO: make name unique
     name = ValidXMLCharField(
@@ -132,13 +148,15 @@ class Organisation(TimestampsMixin, models.Model):
         ),
         default=True
     )
+    public_iati_file = models.BooleanField(
+        _(u'Show latest exported IATI file on organisation page.'), default=True
+    )
 
-    objects = QuerySetManager()
+    objects = OrgManager()
 
     @models.permalink
     def get_absolute_url(self):
         return ('organisation-main', (), {'organisation_id': self.pk})
-
 
     class QuerySet(QuerySet):
         def has_location(self):
@@ -275,6 +293,17 @@ class Organisation(TimestampsMixin, models.Model):
             projectlocation__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
         ).distinct()
 
+    def iati_file(self):
+        """
+        Looks up the latest public IATI file of this organisation.
+
+        :return: String of IATI file or None
+        """
+        for export in self.iati_exports.all().order_by('-last_modified_at'):
+            if export.is_public and export.status == 3 and export.iati_file:
+                return export.iati_file
+        return None
+
     # New API
 
     def euros_pledged(self):
@@ -318,7 +347,6 @@ class Organisation(TimestampsMixin, models.Model):
         app_label = 'rsr'
         verbose_name = _(u'organisation')
         verbose_name_plural = _(u'organisations')
-        ordering = ['name']
         permissions = (
             ('user_management', u'Can manage users'),
         )

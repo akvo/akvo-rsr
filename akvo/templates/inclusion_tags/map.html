@@ -1,7 +1,18 @@
 <div class= "rsr_map" id="{{ map_id }}" style="width:{{width}};height:{{height}};"></div>
 <script>
  var {{ map_id }} = {
-   locations: {{ locations|safe }},
+   locations: [{% for location in locations %}
+   {
+       'url': '{{location.url}}',
+       'text': '{{location.text}}',
+       'latitude': '{{location.latitude}}',
+       'pk': '{{location.pk}}',
+       'image': '{{location.image}}',
+       'type': '{{location.type}}',
+       'longitude': '{{location.longitude}}',
+       'icon': '{{location.icon}}',
+   },
+   {% endfor %}],
    {# icon: '{{ marker_icon }}', #}
    {% if dynamic %}
    dynamic: true,

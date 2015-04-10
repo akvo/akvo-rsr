@@ -56,7 +56,7 @@
           </li>
         </ul>
 
-        <h4 class="topMargin">Contact information</h4>
+        <h4 class="topMargin">{% trans 'Contact information' %}</h4>
 
         <ul class="noStyleUl">
           <li>
@@ -69,9 +69,18 @@
               <p>{{organisation.phone}}</p>
             {% endif %}
           </li>
-        {% endif %}
-      </ul>
+          {% endif %}
+        </ul>
 
+        {% if organisation.iati_file and organisation.public_iati_file %}
+        <h4 class="topMargin">{% trans 'IATI file' %}</h4>
+
+        <ul class="noStyleUl">
+          <li>
+            <span class="orgIati"><a href="{{MEDIA_URL}}{{organisation.iati_file}}" target="_blank">{% trans 'View latest IATI file' %}</a></span>
+          </li>
+        </ul>
+        {% endif %}
     </div>
 
   </div>
@@ -104,10 +113,10 @@
       <h2>{% trans 'Funding' %}</h2>
       <dl class="org_statistics_table dl-horizontal">
         {% if organisation.euro_projects_count %}
-          <dt>{% trans 'project' %}{{organisation.euro_projects_count|pluralize:"s"}}</dt>
-          <dd>{{organisation.euro_projects_count}}
-          {% trans 'in Euros' %}
-          </dd>
+          <dt>{% trans 'Projects' %}</dt>
+          <dd>{{organisation.euro_projects_count}}</dd>
+          <dt>{% trans 'Currency used' %}</dt>
+          <dd>{% trans 'Euros' %}</dd>
           <dt>{% trans 'Pledged' %}</dt>
           <dd>
           € {{organisation.euros_pledged|round|intcomma}}
@@ -124,10 +133,10 @@
           <dd></dd>
         {% endif %}
         {% if organisation.dollar_projects_count %}
-          <dt>
-          {% trans 'project' %}{{organisation.dollar_projects_count|pluralize:"s"}}
-          </dt>
-          <dd>{{organisation.dollar_projects_count}} {% trans 'in US Dollars' %}</dd>
+          <dt>{% trans 'Projects' %}</dt>
+          <dd>{{organisation.dollar_projects_count}}</dd>
+          <dt>{% trans 'Currency used' %}</dt>
+          <dd>{% trans 'US Dollars' %}</dd>          
           <dt>{% trans 'Pledged' %}</dt>
           <dd>
           $ {{organisation.dollars_pledged|round|intcomma}}

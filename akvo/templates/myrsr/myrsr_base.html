@@ -14,6 +14,10 @@
                     <li><a href="{% url 'my_details' %}"  class="{% if current_path == '/myrsr/' %}active{% endif %}">My details</a></li>
                     <li><a href="{% url 'my_updates' %}" class="{% if current_path == '/myrsr/updates/' %}active{% endif %}">My updates</a></li>
                     <li><a href="{% url 'my_projects' %}" class="{% if current_path == '/myrsr/projects/' %}active{% endif %}">My projects</a></li>
+                    {% has_perm 'rsr.iati_management' user as can_manage_iati %}
+                    {% if can_manage_iati %}
+                    <li><a href="{% url 'my_iati' %}" class="{% if '/myrsr/iati/' in current_path %}active{% endif %}">{% trans "My IATI" %}</a></li>
+                    {% endif %}
                     {% has_perm 'rsr.change_employment' user as can_change_employments %}
                     {% if can_change_employments %}
                     <li><a href="{% url 'user_management' %}" class="{% if current_path == '/myrsr/user_management/' %}active{% endif %}">User management</a></li>
