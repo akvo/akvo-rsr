@@ -69,10 +69,10 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
     # If the fieldsets are changed, the template may need fixing too
     fieldsets = (
-        (_(u'General information'), {'fields': ('name', 'long_name', 'partner_types', 'organisation_type',
-                                                'new_organisation_type', 'logo', 'url', 'facebook', 'twitter',
-                                                'linkedin', 'iati_org_id', 'language', 'content_owner',
-                                                'allow_edit',)}),
+        (_(u'General information'), {'fields': (
+            'name', 'long_name', 'partner_types', 'organisation_type', 'new_organisation_type',
+            'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id', 'public_iati_file',
+            'language', 'content_owner', 'allow_edit',)}),
         (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
@@ -161,16 +161,7 @@ class BudgetItemAdminInLine(NestedTabularInline):
     model = get_model('rsr', 'budgetitem')
     extra = 1
     formset = BudgetItemAdminInLineFormSet
-    fieldsets = (
-        (None, {
-            'fields': ('label', 'other_extra', 'type', 'amount',
-                       'period_start', 'period_end', 'value_date')
-        }),
-        ('IATI fields (advanced)', {
-            'classes': ('collapse',),
-            'fields': ('period_start_text', 'period_end_text', )
-        })
-    )
+    fields = ('label', 'other_extra', 'type', 'amount', 'period_start', 'period_end', 'value_date')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -324,17 +315,24 @@ class PartnershipInline(NestedTabularInline):
             return 1
 
 
+class LocationAdministrativeInline(NestedTabularInline):
+    model = get_model('rsr', 'administrativelocation')
+    fields = ('code', 'vocabulary', 'level')
+    extra = 0
+
+
 class ProjectLocationInline(NestedStackedInline):
     model = get_model('rsr', 'projectlocation')
+    inlines = (LocationAdministrativeInline,)
     fieldsets = (
         (None, {
-            'fields': ('latitude', 'longitude', 'country', 'city', 'state', 'address_1', 'address_2', 'postcode')
+            'fields': ('latitude', 'longitude', 'country', 'city', 'state', 'address_1',
+                       'address_2', 'postcode')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
             'fields': ('reference', 'location_code', 'name', 'description', 'activity_description',
-                       'administrative_code', 'administrative_vocabulary', 'administrative_level', 'exactness',
-                       'location_reach', 'location_class', 'feature_designation')
+                       'exactness', 'location_reach', 'location_class', 'feature_designation')
         }),
     )
 
@@ -366,7 +364,7 @@ class CountryBudgetInline(NestedTabularInline):
     fieldsets = (
         ('Country Budget Item', {
             'classes': ('collapse',),
-            'fields': ('code', 'description', 'vocabulary', 'percentage')
+            'fields': ('code', 'description', 'percentage')
         }),
     )
 
@@ -435,7 +433,7 @@ class ProjectConditionInline(NestedTabularInline):
     fieldsets = (
         ('Project Condition', {
             'classes': ('collapse',),
-            'fields': ('type', 'text', 'attached')
+            'fields': ('type', 'text')
         }),
     )
 
@@ -493,18 +491,26 @@ class SectorInline(NestedTabularInline):
             return 1
 
 
+class TransactionSectorInline(NestedTabularInline):
+    model = get_model('rsr', 'TransactionSector')
+    fields = ('code', 'vocabulary', 'text')
+    extra = 0
+
+
 class TransactionInline(NestedStackedInline):
     model = get_model('rsr', 'Transaction')
+    inlines = (TransactionSectorInline, )
     fieldsets = (
         (None, {
             'fields': ('reference', 'transaction_type', 'value', 'transaction_date', 'description')
         }),
         ('IATI fields (advanced)', {
             'classes': ('collapse',),
-            'fields': ('currency',  'value_date', 'transaction_type_text', 'provider_organisation',
-                       'provider_organisation_activity', 'receiver_organisation', 'receiver_organisation_activity',
-                       'aid_type', 'aid_type_text', 'disbursement_channel', 'disbursement_channel_text', 'finance_type',
-                       'finance_type_text', 'flow_type', 'flow_type_text', 'tied_status', 'tied_status_text', )
+            'fields': ('currency',  'value_date', 'provider_organisation',
+                       'provider_organisation_activity', 'receiver_organisation',
+                       'receiver_organisation_activity', 'aid_type', 'disbursement_channel',
+                       'finance_type', 'flow_type', 'tied_status', 'recipient_country',
+                       'recipient_region', 'recipient_region_vocabulary')
         }),
     )
 
@@ -527,7 +533,7 @@ class LegacyDataInline(NestedTabularInline):
 
 class RelatedProjectInline(NestedStackedInline):
     model = get_model('rsr', 'RelatedProject')
-    fields = ('related_project', 'relation')
+    fields = ('related_project', 'related_iati_id', 'relation')
     fk_name = 'project'
 
     def get_extra(self, request, obj=None, **kwargs):
@@ -561,7 +567,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'Optionally, you can add default information based on the IATI standard.'
             ),
             'fields': ('default_aid_type', 'default_flow_type', 'default_tied_status','collaboration_type',
-                       'default_finance_type'),
+                       'default_finance_type', 'country_budget_vocabulary'),
         }),
         (_(u'Contact Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(

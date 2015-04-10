@@ -1059,98 +1059,98 @@ h4.detailedInfo {
                 }
             }
         }
-        &.updates {
-            ul {
-                li {
-                    border: thin solid rgba($rsrGreen, 0);
-                    @include transition(all 0.2s ease-in);
-                    .orgName {}
-                    .projectTitle {
+    }
+    &.updates {
+        ul {
+            li {
+                border: thin solid rgba($rsrGreen, 0);
+                @include transition(all 0.2s ease-in);
+                .orgName {}
+                .projectTitle {
+                    color: rgba($anchorLink, 1);
+                    i {
+                        font-size: 1.1em;
                         color: rgba($anchorLink, 1);
-                        i {
-                            font-size: 1.1em;
-                            color: rgba($anchorLink, 1);
-                        }
+                    }
+                    &:hover {
+                        color: $anchorLinkHover;
+                    }
+                }
+                h1 {
+                    a {
+                        color: $rsrGreen;
                         &:hover {
                             color: $anchorLinkHover;
                         }
                     }
-                    h1 {
-                        a {
-                            color: $rsrGreen;
-                            &:hover {
-                                color: $anchorLinkHover;
-                            }
-                        }
-                    }
-                    &:nth-child(2n+1) {
-                        background: darken(rgba($rsrGreen, 0.05), 10%);
-                        border: thin solid rgba($rsrGreen, 0.1);
-                    }
-                    .projectLocation {
-                        color: rgba($akvoBlack, 0.5);
-                    }
-                    &:hover {
-                        background: darken(rgba($rsrGreen, 0.1), 0%);
-                        border: thin solid rgba($rsrGreen, 0.35);
-                    }
-                    .excerpt {}
-                    .excerpt {}
                 }
+                &:nth-child(2n+1) {
+                    background: darken(rgba($rsrGreen, 0.05), 10%);
+                    border: thin solid rgba($rsrGreen, 0.1);
+                }
+                .projectLocation {
+                    color: rgba($akvoBlack, 0.5);
+                }
+                &:hover {
+                    background: darken(rgba($rsrGreen, 0.1), 0%);
+                    border: thin solid rgba($rsrGreen, 0.35);
+                }
+                .excerpt {}
+                .excerpt {}
             }
         }
-        &.organisations {
-            ul {
-                li {
-                    border: thin solid rgba($akvoTvRed, 0);
-                    @include transition(all 0.2s ease-in);
-                    i {
-                        font-size: 1.1em;
-                    }
-                    .projectLocation {}
-                    .projectTitle {
-                        display: block;
-                        margin: 0 0 3px 0;
-                    }
-                    span.userFullName {
-                        margin: 0 0 0px 0;
-                    }
-                    .upDateTime {
-                        margin-top: 10px;
-                    }
-                    .orgType {}
-                    .additionalInfo {
-                        div {
-                            color: rgba($akvoBlack, 0.5);
-                            span {
-                                margin-left: 5px;
-                            }
+    }
+    &.organisations {
+        ul {
+            li {
+                border: thin solid rgba($akvoTvRed, 0);
+                @include transition(all 0.2s ease-in);
+                i {
+                    font-size: 1.1em;
+                }
+                .projectLocation {}
+                .projectTitle {
+                    display: block;
+                    margin: 0 0 3px 0;
+                }
+                span.userFullName {
+                    margin: 0 0 0px 0;
+                }
+                .upDateTime {
+                    margin-top: 10px;
+                }
+                .orgType {}
+                .additionalInfo {
+                    div {
+                        color: rgba($akvoBlack, 0.5);
+                        span {
+                            margin-left: 5px;
                         }
                     }
-                    h1 {
-                        a {
-                            color: $akvoTvRed;
-                            &:hover {
-                                color: $anchorLinkHover;
-                            }
+                }
+                h1 {
+                    a {
+                        color: $akvoTvRed;
+                        &:hover {
+                            color: $anchorLinkHover;
                         }
                     }
-                    &:nth-child(2n+1) {
-                        background: darken(rgba($akvoTvRed, 0.05), 0);
-                        border: thin solid rgba($akvoTvRed, 0.05);
-                    }
-                    &:hover {
-                        background: darken(rgba($akvoTvRed, 0.1), 0%);
-                        border: thin solid rgba($akvoTvRed, 0.35);
-                    }
+                }
+                &:nth-child(2n+1) {
+                    background: darken(rgba($akvoTvRed, 0.05), 0);
+                    border: thin solid rgba($akvoTvRed, 0.05);
+                }
+                &:hover {
+                    background: darken(rgba($akvoTvRed, 0.1), 0%);
+                    border: thin solid rgba($akvoTvRed, 0.35);
+                }
+                img {
+                    @include bw;
+                    transition: all 0.2s ease-in;
+                }
+                &:hover {
                     img {
-                        @include bw;
-                        transition: all 0.2s ease-in;
-                    }
-                    &:hover {
-                        img {
-                            @include colour;
-                        }
+                        @include colour;
                     }
                 }
             }
@@ -1365,29 +1365,28 @@ div.projectTopRow {
     }
 }
 
-.results {
-    ul {
-        padding: 5px 0 5px 5px;
-        li {
-            i {}
-        }
+ul.results {
+//    padding: 0 0 0 15px;
+    padding: 5px 0 5px 10px;
+    span li {
+        display: inline-block;
+        font-weight: normal;
     }
-}
-
-.indicators, .results {
-    padding: 0 0 0 15px;
-    dl {
-        padding: 5px 0 5px 10px;
-        dt, dd {
-            display: inline-block;
-        }
+    dl.indicators {
+        display: inline-block;
+        padding: 0 0 0 35px;
+        width: 100%;
+        overflow: hidden;
         dd {
-            width: 15%;
+            width: 30%;
+            float: left;
+            text-align: right;
         }
         dt {
-            width: 85%;
+            width: 70%;
             color: rgba($akvoBlack, 0.4);
             font-weight: normal;
+            float: left;
         }
     }
 }

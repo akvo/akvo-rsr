@@ -14,6 +14,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.sites.models import get_current_site
 from django.db.models import get_model
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 
 from mollie.ideal.utils import get_mollie_banklist
 
@@ -21,7 +22,7 @@ from registration.models import RegistrationProfile
 
 from urlparse import urlsplit, urlunsplit
 
-from .models import Country, Invoice, Organisation, ProjectUpdate, ProjectUpdateLocation
+from .models import Country, Invoice, Organisation, Project, ProjectUpdate, ProjectUpdateLocation
 
 from akvo import settings
 
@@ -368,3 +369,67 @@ class InvoiceForm(forms.ModelForm):
             if cd['email'] != cd['email2']:
                 raise forms.ValidationError(_('You must type the same email address each time!'))
         return cd
+
+
+class SelectOrgForm(forms.Form):
+    """Form for selecting an organisation."""
+
+    def __init__(self, user, *args, **kwargs):
+        super(SelectOrgForm, self).__init__(*args, **kwargs)
+
+        if user.is_superuser or user.is_admin:
+            organisations = Organisation.objects.all()
+        else:
+            organisations = user.employers.approved().organisations()
+
+        self.fields['org'] = forms.ModelChoiceField(
+            queryset=organisations,
+            label='Select your organisation',
+        )
+
+
+class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        checks = obj.check_mandatory_fields()
+        if checks[0]:
+            return mark_safe(u'<span class="success">%s</span>' % obj.__unicode__())
+        else:
+            label = obj.__unicode__() + " (<a href='/admin/rsr/project/%s/'" \
+                                        " target='_blank'>edit project</a>)" % str(obj.pk)
+            for check in checks[1]:
+                if check[0] == u'error':
+                    label += u'<br>- %s' % check[1]
+            return mark_safe(u'<span class="error">%s</span>' % label)
+
+
+
+class IatiExportForm(forms.ModelForm):
+    """Form for adding an entry to the IATI export model."""
+    is_public = forms.BooleanField(required=False, label="Show IATI file on organisation page")
+    projects = CustomLabelModelChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=Project.objects.all(),
+        label="Select the projects included in the export:"
+    )
+
+    class Meta:
+        model = get_model('rsr', 'IatiExport')
+        fields = ('projects', 'is_public', )
+
+    def __init__(self, org=None, *args, **kwargs):
+        super(IatiExportForm, self).__init__(*args, **kwargs)
+        if org:
+            self.fields['projects'].queryset = org.reporting_projects.all()
+
+    def save(self, reporting_organisation=None, user=None):
+        if reporting_organisation and user:
+            iati_export = super(IatiExportForm, self).save(commit=False)
+            iati_export.reporting_organisation = reporting_organisation
+            iati_export.user = user
+            iati_export.save()
+            self.save_m2m()
+            iati_export.save()
+
+            return iati_export
+        else:
+            raise forms.ValidationError('Reporting organisation or user not found.')

@@ -900,67 +900,67 @@ h4.detailedInfo {
         margin-top: 1em; } }
     .main-list.projects ul li .donateButton .totalBudgetLabel {
       width: initial; }
-.main-list.projects.updates ul li {
+.main-list.updates ul li {
   border: thin solid rgba(0, 167, 157, 0);
   -moz-transition: all 0.2s ease-in;
   -o-transition: all 0.2s ease-in;
   -webkit-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in; }
-  .main-list.projects.updates ul li .projectTitle {
+  .main-list.updates ul li .projectTitle {
     color: #00aaff; }
-    .main-list.projects.updates ul li .projectTitle i {
+    .main-list.updates ul li .projectTitle i {
       font-size: 1.1em;
       color: #00aaff; }
-    .main-list.projects.updates ul li .projectTitle:hover {
+    .main-list.updates ul li .projectTitle:hover {
       color: #ff5500; }
-  .main-list.projects.updates ul li h1 a {
+  .main-list.updates ul li h1 a {
     color: #00a79d; }
-    .main-list.projects.updates ul li h1 a:hover {
+    .main-list.updates ul li h1 a:hover {
       color: #ff5500; }
-  .main-list.projects.updates ul li:nth-child(2n+1) {
+  .main-list.updates ul li:nth-child(2n+1) {
     background: rgba(0, 116, 109, 0.05);
     border: thin solid rgba(0, 167, 157, 0.1); }
-  .main-list.projects.updates ul li .projectLocation {
+  .main-list.updates ul li .projectLocation {
     color: rgba(32, 32, 36, 0.5); }
-  .main-list.projects.updates ul li:hover {
+  .main-list.updates ul li:hover {
     background: rgba(0, 167, 157, 0.1);
     border: thin solid rgba(0, 167, 157, 0.35); }
-.main-list.projects.organisations ul li {
+.main-list.organisations ul li {
   border: thin solid rgba(238, 49, 36, 0);
   -moz-transition: all 0.2s ease-in;
   -o-transition: all 0.2s ease-in;
   -webkit-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in; }
-  .main-list.projects.organisations ul li i {
+  .main-list.organisations ul li i {
     font-size: 1.1em; }
-  .main-list.projects.organisations ul li .projectTitle {
+  .main-list.organisations ul li .projectTitle {
     display: block;
     margin: 0 0 3px 0; }
-  .main-list.projects.organisations ul li span.userFullName {
+  .main-list.organisations ul li span.userFullName {
     margin: 0 0 0px 0; }
-  .main-list.projects.organisations ul li .upDateTime {
+  .main-list.organisations ul li .upDateTime {
     margin-top: 10px; }
-  .main-list.projects.organisations ul li .additionalInfo div {
+  .main-list.organisations ul li .additionalInfo div {
     color: rgba(32, 32, 36, 0.5); }
-    .main-list.projects.organisations ul li .additionalInfo div span {
+    .main-list.organisations ul li .additionalInfo div span {
       margin-left: 5px; }
-  .main-list.projects.organisations ul li h1 a {
+  .main-list.organisations ul li h1 a {
     color: #ee3124; }
-    .main-list.projects.organisations ul li h1 a:hover {
+    .main-list.organisations ul li h1 a:hover {
       color: #ff5500; }
-  .main-list.projects.organisations ul li:nth-child(2n+1) {
+  .main-list.organisations ul li:nth-child(2n+1) {
     background: rgba(238, 49, 36, 0.05);
     border: thin solid rgba(238, 49, 36, 0.05); }
-  .main-list.projects.organisations ul li:hover {
+  .main-list.organisations ul li:hover {
     background: rgba(238, 49, 36, 0.1);
     border: thin solid rgba(238, 49, 36, 0.35); }
-  .main-list.projects.organisations ul li img {
+  .main-list.organisations ul li img {
     filter: gray;
     -webkit-filter: grayscale(100%);
     filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
     filter: grayscale(100%);
     transition: all 0.2s ease-in; }
-  .main-list.projects.organisations ul li:hover img {
+  .main-list.organisations ul li:hover img {
     filter: 0;
     -webkit-filter: grayscale(0%);
     filter: url();
@@ -1136,21 +1136,25 @@ div.projectTopRow {
         div.projectTopRow .projectSideInfo ul li .donateButton {
           margin-right: 15px; }
 
-.results ul {
-  padding: 5px 0 5px 5px; }
-
-.indicators, .results {
-  padding: 0 0 0 15px; }
-  .indicators dl, .results dl {
-    padding: 5px 0 5px 10px; }
-    .indicators dl dt, .indicators dl dd, .results dl dt, .results dl dd {
-      display: inline-block; }
-    .indicators dl dd, .results dl dd {
-      width: 15%; }
-    .indicators dl dt, .results dl dt {
-      width: 85%;
+ul.results {
+  padding: 5px 0 5px 10px; }
+  ul.results span li {
+    display: inline-block;
+    font-weight: normal; }
+  ul.results dl.indicators {
+    display: inline-block;
+    padding: 0 0 0 35px;
+    width: 100%;
+    overflow: hidden; }
+    ul.results dl.indicators dd {
+      width: 30%;
+      float: left;
+      text-align: right; }
+    ul.results dl.indicators dt {
+      width: 70%;
       color: rgba(32, 32, 36, 0.4);
-      font-weight: normal; }
+      font-weight: normal;
+      float: left; }
 
 div.timelineBlock {
   margin: 15px auto 25px;
