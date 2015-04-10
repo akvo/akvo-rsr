@@ -297,7 +297,7 @@ var UserRow = React.createClass({displayName: 'UserRow',
       React.DOM.td(null, this.props.user.email),
       React.DOM.td(null, this.props.user.first_name),
       React.DOM.td(null, this.props.user.last_name),
-      React.DOM.td(null, EmploymentList( {user:this.props.user} ))
+      React.DOM.td( {className:"text-right"}, EmploymentList( {user:this.props.user} ))
       )
     );
   }
@@ -329,7 +329,7 @@ UserTable = React.createClass({displayName: 'UserTable',
     return (
       Table( {striped:true}, 
       React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Email"),React.DOM.th(null, "First name"),React.DOM.th(null, "Last name"),
-        React.DOM.th(null, "Organisations"))
+        React.DOM.th( {className:"text-right"}, "Organisations"))
       ),
       React.DOM.tbody(null, users)
       )

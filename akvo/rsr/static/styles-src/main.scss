@@ -169,8 +169,8 @@ span.twitter-typeahead .tt-dropdown-menu {
     z-index: 1000;
     display: none;
     float: left;
-    min-width: 160px;
-    padding: 5px 0;
+    min-width: 268px;
+    padding: 5px 15px;
     margin: 2px 0 0;
     list-style: none;
     font-size: 14px;
@@ -182,10 +182,19 @@ span.twitter-typeahead .tt-dropdown-menu {
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     background-clip: padding-box;
+    .tt-suggestions {
+        color: rgba(black, 0.7) !important;
+        * {
+            color: rgba(black, 0.7) !important;
+        }
+    }
+    .tt-dataset-projects {}
+    .tt-dataset-organisations {}
+    .tt-dataset-locations {}
 }
 
 .tt-hint {
-    color: rgba($rsrGreen, 0.5);
+    color: rgba($rsrGreen, 0.9);
 }
 
 span.twitter-typeahead .tt-suggestion > p {
@@ -194,7 +203,7 @@ span.twitter-typeahead .tt-suggestion > p {
     clear: both;
     font-weight: normal;
     line-height: 1.42857143;
-    color: #333;
+    color: rgba(black, 0.7);
     white-space: nowrap;
 }
 
@@ -517,6 +526,17 @@ nav.navbar-fixed-top {
     }
 }
 
+.myProjectList {
+    tbody {
+        tr {
+            background: rgba($akvoBlack, 0.1) !important;
+            &.isPublished {
+                background: white !important;
+            }
+        }
+    }
+}
+
 #profile {
     .usrAvatar {
         background-color: rgba($akvoBlack, 0);
@@ -617,7 +637,7 @@ nav.navbar-fixed-top {
     }
     .tt-dropdown-menu {
         margin-top: 12px;
-        padding: 8px 0;
+        padding: 8px 15px;
         background-color: #fff;
         border: 1px solid #ccc;
         border: 1px solid rgba(0, 0, 0, 0.2);
@@ -733,7 +753,7 @@ h4.detailedInfo {
 /* LISTINGS */
 #map {
     height: 400px;
-    @include responsive(small-max-screens) {
+    @include responsive(xtra-small-max-screens) {
         display: none;
     }
 }
@@ -1025,7 +1045,7 @@ h4.detailedInfo {
                 .donateButton {
                     text-align: left;
                     a {
-                        @include responsive(medium-max-screens) {
+                        @include responsive(mediums-max-screens) {
                             margin-top: 0.6em;
                         }
 
@@ -1653,7 +1673,7 @@ div.textBlock {
         background-color: $secondary8;
     }
     @include responsive(small-screens) {
-        @include responsive(medium-max-screens) {
+        @include responsive(mediums-max-screens) {
             h3 {
                 font-size: 1.3em;
             }
@@ -1695,7 +1715,7 @@ section.projectFinancial {
         }
     }
 
-    @include responsive(medium-max-screens) {
+    @include responsive(mediums-max-screens) {
         @include responsive(small-screens) {
             .dl-horizontal {
                 dt {

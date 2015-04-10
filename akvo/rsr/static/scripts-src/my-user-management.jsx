@@ -297,7 +297,7 @@ var UserRow = React.createClass({
       <td>{this.props.user.email}</td>
       <td>{this.props.user.first_name}</td>
       <td>{this.props.user.last_name}</td>
-      <td><EmploymentList user={this.props.user} /></td>
+      <td className="text-right"><EmploymentList user={this.props.user} /></td>
       </tr>
     );
   }
@@ -329,7 +329,7 @@ UserTable = React.createClass({
     return (
       <Table striped>
       <thead><tr><th>Email</th><th>First name</th><th>Last name</th>
-        <th>Organisations</th></tr>
+        <th className="text-right">Organisations</th></tr>
       </thead>
       <tbody>{users}</tbody>
       </Table>
