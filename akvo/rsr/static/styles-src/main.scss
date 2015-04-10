@@ -249,6 +249,11 @@ dl {
                 font-weight: bold;
             }
         }
+    &.org_statistics_table {
+        dd {
+                text-align: right;
+            }
+        }
     }
 }
 

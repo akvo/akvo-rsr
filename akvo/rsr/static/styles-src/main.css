@@ -239,6 +239,8 @@ dl.dl-horizontal dt {
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
+dl.dl-horizontal.org_statistics_table dd {
+  text-align: right; }
 
 label {
   color: #00a79d;
