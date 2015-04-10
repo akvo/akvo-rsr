@@ -90,7 +90,7 @@
   </div>
   <div class="row">
     <div class="col-md-4">
-      <h2><a href="{% url 'project-directory' %}?organisation={{organisation.pk}}">{% trans 'Projects in RSR' %}</a></h2>
+      <h2><a href="{% url 'project-directory' %}?organisation={{organisation.pk}}"><i class="fa fa-external-link"></i> {% trans 'Projects in RSR' %}</a></h2>
       <dl class="dl-horizontal">
         <dt>{% trans 'Active' %}</dt><dd>{{organisation.published_projects.status_active.count}}</dd>
         <dt>{% trans 'Need funding' %}</dt><dd>{{organisation.published_projects.status_onhold.count}}</dd>
@@ -100,7 +100,7 @@
       </dl>
     </div>
     <div class="col-md-4">
-      <h2><a href="{% url 'update-directory' %}?partner={{organisation.pk}}">{% trans 'Updates in RSR' %}</a></h2>
+      <h2><a href="{% url 'update-directory' %}?partner={{organisation.pk}}"><i class="fa fa-external-link"></i> {% trans 'Updates in RSR' %}</a></h2>
       <dl class="dl-horizontal">
         <dt>{% trans 'Total updates' %}</dt><dd>{{organisation.published_projects.all_updates.count}}</dd>
       </dl>
