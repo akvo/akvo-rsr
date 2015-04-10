@@ -520,8 +520,11 @@ class Project(TimestampsMixin, models.Model):
 
         def all_updates(self):
             "return ProjectUpdates for self, newest first"
-            from .project_update import ProjectUpdate
-            return ProjectUpdate.objects.filter(project__in=self)
+            from ..models import ProjectUpdate
+            qs = ProjectUpdate.objects.none()
+            for project in self:
+                qs = qs | project.project_updates.all()
+            return qs
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):

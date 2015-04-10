@@ -243,6 +243,8 @@ dl.dl-horizontal dt {
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
+dl.dl-horizontal.org_statistics_table dd {
+  text-align: right; }
 
 label {
   color: #00a79d;
@@ -1018,6 +1020,17 @@ header.projectHeader {
         text-transform: uppercase;
         font-size: 0.875em;
         font-weight: bold; }
+
+.donateSection {
+  background: rgba(255, 164, 114, 0.2);
+  padding: 10px 15px;
+  box-shadow: 1px 1px 0 rgba(255, 164, 114, 0.5);
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
+  .donateSection a {
+    margin: -10px auto 5px auto; }
 
 #project-map {
   border: 1px solid #f9d7b9; }
