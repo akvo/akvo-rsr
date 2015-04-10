@@ -119,11 +119,11 @@
           <dd>{% trans 'Euros' %}</dd>
           <dt>{% trans 'Pledged' %}</dt>
           <dd>
-          € {{organisation.euros_pledged|round|intcomma}}
+          € {{organisation.euros_pledged|floatformat:2|intcomma}}
           </dd>
           <dt>{% trans 'Still needed' %}</dt>
           <dd>
-          € {{organisation.euro_funds_needed|round|intcomma}}
+          € {{organisation.euro_funds_needed|floatformat:2|intcomma}}
           </dd>
         {% endif %}
         {% if organisation.euro_projects_count and organisation.dollar_projects_count %}
@@ -139,11 +139,11 @@
           <dd>{% trans 'US Dollars' %}</dd>          
           <dt>{% trans 'Pledged' %}</dt>
           <dd>
-          $ {{organisation.dollars_pledged|round|intcomma}}
+          $ {{organisation.dollars_pledged|floatformat:2|intcomma}}
           </dd>
           <dt>{% trans 'Still needed' %}</dt>
           <dd>
-          $ {{organisation.dollar_funds_needed|round|intcomma}}
+          $ {{organisation.dollar_funds_needed|floatformat:2|intcomma}}
           </dd>
         {% endif %}
       </dl>
