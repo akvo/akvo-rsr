@@ -32,8 +32,10 @@ def _all_projects():
     return Project.objects.published().select_related().prefetch_related(
         'partners').order_by('-id')
 
+
 def _page_projects(page):
     """Dig out the list of projects to use.
+
     First get a list based on page settings (orgs or all projects). Then apply
     keywords filtering / exclusion.
     """

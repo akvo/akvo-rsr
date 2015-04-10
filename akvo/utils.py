@@ -468,6 +468,4 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
 
 def check_auth_groups(group_names):
     for group_name in group_names:
-        group, created = Group.objects.get_or_create(name=group_name)
-        if created:
-            print "Created group => {}".format(group)
+        Group.objects.get_or_create(name=group_name)
