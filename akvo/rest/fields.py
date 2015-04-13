@@ -129,7 +129,10 @@ class Base64ImageField(ImageField):
         if value:
             default_width = '191' # width of update images on akvo.org/seeithappen
             default_thumb = get_thumbnail(value, default_width, quality=99)
-            request = self.context['request']
+            try:
+                request = self.context['request']
+            except KeyError:
+                return None
             # look for name(s) of thumb(s)
             image_thumb_name = request.GET.get('image_thumb_name')
             if image_thumb_name:
