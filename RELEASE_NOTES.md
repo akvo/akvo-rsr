@@ -7,6 +7,19 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
 
+
+### Custom thumbnails in the API
+
+The Django Rest Framework-based API now supports the creation of thumbnails for the images in the Project, Organisation and ProjectUpdate models.
+
+The thumbnail is created on a GET request when the paramterer ```image_thumb_name``` is added. The value of image_thumb_name is one or more names of the thumbnails requested. In addition to the ````image_thumb_name``` parameter, for each image named a second parameter is added, specifying the size of each thumbnail. 
+
+Example of an API call using this new functionality: ```http://rsr.akvo.org/rest/v1/project/?image_thumb_name=big,small&image_thumb_small_width=90&image_thumb_big_max_size=300x200```
+
+For full specification see the Test plan of [issue 1384](https://github.com/akvo/akvo-rsr/issues/1384).
+
+The first practical use of the custom thumbnail in the API is by Akvo RSR Up, that now fetches thumbnails of the correct size for mobile.
+
 Akvo RSR version 3.1 Episkopi
 ---
 
