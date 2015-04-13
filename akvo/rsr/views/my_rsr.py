@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 
 """Akvo RSR is covered by the GNU Affero General Public License.
+
 See more details in the license.txt file located at the root folder of the
 Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import json
-
-from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
-                     SelectOrgForm, IatiExportForm)
-from ...utils import pagination
-from ..models import Country, Organisation, Project
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -21,9 +17,16 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
+from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
+                     SelectOrgForm, IatiExportForm)
+from ..filters import remove_empty_querydict_items
+from ...utils import pagination, filter_query_string
+from ..models import Country, Organisation
+
 
 @login_required
 def my_details(request):
+    """First page in My RSR."""
     if request.method == "POST" and 'avatar' in request.FILES:
         request.FILES['avatar'].name = request.FILES['avatar'].name.encode('ascii', 'ignore')
         avatar_form = UserAvatarForm(request.POST, request.FILES, instance=request.user)
@@ -60,21 +63,18 @@ def my_details(request):
 
 @login_required
 def password_change(request):
+    """The password change page."""
     context = RequestContext(request)
     form = PasswordForm(request.user)
-    return render_to_response('myrsr/password_change.html', {'form': form}, context_instance=context)
+    return render_to_response('myrsr/password_change.html', {'form': form},
+                              context_instance=context)
 
 
 @login_required
 def my_updates(request):
+    """Directory of Updates connected to the user."""
     updates = request.user.updates()
-
-    q = request.GET.get('q')
-    if q:
-        q_list = q.split()
-        for q_item in q_list:
-            updates = updates.filter(title__icontains=q_item)
-
+    qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
@@ -82,24 +82,17 @@ def my_updates(request):
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
-        'q': q,
+        'q': filter_query_string(qs),
     }
-
     return render(request, 'myrsr/my_updates.html', context)
 
 
 @login_required
 def my_projects(request):
+    """Directory of Proejcts connected to the user."""
     organisations = request.user.employers.approved().organisations()
     projects = organisations.all_projects().distinct()
-
-    q = request.GET.get('q')
-    if q:
-        q_list = q.split()
-        for q_item in q_list:
-            projects = projects.filter(title__icontains=q_item) | \
-                projects.filter(subtitle__icontains=q_item)
-
+    qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
 
@@ -108,14 +101,14 @@ def my_projects(request):
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
-        'q': q,
+        'q': filter_query_string(qs),
     }
-
     return render(request, 'myrsr/my_projects.html', context)
 
 
 @login_required
 def my_iati(request):
+    """IATI reports."""
     user = request.user
 
     if not user.has_perm('rsr.iati_management'):
@@ -166,8 +159,10 @@ def my_iati(request):
 
     return render(request, 'myrsr/my_iati.html', context)
 
+
 @login_required
 def user_management(request):
+    """Directory of users connected to the user."""
     user = request.user
 
     if not user.has_perm('rsr.user_management'):
@@ -194,7 +189,7 @@ def user_management(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, users, 10)
 
-    users_array = [user.employments_dict(org_actions) for user in page]
+    users_array = [u.employments_dict(org_actions) for u in page]
 
     context = {}
     if users_array:
