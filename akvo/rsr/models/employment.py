@@ -4,13 +4,16 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
+from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
+
 
 from .models_utils import QuerySetManager
 
@@ -59,10 +62,25 @@ class Employment(models.Model):
     def __unicode__(self):
         return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name, self.organisation.name)
 
-    def approve(self):
+    def approve(self, approved_by):
+        """
+        Approve an Employment. Will also be logged in the Employment admin history.
+
+        :param approved_by: User that approves the Employment
+        """
         if not self.is_approved:
             self.is_approved = True
             self.save()
+
+            # Log in Employment admin history
+            LogEntry.objects.log_action(
+                user_id=approved_by.pk,
+                content_type_id=ContentType.objects.get_for_model(self).pk,
+                object_id=self.pk,
+                object_repr=force_unicode(self),
+                action_flag=CHANGE,
+                change_message=u'Changed is_approved, outside of admin.'
+            )
 
     def to_dict(self, org_list):
         country = '' if not self.country else model_to_dict(self.country)

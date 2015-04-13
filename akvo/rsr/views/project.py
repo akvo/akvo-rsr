@@ -12,13 +12,15 @@ import json
 from sorl.thumbnail import get_thumbnail
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from lxml import etree
 
 from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination, filter_query_string
+from ...iati.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
 
 
@@ -32,8 +34,10 @@ def _all_projects():
     return Project.objects.published().select_related().prefetch_related(
         'partners').order_by('-id')
 
+
 def _page_projects(page):
     """Dig out the list of projects to use.
+
     First get a list based on page settings (orgs or all projects). Then apply
     keywords filtering / exclusion.
     """
@@ -100,6 +104,33 @@ def _get_accordion_data(project):
     accordion_data['target_group'] = project.target_group
     accordion_data['sustainability'] = project.sustainability
     accordion_data['goals_overview'] = project.goals_overview
+    if project.results.all():
+        results_data = []
+        for result in project.results.all():
+            result_data = dict()
+            result_data['id'] = str(result.pk)
+            result_data['title'] = result.title
+            indicators_data = []
+            for indicator in result.indicators.all():
+                for period in indicator.periods.all():
+                    indicator_data = dict()
+                    indicator_data['id'] = str(period.pk)
+                    indicator_data['title'] = indicator.title
+                    if period.period_start:
+                        indicator_data['period_start'] = period.period_start.strftime("%d-%m-%Y")
+                    if period.period_end:
+                        indicator_data['period_end'] = period.period_end.strftime("%d-%m-%Y")
+                    indicator_data['target_value'] = period.target_value
+                    indicator_data['actual_value'] = period.actual_value
+                    indicators_data.append(indicator_data)
+                if not indicator.periods.all():
+                    indicator_data = dict()
+                    indicator_data['id'] = str(indicator.pk)
+                    indicator_data['title'] = indicator.title
+                    indicators_data.append(indicator_data)
+            result_data['indicators'] = indicators_data
+            results_data.append(result_data)
+        accordion_data['results'] = results_data
     return accordion_data
 
 
@@ -311,6 +342,17 @@ def report(request, project_id):
 
     return render(request, 'project_report.html', context)
 
+###############################################################################
+# Project IATI file
+###############################################################################
+
+
+def iati(request, project_id):
+    """Generate the IATI file on-the-fly and return the XML."""
+    iati_activities = IatiXML(Project.objects.filter(pk=project_id)).iati_activities
+    xml_data = etree.tostring(etree.ElementTree(iati_activities))
+    return HttpResponse(xml_data, content_type="text/xml")
+
 
 ###############################################################################
 # Project widgets
@@ -392,6 +434,16 @@ def search(request):
     """."""
     context = {'projects': Project.objects.published()}
     return render(request, 'project_search.html', context)
+
+def partners(request, project_id):
+    """."""
+    project = get_object_or_404(Project, pk=project_id)
+    partners = _get_project_partners(project)    
+    context = {
+        'project': project,
+        'partners': partners
+    }
+    return render(request, 'project_partners.html', context)    
 
 
 def finance(request, project_id):

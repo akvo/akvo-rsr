@@ -12,14 +12,15 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import Region, RegionVocabulary
+from akvo.codelists.store.codelists_v201 import REGION, REGION_VOCABULARY
 from akvo.utils import codelist_choices, codelist_value
 
 
 class RecipientRegion(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='recipient_regions')
-    region = ValidXMLCharField(_(u'region'), blank=True, max_length=3, choices=codelist_choices(Region))
+    region = ValidXMLCharField(_(u'region'), blank=True, max_length=3, choices=codelist_choices(REGION))
     region_vocabulary = ValidXMLCharField(_(u'region vocabulary'), blank=True, max_length=1,
-                                          choices=codelist_choices(RegionVocabulary))
+                                          choices=codelist_choices(REGION_VOCABULARY))
     percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
                                      validators=[MaxValueValidator(100), MinValueValidator(0)])
     text = ValidXMLCharField(_(u'region description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))

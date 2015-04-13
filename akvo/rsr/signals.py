@@ -18,10 +18,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, ImageField
+from django.db.models.signals import post_save
 
 from sorl.thumbnail import ImageField
 
 from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_send_mail_to_users
+from akvo.iati.iati_export import IatiXML
 
 
 def create_publishing_status(sender, **kwargs):
@@ -281,3 +283,28 @@ def update_project_funding(sender, **kwargs):
         except ObjectDoesNotExist:
             # this happens when a project is deleted, and thus any invoices linked to it go the same way.
             pass
+
+
+def create_iati_file(sender, **kwargs):
+    """
+    Create an IATI XML file when an entry in the iati_export table is saved, with projects.
+
+    :param sender: IatiExport model
+    """
+    iati_export = kwargs.get("instance", None)
+    projects = iati_export.projects.all()
+    if iati_export and projects:
+        post_save.disconnect(create_iati_file, sender=sender)
+        try:
+            iati_export.status = 2
+            iati_export.save()
+            iati_xml = IatiXML(projects)
+            iati_file = iati_xml.save_file(str(iati_export.reporting_organisation.pk),
+                                           datetime.utcnow().strftime("%Y%m%d-%H%M%S") + '.xml')
+            iati_export.iati_file = iati_file
+            iati_export.status = 3
+            iati_export.save()
+        except:
+            iati_export.status = 4
+            iati_export.save()
+        post_save.connect(create_iati_file, sender=sender)
