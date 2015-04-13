@@ -10,7 +10,8 @@ import json
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
-from ...utils import pagination
+from ..filters import remove_empty_querydict_items
+from ...utils import pagination, filter_query_string
 from ..models import Country, Organisation, Project
 
 from django.contrib.auth import get_user_model
@@ -69,11 +70,7 @@ def password_change(request):
 def my_updates(request):
     updates = request.user.updates()
 
-    q = request.GET.get('q')
-    if q:
-        q_list = q.split()
-        for q_item in q_list:
-            updates = updates.filter(title__icontains=q_item)
+    qs = remove_empty_querydict_items(request.GET)
 
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
@@ -82,7 +79,7 @@ def my_updates(request):
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
-        'q': q,
+        'q': filter_query_string(qs),
     }
 
     return render(request, 'myrsr/my_updates.html', context)
@@ -93,12 +90,7 @@ def my_projects(request):
     organisations = request.user.employers.approved().organisations()
     projects = organisations.all_projects().distinct()
 
-    q = request.GET.get('q')
-    if q:
-        q_list = q.split()
-        for q_item in q_list:
-            projects = projects.filter(title__icontains=q_item) | \
-                projects.filter(subtitle__icontains=q_item)
+    qs = remove_empty_querydict_items(request.GET)
 
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
@@ -108,7 +100,7 @@ def my_projects(request):
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
-        'q': q,
+        'q': filter_query_string(qs),
     }
 
     return render(request, 'myrsr/my_projects.html', context)
