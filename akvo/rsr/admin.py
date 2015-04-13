@@ -49,8 +49,14 @@ class CountryAdmin(admin.ModelAdmin):
 
 class OrganisationLocationInline(admin.StackedInline):
     model = get_model('rsr', 'organisationlocation')
-    extra = 0
-    fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode', 'country')
+    fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode',
+              'country')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.locations.count() == 0 else 0
+        else:
+            return 1
 
 
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
