@@ -298,19 +298,19 @@ class V201Checks(object):
                         for percentage in sectors_dict[voc_key]:
                             try:
                                 voc_percentage += int(percentage)
-                            except ValueError:
+                            except (ValueError, TypeError):
                                 self.all_checks_passed = False
-                                checks.append((u'error', u'multiple sectors for vocabulary %s, but '
-                                                         u'not all have a percentage '
+                                checks.append((u'error', u'multiple sectors for vocabulary (id: %s)'
+                                                         u', but not all have a percentage '
                                                          u'specified' % str(voc_key)))
 
                         if voc_percentage == 100:
-                            checks.append((u'success', u'sector percentages for vocabulary %s add '
-                                                       u'up to 100' % str(voc_key)))
+                            checks.append((u'success', u'sector percentages for vocabulary (id: %s)'
+                                                       u' add up to 100' % str(voc_key)))
                         else:
                             self.all_checks_passed = False
-                            checks.append((u'error', u'sector percentages for vocabulary %s do not '
-                                                     u'add up to 100' % str(voc_key)))
+                            checks.append((u'error', u'sector percentages for vocabulary (id: %s) '
+                                                     u'do not add up to 100' % str(voc_key)))
 
         elif not self.project.transactions.all():
             self.all_checks_passed = False
