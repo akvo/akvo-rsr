@@ -46,7 +46,7 @@ class OrgManager(models.Manager):
     def get_queryset(self):
         return self.model.QuerySet(self.model).extra(
             select={
-                'lower_name': 'lower(name)'
+                'lower_name': 'lower(rsr_organisation.name)'
             }
         ).order_by('lower_name')
 
