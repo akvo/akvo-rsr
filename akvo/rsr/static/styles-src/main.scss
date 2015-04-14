@@ -587,13 +587,13 @@ nav.navbar-fixed-top {
     width: 100%;
     display: block;
     a {
-        width: 38%;
-        padding: 2px 1%;
+        width: 45%;
+        padding: 2px 0.5%;
         float: left;
         text-align: center;
         background: rgba($anchorLink, 0.2);
         color: $anchorLink;
-        margin: 2px 5%;
+        margin: 2px 2%;
         @include border-radius(3px);
         @include noWrapTxt;
         &:hover {
