@@ -21,7 +21,7 @@ from .utils import apply_keywords, org_projects, show_filter_class
 
 def _all_organisations():
     """Return all project updates."""
-    return Organisation.objects.select_related().order_by('name')
+    return Organisation.objects.select_related()
 
 
 def _page_organisations(page):
