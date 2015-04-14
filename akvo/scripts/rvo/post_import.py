@@ -11,17 +11,21 @@ import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
 import django
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 
 from lxml import etree
 
+from akvo.api_utils import ImageImporter
 from akvo.rsr.models import Project, Organisation, PublishingStatus, Keyword
-from akvo.utils import who_am_i
+from akvo.utils import model_and_instance_based_filename, who_am_i
 
 from akvo.scripts.rvo import (
     RVO_ORG_ID, print_log, log, init_log, outsys, RvoActivity,
     RVO_POST_PROCESS_CSV_FILE,ERROR_PROJECT_NOT_FOUND, ERROR_PROJECT_DATA_INVALID,
     ERROR_PROJECT_NOT_SAVED,ACTION_PROJECT_POST_PROCESS_DONE, load_xml, RVO_IATI_ACTIVITES_URL,
-    ACTION_PROJECT_PUBLISHED, RVO_KEYWORD_ID)
+    ACTION_PROJECT_PUBLISHED, RVO_KEYWORD_ID, RVO_DEFAULT_IMAGE, ERROR_IMAGE_UPLOAD,
+    ACTION_SET_IMAGE, ERROR_IMAGE_NOT_FOUND)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -48,6 +52,45 @@ class ProjectSaver():
                 )
         raise Project.DoesNotExist
 
+    def _current_image(self):
+        image = ImageImporter(RVO_DEFAULT_IMAGE)
+        try:
+            image.get_image()
+        except Exception, e:
+            log(
+                "Error trying to fetch image to project. Image URL: {extra}",
+                dict(
+                    iati_id=self.activity.iati_id(),
+                    event=ERROR_IMAGE_UPLOAD,
+                    extra=self.activity.current_image()
+                )
+            )
+
+        if image.image:
+            filename = model_and_instance_based_filename(
+                'Project', self.project.pk, 'current_image', image.filename
+            )
+            image_temp = NamedTemporaryFile(delete=True)
+            image_temp.write(image.image)
+            image_temp.flush()
+            self.project.current_image.save(filename, File(image_temp), save=True)
+            log(
+               "Save project image: {extra}",
+               dict(
+                   iati_id=self.activity.iati_id(),
+                   event=ACTION_SET_IMAGE,
+                   extra=filename
+               )
+            )
+        else:
+            log(
+                "No image found for project: {rsr_id}",
+                dict(
+                    iati_id=self.activity.iati_id(),
+                    event=ERROR_IMAGE_NOT_FOUND,
+                )
+            )
+
     def _sync_owner(self):
         rvo = Organisation.objects.get(id=RVO_ORG_ID)
         self.project.sync_owner = rvo
@@ -69,6 +112,7 @@ class ProjectSaver():
 
     def process(self):
         self._sync_owner()
+        self._current_image()
         self._publish()
         self._keywords()
         try:

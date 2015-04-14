@@ -32,6 +32,7 @@ rvo_settings = dict(
     RVO_ORG_ID=2304,
     RVO_IATI_ID='NL-KVK-27378529',
     RVO_KEYWORD_ID=73,
+    RVO_DEFAULT_IMAGE='http://rsr.akvo.org/media/db/project/2898/Project_2898_current_image_2015-03-20_17.46.44.jpg',
 )
 
 # construct local variables for RVO supporting data
