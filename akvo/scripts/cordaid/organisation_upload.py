@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import os
+import django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 from akvo import settings
 
@@ -284,6 +285,7 @@ def upload_organisations(argv):
 
 
 if __name__ == '__main__':
+    django.setup()
     import pdb
     pdb.set_trace()
     upload_organisations(sys.argv)

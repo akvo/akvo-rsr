@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
+import django
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
@@ -274,6 +275,7 @@ class PostImporter():
 
 
 if __name__ == '__main__':
+    django.setup()
     log_file = init_log(RAIN_POST_PROCESS_CSV_FILE)
     importer = PostImporter(RAIN_ORG_ID)
     importer.setup()

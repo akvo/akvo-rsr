@@ -152,7 +152,10 @@ class IATIProjectResource(ModelResource):
         super(IATIProjectResource, self).put_detail(request, **kwargs)
 
     def alter_deserialized_detail_data(self, request, data):
-        reporting_iati_org_id = data['partnerships'][0]['reporting_org']
+        try:
+            reporting_iati_org_id = data['partnerships'][0]['reporting_org']
+        except:
+            reporting_iati_org_id = ''
         # Cordaid custom code
         if reporting_iati_org_id == getattr(settings, 'CORDAID_IATI_ID', 'NL-KVK-41160054'):
             # Figure out the category for the project from the business unit
@@ -184,7 +187,7 @@ class IATIProjectResource(ModelResource):
                     new_benchmark['category'] = project_category.pk
                     benchmarks.append(new_benchmark)
             data['benchmarks'] = benchmarks
-        if reporting_iati_org_id == getattr(settings, 'RAIN_IATI_ID', 'NL-KVK-34200988'):
+        elif reporting_iati_org_id == getattr(settings, 'RAIN_IATI_ID', 'NL-KVK-34200988'):
             # remove benchmarks, goals and target group
             data['benchmarks'] = []
             data['goals'] = []
