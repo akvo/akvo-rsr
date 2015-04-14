@@ -25,7 +25,7 @@
             </form>
         </div>
         {% if user_data %}
-        <div id="user_table"></div>
+        <div id="user_table" class="col-sm-12"></div>
         <div>
           <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} users</p>
           {% include 'navigation/pagination.html' %}
