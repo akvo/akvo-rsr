@@ -6,6 +6,7 @@
 
 
 import os
+import django
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 from akvo import settings
@@ -465,6 +466,7 @@ def upload_organisations(argv):
                     print message.format(**data)
 
 if __name__ == '__main__':
+    django.setup()
     upload_organisations(sys.argv)
     log_file = init_log(RAIN_ORG_CSV_FILE)
     names = (u'pk', u'name', u'iati_org_id', u'internal_org_id', u'event', u'extra')
