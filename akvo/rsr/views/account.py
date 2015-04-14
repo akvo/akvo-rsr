@@ -101,7 +101,7 @@ def sign_in(request):
     elif request.method == "POST" and 'email' in request.POST:
         reset_form = PasswordResetForm(data=request.POST)
         if reset_form.is_valid():
-            reset_form.save()
+            reset_form.save(domain_override=settings.RSR_DOMAIN)
         return HttpResponse()
     return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form}, context_instance=context)
 
