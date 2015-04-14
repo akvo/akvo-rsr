@@ -520,13 +520,13 @@ nav.navbar-fixed-top {
   width: 100%;
   display: block; }
   .twoColumns a {
-    width: 38%;
-    padding: 2px 1%;
+    width: 45%;
+    padding: 2px 0.5%;
     float: left;
     text-align: center;
     background: rgba(0, 170, 255, 0.2);
     color: #00aaff;
-    margin: 2px 5%;
+    margin: 2px 2%;
     -moz-border-radius: 3px;
     -o-border-radius: 3px;
     -webkit-border-radius: 3px;
