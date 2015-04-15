@@ -88,6 +88,12 @@ def activate(request, activation_key, extra_context=None):
 
 
 def sign_in(request):
+    """Sign in.
+
+    POST have two variants with username & email:
+     - username > normal sign in
+     - email > password reset workflow
+    """
     context = RequestContext(request)
     form = AuthenticationForm()
     reset_form = PasswordResetForm()
@@ -101,9 +107,10 @@ def sign_in(request):
     elif request.method == "POST" and 'email' in request.POST:
         reset_form = PasswordResetForm(data=request.POST)
         if reset_form.is_valid():
-            reset_form.save()
+            reset_form.save(domain_override=settings.RSR_DOMAIN)
         return HttpResponse()
-    return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form}, context_instance=context)
+    return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form},
+                              context_instance=context)
 
 
 def sign_out(request):

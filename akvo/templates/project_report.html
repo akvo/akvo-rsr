@@ -185,9 +185,6 @@
                             <th>{% trans "Description" %}</th>
                             <th>{% trans "Latitude" %}</th>
                             <th>{% trans "Longitude" %}</th>
-                            <th>{% trans "Code" %}</th>
-                            <th>{% trans "Vocabulary" %}</th>
-                            <th>{% trans "Level" %}</th>
                             <th>{% trans "Reach" %}</th>
                             <th>{% trans "Exactness" %}</th>
                             <th>{% trans "Class" %}</th>
@@ -202,9 +199,6 @@
                             <td>{{location.description}}</td>
                             <td>{{location.latitude}}</td>
                             <td>{{location.longitude}}</td>
-                            <td>{{location.location_code}}</td>
-                            <td>{{location.iati_vocabulary}}</td>
-                            <td>{{location.administrative_level|default_if_none:""}}</td>
                             <td>{{location.iati_reach}}</td>
                             <td>{{location.iati_exactness}}</td>
                             <td>{{location.iati_class}}</td>
@@ -413,7 +407,6 @@
                     <tr>
                         <th>{% trans "Condition" %}</th>
                         <th>{% trans "Type" %}</th>
-                        <th>{% trans "Attached" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -421,7 +414,6 @@
                     <tr>
                         <td>{{condition.text}}</td>
                         <td>{{condition.iati_type}}</td>
-                        <td>{{condition.attached|yesno:"Attached,Not Attached,"}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

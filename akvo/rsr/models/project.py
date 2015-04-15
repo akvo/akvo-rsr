@@ -7,8 +7,6 @@
 
 import math
 
-from datetime import date
-
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -23,8 +21,14 @@ from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus
+from akvo.codelists.models import (AidType, ActivityScope, CollaborationType, FinanceType, FlowType, TiedStatus,
+                                   BudgetIdentifierVocabulary)
+from akvo.codelists.store.codelists_v201 import (AID_TYPE, ACTIVITY_SCOPE, COLLABORATION_TYPE,
+                                                 FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
+                                                 BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
+
+from ...iati.mandatory_fields import check_export_fields
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -38,6 +42,10 @@ from .organisation import Organisation
 from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
+
+
+def image_path(instance, file_name):
+    return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
 
 class Project(TimestampsMixin, models.Model):
@@ -75,9 +83,6 @@ class Project(TimestampsMixin, models.Model):
         STATUS_CANCELLED: 'red',
         STATUS_ARCHIVED: 'grey',
     }
-
-    def image_path(instance, file_name):
-        return rsr_image_path(instance, file_name, 'db/project/%(instance_pk)s/%(file_name)s')
 
     title = ValidXMLCharField(
         _(u'title'), max_length=45, db_index=True,
@@ -199,8 +204,8 @@ class Project(TimestampsMixin, models.Model):
 
     # synced projects
     sync_owner = models.ForeignKey(
-        'Organisation', verbose_name=_(u'reporting organisation'), null=True, blank=True, on_delete=models.SET_NULL,
-        help_text=_(u'Select the reporting organisation of the project.')
+        'Organisation', verbose_name=_(u'reporting organisation'), related_name='reporting_projects',
+        null=True, blank=True, on_delete=models.SET_NULL, help_text=_(u'Select the reporting organisation of the project.')
     )
     sync_owner_secondary_reporter = models.NullBooleanField(
         _(u'secondary reporter'),
@@ -225,7 +230,7 @@ class Project(TimestampsMixin, models.Model):
                     u'So for example: is this project part of a larger project or programme.')
     )
     project_scope = ValidXMLCharField(
-        _(u'project scope'), blank=True, max_length=2, choices=codelist_choices(ActivityScope),
+        _(u'project scope'), blank=True, max_length=2, choices=codelist_choices(ACTIVITY_SCOPE),
         help_text=_(u'Select the geographical scope of the project.')
     )
     capital_spend_percentage = models.DecimalField(
@@ -233,16 +238,19 @@ class Project(TimestampsMixin, models.Model):
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
     collaboration_type = ValidXMLCharField(_(u'collaboration type'), blank=True, max_length=1,
-                                           choices=codelist_choices(CollaborationType))
+                                           choices=codelist_choices(COLLABORATION_TYPE))
     default_aid_type = ValidXMLCharField(_(u'default aid type'), blank=True, max_length=3,
-                                         choices=codelist_choices(AidType))
+                                         choices=codelist_choices(AID_TYPE))
     default_finance_type = ValidXMLCharField(_(u'default finance type'), blank=True, max_length=3,
-                                             choices=codelist_choices(FinanceType))
+                                             choices=codelist_choices(FINANCE_TYPE))
     default_flow_type = ValidXMLCharField(_(u'default flow type'), blank=True, max_length=2,
-                                          choices=codelist_choices(FlowType))
+                                          choices=codelist_choices(FLOW_TYPE))
     default_tied_status = ValidXMLCharField(_(u'default tied status'), blank=True, max_length=1,
-                                            choices=codelist_choices(TiedStatus))
-
+                                            choices=codelist_choices(TIED_STATUS))
+    country_budget_vocabulary = ValidXMLCharField(
+        _(u'country budget vocabulary'), blank=True, max_length=1,
+        choices=codelist_choices(BUDGET_IDENTIFIER_VOCABULARY)
+    )
 
     # denormalized data
     # =================
@@ -512,8 +520,11 @@ class Project(TimestampsMixin, models.Model):
 
         def all_updates(self):
             "return ProjectUpdates for self, newest first"
-            from .project_update import ProjectUpdate
-            return ProjectUpdate.objects.filter(project__in=self)
+            from ..models import ProjectUpdate
+            qs = ProjectUpdate.objects.none()
+            for project in self:
+                qs = qs | project.project_updates.all()
+            return qs
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
@@ -777,16 +788,37 @@ class Project(TimestampsMixin, models.Model):
         return self.parents() or self.children() or self.siblings()
 
     def parents(self):
-        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=1) |
-                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=2)).distinct()
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=1
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=2
+            )
+        ).distinct()
 
     def children(self):
-        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=2) |
-                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=1)).distinct()
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=2
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=1
+            )
+        ).distinct()
 
     def siblings(self):
-        return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |
-                Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=3)).distinct()
+        return (
+            Project.objects.filter(
+                related_projects__related_project=self,
+                related_projects__relation=3
+            ) | Project.objects.filter(
+                related_to_projects__project=self,
+                related_to_projects__relation=3
+            )
+        ).distinct()
 
     def has_results(self):
         for result in self.results.all():
@@ -799,6 +831,9 @@ class Project(TimestampsMixin, models.Model):
             if result.indicators.all():
                 return True
         return False
+
+    def check_mandatory_fields(self, version='2.01'):
+        return check_export_fields(self, version)
 
     class Meta:
         app_label = 'rsr'

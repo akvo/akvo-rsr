@@ -286,4 +286,3 @@ IATI_LIST_SECTOR = (
     (99810, u'Sectors not specified', u'Contributions to general development of the recipient should be included under programme assistance (51010).', 998, u'UNALLOCATED/ UNSPECIFIED', u''),
     (99820, u'Promotion of development awareness', u'Spending in donor country for heightened awareness/interest in development co-operation (brochures, lectures, special research projects, etc.).', 998, u'UNALLOCATED/ UNSPECIFIED', u'')
 )
-

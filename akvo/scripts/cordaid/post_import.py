@@ -13,6 +13,7 @@ from os.path import splitext
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
+import django
 import sys
 
 from django.core.files import File
@@ -198,6 +199,7 @@ def get_post_process_data():
 
 
 if __name__ == '__main__':
+    django.setup()
     photos, budgets, publishing_statuses = get_post_process_data()
     set_publishing_status(publishing_statuses)
     import_images(CORDAID_PROJECT_IMAGES_DIR, photos)

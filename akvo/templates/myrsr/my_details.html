@@ -45,6 +45,7 @@
 {% block js %}
   {{ block.super }}
 
+  {# App data #}
   <script type="application/json" id="akvo-rsr-typeahead-thumbs">
     {
      "numberOfCountries": {{ country_count }},
@@ -56,19 +57,19 @@
    AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
   </script>
 
-  {# App data #}
   <script type="application/json" id="initial-data">
     {{ user_data|safe }}
   </script>
+
   <script type="application/json" id="user-request-link">
     {"link": "{% url 'user_request_organisation' user.id %}",
      "org_rest_link": "{% url 'organisation-list' %}",
      "country_rest_link": "{% url 'country-list' %}"}
   </script>
+
   <script type="application/json" id="akvo-rsr-ajax-url">
     {"ajaxUrl": "{% url 'user_update_details' user.id %}?format=json"}
   </script>
 
-  {% compressed_js 'rsr_v3_react_my_details' %}
-
+  {% compressed_js 'my_details' %}
 {% endblock js %}
