@@ -7,18 +7,162 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
 
+Akvo RSR version 3.2 Flying Fish Cove
+---
+
+Wednesday 15th April 2015, kasperbrandt
+
+New & Noteworthy
+---
+
+### Data export options
+On the project page, we have added data export export options in the footer. It is possible to export project data in RSS, XML, JSON and IATI format.
+
+However, for the XML and JSON format it is required that the user is logged in, since this functionality uses our REST API.
+
+Github issue: [#993](https://github.com/akvo/akvo-rsr/issues/993).
+
+### IATI export
+We have introduced a new section for organisation admins in MyRSR: My IATI. 
+
+In this section it is possible to create an IATI v2.01 file, based on a selection of projects of which the users' organisation is the reporting organisation.
+
+The generated IATI file can be shown on the organisation page, if desired.
+
+Github issue: [#1351](https://github.com/akvo/akvo-rsr/issues/1351).
+
+Introduced Changes
+---
+
+### MyRSR improvements
+We have extended the My Projects, My Updates and User Management sections on MyRSR with a search box.
+
+In addition, when a user is approved on the User Management page, this will be logged in the admin.
+
+Furthermore, the titles of the projects in the My Project section and updates in the My Updates section are now links to the respective project or update.
+
+Finally, we have improved some UI elements on the MyRSR section. Unpublished projects now have a grey background in My Projects, the table on My Projects is shown correctly in Firefox and the text in all action buttons is now visible at all times.
+  
+Github issues: [#1079](https://github.com/akvo/akvo-rsr/issues/1079), [#1398](https://github.com/akvo/akvo-rsr/issues/1398), [#1410](https://github.com/akvo/akvo-rsr/issues/1410), [#1413](https://github.com/akvo/akvo-rsr/issues/1413), [#1418](https://github.com/akvo/akvo-rsr/issues/1418), [#1420](https://github.com/akvo/akvo-rsr/issues/1420).
+
+### Result data
+Result and indicator data is now displayed in the accordion on the project page in a nested manner.
+
+Github issue: [#1267](https://github.com/akvo/akvo-rsr/issues/1267).
+
+### Last update on project list
+In the project list, the date of the last update is now shown. When clicked, the user will be redirected to this update.
+
+Github issue: [#1281](https://github.com/akvo/akvo-rsr/issues/1281).
+
+### Organisation page improvements
+We have added links to all projects and all updates of an organisation to an organisation page. 
+
+In addition, the funding information is aligned to the right and the amounts are displayed with two decimals.
+ 
+Github issues: [#1285](https://github.com/akvo/akvo-rsr/issues/1285), [#1286](https://github.com/akvo/akvo-rsr/issues/1286), [#1416](https://github.com/akvo/akvo-rsr/issues/1416).
+
+### Hide updates of unpublished projects
+In the updates list, the updates of unpublished projects are not shown anymore.
+
+Github issue: [#1323](https://github.com/akvo/akvo-rsr/issues/1323).
+
+### Partners of a project
+We have added the logos of partners to the partner pop-up on the project page. Also, it is now possible to click the ```+ more``` button to show a new page with a list of all partners of a project.
+ 
+Github issue: [#1358](https://github.com/akvo/akvo-rsr/issues/1358).
+
+### Last modified sorting
+The filter that was previously named 'last updated' is now named 'last modified', since it not only sorts by updates, but also by general edits of a project.
+
+Github issue: [#1377](https://github.com/akvo/akvo-rsr/issues/1377).
+
+### User employment admin improvements
+We have added search and filter options for the user employment admin.
+
+Github issue: [#1379](https://github.com/akvo/akvo-rsr/issues/1379).
 
 ### Custom thumbnails in the API
-
 The Django Rest Framework-based API now supports the creation of thumbnails for the images in the Project, Organisation and ProjectUpdate models.
 
 The thumbnail is created on a GET request when the paramterer ```image_thumb_name``` is added. The value of image_thumb_name is one or more names of the thumbnails requested. In addition to the ````image_thumb_name``` parameter, for each image named a second parameter is added, specifying the size of each thumbnail. 
 
 Example of an API call using this new functionality: ```http://rsr.akvo.org/rest/v1/project/?image_thumb_name=big,small&image_thumb_small_width=90&image_thumb_big_max_size=300x200```
 
-For full specification see the Test plan of [issue 1384](https://github.com/akvo/akvo-rsr/issues/1384).
-
 The first practical use of the custom thumbnail in the API is by Akvo RSR Up, that now fetches thumbnails of the correct size for mobile.
+
+Github issue: [#1384](https://github.com/akvo/akvo-rsr/issues/1384).
+
+### Remove v3 notification
+The notification of RSR v3 in the bottom right corner of the project list has been removed.
+
+Github issue: [#1385](https://github.com/akvo/akvo-rsr/issues/1385).
+
+### Rename partner filter to organisation
+The filter on the project list previously named 'partner' is now named 'organisation'.
+
+Github issue: [#1402](https://github.com/akvo/akvo-rsr/issues/1402).
+
+### Donate button
+The donate button on the project main page has its' own new section, includin the budget needed information.
+
+Github issue: [#1414](https://github.com/akvo/akvo-rsr/issues/1414).
+
+### Map on smaller screens
+We received feedback that the map on smaller screens, such as an iPad, would disappear. This is changed now so that the map is only hidden on the narrowest screen size.
+
+Github issue: [#1433](https://github.com/akvo/akvo-rsr/issues/1433).
+
+### Look and feel of search dropdown
+We have changed the UI of the search dropdown on the project, update and organisation listing pages.
+
+Github issue: [#1434](https://github.com/akvo/akvo-rsr/issues/1434).
+
+Bug Fixes
+---
+
+### Search for special characters
+We have fixed a bug that would display a server error when searching for special characters, such as ```é```.
+
+Github issue: [#1284](https://github.com/akvo/akvo-rsr/issues/1284).
+
+### Sorting of organisation names
+We have fixed the sorting of organisation names. Previously, organisation 'ZZZ' would appear above 'Zaa' because of capitals.
+
+Github issue: [#1338](https://github.com/akvo/akvo-rsr/issues/1338).
+
+### Styling of update and organisation list
+The red and green hovers on respectively the organisation and update list pages had been removed, but are back in now.
+ 
+Github issue: [#1380](https://github.com/akvo/akvo-rsr/issues/1380).
+
+Under the Hood
+---
+
+### Upgrade to Django 1.7
+We have upgraded our Django library to version 1.7. This will allow us to use the Django native migrations, and many other improvements.
+
+Github issue: [#1324](https://github.com/akvo/akvo-rsr/issues/1324).
+
+### Cleanup of old files
+We have cleaned up the repository by removing unused files stemming from either RSR v2 or the transition to Postgres.
+
+Github issues: [#1234](https://github.com/akvo/akvo-rsr/issues/1234), [#1340](https://github.com/akvo/akvo-rsr/issues/1340).
+
+### Piwik
+We have added code for tracking Akvo Pages and CNAME addresses, which was not in anymore after the RSR v3 release.
+
+Github issue: [#1305](https://github.com/akvo/akvo-rsr/issues/1305).
+
+### Akvo Pages permissions
+We have added permissions for Akvo Pages, so that it is possible for organisation admins to view and edit their Akvo Page in the admin.
+
+Github issue: [#1365](https://github.com/akvo/akvo-rsr/issues/1365).
+
+### Gulp-react update
+We have updated the version of gulp-react, to match the version of React used in RSR.
+
+Github issue: [#1371](https://github.com/akvo/akvo-rsr/issues/1371).
 
 Akvo RSR version 3.1 Episkopi
 ---
@@ -40,7 +184,7 @@ Following on from the changes to registration and approval made in v3, we have n
 
 These changes include a new option for Akvo staff to be labelled as Support user and this means that they can make the necessary changes for all users.
 
-Akvo staff that are not tagged as being support staff will not receive new user notfiications any more.
+Akvo staff that are not tagged as being support staff will not receive new user notifications any more.
 
 Github issue: [#1042](https://github.com/akvo/akvo-rsr/issues/1042)
 
