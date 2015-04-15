@@ -45,7 +45,7 @@
         {% for project in projects  %}
         <tr class="projectListTitle"> <td colspan="4"><h2 id="project_title">
                   <a href="{% url 'project-main' project.id %}">
-                    {{project.title|smart_truncate:60}}
+                    {{project.title|truncatechars_html:60}}
                   </a>
                 </h2></td></tr>
           <tr class="projectListDescr">
@@ -53,7 +53,7 @@
             <div class="projectDescr">
 
                 {% img project 120 90 project.title %}
-                <p id="project_subtitle">{{project.project_plan_summary|smart_truncate:50}}</p>
+                <p id="project_subtitle">{{project.project_plan_summary|truncatechars_html:50}}</p>
                 <a href="{% url 'project-main' project.id %}">{% trans "See full description" %}</a>
             </div>
             </td>
