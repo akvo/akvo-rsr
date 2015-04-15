@@ -26,6 +26,7 @@ class IATIBenchmarkResource(ModelResource):
     name = fields.ToOneField('akvo.api.resources.BenchmarknameResource', 'name', full=True)
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['post']
         resource_name   = 'iati_benchmark'
         authorization   = Authorization()
@@ -64,6 +65,7 @@ class BenchmarkResource(ConditionalFullResource):
     name = ConditionalFullToOneField('akvo.api.resources.BenchmarknameResource', 'name', full=True)
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = Benchmark.objects.all()
         resource_name   = 'benchmark'
@@ -77,6 +79,7 @@ class BenchmarkResource(ConditionalFullResource):
 
 class BenchmarknameResource(ConditionalFullResource):
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = Benchmarkname.objects.all()
         resource_name   = 'benchmarkname'

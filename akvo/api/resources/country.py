@@ -14,6 +14,7 @@ from .resources import ConditionalFullResource
 
 class CountryResource(ConditionalFullResource):
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = Country.objects.all()
         resource_name   = 'country'

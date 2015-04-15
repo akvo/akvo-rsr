@@ -18,6 +18,7 @@ class IATIRecipientCountryResource(ModelResource):
     project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project',)
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['post', 'put']
         resource_name   = 'iati_recipient_country'
         authorization   = Authorization()

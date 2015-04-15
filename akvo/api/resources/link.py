@@ -18,6 +18,7 @@ class LinkResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = Link.objects.all()
         resource_name   = 'link'
