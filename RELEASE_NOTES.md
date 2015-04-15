@@ -104,7 +104,7 @@ The filter on the project list previously named 'partner' is now named 'organisa
 Github issue: [#1402](https://github.com/akvo/akvo-rsr/issues/1402).
 
 ### Donate button
-The donate button on the project main page has its' own new section, includin the budget needed information.
+The donate button on the project main page has its' own new section, including the budget needed information.
 
 Github issue: [#1414](https://github.com/akvo/akvo-rsr/issues/1414).
 
