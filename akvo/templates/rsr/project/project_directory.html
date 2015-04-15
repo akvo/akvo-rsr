@@ -66,7 +66,7 @@
       {% if org %}
         <h1 class="h0">{% trans 'Project listing for' %} <a href="{{org.get_absolute_url}}">{{org.name}}</a></h1>
         <a href="{{org.get_absolute_url}}">{% org_logo org 120 90 'float: left; margin: 0 20px 20px 0;' %}</a>
-        {{org.description|smart_truncate:300|linebreaks|safe}}
+        {{org.description|linebreaks|safe|truncatechars_html:300}}
         <p><a href="{{org.get_absolute_url}}">{% trans 'Read more about' %} {{org.name}}</a></p>
       {% else %}
         <h1 class="h0">{{focus_area}} {% trans 'projects' %}</h1>
@@ -149,7 +149,7 @@
                       </p>
                     </a>
                     <p class="tiny grey">
-                      {{project.project_plan_summary|capfirst|smart_truncate:100}}
+                      {{project.project_plan_summary|capfirst|truncatechars_html:100}}
                     </p>
                   </div>
                 </td>
