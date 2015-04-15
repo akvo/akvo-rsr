@@ -74,6 +74,12 @@ def password_change(request):
 def my_updates(request):
     """Directory of Updates connected to the user."""
     updates = request.user.updates()
+
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            updates = updates.filter(title__icontains=q_item)
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
@@ -83,6 +89,7 @@ def my_updates(request):
         'paginator': paginator,
         'page_range': page_range,
         'q': filter_query_string(qs),
+        'q_search': q,
     }
     return render(request, 'myrsr/my_updates.html', context)
 
@@ -92,6 +99,13 @@ def my_projects(request):
     """Directory of Proejcts connected to the user."""
     organisations = request.user.employers.approved().organisations()
     projects = organisations.all_projects().distinct()
+
+    q = request.GET.get('q')
+    if q:
+        q_list = q.split()
+        for q_item in q_list:
+            projects = projects.filter(title__icontains=q_item) | \
+                projects.filter(subtitle__icontains=q_item)
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)
@@ -102,6 +116,7 @@ def my_projects(request):
         'paginator': paginator,
         'page_range': page_range,
         'q': filter_query_string(qs),
+        'q_search': q,
     }
     return render(request, 'myrsr/my_projects.html', context)
 
