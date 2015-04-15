@@ -16,7 +16,7 @@ New & Noteworthy
 ---
 
 ### Data export options
-On the project page, we have added data export export options in the footer. It is possible to export project data in RSS, XML, JSON and IATI format.
+On the project page, we have added data export options in the footer. It is possible to export project data in RSS, XML, JSON and IATI format.
 
 However, for the XML and JSON format it is required that the user is logged in, since this functionality uses our REST API.
 
