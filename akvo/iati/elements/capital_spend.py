@@ -16,7 +16,7 @@ def capital_spend(project):
     """
     if project.capital_spend_percentage:
         element = etree.Element("capital-spend")
-        element.attrib['percentage'] = project.capital_spend_percentage
+        element.attrib['percentage'] = str(project.capital_spend_percentage)
         return [element]
 
     return []

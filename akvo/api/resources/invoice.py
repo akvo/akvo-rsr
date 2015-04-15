@@ -18,6 +18,7 @@ class InvoiceResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = Invoice.objects.filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE)
         resource_name   = 'invoice'

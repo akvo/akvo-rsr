@@ -29,6 +29,7 @@ class IATIProjectLocationResource(ModelResource):
     country = fields.ToOneField('akvo.api.resources.CountryResource', 'country')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['post']
         resource_name   = 'iati_project_location'
         authorization   = Authorization()
@@ -48,6 +49,7 @@ class OrganisationLocationResource(ConditionalFullResource):
     country = ConditionalFullToOneField(CountryResource, 'country')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = OrganisationLocation.objects.all()
         resource_name   = 'organisation_location'
@@ -67,6 +69,7 @@ class ProjectLocationResource(ConditionalFullResource):
     country = ConditionalFullToOneField(CountryResource, 'country')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = ProjectLocation.objects.all()
         resource_name   = 'project_location'
@@ -89,6 +92,7 @@ class MapLocationResource(ModelResource):
     country = ConditionalFullToOneField(CountryResource, 'country')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         filtering       = dict(
             # other fields

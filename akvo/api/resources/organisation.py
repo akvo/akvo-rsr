@@ -27,6 +27,7 @@ class OrganisationResource(ConditionalFullResource):
     )
 
     class Meta:
+        max_limit = 10
         allowed_methods         = ['get']
         queryset                = Organisation.objects.all()
         resource_name           = 'organisation'

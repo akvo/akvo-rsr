@@ -19,6 +19,7 @@ class UserResource(ConditionalFullResource):
     organisations = ConditionalFullToManyField('akvo.api.resources.OrganisationResource', 'organisations', null=True)
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         authentication = ConditionalApiKeyAuthentication()
         queryset = get_user_model().objects.filter(is_active=True)

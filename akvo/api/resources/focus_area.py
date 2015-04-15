@@ -18,6 +18,7 @@ class FocusAreaResource(ConditionalFullResource):
     categories = ConditionalFullToManyField('akvo.api.resources.CategoryResource', 'categories')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = FocusArea.objects.all()
         resource_name   = 'focus_area'

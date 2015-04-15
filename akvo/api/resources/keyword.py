@@ -15,6 +15,7 @@ from .resources import ConditionalFullResource
 class KeywordResource(ConditionalFullResource):
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset = Keyword.objects.all()
         resource_name = 'keyword'

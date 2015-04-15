@@ -25,6 +25,7 @@ class CachedMapResource(ModelResource):
     Base class for maps API calls that need caching for speed
     """
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         include_absolute_url = True
         cache = SimpleCache(timeout=getattr(settings, 'MAP_CACHE_TIMEOUT_SECONDS', 3600)) #an hour
