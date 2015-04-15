@@ -20,7 +20,6 @@ def is_rsr_admin(user):
 
 @rules.predicate
 def is_org_admin(user, obj):
-    # obj + 1
     if not user.is_authenticated():
         return False
     for employment in user.employers.approved():
@@ -105,6 +104,8 @@ def is_org_user(user, obj):
         return False
     for employment in user.employers.approved():
         if employment.group == Group.objects.get(name='Users'):
+            if not obj:
+                return True
             if isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True
     return False
