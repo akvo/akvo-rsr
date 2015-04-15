@@ -40,6 +40,8 @@ router.register(r'policy_marker', views.PolicyMarkerViewSet)
 router.register(r'project', views.ProjectViewSet)
 router.register(r'project_extra', views.ProjectExtraViewSet,
                 base_name='project_extra')
+router.register(r'project_up', views.ProjectUpViewSet,
+                base_name='project_up')
 router.register(r'project_comment', views.ProjectCommentViewSet)
 router.register(r'project_condition', views.ProjectConditionViewSet)
 router.register(r'project_contact', views.ProjectContactViewSet)

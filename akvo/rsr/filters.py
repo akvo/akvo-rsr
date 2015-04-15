@@ -14,7 +14,7 @@ from copy import deepcopy
 from .models import Project, Organisation, Category, ProjectUpdate
 from .m49 import M49_CODES, M49_HIERARCHY
 
-from akvo.codelists.models import SectorCategory
+from akvo.codelists.store.codelists_v201 import SECTOR_CATEGORY
 from akvo.utils import codelist_choices
 
 ANY_CHOICE = (('', 'All'), )
@@ -22,7 +22,7 @@ ANY_CHOICE = (('', 'All'), )
 
 def sectors():
     sectors_list = []
-    for sector in codelist_choices(SectorCategory):
+    for sector in codelist_choices(SECTOR_CATEGORY):
         if Project.objects.filter(sectors__sector_code=sector[0]):
             sectors_list.append(sector)
     return sectors_list
@@ -96,7 +96,7 @@ class ProjectFilter(django_filters.FilterSet):
 
     organisation = django_filters.ChoiceFilter(
         choices=get_orgs(),
-        label='partner',
+        label='organisation',
         name='partners__id')
 
     class Meta:
@@ -119,7 +119,7 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),
-        label='partner',
+        label='organisation',
         name='project__partners__id')
 
     sector = django_filters.ChoiceFilter(

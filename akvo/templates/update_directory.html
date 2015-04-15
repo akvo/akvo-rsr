@@ -84,7 +84,7 @@
             <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>
                 {% if u.user.approved_organisations %}
                   {% with org=u.user.approved_organisations.0 %}
-                    ( <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a> )
+                    <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
                   {% endwith %}
                 {% endif %}
             </div>
@@ -125,7 +125,7 @@
    AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
   </script>
 
-  {% compressed_js 'rsr_v3_update_directory' %}
+  {% compressed_js 'update_directory' %}
 {% endblock js %}
 
 {% block jq %}

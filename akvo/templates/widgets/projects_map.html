@@ -29,10 +29,9 @@
 {% projects_map projects widthpx heightpx state %}
   <div id="footer">
     <a href="http://akvo.org">
-      <img src="{{ STATIC_URL }}rsr/widgets/img/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
+      <img src="{{ STATIC_URL }}images/akvo-badge_small.png" width="60" height="18" alt="Akvo.org" />
     </a>
   </div>
-  {#  Piwik #}
-  {% tracking_code %}
+  {% piwik_tracking_code %}
 </body>
 </html>

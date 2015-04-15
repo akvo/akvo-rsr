@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "./provisioning/install_dependencies.sh"
   config.vm.provision "shell", path: "./provisioning/install_dev_dependencies.sh"
   config.vm.provision "shell", run: "always", path: "./provisioning/fix_dns.sh"
-  config.vm.provision "shell", path: "./provisioning/load_test_db.sh"
+  config.vm.provision "shell", path: "./provisioning/prepare_test_db.sh"
   config.vm.provision "shell", run: "always", path: "./provisioning/prepare_rsr.sh"
 
 end

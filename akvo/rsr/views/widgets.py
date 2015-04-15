@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
+"""Akvo RSR is covered by the GNU Affero General Public License.
+
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
-    Akvo RSR is covered by the GNU Affero General Public License.
-    See more details in the license.txt file located at the root folder of the
-    Akvo RSR module. For additional details on the GNU license please
-    see < http://www.gnu.org/licenses/agpl.html >.
-"""
+
 from __future__ import absolute_import
 
 import random
 
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
-
 from akvo.rsr.models import Organisation, Project
 
 
 __all__ = [
-    'GetWidgetView',
     'ProjectMapView',
     'CobrandedBannerView',
     'ProjectNarrowView',
@@ -24,7 +22,9 @@ __all__ = [
 
 
 class BaseWidgetView(TemplateView):
-    """Setup a common base widget"""
+
+    """Setup a common base widget."""
+
     def get_context_data(self, **kwargs):
         context = super(BaseWidgetView, self).get_context_data(**kwargs)
         context['style'] = 'darkBG'
@@ -34,16 +34,20 @@ class BaseWidgetView(TemplateView):
 
 
 class ProjectBaseWidgetView(BaseWidgetView):
-    """Extends the base widget with a project from url"""
+
+    """Extends the base widget with a project from url."""
+
     def get_context_data(self, **kwargs):
         context = super(ProjectBaseWidgetView, self).get_context_data(**kwargs)
         context['project'] = get_object_or_404(
-            Project, pk=self.kwargs['project_id'])
+            Project, pk=int(self.kwargs['project_id']))
         return context
 
 
 class RandomBaseWidgetView(BaseWidgetView):
-    """Extends the base widget with random project"""
+
+    """Extends the base widget with random project."""
+
     def get_context_data(self, **kwargs):
         context = super(RandomBaseWidgetView, self).get_context_data(**kwargs)
         org_id = self.request.GET.get('organisation_id', '0')

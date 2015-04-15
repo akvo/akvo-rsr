@@ -108,7 +108,7 @@ __all__ = [
     'OrganisationType',
     'OtherIdentifierType',
     'PolicyMarker',
-    'PolicyMarkerVocabulary'
+    'PolicyMarkerVocabulary',
     'PolicySignificance',
     'PublisherType',
     'Region',

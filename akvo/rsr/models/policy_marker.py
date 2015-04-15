@@ -11,17 +11,19 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists import models as codelist_models
+from akvo.codelists.store.codelists_v201 import (POLICY_MARKER, POLICY_SIGNIFICANCE,
+                                                 POLICY_MARKER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value
 
 
 class PolicyMarker(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='policy_markers')
     policy_marker = ValidXMLCharField(_(u'policy marker'), blank=True, max_length=2,
-                                      choices=codelist_choices(codelist_models.PolicyMarker))
+                                      choices=codelist_choices(POLICY_MARKER))
     significance = ValidXMLCharField(_(u'significance'), max_length=2, blank=True,
-                                     choices=codelist_choices(codelist_models.PolicySignificance))
+                                     choices=codelist_choices(POLICY_SIGNIFICANCE))
     vocabulary = ValidXMLCharField(_(u'vocabulary'), blank=True, max_length=5,
-                                   choices=codelist_choices(codelist_models.PolicyMarkerVocabulary))
+                                   choices=codelist_choices(POLICY_MARKER_VOCABULARY))
     description = ValidXMLCharField(
         _(u'description'), max_length=255, blank=True, help_text=_(u'(max 255 characters)')
     )

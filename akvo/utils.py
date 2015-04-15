@@ -308,7 +308,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
                     getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
                     recipients
                 )
-            if should_send(user, notice_type, "sms") and user.get_profile().phone_number: # SMS
+            if should_send(user, notice_type, "sms") and user.phone_number: # SMS
                 # strip newlines
                 sms = ''.join(render_to_string('notification/email_subject.txt', {
                     'message': messages['sms.txt'],
@@ -425,26 +425,31 @@ def filter_query_string(qs):
     """
     q = dict(qs.iterlists())  # to Python dict
     q.pop('page', None)
-    q.pop('sort_by', None)
 
     if not bool(q):
         return ''
 
-    return '&{}'.format(
-        '&'.join(['{}={}'.format(k, ''.join(v)) for (k, v) in q.items()]))
+    return u'&{}'.format(
+        u'&'.join([u'{}={}'.format(k, u''.join(v)) for (k, v) in q.items()])).encode('utf-8')
 
 
-def codelist_choices(model, version=settings.IATI_VERSION):
+def codelist_choices(codelist):
     """
-    Based on a model from the codelists app and a version, returns a list of tuples with the available choices.
-    :param model: Model from codelists app
-    :param version: String of version (optional)
+    Based on a model from the codelists app, returns a list of tuples with the available choices.
+
+    :param codelist: Codelist from codelists store
     :return: List of tuples with available choices, tuples in the form of (code, name)
     """
-    try:
-        return [(cl.code, cl) for cl in model.objects.filter(version__code=version)]
-    except:
-        return []
+    name_index = 0
+    for index, header in enumerate(codelist[0]):
+        if header == 'name':
+            name_index = index
+            break
+
+    if name_index > 0:
+        return [(cl[0], '%s - %s' % (cl[0], cl[name_index])) for cl in codelist[1:]]
+    else:
+        return [(cl[0], cl[name_index]) for cl in codelist[1:]]
 
 
 def codelist_value(model, instance, field, version=settings.IATI_VERSION):
@@ -468,6 +473,4 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
 
 def check_auth_groups(group_names):
     for group_name in group_names:
-        group, created = Group.objects.get_or_create(name=group_name)
-        if created:
-            print "Created group => {}".format(group)
+        Group.objects.get_or_create(name=group_name)

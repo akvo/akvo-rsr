@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """Akvo RSR is covered by the GNU Affero General Public License.
-See more details in the license.txt file located at the root folder of the
-Akvo RSR module. For additional details on the GNU license please
-see < http://www.gnu.org/licenses/agpl.html >.
+
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import urllib
@@ -27,7 +27,8 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 
 def render_to(template):
-    """
+    """Render utility function.
+
     Decorator for Django views that sends returned dict to render_to_response
     function with given template and RequestContext as context instance.
     If view doesn't return dict then decorator simply returns output.
@@ -90,9 +91,10 @@ def donate(request, p, engine):
             if is_test_donation:
                 invoice.test = True
             if request.session.get("donation_return_url", False):
-                return_url = urljoin(request.session["donation_return_url"], reverse("donate_thanks"))
+                return_url = urljoin(request.session["donation_return_url"],
+                                     reverse("donate_thanks"))
             else:
-                return_url = urljoin(request.domain_url, reverse("donate_thanks"))
+                return_url = urljoin(request.META['HTTP_ORIGIN'], reverse("donate_thanks"))
             if engine == "ideal":
                 invoice.bank = cd["bank"]
                 mollie_dict = dict(
@@ -100,7 +102,7 @@ def donate(request, p, engine):
                     bank_id=invoice.bank,
                     partnerid=invoice.gateway,
                     description=description,
-                    reporturl=urljoin(request.domain_url, reverse("mollie_report")),
+                    reporturl=urljoin(request.META['HTTP_ORIGIN'], reverse("mollie_report")),
                     returnurl=return_url)
                 try:
                     mollie_response = query_mollie(mollie_dict, "fetch")
@@ -125,9 +127,9 @@ def donate(request, p, engine):
                     item_name=description,
                     invoice=int(invoice.id),
                     lc=invoice.locale,
-                    notify_url=urljoin(request.domain_url, reverse("paypal_ipn")),
+                    notify_url=urljoin(request.META['HTTP_ORIGIN'], reverse("paypal_ipn")),
                     return_url=return_url,
-                    cancel_url=request.domain_url)
+                    cancel_url=request.META['HTTP_ORIGIN'])
                 pp_form = PayPalPaymentsForm(initial=pp_dict)
                 if is_test_donation:
                     pp_button = pp_form.sandbox()
@@ -158,7 +160,8 @@ def donate(request, p, engine):
                                                    is_public=not invoice.is_anonymous))
         if request.session.get("donation_return_url", False):
             request.session["cancel_url"] = urljoin(request.session["donation_return_url"],
-                                                    reverse("project-main", kwargs={'project_id': p.id}))
+                                                    reverse("project-main",
+                                                    kwargs={'project_id': p.id}))
         else:
             request.session["cancel_url"] = reverse("project-main", kwargs={'project_id': p.id})
     return render_to_response("donate/donate_step2.html",
