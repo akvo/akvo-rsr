@@ -157,6 +157,7 @@ class IATIPartnershipResource(ModelResource):
     organisation = fields.ToOneField('akvo.api.resources.OrganisationResource', 'organisation')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['post']
         resource_name   = 'iati_partnership'
         authorization   = Authorization()
@@ -205,6 +206,7 @@ class PartnershipResource(ConditionalFullResource):
         )
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = Partnership.objects.all()
         resource_name   = 'partnership'

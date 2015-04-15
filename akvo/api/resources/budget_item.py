@@ -26,6 +26,7 @@ class IATIBudgetItemResource(ModelResource):
     label = fields.ToOneField('akvo.api.resources.BudgetItemLabelResource', 'label',)
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['post', 'put']
         resource_name   = 'iati_budget_item'
         authorization   = Authorization()
@@ -46,6 +47,7 @@ class BudgetItemResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = BudgetItem.objects.all()
         resource_name   = 'budget_item'
@@ -58,6 +60,7 @@ class BudgetItemResource(ConditionalFullResource):
 
 class BudgetItemLabelResource(ConditionalFullResource):
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = BudgetItemLabel.objects.all()
         resource_name   = 'budget_item_label'

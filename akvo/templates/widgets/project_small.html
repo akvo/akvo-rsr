@@ -14,7 +14,7 @@
     <div class="projectDescr">
       {% rsr_widget_project_status_location project %}
       <h2 id="project_title"><a href="{{project.get_absolute_url}}">
-        {{project.title|smart_truncate:60}}
+        {{project.title|truncatechars_html:60}}
       </a></h2>
       <a href="{{project.get_absolute_url}}">{% img project 145 109 project.title %}</a>
     </div>

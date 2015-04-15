@@ -22,6 +22,7 @@ class PartnerSiteResource(ConditionalFullResource):
     )
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset = PartnerSite.objects.all()
         resource_name = 'partner_site'
