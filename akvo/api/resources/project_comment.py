@@ -19,6 +19,7 @@ class ProjectCommentResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = ProjectComment.objects.all()
         resource_name   = 'project_comment'

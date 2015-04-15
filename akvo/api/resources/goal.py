@@ -22,6 +22,7 @@ class IATIGoalResource(ModelResource):
     project = fields.ToOneField('akvo.api.resources.IATIProjectResource', 'project',)
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['post', 'put']
         resource_name   = 'iati_goal'
         authorization   = Authorization()
@@ -33,6 +34,7 @@ class GoalResource(ConditionalFullResource):
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['get']
         queryset        = Goal.objects.all()
         resource_name   = 'goal'

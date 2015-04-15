@@ -96,6 +96,7 @@ class IATIProjectResource(ModelResource):
     # )
 
     class Meta:
+        max_limit = 10
         allowed_methods = ['post', 'put']
         resource_name   = 'iati_activity'
         authorization   = Authorization()
@@ -264,6 +265,7 @@ class ProjectResource(ConditionalFullResource):
     project_updates = ConditionalFullToManyField('akvo.api.resources.ProjectUpdateResource', 'project_updates')
 
     class Meta:
+        max_limit = 10
         allowed_methods         = ['get']
         authentication          = ConditionalApiKeyAuthentication(methods_requiring_key=['POST', 'PUT'])
         queryset                = Project.objects.all() #Note: this is modified in get_object_list()

@@ -30,6 +30,7 @@ class ProjectUpdateResource(ConditionalFullResource):
     user = ConditionalFullToOneField('akvo.api.resources.UserResource', 'user')
 
     class Meta:
+        max_limit = 10
         allowed_methods         = ['get', 'post']
         authorization           = Authorization()
         authentication          = ConditionalApiKeyAuthentication(methods_requiring_key=['POST'])
