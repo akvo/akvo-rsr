@@ -9,7 +9,7 @@ import rules
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from .models import Employment, Organisation, PartnerSite, Project, PublishingStatus, ProjectUpdate
+from .models import Employment, Organisation, PartnerSite, Project, PublishingStatus
 
 
 @rules.predicate
