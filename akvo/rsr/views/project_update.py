@@ -30,7 +30,7 @@ def _page_updates(page):
     org = page.organisation
     if page.partner_projects:
         projects = apply_keywords(page, org_projects(org))
-        return projects.all_updates()
+        return projects.all_updates().order_by('-id')
     else:
         return _all_updates()
 
