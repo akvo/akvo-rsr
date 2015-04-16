@@ -220,8 +220,7 @@ class OrganisationUpdates(UpdateFeed):
             ) % {'org_name': obj.name, 'long_name': obj.long_name}
 
     def items(self, obj):
-        projects = Organisation.objects.get(pk=obj.id).projects.published()
-        return ProjectUpdate.objects.filter(project__id__in=projects).order_by('-created_at')
+        return obj.projects.published().all_updates().order_by('-created_at')
 
     def item_title(self, item):
         return _(
@@ -244,12 +243,8 @@ class AllProjectUpdates(UpdateFeed):
     description = _(u'Project updates for all Akvo RSR projects')
 
     def items(self):
-        # Limited to 100 items to prevent gateway timeouts & since only the last 100 items
-        # are required for current usage anyway.
-        # TODO: rename or create a new appropriately named feed.
-        return ProjectUpdate.objects.filter(
-                project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
-            ).order_by('-created_at')[:100]
+        # Limited to 25 items to prevent gateway timeouts.
+        return Project.objects.published().all_updates().order_by('-created_at')[:25]
 
     def item_title(self, item):
         return _(
