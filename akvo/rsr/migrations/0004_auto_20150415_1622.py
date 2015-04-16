@@ -14,13 +14,14 @@ def combine_results(apps, schema_editor):
         if project.results.all() and project.results.all().count() > 1:
             altered_results = []
             for result in project.results.all():
-                for other_result in project.results.filter(title=result.title,
-                                                           type=result.type).exclude(pk=result.pk):
-                    for indicator in other_result.indicators.all():
-                        indicator.result = result
-                        indicator.save()
-                    if other_result not in altered_results:
-                        altered_results.append(other_result)
+                if result.indicators.all():
+                    for other_result in project.results.filter(
+                            title=result.title, type=result.type).exclude(pk=result.pk):
+                        for indicator in other_result.indicators.all():
+                            indicator.result = result
+                            indicator.save()
+                        if other_result not in altered_results:
+                            altered_results.append(other_result)
 
             for result in altered_results:
                 if not result.indicators.all():
