@@ -41,6 +41,30 @@ class ValidStockRSRTestCase(TestCase):
         self.assertTrue(_is_rsr_host(self.req_localhost.get_host()))
 
 
+class HostHeaderTestCase(TestCase):
+
+    """Testing boot traffic."""
+
+    def setUp(self):
+        """Setup."""
+        self.c = Client(HTTP_HOST='_')
+
+    def test_underscore_host(self):
+        """When host is '_'."""
+        resp = self.c.get('/')
+        self.assertEqual(resp.status_code, 400)
+
+    def test_empy_host(self):
+        """When host is ''."""
+        resp = self.c.get('')
+        self.assertEqual(resp.status_code, 400)
+
+    def test_oddchar_host(self):
+        """When host is ''."""
+        resp = self.c.get('$')
+        self.assertEqual(resp.status_code, 400)
+
+
 class InValidStockRSRTestCase(TestCase):
 
     """Testing request to stock RSR.

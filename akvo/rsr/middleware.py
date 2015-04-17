@@ -87,7 +87,7 @@ class RSRVersionHeaderMiddleware(object):
     """Add a response header with RSR version info."""
 
     def process_response(self, request, response):
-        """."""
+        """Add the X-RSR-Version header."""
         context = extra_context(request)
 
         response['X-RSR-Version'] = "tag={}, commit={}, branch={}".format(

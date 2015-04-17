@@ -21,8 +21,8 @@ from .utils import apply_keywords, org_projects, show_filter_class
 
 
 def _all_updates():
-    """Return all project updates of published projects."""
-    return Project.objects.published().all_updates().order_by('-id')
+    """Return all project updates."""
+    return ProjectUpdate.objects.select_related().order_by('-id')
 
 
 def _page_updates(page):
@@ -30,7 +30,7 @@ def _page_updates(page):
     org = page.organisation
     if page.partner_projects:
         projects = apply_keywords(page, org_projects(org))
-        return projects.published().all_updates().order_by('-id')
+        return projects.all_updates().order_by('-id')
     else:
         return _all_updates()
 
