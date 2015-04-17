@@ -22,7 +22,7 @@ from .utils import apply_keywords, org_projects, show_filter_class
 
 def _all_updates():
     """Return all project updates."""
-    return ProjectUpdate.objects.all().order_by('-id')
+    return ProjectUpdate.objects.select_related().order_by('-id')
 
 
 def _page_updates(page):
