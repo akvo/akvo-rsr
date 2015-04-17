@@ -791,10 +791,10 @@ class Project(TimestampsMixin, models.Model):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
-                related_projects__relation=1
+                related_projects__relation=2
             ) | Project.objects.filter(
                 related_to_projects__project=self,
-                related_to_projects__relation=2
+                related_to_projects__relation=1
             )
         ).distinct()
 
@@ -802,10 +802,10 @@ class Project(TimestampsMixin, models.Model):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
-                related_projects__relation=2
+                related_projects__relation=1
             ) | Project.objects.filter(
                 related_to_projects__project=self,
-                related_to_projects__relation=1
+                related_to_projects__relation=2
             )
         ).distinct()
 

@@ -4,17 +4,17 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module. 
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import os
 import re
 
 from xml.sax.saxutils import XMLGenerator
 
 from django.contrib.syndication.views import FeedDoesNotExist, Feed
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 from django.utils.feedgenerator import Rss201rev2Feed
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.rsr.models import Project, ProjectUpdate, Organisation, PublishingStatus
+from akvo.rsr.models import Project, ProjectUpdate, Organisation
 
 
 def __dict_replace(s, d):
@@ -185,43 +185,49 @@ class UpdateFeed(Feed):
 
 
 class ProjectUpdates(UpdateFeed):
-    """feed with all updates for a particular project
-    """
+    """RSS feed for last 50 RSR updates of a project."""
     def get_object(self, request, project_id):
         return Project.objects.get(pk__exact=project_id)
 
     def title(self, obj):
-        return _(u'Akvo RSR project %(id)d: %(project_title)s') % {'id':obj.id, 'project_title':obj.title}
+        return _(u'Akvo RSR project %(id)d: %(project_title)s') % {
+            'id': obj.id,
+            'project_title': obj.title
+        }
 
     def description(self, obj):
-        return _(u'Project updates for project %(project_title)s' % {'project_title': obj.title})
+        return _(u'Project updates for project %(project_title)s') % {
+            'project_title': obj.title
+        }
 
     def items(self, obj):
-        return ProjectUpdate.objects.filter(project__id__exact=obj.id).order_by('-created_at')
+        # Limited to 50 items to prevent gateway timeouts.
+        return ProjectUpdate.objects.filter(project__id=obj.id).order_by('-id')[:50]
 
 
 class OrganisationUpdates(UpdateFeed):
-    """feed that aggregates all updates from all projects that an organisation is a partner to
-    """
+    """RSS feed for last 50 RSR updates of an organisation."""
     feed_type = RSRMediaRssFeed
 
     def get_object(self, request, org_id):
-        return Organisation.objects.get(pk__exact=org_id)
+        return get_object_or_404(Organisation, id=int(org_id))
 
     def title(self, obj):
         return _(u'Projects of %(org_name)s') % {'org_name':obj.name,}
 
     def description(self, obj):
         if obj.name == obj.long_name:
-            return _(u"Project updates for projects partnered by %(org_name)s") % {'org_name': obj.name}
+            return _(u"Project updates for projects partnered by %(org_name)s") % {
+                'org_name': obj.name
+            }
         else:
             return _(
                 u"Project updates for projects partnered by %(org_name)s - %(long_name)s"
             ) % {'org_name': obj.name, 'long_name': obj.long_name}
 
     def items(self, obj):
-        projects = Organisation.objects.get(pk=obj.id).projects.published()
-        return ProjectUpdate.objects.filter(project__id__in=projects).order_by('-created_at')
+        # Limited to 50 items to prevent gateway timeouts.
+        return obj.published_projects().all_updates()[:50]
 
     def item_title(self, item):
         return _(
@@ -234,9 +240,8 @@ class OrganisationUpdates(UpdateFeed):
 
 
 class AllProjectUpdates(UpdateFeed):
-    """all updates in RSR!
-    """
-    title = _(u'Akvo RSR all project updates')
+    """RSS feed for last 50 RSR updates."""
+    title = _(u'Last 50 RSR project updates')
     
     def link(self):
         return reverse('update-directory')
@@ -244,12 +249,8 @@ class AllProjectUpdates(UpdateFeed):
     description = _(u'Project updates for all Akvo RSR projects')
 
     def items(self):
-        # Limited to 100 items to prevent gateway timeouts & since only the last 100 items
-        # are required for current usage anyway.
-        # TODO: rename or create a new appropriately named feed.
-        return ProjectUpdate.objects.filter(
-                project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
-            ).order_by('-created_at')[:100]
+        # Limited to 50 items to prevent gateway timeouts.
+        return ProjectUpdate.objects.select_related().order_by('-id')[:50]
 
     def item_title(self, item):
         return _(

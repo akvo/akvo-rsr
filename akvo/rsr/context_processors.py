@@ -10,18 +10,22 @@ Akvo RSR module. For additional details on the GNU license please see
 import django
 
 from django.conf import settings
+from django.core.exceptions import DisallowedHost
 from django.contrib.sites.models import get_current_site
 
 
 def extra_context(request, protocol="http"):
     """Add information to the request context."""
-    current_site = get_current_site(request)
+    try:
+        current_site = get_current_site(request)
+    except DisallowedHost:
+        current_site = None
+
     django_version = django.get_version()
     deploy_tag = getattr(settings, 'DEPLOY_TAG', 'Unknown')
     deploy_branch = getattr(settings, 'DEPLOY_BRANCH', 'Unknown')
     deploy_commit_id = getattr(settings, 'DEPLOY_COMMIT_ID', 'Unknown')
-    deploy_commit_full_id = getattr(
-        settings, 'DEPLOY_COMMIT_FULL_ID', 'Unknown')
+    deploy_commit_full_id = getattr(settings, 'DEPLOY_COMMIT_FULL_ID', 'Unknown')
 
     return dict(
         current_site=current_site,
