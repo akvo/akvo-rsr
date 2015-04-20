@@ -42,7 +42,7 @@
                 <div class="row updateLine">
                     <div class="col-lg-2 col-md-2 thumbImg">
                         <a href="{% url 'update-main' update.project.id update.id %}">
-                          {% if u.video %}
+                          {% if update.video %}
                             {% vid_img update 80 80 update.title %}
                           {% else %}
                             {% img update 80 80 update.title %}
