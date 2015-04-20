@@ -91,7 +91,7 @@
         {% else %}
             {% if q %}
                 <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
-                    {% trans "Your search" %} - {{q}} - {% trans "did not match any projects." %}
+                    {% trans "Your search" %} - {{q_search}} - {% trans "did not match any projects." %}
                 </p>
             {% elif organisations %}
               <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
