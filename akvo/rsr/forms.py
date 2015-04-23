@@ -400,8 +400,7 @@ class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
         if checks[0]:
             return mark_safe(u'<span class="success">%s</span>' % obj.__unicode__())
         else:
-            label = obj.__unicode__() + " (<a href='/admin/rsr/project/%s/' target='_blank'>" % \
-                                        str(obj.pk) + _(u'edit project') + "</a>)"
+            label = obj.__unicode__()
             for check in checks[1]:
                 if check[0] == u'error':
                     label += u'<br>- %s' % check[1]
