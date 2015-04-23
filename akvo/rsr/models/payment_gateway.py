@@ -6,6 +6,7 @@
 
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField, ValidXMLTextField
 
@@ -13,13 +14,13 @@ from .project import Project
 
 
 class PaymentGateway(models.Model):
-    name = ValidXMLCharField(max_length=255, help_text=u'Use a short, descriptive name.')
+    name = ValidXMLCharField(max_length=255, help_text=_(u'Use a short, descriptive name.'))
     description = ValidXMLTextField(blank=True)
     currency = ValidXMLCharField(max_length=3, choices=Project.CURRENCY_CHOICES, default='EUR')
     notification_email = models.EmailField(
-        u'notification email',
-        help_text=u'When a donation is completed successfully, '
-                  u'notification emails will be sent to the donor and to this address.'
+        _(u'notification email'),
+        help_text=_(u'When a donation is completed successfully, '
+                    u'notification emails will be sent to the donor and to this address.')
     )
 
     def __unicode__(self):
@@ -36,11 +37,13 @@ class PayPalGateway(PaymentGateway):
         (PAYPAL_US_LOCALE, u'US English'),
     )
     account_email = models.EmailField()
-    locale = ValidXMLCharField(max_length=2, choices=PAYPAL_LOCALE_CHOICES, default=PAYPAL_US_LOCALE)
+    locale = ValidXMLCharField(
+        max_length=2, choices=PAYPAL_LOCALE_CHOICES, default=PAYPAL_US_LOCALE
+    )
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = u'PayPal gateway'
+        verbose_name = _(u'PayPal gateway')
 
 
 class MollieGateway(PaymentGateway):
@@ -48,7 +51,7 @@ class MollieGateway(PaymentGateway):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = u'Mollie/iDEAL gateway'
+        verbose_name = _(u'Mollie/iDEAL gateway')
 
 
 class PaymentGatewaySelector(models.Model):
@@ -61,4 +64,4 @@ class PaymentGatewaySelector(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = u'Project payment gateway configuration'
+        verbose_name = _(u'Project payment gateway configuration')

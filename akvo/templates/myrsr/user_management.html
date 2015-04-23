@@ -5,7 +5,7 @@
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
 {% block myrsr_main %}
-    <h3>User management</h3>
+    <h3>{% trans 'User management' %}</h3>
     {% has_perm 'rsr.change_employment' user as can_change_employments %}
     {% if not can_change_employments %}
     <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
@@ -27,13 +27,17 @@
         {% if user_data %}
         <div id="user_table" class="col-sm-12"></div>
         <div>
-          <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} users</p>
+          <p>
+          {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
+              Viewing {{start_index}} - {{end_index}} of {{paginator_count}} users
+          {% endblocktrans %}
+          </p>
           {% include 'navigation/pagination.html' %}
         </div>
         {% else %}
         <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
             {% if q %}
-                {% trans "Your search" %} - <strong>{{q}}</strong> - {% trans "did not match any users." %}
+                {% blocktrans %}Your search - {{q}} - did not match any users.{% endblocktrans %}
             {% else %}
                 {% trans "No users that you can manage." %}
             {% endif %}
@@ -48,6 +52,27 @@
     {% if user_data %}
     {# App data #}
     <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
+
+    {# Translation strings #}
+    <script type="application/json" id="user-management-text">
+        {
+            "remove_user_text": "{% trans 'Remove user from organisation' %}",
+            "remove_text": "{% trans 'Are you sure you want to remove' %}",
+            "from_text": "{% trans 'from' %}",
+            "close_text": "{% trans 'Close' %}",
+            "remove_button_text": "{% trans 'Remove' %}",
+            "approve_text": "{% trans 'Are you sure you want to approve' %}",
+            "approve_button_text": "{% trans 'Approve' %}",
+            "at_text": "{% trans 'at' %}",
+            "loading_text": "{% trans 'Loading...' %}",
+            "in_text": "{% trans 'in' %}",
+            "none_text": "{% trans 'None' %}",
+            "email_text": "{% trans 'Email' %}",
+            "first_name_text": "{% trans 'First name' %}",
+            "last_name_text": "{% trans 'Last name' %}",
+            "organisations_text": "{% trans 'Organisations' %}"
+        }
+    </script>
 
     {% compressed_js 'my_user_management' %}
     {% endif %}

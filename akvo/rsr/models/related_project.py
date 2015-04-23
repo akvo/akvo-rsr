@@ -17,7 +17,8 @@ from akvo.utils import codelist_choices, codelist_value
 class RelatedProject(models.Model):
     project = models.ForeignKey('Project', related_name='related_projects')
     related_project = models.ForeignKey(
-        'Project', related_name='related_to_projects', null=True, blank=True, on_delete=models.SET_NULL
+        'Project', related_name='related_to_projects', null=True, blank=True,
+        on_delete=models.SET_NULL
     )
     related_iati_id = ValidXMLCharField(
         _(u'related project IATI identifier'), max_length=100, blank=True,
@@ -27,7 +28,8 @@ class RelatedProject(models.Model):
     relation = ValidXMLCharField(
         _(u'relation'), max_length=1, choices=codelist_choices(RELATED_ACTIVITY_TYPE),
         help_text=_(u'The relation between a project and related project. '
-        u'(E.g. select the \'Parent\' relation when the selected project here is the parent of this project).')
+                    u'(E.g. select the \'Parent\' relation when the selected project here is '
+                    u'the parent of this project).')
     )
 
     def iati_relation(self):

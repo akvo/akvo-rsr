@@ -26,7 +26,7 @@
                     <h3><small>{% trans "Project" %}</small></h3>
                     <div class="radio">
                         <label>
-                            <input type="radio" name="widget-project" value="project" checked>{% trans "Use the" %} {{project.title}} {% trans "project" %}
+                            <input type="radio" name="widget-project" value="project" checked>{% blocktrans with title=project.title %}Use the {{title}} project{% endblocktrans %}
                         </label>
                     </div>
                     <div class="radio">
@@ -103,7 +103,7 @@
                     {% endif %}
                 </p>
                 <p class="small">
-                    <a href="{% url 'project-widgets' project.pk %}">< Back to widget selection</a>
+                    <a href="{% url 'project-widgets' project.pk %}">< {% trans 'Back to widget selection' %}</a>
                 </p>
             </div>
             <div class="col-sm-7">

@@ -31,13 +31,13 @@ var ResetModal = React.createClass({
 
   render: function() {
     return this.transferPropsTo(
-        <Modal title="Reset your password">
+        <Modal title={i18n.reset_your_password_text}>
         <div className="modal-body">
-        <p>{'Fill in your email address in the field below. We will send you instructions on how to reset your password.'}</p>
-        <Input className="form-control" id="id_email" maxLength="254" name="email" placeholder="Email" required="required" title="" type="email" />
+        <p>{i18n.fill_email_text}</p>
+        <Input className="form-control" id="id_email" maxLength="254" name="email" placeholder={i18n.email_text} required="required" title="" type="email" />
         </div>
         <div className="modal-footer">
-        <Button onClick={this.resetPassword} bsStyle='info'>Reset password</Button>
+        <Button onClick={this.resetPassword} bsStyle='info'>{i18n.reset_password_text}</Button>
         </div>
         </Modal>
     );
@@ -47,9 +47,12 @@ var ResetModal = React.createClass({
 var TriggerModal = React.createClass({
   render: function () {
     return (
-        <ModalTrigger modal={<ResetModal />}><a href="#">I forgot my password</a></ModalTrigger>
+        <ModalTrigger modal={<ResetModal />}><a href="#">{i18n.forgot_password_text}</a></ModalTrigger>
     );
   }
 });
 
-var resetPW = React.renderComponent(<TriggerModal />, document.getElementById('reset-pw'));
+// Initial data
+i18n = JSON.parse(document.getElementById("reset-password-text").innerHTML);
+
+React.renderComponent(<TriggerModal />, document.getElementById('reset-pw'));

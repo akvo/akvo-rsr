@@ -1,3 +1,6 @@
+{% load i18n %}
+
+{% blocktrans %}
 Organisation: {{ organisation.name }}
 
 A new user has requested to join {{ organisation.name }} in the Akvo RSR system.
@@ -6,12 +9,15 @@ Name: {{ user.get_full_name }}
 Email: {{ user.email }}
 
 Linked support partners of {{ organisation.name }}:
+{% endblocktrans %}
 {% for partner in organisation.support_partners %}
 - {{ partner.name }}
 {% endfor %}
 
+{% blocktrans %}
 Please check the credentials of this user and then activate here:
 http://{{ site }}/myrsr/user_management/
 
 Thank you,
 Akvo.org
+{% endblocktrans %}

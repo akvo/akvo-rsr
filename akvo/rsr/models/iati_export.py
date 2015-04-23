@@ -18,20 +18,21 @@ def file_path(self, filename):
 
 
 STATUS_CODE = {
-    1: u'pending',
-    2: u'in progress',
-    3: u'completed',
-    4: u'cancelled'
+    1: _(u'pending'),
+    2: _(u'in progress'),
+    3: _(u'completed'),
+    4: _(u'cancelled')
 }
+
 
 class IatiExport(TimestampsMixin, models.Model):
     reporting_organisation = models.ForeignKey(
-        'Organisation', verbose_name=u'reporting organisation', related_name='iati_exports'
+        'Organisation', verbose_name=_(u'reporting organisation'), related_name='iati_exports'
     )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=u'user', related_name='iati_exports'
+        settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_exports'
     )
-    projects = models.ManyToManyField('Project', verbose_name=u'projects')
+    projects = models.ManyToManyField('Project', verbose_name=_(u'projects'))
     version = ValidXMLCharField(_(u'version'), max_length=4, default='2.01')
     status = models.PositiveSmallIntegerField(_(u'status'), default=1)
     iati_file = models.FileField(_(u'IATI file'), blank=True, upload_to=file_path)
@@ -44,6 +45,6 @@ class IatiExport(TimestampsMixin, models.Model):
 
     def show_status(self):
         if not self.status in STATUS_CODE.keys():
-            return u'unknown status'
+            return _(u'unknown status')
         else:
             return STATUS_CODE[int(self.status)]

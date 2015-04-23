@@ -24,8 +24,9 @@ class Result(models.Model):
     type = ValidXMLCharField(
         _(u'type'), blank=True, max_length=1, choices=codelist_choices(RESULT_TYPE),
         help_text=_(u'Select whether the result is an output, outcome or impact. '
-                    u'<a href="http://www.tacticalphilanthropy.com/2010/06/outputs-outcomes-impact-oh-my/" '
-                    u'target="_blank">Further explanation on result types</a>')
+                    u'<a href="http://www.tacticalphilanthropy.com/2010/06/'
+                    u'outputs-outcomes-impact-oh-my/" target="_blank">'
+                    u'Further explanation on result types</a>')
     )
     aggregation_status = models.NullBooleanField(_(u'aggregation status'), blank=True)
     description = ValidXMLCharField(

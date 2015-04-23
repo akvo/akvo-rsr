@@ -13,14 +13,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
 
-from akvo.utils import rsr_image_path
+from akvo.utils import codelist_choices, rsr_image_path
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
-from ..iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 
 from .country import Country
-from .models_utils import QuerySetManager
 from .partner_type import PartnerType
 from .partner_site import PartnerSite
 from .partnership import Partnership
@@ -71,7 +70,7 @@ class Organisation(TimestampsMixin, models.Model):
     def org_type_from_iati_type(cls, iati_type):
         """ utility that maps the IATI organisation types to the old Akvo organisation types
         """
-        types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
+        types = dict(zip([int(type) for type, name in IATI_LIST_ORGANISATION_TYPE[1:]],
             cls.NEW_TO_OLD_TYPES
         ))
         return types[iati_type]
@@ -79,32 +78,37 @@ class Organisation(TimestampsMixin, models.Model):
     # TODO: make name unique
     name = ValidXMLCharField(
         _(u'name'), max_length=25, db_index=True,
-        help_text=_(u'Short name which will appear in organisation and partner listings (25 characters).'),
+        help_text=_(u'Short name which will appear in organisation and partner listings '
+                    u'(25 characters).')
     )
     long_name = ValidXMLCharField(
         _(u'long name'), blank=True, max_length=75,
         help_text=_(u'Full name of organisation (75 characters).'),
     )
     language = ValidXMLCharField(
-        max_length=2, choices=settings.LANGUAGES, default='en',
-        help_text=u'The main language of the organisation',
+        _(u'language'), max_length=2, choices=settings.LANGUAGES, default='en',
+        help_text=_(u'The main language of the organisation'),
     )
     partner_types = models.ManyToManyField(PartnerType)
-    organisation_type = ValidXMLCharField(_(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES)
+    organisation_type = ValidXMLCharField(
+        _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES
+    )
     new_organisation_type = models.IntegerField(
-        _(u'IATI organisation type'), db_index=True, choices=IATI_LIST_ORGANISATION_TYPE, default=22,
-        help_text=u'Check that this field is set to an organisation type that matches your organisation.',
+        _(u'IATI organisation type'), db_index=True,
+        choices=codelist_choices(IATI_LIST_ORGANISATION_TYPE), default=22,
+        help_text=_(u'Check that this field is set to an organisation type that matches '
+                    u'your organisation.'),
     )
     iati_org_id = ValidXMLCharField(
         _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True
     )
     internal_org_ids = models.ManyToManyField(
-        'self', through='InternalOrganisationID', symmetrical=False, related_name='recording_organisation'
+        'self', through='InternalOrganisationID', symmetrical=False,
+        related_name='recording_organisation'
     )
-    logo = ImageField(_(u'logo'),
-                      blank=True,
-                      upload_to=image_path,
-                      help_text=_(u'Logos should be approximately 360x270 pixels (approx. 100-200kB in size) on a white background.'),
+    logo = ImageField(_(u'logo'), blank=True, upload_to=image_path,
+                      help_text=_(u'Logos should be approximately 360x270 pixels '
+                                  u'(approx. 100-200kB in size) on a white background.'),
     )
     url = models.URLField(
         blank=True,
@@ -122,31 +126,40 @@ class Organisation(TimestampsMixin, models.Model):
         blank=True,
         help_text=_(u'Enter the full address of your LinkedIn page, beginning with http://.'),
     )
-    phone = ValidXMLCharField(_(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    mobile = ValidXMLCharField(_(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
-    fax = ValidXMLCharField(_(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).'))
+    phone = ValidXMLCharField(
+        _(u'phone'), blank=True, max_length=20, help_text=_(u'(20 characters).')
+    )
+    mobile = ValidXMLCharField(
+        _(u'mobile'), blank=True, max_length=20, help_text=_(u'(20 characters).')
+    )
+    fax = ValidXMLCharField(
+        _(u'fax'), blank=True, max_length=20, help_text=_(u'(20 characters).')
+    )
     contact_person = ValidXMLCharField(
         _(u'contact person'), blank=True, max_length=30,
         help_text=_(u'Name of external contact person for your organisation (30 characters).'),
     )
     contact_email = ValidXMLCharField(
         _(u'contact email'), blank=True, max_length=50,
-        help_text=_(u'Email to which inquiries about your organisation should be sent (50 characters).'),
+        help_text=_(u'Email to which inquiries about your organisation should be sent '
+                    u'(50 characters).'),
     )
-    description = ValidXMLTextField(_(u'description'), blank=True, help_text=_(u'Describe your organisation.'))
-    notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
-    primary_location = models.ForeignKey('OrganisationLocation', null=True, on_delete=models.SET_NULL)
-    content_owner = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
-        help_text=_(u'Organisation that maintains content for this organisation through the API.'),
+    description = ValidXMLTextField(
+        _(u'description'), blank=True, help_text=_(u'Describe your organisation.')
+    )
+    notes = ValidXMLTextField(verbose_name=_(u"Notes and comments"), blank=True, default='')
+    primary_location = models.ForeignKey(
+        'OrganisationLocation', null=True, on_delete=models.SET_NULL
+    )
+    content_owner = models.ForeignKey(
+        'self', null=True, blank=True, on_delete=models.SET_NULL,
+        help_text=_(u'Organisation that maintains content for this organisation through the API.')
     )
     allow_edit = models.BooleanField(
-        _(u'Partner editors of this organisation are allowed to manually edit projects where this organisation is '
-          u'support partner'),
-        help_text=_(
-            u'When manual edits are disallowed, partner admins and editors of other organisations are also not '
-            u'allowed to edit these projects.'
-        ),
-        default=True
+        _(u'Partner editors of this organisation are allowed to manually edit projects where '
+          u'this organisation is support partner'),
+        help_text=_(u'When manual edits are disallowed, partner admins and editors of other '
+                    u'organisations are also not allowed to edit these projects.'), default=True
     )
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
@@ -182,8 +195,8 @@ class Organisation(TimestampsMixin, models.Model):
             return self.partners(Partnership.SUPPORT_PARTNER)
 
         def supportpartners_with_projects(self):
-            """return the organisations in the queryset that are support partners with published projects, not
-            counting archived projects"""
+            """return the organisations in the queryset that are support partners with published
+            projects, not counting archived projects"""
             from .project import Project
             return self.filter(
                 partnerships__partner_type=Partnership.SUPPORT_PARTNER,
@@ -227,10 +240,12 @@ class Organisation(TimestampsMixin, models.Model):
         return self.name
 
     def iati_org_type(self):
-        return dict(IATI_LIST_ORGANISATION_TYPE)[self.new_organisation_type] if self.new_organisation_type else ""
+        return dict(IATI_LIST_ORGANISATION_TYPE)[str(self.new_organisation_type)] if \
+            self.new_organisation_type else ""
 
     def is_partner_type(self, partner_type):
-        "returns True if the organisation is a partner of type partner_type to at least one project"
+        """returns True if the organisation is a partner of type partner_type to
+        at least one project"""
         return self.partnerships.filter(partner_type__exact=partner_type).count() > 0
 
     def is_field_partner(self):
@@ -274,20 +289,24 @@ class Organisation(TimestampsMixin, models.Model):
         return self.published_projects().status_not_cancelled().status_not_archived()
 
     def partners(self):
-        "returns a queryset of all organisations that self has at least one project in common with, excluding self"
+        """returns a queryset of all organisations that self has at least one project
+        in common with, excluding self"""
         return self.published_projects().all_partners().exclude(id__exact=self.id)
 
     def support_partners(self):
-        "returns a queryset of support partners that self has at least one project in common with, excluding self"
+        """returns a queryset of support partners that self has at least one project
+        in common with, excluding self"""
         return self.published_projects().support_partners().exclude(id__exact=self.id)
 
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
         from .partnership import Partnership
-        return [ps.partner_type for ps in Partnership.objects.filter(project=project, organisation=self)]
+        return [ps.partner_type for ps in Partnership.objects.filter(project=project,
+                                                                     organisation=self)]
 
     def countries_where_active(self):
-        """Returns a Country queryset of countries where this organisation has published projects."""
+        """Returns a Country queryset of countries where this organisation has
+        published projects."""
         return Country.objects.filter(
             projectlocation__project__partnerships__organisation=self,
             projectlocation__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED
@@ -309,7 +328,8 @@ class Organisation(TimestampsMixin, models.Model):
     def euros_pledged(self):
         "How much € the organisation has pledged to projects it is a partner to"
         return self.active_projects().euros().filter(
-            partnerships__organisation__exact=self, partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__organisation__exact=self,
+            partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
         ).aggregate(
             euros_pledged=Sum('partnerships__funding_amount')
         )['euros_pledged'] or 0
@@ -317,7 +337,8 @@ class Organisation(TimestampsMixin, models.Model):
     def dollars_pledged(self):
         "How much $ the organisation has pledged to projects"
         return self.active_projects().dollars().filter(
-            partnerships__organisation__exact=self, partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__organisation__exact=self,
+            partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
         ).aggregate(
             dollars_pledged=Sum('partnerships__funding_amount')
         )['dollars_pledged'] or 0
@@ -334,13 +355,19 @@ class Organisation(TimestampsMixin, models.Model):
         return sum(projects.values_list('funds_needed', flat=True))
 
     def euro_funds_needed(self):
-        "How much is still needed to fully fund all projects with € budget that the organiastion is a partner to"
-        # the ORM aggregate() doesn't work here since we may have multiple partnership relations to the same project
+        """How much is still needed to fully fund all projects with € budget that the
+        organisation is a partner to.
+
+        The ORM aggregate() doesn't work here since we may have multiple partnership relations
+        to the same project."""
         return self._aggregate_funds_needed(self.published_projects().euros().distinct())
 
     def dollar_funds_needed(self):
-        "How much is still needed to fully fund all projects with $ budget that the organiastion is a partner to"
-        # the ORM aggregate() doesn't work here since we may have multiple partnership relations to the same project
+        """How much is still needed to fully fund all projects with $ budget that the
+        organisation is a partner to.
+
+        The ORM aggregate() doesn't work here since we may have multiple partnership relations
+        to the same project."""
         return self._aggregate_funds_needed(self.published_projects().dollars().distinct())
 
     class Meta:

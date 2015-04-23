@@ -13,11 +13,16 @@
                 <h2>{% if edit_mode %}{% trans 'Edit an update' %}{% else %}{% trans 'Add an update' %}{% endif %}</h2>
                 {% if not allow_update %}
                 <p>{% trans "You are not allowed to post updates for this project, because you are not connected to an organisation of this project." %}</p>
-                <p>{% trans "Go to the" %} <a href="{% url 'my_details' %}">{% trans "My details" %}</a> {% trans "page to request to join an organisation." %}
+                {% url 'my_details' as my_details_url %}
+                <p>{% blocktrans %}Go to the <a href="{{my_details_url}}">My details</a> page to request to join an organisation.{% endblocktrans %}
                 {% trans "Once your request is approved, you will be able to post updates to this project." %}</p>
                 {% else %}
                 {% if edit_mode %}
-                    <p class="small">You posted this update at {{ update.time_gmt|date:"H:i T"}}. You have until {{ update.expires_at|date:"H:i T" }} to save your edits.</p>
+                    <p class="small">
+                    {% blocktrans with update_time=update.time_gmt|date:"H:i T" expires_time=update.expires_at|date:"H:i T" %}
+                        You posted this update at {{update_time}}. You have until {{expires_time}} to save your edits.
+                    {% endblocktrans %}
+                    </p>
                 {% endif %}
                 {% if update and update.photo and edit_mode %}
                     <p>{% img update 400 300 update.title %}</p>
@@ -37,7 +42,7 @@
             </div>
             {% if updates %}
             <div class="col-md-5 hidden-sm hidden-xs udpateComponent">
-                <h3>Previous updates of this project</h3>
+                <h3>{% trans 'Previous updates of this project' %}</h3>
                 {% for update in updates %}
                 <div class="row updateLine">
                     <div class="col-lg-2 col-md-2 thumbImg">
@@ -50,7 +55,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> See all updates for this project.</a></div>
+                <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a></div>
             </div>
             {% endif %}
     </div>

@@ -64,37 +64,41 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
-    A fully featured User model with admin-compliant permissions that uses a full-length email field as the username.
+    A fully featured User model with admin-compliant permissions that uses a full-length email
+    field as the username.
     Email and password are required. Other fields are optional.
     """
-    username = ValidXMLCharField(_('username'), max_length=254, unique=True)
-    email = models.EmailField(_('email address'), max_length=254, unique=True)
-    first_name = ValidXMLCharField(_('first name'), max_length=30, blank=True)
-    last_name = ValidXMLCharField(_('last name'), max_length=30, blank=True)
+    username = ValidXMLCharField(_(u'username'), max_length=254, unique=True)
+    email = models.EmailField(_(u'email address'), max_length=254, unique=True)
+    first_name = ValidXMLCharField(_(u'first name'), max_length=30, blank=True)
+    last_name = ValidXMLCharField(_(u'last name'), max_length=30, blank=True)
     is_active = models.BooleanField(
-        _('active'), default=False, help_text=_('Designates whether this user should be treated as active. '
-                                                'Unselect this instead of deleting accounts.')
+        _(u'active'), default=False,
+        help_text=_(u'Designates whether this user should be treated as active. '
+                    u'Unselect this instead of deleting accounts.')
     )
     is_staff = models.BooleanField(
-        _('staff'), default=False, help_text=_('Designates whether the user can log into this admin site.')
+        _(u'staff'), default=False,
+        help_text=_(u'Designates whether the user can log into this admin site.')
     )
     is_admin = models.BooleanField(
-        _('admin'), default=False, help_text=_('Designates whether the user is a general RSR admin. '
-                                               'To be used only for Akvo employees.')
+        _(u'admin'), default=False,
+        help_text=_(u'Designates whether the user is a general RSR admin. '
+                    u'To be used only for Akvo employees.')
     )
     is_support = models.BooleanField(
-        _('support user'), default=False, help_text=_('Designates whether the user is a support user. To be used for '
-                                                      'users willing to receive notifications when a new user '
-                                                      'registers for their organisation.')
+        _(u'support user'), default=False,
+        help_text=_(u'Designates whether the user is a support user. To be used for users '
+                    u'willing to receive notifications when a new user registers for '
+                    u'their organisation.')
     )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_joined = models.DateTimeField(_(u'date joined'), default=timezone.now)
     organisations = models.ManyToManyField(
-        'Organisation', verbose_name=_(u'organisations'), through=Employment, related_name='users', blank=True
+        'Organisation', verbose_name=_(u'organisations'), through=Employment,
+        related_name='users', blank=True
     )
-    notes = ValidXMLTextField(verbose_name=_('Notes and comments'), blank=True, default='')
-    avatar = ImageField(_(u'avatar'),
-                        null=True,
-                        upload_to=image_path,
+    notes = ValidXMLTextField(verbose_name=_(u'Notes and comments'), blank=True, default='')
+    avatar = ImageField(_(u'avatar'), null=True, upload_to=image_path,
                         help_text=_(u'The avatar should be less than 500 kb in size.'),
     )
 
@@ -105,8 +109,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
+        verbose_name = _(u'user')
+        verbose_name_plural = _(u'users')
         ordering = ['username', ]
 
     class QuerySet(QuerySet):
@@ -133,7 +137,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         """
-        Returns only the first_name, but is needed because the default admin templates use this method.
+        Returns only the first_name, but is needed because the default admin templates use
+        this method.
         """
         return self.first_name
 
@@ -202,7 +207,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment = Employment.objects.get(user=self, organisation=org)
         except:
             return False
-        return employment.group == Group.objects.get(name='Admins') if employment.is_approved else False
+        return employment.group == Group.objects.get(name='Admins') if \
+            employment.is_approved else False
     get_is_org_admin.boolean = True  # make pretty icons in the admin list view
     get_is_org_admin.short_description = _(u'organisation admin')
 
@@ -224,7 +230,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment = Employment.objects.get(user=self, organisation=org)
         except:
             return False
-        return employment.group == Group.objects.get(name='User manager') if employment.is_approved else False
+        return employment.group == Group.objects.get(name='User manager') \
+            if employment.is_approved else False
     get_is_user_manager.boolean = True  # make pretty icons in the admin list view
     get_is_user_manager.short_description = _(u'organisation admin')
 
@@ -246,7 +253,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment = Employment.objects.get(user=self, organisation=org)
         except:
             return False
-        return employment.group == Group.objects.get(name='Project Editors') if employment.is_approved else False
+        return employment.group == Group.objects.get(name='Project Editors') \
+            if employment.is_approved else False
     get_is_project_editor.boolean = True  # make pretty icons in the admin list view
     get_is_project_editor.short_description = _(u'organisation admin')
 
@@ -268,7 +276,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment = Employment.objects.get(user=self, organisation=org)
         except:
             return False
-        return employment.group == Group.objects.get(name='Users') if employment.is_approved else False
+        return employment.group == Group.objects.get(name='Users') if \
+            employment.is_approved else False
     get_is_user.boolean = True  # make pretty icons in the admin list view
     get_is_user.short_description = _(u'organisation admin')
 
@@ -295,9 +304,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     def allow_edit(self, project):
-        """ Support partner organisations may "take ownership" of projects, meaning that editing of them is restricted
-        This method is used "on top" of normal checking for user access to projects since it is only relevant for
-        Partner users
+        """ Support partner organisations may "take ownership" of projects, meaning that editing
+        of them is restricted. This method is used "on top" of normal checking for user access to
+        projects since it is only relevant for Partner users.
         """
         allow_edit = True
         partner_admins_allowed = []
@@ -340,8 +349,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def in_group(self, group, organisation=None):
         """
-        Returns whether a user is part of a group. Optionally an organisation can be added to check if a user is part
-        of a group for the organisation.
+        Returns whether a user is part of a group. Optionally an organisation can be added
+        to check if a user is part of a group for the organisation.
         """
         for employment in self.employers.approved():
             if organisation:
@@ -360,8 +369,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.
-        The org_list is a list of approved organisations of the original user. Based on this, the original user will
-        have the option to approve / delete the employment.
+        The org_list is a list of approved organisations of the original user. Based on this,
+        the original user will have the option to approve / delete the employment.
         """
         employments = Employment.objects.filter(user=self)
 

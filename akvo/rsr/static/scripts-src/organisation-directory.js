@@ -5,6 +5,8 @@ $(document).ready(function(){
     $('#filterForm').submit();
   });
 
+  var organisations_text = JSON.parse(document.getElementById("organisations-text").innerHTML).organisations_text;
+
   var organisations = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name',
                                                          'long_name'),
@@ -29,7 +31,7 @@ $(document).ready(function(){
       displayKey: 'name',
       source: organisations.ttAdapter(),
       templates: {
-        header: '<h3 class="dd-category">Organisations</h3>',
+        header: '<h3 class="dd-category">' + organisations_text + '</h3>',
         suggestion: _.template('<a href="/organisation/<%= id %>"><p><%= name %></p></a>')
        }
     }

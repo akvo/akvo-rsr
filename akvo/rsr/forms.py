@@ -29,45 +29,46 @@ from akvo import settings
 
 class RegisterForm(forms.Form):
     email = forms.EmailField(
-        label='Email',
+        label=_(u'Email'),
         max_length=254,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Email'}
+            attrs={'placeholder': _(u'Email')}
         ),
     )
     first_name = forms.CharField(
-        label='First name',
+        label=_(u'First name'),
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': 'First name'}
+            attrs={'placeholder': _(u'First name')}
         ),
     )
     last_name = forms.CharField(
-        label='Last name',
+        label=_(u'Last name'),
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Last name'}
+            attrs={'placeholder': _(u'Last name')}
         ),
     )
     password1 = forms.CharField(
-        label='Password',
+        label=_(u'Password'),
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Password'},
+            attrs={'placeholder': _(u'Password')},
             render_value=False
         )
     )
     password2 = forms.CharField(
-        label='Repeat password',
+        label=_(u'Repeat password'),
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Repeat password'},
+            attrs={'placeholder': _(u'Repeat password')},
             render_value=False
         )
     )
 
     def clean(self):
         """
-        Verify that the values entered into the two password fields match. Note that an error here will end up in
-        non_field_errors() because it doesn't apply to a single field.
+        Verify that the values entered into the two password fields match.
+        Note that an error here will end up in non_field_errors() because it doesn't
+        apply to a single field.
         """
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
@@ -90,9 +91,10 @@ class RegisterForm(forms.Form):
         """
         Create the new User and RegistrationProfile, and returns the User.
 
-        This is essentially a light wrapper around RegistrationProfile.objects.create_inactive_user(), feeding it the
-        form data and a profile callback (see the documentation on create_inactive_user() for details) if supplied.
-        Modified to set user.is_active = False and add User object creation.
+        This is essentially a light wrapper around
+        RegistrationProfile.objects.create_inactive_user(), feeding it the form data and
+        a profile callback (see the documentation on create_inactive_user() for details)
+        if supplied. Modified to set user.is_active = False and add User object creation.
         """
         site = get_current_site(request)
         new_user = RegistrationProfile.objects.create_inactive_user(
@@ -114,7 +116,7 @@ class ProfileForm(forms.Form):
         max_length=254,
         widget=forms.TextInput(
             attrs={
-                'placeholder': 'Email',
+                'placeholder': _(u'Email'),
                 'readonly': True}
         ),
     )
@@ -122,14 +124,14 @@ class ProfileForm(forms.Form):
         label='',
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': 'First name'}
+            attrs={'placeholder': _(u'First name')}
         ),
     )
     last_name = forms.CharField(
         label='',
         max_length=30,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Last name'}
+            attrs={'placeholder': _(u'Last name')}
         ),
     )
 
@@ -150,21 +152,21 @@ class PasswordForm(PasswordChangeForm):
     old_password = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Current password'},
+            attrs={'placeholder': _(u'Current password')},
             render_value=False
         )
     )
     new_password1 = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'New password'},
+            attrs={'placeholder': _(u'New password')},
             render_value=False
         )
     )
     new_password2 = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'Repeat new password'},
+            attrs={'placeholder': _(u'Repeat new password')},
             render_value=False
         )
     )
@@ -174,21 +176,21 @@ class UserOrganisationForm(forms.Form):
     organisation = forms.ModelChoiceField(
         queryset=Organisation.objects.all(),
         label='',
-        empty_label='Organisation'
+        empty_label=_(u'Organisation')
     )
     job_title = forms.CharField(
         label='',
         required=False,
         max_length=50,
         widget=forms.TextInput(
-            attrs={'placeholder': 'Job title (optional)'}
+            attrs={'placeholder': _(u'Job title (optional)')}
         ),
     )
     country = forms.ModelChoiceField(
         queryset=Country.objects.all(),
         label='',
         required=False,
-        empty_label='Country (optional)'
+        empty_label=_(u'Country (optional)')
     )
 
     def __init__(self, *args, **kwargs):
@@ -222,11 +224,11 @@ class ProjectUpdateForm(forms.ModelForm):
         'class': 'input',
         'size': '42',
         'maxlength': '50',
-        'placeholder': 'Title',
+        'placeholder': _(u'Title'),
         }))
     text = forms.CharField(label='', required=False, widget=forms.Textarea(attrs={
         'class': 'textarea',
-        'placeholder': 'Description',
+        'placeholder': _(u'Description'),
         }))
     language = forms.ChoiceField(choices=settings.LANGUAGES, initial='en')
     photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={
@@ -237,39 +239,39 @@ class ProjectUpdateForm(forms.ModelForm):
         'class': 'input',
         'size': '25',
         'maxlength': '75',
-        'placeholder': 'Photo caption',
+        'placeholder': _(u'Photo caption'),
         }))
     photo_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
         'maxlength': '25',
-        'placeholder': 'Photo credit',
+        'placeholder': _(u'Photo credit'),
         }))
     video = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '42',
         'maxlength': '255',
-        'placeholder': 'Video link',
+        'placeholder': _(u'Video link'),
         }))
     video_caption = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
         'maxlength': '75',
-        'placeholder': 'Video caption',
+        'placeholder': _(u'Video caption'),
         }))
     video_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
         'maxlength': '25',
-        'placeholder': 'Video credit',
+        'placeholder': _(u'Video credit'),
         }))
     latitude = forms.FloatField(widget=forms.HiddenInput())
     longitude = forms.FloatField(widget=forms.HiddenInput())
 
     class Meta:
         model = ProjectUpdate
-        fields = ('title', 'text', 'language', 'photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
-        'video_credit')
+        fields = ('title', 'text', 'language', 'photo', 'photo_caption', 'photo_credit',
+                  'video', 'video_caption', 'video_credit')
 
     def clean_video(self):
         data = self.cleaned_data['video']
@@ -280,7 +282,9 @@ class ProjectUpdateForm(forms.ModelForm):
                          netloc == 'www.youtube.com' and path == '/watch' or
                          netloc == 'youtu.be')
             if not valid_url:
-                raise forms.ValidationError(_('Invalid video URL. Currently only YouTube and Vimeo are supported.'))
+                raise forms.ValidationError(
+                    _(u'Invalid video URL. Currently only YouTube and Vimeo are supported.')
+                )
             if netloc == 'youtu.be':
                 netloc = 'www.youtube.com'
                 path = '/watch?v=%s' % path.lstrip('/')
@@ -297,7 +301,8 @@ class ProjectUpdateForm(forms.ModelForm):
             update.save()
 
             # Save update location
-            # Only when adding an update. When editing an update, the initial location is maintained.
+            # Only when adding an update. When editing an update,
+            # the initial location is maintained.
             if not update.primary_location:
                 latitude_data = self.cleaned_data['latitude']
                 longitude_data = self.cleaned_data['longitude']
@@ -309,7 +314,7 @@ class ProjectUpdateForm(forms.ModelForm):
 
             return update
         else:
-            raise forms.ValidationError('Project or user not found.')
+            raise forms.ValidationError(_(u'Project or user not found.'))
 
 
 class UserAvatarForm(forms.ModelForm):
@@ -340,16 +345,15 @@ class InvoiceForm(forms.ModelForm):
     The fields below *override* the model to ensure data consistency.
     """
     amount = forms.IntegerField(min_value=2)
-    name = forms.CharField(label="Full name")
-    email = forms.EmailField(label="Email address")
-    email2 = forms.EmailField(label="Email address (repeat)")
-    campaign_code = forms.CharField(required=False, label="Campaign code (optional)")
-    is_public = forms.BooleanField(required=False, label="List name next to donation")
+    name = forms.CharField(label=_(u"Full name"))
+    email = forms.EmailField(label=_(u"Email address"))
+    email2 = forms.EmailField(label=_(u"Email address (repeat)"))
+    campaign_code = forms.CharField(required=False, label=_(u"Campaign code (optional)"))
+    is_public = forms.BooleanField(required=False, label=_(u"List name next to donation"))
 
     class Meta:
         model = get_model('rsr', 'invoice')
-        fields = ('amount', 'name', 'email', 'email2',
-                  'campaign_code', 'is_public')
+        fields = ('amount', 'name', 'email', 'email2', 'campaign_code', 'is_public')
 
     def over_donated(self):
         donation = self.cleaned_data.get('amount', 0)
@@ -363,11 +367,13 @@ class InvoiceForm(forms.ModelForm):
 
     def clean(self):
         if self.over_donated():
-            raise forms.ValidationError(_('You cannot donate more than the project actually needs!'))
+            raise forms.ValidationError(
+                _(u'You cannot donate more than the project actually needs!')
+            )
         cd = self.cleaned_data
         if 'email' in cd and 'email2' in cd:
             if cd['email'] != cd['email2']:
-                raise forms.ValidationError(_('You must type the same email address each time!'))
+                raise forms.ValidationError(_(u'You must type the same email address each time!'))
         return cd
 
 
@@ -384,7 +390,7 @@ class SelectOrgForm(forms.Form):
 
         self.fields['org'] = forms.ModelChoiceField(
             queryset=organisations,
-            label='Select your organisation',
+            label=_(u'Select your organisation'),
         )
 
 
@@ -394,8 +400,8 @@ class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
         if checks[0]:
             return mark_safe(u'<span class="success">%s</span>' % obj.__unicode__())
         else:
-            label = obj.__unicode__() + " (<a href='/admin/rsr/project/%s/'" \
-                                        " target='_blank'>edit project</a>)" % str(obj.pk)
+            label = obj.__unicode__() + " (<a href='/admin/rsr/project/%s/' target='_blank'>" % \
+                                        str(obj.pk) + _(u'edit project') + "</a>)"
             for check in checks[1]:
                 if check[0] == u'error':
                     label += u'<br>- %s' % check[1]
@@ -405,11 +411,11 @@ class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
 
 class IatiExportForm(forms.ModelForm):
     """Form for adding an entry to the IATI export model."""
-    is_public = forms.BooleanField(required=False, label="Show IATI file on organisation page")
+    is_public = forms.BooleanField(required=False, label=_(u"Show IATI file on organisation page"))
     projects = CustomLabelModelChoiceField(
         widget=forms.CheckboxSelectMultiple,
         queryset=Project.objects.all(),
-        label="Select the projects included in the export:"
+        label=_(u"Select the projects included in the export:")
     )
 
     class Meta:
@@ -432,4 +438,4 @@ class IatiExportForm(forms.ModelForm):
 
             return iati_export
         else:
-            raise forms.ValidationError('Reporting organisation or user not found.')
+            raise forms.ValidationError(_(u'Reporting organisation or user not found.'))

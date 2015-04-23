@@ -42,13 +42,13 @@ DeleteModal = React.createClass({
 
   render: function() {
     return this.transferPropsTo(
-      <Modal title="Remove user from organisation">
+      <Modal title={i18n.remove_user_text}>
       <div className="modal-body">
-      {'Are you sure you want to remove ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' from ' + this.props.employment.organisation_full.name + '?'}
+      {i18n.remove_text + ' ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' ' + i18n.from_text + ' ' + this.props.employment.organisation_full.name + '?'}
       </div>
       <div className="modal-footer">
-      <Button onClick={this.props.onRequestHide}>Close</Button>
-      <Button onClick={this.deleteEmployment} bsStyle="danger">Remove</Button>
+      <Button onClick={this.props.onRequestHide}>{i18n.close_text}</Button>
+      <Button onClick={this.deleteEmployment} bsStyle="danger">{i18n.remove_button_text}</Button>
       </div>
       </Modal>
     );
@@ -79,11 +79,11 @@ ApproveModal = React.createClass({
     return this.transferPropsTo(
       <Modal title="Approve user">
       <div className="modal-body">
-      {'Are you sure you want to approve ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' at ' + this.props.employment.organisation_full.long_name + '?'}
+      {i18n.approve_text + ' ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' ' + i18n.at_text + ' ' + this.props.employment.organisation_full.long_name + '?'}
       </div>
       <div className="modal-footer">
-      <Button onClick={this.props.onRequestHide}>Close</Button>
-      <Button onClick={this.approveEmployment} bsStyle="success">Approve</Button>
+      <Button onClick={this.props.onRequestHide}>{i18n.close_text}</Button>
+      <Button onClick={this.approveEmployment} bsStyle="success">{i18n.approve_button_text}</Button>
       </div>
       </Modal>
     );
@@ -159,7 +159,7 @@ DropDownItem = React.createClass({
     $("div.btn-group").removeClass("open");
 
     this.props.loading(true);
-    this.props.onSetGroup(<i>Loading...</i>);
+    this.props.onSetGroup(<i>{i18n.loading_text}</i>);
     this.setGroup();
     this.props.loading(false);
   },
@@ -189,7 +189,7 @@ CountryJobTitle = React.createClass({
         if (job_title !== "") {
           text += " ";
         }
-        text += "in " + country.name;
+        text += i18n.in_text + ' ' + country.name;
       }
       text += ")";
       return (
@@ -204,7 +204,7 @@ Employment = React.createClass({
   getInitialState: function() {
     return {
       visible: true,
-      button_title: '(None)',
+      button_title: '(' + i18n.none_text + ')',
       loading: !this.props.employment.actions
     };
   },
@@ -328,10 +328,15 @@ UserTable = React.createClass({
     });
     return (
       <Table striped>
-      <thead><tr><th>Email</th><th>First name</th><th>Last name</th>
-        <th className="text-right">Organisations</th></tr>
-      </thead>
-      <tbody>{users}</tbody>
+          <thead>
+              <tr>
+                  <th>{i18n.email_text}</th>
+                  <th>{i18n.first_name_text}</th>
+                  <th>{i18n.last_name_text}</th>
+                  <th className="text-right">{i18n.organisations_text}</th>
+              </tr>
+          </thead>
+          <tbody>{users}</tbody>
       </Table>
     );
   }
@@ -339,6 +344,7 @@ UserTable = React.createClass({
 
 
 initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
+i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(<UserTable source={initial_data} />,
                       document.getElementById('user_table'));

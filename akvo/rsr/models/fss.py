@@ -35,7 +35,7 @@ class FssForecast(models.Model):
     """
     Forecast items for an OECD DAC Forward Spending Survey item.
     """
-    fss = models.ForeignKey('Fss', verbose_name=u'fss', related_name='forecasts')
+    fss = models.ForeignKey('Fss', verbose_name=_(u'fss'), related_name='forecasts')
     year = models.PositiveIntegerField(_(u'year'), blank=True, null=True, max_length=4)
     value_date = models.DateField(_(u'value date'), blank=True, null=True)
     currency = ValidXMLCharField(_(u'currency'), blank=True, max_length=3,
