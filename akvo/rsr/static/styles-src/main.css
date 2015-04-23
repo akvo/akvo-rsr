@@ -1334,6 +1334,23 @@ div.textBlock {
 .organisationDetail .orgUrl, .organisationDetail .orgIati, .organisationDetail .orgEmail {
   display: block;
   padding-bottom: 0.75em; }
+@media only screen and (max-width: 768px) {
+  .organisationDetail .orgDetails > h4 {
+    padding-top: 0.75em; } }
+
+@media only screen and (max-width: 768px) {
+  .organisationInfo {
+    max-width: 325px;
+    margin-right: auto;
+    margin-left: auto; }
+    .organisationInfo dd, .organisationInfo dt {
+      display: inline-block; }
+    .organisationInfo dt {
+      width: 49%;
+      text-align: left; }
+    .organisationInfo dd {
+      width: 49%;
+      text-align: right; } }
 
 /* Update Page */
 .updateMain h2 {
