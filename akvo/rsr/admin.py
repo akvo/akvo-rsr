@@ -707,7 +707,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
     filter_horizontal = ('keywords',)
     list_display = ('title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',
                     'show_keywords')
-    search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
+    search_fields = ('title', 'subtitle', 'project_plan_summary')
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
