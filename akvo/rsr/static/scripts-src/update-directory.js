@@ -11,6 +11,8 @@ $(document).ready(function(){
     $('#filterForm').submit();
   });
 
+  var updates_text = JSON.parse(document.getElementById("updates-text").innerHTML).updates_text;
+
     // setup Bloodhound for typeahead
   var updates = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
@@ -36,7 +38,7 @@ $(document).ready(function(){
       displayKey: 'title',
       source: updates.ttAdapter(),
       templates: {
-        header: '<h3 class="dd-category">Updates</h3>',
+        header: '<h3 class="dd-category">' + updates_text + '</h3>',
         suggestion: _.template('<a href="/project/<%= project %>/update/<%= id %>"><p><%= title %></p></a>')
        }
     });

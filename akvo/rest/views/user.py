@@ -6,6 +6,7 @@
 
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -82,7 +83,7 @@ def request_organisation(request, pk=None):
             )
             employment.save()
         except IntegrityError:
-            return Response({'detail': 'User already linked to this organisation'}, status=status.HTTP_409_CONFLICT)
+            return Response({'detail': _(u'User already linked to this organisation')}, status=status.HTTP_409_CONFLICT)
 
         serializer.data['country_full'] = CountrySerializer(country).data
         serializer.data['organisation_full'] = OrganisationSerializer(organisation).data

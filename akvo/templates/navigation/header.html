@@ -14,7 +14,7 @@
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapsed">
-        <span class="sr-only">Toggle navigation</span>
+        <span class="sr-only">{% trans 'Toggle navigation' %}</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -58,18 +58,18 @@
         <li>
             <a href="{% if project %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
                class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
-              <i class="fa fa-camera-retro"></i> Add an update
+              <i class="fa fa-camera-retro"></i> {% trans 'Add an update' %}
             </a>
         </li>
         {% if not user.username %}
-        <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> Register</a></li>
-        <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> Sign in</a></li>
+        <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
+        <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
         {% else %}
         <li>
           <a class="{% if current_path == myrsr_path %}active{% endif %}"
-             href="{% url 'my_details' %}"><i class="fa fa-user"></i> MyRSR</a>
+             href="{% url 'my_details' %}"><i class="fa fa-user"></i> {% trans 'MyRSR' %}</a>
         </li>
-        <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> Sign out</a></li>
+        <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
       </ul>
     </div>

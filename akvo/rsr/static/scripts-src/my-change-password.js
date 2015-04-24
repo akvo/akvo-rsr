@@ -7,6 +7,8 @@
 $(function() {
 
   $('#passwordForm').submit(function(event) {
+    var close_text = JSON.parse(document.getElementById("password-change-strings").innerHTML).close_text;
+    var password_update_text = JSON.parse(document.getElementById("password-change-strings").innerHTML).password_update_text;
 
     serializedData = {};
     $.each($(this).serializeArray(), function(i, obj) { serializedData[obj.name] = obj.value; });
@@ -17,7 +19,7 @@ $(function() {
       data : JSON.stringify(serializedData),
       contentType : 'application/json; charset=UTF-8',
       success: function(response) {
-        $( "#password" ).prepend('<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>Password has been updated.</div>');
+        $( "#password" ).prepend('<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">' + close_text + '</span></button>' + password_update_text + '</div>');
         window.setTimeout(function() {
           $(".alert").fadeTo(500, 0).slideUp(500, function(){
             $(this).remove();
@@ -29,7 +31,7 @@ $(function() {
         jsonValue = $.parseJSON( response.responseText );
 
         $.each(jsonValue, function(key, value){
-          $( "#password" ).prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>' + value + '</div>');
+          $( "#password" ).prepend('<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">' + close_text + '</span></button>' + value + '</div>');
           window.setTimeout(function() {
             $(".alert").fadeTo(500, 0).slideUp(500, function(){
               $(this).remove();

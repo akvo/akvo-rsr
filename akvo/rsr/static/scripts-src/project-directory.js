@@ -31,6 +31,10 @@ $(document).ready(function() {
     $('#filterForm').submit();
   });
 
+  var projects_text = JSON.parse(document.getElementById("typeahead-header-text").innerHTML).projects_text;
+  var organisations_text = JSON.parse(document.getElementById("typeahead-header-text").innerHTML).organisations_text;
+  var locations_text = JSON.parse(document.getElementById("typeahead-header-text").innerHTML).locations_text;
+
   // setup Bloodhound for typeahead
   var organisations = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'
@@ -120,7 +124,7 @@ $(document).ready(function() {
       displayKey: 'title',
       source: projects.ttAdapter(),
       templates: {
-        header: '<h3 class="dd-category">Projects</h3>',
+        header: '<h3 class="dd-category">' + projects_text + '</h3>',
         suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %></p></a>')
         // suggestion: _.template('<a href="/project/<%= id %>"><p><%= title %></p><p><%= subtitle %></p></a>')
        }
@@ -130,7 +134,7 @@ $(document).ready(function() {
       displayKey: 'name',
       source: organisations.ttAdapter(),
       templates: {
-        header: '<h3 class="dd-category">Organisations</h3>',
+        header: '<h3 class="dd-category">' + organisations_text + '</h3>',
         suggestion: _.template('<a href="/projects/?organisation=<%= id %>"><p><%= name %></p></a>')
        }
     },
@@ -139,7 +143,7 @@ $(document).ready(function() {
       displayKey: 'name',
       source: locations.ttAdapter(),
       templates: {
-        header: '<h3 class="dd-category">Locations</h3>',
+        header: '<h3 class="dd-category">' + locations_text + '</h3>',
         suggestion: _.template('<a href="/projects/?location=<%= code %>"><p><%= name %></p></a>')
        }
     }

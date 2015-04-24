@@ -18,8 +18,8 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class BaseLocation(models.Model):
-    _help_text = _(u"Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> "
-                   u'to get the decimal coordinates of your project.')
+    _help_text = _(u"Go to <a href='http://mygeoposition.com/' target='_blank'>"
+                   u"http://mygeoposition.com/</a> to get the decimal coordinates of your project.")
     latitude = LatitudeField(_(u'latitude'), db_index=True, default=0, help_text=_help_text)
     longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
     city = ValidXMLCharField(
@@ -37,7 +37,8 @@ class BaseLocation(models.Model):
         help_text=_(u'Add additional address information, if needed. (255 characters)')
     )
     postcode = ValidXMLCharField(
-        _(u'postal code'), max_length=10, blank=True, help_text=_(u'Enter the postal/area code. (10 characters)')
+        _(u'postal code'), max_length=10, blank=True,
+        help_text=_(u'Enter the postal/area code. (10 characters)')
     )
 
     def delete(self, *args, **kwargs):
@@ -88,7 +89,8 @@ class ProjectLocation(BaseLocation):
     vocabulary = ValidXMLCharField(_(u'vocabulary'), blank=True, max_length=2,
                                    choices=codelist_choices(GEOGRAPHIC_VOCABULARY))
     name = ValidXMLCharField(_(u'name'), blank=True, max_length=100)
-    description = ValidXMLCharField(_(u'description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)'))
+    description = ValidXMLCharField(_(u'description'), blank=True, max_length=255,
+                                    help_text=_(u'(max 255 characters)'))
     activity_description = ValidXMLCharField(
         _(u'activity description'), blank=True, max_length=255, help_text=_(u'(max 255 characters)')
     )

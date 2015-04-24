@@ -12,7 +12,7 @@
   {% include "partials/project_header.html" %}
   <div class="container">
     {% if not project.is_published %}
-      <div id="draft" class="row">This is a draft view of the project. It can only be seen by Administrators and Project editors.</div>
+      <div id="draft" class="row">{% trans 'This is a draft view of the project. It can only be seen by Administrators and Project editors.' %}</div>
     {% endif %}
   </div>
   <div class="projectTopRow">
@@ -24,17 +24,17 @@
         <div class="col-sm-4">
           <aside class="projectSideInfo">
             <ul>
-              <li><span class="detailedInfo">Project summary</span><p>{{project.project_plan_summary}}</p></li>
+              <li><span class="detailedInfo">{% trans 'Project summary' %}</span><p>{{project.project_plan_summary}}</p></li>
               {% if project.iati_activity_id %}
-                <li><span class="detailedInfo">IATI ID</span> {{project.iati_activity_id}}</li>
+                <li><span class="detailedInfo">{% trans 'IATI ID' %}</span> {{project.iati_activity_id}}</li>
               {% endif %}
-              <li><span class="detailedInfo">Status</span> {{project.get_status_display}}</li>
+              <li><span class="detailedInfo">{% trans 'Status' %}</span> {{project.get_status_display}}</li>
               {% if project.has_relations %}
-                <li><span class="detailedInfo">Hierarchy</span>
-                This project has {{project.parents.count}} parent project{{project.parents.count|pluralize}},
-                {{project.children.count}} child project{{project.children.count|pluralize}} and
-                {{project.siblings.count}} sibling project{{project.siblings.count|pluralize}}
-                <a href="{% url 'project-hierarchy' project.pk %}">View full hierarchy</a></li>
+                <li><span class="detailedInfo">{% trans 'Hierarchy' %}</span>
+                {% blocktrans with parents_count=project.parents.count children_count=project.children.count siblings_count=project.siblings.count %}
+                This project has {{parents_count}} parent projects, {{children_count}} child projects and {{siblings_count}} sibling projects
+                {% endblocktrans %}
+                <a href="{% url 'project-hierarchy' project.pk %}">{% trans 'View full hierarchy' %}</a></li>
               {% endif %}
               {% if project.sectors.all %}
                 <li><span class="detailedInfo">{% trans "Sectors" %}</span>
@@ -51,7 +51,7 @@
                   <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
                   <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
                     title="<div class='extra-partner-tooltip'>{% for partner, types in partners.items %}<div class='extra-partner-entry'>{% if partner.logo %}<a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a> ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)<hr></div>{% endfor %}</div>"
-                  data-placement="right" data-container="article" data-class="foo">+ {{partners|length}} partners</a>
+                  data-placement="right" data-container="article" data-class="foo">{% blocktrans with partners_count=partners|length %}+ {{partners_count}} partners{% endblocktrans %}</a>
                   {% if project.reporting_org.primary_location.country %}
                     <div class="projectLocation"><i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}</div>
                   </div>
@@ -60,12 +60,12 @@
             </li>
             <li class="financeBlock"><span class="detailedInfo">{% trans "financial info" %}</span>
             
-            <a href="{% url 'project-finance' project.id %}" class="text-center"><i class="fa fa-line-chart"></i> See all financial info</a>
+            <a href="{% url 'project-finance' project.id %}" class="text-center"><i class="fa fa-line-chart"></i> trans 'See all financial info' %}</a>
           </li>
           {% if project.accepts_donations %}
             <li class="donateSection text-center topMargin">
               <dl class="dl-horizontal">
-                <dt class="totalBudgetLabel">Budget Needed:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed}}</dd>
+                <dt class="totalBudgetLabel">{% trans 'Budget Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed}}</dd>
               </dl>
               <a href="{% url 'project-donate' project.id %}" class="btn btn-primary donateButton">{% trans "Donate" %}</a>
             </li>
@@ -81,7 +81,7 @@
   <div class="col-sm-3 col-xs-6">
     <h4 class="detailedInfo">Finance</h4>
     {% include "partials/project_budget.html" %}
-    <p class="center-text"><a href="#">See all financial info</a></p>
+    <p class="center-text"><a href="#">{% trans 'See all financial info' %}</a></p>
   </div>
 </div>
 </div>
@@ -99,11 +99,11 @@
   </div>
   {% if updates %}
     <div class="col-sm-4 udpateComponent">
-      <h4 class="detailedInfo">Latest project updates</h4>
+      <h4 class="detailedInfo">{% trans 'Latest project updates' %}</h4>
       {% for update in updates %}
         <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
       {% endfor %}
-      <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> See all updates for this project.</a></div>
+      <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a></div>
     </div>
   {% endif %}
 </div>
@@ -120,6 +120,24 @@
 <script type="application/json" id="akvo-rsr-carousel">
 {{ carousel_data|safe }}
 </script>
+
+    {# Translation strings #}
+    <script type="application/json" id="project-main-text">
+        {
+            "end_date_unknown_text": "{% trans 'End date unknown' %}",
+            "start_date_unknown_text": "{% trans 'Start date unknown' %}",
+            "actual_text": "{% trans 'actual' %}",
+            "target_text": "{% trans 'target' %}",
+            "background_text": "{% trans 'Background' %}",
+            "current_situation_text": "{% trans 'Current situation' %}",
+            "goals_overview_text": "{% trans 'Goals overview' %}",
+            "project_plan_text": "{% trans 'Project plan' %}",
+            "sustainability_text": "{% trans 'Sustainability' %}",
+            "target_group_text": "{% trans 'Target group' %}",
+            "results_text": "{% trans 'Results' %}"
+        }
+    </script>
+
 <script src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
 {% compressed_js 'project_main' %}
 {% endblock js %}

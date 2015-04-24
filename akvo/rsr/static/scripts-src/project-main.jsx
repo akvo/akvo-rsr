@@ -21,10 +21,10 @@ Indicator = React.createClass({
         if (period_end !== undefined) {
             periods = "(" + period_start + " - " + period_end + ")";
         } else {
-            periods = "(" + period_start + " - End date unknown)";
+            periods = "(" + period_start + " - " + i18n.end_date_unknown_text + ")";
         }
     } else if (period_end !== undefined) {
-        periods = "(Start date unknown - " + period_end + ")";
+        periods = "(" + i18n.start_date_unknown_text + " - " + period_end + ")";
     } else {
         periods = "";
     }
@@ -33,13 +33,13 @@ Indicator = React.createClass({
     var actual_value = this.props.indicator.actual_value;
     var value = "";
     if (actual_value !== "") {
-        value += actual_value + " (actual)";
+        value += actual_value + " (" + i18n.actual_text + ")";
         if (target_value !== "") {
             value += " / ";
         }
     }
     if (target_value !== "") {
-        value += target_value + " (target)";
+        value += target_value + " (" + i18n.target_text + ")";
     }
 
     return (
@@ -142,43 +142,43 @@ AccordionInstance = React.createClass({
         panel_id = 0;
 
     if (background !== null) {
-      background = <Panel key={panel_id++} className="background" header="Background" eventKey={'background'}>
+      background = <Panel key={panel_id++} className="background" header={i18n.background_text} eventKey={'background'}>
         {this.splitLines(background)}
       </Panel>;
     }
 
     if (current_status !== null) {
-      current_status = <Panel key={panel_id++} className="current_status" header="Current situation" eventKey={'current_status'}>
+      current_status = <Panel key={panel_id++} className="current_status" header={i18n.current_situation_text} eventKey={'current_status'}>
         {this.splitLines(current_status)}
       </Panel>;
     }
 
     if (goals_overview !== null) {
-      goals_overview = <Panel key={panel_id++} className="goals_overview" header="Goals overview" eventKey={'goals_overview'}>
+      goals_overview = <Panel key={panel_id++} className="goals_overview" header={i18n.goals_overview_text} eventKey={'goals_overview'}>
         {this.splitLines(goals_overview)}
       </Panel>;
     }
 
     if (project_plan !== null) {
-      project_plan = <Panel key={panel_id++} className="project_plan" header="Project plan" eventKey={'project_plan'}>
+      project_plan = <Panel key={panel_id++} className="project_plan" header={i18n.project_plan_text} eventKey={'project_plan'}>
         {this.splitLines(project_plan)}
       </Panel>;
     }
 
     if (sustainability !== null) {
-      sustainability = <Panel key={panel_id++} className="sustainability" header="Sustainability" eventKey={'sustainability'}>
+      sustainability = <Panel key={panel_id++} className="sustainability" header={i18n.sustainability_text} eventKey={'sustainability'}>
         {this.splitLines(sustainability)}
       </Panel>;
     }
 
     if (target_group !== null) {
-      target_group = <Panel key={panel_id++} className="target_group" header="Target group" eventKey={'target_group'}>
+      target_group = <Panel key={panel_id++} className="target_group" header={i18n.target_group_text} eventKey={'target_group'}>
         {this.splitLines(target_group)}
       </Panel>;
     }
 
     if (results !== null) {
-      results = <Panel key={panel_id++} className="result" header="Results" eventKey={'results'}>
+      results = <Panel key={panel_id++} className="result" header={i18n.results_text} eventKey={'results'}>
         <ResultList key={0} results={results} />
       </Panel>;
     }
@@ -217,6 +217,9 @@ CarouselInstance = React.createClass({
     );
   }
 });
+
+// Initial data
+i18n = JSON.parse(document.getElementById("project-main-text").innerHTML);
 
 React.renderComponent(
     <AccordionInstance source={JSON.parse(document.getElementById("akvo-rsr-accordion").innerHTML)} />,

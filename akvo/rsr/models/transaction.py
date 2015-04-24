@@ -33,48 +33,60 @@ class Transaction(models.Model):
         help_text=_(u'Enter a description for the transaction. (255 characters)')
     )
     disbursement_channel = ValidXMLCharField(
-        _(u'disbursement channel'), blank=True, max_length=1, choices=codelist_choices(DISBURSEMENT_CHANNEL)
+        _(u'disbursement channel'), blank=True, max_length=1,
+        choices=codelist_choices(DISBURSEMENT_CHANNEL)
     )
     finance_type = ValidXMLCharField(
         _(u'finance type'), max_length=3, blank=True, choices=codelist_choices(FINANCE_TYPE)
     )
-    flow_type = ValidXMLCharField(_(u'flow type'), max_length=2, blank=True, choices=codelist_choices(FLOW_TYPE))
-    tied_status = ValidXMLCharField(_(u'tied status'), blank=True, max_length=1, choices=codelist_choices(TIED_STATUS))
+    flow_type = ValidXMLCharField(
+        _(u'flow type'), max_length=2, blank=True, choices=codelist_choices(FLOW_TYPE)
+    )
+    tied_status = ValidXMLCharField(
+        _(u'tied status'), blank=True, max_length=1, choices=codelist_choices(TIED_STATUS)
+    )
     transaction_date = models.DateField(
         _(u'transaction date'), blank=True, null=True,
-        help_text=u'Enter the financial reporting date that the transaction was/will be undertaken.'
+        help_text=_(u'Enter the financial reporting date that '
+                    u'the transaction was/will be undertaken.')
     )
     transaction_type = ValidXMLCharField(
-        _(u'transaction type'), blank=True, max_length=2, choices=codelist_choices(TRANSACTION_TYPE),
+        _(u'transaction type'), blank=True, max_length=2,
+        choices=codelist_choices(TRANSACTION_TYPE),
         help_text=_(u'Select the type of transaction from the list.')
     )
     value = models.DecimalField(
         _(u'value'), blank=True, null=True, max_digits=11, decimal_places=2,
-        help_text=u'Enter the transaction amount.'
+        help_text=_(u'Enter the transaction amount.')
     )
     value_date = models.DateField(_(u'value date'), blank=True, null=True)
-    currency = ValidXMLCharField(_(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY))
+    currency = ValidXMLCharField(
+        _(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)
+    )
     provider_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'provider organisation'), related_name='providing_transactions', blank=True,
-        null=True, on_delete=models.SET_NULL
+        'Organisation', verbose_name=_(u'provider organisation'),
+        related_name='providing_transactions', blank=True, null=True, on_delete=models.SET_NULL
     )
     provider_organisation_activity = ValidXMLCharField(
         _(u'provider organisation activity id'), blank=True, max_length=50
     )
     receiver_organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'receiver organisation'), related_name='receiving_transactions', blank=True,
-        null=True, on_delete=models.SET_NULL
+        'Organisation', verbose_name=_(u'receiver organisation'),
+        related_name='receiving_transactions', blank=True, null=True, on_delete=models.SET_NULL
     )
     receiver_organisation_activity = ValidXMLCharField(
         _(u'receiver organisation activity id'), blank=True, max_length=50
     )
-    recipient_country = ValidXMLCharField(_(u'recipient country'), blank=True, max_length=2,
-                                          choices=codelist_choices(COUNTRY))
+    recipient_country = ValidXMLCharField(
+        _(u'recipient country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY)
+    )
     recipient_region = ValidXMLCharField(
         _(u'recipient region'), blank=True, max_length=3, choices=codelist_choices(REGION)
     )
-    recipient_region_vocabulary = ValidXMLCharField(_(u'recipient region vocabulary'), blank=True, max_length=1,
-                                                    choices=codelist_choices(REGION_VOCABULARY))
+    recipient_region_vocabulary = ValidXMLCharField(
+        _(u'recipient region vocabulary'), blank=True, max_length=1,
+        choices=codelist_choices(REGION_VOCABULARY)
+    )
 
     def __unicode__(self):
         return self.value

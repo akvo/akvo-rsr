@@ -59,20 +59,20 @@
             <p class="noItem text-center">
                 {% trans "Your organisation does not report any projects yet. " %}
                 {% trans "Set your organisation to reporting organisation of a project to create an IATI file for the project." %}<br/>
-                {% trans "Go to the projects admin" %} <a href="/admin/rsr/project/">{% trans "here" %}</a>.
+                {% blocktrans with admin_link="/admin/rsr/project/" %}Go to the projects admin <a href={{admin_link}}>here</a>.{% endblocktrans %}
             </p>
         {% endif %}
     </div>
     {% if exports %}
     <div class="col-sm-5 col-xs-12 udpateComponent">
-        <h4 class="detailedInfo">{% trans 'Existing IATI export' %}{{exports.count|pluralize}}</h4>
+        <h4 class="detailedInfo">{% trans 'Existing IATI exports' %}</h4>
         <ul class="noStyleUl">
         {% for export in exports %}
             <li>
                 {{export.last_modified_at|date:"d-M-Y"}}:
                 {% if export.iati_file %}
                     <a href="{{MEDIA_URL}}{{export.iati_file}}">{% trans 'View IATI file' %}</a>
-                    ({{export.projects.count}} project{{export.projects.count|pluralize}})
+                    ({{export.projects.count}} {% trans 'projects' %})
                 {% else %}
                     {% trans 'No IATI file' %} ({{export.show_status}})
                 {% endif %}

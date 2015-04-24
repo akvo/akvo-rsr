@@ -20,10 +20,10 @@
                 <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
               </span>
             </div>
-            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
+            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
           </div>
           {% if q %}
-          <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
+          <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> {% trans 'Reset all filters' %}</a></div>
           {% endif %}
         </div>
       </div>
@@ -46,7 +46,7 @@
         <div>
           <nav>
             <ul class="nav nav-pills nav-stacked">
-              <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> Close this</a></li>
+              <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> {% trans 'Close this' %}</a></li>
             </ul>
           </nav>
         </div>
@@ -58,7 +58,11 @@
 
 <div class="container">
   <div class="row center-text">
-        <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} updates</p>
+        <p class="verticalPadding emTxt">
+        {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
+            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} updates
+        {% endblocktrans %}
+        </p>
   </div>
   <div class="row">
         {% include 'navigation/pagination.html' %}
@@ -124,6 +128,13 @@
    AKVO_RSR.typeahead = {};
    AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
   </script>
+
+    {# Translation strings #}
+    <script type="application/json" id="updates-text">
+    {
+        "updates_text": "{% trans 'Updates' %}"
+    }
+    </script>
 
   {% compressed_js 'update_directory' %}
 {% endblock js %}

@@ -16,7 +16,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class ProjectContact(models.Model):
-    project = models.ForeignKey('Project', verbose_name=u'project', related_name='contacts')
+    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='contacts')
     type = ValidXMLCharField(_(u'type'), blank=True, max_length=1,
                              choices=codelist_choices(CONTACT_TYPE))
     person_name = ValidXMLCharField(
@@ -45,7 +45,7 @@ class ProjectContact(models.Model):
     )
     state = ValidXMLCharField(_(u'state'), blank=True, max_length=100,
                               help_text=_(u'(100 characters)'))
-    country = models.ForeignKey('Country', blank=True, null=True, verbose_name=u'country',
+    country = models.ForeignKey('Country', blank=True, null=True, verbose_name=_(u'country'),
                                 related_name='contacts')
     department = ValidXMLCharField(_(u'department'), blank=True, max_length=100,
                                    help_text=_(u'(100 characters)'))

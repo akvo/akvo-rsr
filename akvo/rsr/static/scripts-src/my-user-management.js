@@ -42,13 +42,13 @@ DeleteModal = React.createClass({displayName: 'DeleteModal',
 
   render: function() {
     return this.transferPropsTo(
-      Modal( {title:"Remove user from organisation"}, 
+      Modal( {title:i18n.remove_user_text}, 
       React.DOM.div( {className:"modal-body"}, 
-      'Are you sure you want to remove ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' from ' + this.props.employment.organisation_full.name + '?'
+      i18n.remove_text + ' ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' ' + i18n.from_text + ' ' + this.props.employment.organisation_full.name + '?'
       ),
       React.DOM.div( {className:"modal-footer"}, 
-      Button( {onClick:this.props.onRequestHide}, "Close"),
-      Button( {onClick:this.deleteEmployment, bsStyle:"danger"}, "Remove")
+      Button( {onClick:this.props.onRequestHide}, i18n.close_text),
+      Button( {onClick:this.deleteEmployment, bsStyle:"danger"}, i18n.remove_button_text)
       )
       )
     );
@@ -79,11 +79,11 @@ ApproveModal = React.createClass({displayName: 'ApproveModal',
     return this.transferPropsTo(
       Modal( {title:"Approve user"}, 
       React.DOM.div( {className:"modal-body"}, 
-      'Are you sure you want to approve ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' at ' + this.props.employment.organisation_full.long_name + '?'
+      i18n.approve_text + ' ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' ' + i18n.at_text + ' ' + this.props.employment.organisation_full.long_name + '?'
       ),
       React.DOM.div( {className:"modal-footer"}, 
-      Button( {onClick:this.props.onRequestHide}, "Close"),
-      Button( {onClick:this.approveEmployment, bsStyle:"success"}, "Approve")
+      Button( {onClick:this.props.onRequestHide}, i18n.close_text),
+      Button( {onClick:this.approveEmployment, bsStyle:"success"}, i18n.approve_button_text)
       )
       )
     );
@@ -159,7 +159,7 @@ DropDownItem = React.createClass({displayName: 'DropDownItem',
     $("div.btn-group").removeClass("open");
 
     this.props.loading(true);
-    this.props.onSetGroup(React.DOM.i(null, "Loading..."));
+    this.props.onSetGroup(React.DOM.i(null, i18n.loading_text));
     this.setGroup();
     this.props.loading(false);
   },
@@ -189,7 +189,7 @@ CountryJobTitle = React.createClass({displayName: 'CountryJobTitle',
         if (job_title !== "") {
           text += " ";
         }
-        text += "in " + country.name;
+        text += i18n.in_text + ' ' + country.name;
       }
       text += ")";
       return (
@@ -204,7 +204,7 @@ Employment = React.createClass({displayName: 'Employment',
   getInitialState: function() {
     return {
       visible: true,
-      button_title: '(None)',
+      button_title: '(' + i18n.none_text + ')',
       loading: !this.props.employment.actions
     };
   },
@@ -328,10 +328,15 @@ UserTable = React.createClass({displayName: 'UserTable',
     });
     return (
       Table( {striped:true}, 
-      React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Email"),React.DOM.th(null, "First name"),React.DOM.th(null, "Last name"),
-        React.DOM.th( {className:"text-right"}, "Organisations"))
-      ),
-      React.DOM.tbody(null, users)
+          React.DOM.thead(null, 
+              React.DOM.tr(null, 
+                  React.DOM.th(null, i18n.email_text),
+                  React.DOM.th(null, i18n.first_name_text),
+                  React.DOM.th(null, i18n.last_name_text),
+                  React.DOM.th( {className:"text-right"}, i18n.organisations_text)
+              )
+          ),
+          React.DOM.tbody(null, users)
       )
     );
   }
@@ -339,6 +344,7 @@ UserTable = React.createClass({displayName: 'UserTable',
 
 
 initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
+i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(UserTable( {source:initial_data} ),
                       document.getElementById('user_table'));
