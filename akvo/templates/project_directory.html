@@ -93,7 +93,7 @@
             {% if p.reporting_org %}
               <p><a href="{% url 'organisation-main' p.reporting_org.id %}"><i class="fa fa-users"></i> {{p.reporting_org}}</a>
               {% if p.partners.distinct.count > 1 %}
-                <a href="javascript:;" class="small moreLink  " data-toggle="tooltip"
+                <a href="{% url 'project-partners' p.id %}" class="small moreLink  " data-toggle="tooltip"
                   title="{% for partner in p.partners.all.distinct %}
                     {% ifnotequal partner.id p.reporting_org.id %}
                       <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a><br>
