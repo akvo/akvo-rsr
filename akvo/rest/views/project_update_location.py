@@ -6,8 +6,7 @@
 
 
 from akvo.rsr.models import ProjectUpdateLocation
-
-from ..serializers import ProjectUpdateLocationSerializer
+from ..serializers import ProjectUpdateLocationSerializer, MapProjectUpdateLocationSerializer
 from ..viewsets import BaseRSRViewSet
 
 
@@ -17,3 +16,22 @@ class ProjectUpdateLocationViewSet(BaseRSRViewSet):
     """
     queryset = ProjectUpdateLocation.objects.all()
     serializer_class = ProjectUpdateLocationSerializer
+
+
+class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
+
+    """Returns a resource tailored for generating a map of project locations.
+
+    The number of items allowed to be returned is raised to 100(default)/500(max).
+    """
+
+    filter_fields = ()
+    max_paginate_by = 500
+    paginate_by = 100
+    queryset = ProjectUpdateLocation.objects.select_related(
+        'location_target',
+        'location_target__project').only(
+            'id', 'latitude', 'longitude',
+            'location_target__id', 'location_target__project', 'location_target__title',
+            'location_target__photo', 'location_target__video')
+    serializer_class = MapProjectUpdateLocationSerializer
