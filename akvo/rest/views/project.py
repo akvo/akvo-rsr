@@ -15,7 +15,13 @@ class ProjectViewSet(BaseRSRViewSet):
 
     """The project resource."""
 
-    queryset = Project.objects.all()
+    queryset = Project.objects.select_related(
+        'publishingstatus'
+        ).prefetch_related(
+            'categories',
+            'keywords',
+            'partners')
+
     serializer_class = ProjectSerializer
     filter_fields = {
         'title': ['exact', 'icontains'],
