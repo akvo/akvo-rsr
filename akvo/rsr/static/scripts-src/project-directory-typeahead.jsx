@@ -138,7 +138,8 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
                     <Typeahead
                         placeholder={placeholder}
                         options={typeaheadOptions}
-                        onOptionSelected= {typeaheadCallback}
+                        onOptionSelected={typeaheadCallback}
+                        maxVisible="10"
                         customClasses={{
                           typeahead: "",
                           input: "form-group form-control",
