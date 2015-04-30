@@ -43,15 +43,39 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
 
 
 class ProjectUpdateExtraViewSet(BaseRSRViewSet):
-    """
-    """
-    queryset = ProjectUpdate.objects.all()
+
+    """Project update extra resource."""
+
+    max_paginate_by = 30
+    paginate_by = 10
+
+    queryset = ProjectUpdate.objects.select_related(
+        'primary_location',
+        'primary_location__location_target',
+        'primary_location__location_target__project',
+        'primary_location__location_target__user',
+        'primary_location__location_target__primary_location',
+        'primary_location__location_target__country',
+        'project',
+        'user',
+        'user__organisation',
+        'user__organisation__primary_location',
+        'user__organisation__primary_location__country',
+        'user__organisation__primary_location__location_target',
+        'user__organisation__primary_location__location_target__partner_types',
+        'user__organisation__primary_location__location_target__internal_org_ids',
+
+    ).prefetch_related(
+        'user__organisations',
+        'user__organisations__primary_location',
+        'user__organisations__primary_location__country',
+        'user__organisations__primary_location__location_target',
+        'user__organisations__primary_location__location_target__partner_types')
     serializer_class = ProjectUpdateExtraSerializer
     filter_fields = ('project', 'user', )
 
     def get_queryset(self):
-        """ Allow simple filtering on selected fields
-        """
+        """Allow simple filtering on selected fields."""
         queryset = self.queryset
         project = self.request.QUERY_PARAMS.get('project', None)
         if project is not None:
