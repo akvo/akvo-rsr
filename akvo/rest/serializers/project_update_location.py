@@ -24,7 +24,7 @@ class ProjectUpdateLocationExtraSerializer(ProjectUpdateLocationSerializer):
 
 class MapProjectUpdateSerializer(serializers.Serializer):
 
-    """To be searlize the project field of the project map resource."""
+    """To serialize the update field of the update map resource."""
 
     id = serializers.IntegerField()
     title = serializers.CharField()
@@ -35,7 +35,7 @@ class MapProjectUpdateSerializer(serializers.Serializer):
 
 class MapProjectUpdateLocationSerializer(serializers.Serializer):
 
-    """To searlize the project map resource."""
+    """To serialize the update map resource."""
 
     id = serializers.IntegerField()
     latitude = serializers.FloatField()

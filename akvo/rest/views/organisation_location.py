@@ -19,9 +19,12 @@ class OrganisationLocationViewSet(BaseRSRViewSet):
 
 class MapOrganisationLocationViewSet(BaseRSRViewSet):
 
-    """Returns a resource tailored for generating a map of project locations.
+    """Returns a resource tailored for generating a map of organisation locations.
 
-    The number of items allowed to be returned is raised to 100(default)/500(max).
+    Allowed parameters are:
+    limit (default 100 / max 500),
+    location_target (filter on organisation ID), and
+    country (filter on country ID)
     """
 
     filter_fields = ('location_target', 'country')
