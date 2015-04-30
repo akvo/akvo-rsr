@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
+"""Akvo RSR is covered by the GNU Affero General Public License.
 
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""
+
 from akvo.rest.serializers.project import ProjectUpSerializer
-
 from akvo.rsr.models import Project, PublishingStatus
-
 from ..serializers import ProjectSerializer, ProjectExtraSerializer
 from ..viewsets import BaseRSRViewSet
 
 
 class ProjectViewSet(BaseRSRViewSet):
-    """
-    """
+
+    """The project resource."""
+
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     filter_fields = {
@@ -47,17 +48,21 @@ class ProjectViewSet(BaseRSRViewSet):
 
 
 class ProjectExtraViewSet(ProjectViewSet):
-    """ Viewset providing extra data and limited filtering for Up in one go
-    """
+
+    """Viewset providing extra data and limited filtering for Up in one go."""
+
+    queryset = Project.objects.select_related(
+        'publishing_status').prefetch_related(
+            'sectors', 'partnerships')
     serializer_class = ProjectExtraSerializer
     paginate_by_param = 'limit'
-    max_paginate_by = 1000
 
     def get_queryset(self):
-        """ Allow simple filtering on selected fields
-            Note that the query string keys "mimic" the django ORM filtering syntax,
-            but in reality are totally arbitrary. Some day we might get full filtering
-            using the Django ORM and then it'd nice if those custom filters continue to work.
+        """Allow simple filtering on selected fields.
+
+        Note that the query string keys "mimic" the django ORM filtering syntax,
+        but in reality are totally arbitrary. Some day we might get full filtering
+        using the Django ORM and then it'd nice if those custom filters continue to work.
         """
         queryset = self.queryset
         organisation = self.request.QUERY_PARAMS.get('partnerships__organisation', None)
@@ -70,17 +75,19 @@ class ProjectExtraViewSet(ProjectViewSet):
 
 
 class ProjectUpViewSet(ProjectViewSet):
-    """ Viewset providing extra data and limited filtering for Up in one go
-    """
+
+    """Viewset providing extra data and limited filtering for Up in one go."""
+
     serializer_class = ProjectUpSerializer
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 
     def get_queryset(self):
-        """ Allow simple filtering on selected fields
-            Note that the query string keys "mimic" the django ORM filtering syntax,
-            but in reality are totally arbitrary. Some day we might get full filtering
-            using the Django ORM and then it'd nice if those custom filters continue to work.
+        """Allow simple filtering on selected fields.
+
+        Note that the query string keys "mimic" the django ORM filtering syntax,
+        but in reality are totally arbitrary. Some day we might get full filtering
+        using the Django ORM and then it'd nice if those custom filters continue to work.
         """
         queryset = self.queryset
         organisation = self.request.QUERY_PARAMS.get('partnerships__organisation', None)
