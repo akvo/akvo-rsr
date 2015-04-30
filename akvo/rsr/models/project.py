@@ -600,8 +600,8 @@ class Project(TimestampsMixin, models.Model):
         return u'%s' % self.title
 
     def updates_desc(self):
-        "return ProjectUpdates for self, newest first"
-        return self.project_updates.all().order_by('-created_at')
+        """ProjectUpdate list for self, newest first."""
+        return self.project_updates.select_related('user').order_by('-created_at')
 
     def latest_update(self):
         """
