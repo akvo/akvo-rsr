@@ -71,10 +71,10 @@ def directory(request):
 def main(request, project_id, update_id):
     """The projectupdate main view."""
     project = get_object_or_404(Project, pk=project_id)
-    # update = get_object_or_404(ProjectUpdate, pk=update_id, project=project_id)
     update = get_object_or_404(
         ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id)
     other_updates = project.updates_desc().exclude(pk=update_id)[:5]
+
     context = {
         'update': update,
         'other_updates': other_updates,
