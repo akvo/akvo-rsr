@@ -21,7 +21,7 @@ function loadAsync(url, retryCount, retryLimit) {
         } else {
             return;
         }            
-    }
+    };
 
     xmlHttp.open("GET", url, true);
     xmlHttp.send();
@@ -51,7 +51,7 @@ function processResponse(response) {
         idElement = document.querySelector('#org-filter-input');
 
         idElement.value = id;
-    }
+    };
 
     buildReactComponents(typeaheadPlaceholder, typeaheadOptions, typeaheadCallback);
 }
@@ -126,7 +126,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
                 <div>
                     <label className={'control-label'}>organisation</label>
                 </div>
-            )
+            );
         }
     });    
 
@@ -150,7 +150,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
                         }}
                         className="partnerTest" />
                 </div>
-            )
+            );
         }
     });
 

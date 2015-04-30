@@ -187,6 +187,6 @@ $(document).ready(function() {
   applyFilterButton= document.getElementById('apply-filter');
   applyFilterButton.onclick = function() {
       document.getElementById('filterForm').submit();
-  }
+  };
 
 }());

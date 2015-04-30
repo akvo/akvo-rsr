@@ -22,7 +22,7 @@ function loadAsync(url, retryCount, retryLimit) {
         } else {
             return;
         }            
-    }
+    };
 
     xmlHttp.open("GET", url, true);
     xmlHttp.send();
@@ -52,7 +52,7 @@ function processResponse(response) {
         idElement = document.querySelector('#org-filter-input');
 
         idElement.value = id;
-    }
+    };
 
     buildReactComponents(typeaheadPlaceholder, typeaheadOptions, typeaheadCallback);
 }
@@ -127,7 +127,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
                 React.DOM.div(null, 
                     React.DOM.label( {className:'control-label'}, "organisation")
                 )
-            )
+            );
         }
     });    
 
@@ -151,7 +151,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
                         },
                         className:"partnerTest"} )
                 )
-            )
+            );
         }
     });
 
