@@ -38,7 +38,6 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
         last_modified_at = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
         if last_modified_at is not None:
             queryset = self.queryset.filter(last_modified_at__gt=last_modified_at)
-        print queryset.query
         return queryset
 
 
