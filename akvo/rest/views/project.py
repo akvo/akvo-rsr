@@ -78,9 +78,17 @@ class ProjectUpViewSet(ProjectViewSet):
 
     """Viewset providing extra data and limited filtering for Up in one go."""
 
+    queryset = Project.objects.select_related(
+        'primary_location',
+        'updates',
+        'publishingstatus'
+        ).prefetch_related(
+            'categories',
+            'keywords',
+            'partners')
     serializer_class = ProjectUpSerializer
     paginate_by_param = 'limit'
-    max_paginate_by = 1000
+    max_paginate_by = 100
 
     def get_queryset(self):
         """Allow simple filtering on selected fields.
