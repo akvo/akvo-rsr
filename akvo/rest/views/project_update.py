@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+"""Akvo RSR is covered by the GNU Affero General Public License.
 
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""
 
 from akvo.rsr.models import ProjectUpdate
 
@@ -12,17 +12,19 @@ from ..viewsets import BaseRSRViewSet
 
 
 class ProjectUpdateViewSet(BaseRSRViewSet):
-    """
-    """
-    queryset = ProjectUpdate.objects.all()
+
+    """."""
+
+    # queryset = ProjectUpdate.objects.all()
+    queryset = ProjectUpdate.objects.select_related('project',
+                                                    'user').prefetch_related('locations')
     serializer_class = ProjectUpdateSerializer
     filter_fields = ('project', 'user', )
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 
     def get_queryset(self):
-        """ Allow simple filtering on selected fields
-        """
+        """Allow simple filtering on selected fields."""
         queryset = self.queryset
         project = self.request.QUERY_PARAMS.get('project', None)
         if project is not None:
@@ -36,6 +38,7 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
         last_modified_at = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
         if last_modified_at is not None:
             queryset = self.queryset.filter(last_modified_at__gt=last_modified_at)
+        print queryset.query
         return queryset
 
 
