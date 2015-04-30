@@ -26,11 +26,6 @@ function insertParam(key, value)
 
 $(document).ready(function() {
 
-  // Submit filter form on select change
-  $('#filter select').change(function() {
-    $('#filterForm').submit();
-  });
-
   var projects_text = JSON.parse(document.getElementById("typeahead-header-text").innerHTML).projects_text;
   var organisations_text = JSON.parse(document.getElementById("typeahead-header-text").innerHTML).organisations_text;
   var locations_text = JSON.parse(document.getElementById("typeahead-header-text").innerHTML).locations_text;
@@ -184,3 +179,14 @@ $(document).ready(function() {
   }));
 
 });
+
+(function() {
+
+  var applyFilterButton;
+
+  applyFilterButton= document.getElementById('apply-filter');
+  applyFilterButton.onclick = function() {
+      document.getElementById('filterForm').submit();
+  }
+
+}());

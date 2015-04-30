@@ -56,6 +56,7 @@ def _project_directory_coll(request):
 
 def directory(request):
     """The project list view."""
+
     qs = remove_empty_querydict_items(request.GET)
 
     # Set show_filters to "in" if any filter is selected
@@ -78,6 +79,9 @@ def directory(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, sorted_projects, 10)
 
+    # Get the current org filter for typeahead
+    org_filter = request.GET.get('organisation', '')   
+
     context = {
         'project_count': sorted_projects.count(),
         'filter': f,
@@ -87,6 +91,7 @@ def directory(request):
         'show_filters': show_filters,
         'q': filter_query_string(qs),
         'sorting': sorting,
+        'current_org': org_filter,
     }
     return render(request, 'project_directory.html', context)
 

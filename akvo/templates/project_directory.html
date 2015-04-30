@@ -42,9 +42,9 @@
                   </div>
                 </div>
             <div>
-                <div class="btn-group">
-                  {% bootstrap_field filter.form.organisation %}
+                <div class="btn-group" id="org-filter-container"> 
                 </div>
+                <input type="hidden" name="organisation" id="org-filter-input" type="text">
             </div>
             <div>
               <div class="btn-group">
@@ -54,6 +54,7 @@
             <div>
               <nav>
                 <ul class="nav nav-pills nav-stacked">
+                  <li><a class="showFilters text-center" id="apply-filter">{% trans 'Apply filter' %}</a></li>
                   <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> {% trans 'Close this' %}</a></li>
                 </ul>
               </nav>
@@ -190,7 +191,15 @@
     }
     </script>
 
+    <script type="application/json" id="react-typeahead-org">
+     {
+       "currentOrg": "{{ current_org }}"
+     }
+    </script>     
+
   {% compressed_js 'project_directory' %}
+  {% compressed_js 'project_directory_typeahead' %}
+  {% compressed_js 'react_typeahead' %} 
 {% endblock js %}
 
 {% block jq %}
