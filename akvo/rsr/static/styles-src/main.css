@@ -1321,7 +1321,8 @@ div.textBlock {
     padding-top: 4px;
     padding-bottom: 4px; }
     #filterForm #org-filter-container ul.typeahead-selector li:hover, #filterForm #org-filter-container ul.typeahead-selector li.hover {
-      font-weight: bold; }
+      font-weight: bold;
+      cursor: pointer; }
     #filterForm #org-filter-container ul.typeahead-selector li a {
       color: #555555; }
 
