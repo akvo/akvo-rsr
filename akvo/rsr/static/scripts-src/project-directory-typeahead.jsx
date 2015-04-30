@@ -141,7 +141,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
                         onOptionSelected= {typeaheadCallback}
                         customClasses={{
                           typeahead: "",
-                          input: "form-control",
+                          input: "form-group form-control",
                           results: "",
                           listItem: "",
                           token: "",

@@ -1583,6 +1583,34 @@ div.textBlock {
     }
 }
 
+/* Project Directory Typeahead Styling */
+#filterForm {
+    #org-filter-container {
+        ul.typeahead-selector {
+            margin: -15px 0 0 0;            
+            padding: 0.25em;
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            background-color: #fff;
+            list-style: none;
+            @include border-radius(4px);
+            li {
+                padding-left: 6px;
+                padding-top: 4px;
+                padding-bottom: 4px;
+                &:hover,
+                &.hover {
+                    font-weight: bold;
+                }
+                a {
+                    color: rgb(85, 85, 85);
+                }
+            }
+        }
+    }
+}
+
 /* Organisation Page */
 .organisationDetail {
     .organisationHeader {
