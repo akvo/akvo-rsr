@@ -35,7 +35,7 @@ class MapOrganisationSerializer(serializers.Serializer):
 
 class MapOrganisationLocationSerializer(serializers.Serializer):
 
-    """To serialize the project map resource."""
+    """To serialize the organisation map resource."""
 
     id = serializers.IntegerField()
     latitude = serializers.FloatField()
