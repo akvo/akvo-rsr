@@ -9,16 +9,14 @@ function loadAsync(url, retryCount, retryLimit) {
 
             if(xmlHttp.status == 200){
                 processResponse(xmlHttp.responseText);
-
             } else {
                 if (retryCount >= retryLimit) {
                     return;
-
                 } else {
-                    loadAsync(url, retryCount++, retryLimit);
+                    retryCount = retryCount + 1;
+                    loadAsync(url, retryCount, retryLimit);
                 }
             }
-
         } else {
             return;
         }            
@@ -49,7 +47,7 @@ function processResponse(response) {
         var id, idElement;
 
         id = getIdFromName(option, orgs);
-        idElement = document.querySelector('#org-filter-input');
+        idElement = document.getElementById('org-filter-input');
 
         idElement.value = id;
     };
@@ -104,7 +102,7 @@ function getIdFromName(name, orgs) {
 function updateIdElement(filter) {
     var idElement, typeaheadPlaceholder;
 
-    idElement = document.querySelector('#org-filter-input');
+    idElement = document.getElementById('org-filter-input');
     idElement.value = filter.id;
 }
 
@@ -140,7 +138,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
                         {placeholder:placeholder,
                         options:typeaheadOptions,
                         onOptionSelected:typeaheadCallback,
-                        maxVisible:"10",
+                        maxVisible:10,
                         customClasses:{
                           typeahead: "",
                           input: "form-group form-control",
