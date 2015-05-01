@@ -31,6 +31,7 @@ router.register(r'legacy_data', views.LegacyDataViewSet)
 router.register(r'link', views.LinkViewSet)
 router.register(r'organisation', views.OrganisationViewSet)
 router.register(r'organisation_location', views.OrganisationLocationViewSet)
+router.register(r'organisation_map_location', views.MapOrganisationLocationViewSet)
 router.register(r'partner_site', views.PartnerSiteViewSet)
 router.register(r'partner_type', views.PartnerTypeViewSet)
 router.register(r'partnership', views.PartnershipViewSet)
@@ -46,11 +47,15 @@ router.register(r'project_condition', views.ProjectConditionViewSet)
 router.register(r'project_contact', views.ProjectContactViewSet)
 router.register(r'project_document', views.ProjectDocumentViewSet)
 router.register(r'project_location', views.ProjectLocationViewSet)
+router.register(r'project_map_location', views.MapProjectLocationViewSet)
+
 router.register(r'project_update_extra', views.ProjectUpdateExtraViewSet,
                 base_name='project_update_extra')
 router.register(r'project_update', views.ProjectUpdateViewSet,
                 base_name='project_update')
 router.register(r'project_update_location', views.ProjectUpdateLocationViewSet)
+router.register(r'project_update_map_location', views.MapProjectUpdateLocationViewSet)
+
 router.register(r'publishing_status', views.PublishingStatusViewSet)
 router.register(r'recipient_country', views.RecipientCountryViewSet)
 router.register(r'recipient_region', views.RecipientRegionViewSet)
