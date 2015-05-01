@@ -60,7 +60,7 @@
             </li>
             <li class="financeBlock"><span class="detailedInfo">{% trans "financial info" %}</span>
             
-            <a href="{% url 'project-finance' project.id %}" class="text-center"><i class="fa fa-line-chart"></i> trans 'See all financial info' %}</a>
+            <a href="{% url 'project-finance' project.id %}" class="text-center"><i class="fa fa-line-chart"></i>{% trans 'See all financial info' %}</a>
           </li>
           {% if project.accepts_donations %}
             <li class="donateSection text-center topMargin">
