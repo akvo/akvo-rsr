@@ -25,7 +25,6 @@ def _all_organisations():
         'locations',
         'primary_location',
         'primary_location__country',
-        'projects',
     )
 
 
