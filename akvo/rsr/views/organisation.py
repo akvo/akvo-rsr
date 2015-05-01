@@ -20,11 +20,12 @@ from .utils import apply_keywords, org_projects, show_filter_class
 
 
 def _all_organisations():
-    """Return all project updates."""
+    """Return all organisations."""
     return Organisation.objects.select_related(
         'locations',
-        # 'projects',
-        # 'primary_location',
+        'primary_location',
+        'primary_location__country',
+        'projects',
     )
 
 
@@ -33,7 +34,11 @@ def _page_organisations(page):
     org = page.organisation
     if page.partner_projects:
         projects = apply_keywords(page, org_projects(org))
-        return projects.all_partners()
+        return projects.all_partners().select_related(
+            'locations',
+            'primary_location',
+            'published_projects',
+        )
     else:
         return _all_organisations()
 
@@ -68,8 +73,7 @@ def directory(request):
         'page_range': page_range,
         'show_filters': filter_class,
         'q': filter_query_string(qs)
-        })
-    # return render(request, 'organisation_directory.html', context)
+    })
 
 
 ###############################################################################

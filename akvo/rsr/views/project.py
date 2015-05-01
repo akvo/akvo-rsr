@@ -44,7 +44,7 @@ def _all_projects():
         'partnerships__organisation',
         'sectors',
         'partners',
-        ).order_by('-id')
+    ).order_by('-id')
 
 def _page_projects(page):
     """Dig out the list of projects to use.

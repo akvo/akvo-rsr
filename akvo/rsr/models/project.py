@@ -562,7 +562,10 @@ class Project(TimestampsMixin, models.Model):
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
-            orgs = Organisation.objects.filter(partnerships__project__in=self)
+            from ..models import Organisation
+            orgs = Organisation.objects.none()
+            for project in self:
+                orgs = orgs | project.partners
             if partner_type:
                 orgs = orgs.filter(partnerships__partner_type=partner_type)
             return orgs.distinct()
