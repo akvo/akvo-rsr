@@ -22,12 +22,17 @@ class MapProjectLocationViewSet(BaseRSRViewSet):
     """Returns a resource tailored for generating a map of project locations.
 
     Allowed parameters are:
-    limit (default 100 / max 500),
-    location_target (filter on project ID), and
-    country (filter on country ID)
+    __limit__ (default 100 / max 500),
+    __location_target__ (filter on project ID),
+    __location_target\__partners__ (filter on organisation ID), and
+    __country__ (filter on country ID)
     """
 
-    filter_fields = ('location_target', 'country')
+    filter_fields = (
+        'location_target',
+        'location_target__partners',
+        'country'
+    )
     max_paginate_by = 500
     paginate_by = 100
     queryset = ProjectLocation.objects.select_related(

@@ -22,9 +22,9 @@ class MapOrganisationLocationViewSet(BaseRSRViewSet):
     """Returns a resource tailored for generating a map of organisation locations.
 
     Allowed parameters are:
-    limit (default 100 / max 500),
-    location_target (filter on organisation ID), and
-    country (filter on country ID)
+    __limit__ (default 100 / max 500),
+    __location_target__ (filter on organisation ID), and
+    __country__ (filter on country ID)
     """
 
     filter_fields = ('location_target', 'country')

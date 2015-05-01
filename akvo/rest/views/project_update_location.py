@@ -23,11 +23,18 @@ class MapProjectUpdateLocationViewSet(BaseRSRViewSet):
     """Returns a resource tailored for generating a map of update locations.
 
     Allowed parameters are:
-    limit (default 100 / max 500), and
-    location_target__project (filter on project ID)
+    __limit__ (default 100 / max 500),
+    __location_target\__project__ (filter on project ID),
+    __location_target\__project\__partners__
+    (filter on organisation ID of the projects' organisations),
+    __location_target\__user\__employers__ (filter on organisation ID of the users' organisations)
     """
 
-    filter_fields = ('location_target__project', )
+    filter_fields = (
+        'location_target__project',
+        'location_target__project__partners',
+        'location_target__user__employers'
+    )
     max_paginate_by = 500
     paginate_by = 100
     queryset = ProjectUpdateLocation.objects.select_related(
