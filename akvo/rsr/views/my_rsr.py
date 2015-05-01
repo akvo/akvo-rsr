@@ -73,7 +73,7 @@ def password_change(request):
 @login_required
 def my_updates(request):
     """Directory of Updates connected to the user."""
-    updates = request.user.updates()
+    updates = request.user.updates().select_related('project')
 
     q = request.GET.get('q')
     if q:
@@ -96,9 +96,12 @@ def my_updates(request):
 
 @login_required
 def my_projects(request):
-    """Directory of Proejcts connected to the user."""
+    """Directory of Projects connected to the user."""
     organisations = request.user.employers.approved().organisations()
-    projects = organisations.all_projects().distinct()
+    projects = organisations.all_projects().distinct().select_related(
+        'publishingstatus',
+        'primary_location__country',
+    )
 
     q = request.GET.get('q')
     if q:
