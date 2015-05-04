@@ -4,6 +4,11 @@
 
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
+{% block head_js %}
+{# React #}
+<script src="//fb.me/react-0.10.0.js"></script>
+{% endblock head_js %}
+
 {% block myrsr_main %}
     <h3>{% trans 'User management' %}</h3>
     {% has_perm 'rsr.change_employment' user as can_change_employments %}
