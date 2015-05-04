@@ -239,7 +239,7 @@ def user_management(request):
 
     context = {}
     if employments_array:
-        context["employments"] = json.dumps(employments_array)
+        context['employments'] = json.dumps(employments_array)
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range
