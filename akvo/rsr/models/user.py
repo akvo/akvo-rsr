@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.core.mail import send_mail
 from django.db import models
@@ -52,8 +53,8 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, username, email, password, **extra_fields):
         return self._create_user(username, email, password, True, True, **extra_fields)
 
-    def get_queryset(self):
-        return self.model.QuerySet(self.model)
+    # def get_queryset(self):
+    #     return self.model.QuerySet(self.model)
 
     def __getattr__(self, attr, *args):
         try:
@@ -112,14 +113,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _(u'user')
         verbose_name_plural = _(u'users')
         ordering = ['username', ]
-
-    class QuerySet(QuerySet):
-        def have_employments(self):
-            qs = self
-            for user in qs:
-                if not user.employers.all():
-                    qs = qs.exclude(pk=user.pk)
-            return qs
 
     def __unicode__(self):
         return self.username

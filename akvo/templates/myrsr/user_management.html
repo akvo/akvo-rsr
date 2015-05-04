@@ -24,7 +24,7 @@
             </div>
             </form>
         </div>
-        {% if user_data %}
+        {% if employments %}
         <div id="user_table" class="col-sm-12"></div>
         <div>
           <p>
@@ -49,9 +49,9 @@
 {% block js %}
     {{ block.super }}
 
-    {% if user_data %}
+    {% if employments %}
     {# App data #}
-    <script type="application/json" id="initial-data">{{ user_data|safe }}</script>
+    <script type="application/json" id="initial-employment-data">{{ employments|safe }}</script>
 
     {# Translation strings #}
     <script type="application/json" id="user-management-text">
@@ -70,7 +70,7 @@
             "email_text": "{% trans 'Email' %}",
             "first_name_text": "{% trans 'First name' %}",
             "last_name_text": "{% trans 'Last name' %}",
-            "organisations_text": "{% trans 'Organisations' %}"
+            "organisations_text": "{% trans 'Organisation' %}"
         }
     </script>
 

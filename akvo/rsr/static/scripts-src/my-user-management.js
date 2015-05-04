@@ -44,7 +44,7 @@ DeleteModal = React.createClass({displayName: 'DeleteModal',
     return this.transferPropsTo(
       Modal( {title:i18n.remove_user_text}, 
       React.DOM.div( {className:"modal-body"}, 
-      i18n.remove_text + ' ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' ' + i18n.from_text + ' ' + this.props.employment.organisation_full.name + '?'
+      i18n.remove_text + ' ' + this.props.employment.user.first_name + ' ' + this.props.employment.user.last_name + ' ' + i18n.from_text + ' ' + this.props.employment.organisation.name + '?'
       ),
       React.DOM.div( {className:"modal-footer"}, 
       Button( {onClick:this.props.onRequestHide}, i18n.close_text),
@@ -79,7 +79,7 @@ ApproveModal = React.createClass({displayName: 'ApproveModal',
     return this.transferPropsTo(
       Modal( {title:"Approve user"}, 
       React.DOM.div( {className:"modal-body"}, 
-      i18n.approve_text + ' ' + this.props.employment.user_full.first_name + ' ' + this.props.employment.user_full.last_name + ' ' + i18n.at_text + ' ' + this.props.employment.organisation_full.long_name + '?'
+      i18n.approve_text + ' ' + this.props.employment.user.first_name + ' ' + this.props.employment.user.last_name + ' ' + i18n.at_text + ' ' + this.props.employment.organisation.name + '?'
       ),
       React.DOM.div( {className:"modal-footer"}, 
       Button( {onClick:this.props.onRequestHide}, i18n.close_text),
@@ -99,15 +99,14 @@ TriggerModal = React.createClass({displayName: 'TriggerModal',
   },
 
   componentDidMount: function() {
-    var visible = this.props.employment.actions;
     var approved = this.props.employment.is_approved;
     if (this.isMounted() && this.props.delete) {
       this.setState({
-        visible: visible
+        visible: true
       });
     } else if (this.isMounted() && !this.props.delete) {
       this.setState({
-        visible: visible && !approved
+        visible: !approved
       });
     }
   },
@@ -176,7 +175,7 @@ CountryJobTitle = React.createClass({displayName: 'CountryJobTitle',
   render: function() {
     var country = this.props.country;
     var job_title = this.props.job_title;
-    if (country === "" && job_title === "") {
+    if (country === null && job_title === "") {
       return (
         React.DOM.span(null, " ")
       );
@@ -185,7 +184,7 @@ CountryJobTitle = React.createClass({displayName: 'CountryJobTitle',
       if (job_title !== "") {
         text += job_title;
       }
-      if (country !== "") {
+      if (country !== null) {
         if (job_title !== "") {
           text += " ";
         }
@@ -205,7 +204,7 @@ Employment = React.createClass({displayName: 'Employment',
     return {
       visible: true,
       button_title: '(' + i18n.none_text + ')',
-      loading: !this.props.employment.actions
+      loading: false
     };
   },
 
@@ -239,12 +238,10 @@ Employment = React.createClass({displayName: 'Employment',
     var setGroupName = this.setGroupName;
     var old_title = this.state.button_title;
     var loading = this.isLoading;
-    var user_id = this.props.employment.user_full.id;
     var other_groups = this.props.employment.other_groups.map(function(group) {
       return (
-        DropDownItem(
-        {key:group.id,
-        group:group, employment_id:employment_id, onSetGroup:setGroupName, old_group:old_title, loading:loading} )
+        DropDownItem( {key:group.id, group:group, employment_id:employment_id,
+        onSetGroup:setGroupName, old_group:old_title, loading:loading} )
       );
     });
     if ( !this.state.visible ) {
@@ -252,52 +249,27 @@ Employment = React.createClass({displayName: 'Employment',
     } else {
       return (
         React.DOM.span(null, 
-        this.props.employment.organisation_full.long_name," ",
-        CountryJobTitle( {country:this.props.employment.country_full, job_title:this.props.employment.job_title} ),
+        this.props.employment.organisation.name," ",
+        CountryJobTitle( {country:this.props.employment.country, job_title:this.props.employment.job_title} ),
         DropdownButton( {title:this.state.button_title, disabled:this.state.loading}, other_groups), "    ",
         TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:true} ), "  ",
-        TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:false} ),React.DOM.br(null ),React.DOM.br(null )
+        TriggerModal( {employment:this.props.employment, onDeleteToggle:this.onDelete, delete:false} )
         )
       );
     }
   }
 });
 
-
-EmploymentList = React.createClass({displayName: 'EmploymentList',
-  getInitialState: function() {
-    return { employments: [] };
-  },
-
-  componentDidMount: function() {
-    var employments = this.props.user.employments;
-    if (this.isMounted()) {
-      this.setState({
-        employments: employments
-      });
-    }
-  },
-
-  render: function () {
-    var employments = this.state.employments.map(function(employment) {
-      return (
-        Employment( {key:employment.id, employment:employment} )
-      );
-    });
-    return (
-      React.DOM.span(null, employments)
-    );
-  }
-});
-
-var UserRow = React.createClass({displayName: 'UserRow',
+var EmploymentRow = React.createClass({displayName: 'EmploymentRow',
   render: function() {
     return (
       React.DOM.tr(null, 
-      React.DOM.td(null, this.props.user.email),
-      React.DOM.td(null, this.props.user.first_name),
-      React.DOM.td(null, this.props.user.last_name),
-      React.DOM.td( {className:"text-right"}, EmploymentList( {user:this.props.user} ))
+      React.DOM.td(null, this.props.employment.user.email),
+      React.DOM.td(null, this.props.employment.user.first_name),
+      React.DOM.td(null, this.props.employment.user.last_name),
+      React.DOM.td( {className:"text-right"}, 
+          Employment( {key:this.props.employment.id, employment:this.props.employment} )
+      )
       )
     );
   }
@@ -307,23 +279,23 @@ var UserRow = React.createClass({displayName: 'UserRow',
 UserTable = React.createClass({displayName: 'UserTable',
   getInitialState: function() {
     return {
-      users: []
+      employments: []
     };
   },
 
   componentDidMount: function() {
-    var users = this.props.source.users;
+    var employments = this.props.source;
     if (this.isMounted()) {
       this.setState({
-        users: users
+        employments: employments
       });
     }
   },
 
   render: function() {
-    var users = this.state.users.map(function(user) {
+    var employments_table = this.state.employments.map(function(employment) {
       return (
-        UserRow( {key:user.id, user:user} )
+        EmploymentRow( {key:employment.id, employment:employment} )
       );
     });
     return (
@@ -336,14 +308,14 @@ UserTable = React.createClass({displayName: 'UserTable',
                   React.DOM.th( {className:"text-right"}, i18n.organisations_text)
               )
           ),
-          React.DOM.tbody(null, users)
+          React.DOM.tbody(null, employments_table)
       )
     );
   }
 });
 
 
-initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
+initial_data = JSON.parse(document.getElementById("initial-employment-data").innerHTML);
 i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
 React.renderComponent(UserTable( {source:initial_data} ),

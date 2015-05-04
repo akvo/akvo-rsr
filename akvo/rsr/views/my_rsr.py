@@ -9,10 +9,11 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import json
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
@@ -21,7 +22,7 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
-from ..models import Country, Organisation
+from ..models import Country, Organisation, Employment
 
 
 @login_required
@@ -184,31 +185,59 @@ def user_management(request):
         raise PermissionDenied
 
     if user.is_support and user.is_admin:
-        users = get_user_model().objects.filter(is_active=True)\
-            .order_by('-date_joined').have_employments()
-        org_actions = Organisation.objects.all()
+        employments = Employment.objects.select_related().\
+            prefetch_related('country', 'group').order_by('-id')
     else:
         organisations = user.employers.approved().organisations()
-        users = organisations.users().exclude(pk=user.pk)\
-            .order_by('-date_joined').have_employments()
         org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
+        employments = Employment.objects.filter(organisation__in=org_actions).exclude(user=user).\
+            select_related().prefetch_related('country', 'group').order_by('-id')
 
     q = request.GET.get('q')
     if q:
         q_list = q.split()
         for q_item in q_list:
-            users = users.filter(username__icontains=q_item) | \
-                users.filter(first_name__icontains=q_item) | \
-                users.filter(last_name__icontains=q_item)
+            employments = employments.filter(user__username__icontains=q_item) | \
+                employments.filter(user__first_name__icontains=q_item) | \
+                employments.filter(user__last_name__icontains=q_item)
 
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, users, 10)
+    page, paginator, page_range = pagination(page, employments, 10)
 
-    users_array = [u.employments_dict(org_actions) for u in page]
+    all_groups = [
+        Group.objects.get(name='Users'),
+        Group.objects.get(name='User Managers'),
+        Group.objects.get(name='Project Editors'),
+        Group.objects.get(name='Admins')
+    ]
+
+    employments_array = []
+    for employment in page:
+        employment_dict = model_to_dict(employment)
+        employment_dict['other_groups'] = [
+            model_to_dict(group, fields=['id', 'name']) for group in all_groups
+        ]
+        if employment.country:
+            country_dict = model_to_dict(employment.country, fields=['id', 'iso_code', 'name'])
+            employment_dict["country"] = country_dict
+        if employment.group:
+            group_dict = model_to_dict(employment.group, fields=['id', 'name'])
+            employment_dict["group"] = group_dict
+        if employment.organisation:
+            organisation_dict = model_to_dict(employment.organisation, fields=[
+                'id', 'name', 'long_name'
+            ])
+            employment_dict["organisation"] = organisation_dict
+        if employment.user:
+            user_dict = model_to_dict(employment.user, fields=[
+                'id', 'first_name', 'last_name', 'email'
+            ])
+            employment_dict["user"] = user_dict
+        employments_array.append(employment_dict)
 
     context = {}
-    if users_array:
-        context['user_data'] = json.dumps({'users': users_array, })
+    if employments_array:
+        context["employments"] = json.dumps(employments_array)
     context['page'] = page
     context['paginator'] = paginator
     context['page_range'] = page_range
