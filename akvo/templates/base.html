@@ -78,20 +78,21 @@
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
+    {% block react_js %}
+    <script src="//fb.me/react-0.10.0.js"></script>
+    {% endblock react_js %}
+
     {% compressed_js 'rsr' %}
     {% compressed_js 'rsr_lib' %}
+
     <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
 
     {% block js %}{% endblock js %}
 
     <script>
-     $(document).ready(function() {
+      $(document).ready(function() {
         {% block jq %}{% endblock %}
-     });
-    function toggle_visibility(id) {
-       var e = document.getElementById(id);
-          e.style.display = 'none';
-        }
+      });
     </script>
 
     {# Translation strings #}
