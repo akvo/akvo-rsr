@@ -189,9 +189,11 @@ def user_management(request):
             prefetch_related('country', 'group').order_by('-id')
     else:
         organisations = user.employers.approved().organisations()
-        org_actions = [org for org in organisations if user.has_perm('rsr.user_management', org)]
-        employments = Employment.objects.filter(organisation__in=org_actions).exclude(user=user).\
-            select_related().prefetch_related('country', 'group').order_by('-id')
+        for org in organisations:
+            if not user.has_perm('rsr.user_management', org):
+                organisations = organisations.exclude(pk=org.pk)
+        employments = organisations.employments().exclude(user=user).select_related().\
+            prefetch_related('country', 'group').order_by('-id')
 
     q = request.GET.get('q')
     if q:
