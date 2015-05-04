@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+"""Akvo RSR is covered by the GNU Affero General Public License.
 
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""
 
 import math
 
@@ -562,7 +562,10 @@ class Project(TimestampsMixin, models.Model):
 
         #the following 6 methods return organisation querysets!
         def _partners(self, partner_type=None):
-            orgs = Organisation.objects.filter(partnerships__project__in=self)
+            from ..models import Organisation
+            orgs = Organisation.objects.none()
+            for project in self:
+                orgs = orgs | project.partners
             if partner_type:
                 orgs = orgs.filter(partnerships__partner_type=partner_type)
             return orgs.distinct()
@@ -600,8 +603,8 @@ class Project(TimestampsMixin, models.Model):
         return u'%s' % self.title
 
     def updates_desc(self):
-        "return ProjectUpdates for self, newest first"
-        return self.project_updates.all().order_by('-created_at')
+        """ProjectUpdate list for self, newest first."""
+        return self.project_updates.select_related('user').order_by('-created_at')
 
     def latest_update(self):
         """
