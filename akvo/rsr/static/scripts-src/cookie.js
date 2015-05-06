@@ -9,10 +9,14 @@ var cookieName = 'complianceCookie';        // Name of our cookie
 var cookieValue = 'on';                     // Value of cookie
 
 function createDiv(){
+    var cookie_text = JSON.parse(document.getElementById("cookie-text").innerHTML).cookie_text;
+    var policy_text = JSON.parse(document.getElementById("cookie-text").innerHTML).privacy_text;
+    var button_text = JSON.parse(document.getElementById("cookie-text").innerHTML).button_text;
+
     var bodytag = document.getElementsByTagName('body')[0];
     var div = document.createElement('div');
     div.setAttribute('id','cookie-law');
-    div.innerHTML = '<p>This website uses cookies to improve your experience. By continuing to browse the site you are agreeing to our use of cookies, as detailed in our <a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-terms-of-use/cookie-policy/" rel="nofollow" title="Privacy &amp; Cookies Policy" target="_blank">privacy and cookies policy</a>.    <a class="close-cookie-banner btn btn-primary" href="javascript:void(0);" onclick="removeMe();"><span>Accept</span></a></p>';
+    div.innerHTML = '<p>' + cookie_text + '<a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-terms-of-use/cookie-policy/" rel="nofollow" title="Privacy &amp; Cookies Policy" target="_blank">' + policy_text + '</a>.    <a class="close-cookie-banner btn btn-primary" href="javascript:void(0);" onclick="removeMe();"><span>' + button_text + '</span></a></p>';
  // Be advised the Close Banner 'X' link requires jQuery
 
     // bodytag.appendChild(div); // Adds the Cookie Law Banner just before the closing </body> tag

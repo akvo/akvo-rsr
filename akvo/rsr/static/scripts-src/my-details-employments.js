@@ -80,7 +80,7 @@ OrganisationInput = React.createClass({displayName: 'OrganisationInput',
 
   render: function() {
     return (
-      Input( {type:"text", placeholder:"Organisation", id:"organisationInput"} )
+      Input( {type:"text", placeholder:i18n.organisation_text, id:"organisationInput"} )
     );
   }
 });
@@ -89,7 +89,7 @@ OrganisationInput = React.createClass({displayName: 'OrganisationInput',
 CountryInput = React.createClass({displayName: 'CountryInput',
   render: function() {
     return (
-      Input( {type:"text", placeholder:"Country (optional)", id:"countriesInput"} )
+      Input( {type:"text", placeholder:i18n.country_text, id:"countriesInput"} )
     );
   }
 });
@@ -98,7 +98,7 @@ CountryInput = React.createClass({displayName: 'CountryInput',
 JobTitleInput = React.createClass({displayName: 'JobTitleInput',
   render: function() {
     return (
-      Input( {type:"text", placeholder:"Job title (optional)", id:"jobtitleInput"} )
+      Input( {type:"text", placeholder:i18n.job_title_text, id:"jobtitleInput"} )
     );
   }
 });
@@ -119,7 +119,7 @@ AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
 
   postEmployment: function( data ) {
     this.setState({
-      response: "Linking user to organisation..."
+      response: i18n.linking_user_text
     });
     $.ajax({
       type: "POST",
@@ -129,20 +129,20 @@ AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
       success: function(response) {
         this.handleAddEmployment(response);
         this.setState({
-          title: "Request successful",
-          response: "Your request is now pending and will have to be approved."
+          title: i18n.request_successful_text,
+          response: i18n.request_pending_text
         });
       }.bind(this),
       error: function(xhr, status, err) {
         if (xhr.status == 409) {
           this.setState({
-            title: "Request failed",
-            response: "You are already connected to this organisation. Only one connection per organisation is allowed."
+            title: i18n.request_failed_text,
+            response: i18n.already_connected_text
           });
         } else {
           this.setState({
-            title: "Request failed",
-            response: "Request failed, could not connect to organisation."
+            title: i18n.request_failed_text,
+            response: i18n.not_connected_text
           });
         }
       }.bind(this)
@@ -151,7 +151,7 @@ AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
 
   getCountryByName: function( serializedData ) {
     this.setState({
-      response: "Retrieving country information..."
+      response: i18n.retrieve_country_text
     });
     var name = $('#countriesInput').val();
     $.get(this.props.country_link + "?format=json&name=" + name, function( data ) {
@@ -168,7 +168,7 @@ AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
 
   getOrgByName: function( serializedData ) {
     this.setState({
-      response: "Retrieving organisation information..."
+      response: i18n.retrieve_organisation_text
     });
     var name = $('#organisationInput').val();
     $.get(this.props.org_link + "?format=json&name=" + name, function( data ) {
@@ -177,84 +177,25 @@ AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
         this.getCountryByName( serializedData );
       } else if (data.count > 1) {
         this.setState({
-          title: "Request failed",
-          response: "Request failed, multiple organisations named \"" + name + "\" found. " +
-            "Please send a mail to support@akvo.org to get this resolved."
+          title: i18n.request_failed_text,
+          response: i18n.multiple_organisations_text +
+              " \"" + name + "\". " + i18n.send_mail_text
         });
       } else {
         this.setState({
-          title: "Request failed",
-          response: "Request failed, could not find organisation \"" + name + "\"."
+          title: i18n.request_failed_text,
+          response: i18n.no_organisation_text + " \"" + name + "\"."
         });
       }
     }.bind(this))
       .fail(function() {
         this.setState({
-          title: "Request failed",
-          response: "Request failed, could not find organisation \"" + name + "\"."
+          title: i18n.request_failed_text,
+          response: i18n.no_organisation_text + " \"" + name + "\"."
         });
       }.bind(this)
            );
   },
-
-  // getOrgByName: function( serializedData ) {
-  //   var name,  ajaxUrl, request;
-  //   this.setState({
-  //     response: "Retrieving organisation information..."
-  //   });
-  //   // name = document.getElementById('organisationInput').val();
-  //   name = $('#organisationInput').val();
-  //   ajaxUrl = this.props.org_link + "asdf" + '?format=json&name=' + name;
-
-  //   function ajaxError(e, that) {
-  //     console.log(e);
-  //     console.log(that);
-  //     that.setState({
-  //       title: e.title,
-  //       response: e.response
-  //     });
-  //   }
-
-  //   $.get(ajaxUrl).done(function(data) {
-  //     var errorResponse;
-  //     console.log('Done');
-  //     if (data.count == 1) {
-  //       console.log('Got one org!');
-  //     } else if ( data.count > 1 ) {
-  //       errorResponse = 'Request failed, multiple organisations named "' +
-  //         name + '" found. ' +
-  //         'Please send a mail to support@akvo.org to get this resolved.';
-  //       ajaxUrl({
-  //         response: errorResponse,
-  //         title: 'Request failed'
-  //       });
-  //     }
-  //   }).fail(function() {
-  //     console.log('Fail');
-  //     ajaxError({
-  //       response: 'No response from server.',
-  //       title: 'Request failed'
-  //     }, thi);
-  //   });
-
-  //   // request = $.get(ajaxUrl, function (data) { ... });
-
-  //   // request = $.get(ajaxUrl, function(data) {
-  //   //   if (data.count == 1) {
-  //   //     console.log('Request success');
-  //   //   } else {
-  //   //     console.log('Count not one.');
-  //   //     throw new Error('Count not one');
-  //   //   }
-  //   // }).fail(function (e) {
-  //   //   console.log('Request failed' + e);
-  //   //   this.setState({
-  //   //     title: "Request failed",
-  //   //     response: "Request failed, cound not..."
-  //   //   });
-  //   // });
-
-
 
   getFormData: function() {
     return {
@@ -264,12 +205,11 @@ AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
     };
   },
 
-
   addEmployment: function() {
     this.setState(
       {
-        title: 'Sending request',
-        response: 'Waiting...'
+        title: i18n.sending_request_text,
+        response: i18n.waiting_text
       }
     );
 
@@ -279,13 +219,13 @@ AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
   render: function() {
     return (
       React.DOM.span(null, 
-      React.DOM.h4(null, "Connect with your employer"),
+      React.DOM.h4(null, i18n.connect_employer_text),
       React.DOM.form(null, 
       OrganisationInput( {ref:"organisationInput"} ),
       CountryInput( {ref:"countryInput"} ),
       JobTitleInput( {ref:"jobtitleInput"} ),
       ModalTrigger( {modal:ResponseModal( {title:this.state.title, response:this.state.response} )}, 
-      Button( {onClick:this.addEmployment, bsStyle:"primary"}, "Request to join")
+      Button( {onClick:this.addEmployment, bsStyle:"primary"}, i18n.request_join_text)
       )
       )
       )
@@ -318,7 +258,7 @@ EmploymentApp = React.createClass({displayName: 'EmploymentApp',
   render: function() {
     return (
       React.DOM.span(null, 
-      React.DOM.h3(null, React.DOM.i( {className:"fa fa-users"}), " My organisations"),
+      React.DOM.h3(null, React.DOM.i( {className:"fa fa-users"}), " ", i18n.my_organisations_text),
       EmploymentList( {employments:this.state.employments} ),
 
       AddEmploymentForm(
@@ -336,15 +276,16 @@ EmploymentApp = React.createClass({displayName: 'EmploymentApp',
 
 // Initial data (via JSON from backend)
 initial_data = JSON.parse(document.getElementById("initial-data").innerHTML);
-request_link = JSON.parse(
-  document.getElementById("user-request-link").innerHTML);
+request_link = JSON.parse(document.getElementById("user-request-link").innerHTML);
+i18n = JSON.parse(document.getElementById("my-details-text").innerHTML);
 
 
 React.renderComponent(
   EmploymentApp( {employments:initial_data.user.employments,
   link:request_link.link,
   org_link:request_link.org_rest_link,
-  country_link:request_link.country_rest_link} ),
+  country_link:request_link.country_rest_link}
+  ),
   document.getElementById('organisations')
 );
 

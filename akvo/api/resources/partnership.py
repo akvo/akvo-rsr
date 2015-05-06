@@ -20,7 +20,7 @@ logger = logging.getLogger('akvo.rsr')
 from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToOneField
 
-from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import Organisation, Partnership, InternalOrganisationID
 
 from .resources import ConditionalFullResource
@@ -85,7 +85,8 @@ def create_organisation(bundle, bundle_field_to_use):
     new_organisation_type=int(bundle.data[FIELD_NEW_ORGANISATION_TYPE])
     # derive the old organisation type from the new one
     organisation_type = dict(
-        zip([type for type, name in IATI_LIST_ORGANISATION_TYPE], Organisation.NEW_TO_OLD_TYPES)
+        zip([int(type) for type, name in IATI_LIST_ORGANISATION_TYPE[1:]],
+            Organisation.NEW_TO_OLD_TYPES)
     )[new_organisation_type]
     kwargs = dict(
         name=bundle.data[FIELD_NAME],

@@ -17,7 +17,7 @@ from django.core.files.temp import NamedTemporaryFile
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
-from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import (
     Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID, OrganisationLocation
 )
@@ -163,7 +163,7 @@ def find_benchmarknames_and_BUs():
 
 
 def get_organisation_type(new_organisation_type):
-    types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
+    types = dict(zip([int(type) for type, name in IATI_LIST_ORGANISATION_TYPE[1:]],
                      Organisation.NEW_TO_OLD_TYPES
     ))
     return types[new_organisation_type]

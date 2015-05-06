@@ -16,9 +16,9 @@
 
       <p class="small">
         {% blocktrans with invoice.get_engine_display as engine %}Click the Donate button to proceed to {{engine}} checkout.{% endblocktrans %}
-        {% trans 'By clicking on the "Donate" button you agree to the' %}
-        <a href="http://akvo.org/help/akvo-donation-policy/" target="_blank">{% trans 'Terms and Conditions' %}</a>
-        {% trans 'for the donation.' %}
+        {% blocktrans with donation_policy_link="http://akvo.org/help/akvo-donation-policy/" %}
+          By clicking on the "Donate" button you agree to the <a href={{donation_policy_link}} target="_blank">Terms and Conditions</a> for the donation.
+        {% endblocktrans %}
       </p>
 
       <p>
