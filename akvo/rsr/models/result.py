@@ -30,8 +30,8 @@ class Result(models.Model):
     )
     aggregation_status = models.NullBooleanField(_(u'aggregation status'), blank=True)
     description = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=255,
-        help_text=_(u'You can provide further information of the result here. (255 characters)')
+        _(u'description'), blank=True, max_length=2000,
+        help_text=_(u'You can provide further information of the result here. (2000 characters)')
     )
 
     def __unicode__(self):
