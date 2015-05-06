@@ -128,20 +128,3 @@
     </script>
   {% compressed_js 'organisation_directory' %}
 {% endblock js %}
-
-{% block jq %}
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip({
-    html: true,
-    delay: {
-      "show": 0,
-      "hide": 1000
-    }
-  })
-})
-    $(".menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper, #search").toggleClass("toggled");
-        $("a.showFilters > i").toggleClass("fa-toggle-off fa-toggle-on");
-    });
-{% endblock %}

@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-{% load i18n maps markup_tags rsr_utils bootstrap3 compressed %}
+{% load i18n maps markup_tags rsr_utils rsr_filters bootstrap3 compressed %}
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
-{% load rsr_filters %}
 
 <section id="map" class="touch-navbar">
     {% coll_map page '100%' '100%' %}
@@ -138,20 +137,3 @@
 
   {% compressed_js 'update_directory' %}
 {% endblock js %}
-
-{% block jq %}
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip({
-    html: true,
-    delay: {
-      "show": 0,
-      "hide": 1000
-    }
-  })
-})
-    $(".menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper, #search").toggleClass("toggled");
-        $("a.showFilters > i").toggleClass("fa-toggle-off fa-toggle-on");
-    });
-{% endblock %}
