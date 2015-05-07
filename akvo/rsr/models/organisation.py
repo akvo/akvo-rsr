@@ -95,9 +95,9 @@ class Organisation(TimestampsMixin, models.Model):
     )
     new_organisation_type = models.IntegerField(
         _(u'IATI organisation type'), db_index=True,
-        choices=codelist_choices(IATI_LIST_ORGANISATION_TYPE), default=22,
-        help_text=_(u'Check that this field is set to an organisation type that matches '
-                    u'your organisation.'),
+        choices=[(int(c[0]), c[1]) for c in codelist_choices(IATI_LIST_ORGANISATION_TYPE)],
+        default=22, help_text=_(u'Check that this field is set to an organisation type that '
+                                u'matches your organisation.'),
     )
     iati_org_id = ValidXMLCharField(
         _(u'IATI organisation ID'), max_length=75, blank=True, null=True, db_index=True, unique=True
