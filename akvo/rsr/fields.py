@@ -89,7 +89,7 @@ class ProjectLimitedTextField(LimitedTextField):
         """
         if model_instance.id and model_instance.id <= getattr(settings, 'OLD_PROJECT_MAX_ID', 0):
             self.validators = [v for v in self.validators if type(v) != MaxLengthValidator]
-        return super(LimitedTextField, self).clean(value, model_instance)
+        return super(ProjectLimitedTextField, self).clean(value, model_instance)
 
 
 # needed to get custom fields work with South.

@@ -51,7 +51,8 @@ def user_org(user_cred):
     try:
         profile = Requester(
             url_template="http://{domain}/api/{api_version}/user/?"
-                "format=json&api_key={api_key}&username={username}&user__username={username}",
+                         "format=json&api_key={api_key}&username={username}&"
+                         "user__username={username}",
             url_args=user_cred
         )
         # find the organisation ID in the path string, e.g. "/api/v1/organisation/42/"
@@ -72,7 +73,7 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
     try:
         ioi = Requester(
             url_template="http://{domain}/rest/v1/internal_organisation_id/?"
-                "recording_org={recording_org}&identifier={identifier}&format=json",
+                         "recording_org={recording_org}&identifier={identifier}&format=json",
             url_args=url_args,
             headers={
                 'content-type': 'application/xml', 'encoding': 'utf-8',

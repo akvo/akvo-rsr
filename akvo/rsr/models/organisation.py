@@ -8,7 +8,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum
-from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet as DjangoQuerySet
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -171,7 +171,7 @@ class Organisation(TimestampsMixin, models.Model):
     def get_absolute_url(self):
         return ('organisation-main', (), {'organisation_id': self.pk})
 
-    class QuerySet(QuerySet):
+    class QuerySet(DjangoQuerySet):
         def has_location(self):
             return self.filter(primary_location__isnull=False)
 

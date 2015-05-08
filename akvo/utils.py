@@ -64,7 +64,9 @@ def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):
 
 
 def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
-                  message='templates/email/test_message.txt', subject_context={}, msg_context={}):
+                  message='templates/email/test_message.txt',
+                  subject_context=None,
+                  msg_context=None):
     """
     Send template driven email.
         to_list is a list of email addresses
@@ -72,6 +74,10 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
         subject_context and msg_context are dicts used when renedering the respective templates
     settings.RSR_DOMAIN is added to both contexts as current_site, defaulting to 'akvo.org' if undefined
     """
+    if not subject_context:
+        subject_context = {}
+    if not msg_context:
+        msg_context = {}
     current_site = getattr(settings, 'RSR_DOMAIN', 'rsr.akvo.org')
     subject_context.update({'site': current_site})
     subject = loader.render_to_string(subject, subject_context)
@@ -84,11 +90,18 @@ def rsr_send_mail(to_list, subject='templates/email/test_subject.txt',
     )
 
 
-def rsr_send_mail_to_users(users, subject='templates/email/test_subject.txt',
-                  message='templates/email/test_message.txt', subject_context={}, msg_context={}):
+def rsr_send_mail_to_users(users,
+                           subject='templates/email/test_subject.txt',
+                           message='templates/email/test_message.txt',
+                           subject_context=None,
+                           msg_context=None):
     """
     Send mail to many users supplied through a queryset
     """
+    if not subject_context:
+        subject_context = {}
+    if not msg_context:
+        msg_context = {}
     to_list = [user.email for user in users if user.email]
     rsr_send_mail(to_list, subject, message, subject_context, msg_context)
 
