@@ -3,6 +3,8 @@
 {% load rsr_filters %}
 {% block title %}{{project.title}}{% endblock title%}
 {% block head_js %}
+{# React #}
+<script src="//fb.me/react-0.10.0.js"></script>
 <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
 <style>
 </style>
@@ -39,82 +41,76 @@
               {% if project.sectors.all %}
                 <li><span class="detailedInfo">{% trans "Sectors" %}</span>
                 {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector}}{% endfor %}
-                </li>
-              {% endif %}
-              <li class="projectPartners">
-                <span class="detailedInfo">{% trans "Reporting organisation" %}</span>
-                <div class="row">
-                  <div class="col-xs-12">
-                    <a href="{% url 'organisation-main' project.reporting_org.pk %}" class="pull-left logoImg">
-                      {% img project.reporting_org 80 60 project.reporting_org.name %}
-                    </a>
-                    <div class="media-body">
-                      <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
-                      <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
-                        title="<div class='extra-partner-tooltip'>{% for partner, types in partners.items %}<div class='extra-partner-entry'>{% if partner.logo %}<a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a> ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)<hr></div>{% endfor %}</div>"
-                      data-placement="right" data-container="article" data-class="foo">{% blocktrans with partners_count=partners|length %}+ {{partners_count}} partners{% endblocktrans %}</a>
-                      {% if project.reporting_org.primary_location.country %}
-                        <div class="projectLocation">
-                          <i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}
-                        </div>  
-                      {% endif %}
-                    </div>
+              </li>
+            {% endif %}
+            <li class="projectPartners"><span class="detailedInfo">{% trans "Reporting organisation" %}</span>
+            <div class="row">
+              <div class="col-xs-12">
+                <a href="{% url 'organisation-main' project.reporting_org.pk %}" class="pull-left logoImg">
+                  {% img project.reporting_org 80 60 project.reporting_org.name %}
+                </a>
+                <div class="media-body">
+                  <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
+                  <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
+                    title="<div class='extra-partner-tooltip'>{% for partner, types in partners.items %}<div class='extra-partner-entry'>{% if partner.logo %}<a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a> ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)<hr></div>{% endfor %}</div>"
+                  data-placement="right" data-container="article" data-class="foo">{% blocktrans with partners_count=partners|length %}+ {{partners_count}} partners{% endblocktrans %}</a>
+                  {% if project.reporting_org.primary_location.country %}
+                    <div class="projectLocation"><i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}{% endif %}</div>
                   </div>
                 </div>
-              </li>
-              <li class="financeBlock">
-                <span class="detailedInfo">{% trans "financial info" %}</span>
-                <a href="{% url 'project-finance' project.id %}" class="text-center">
-                  <i class="fa fa-line-chart"></i> trans 'See all financial info' %}
-                </a>
-              </li>
-              {% if project.accepts_donations %}
-              <li class="donateSection text-center topMargin">
-                <dl class="dl-horizontal">
-                  <dt class="totalBudgetLabel">{% trans 'Budget Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed}}</dd>
-                </dl>
-                <a href="{% url 'project-donate' project.id %}" class="btn btn-primary donateButton">{% trans "Donate" %}</a>
-              </li>
-              {% endif %}
-            </ul>
-          </aside>
-        </div>
-      </div>
+              </div>
+            </li>
+            <li class="financeBlock"><span class="detailedInfo">{% trans "financial info" %}</span>
+            
+            <a href="{% url 'project-finance' project.id %}" class="text-center"><i class="fa fa-line-chart"></i>{% trans 'See all financial info' %}</a>
+          </li>
+          {% if project.accepts_donations %}
+            <li class="donateSection text-center topMargin">
+              <dl class="dl-horizontal">
+                <dt class="totalBudgetLabel">{% trans 'Budget Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed}}</dd>
+              </dl>
+              <a href="{% url 'project-donate' project.id %}" class="btn btn-primary donateButton">{% trans "Donate" %}</a>
+            </li>
+          {% endif %}
+        </ul>
+      </aside>
     </div>
   </div>
-  <div class="container">
-    <div class="row hidden">
-      <div class="col-sm-3 col-xs-6">
-        <h4 class="detailedInfo">Finance</h4>
-        {% include "partials/project_budget.html" %}
-        <p class="center-text"><a href="#">{% trans 'See all financial info' %}</a></p>
-      </div>
-    </div>
+</div>
+</div>
+<div class="container">
+<div class="row hidden">
+  <div class="col-sm-3 col-xs-6">
+    <h4 class="detailedInfo">Finance</h4>
+    {% include "partials/project_budget.html" %}
+    <p class="center-text"><a href="#">{% trans 'See all financial info' %}</a></p>
   </div>
-  <div class="container timelineBlock">
-    <div class="row">
-      <div class="col-sm-12">
-        <div id="timeline"></div>
-      </div>
-    </div>
+</div>
+</div>
+<div class="container timelineBlock">
+<div class="row">
+  <div class="col-sm-12">
+    <div id="timeline"></div>
   </div>
-  <div class="container textBlock">
-    <div class="row">
-      <div class="col-sm-8">
-        <div id="accordion"></div>
-      </div>
-      {% if updates %}
-        <div class="col-sm-4 udpateComponent">
-          <h4 class="detailedInfo">{% trans 'Latest project updates' %}</h4>
-          {% for update in updates %}
-            <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
-          {% endfor %}
-          <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a></div>
-        </div>
-      {% endif %}
-    </div>
+</div>
+</div>
+<div class="container textBlock">
+<div class="row">
+  <div class="col-sm-8">
+    <div id="accordion"></div>
   </div>
-  {% include "partials/project_footer.html" %}
+  {% if updates %}
+    <div class="col-sm-4 udpateComponent">
+      <h4 class="detailedInfo">{% trans 'Latest project updates' %}</h4>
+      {% for update in updates %}
+        <a href="{{update.get_absolute_url}}" class="updateLinkTitle"><i class="fa fa-camera-retro"></i> {{update.title}}</a>
+      {% endfor %}
+      <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a></div>
+    </div>
+  {% endif %}
+</div>
+</div>
+{% include "partials/project_footer.html" %}
 </article>
 {% endblock maincontent %}
 {% block js %}
