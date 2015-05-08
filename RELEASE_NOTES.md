@@ -7,6 +7,82 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
 
+Akvo RSR version 3.2.3 Flying Fish Cove Hotfix
+---
+
+Thursday 7th May 2015, kasperbrandt
+
+New & Noteworthy
+---
+
+### Advanced filter on projects listing page
+On the project listing page, we have adjusted the advanced filter. The filter is now only applied when the 'Apply filter' button is clicked, and it is now possible to type the name of an organisation in the filter which will show suggestions of organisations.
+
+Github issue: [#1052](https://github.com/akvo/akvo-rsr/issues/1052).
+
+### Clickable '+ more' link on projects listing page
+On the project main page, the '+ more' link next to the partners was already clickable so that all partners of a project could be viewed on a separate page. We have now implemented the same functionality on the projects listing page.
+
+Github issue: [#1474](https://github.com/akvo/akvo-rsr/issues/1474).
+
+### New API resources for map
+We have created new API resources for maps. These resources are a lot faster and provide more information in comparison to the previous location resources.
+
+Github issues: [#1521](https://github.com/akvo/akvo-rsr/issues/1521), [#1530](https://github.com/akvo/akvo-rsr/issues/1530).
+
+Bug Fixes
+---
+
+### Video thumbnails missing
+On some pages, the thumbnails for videos of updates were missing. We have now added these.
+
+Github issue: [#1494](https://github.com/akvo/akvo-rsr/issues/1494).
+
+### Search query displayed incorrectly on MyRSR
+The search query for some pages in MyRSR was displayed incorrectly when the search has no results. This has now been fixed.
+
+Github issue: [#1498](https://github.com/akvo/akvo-rsr/issues/1498).
+
+### Change password broken in MyRSR
+The change password functionality in MyRSR was broken, this has now been fixed.
+
+Github issue: [#1511](https://github.com/akvo/akvo-rsr/issues/1511).
+
+Under the Hood
+---
+
+### Responsive design for organisation page
+We have changed the layout of the organisation page, so that it is fully responsive.
+
+Github issue: [#1375](https://github.com/akvo/akvo-rsr/issues/1375).
+
+### Mark all strings as translatable
+In preparation for a multi-lingual RSR v3, we have marked all strings as translatable.
+
+Github issue: [#1421](https://github.com/akvo/akvo-rsr/issues/1421).
+
+### Performance of MyRSR user management page
+At times, the user management page in MyRSR was very slow. We have rewritten this page to increase the performance.
+
+Github issue: [#1499](https://github.com/akvo/akvo-rsr/issues/1499).
+
+### Performance of search in project admin
+The search in the project admin could get slow when creating a search query with multiple words. We have now limited the search fields so that the performance of search is increased.
+
+Github issue: [#1519](https://github.com/akvo/akvo-rsr/issues/1519).
+
+### Performance of API and pages with updates
+In general, we have increased the performance of the API. However, we have also put a limit on the API to show 30 objects per page by default, and a maximum of 100 objects per page.
+
+In addition, we noticed that pages showing updates were slow as well. The performance of these pages has been increased.
+
+Github issue: [#1523](https://github.com/akvo/akvo-rsr/issues/1523).
+
+### Increase the character limit on results and indicators
+In preparation for paperless reporting, we have increased the character limit on descriptions and comments of the results and indicators fields. Previously these were set to 255 characters, they have now been increased to allow up to 2000 characters.
+
+Github issue: [#1542](https://github.com/akvo/akvo-rsr/issues/1542).
+
 Akvo RSR version 3.2 Flying Fish Cove
 ---
 

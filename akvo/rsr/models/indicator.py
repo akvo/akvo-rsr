@@ -29,8 +29,8 @@ class Indicator(models.Model):
         help_text=_(u'Is the aim of the project to increase or decrease the value of the '
                     u'indicator?'))
     description = ValidXMLCharField(
-        _(u'description'), blank=True, max_length=255,
-        help_text=_(u'You can further define the indicator here. (255 characters)')
+        _(u'description'), blank=True, max_length=2000,
+        help_text=_(u'You can further define the indicator here. (2000 characters)')
     )
     baseline_year = models.PositiveIntegerField(
         _(u'baseline year'), blank=True, null=True, max_length=4,
@@ -41,8 +41,8 @@ class Indicator(models.Model):
         help_text=_(u'Enter the value of the baseline indicator. (50 characters)')
     )
     baseline_comment = ValidXMLCharField(
-        _(u'baseline comment'), blank=True, max_length=255,
-        help_text=_(u'You can further define the baseline here. (255 characters)')
+        _(u'baseline comment'), blank=True, max_length=2000,
+        help_text=_(u'You can further define the baseline here. (2000 characters)')
     )
 
     def __unicode__(self):
@@ -73,8 +73,8 @@ class IndicatorPeriod(models.Model):
                     u'(50 characters)')
     )
     target_comment = ValidXMLCharField(
-        _(u'target comment'), blank=True, max_length=255,
-        help_text=_(u'You can comment on the target value here. (255 characters)')
+        _(u'target comment'), blank=True, max_length=2000,
+        help_text=_(u'You can comment on the target value here. (2000 characters)')
     )
     actual_value = ValidXMLCharField(
         _(u'actual value'), blank=True, max_length=50,
@@ -82,8 +82,8 @@ class IndicatorPeriod(models.Model):
                     u'(50 characters)')
     )
     actual_comment = ValidXMLCharField(
-        _(u'actual comment'), blank=True, max_length=255,
-        help_text=_(u'You can comment on the actual value here. (255 characters)')
+        _(u'actual comment'), blank=True, max_length=2000,
+        help_text=_(u'You can comment on the actual value here. (2000 characters)')
     )
 
     def __unicode__(self):

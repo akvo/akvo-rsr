@@ -17,7 +17,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
-                <h1>Project updates</h1>
+                <h1>{% trans 'Project updates' %}</h1>
             </div>
         </div>
     </div>
@@ -40,7 +40,7 @@
                 <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>
                     {% if u.user.approved_organisations %}
                       {% with org=u.user.approved_organisations.0 %}
-                        ( <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a> )
+                        <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
                       {% endwith %}
                     {% endif %}
                 </div>

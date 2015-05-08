@@ -24,19 +24,22 @@ class Sector(models.Model):
         _(u'sector code'), blank=True, max_length=5,
         help_text=_(u'Enter the sector code of the sectors that the project is working within.<br>'
                     u'See these lists for the DAC-5 and DAC-3 sector codes:<br>'
-                    u'- <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">DAC-5 sector codes</a>'
-                    u'<br>'
-                    u'- <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">DAC-3 sector '
-                    u'codes</a>')
+                    u'- <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">'
+                    u'DAC-5 sector codes</a><br>'
+                    u'- <a href="http://iatistandard.org/201/codelists/SectorCategory/" '
+                    u'target="_blank">DAC-3 sector codes</a>')
     )
-    text = ValidXMLCharField(_(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)'))
+    text = ValidXMLCharField(
+        _(u'description'), blank=True, max_length=100, help_text=_(u'(max 100 characters)')
+    )
     vocabulary = ValidXMLCharField(
         _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(SECTOR_VOCABULARY)
     )
     percentage = models.DecimalField(
         _(u'sector percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)],
-        help_text=_(u'You can set the percentage of the project that is relevant for this sector here.')
+        help_text=_(u'You can set the percentage of the project that is relevant for '
+                    u'this sector here.')
     )
 
     def __unicode__(self):
@@ -46,7 +49,9 @@ class Sector(models.Model):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
             return self.sector_code, codelist_value(codelist_models.Sector, self, 'sector_code')
         elif self.sector_code and (self.vocabulary == '2' or self.vocabulary == 'DAC-3'):
-            return self.sector_code, codelist_value(codelist_models.SectorCategory, self, 'sector_code')
+            return self.sector_code, codelist_value(codelist_models.SectorCategory,
+                                                    self,
+                                                    'sector_code')
         else:
             return self.sector_code, self.sector_code
 

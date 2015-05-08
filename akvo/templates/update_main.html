@@ -20,7 +20,7 @@
                             {% if update.user.avatar %}
                                 {% img update.user 50 50 update.user.get_full_name %}
                             {% endif %}
-                            <span class="userFullName"><em>by</em>{{update.user.first_name}} {{update.user.last_name}}</span> via {{update.get_update_method_display}}
+                            <span class="userFullName"><em>{% trans 'by' %}</em>{{update.user.first_name}} {{update.user.last_name}}</span> {% trans 'via' %} {{update.get_update_method_display}}
                             </p>
                         </div>
 
@@ -75,7 +75,7 @@
                                 <div><span class="userFullName"><em>by</em>{{u.user.first_name}} {{u.user.last_name}}</span>
                                     {% if u.user.approved_organisations %}
                                         {% with org=u.user.approved_organisations.0 %}
-                                        ( <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a> )
+                                        <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
                                     {% endwith %}
                                 {% endif %}
                             </div>
@@ -88,7 +88,7 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> See all updates for this project.</a></div>
+                <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a></div>
             </aside>
         {% endif %}
     </div>

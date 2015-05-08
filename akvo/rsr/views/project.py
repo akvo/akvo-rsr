@@ -31,9 +31,20 @@ from .utils import apply_keywords, org_projects
 
 def _all_projects():
     """Return all active projects."""
-    return Project.objects.published().select_related().prefetch_related(
-        'partners').order_by('-id')
+    # return Project.objects.published().select_related().prefetch_related(
+    #     'partners').order_by('-id')
 
+    return Project.objects.published().select_related(
+        'publishingstatus__status',
+        'sync_owner',
+        'primary_location',
+        'primary_location__country'
+        'locations',
+        'partnerships',
+        'partnerships__organisation',
+        'sectors',
+        'partners',
+    ).order_by('-id')
 
 def _page_projects(page):
     """Dig out the list of projects to use.
@@ -56,6 +67,7 @@ def _project_directory_coll(request):
 
 def directory(request):
     """The project list view."""
+
     qs = remove_empty_querydict_items(request.GET)
 
     # Set show_filters to "in" if any filter is selected
@@ -78,6 +90,9 @@ def directory(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, sorted_projects, 10)
 
+    # Get the current org filter for typeahead
+    org_filter = request.GET.get('organisation', '')   
+
     context = {
         'project_count': sorted_projects.count(),
         'filter': f,
@@ -87,6 +102,7 @@ def directory(request):
         'show_filters': show_filters,
         'q': filter_query_string(qs),
         'sorting': sorting,
+        'current_org': org_filter,
     }
     return render(request, 'project_directory.html', context)
 
@@ -438,12 +454,12 @@ def search(request):
 def partners(request, project_id):
     """."""
     project = get_object_or_404(Project, pk=project_id)
-    partners = _get_project_partners(project)    
+    partners = _get_project_partners(project)
     context = {
         'project': project,
         'partners': partners
     }
-    return render(request, 'project_partners.html', context)    
+    return render(request, 'project_partners.html', context)
 
 
 def finance(request, project_id):
