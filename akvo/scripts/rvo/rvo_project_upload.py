@@ -176,7 +176,7 @@ def get_project_count(user, **q_args):
     try:
         project = Requester(
             url_template="http://{domain}/api/{api_version}/project/"
-                "?format=json&api_key={api_key}&username={username}&{extra_args}",
+                         "?format=json&api_key={api_key}&username={username}&{extra_args}",
             url_args=url_args,
         )
     except Exception, e:

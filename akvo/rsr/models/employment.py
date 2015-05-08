@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet as DjangoQuerySet
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
@@ -34,7 +34,7 @@ class Employment(models.Model):
 
     objects = QuerySetManager()
 
-    class QuerySet(QuerySet):
+    class QuerySet(DjangoQuerySet):
         def organisations(self):
             """
             Return an Organisation QuerySet containing the organisations of the Employment QuerySet

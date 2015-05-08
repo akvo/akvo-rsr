@@ -14,7 +14,7 @@ from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.util import flatten_fieldsets
 from django.contrib.auth import get_permission_codename, get_user_model
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.models import Group
 from django.db import models, transaction
 from django.db.models import get_model
@@ -780,7 +780,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
-                if not "_saveasnew" in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
+                if "_saveasnew" not in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
                     # end of add although the following block is indented as a result
                     prefixes[prefix] = prefixes.get(prefix, 0) + 1
                     if prefixes[prefix] != 1 or not prefix:
@@ -869,7 +869,7 @@ class ApiKeyInline(admin.StackedInline):
         return False
 
 
-class UserAdmin(UserAdmin):
+class UserAdmin(DjangoUserAdmin):
     model = get_model('rsr', 'user')
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),

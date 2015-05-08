@@ -131,59 +131,59 @@ class RSRModelInstance(object):
             self.data['photo'] = photo.to_base64()
 
 
-    def partnership__organisation(self):
-        """ The Partnership object has two FKs, one to the Project and one to the Organisation. Since the Organisation
-            may not exist when the JSON is created we need a way to lookup the Organisation from the API. This is done
-            using the IATI organisation ID if it exists, and if not lookup of the organisation name is used.
-            Note that currently Organisation.name isn't unique. This should be fixed.
-        """
-        def lookup_organisation(instance):
-            request = Requester(
-                url_template='http://{host}/rest/v1/{model}/?iati_org_id={iati_org_id}',
-                url_args=dict(host=instance.host, model='organisation', iati_org_id=instance.data['organisation']),
-                headers={
-                    'Content-type': 'application/json',
-                    'Accept': 'application/json',
-                    'Encoding': 'utf-8',
-                    'Authorization': 'Token {}'.format(instance.api_token),
-                },
-                accept_codes=[codes.ok],
-            )
-            if request.response.status_code == codes.ok:
-                data = data_from_json_reponse(request)
-                if data['count'] == 1:
-                    return data['results'][0]['id']
-
-            request = Requester(
-                url_template='http://{host}/rest/v1/{model}/?name={name}',
-                url_args=dict(host=instance.host, model='organisation', name=instance.data['organisation']),
-                headers={
-                    'Content-type': 'application/json',
-                    'Accept': 'application/json',
-                    'Encoding': 'utf-8',
-                    'Authorization': 'Token {}'.format(instance.api_token),
-                },
-                accept_codes=[codes.ok],
-            )
-            if request.response.status_code == codes.ok:
-                data = data_from_json_reponse(request)
-                if data['count'] == 1:
-                    return data['results'][0]['id']
-
-            raise NotFoundError, 'Organisation not found, using filters "iati_org_id={}" and "name={}"'.format(
-                instance.data['organisation'], instance.data['organisation']
-            )
-
-        organisation = self.data.get('organisation', False)
-        if organisation:
-            # if we have an integer ID we're happy
-            if isinstance(organisation, int):
-                return
-            # otherwise try to get the ID from the API
-            elif isinstance(organisation, (str, unicode)):
-                id = lookup_organisation(self)
-                if id:
-                    self.data['organisation'] = id
+    # def partnership__organisation(self):
+    #     """ The Partnership object has two FKs, one to the Project and one to the Organisation. Since the Organisation
+    #         may not exist when the JSON is created we need a way to lookup the Organisation from the API. This is done
+    #         using the IATI organisation ID if it exists, and if not lookup of the organisation name is used.
+    #         Note that currently Organisation.name isn't unique. This should be fixed.
+    #     """
+    #     def lookup_organisation(instance):
+    #         request = Requester(
+    #             url_template='http://{host}/rest/v1/{model}/?iati_org_id={iati_org_id}',
+    #             url_args=dict(host=instance.host, model='organisation', iati_org_id=instance.data['organisation']),
+    #             headers={
+    #                 'Content-type': 'application/json',
+    #                 'Accept': 'application/json',
+    #                 'Encoding': 'utf-8',
+    #                 'Authorization': 'Token {}'.format(instance.api_token),
+    #             },
+    #             accept_codes=[codes.ok],
+    #         )
+    #         if request.response.status_code == codes.ok:
+    #             data = data_from_json_reponse(request)
+    #             if data['count'] == 1:
+    #                 return data['results'][0]['id']
+    #
+    #         request = Requester(
+    #             url_template='http://{host}/rest/v1/{model}/?name={name}',
+    #             url_args=dict(host=instance.host, model='organisation', name=instance.data['organisation']),
+    #             headers={
+    #                 'Content-type': 'application/json',
+    #                 'Accept': 'application/json',
+    #                 'Encoding': 'utf-8',
+    #                 'Authorization': 'Token {}'.format(instance.api_token),
+    #             },
+    #             accept_codes=[codes.ok],
+    #         )
+    #         if request.response.status_code == codes.ok:
+    #             data = data_from_json_reponse(request)
+    #             if data['count'] == 1:
+    #                 return data['results'][0]['id']
+    #
+    #         raise NotFoundError, 'Organisation not found, using filters "iati_org_id={}" and "name={}"'.format(
+    #             instance.data['organisation'], instance.data['organisation']
+    #         )
+    #
+    #     organisation = self.data.get('organisation', False)
+    #     if organisation:
+    #         # if we have an integer ID we're happy
+    #         if isinstance(organisation, int):
+    #             return
+    #         # otherwise try to get the ID from the API
+    #         elif isinstance(organisation, (str, unicode)):
+    #             id = lookup_organisation(self)
+    #             if id:
+    #                 self.data['organisation'] = id
 
     def lookup_organisation(self):
 

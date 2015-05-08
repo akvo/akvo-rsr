@@ -100,7 +100,7 @@ __all__ = [
     'SectorViewSet',
     'set_group',
     'TransactionViewSet',
-    'typeahead_country,',
+    'typeahead_country',
     'typeahead_organisation',
     'typeahead_project',
     'typeahead_projectupdate',

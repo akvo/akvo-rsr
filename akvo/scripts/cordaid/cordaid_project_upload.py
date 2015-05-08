@@ -43,9 +43,9 @@ def check_activity_language(activity_element):
         dict2_extra = 0
 
         # Check if xml:lang attribute is present in one dict and missing in the other
-        if XML_LANG in dict1 and (not XML_LANG in dict2):
+        if XML_LANG in dict1 and XML_LANG not in dict2:
             dict1_extra += 1
-        elif XML_LANG in dict2 and (not XML_LANG in dict1):
+        elif XML_LANG in dict2 and XML_LANG not in dict1:
             dict2_extra += 1
 
         # Return False if the number of shared attributes is different
@@ -66,7 +66,7 @@ def check_activity_language(activity_element):
         """Check if the element has the xml:lang corresponding to the activity language or no xml:lang attribute.
         Return True if so, False otherwise."""
 
-        if not XML_LANG in element.attrib:
+        if XML_LANG not in element.attrib:
             return True
 
         elif element.attrib[XML_LANG].lower() == lang:
@@ -113,7 +113,7 @@ def post_an_activity(activity_element, user):
         project = Requester(
             method='post',
             url_template="http://{domain}/api/{api_version}/iati_activity/"
-                "?format=xml&api_key={api_key}&username={username}",
+                         "?format=xml&api_key={api_key}&username={username}",
             url_args=user,
             headers={'content-type': 'application/xml', 'encoding': 'utf-8'},
             data=etree.tostring(activity_element),
@@ -158,7 +158,7 @@ def put_an_activity(activity_element, pk, url_args):
         project = Requester(
             method='put',
             url_template="http://{domain}/api/{api_version}/iati_activity/{pk}/?"
-                "format=xml&api_key={api_key}&username={username}",
+                         "format=xml&api_key={api_key}&username={username}",
             url_args=url_args,
             headers={'content-type': 'application/xml', 'encoding': 'utf-8'},
             data=etree.tostring(activity_element),
@@ -268,7 +268,7 @@ def get_project_count(user, **q_args):
     try:
         project = Requester(
             url_template="http://{domain}/api/{api_version}/project/?"
-                "format=json&api_key={api_key}&username={username}&{extra_args}",
+                         "format=json&api_key={api_key}&username={username}&{extra_args}",
             url_args=url_args
         )
     except Exception, e:
@@ -311,7 +311,7 @@ def upload_activities(argv):
                         log(None, data)
                         print(
                             "**** Error updating iati-activity: {iati_id}. "
-                                "More than one project with internal ID {extra} exists.".format(**data)
+                            "More than one project with internal ID {extra} exists.".format(**data)
                         )
                 else:
                     message = "Iati-activity {iati_id} has no participating-orgs, aborting"

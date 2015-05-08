@@ -163,10 +163,12 @@ def _get_timeline_data(project):
 
     for date in (date_start, date_end):
         if date:
+            headline = date[1] + " date of project"
+            if not date[2] == 'actual':
+                headline += " (planned)"
             timeline_dates.append({
                 'startDate': ','.join((str(date[0].year), str(date[0].month), str(date[0].day))),
-                'headline': date[1] + " date of project" if date[2] == 'actual' else date[1] +
-                                                                                     " date of project (planned)",
+                'headline': headline,
             })
 
     # Project updates
