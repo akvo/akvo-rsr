@@ -72,6 +72,8 @@ def is_org_user_manager(user, obj):
                 return True
             elif type(obj) == Project and obj in employment.organisation.all_projects():
                 return True
+            elif type(obj) == Organisation and obj == employment.organisation:
+                return True
     return False
 
 @rules.predicate

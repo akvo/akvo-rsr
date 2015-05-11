@@ -12,6 +12,7 @@ import uuid
 
 from django.core.files.base import ContentFile
 from django.utils.encoding import smart_text
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 from rest_framework.fields import ImageField
@@ -53,14 +54,16 @@ class Base64ImageField(ImageField):
             try:
                 decoded_file = base64.b64decode(base64_data)
             except TypeError:
-                raise serializers.ValidationError("Please upload a valid image.")
+                raise serializers.ValidationError(_(u"Please upload a valid image."))
 
             # Generate file name:
             file_name = str(uuid.uuid4())[:12] # 12 characters are more than enough.
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
             if file_extension not in self.ALLOWED_IMAGE_TYPES:
-                raise serializers.ValidationError("The type of the image couldn't been determined.")
+                raise serializers.ValidationError(
+                    _(u"The type of the image couldn't been determined.")
+                )
             complete_file_name = file_name + "." + file_extension
             data = ContentFile(decoded_file, name=complete_file_name)
         else:

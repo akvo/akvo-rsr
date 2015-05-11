@@ -70,38 +70,40 @@
 
     {% include 'navigation/footer.html' %}
 
-    {# Localisation strings #}
-    <script type="application/json" id="akvo-rsr-i18n">
-      {"isLargerThanTheAllowedLimit": "{% trans "is larger than the allowed limit" %}"}
-    </script>
     <script type="application/javascript">
       var AKVO_RSR = {};
-      AKVO_RSR["i18n"] = JSON.parse(document.getElementById("akvo-rsr-i18n").innerHTML);
     </script>
 
     {# jQuery #}
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
-    {# React #}
-    {#<script src="http://fb.me/react-0.13.1.js"></script>#}
+    {% block react_js %}
     <script src="//fb.me/react-0.10.0.js"></script>
+    {% endblock react_js %}
 
     {% compressed_js 'rsr' %}
     {% compressed_js 'rsr_lib' %}
+
     <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
 
     {% block js %}{% endblock js %}
 
     <script>
-     $(document).ready(function() {
+      $(document).ready(function() {
         {% block jq %}{% endblock %}
-     });
-    function toggle_visibility(id) {
-       var e = document.getElementById(id);
-          e.style.display = 'none';
+      });
+    </script>
+
+    {# Translation strings #}
+    <script type="application/json" id="cookie-text">
+        {
+            "cookie_text": "{% trans 'This website uses cookies to improve your experience. By continuing to browse the site you are agreeing to our use of cookies, as detailed in our ' %}",
+            "privacy_text": "{% trans 'privacy and cookies policy' %}",
+            "button_text": "{% trans 'Accept' %}"
         }
     </script>
+
     {% piwik_tracking_code %}
   </body>
 </html>

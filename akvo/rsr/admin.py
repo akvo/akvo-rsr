@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+"""Akvo RSR is covered by the GNU Affero General Public License.
+
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""
+
+
 from django import forms
 from django.conf import settings
 from django.contrib import admin
@@ -7,7 +14,7 @@ from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.util import flatten_fieldsets
 from django.contrib.auth import get_permission_codename, get_user_model
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.models import Group
 from django.db import models, transaction
 from django.db.models import get_model
@@ -72,14 +79,20 @@ class OrganisationAdminForm(forms.ModelForm):
 
 
 class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin):
-    # NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
-    # If the fieldsets are changed, the template may need fixing too
+
+    """OrganisationAdmin.
+
+    NOTE: The change_form.html template relies on the fieldsets to put the inline forms correctly.
+    If the fieldsets are changed, the template may need fixing too
+    """
+
     fieldsets = (
         (_(u'General information'), {'fields': (
             'name', 'long_name', 'partner_types', 'organisation_type', 'new_organisation_type',
             'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id', 'public_iati_file',
             'language', 'content_owner', 'allow_edit',)}),
-        (_(u'Contact information'), {'fields': ('phone', 'mobile', 'fax',  'contact_person',  'contact_email', ), }),
+        (_(u'Contact information'),
+            {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
     )
     form = OrganisationAdminForm
@@ -92,10 +105,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     search_fields = ('name', 'long_name')
 
     def __init__(self, model, admin_site):
-        """
-        Override to add self.formfield_overrides.
-        Needed to get the ImageField working in the admin.
-        """
+        """Override to add self.formfield_overrides. Needed for ImageField working in the admin."""
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
 
@@ -104,7 +114,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
 
     def get_list_display(self, request):
         # see the notes fields in the change list if you have the right permissions
-        if request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('change', self.opts)):
+        if request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('change',
+                                                                                     self.opts)):
             return list(self.list_display) + ['allowed_partner_types']
         return super(OrganisationAdmin, self).get_list_display(request)
 
@@ -146,6 +157,7 @@ admin.site.register(get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
 
 
 class BudgetItemAdminInLineFormSet(forms.models.BaseInlineFormSet):
+
     def clean(self):
         super(BudgetItemAdminInLineFormSet, self).clean()
 
@@ -160,7 +172,9 @@ class BudgetItemAdminInLineFormSet(forms.models.BaseInlineFormSet):
                     including_total = True
 
         if budget_item_count > 1 and including_total:
-            raise forms.ValidationError(_("The 'total' budget item cannot be used in combination with other budget items."))
+            raise forms.ValidationError(
+                _("The 'total' budget item cannot be used in combination with other budget items.")
+            )
 
 
 class BudgetItemAdminInLine(NestedTabularInline):
@@ -269,18 +283,21 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
             # populate a dict with org names as keys and a list of partner_types as values
             try:
                 if not form.cleaned_data.get('DELETE', False):
-                    partner_types.setdefault(form.cleaned_data['organisation'], []).append(form.cleaned_data['partner_type'])
+                    partner_types.setdefault(
+                        form.cleaned_data['organisation'], []
+                    ).append(form.cleaned_data['partner_type'])
             except:
                 pass
         for org, types in partner_types.items():
             # are there duplicates in the list of partner_types?
             if duplicates_in_list(types):
-                errors += [_(u'{org} has duplicate partner types of the same kind.'.format(org=org))]
+                errors += [_(u'{} has duplicate partner types of the same kind.'.format(org))]
 
         self._non_form_errors = ErrorList(errors)
 
 
 class RSR_PartnershipInlineForm(forms.ModelForm):
+
     def clean_partner_type(self):
         partner_types = get_model('rsr', 'PartnerType').objects.all()
         partner_types_dict = {partner_type.id: partner_type.label for partner_type in partner_types}
@@ -298,18 +315,19 @@ class RSR_PartnershipInlineForm(forms.ModelForm):
 
 
 class PartnershipInline(NestedTabularInline):
+
     model = get_model('rsr', 'Partnership')
     fields = ('organisation', 'partner_type', 'funding_amount', 'internal_id')
     extra = 0
     form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
     formfield_overrides = {
-        ValidXMLCharField: {'widget': TextInput(attrs={'size':'20'})},
-        models.URLField: {'widget': TextInput(attrs={'size':'30'})}
+        ValidXMLCharField: {'widget': TextInput(attrs={'size': '20'})},
+        models.URLField: {'widget': TextInput(attrs={'size': '30'})}
     }
 
     def get_formset(self, request, *args, **kwargs):
-        "Add the request to the formset for use in RSR_PartnershipInlineFormFormSet.clean()"
+        """Add the request to the formset for use in RSR_PartnershipInlineFormFormSet.clean()."""
         formset = super(PartnershipInline, self).get_formset(request, *args, **kwargs)
         formset.request = request
         return formset
@@ -322,12 +340,14 @@ class PartnershipInline(NestedTabularInline):
 
 
 class LocationAdministrativeInline(NestedTabularInline):
+
     model = get_model('rsr', 'administrativelocation')
     fields = ('code', 'vocabulary', 'level')
     extra = 0
 
 
 class ProjectLocationInline(NestedStackedInline):
+
     model = get_model('rsr', 'projectlocation')
     inlines = (LocationAdministrativeInline,)
     fieldsets = (
@@ -377,7 +397,8 @@ class CountryBudgetInline(NestedTabularInline):
 
 class IndicatorPeriodInline(NestedTabularInline):
     model = get_model('rsr', 'IndicatorPeriod')
-    fields = ('period_start', 'period_end', 'target_value', 'target_comment', 'actual_value', 'actual_comment')
+    fields = ('period_start', 'period_end', 'target_value', 'target_comment', 'actual_value',
+              'actual_comment')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -417,7 +438,8 @@ class PlannedDisbursementInline(NestedTabularInline):
     fieldsets = (
         ('Planned Disbursement', {
             'classes': ('collapse',),
-            'fields': ('currency', 'value', 'value_date', 'period_start', 'period_end', 'type', 'updated')
+            'fields': ('currency', 'value', 'value_date', 'period_start', 'period_end', 'type',
+                       'updated')
         }),
     )
 
@@ -526,6 +548,7 @@ class TransactionInline(NestedStackedInline):
         else:
             return 1
 
+
 class LegacyDataInline(NestedTabularInline):
     model = get_model('rsr', 'LegacyData')
     extra = 0
@@ -552,9 +575,10 @@ class RelatedProjectInline(NestedStackedInline):
 class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
     model = get_model('rsr', 'project')
     inlines = (
-        RelatedProjectInline, ProjectContactInline, PartnershipInline, ProjectDocumentInline, ProjectLocationInline,
-        SectorInline, BudgetItemAdminInLine, TransactionInline, ResultInline, LinkInline, ProjectConditionInline,
-        CountryBudgetInline, PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline,
+        RelatedProjectInline, ProjectContactInline, PartnershipInline, ProjectDocumentInline,
+        ProjectLocationInline, SectorInline, BudgetItemAdminInLine, TransactionInline,
+        ResultInline, LinkInline, ProjectConditionInline, CountryBudgetInline,
+        PlannedDisbursementInline, PolicyMarkerInline, RecipientCountryInline,
         RecipientRegionInline, LegacyDataInline,
     )
     save_as = True
@@ -565,15 +589,16 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'This section should contain the top-level information about your project which will be publicly '
                 u'available and used within searches. Try to keep your Title and Subtitle short and snappy.'
             ),
-            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned', 'date_start_actual',
-                       'date_end_planned', 'date_end_actual', 'language', 'currency', 'donate_button', 'hierarchy'),
+            'fields': ('title', 'subtitle', 'iati_activity_id', 'status', 'date_start_planned',
+                       'date_start_actual', 'date_end_planned', 'date_end_actual', 'language',
+                       'currency', 'donate_button', 'hierarchy'),
         }),
         (_(u'IATI defaults'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
                 u'Optionally, you can add default information based on the IATI standard.'
             ),
-            'fields': ('default_aid_type', 'default_flow_type', 'default_tied_status','collaboration_type',
-                       'default_finance_type', 'country_budget_vocabulary'),
+            'fields': ('default_aid_type', 'default_flow_type', 'default_tied_status',
+                       'collaboration_type', 'default_finance_type', 'country_budget_vocabulary'),
         }),
         (_(u'Contact Information'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -606,8 +631,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 u'for the future. Both The Project Plan and Sustainability fields are unlimited, so you can add '
                 u'additional details to your project there.'
             ),
-            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan', 'target_group',
-                       'sustainability', 'goals_overview'),
+            'fields': ('project_plan_summary', 'background', 'current_status', 'project_plan',
+                       'target_group', 'sustainability', 'goals_overview'),
         }),
         (_(u'Project Photo'), {
             'description': u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">%s</p>' % _(
@@ -705,9 +730,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
         }),
     )
     filter_horizontal = ('keywords',)
-    list_display = ('title', 'status', 'project_plan_summary', 'latest_update', 'show_current_image', 'is_published',
-                    'show_keywords')
-    search_fields = ('title', 'status', 'project_plan_summary', 'partnerships__internal_id')
+    list_display = ('title', 'status', 'project_plan_summary', 'latest_update',
+                    'show_current_image', 'is_published', 'show_keywords')
+    search_fields = ('title', 'subtitle', 'project_plan_summary')
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
@@ -753,10 +778,10 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
             prefixes = {}
             for FormSet, inline in zip(self.get_formsets(request), inline_instances):
                 prefix = FormSet.get_default_prefix()
-                # check if we're trying to create a new project by copying an existing one. If so we ignore
-                # location and benchmark inlines
-                if not "_saveasnew" in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
-                # end of add although the following block is indented as a result
+                # check if we're trying to create a new project by copying an existing one. If so
+                # we ignore location and benchmark inlines
+                if "_saveasnew" not in request.POST or not prefix in ['benchmarks', 'rsr-location-content_type-object_id']:
+                    # end of add although the following block is indented as a result
                     prefixes[prefix] = prefixes.get(prefix, 0) + 1
                     if prefixes[prefix] != 1 or not prefix:
                         prefix = "%s-%s" % (prefix, prefixes[prefix])
@@ -789,7 +814,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 if prefixes[prefix] != 1 or not prefix:
                     prefix = "%s-%s" % (prefix, prefixes[prefix])
 
-                # hack by GvH to get user's organisation preset as partner when adding a new project
+                # hack by GvH to get user's organisation preset as partner when adding a new
+                # project
                 if prefix == 'partnerships':
                     formset = FormSet(instance=self.model(), prefix=prefix,
                                       initial=[{'organisation': request.user.organisations.all()[0]}],
@@ -801,9 +827,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 formsets.append(formset)
 
         adminForm = helpers.AdminForm(form, list(self.get_fieldsets(request)),
-            self.get_prepopulated_fields(request),
-            self.get_readonly_fields(request),
-            model_admin=self)
+                                      self.get_prepopulated_fields(request),
+                                      self.get_readonly_fields(request),
+                                      model_admin=self)
         media = self.media + adminForm.media
 
         inline_admin_formsets = []
@@ -843,7 +869,7 @@ class ApiKeyInline(admin.StackedInline):
         return False
 
 
-class UserAdmin(UserAdmin):
+class UserAdmin(DjangoUserAdmin):
     model = get_model('rsr', 'user')
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
@@ -859,12 +885,11 @@ class UserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2')}
-        ),
+            'fields': ('username', 'email', 'password1', 'password2')}),
     )
     list_display = (
-        'username', 'email', 'get_organisation_names', 'get_full_name', 'get_is_active', 'get_is_admin',
-        'get_is_support', 'latest_update_date'
+        'username', 'email', 'get_organisation_names', 'get_full_name', 'get_is_active',
+        'get_is_admin', 'get_is_support', 'latest_update_date'
     )
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('username',)
@@ -900,7 +925,8 @@ admin.site.register(get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 class ProjectUpdateLocationInline(admin.StackedInline):
     model = get_model('rsr', 'projectupdatelocation')
     extra = 0
-    fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode', 'country')
+    fields = ('latitude', 'longitude', 'city', 'state', 'address_1', 'address_2', 'postcode',
+              'country')
 
 
 class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.ModelAdmin):
@@ -914,19 +940,21 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
 
     fieldsets = (
         (_(u'General Information'), {
-            'fields': ('project','user','update_method', 'created_at', 'last_modified_at'),
+            'fields': ('project', 'user', 'update_method', 'created_at', 'last_modified_at'),
         }),
         (_(u'Content'), {
-            'fields': ('title','text','language', ),
+            'fields': ('title', 'text', 'language', ),
         }),
         (_(u'Image and video'), {
-            'fields': ('photo', 'photo_caption', 'photo_credit', 'video', 'video_caption', 'video_credit',),
+            'fields': ('photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
+                       'video_credit',),
         }),
     )
-    #Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+    # Methods overridden from ModelAdmin (django/contrib/admin/options.py)
+
     def __init__(self, model, admin_site):
-        """
-        Override to add self.formfield_overrides.
+        """Override to add self.formfield_overrides.
+
         Needed to get the ImageField working in the admin.
         """
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
@@ -936,7 +964,8 @@ admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('project', 'user', 'name', 'email', 'time', 'engine', 'status', 'test', 'is_anonymous')
+    list_display = ('project', 'user', 'name', 'email', 'time', 'engine', 'status', 'test',
+                    'is_anonymous')
     list_filter = ('engine', 'status', 'test', 'is_anonymous')
     actions = ('void_invoices',)
 
@@ -986,10 +1015,13 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     fieldsets = (
         (u'General', dict(fields=('organisation', 'enabled',))),
-        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text', 'piwik_id',))),
+        (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
+                               'piwik_id',))),
         (u'Style and content',
-            dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo', 'custom_favicon',))),
-        (u'Languages and translation', dict(fields=('default_language', 'ui_translation', 'google_translation',))),
+            dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo',
+                         'custom_favicon',))),
+        (u'Languages and translation', dict(fields=('default_language', 'ui_translation',
+                                                    'google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
         (_(u'Project selection'), {
             'description': u'{}'.format(
@@ -1022,7 +1054,8 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         # don't show the notes field unless you are superuser or admin
-        # note that this is somewhat fragile as it relies on adding/removing from the _first_ fieldset
+        # note that this is somewhat fragile as it relies on adding/removing from the _first_
+        # fieldset
         if request.user.is_superuser or request.user.is_admin:
             self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
         else:
@@ -1030,9 +1063,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
 
     def get_form(self, request, obj=None, **kwargs):
-        """
-        Workaround bug http://code.djangoproject.com/ticket/9360
-        """
+        """Workaround bug http://code.djangoproject.com/ticket/9360."""
         return super(PartnerSiteAdmin, self).get_form(
             request, obj, fields=flatten_fieldsets(self.get_fieldsets(request, obj))
         )
@@ -1045,8 +1076,11 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
-            return super(PartnerSiteAdmin, self).get_queryset(request)
+            print "is admin or superuser"
+            return super(PartnerSiteAdmin, self).get_queryset(
+                request).select_related('organisation')
 
+        print "was not admin or superuser"
         from .models import PartnerSite
         qs = PartnerSite.objects.none()
         for employment in request.user.employers.approved():

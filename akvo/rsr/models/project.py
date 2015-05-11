@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+"""Akvo RSR is covered by the GNU Affero General Public License.
 
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""
 
 import math
 
@@ -12,7 +12,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max, Sum
 from django.db.models.signals import post_save
-from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -55,9 +55,9 @@ class Project(TimestampsMixin, models.Model):
     )
 
     HIERARCHY_OPTIONS = (
-        (1, u'Core Activity'),
-        (2, u'Sub Activity'),
-        (3, u'Lower Sub Activity')
+        (1, _(u'Core Activity')),
+        (2, _(u'Sub Activity')),
+        (3, _(u'Lower Sub Activity'))
     )
 
     STATUS_NONE = 'N'
@@ -86,13 +86,13 @@ class Project(TimestampsMixin, models.Model):
 
     title = ValidXMLCharField(
         _(u'title'), max_length=45, db_index=True,
-        help_text=_(u'The title and subtitle fields are the newspaper headline for your project. Use them to attract '
-                    u'attention to what you are doing. (45 characters)')
+        help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
+                    u'Use them to attract attention to what you are doing. (45 characters)')
     )
     subtitle = ValidXMLCharField(
         _(u'subtitle'), max_length=75,
-        help_text=_(u'The title and subtitle fields are the newspaper headline for your project. Use them to attract '
-                    u'attention to what you are doing. (75 characters)')
+        help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
+                    u'Use them to attract attention to what you are doing. (75 characters)')
     )
     status = ValidXMLCharField(
         _(u'status'), max_length=1, choices=STATUSES, db_index=True, default=STATUS_NONE,
@@ -102,7 +102,9 @@ class Project(TimestampsMixin, models.Model):
                     u'3) Completed: projects that have been finished.<br>'
                     u'4) Cancelled: projects that were never fully implemented or carried out.')
     )
-    categories = models.ManyToManyField('Category', verbose_name=_(u'categories'), related_name='projects', blank=True)
+    categories = models.ManyToManyField(
+        'Category', verbose_name=_(u'categories'), related_name='projects', blank=True
+    )
     partners = models.ManyToManyField(
         'Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',
     )
@@ -118,9 +120,11 @@ class Project(TimestampsMixin, models.Model):
 
     current_image = ImageField(
         _('project photo'), blank=True, upload_to=image_path,
-        help_text=_(u'Add your project photo here. You can only add one photo. If you have more, you can add them '
-                    u'via RSR updates when your project is published.<br>'
-                    u'The photo should be about 1 MB in size, and should preferably be in JPG format.'),
+        help_text=_(u'Add your project photo here. You can only add one photo. '
+                    u'If you have more, you can add them via RSR updates when your project is '
+                    u'published.<br>'
+                    u'The photo should be about 1 MB in size, and should preferably be in '
+                    u'JPG format.'),
     )
     current_image_caption = ValidXMLCharField(
         _(u'photo caption'), blank=True, max_length=50,
@@ -144,53 +148,64 @@ class Project(TimestampsMixin, models.Model):
     project_plan = ValidXMLTextField(
         _(u'project plan'), blank=True,
         help_text=_(
-            u'This should include detailed information about the project and plans for implementing: '
-            u'the what, how, who and when. (unlimited)'
+            u'This should include detailed information about the '
+            u'project and plans for implementing: the what, how, who and when. (unlimited)'
         )
     )
     sustainability = ValidXMLTextField(
         _(u'sustainability'),
-        help_text=_(u'Describe plans for sustaining/maintaining results after implementation is complete. (unlimited)')
+        help_text=_(u'Describe plans for sustaining/maintaining results after '
+                    u'implementation is complete. (unlimited)')
     )
     background = ProjectLimitedTextField(
         _(u'background'), blank=True, max_length=1000,
         help_text=_(
-            u'Include relevant background information, including geographic, political, environmental, social and/or '
-            u'cultural issues. (1000 characters)'
+            u'Include relevant background information, including geographic, political, '
+            u'environmental, social and/or cultural issues. (1000 characters)'
         )
     )
     target_group = ProjectLimitedTextField(
         _(u'target group'), blank=True, max_length=600,
         help_text=_(
-            u'This should include information about the people, organisations or resources that are being impacted by '
-            u'this project. (600 characters)'
+            u'This should include information about the people, organisations or resources that '
+            u'are being impacted by this project. (600 characters)'
         )
     )
 
     # project meta info
     language = ValidXMLCharField(
-        max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The main language of the project.'
+        max_length=2, choices=settings.LANGUAGES, default='en',
+        help_text=_(u'The main language of the project.')
     )
     project_rating = models.IntegerField(_(u'project rating'), default=0)
-    notes = ValidXMLTextField(_(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).'))
-    keywords = models.ManyToManyField('Keyword', verbose_name=_(u'keywords'), related_name='projects', blank=True)
+    notes = ValidXMLTextField(
+        _(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).')
+    )
+    keywords = models.ManyToManyField(
+        'Keyword', verbose_name=_(u'keywords'), related_name='projects', blank=True
+    )
 
     # budget
     currency = ValidXMLCharField(
         _(u'currency'), choices=CURRENCY_CHOICES, max_length=3, default='EUR',
-        help_text=_(u'The default currency for this project. Used in all financial aspects of the project.')
+        help_text=_(u'The default currency for this project. Used in all financial '
+                    u'aspects of the project.')
     )
     date_start_planned = models.DateField(
-        _(u'start date (planned)'), null=True, blank=True, help_text=_(u'Enter the planned start date of the project.')
+        _(u'start date (planned)'), null=True, blank=True,
+        help_text=_(u'Enter the planned start date of the project.')
     )
     date_start_actual = models.DateField(
-        _(u'start date (actual)'), null=True, blank=True, help_text=_(u'Enter the actual start date of the project.')
+        _(u'start date (actual)'), null=True, blank=True,
+        help_text=_(u'Enter the actual start date of the project.')
     )
     date_end_planned = models.DateField(
-        _(u'end date (planned)'), null=True, blank=True, help_text=_(u'Enter the planned end date of the project.')
+        _(u'end date (planned)'), null=True, blank=True,
+        help_text=_(u'Enter the planned end date of the project.')
     )
     date_end_actual = models.DateField(
-        _(u'end date (actual)'), null=True, blank=True, help_text=_(u'Enter the actual end date of the project.')
+        _(u'end date (actual)'), null=True, blank=True,
+        help_text=_(u'Enter the actual end date of the project.')
     )
 
     primary_location = models.ForeignKey('ProjectLocation', null=True, on_delete=models.SET_NULL)
@@ -198,35 +213,38 @@ class Project(TimestampsMixin, models.Model):
     # donate button
     donate_button = models.BooleanField(
         _(u'donate button'), default=True,
-        help_text=_(u'Show donate button for this project. If not selected, it is not possible to donate to this '
-                    u'project and the donate button will not be shown.')
+        help_text=_(u'Show donate button for this project. If not selected, it is not possible '
+                    u'to donate to this project and the donate button will not be shown.')
     )
 
     # synced projects
     sync_owner = models.ForeignKey(
-        'Organisation', verbose_name=_(u'reporting organisation'), related_name='reporting_projects',
-        null=True, blank=True, on_delete=models.SET_NULL, help_text=_(u'Select the reporting organisation of the project.')
+        'Organisation', verbose_name=_(u'reporting organisation'),
+        related_name='reporting_projects', null=True, blank=True, on_delete=models.SET_NULL,
+        help_text=_(u'Select the reporting organisation of the project.')
     )
     sync_owner_secondary_reporter = models.NullBooleanField(
         _(u'secondary reporter'),
-        help_text=_(u'This indicates whether the reporting organisation is a secondary publisher: publishing data for '
-                    u'which it is not directly responsible.')
+        help_text=_(u'This indicates whether the reporting organisation is a secondary publisher: '
+                    u'publishing data for which it is not directly responsible.')
     )
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(
         _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True,
-        help_text=_(u'This should be the official unique IATI Identifier for the project. The identifier consists of '
-                    u'the IATI organisation identifier and the (organisations internal) project identifier, e.g. '
-                    u'NL-KVK-31156201-TZ1234. (100 characters)<br>'
-                    u'Note that \'projects\' in this form are the same as \'activities\' in IATI.<br>'
-                    u'<a href="http://iatistandard.org/activity-standard/iati-activities/iati-activity/iati-identifier"'
-                    u' target="_blank">How to create</a>')
+        help_text=_(u'This should be the official unique IATI Identifier for the project. '
+                    u'The identifier consists of the IATI organisation identifier and the '
+                    u'(organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. '
+                    u'(100 characters)<br>'
+                    u'Note that \'projects\' in this form are the same as \'activities\' in '
+                    u'IATI.<br>'
+                    u'<a href="http://iatistandard.org/activity-standard/iati-activities/'
+                    u'iati-activity/iati-identifier" target="_blank">How to create</a>')
     )
     hierarchy = models.PositiveIntegerField(
         _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS,
-        help_text=_(u'If you are reporting multiple levels of projects in RSR, you can specify whether this is a core '
-                    u'or sub-project here.<br>'
+        help_text=_(u'If you are reporting multiple levels of projects in RSR, you can specify '
+                    u'whether this is a core or sub-project here.<br>'
                     u'So for example: is this project part of a larger project or programme.')
     )
     project_scope = ValidXMLCharField(
@@ -255,12 +273,18 @@ class Project(TimestampsMixin, models.Model):
     # denormalized data
     # =================
     budget = models.DecimalField(
-        _('project budget'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+        _(u'project budget'), max_digits=10, decimal_places=2, blank=True, null=True,
+        db_index=True, default=0
     )
-    funds = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
-    funds_needed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0)
-    last_update = models.ForeignKey(ProjectUpdate, related_name='the_project',
-                                    null=True, on_delete=models.SET_NULL)
+    funds = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+    )
+    funds_needed = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+    )
+    last_update = models.ForeignKey(
+        ProjectUpdate, related_name='the_project',null=True, on_delete=models.SET_NULL
+    )
 
     # Custom manager
     # based on http://www.djangosnippets.org/snippets/562/ and
@@ -289,7 +313,8 @@ class Project(TimestampsMixin, models.Model):
     def public_donations(self):
         return Invoice.objects.filter(
             project__exact=self.id
-        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE).exclude(test=True).exclude(is_anonymous=True)
+        ).filter(status__exact=Invoice.PAYPAL_INVOICE_STATUS_COMPLETE)\
+            .exclude(test=True).exclude(is_anonymous=True)
 
     def all_donations_amount(self):
         return Invoice.objects.filter(
@@ -327,9 +352,13 @@ class Project(TimestampsMixin, models.Model):
 
     def get_budget(self):
         if 'total' in BudgetItemLabel.objects.filter(budgetitem__project__exact=self):
-            return BudgetItem.objects.filter(project__exact=self).filter(label__label='total')[0].amount
+            return BudgetItem.objects.filter(
+                project__exact=self
+            ).filter(label__label='total')[0].amount
         else:
-            return BudgetItem.objects.filter(project__exact=self).aggregate(Sum('amount'))['amount__sum'] or 0
+            return BudgetItem.objects.filter(
+                project__exact=self
+            ).aggregate(Sum('amount'))['amount__sum'] or 0
 
     def update_budget(self):
         "Update de-normalized field"
@@ -355,8 +384,8 @@ class Project(TimestampsMixin, models.Model):
         ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
 
     def get_funds(self):
-        """ All money given to a project, including pending donations"""
-        return self.get_donations() + self.get_pending_donations() + self.get_pledged()
+        """ All money given to a project"""
+        return self.get_donations() + self.get_pledged()
 
     def update_funds(self):
         "Update de-normalized field"
@@ -382,7 +411,7 @@ class Project(TimestampsMixin, models.Model):
         return counter.count or 0
 
 
-    class QuerySet(QuerySet):
+    class QuerySet(DjangoQuerySet):
 
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
@@ -464,16 +493,19 @@ class Project(TimestampsMixin, models.Model):
 
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
-                result = self.filter(  # filter finds largest "benchmarkname" value in benchmarks for categories in cats
+                # filter finds largest "benchmarkname" value in benchmarks for categories in cats
+                result = self.filter(
                     benchmarks__name__name=benchmarkname,
                     benchmarks__category__name__in=cats
                 )
             else:
-                result = self.filter(  # filter finds largest "benchmarkname" value in benchmarks for all categories
+                # filter finds largest "benchmarkname" value in benchmarks for all categories
+                result = self.filter(
                     benchmarks__name__name=benchmarkname
                 )
             # annotate the greatest of the "benchmarkname" values into max_value
-            return result.annotate(max_value=Max('benchmarks__value')).aggregate( # sum max_value for all projects
+            # sum max_value for all projects
+            return result.annotate(max_value=Max('benchmarks__value')).aggregate(
                 Sum('max_value')
             )['max_value__sum'] or 0  # we want to return 0 instead of an empty QS
 
@@ -512,10 +544,12 @@ class Project(TimestampsMixin, models.Model):
             )
 
         def latest_update_fields(self):
-            #used in project_list view
-            #cheating slightly, counting on that both id and time are the largest for the latest update
+            # used in project_list view
+            # cheating slightly, counting on that both id and time are the largest
+            # for the latest update
             return self.annotate(
-                latest_update_id=Max('project_updates__id'), latest_update_date=Max('project_updates__created_at')
+                latest_update_id=Max('project_updates__id'),
+                latest_update_date=Max('project_updates__created_at')
             )
 
         def all_updates(self):
@@ -566,23 +600,25 @@ class Project(TimestampsMixin, models.Model):
         return u'%s' % self.title
 
     def updates_desc(self):
-        "return ProjectUpdates for self, newest first"
-        return self.project_updates.all().order_by('-created_at')
+        """ProjectUpdate list for self, newest first."""
+        return self.project_updates.select_related('user').order_by('-created_at')
 
     def latest_update(self):
         """
         for use in the admin
-        lists data useful when looking for projects that haven't been updated in a while (or not at all)
-        note: it would have been useful to make this column sortable via the admin_order_field attribute,
-        but this results in multiple rows shown for the project in the admin change list view and there's no easy way
-        to distinct() them
+        lists data useful when looking for projects that haven't been updated in a while
+        (or not at all)
+        note: it would have been useful to make this column sortable via the
+        admin_order_field attribute, but this results in multiple rows shown for the project
+        in the admin change list view and there's no easy way to distinct() them
         """
         # TODO: probably this can be solved by customizing ModelAdmin.queryset
         updates = self.updates_desc()
         if updates:
             update = updates[0]
             # date of update shown as link poiting to the update page
-            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(), update.created_at,)
+            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(),
+                                                        update.created_at,)
             # if we have an email of the user doing the update, add that as a mailto link
             if update.user.email:
                 update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (
@@ -591,7 +627,7 @@ class Project(TimestampsMixin, models.Model):
             else:
                 update_info = '%s<br/>' % update_info
         else:
-            update_info = u'%s<br/><br/>' % (ugettext(u'No update yet'),)
+            update_info = u'%s<br/><br/>' % (_(u'No update yet'),)
         # links to the project's support partners
         update_info = "%sSP: %s" % (
             update_info, ", ".join(
@@ -616,7 +652,8 @@ class Project(TimestampsMixin, models.Model):
     def show_status(self):
         "Show the current project status"
         return mark_safe(
-            "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.status], self.get_status_display())
+            "<span style='color: %s;'>%s</span>" % (self.STATUSES_COLORS[self.status],
+                                                    self.get_status_display())
         )
 
     def show_current_image(self):
@@ -674,12 +711,17 @@ class Project(TimestampsMixin, models.Model):
     def areas_and_categories(self):
         from .focus_area import FocusArea
         from .category import Category
-        area_objs = FocusArea.objects.filter(categories__projects__exact=self).distinct().order_by('name')
+        area_objs = FocusArea.objects.filter(
+            categories__projects__exact=self
+        ).distinct().order_by('name')
         areas = []
         for area_obj in area_objs:
             area = {'area': area_obj}
             area['categories'] = []
-            for cat_obj in Category.objects.filter(focus_area=area_obj, projects=self).order_by('name'):
+            for cat_obj in Category.objects.filter(
+                    focus_area=area_obj,
+                    projects=self
+            ).order_by('name'):
                 area['categories'] += [cat_obj.name]
             areas += [area]
         return areas
@@ -726,12 +768,12 @@ class Project(TimestampsMixin, models.Model):
         Return a dict of the distinct partners with the organisation as key and as content:
         1. The partnerships of the organisation
         2. The (added up) funding amount, if available. Otherwise None.
-        E.g. {<Organisation 1>: [[<Partnership 1>,], 10000], <Organisation 2>: [[<Partnership 2>,], None]]}
+        E.g. {<Organisation 1>: [[<Partnership 1>,], 10000],}
         """
         partners_info = {}
         for partnership in Partnership.objects.filter(project=self):
             funding_amount = partnership.funding_amount if partnership.funding_amount else None
-            if not partnership.organisation in partners_info.keys():
+            if partnership.organisation not in partners_info.keys():
                 partners_info[partnership.organisation] = [[partnership], funding_amount]
             else:
                 partners_info[partnership.organisation][0].append(partnership)
@@ -749,7 +791,8 @@ class Project(TimestampsMixin, models.Model):
     def show_status_large(self):
         "Show the current project status with background"
         return mark_safe(
-            "<span class='status_large' style='background-color:%s; color:inherit; display:inline-block;'>%s</span>" % (
+            "<span class='status_large' style='background-color:%s; color:inherit; "
+            "display:inline-block;'>%s</span>" % (
                 self.STATUSES_COLORS[self.status], self.get_status_display()
             )
         )

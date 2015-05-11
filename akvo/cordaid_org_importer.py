@@ -15,7 +15,7 @@ from lxml import etree
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
-from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import InternalOrganisationID, Organisation, PartnerType
 from akvo.utils import model_and_instance_based_filename
 
@@ -52,7 +52,7 @@ def run_import_report(import_type, data):
 
 
 def get_organisation_type(new_organisation_type):
-    types = dict(zip([type for type, name in IATI_LIST_ORGANISATION_TYPE],
+    types = dict(zip([int(type) for type, name in IATI_LIST_ORGANISATION_TYPE[1:]],
                      Organisation.NEW_TO_OLD_TYPES
     ))
     return types[new_organisation_type]
@@ -101,8 +101,7 @@ def import_orgs(xml_file):
                     action = "failed"
                     internal_org_id.delete()
                     referenced_org.delete()
-                    print(u"*** UNABLE TO CREATE NEW ORGANISATION! "
-                           "Reason: {message}.".format(e.message))
+                    print(u"*** UNABLE TO CREATE NEW ORGANISATION! ")
             name = element.findtext("name")
             referenced_org.name, referenced_org.long_name = name[:25], name
             referenced_org.description = element.findtext("description") or "N/A"

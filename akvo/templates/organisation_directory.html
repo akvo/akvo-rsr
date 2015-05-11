@@ -20,11 +20,11 @@
                 <button class="btn btn-primary" type="submit">{% trans "Update list" %} &#8250;</button>
               </span>
             </div>
-            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> Advanced filters</a>
+            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
           </div>
         </div>
         {% if q %}
-        <div><a href="{% url 'organisation-directory' %}" class="btn"><i class="fa fa-times"></i> Reset all filters</a></div>
+        <div><a href="{% url 'organisation-directory' %}" class="btn"><i class="fa fa-times"></i> {% trans 'Reset all filters' %}</a></div>
         {% endif %}
       </div>
     </div>
@@ -42,7 +42,7 @@
         <div>
           <nav>
             <ul class="nav nav-pills nav-stacked">
-              <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> Close this</a></li>
+              <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> {% trans 'Close this' %}</a></li>
             </ul>
           </nav>
         </div>
@@ -53,7 +53,11 @@
 
 <div class="container">
   <div class="row center-text">
-        <p class="verticalPadding emTxt">Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} organisations</p>
+        <p class="verticalPadding emTxt">
+        {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
+            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} organisations
+        {% endblocktrans %}
+        </p>
   </div>
   <div class="row">
         {% include 'navigation/pagination.html' %}
@@ -71,14 +75,14 @@
         </div>
         <div class="col-lg-4 col-sm-3 col-xs-7">
           <h1><a href="{% url 'organisation-main' o.id %}"><i class="fa fa-users"></i> {{o.name}}</a></h1>
-          {% if o.iati_org_id %}{{o.iati_org_id}}{% endif %}
-          <div class="orgType"><i class="fa fa-tag"></i> {{o.get_new_organisation_type_display}}</div>
-          <div  class="projectLocation">{% if o.primary_location.country %}<i class="fa fa-map-marker"></i> {{o.primary_location.country}}, {{o.primary_location.country.continent}}{% endif %}</div>
+          {% if o.iati_org_id %}<div class="orgIatiId">{{o.iati_org_id}}</div>{% endif %}
+          <div class="orgType"><i class="fa fa-tag"></i> {{o.iati_org_type}}</div>
+          <div class="projectLocation">{% if o.primary_location.country %}<i class="fa fa-map-marker"></i> {{o.primary_location.country}}, {{o.primary_location.country.continent}}{% endif %}</div>
         </div>
         <div class="col-sm-3 hidden-xs hidden-sm additionalInfo">
           <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
           <div class=""><i class="fa fa-folder-o"></i> <span>{{o.published_projects.count}} {% trans "projects" %}</span></div>
-          <div class=""><i class="fa fa-user"></i> <span>{{o.all_users.count}} {% trans "users" %}</div>
+          <div class=""><i class="fa fa-user"></i> <span>{{o.all_users.count}} {% trans "users" %}</span></div>
           <div class=""><i class="fa fa-camera-retro"></i> <span>{{o.all_projects.all_updates.count}} {% trans "updates" %}</span></div>
         </div>
         {% if o.facebook or o.twitter or o.linkedin %}
@@ -115,22 +119,12 @@
    AKVO_RSR.typeahead = {};
    AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
   </script>
+
+    {# Translation strings #}
+    <script type="application/json" id="organisations-text">
+    {
+        "organisations_text": "{% trans 'Organisations' %}"
+    }
+    </script>
   {% compressed_js 'organisation_directory' %}
 {% endblock js %}
-
-{% block jq %}
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip({
-    html: true,
-    delay: {
-      "show": 0,
-      "hide": 1000
-    }
-  })
-})
-    $(".menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper, #search").toggleClass("toggled");
-        $("a.showFilters > i").toggleClass("fa-toggle-off fa-toggle-on");
-    });
-{% endblock %}

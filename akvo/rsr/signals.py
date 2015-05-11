@@ -17,7 +17,7 @@ from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db.models import get_model, ImageField
+from django.db.models import get_model
 from django.db.models.signals import post_save
 
 from sorl.thumbnail import ImageField

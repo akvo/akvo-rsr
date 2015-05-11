@@ -23,7 +23,7 @@ from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
 from .organisation import OrganisationViewSet
-from .organisation_location import OrganisationLocationViewSet
+from .organisation_location import OrganisationLocationViewSet, MapOrganisationLocationViewSet
 from .partner_site import PartnerSiteViewSet
 from .partner_type import PartnerTypeViewSet
 from .partnership import PartnershipViewSet
@@ -34,9 +34,9 @@ from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
-from .project_location import ProjectLocationViewSet
+from .project_location import ProjectLocationViewSet, MapProjectLocationViewSet
 from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
-from .project_update_location import ProjectUpdateLocationViewSet
+from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
@@ -52,56 +52,59 @@ from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
 
 __all__ = [
-    'BenchmarkViewSet',
+    'approve_employment',
     'BenchmarknameViewSet',
-    'BudgetItemViewSet',
+    'BenchmarkViewSet',
     'BudgetItemLabelViewSet',
+    'BudgetItemViewSet',
     'CategoryViewSet',
+    'change_password',
     'CountryViewSet',
     'EmploymentViewSet',
-    'approve_employment',
-    'set_group',
     'FocusAreaViewSet',
     'GoalViewSet',
-    'IndicatorViewSet',
     'IndicatorPeriodViewSet',
+    'IndicatorViewSet',
     'InternalOrganisationIDViewSet',
     'InvoiceViewSet',
     'KeywordViewSet',
     'LegacyDataViewSet',
     'LinkViewSet',
-    'OrganisationViewSet',
+    'MapOrganisationLocationViewSet',
+    'MapProjectLocationViewSet',
+    'MapProjectUpdateLocationViewSet',
     'OrganisationLocationViewSet',
+    'OrganisationViewSet',
+    'PartnershipViewSet',
     'PartnerSiteViewSet',
     'PartnerTypeViewSet',
-    'PartnershipViewSet',
     'PlannedDisbursementViewSet',
     'PolicyMarkerViewSet',
-    'ProjectViewSet',
-    'ProjectExtraViewSet',
     'ProjectCommentViewSet',
     'ProjectConditionViewSet',
     'ProjectContactViewSet',
     'ProjectDocumentViewSet',
+    'ProjectExtraViewSet',
     'ProjectLocationViewSet',
-    'ProjectUpViewSet',
+    'ProjectUpdateExtraViewSet',
     'ProjectUpdateLocationViewSet',
     'ProjectUpdateViewSet',
-    'ProjectUpdateExtraViewSet',
+    'ProjectUpViewSet',
+    'ProjectViewSet',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
     'RelatedProjectViewSet',
+    'request_organisation',
     'ResultViewSet',
     'SectorViewSet',
+    'set_group',
     'TransactionViewSet',
-    'typeahead_country,',
+    'typeahead_country',
+    'typeahead_organisation',
     'typeahead_project',
     'typeahead_projectupdate',
-    'typeahead_organisation',
-    # 'typeahead_sector',
-    'UserViewSet',
-    'change_password',
     'update_details',
-    'request_organisation',
+    'UserViewSet',
+    # 'typeahead_sector',
 ]

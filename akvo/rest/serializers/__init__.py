@@ -23,7 +23,8 @@ from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
 from .organisation import OrganisationSerializer
-from .organisation_location import OrganisationLocationSerializer
+from .organisation_location import (OrganisationLocationSerializer,
+                                    MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer
 from .partner_type import PartnerTypeSerializer
 from .partnership import PartnershipSerializer
@@ -34,10 +35,11 @@ from .project_comment import ProjectCommentSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
 from .project_document import ProjectDocumentSerializer
-from .project_location import ProjectLocationSerializer
+from .project_location import ProjectLocationSerializer, MapProjectLocationSerializer
 from .project_update import (ProjectUpdateSerializer,
                              ProjectUpdateExtraSerializer)
-from .project_update_location import ProjectUpdateLocationSerializer
+from .project_update_location import (ProjectUpdateLocationSerializer,
+                                      MapProjectUpdateLocationSerializer)
 from .publishing_status import PublishingStatusSerializer
 from .recipient_country import RecipientCountrySerializer
 from .region import RecipientRegionSerializer
@@ -52,8 +54,8 @@ from .typeahead import (TypeaheadCountrySerializer,
 from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
 
 __all__ = [
-    'BenchmarkSerializer',
     'BenchmarknameSerializer',
+    'BenchmarkSerializer',
     'BudgetItemLabelSerializer',
     'BudgetItemSerializer',
     'CategorySerializer',
@@ -68,11 +70,14 @@ __all__ = [
     'KeywordSerializer',
     'LegacyDataSerializer',
     'LinkSerializer',
+    'MapOrganisationLocationSerializer',
+    'MapProjectLocationSerializer',
+    'MapProjectUpdateLocationSerializer',
     'OrganisationLocationSerializer',
     'OrganisationSerializer',
+    'PartnershipSerializer',
     'PartnerSiteSerializer',
     'PartnerTypeSerializer',
-    'PartnershipSerializer',
     'PlannedDisbursementSerializer',
     'PolicyMarkerSerializer',
     'ProjectCommentSerializer',
@@ -82,10 +87,10 @@ __all__ = [
     'ProjectExtraSerializer',
     'ProjectLocationSerializer',
     'ProjectSerializer',
-    'ProjectUpSerializer',
     'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',
     'ProjectUpdateSerializer',
+    'ProjectUpSerializer',
     'PublishingStatusSerializer',
     'RecipientCountrySerializer',
     'RecipientRegionSerializer',
@@ -97,7 +102,6 @@ __all__ = [
     'TypeaheadOrganisationSerializer',
     'TypeaheadProjectSerializer',
     'TypeaheadProjectUpdateSerializer',
-    # 'TypeaheadSectorSerializer',
     'UserDetailsSerializer',
     'UserPasswordSerializer',
     'UserSerializer',

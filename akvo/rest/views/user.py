@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+"""Akvo RSR is covered by the GNU Affero General Public License.
 
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""
 
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -20,11 +22,25 @@ from ..serializers import UserSerializer, UserDetailsSerializer, UserPasswordSer
 
 
 class UserViewSet(BaseRSRViewSet):
-    """
-    """
-    queryset = get_user_model().objects.all()
+
+    """User resource."""
+
+    queryset = get_user_model().objects.select_related(
+        'organisation',
+        'organisation__primary_location',
+        'organisation__primary_location__country',
+        'organisation__primary_location__location_target',
+        'organisation__primary_location__location_target__partner_types',
+        'organisation__primary_location__location_target__internal_org_ids',
+    ).prefetch_related(
+        'organisations',
+        'organisations__primary_location',
+        'organisations__primary_location__country',
+        'organisations__primary_location__location_target',
+        'organisations__primary_location__location_target__partner_types')
     serializer_class = UserSerializer
-    filter_fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_admin', )
+    filter_fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff',
+                     'is_admin', )
 
 
 @api_view(['POST'])
@@ -82,7 +98,8 @@ def request_organisation(request, pk=None):
             )
             employment.save()
         except IntegrityError:
-            return Response({'detail': 'User already linked to this organisation'}, status=status.HTTP_409_CONFLICT)
+            return Response({'detail': _(u'User already linked to this organisation')},
+                            status=status.HTTP_409_CONFLICT)
 
         serializer.data['country_full'] = CountrySerializer(country).data
         serializer.data['organisation_full'] = OrganisationSerializer(organisation).data

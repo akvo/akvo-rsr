@@ -36,32 +36,51 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         ('M', _(u'mobile')),
     )
 
-    project = models.ForeignKey('Project', related_name='project_updates', verbose_name=_(u'project'))
+    project = models.ForeignKey(
+        'Project', related_name='project_updates', verbose_name=_(u'project')
+    )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))
     title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
     language = ValidXMLCharField(
-        max_length=2, choices=settings.LANGUAGES, default='en', help_text=u'The language of the update'
+        max_length=2, choices=settings.LANGUAGES, default='en',
+        help_text=_(u'The language of the update')
     )
-    primary_location = models.ForeignKey('ProjectUpdateLocation', null=True, blank=True, on_delete=models.SET_NULL)
+    primary_location = models.ForeignKey(
+        'ProjectUpdateLocation', null=True, blank=True, on_delete=models.SET_NULL
+    )
     photo = ImageField(_(u'photo'),
                        blank=True,
                        upload_to=image_path,
-                       help_text=_(u'The image should have 4:3 height:width ratio for best displaying result'),
+                       help_text=_(u'The image should have 4:3 height:width ratio for '
+                                   u'best displaying result'),
     )
-    photo_caption = ValidXMLCharField(_(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
-    photo_credit = ValidXMLCharField(_(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
-    video = EmbedVideoField(_(u'video URL'), blank=True, help_text=_(u'Supported providers: YouTube and Vimeo'))
-    video_caption = ValidXMLCharField(_(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters'))
-    video_credit = ValidXMLCharField(_(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters'))
+    photo_caption = ValidXMLCharField(
+        _(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters')
+    )
+    photo_credit = ValidXMLCharField(
+        _(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters')
+    )
+    video = EmbedVideoField(
+        _(u'video URL'), blank=True, help_text=_(u'Supported providers: YouTube and Vimeo')
+    )
+    video_caption = ValidXMLCharField(
+        _(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters')
+    )
+    video_credit = ValidXMLCharField(
+        _(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters')
+    )
     update_method = ValidXMLCharField(
-        _(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True, default='W'
+        _(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True,
+        default='W'
     )
-    user_agent = ValidXMLCharField(_(u'user agent'), blank=True, max_length=200, default='')
+    user_agent = ValidXMLCharField(
+        _(u'user agent'), blank=True, max_length=200, default=''
+    )
     uuid = ValidXMLCharField(_(u'uuid'), blank=True, max_length=40, default='', db_index=True,
-        help_text=_(u'Universally unique ID set by creating user agent'))
+                             help_text=_(u'Universally unique ID set by creating user agent'))
 
-    notes = ValidXMLTextField(verbose_name=_("Notes and comments"), blank=True, default='')
+    notes = ValidXMLTextField(verbose_name=_(u"Notes and comments"), blank=True, default='')
 
     class Meta:
         app_label = 'rsr'
@@ -115,4 +134,4 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         return ('update-main', (), {'project_id': self.project.pk, 'update_id': self.pk})
 
     def __unicode__(self):
-        return u'Project update for %(project_name)s' % {'project_name': self.project.title}
+        return _(u'Project update for %(project_name)s') % {'project_name': self.project.title}

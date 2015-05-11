@@ -31,13 +31,13 @@ var ResetModal = React.createClass({displayName: 'ResetModal',
 
   render: function() {
     return this.transferPropsTo(
-        Modal( {title:"Reset your password"}, 
+        Modal( {title:i18n.reset_your_password_text}, 
         React.DOM.div( {className:"modal-body"}, 
-        React.DOM.p(null, 'Fill in your email address in the field below. We will send you instructions on how to reset your password.'),
-        Input( {className:"form-control", id:"id_email", maxLength:"254", name:"email", placeholder:"Email", required:"required", title:"", type:"email"} )
+        React.DOM.p(null, i18n.fill_email_text),
+        Input( {className:"form-control", id:"id_email", maxLength:"254", name:"email", placeholder:i18n.email_text, required:"required", title:"", type:"email"} )
         ),
         React.DOM.div( {className:"modal-footer"}, 
-        Button( {onClick:this.resetPassword, bsStyle:"info"}, "Reset password")
+        Button( {onClick:this.resetPassword, bsStyle:"info"}, i18n.reset_password_text)
         )
         )
     );
@@ -47,9 +47,12 @@ var ResetModal = React.createClass({displayName: 'ResetModal',
 var TriggerModal = React.createClass({displayName: 'TriggerModal',
   render: function () {
     return (
-        ModalTrigger( {modal:ResetModal(null )}, React.DOM.a( {href:"#"}, "I forgot my password"))
+        ModalTrigger( {modal:ResetModal(null )}, React.DOM.a( {href:"#"}, i18n.forgot_password_text))
     );
   }
 });
 
-var resetPW = React.renderComponent(TriggerModal(null ), document.getElementById('reset-pw'));
+// Initial data
+i18n = JSON.parse(document.getElementById("reset-password-text").innerHTML);
+
+React.renderComponent(TriggerModal(null ), document.getElementById('reset-pw'));

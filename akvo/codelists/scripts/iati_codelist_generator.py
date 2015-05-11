@@ -73,7 +73,7 @@ def codelist_to_tuples(xml_string, codelist, version):
     for codelist_field in list(codelist_tree):
         for codelist_field_item in codelist_field.findall('*'):
             unicode_field_tag = "u'" + codelist_field_item.tag + "'"
-            if not unicode_field_tag in fields:
+            if unicode_field_tag not in fields:
                 fields.append(unicode_field_tag)
     fields_string = ', '.join(fields)
 
@@ -82,7 +82,7 @@ def codelist_to_tuples(xml_string, codelist, version):
         codelist_field_content = ["" for _field in fields]
         codelist_tags = []
         for codelist_field_item in codelist_field.findall('*'):
-            if not codelist_field_item.tag in codelist_tags:
+            if codelist_field_item.tag not in codelist_tags:
                 codelist_tags.append(codelist_field_item.tag)
                 list_index = fields.index("u'" + codelist_field_item.tag + "'")
                 if codelist_field_item.text:
@@ -141,7 +141,7 @@ def generate_code_lists(version):
         result = requests.get(codelist_url % codelist)
         if result.status_code == 200 and len(result.text) > 0:
             print "Generating python for %s..." % codelist
-            if not codelist in ["IATIOrganisationIdentifier", ]:
+            if codelist not in ["IATIOrganisationIdentifier", ]:
                 # IATIOrganisationIdentifier is not a codelist
                 python_code.append('# From %s' % codelist_url % codelist)
                 python_code.append('\n')
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Version has to be one of the allowed versions
-    if not args.version in VERSIONS.keys():
+    if args.version not in VERSIONS.keys():
         print "Error; Version should be one of the following:"
         for version in VERSIONS.keys():
             print "- %s" % version

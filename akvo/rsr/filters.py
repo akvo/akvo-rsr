@@ -17,6 +17,8 @@ from .m49 import M49_CODES, M49_HIERARCHY
 from akvo.codelists.store.codelists_v201 import SECTOR_CATEGORY
 from akvo.utils import codelist_choices
 
+from django.utils.translation import ugettext_lazy as _
+
 ANY_CHOICE = (('', 'All'), )
 
 
@@ -26,6 +28,11 @@ def sectors():
         if Project.objects.filter(sectors__sector_code=sector[0]):
             sectors_list.append(sector)
     return sectors_list
+
+
+def get_orgs():
+    orgs = list(Organisation.objects.all().values_list('id', 'name', flat=False))
+    return [('', 'All')] + orgs
 
 
 def remove_empty_querydict_items(request_get):
@@ -64,39 +71,36 @@ class ProjectFilter(django_filters.FilterSet):
         choices=([('', 'All')] +
                  list(Category.objects.all().values_list('id', 'name',
                                                          flat=False))),
-        label='category',
+        label=_(u'category'),
         name='categories__id')
 
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
-        label='location',
+        label=_(u'location'),
         action=filter_m49
     )
 
     sector = django_filters.ChoiceFilter(
         initial='All',
         choices=([('', 'All')] + sectors()),
-        label='sector',
+        label=_(u'sector'),
         name='sectors__sector_code')
 
     status = django_filters.ChoiceFilter(
         initial='All',
-        label='status',
+        label=_(u'status'),
         choices=ANY_CHOICE + Project.STATUSES)
 
     title = django_filters.CharFilter(
         lookup_type='icontains',
-        label='Search',
+        label=_(u'Search'),
         name='title')
 
-    def get_orgs():
-        orgs = list(Organisation.objects.all().values_list('id', 'name',
-                                                           flat=False))
-        return ([('', 'All')] + orgs)
+
 
     organisation = django_filters.ChoiceFilter(
         choices=get_orgs(),
-        label='organisation',
+        label=_(u'organisation'),
         name='partners__id')
 
     class Meta:
@@ -109,28 +113,23 @@ class ProjectUpdateFilter(django_filters.FilterSet):
 
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
-        label='location',
+        label=_(u'location'),
         action=filter_m49)
-
-    def get_orgs():
-        orgs = list(Organisation.objects.all().values_list('id', 'name',
-                                                           flat=False))
-        return ([('', 'All')] + orgs)
 
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),
-        label='organisation',
+        label=_(u'organisation'),
         name='project__partners__id')
 
     sector = django_filters.ChoiceFilter(
         initial='All',
         choices=([('', 'All')] + sectors()),
-        label='sector',
+        label=_(u'sector'),
         name='project__sectors__sector_code')
 
     title = django_filters.CharFilter(
         lookup_type='icontains',
-        label='Search',
+        label=_(u'Search'),
         name='title')
 
     class Meta:
@@ -142,12 +141,12 @@ class OrganisationFilter(django_filters.FilterSet):
 
     location = django_filters.ChoiceFilter(
         choices=M49_CODES,
-        label='location',
+        label=_(u'location'),
         action=filter_m49)
 
     name = django_filters.CharFilter(
         lookup_type='icontains',
-        label='Search',
+        label=_(u'Search'),
         name='name')
 
     class Meta:

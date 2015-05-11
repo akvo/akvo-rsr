@@ -16,7 +16,6 @@ if __name__ == "__main__":
         from django.core.management import execute_from_command_line
 
     except ImportError as e:
-        import sys
         message = """Error: Can't find the 'settings' module, it appears you've customized things.\nYou'll have to run
         django-admin.py, passing it your settings module.\n(If the settings module does indeed exist, it's causing an
         ImportError somehow.)\n"""

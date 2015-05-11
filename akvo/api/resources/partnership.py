@@ -20,7 +20,7 @@ logger = logging.getLogger('akvo.rsr')
 from akvo.api.authentication import ConditionalApiKeyAuthentication
 from akvo.api.fields import ConditionalFullToOneField
 
-from akvo.rsr.iati.iati_code_lists import IATI_LIST_ORGANISATION_TYPE
+from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import Organisation, Partnership, InternalOrganisationID
 
 from .resources import ConditionalFullResource
@@ -85,7 +85,8 @@ def create_organisation(bundle, bundle_field_to_use):
     new_organisation_type=int(bundle.data[FIELD_NEW_ORGANISATION_TYPE])
     # derive the old organisation type from the new one
     organisation_type = dict(
-        zip([type for type, name in IATI_LIST_ORGANISATION_TYPE], Organisation.NEW_TO_OLD_TYPES)
+        zip([int(type) for type, name in IATI_LIST_ORGANISATION_TYPE[1:]],
+            Organisation.NEW_TO_OLD_TYPES)
     )[new_organisation_type]
     kwargs = dict(
         name=bundle.data[FIELD_NAME],
@@ -97,14 +98,14 @@ def create_organisation(bundle, bundle_field_to_use):
     if bundle_field_to_use == FIELD_IATI_ORG_ID:
         kwargs[FIELD_IATI_ORG_ID] = bundle.data[FIELD_IATI_ORG_ID]
         try:
-            logger.debug("Trying to create an org with kwargs: {kwargs}".format(kwargs=kwargs))
+            logger.debug("Trying to create an org")
             organisation = Organisation.objects.create(**kwargs)
         except Exception, e:
-            logger.exception('{message} Locals:\n {locals}\n\n'.format(message=e.message, locals=locals(), ))
+            logger.exception('%s' % e.message)
     # otherwise fall back to using the reporting_org's internal ID
     elif bundle_field_to_use == FIELD_INTERNAL_ORG_ID:
         try:
-            logger.debug("Trying to create an org with kwargs: {kwargs}".format(kwargs=kwargs))
+            logger.debug("Trying to create an org")
             organisation = Organisation.objects.create(**kwargs)
             our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
             InternalOrganisationID.objects.create(
@@ -113,7 +114,7 @@ def create_organisation(bundle, bundle_field_to_use):
                 identifier=bundle.data[FIELD_INTERNAL_ORG_ID],
             )
         except Exception, e:
-            logger.exception('{message} Locals:\n {locals}\n\n'.format(message=e.message, locals=locals(), ))
+            logger.exception('%s' % e.message)
     return organisation
 
 
