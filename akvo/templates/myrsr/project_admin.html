@@ -8,9 +8,9 @@
         <form role="form" id="">
             <fieldset>
                 <!--*************************************** FORM STEP 1 **********************************************-->
-                <div class="myPanel" id="panel0">
+                <div class="myPanel" id="panel1">
                     <div class="stepOne row">
-                        <h2 class="text-center topMargin"><span>01</span>Project details</h2>
+                        <h2 class="text-center topMargin"><span>01</span>General information</h2>
                         <div class="editDate">
                             <span>Date created:</span>
                             <time datetime="YYYY-MM-DDThh:mm:ssTZD">
@@ -84,9 +84,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="projectStatus" class="control-label">Language</label>
+                        <label for="language" class="control-label">Language</label>
                         <div class="select-group">
-                            <select name="projectStatus" id="projectStatus" class="form-control">
+                            <select name="projectStatus" id="language" class="form-control">
                                 <option value="GER">German</option>
                                 <option value="EN">English</option>
                                 <option value="FR">French</option>
@@ -136,7 +136,7 @@
 
                 </div>
                 <!--*************************************** FORM STEP 2 **********************************************-->
-                <div class="myPanel" id="panel1">
+                <div class="myPanel" id="panel2">
                     <div class="formStep stepTwo">
                         <h2 class="text-center topMargin"><span>02</span>Contact information</h2>
                     </div>
@@ -178,51 +178,380 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 3 **********************************************-->
-                <div class="myPanel" id="panel2">
+                <div class="myPanel" id="panel3">
                     <div class="formStep stepThree">
                         <h2 class="text-center topMargin"><span>03</span>Partners</h2>
                     </div>
+                    <div class="form-group">
+                        <label for="reportingOrganisation" class="control-label">Reporting organisation</label>
+                        <input type="text" class="form-control" id="reportingOrganisation" placeholder="Reporting organisation" />
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="secondaryReporter" class="control-label">
+                                <input id="secondaryReporter" type="checkbox" name="secondaryReporter">Secondary reporter</label>
+                        </div>
+                        <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="partner" class="control-label">Partner</label>
+                                <input type="text" class="form-control" id="partner" placeholder="Partner">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="partnerType" class="control-label">Type</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="partnerType" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="field">Field partner</option>
+                                        <option value="funding">Funding partner</option>
+                                        <option value="sponsor">Sponsor partner</option>
+                                        <option value="support">Support partner</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="fundingAmount" class="control-label">Funding amount</label>
+                                <input type="text" class="form-control" id="fundingAmount" placeholder="Funding amount">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="partner2" class="control-label">Partner</label>
+                                <input type="text" class="form-control" id="partner2" placeholder="Partner">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="partnerType2" class="control-label">Type</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="partnerType2" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="field">Field partner</option>
+                                        <option value="funding">Funding partner</option>
+                                        <option value="sponsor">Sponsor partner</option>
+                                        <option value="support">Support partner</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="fundingAmount2" class="control-label">Funding amount</label>
+                                <input type="text" class="form-control" id="fundingAmount2" placeholder="Funding amount">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!--*************************************** FORM STEP 4 **********************************************-->
-                <div class="myPanel" id="panel1">
-                    <div class="formStep stepTwo">
-                        <h2 class="text-center topMargin"><span>02</span>Descriptions</h2>
+                <div class="myPanel" id="panel4">
+                    <div class="formStep stepFour">
+                        <h2 class="text-center topMargin"><span>04</span>Descriptions</h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="summary">Summary of project plan</label>
+                        <textarea id="summary" class="form-control" name="textarea" placeholder="Type in summary of the project plan"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="background">Background</label>
+                        <textarea id="background" class="form-control" name="textarea" placeholder="Type in background"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="currentSituation">Current situation</label>
+                        <textarea id="currentSituation" class="form-control" name="textarea" placeholder="Type in current situation"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="projectPlan">Project plan</label>
+                        <textarea id="projectPlan" class="form-control" name="textarea" placeholder="Type in project plan"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="targetGroup">Target group</label>
+                        <textarea id="targetGroup" class="form-control" name="textarea" placeholder="Type in target group"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sustainability">Sustainability</label>
+                        <textarea id="sustainability" class="form-control" name="textarea" placeholder="Type in sustainability"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="goalsOverview">Goals overview</label>
+                        <textarea id="goalsOverview" class="form-control" name="textarea" placeholder="Type in goals overview"></textarea>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 5 **********************************************-->
-                <div class="myPanel" id="panel2">
-                    <div class="formStep stepThree">
-                        <h2 class="text-center topMargin"><span>03</span>Photos</h2>
+                <div class="myPanel" id="panel5">
+                    <div class="formStep stepFive">
+                        <h2 class="text-center topMargin"><span>05</span>Photo</h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="photo">Photo</label>
+                        <input type="file" class="form-control" id="photo">
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="photoCaption" class="control-label">Photo caption</label>
+                                <input type="text" class="form-control" id="photoCaption" placeholder="Photo caption">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="photoCredit" class="control-label">Photo credit</label>
+                                <input type="text" class="form-control" id="photoCredit" placeholder="Photo credit">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 6 **********************************************-->
-                <div class="myPanel" id="panel1">
-                    <div class="formStep stepTwo">
-                        <h2 class="text-center topMargin"><span>02</span>Links and documents</h2>
+                <div class="myPanel" id="panel6">
+                    <div class="formStep stepSix">
+                        <h2 class="text-center topMargin"><span>06</span>Links and documents</h2>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="linkType" class="control-label">Link type</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="linkType" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">Akvopedia entry</option>
+                                        <option value="2">External link</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="linkUrl" class="control-label">Link URL</label>
+                                <input type="text" class="form-control" id="linkUrl" placeholder="Link URL">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="linkCaption" class="control-label">Link caption</label>
+                                <input type="text" class="form-control" id="linkCaption" placeholder="Link caption">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="linkType2" class="control-label">Link type</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="linkType2" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">Akvopedia entry</option>
+                                        <option value="2">External link</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="linkUrl2" class="control-label">Link URL</label>
+                                <input type="text" class="form-control" id="linkUrl2" placeholder="Link URL">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="linkCaption2" class="control-label">Link caption</label>
+                                <input type="text" class="form-control" id="linkCaption2" placeholder="Link caption">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="document">Document</label>
+                                <input type="file" class="form-control" id="document">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentUrl">Document URL</label>
+                                <input type="text" class="form-control" id="documentUrl" placeholder="Document URL">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentTitle">Document title</label>
+                                <input type="text" class="form-control" id="documentTitle" placeholder="Document title">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentFormat">Document format</label>
+                                <input type="text" class="form-control" id="documentFormat" placeholder="Document format">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentCategory">Document category</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="documentCategory" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="A01">A01 - Pre- and post-project impact appraisal</option>
+                                        <option value="A02">A02 - Obectives / Purpose of activity</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentLanguage">Document language</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="documentLanguage" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="en">en - English</option>
+                                        <option value="sp">sp - Spanish</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="document2">Document</label>
+                                <input type="file" class="form-control" id="document2">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentUrl2">Document URL</label>
+                                <input type="text" class="form-control" id="documentUrl2" placeholder="Document URL">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentTitle2">Document title</label>
+                                <input type="text" class="form-control" id="documentTitle2" placeholder="Document title">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentFormat2">Document format</label>
+                                <input type="text" class="form-control" id="documentFormat2" placeholder="Document format">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentCategory2">Document category</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="documentCategory2" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="A01">A01 - Pre- and post-project impact appraisal</option>
+                                        <option value="A02">A02 - Obectives / Purpose of activity</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="documentLanguage2">Document language</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="documentLanguage2" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="en">en - English</option>
+                                        <option value="sp">sp - Spanish</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 7 **********************************************-->
-                <div class="myPanel" id="panel2">
-                    <div class="formStep stepThree">
-                        <h2 class="text-center topMargin"><span>03</span>Locations</h2>
+                <div class="myPanel" id="panel7">
+                    <div class="formStep stepSeven">
+                        <h2 class="text-center topMargin"><span>07</span>Locations</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="scope" class="control-label">Project scope</label>
+                        <div class="select-group">
+                            <select name="partnerType" id="scope" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="1">1 - Global</option>
+                                <option value="2">2 - Regional</option>
+                                <option value="3">3 - Multi-national</option>
+                                <option value="4">3 - National</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="latitude">Latitude</label>
+                                <input type="text" class="form-control" id="latitude" placeholder="Latitude">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="longitude">Longitude</label>
+                                <input type="text" class="form-control" id="longitude" placeholder="Longitude">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="scope" class="control-label">Country</label>
+                        <div class="select-group">
+                            <select name="partnerType" id="country" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="nl">Netherlands</option>
+                                <option value="se">Sweden</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="city">City</label>
+                                <input type="text" class="form-control" id="city" placeholder="City">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="state">State</label>
+                                <input type="text" class="form-control" id="state" placeholder="State">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label" for="address1">Address 1</label>
+                                <input type="text" class="form-control" id="address1" placeholder="Address 1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="address2">Address 2</label>
+                                <input type="text" class="form-control" id="address2" placeholder="Address 2">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="postalCode">Postal code</label>
+                                <input type="text" class="form-control" id="postalCode" placeholder="Postal code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label" for="locationReference">Reference</label>
+                                <input type="text" class="form-control" id="locationReference" placeholder="Reference">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="locationCode">Code</label>
+                                <input type="text" class="form-control" id="locationCode" placeholder="Code">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="locationName">Name</label>
+                                <input type="text" class="form-control" id="locationName" placeholder="Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="locationDescription">Description</label>
+                        <textarea id="locationDescription" class="form-control" name="textarea" placeholder="Type in a location description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="locationActivityDescription">Activity description</label>
+                        <textarea id="locationActivityDescription" class="form-control" name="textarea" placeholder="Type in a location activity description"></textarea>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 8 **********************************************-->
-                <div class="myPanel" id="panel1">
-                    <div class="formStep stepTwo">
-                        <h2 class="text-center topMargin"><span>02</span>Focus</h2>
+                <div class="myPanel" id="panel8">
+                    <div class="formStep stepEight">
+                        <h2 class="text-center topMargin"><span>08</span>Focus</h2>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 9 **********************************************-->
-                <div class="myPanel" id="panel2">
-                    <div class="formStep stepThree">
-                        <h2 class="text-center topMargin"><span>03</span>Finance</h2>
+                <div class="myPanel" id="panel9">
+                    <div class="formStep stepNine">
+                        <h2 class="text-center topMargin"><span>09</span>Finance</h2>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 10 **********************************************-->
-                <div class="myPanel" id="panel2">
-                    <div class="formStep stepThree">
-                        <h2 class="text-center topMargin"><span>03</span>Results</h2>
+                <div class="myPanel" id="panel10">
+                    <div class="formStep stepTen">
+                        <h2 class="text-center topMargin"><span>10</span>Results</h2>
                     </div>
                 </div>
             </fieldset>
