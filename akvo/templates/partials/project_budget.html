@@ -13,6 +13,9 @@
 </div>
 <dl class="dl-horizontal topMargin">
 	<dt class="totalBudgetLabel">{% trans 'Total Budget' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.budget|floatformat:2|intcomma}}</dd>
+    {% if project.accepts_donations %}
+    <dt class="totalBudgetLabel">{% trans 'Funds needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed|floatformat:2|intcomma}}</dd>
+    {% endif %}
 </dl>
 {% if project.accepts_donations %}
 <div class="text-center donateButton">
