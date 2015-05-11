@@ -76,6 +76,10 @@ img {
     }
 }
 
+time {
+    color: $flowOrange;
+}
+
 em {
     font-family: $scriptFont;
     font-size: 1.2em;
@@ -542,6 +546,18 @@ nav.navbar-fixed-top {
     }
 }
 
+.help-block {
+    font-size:0.9em;
+    color:rgba($akvoPurple, 0.3);
+}
+.editDate {
+    font-style: italic;
+    padding: 10px 0 10px 15px;
+    margin-bottom: 15px;
+    span {
+        color:rgba($akvoBlack,0.3);
+    }
+}
 #profile {
     .usrAvatar {
         background-color: rgba($akvoBlack, 0);
@@ -1589,7 +1605,7 @@ div.textBlock {
         background: rgba($akvoBlack, 0.05);
     }
     .orgDescr {
-        background-color: rgba(lighten($akvoTvRed, 15%), 0.1);
+        background-color: rgba(lighten($akvoTvRed, 15%), 0);
         p {
             padding-left: 20px;
         }

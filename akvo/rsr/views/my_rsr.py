@@ -120,7 +120,13 @@ def my_projects(request):
     }
     return render(request, 'myrsr/my_projects.html', context)
 
+@login_required
+def rsr_admin(request):
+    """."""
 
+    context = {}
+    return render(request, 'myrsr/rsr_admin.html', context)
+    
 @login_required
 def my_iati(request):
     """IATI reports."""
