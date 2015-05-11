@@ -384,8 +384,8 @@ class Project(TimestampsMixin, models.Model):
         ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
 
     def get_funds(self):
-        """ All money given to a project, including pending donations"""
-        return self.get_donations() + self.get_pending_donations() + self.get_pledged()
+        """ All money given to a project"""
+        return self.get_donations() + self.get_pledged()
 
     def update_funds(self):
         "Update de-normalized field"
