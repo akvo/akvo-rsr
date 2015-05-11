@@ -18,7 +18,12 @@ class Partnership(models.Model):
     SUPPORT_PARTNER = u'support'
 
     PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
-    PARTNER_LABELS = [_(u'Field partner'), _(u'Funding partner'), _(u'Sponsor partner'), _(u'Support partner'), ]
+    PARTNER_LABELS = [
+        _(u'Field partner'),
+        _(u'Funding partner'),
+        _(u'Sponsor partner'),
+        _(u'Support partner')
+    ]
 
     PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
 
@@ -27,7 +32,11 @@ class Partnership(models.Model):
     NETWORK_PARTNER = u'network'
 
     PARTNER_TYPE_EXTRAS_LIST = (ALLIANCE_PARTNER, KNOWLEDGE_PARTNER, NETWORK_PARTNER)
-    PARTNER_TYPE_EXTRA_LABELS = (_(u'Alliance'), _(u'Knowledge'), _(u'Network'),)
+    PARTNER_TYPE_EXTRA_LABELS = (
+        _(u'Alliance'),
+        _(u'Knowledge'),
+        _(u'Network')
+    )
 
     PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
@@ -41,27 +50,32 @@ class Partnership(models.Model):
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
         help_text=_(u'The funding amount of the partner.<br>'
-                    u'Note that it\'s only possible to indicate a funding amount for funding partners.')
+                    u'Note that it\'s only possible to indicate a funding amount for funding '
+                    u'partners.')
     )
     partner_type_extra = ValidXMLCharField(
         _(u'partner type extra'), max_length=30, blank=True, null=True, choices=PARTNER_TYPE_EXTRAS,
         help_text=_(u'RSR specific partner type.')
     )
-    iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True,)
+    iati_activity_id = ValidXMLCharField(
+        _(u'IATI activity ID'), max_length=75, blank=True, null=True, db_index=True
+    )
     internal_id = ValidXMLCharField(
         _(u'Internal ID'), max_length=75, blank=True, null=True, db_index=True,
-        help_text=_(u'This field can be used to indicate an internal identifier that is used by the organisation '
-                    u'for this project. (75 characters)')
+        help_text=_(u'This field can be used to indicate an internal identifier that is used by '
+                    u'the organisation for this project. (75 characters)')
     )
     iati_url = models.URLField(
         blank=True,
         help_text=_(
             u'Please enter the URL for where the IATI Activity Id Funding details are published. '
-            u'For projects directly or indirectly funded by the Dutch Government, this should be the OpenAid.nl page. '
-            u'For other projects, an alternative URL can be used.'
+            u'For projects directly or indirectly funded by the Dutch Government, this should '
+            u'be the OpenAid.nl page. For other projects, an alternative URL can be used.'
         )
     )
-    related_activity_id = ValidXMLCharField(_(u'related IATI activity ID'), max_length=50, blank=True)
+    related_activity_id = ValidXMLCharField(
+        _(u'related IATI activity ID'), max_length=50, blank=True
+    )
 
     class Meta:
         app_label = 'rsr'

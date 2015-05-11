@@ -4,17 +4,20 @@
 {% block myrsr_main %}
   <div>
     <div class="">
-      <div class="col-sm-6"><h3>{% trans "My project" %}s</h3></div>
+      <div class="col-sm-6"><h3>{% trans "My projects" %}</h3></div>
       {% has_perm 'rsr.add_project' user as can_add_project %}
       {% if can_add_project %}
-      <div class="col-sm-6 text-right btnHeader"><a href="http://rsr.akvo.org/admin/rsr/project/add" class="btn btn-primary"><i class="fa fa-plus"></i> Add a new project</a></div>
+      <div class="col-sm-6 text-right btnHeader"><a href="http://rsr.akvo.org/admin/rsr/project/add" class="btn btn-primary"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</a></div>
       {% endif %}
     </div>
     {% if not organisations %}
       <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
       <p class="text-center col-sm-8 col-sm-offset-2">
-        Go to the <a href="{% url 'my_details' %}">My details</a> page to request to join an organisation.
+        {% url 'my_details' as my_details_url %}
+        {% blocktrans %}
+        Go to the <a href="{{my_details_url}}">My details</a> page to request to join an organisation.
         Once your request is approved, you will see the projects of this organisation on this page.
+        {% endblocktrans %}
       </p>
     {% else %}
         <div class="col-sm-12">
@@ -41,11 +44,6 @@
                   <tr class="isPublished">
                 {% endif %}
                     <td class="media">
-                      {% comment %}
-                      <a class="pull-left" href="{% url 'project-main' project.id %}">
-                        <img src="{{MEDIA_URL}}{{project.current_image}}" height="64" width="64"/>
-                      </a>
-                    {% endcomment %}
                     <a class="pull-left" href="{% url 'project-main' project.id %}">
                       {% img project 64 64 project.title %}
                     </a>
@@ -64,26 +62,30 @@
                       {% has_perm 'rsr.change_project' user project as can_edit_project %}
                       {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
                       {% if can_edit_project %}
-                        <a href="/admin/rsr/project/{{project.pk}}/">Edit</a>
+                        <a href="/admin/rsr/project/{{project.pk}}/">{% trans 'Edit' %}</a>
                       {% endif %}
                       {% if can_publish %}
                         <a href="/admin/rsr/publishingstatus/?project={{project.pk}}">
                           {% if project.is_published %}
-                            Unpublish
+                            {% trans 'Unpublish' %}
                           {% else %}
-                            Publish
+                            {% trans 'Publish' %}
                           {% endif %}
                         </a>
                       {% endif %}
                       {% has_perm 'rsr.post_updates' project as can_add_update %}
-                      <a href="{% url 'add-update' project.pk %}">Update</a>
+                      <a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a>
                     </div>
                   </td>
                 </tr>
               {% endfor %}
             </table>
             <div class="">
-              <p>Viewing {{ page.start_index }} - {{ page.end_index }} of {{ paginator.count }} projects</p>
+              <p>
+              {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
+                  Viewing {{start_index}} - {{end_index}} of {{paginator_count}} projects
+              {% endblocktrans %}
+              </p>
               {% include 'navigation/pagination.html' %}
             </div>
           </div>
@@ -91,13 +93,16 @@
         {% else %}
             {% if q %}
                 <p class="noItem text-center verticalPadding col-sm-6 col-sm-offset-3">
-                    {% trans "Your search" %} - {{q_search}} - {% trans "did not match any projects." %}
+                    {% blocktrans %}Your search - {{q_search}} - did not match any projects.{% endblocktrans %}
                 </p>
             {% elif organisations %}
               <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
               <p class="text-center col-sm-8 col-sm-offset-2">
+                {% url 'my_details' as my_details_url %}
+                {% blocktrans %}
                 The organisation(s) you have joined do not have any projects yet.
-                Go to the <a href="{% url 'my_details' %}">My details</a> page to see your organisation(s).
+                Go to the <a href="{{my_details_url}}">My details</a> page to see your organisation(s).
+                {% endblocktrans %}
               </p>
             {% endif %}
         {% endif %}

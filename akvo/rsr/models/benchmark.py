@@ -40,7 +40,8 @@ class Benchmarkname(models.Model):
     )
     order = models.IntegerField(
         _(u'order'), default=0,
-        help_text=_(u'Used to order the benchmarks when displayed. Larger numbers sink to the bottom of the list.')
+        help_text=_(u'Used to order the benchmarks when displayed. '
+                    u'Larger numbers sink to the bottom of the list.')
     )
 
     def __unicode__(self):

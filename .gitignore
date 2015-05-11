@@ -19,6 +19,7 @@ data/*
 !data/README.md
 !data/dump.sh
 !data/load.sh
+!data/simple-load.sh
 
 # Dev environment
 .vagrant

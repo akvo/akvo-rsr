@@ -30,7 +30,7 @@ class TimestampsAdminDisplayMixin(admin.ModelAdmin):
         def add_or_remove(obj, fields, name):
             # if the field has a value, add it to the fields tuple, unless it's already there
             if getattr(obj, name, None):
-                if not name in fields:
+                if name not in fields:
                     fields += (name,)
             # otherwise make sure it's removed
             else:

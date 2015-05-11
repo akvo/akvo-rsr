@@ -304,6 +304,7 @@ def global_project_map(width, height, dynamic='dynamic'):
     map_id = 'akvo_map_%s' % os.urandom(8).encode('hex')
 
     locations = []
+    update_locations = []
 
     for project in Project.objects.published():
         try:

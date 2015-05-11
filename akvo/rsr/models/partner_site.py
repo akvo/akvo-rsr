@@ -50,24 +50,24 @@ class PartnerSite(TimestampsMixin, models.Model):
     organisation = models.ForeignKey(
         'Organisation', verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.'))
-    notes = ValidXMLTextField(verbose_name=u'Akvo partner site notes', blank=True, default='')
+    notes = ValidXMLTextField(verbose_name=_(u'Akvo page notes'), blank=True, default='')
     hostname = ValidXMLCharField(
         _(u'hostname'), max_length=50, unique=True, help_text=_(
-            u'<p>Your hostname is used in the default web address of your partner site. '
+            u'<p>Your hostname is used in the default web address of your Akvo page. '
             u'The web address created from  the hostname <em>myorganisation</em> would be '
             u'<em>http://myorganisation.akvoapp.org/</em>.</p>'
         )
     )
     cname = NullCharField(
         _(u'CNAME'), max_length=100, unique=True, blank=True, null=True, help_text=_(
-            u'<p>Enter a custom domain name for accessing the partner site, for example '
+            u'<p>Enter a custom domain name for accessing the Akvo page, for example '
             u'<i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>'
         )
     )
     custom_return_url = models.URLField(
         _(u'Return URL'), blank=True, help_text=_(
             u'<p>Enter the full URL (including http://) for the page to which users '
-            u'should be returned when leaving the partner site.</p>'
+            u'should be returned when leaving the Akvo page.</p>'
         )
     )
     custom_return_url_text = ValidXMLCharField(
@@ -76,11 +76,11 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'Leave empty to display "Back to <em>myorganisation</em>".</p>'
         )
     )
-    piwik_id = models.PositiveIntegerField(_('Piwik analytics ID'), blank=True, null=True)
+    piwik_id = models.PositiveIntegerField(_(u'Piwik analytics ID'), blank=True, null=True)
     custom_css = models.FileField(_(u'stylesheet'), blank=True, upload_to=custom_css_path)
     custom_logo = models.FileField(
         _(u'organisation banner logo'), blank=True, upload_to=custom_logo_path, help_text=_(
-            u'<p>Upload a logo file for the logo at the top of the partner site page. By default '
+            u'<p>Upload a logo file for the logo at the top of the Akvo page. By default '
             u'logo of the organisation belonging to the Akvo Page will be displayed.</p>'
         )
     )
@@ -145,7 +145,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     )
     partner_projects = models.BooleanField(
         _(u'Show only projects of partner'), default=True,
-        help_text=_(u'Uncheck to list all projects on this partnersite.')
+        help_text=_(u'Uncheck to list all projects on this Akvo page.')
     )
     keywords = models.ManyToManyField(
         'Keyword', verbose_name=_(u'keywords'), related_name='partnersites', blank=True)
@@ -154,7 +154,7 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     def __unicode__(self):
         """Unicode representation."""
-        return u'Partner site for {}'.format(self.organisation.name)
+        return _(u'Akvo page for {}').format(self.organisation.name)
 
     @property
     def logo(self):
@@ -205,6 +205,6 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = u'partner site'
-        verbose_name_plural = u'partner sites'
+        verbose_name = _(u'Akvo page')
+        verbose_name_plural = _(u'Akvo pages')
         ordering = ('organisation__name',)

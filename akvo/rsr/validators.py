@@ -7,6 +7,7 @@
 import sys, re
 
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 
 def string_validator(value):
@@ -27,4 +28,4 @@ def string_validator(value):
 
     match = re.search(RESTRICTED_CHARACTERS, value)
     if match:
-        raise ValidationError('%s is not an allowed character' % match.group(0))
+        raise ValidationError(match.group(0) + ' ' + _(u'is not an allowed character'))

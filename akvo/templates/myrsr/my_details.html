@@ -4,6 +4,11 @@
 
 {% block title %}{% trans 'MyRSR' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 
+{% block head_js %}
+{# React #}
+<script src="//fb.me/react-0.10.0.js"></script>
+{% endblock head_js %}
+
 {% block head %}
 
 <style>
@@ -14,7 +19,7 @@
 
 {% block myrsr_main %}
     <div class="col-sm-7 col-xs-12" id="profile">
-        <h3>My details</h3>
+        <h3>{% trans 'My details' %}</h3>
         <div class="usrAvatar">
             {% img user 100 100 user.get_full_name %}
         </div>
@@ -70,6 +75,35 @@
   <script type="application/json" id="akvo-rsr-ajax-url">
     {"ajaxUrl": "{% url 'user_update_details' user.id %}?format=json"}
   </script>
+
+    {# Translation strings #}
+    <script type="application/json" id="my-details-text">
+        {
+            "too_large_text": "{% trans 'is larger than the allowed limit' %}",
+            "close_text": "{% trans 'Close' %}",
+            "details_updated_text": "{% trans 'Your details have been updated.' %}",
+            "not_approved_text": "{% trans 'Not approved' %}",
+            "organisation_text": "{% trans 'Organisation' %}",
+            "country_text": "{% trans 'Country (optional)' %}",
+            "job_title_text": "{% trans 'Job title (optional)' %}",
+            "linking_user_text": "{% trans 'Linking user to organisation...' %}",
+            "request_successful_text": "{% trans 'Request successful' %}",
+            "request_failed_text": "{% trans 'Request failed' %}",
+            "request_pending_text": "{% trans 'Your request is now pending and will have to be approved.' %}",
+            "already_connected_text": "{% trans 'You are already connected to this organisation. Only one connection per organisation is allowed.' %}",
+            "not_connected_text": "{% trans 'Could not connect to organisation.' %}",
+            "retrieve_country_text": "{% trans 'Retrieving country information...' %}",
+            "retrieve_organisation_text": "{% trans 'Retrieving organisation information...' %}",
+            "multiple_organisations_text": "{% trans 'Found multiple organisations named' %}",
+            "send_mail_text": "{% trans 'Please send a mail to support@akvo.org to get this resolved.' %}",
+            "no_organisation_text": "{% trans 'Could not find organisation' %}",
+            "sending_request_text": "{% trans 'Sending request' %}",
+            "waiting_text": "{% trans 'Waiting...' %}",
+            "connect_employer_text": "{% trans 'Connect with your employer' %}",
+            "request_join_text": "{% trans 'Request to join' %}",
+            "my_organisations_text": "{% trans 'My organisations' %}"
+        }
+    </script>
 
   {% compressed_js 'my_details' %}
 {% endblock js %}

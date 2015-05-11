@@ -22,7 +22,7 @@ class Link(models.Model):
     kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS)
     url = models.URLField(_(u'URL'))
     caption = ValidXMLCharField(_(u'caption'), max_length=50)
-    project = models.ForeignKey('Project', verbose_name=u'project', related_name='links')
+    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='links')
 
     def __unicode__(self):
         return self.url

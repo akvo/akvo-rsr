@@ -17,13 +17,23 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class RecipientRegion(models.Model):
-    project = models.ForeignKey('Project', verbose_name=u'project', related_name='recipient_regions')
-    region = ValidXMLCharField(_(u'region'), blank=True, max_length=3, choices=codelist_choices(REGION))
-    region_vocabulary = ValidXMLCharField(_(u'region vocabulary'), blank=True, max_length=1,
-                                          choices=codelist_choices(REGION_VOCABULARY))
-    percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
-                                     validators=[MaxValueValidator(100), MinValueValidator(0)])
-    text = ValidXMLCharField(_(u'region description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
+    project = models.ForeignKey(
+        'Project', verbose_name=_(u'project'), related_name='recipient_regions'
+    )
+    region = ValidXMLCharField(
+        _(u'region'), blank=True, max_length=3, choices=codelist_choices(REGION)
+    )
+    region_vocabulary = ValidXMLCharField(
+        _(u'region vocabulary'), blank=True, max_length=1,
+        choices=codelist_choices(REGION_VOCABULARY)
+    )
+    percentage = models.DecimalField(
+        _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
+        validators=[MaxValueValidator(100), MinValueValidator(0)]
+    )
+    text = ValidXMLCharField(
+        _(u'region description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)')
+    )
 
     def iati_region(self):
         return codelist_value(Region, self, 'region')

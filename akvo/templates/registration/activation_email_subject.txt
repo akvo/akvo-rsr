@@ -1,1 +1,1 @@
-[Akvo RSR] Activate your account
+{% load i18n %}{% trans '[Akvo RSR] Activate your account' %}

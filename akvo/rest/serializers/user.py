@@ -6,6 +6,7 @@
 
 
 from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
@@ -56,7 +57,7 @@ class UserPasswordSerializer(serializers.Serializer):
     def validate_old_password(self, attrs, source):
         """Check for current password"""
         if not self.object.check_password(attrs.get("old_password")):
-            raise serializers.ValidationError('Old password is not correct.')
+            raise serializers.ValidationError(_(u'Old password is not correct.'))
 
         return attrs
 
@@ -66,7 +67,7 @@ class UserPasswordSerializer(serializers.Serializer):
         password = attrs['new_password1']
 
         if password_confirmation != password:
-            raise serializers.ValidationError('Passwords do not match.')
+            raise serializers.ValidationError(_(u'Passwords do not match.'))
 
         return attrs
 

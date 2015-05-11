@@ -7,6 +7,76 @@
 from lxml import etree
 
 
+def _provider_organisation(element, trans):
+    """
+    Helper function for transaction()
+    """
+    org = trans.provider_organisation
+    provider_org_element = etree.SubElement(element, "provider-org")
+
+    if trans.provider_organisation_activity:
+        provider_org_element.attrib['provider-activity-id'] = trans.provider_organisation_activity
+
+    if org.iati_org_id:
+        provider_org_element.attrib['ref'] = org.iati_org_id
+
+    if org.long_name:
+        narrative_element = etree.SubElement(provider_org_element, "narrative")
+        narrative_element.text = org.long_name
+    elif org.name:
+        narrative_element = etree.SubElement(provider_org_element, "narrative")
+        narrative_element.text = org.name
+
+    return element
+
+
+def _receiver_organisation(element, trans):
+    """
+    Helper function for transaction()
+    """
+    org = trans.receiver_organisation
+    receiver_org_element = etree.SubElement(element, "receiver-org")
+
+    if trans.receiver_organisation_activity:
+        receiver_org_element.attrib['receiver-activity-id'] = trans.receiver_organisation_activity
+
+    if org.iati_org_id:
+        receiver_org_element.attrib['ref'] = org.iati_org_id
+
+    if org.long_name:
+        narrative_element = etree.SubElement(receiver_org_element, "narrative")
+        narrative_element.text = org.long_name
+    elif org.name:
+        narrative_element = etree.SubElement(receiver_org_element, "narrative")
+        narrative_element.text = org.name
+
+    return element
+
+
+def _sector(element, sector):
+    """
+    Helper function for transaction()
+    """
+    if sector.code:
+        sector_element = etree.SubElement(element, "sector")
+        sector_element.attrib['code'] = sector.code
+
+        if not sector.vocabulary or sector.vocabulary == 'DAC':
+            sector_element.attrib['vocabulary'] = '1'
+        elif sector.vocabulary == 'DAC-3':
+            sector_element.attrib['vocabulary'] = '2'
+        else:
+            sector_element.attrib['vocabulary'] = sector.vocabulary
+
+        if sector.percentage:
+            sector_element.attrib['percentage'] = str(sector.percentage)
+
+        if sector.text:
+            sector_element.text = sector.text
+
+    return element
+
+
 def transaction(project):
     """
     Generate the transaction elements.
@@ -47,60 +117,17 @@ def transaction(project):
             narrative_element.text = trans.description
 
         if trans.provider_organisation:
-            org = trans.provider_organisation
-            provider_org_element = etree.SubElement(element, "provider-org")
-
-            if trans.provider_organisation_activity:
-                provider_org_element.attrib['provider-activity-id'] = trans.provider_organisation_activity
-
-            if org.iati_org_id:
-                provider_org_element.attrib['ref'] = org.iati_org_id
-
-            if org.long_name:
-                narrative_element = etree.SubElement(provider_org_element, "narrative")
-                narrative_element.text = org.long_name
-            elif org.name:
-                narrative_element = etree.SubElement(provider_org_element, "narrative")
-                narrative_element.text = org.name
+            element = _provider_organisation(element, trans)
 
         if trans.receiver_organisation:
-            org = trans.receiver_organisation
-            receiver_org_element = etree.SubElement(element, "receiver-org")
-
-            if trans.receiver_organisation_activity:
-                receiver_org_element.attrib['receiver-activity-id'] = trans.receiver_organisation_activity
-
-            if org.iati_org_id:
-                receiver_org_element.attrib['ref'] = org.iati_org_id
-
-            if org.long_name:
-                narrative_element = etree.SubElement(receiver_org_element, "narrative")
-                narrative_element.text = org.long_name
-            elif org.name:
-                narrative_element = etree.SubElement(receiver_org_element, "narrative")
-                narrative_element.text = org.name
+            element = _receiver_organisation(element, trans)
 
         if trans.disbursement_channel:
             disbursement_channel_element = etree.SubElement(element, "disbursement-channel")
             disbursement_channel_element.attrib['code'] = trans.disbursement_channel
 
         for sector in trans.sectors.all():
-            if sector.code:
-                sector_element = etree.SubElement(element, "sector")
-                sector_element.attrib['code'] = sector.code
-
-                if not sector.vocabulary or sector.vocabulary == 'DAC':
-                    sector_element.attrib['vocabulary'] = '1'
-                elif sector.vocabulary == 'DAC-3':
-                    sector_element.attrib['vocabulary'] = '2'
-                else:
-                    sector_element.attrib['vocabulary'] = sector.vocabulary
-
-                if sector.percentage:
-                    sector_element.attrib['percentage'] = str(sector.percentage)
-
-                if sector.text:
-                    sector_element.text = sector.text
+            element = _sector(element, sector)
 
         if trans.recipient_country:
             recipient_country_element = etree.SubElement(element, "recipient-country")

@@ -35,7 +35,8 @@ def user_org(user_cred):
     try:
         profile = Requester(
             url_template="http://{domain}/api/{api_version}/user_profile/?"
-                 "format=json&api_key={api_key}&username={username}&user__username={username}",
+                         "format=json&api_key={api_key}&username={username}&"
+                         "user__username={username}",
             url_args=user_cred,
         )
         # find the organisation ID in the path string, e.g. "/api/v1/organisation/42/"
@@ -99,7 +100,7 @@ def find_org(user_cred, reporting_org_id, org_id, iati_org_id, internal_org_id, 
         user_cred.update({'recording_org': reporting_org_id, 'identifier': internal_org_id})
         return query_rsr_for_org(
             "http://{domain}/rest/v1/internal_organisation_id/?"
-                "recording_org={recording_org}&identifier={identifier}&format=json",
+            "recording_org={recording_org}&identifier={identifier}&format=json",
             user_cred,
             user_cred['api_key'],
             'referenced_org'
@@ -121,7 +122,7 @@ def find_org(user_cred, reporting_org_id, org_id, iati_org_id, internal_org_id, 
         if iati_org_id:
             org_id_from_iati_org_id, content_owner_id = find_by_iati_org_id(user_cred, iati_org_id)
             if org_id_from_iati_org_id:
-               org_ids.append(org_id_from_iati_org_id)
+                org_ids.append(org_id_from_iati_org_id)
         if internal_org_id:
             org_id_from_internal_org_id, content_owner_id = find_by_internal_org_id(user_cred, internal_org_id)
             if org_id_from_internal_org_id:

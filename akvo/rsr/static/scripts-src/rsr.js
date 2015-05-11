@@ -33,6 +33,22 @@ window.AKVO_RSR.utils = {
 
 $(document).ready(function() {
 
+  // Advanced filtering & search
+  $(".menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper, #search").toggleClass("toggled");
+    $("a.showFilters > i").toggleClass("fa-toggle-off fa-toggle-on");
+  });
+
+  // partner + tooltip
+  $('[data-toggle="tooltip"]').tooltip({
+    html: true,
+    delay: {
+      "show": 0,
+      "hide": 1000
+    }
+  });
+
   function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
