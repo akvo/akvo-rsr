@@ -38,6 +38,42 @@
                         <p class="help-block hidden">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
                         Note that 'projects' in this form are the same as 'activities' in IATI.</p>
                     </div>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="partner" class="control-label">Related project</label>
+                                <input type="text" class="form-control" id="relatedProject" placeholder="Related project">
+                                <p class="help-block hidden">A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="relatedProjectIatiId" class="control-label">Related project IATI identifier</label>
+                                <input type="text" class="form-control" id="relatedProjectIatiId" placeholder="Related project IATI identifier">
+                                <p class="help-block hidden">The IATI activity identifier for the related project. Fill this in if the related project does not exist in RSR.</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="relation" class="control-label">Type</label>
+                                <div class="select-group">
+                                    <select name="relation" id="relation" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - Parent</option>
+                                        <option value="2">2 - Child</option>
+                                        <option value="3">3 - Sibling</option>
+                                        <option value="4">4 - Co-funded</option>
+                                        <option value="5">5 - Third party</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="projectStatus" class="control-label">Status</label>
                         <div class="select-group">
