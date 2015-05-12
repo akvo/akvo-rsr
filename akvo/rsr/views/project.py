@@ -83,7 +83,8 @@ def directory(request):
     sorting = sort_by if sort_by in available_sorting else '-last_modified_at'
 
     # Yank project collection
-    f = ProjectFilter(qs, queryset=_project_directory_coll(request))
+    all_projects = _project_directory_coll(request)
+    f = ProjectFilter(qs, queryset=all_projects)
     sorted_projects = f.qs.distinct().order_by(sorting)
 
     # Build page
@@ -91,7 +92,10 @@ def directory(request):
     page, paginator, page_range = pagination(page, sorted_projects, 10)
 
     # Get the current org filter for typeahead
-    org_filter = request.GET.get('organisation', '')   
+    org_filter = request.GET.get('organisation', '')
+
+    # Get projects to be displayed on the map
+    map_projects = all_projects if request.rsr_page and request.rsr_page.all_maps else page
 
     context = {
         'project_count': sorted_projects.count(),
@@ -103,6 +107,7 @@ def directory(request):
         'q': filter_query_string(qs),
         'sorting': sorting,
         'current_org': org_filter,
+        'map_projects': map_projects,
     }
     return render(request, 'project_directory.html', context)
 

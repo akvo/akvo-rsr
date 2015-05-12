@@ -151,6 +151,9 @@ class PartnerSite(TimestampsMixin, models.Model):
         'Keyword', verbose_name=_(u'keywords'), related_name='partnersites', blank=True)
     exclude_keywords = models.BooleanField(
         _(u'Exclude projects with selected keyword(s)'), default=False)
+    all_maps = models.BooleanField(
+        _(u'Show all projects, updates and organisations on the maps.'), default=False
+    )
 
     def __unicode__(self):
         """Unicode representation."""
