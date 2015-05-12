@@ -88,7 +88,16 @@ class ProjectListView(BaseWidgetView):
         order_by = self.request.GET.get('order_by', 'title')
         org_id = self.request.GET.get('organisation_id', '0')
         organisation = get_object_or_404(Organisation, pk=org_id)
-        projects = organisation.published_projects()
+        projects = Project.objects.select_related(
+            'publishingstatus__status',
+            'primary_location',
+            'primary_location__country'
+        ).prefetch_related(
+            'last_update'
+        ).filter(
+            partnerships__organisation__id=org_id,
+            publishingstatus__status__exact='published'
+        ).order_by('-id')
 
         if order_by == 'status':
             projects = projects.order_by('status', 'title')
