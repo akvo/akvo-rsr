@@ -58,11 +58,15 @@ def directory(request):
     filter_class = show_filter_class(qs, ['location', ])
 
     # Yank Organisation collection
-    f = OrganisationFilter(qs, queryset=_organisation_directory_coll(request))
+    all_organisations = _organisation_directory_coll(request)
+    f = OrganisationFilter(qs, queryset=all_organisations)
 
     # Build page
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, f.qs.distinct(), 10)
+
+    # Get organisations to be displayed on the map
+    map_orgs = all_organisations if request.rsr_page and request.rsr_page.all_maps else page
 
     return render(request, 'organisation_directory.html', {
         'orgs_count': f.qs.distinct().count(),
@@ -71,7 +75,8 @@ def directory(request):
         'paginator': paginator,
         'page_range': page_range,
         'show_filters': filter_class,
-        'q': filter_query_string(qs)
+        'q': filter_query_string(qs),
+        'map_organisations': map_orgs,
     })
 
 
