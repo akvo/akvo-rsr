@@ -119,6 +119,7 @@
                         <label for="projectHierarchy" class="control-label">Hierarchy</label>
                         <div class="select-group">
                             <select name="projectHierarchy" id="projectHierarchy" class="form-control">
+                                <option value="" selected="selected">---------</option>
                                 <option value="GER">Core activity</option>
                                 <option value="EN">Sub activity</option>
                                 <option value="FR">Lower sub activity</option>
@@ -127,13 +128,57 @@
                         <p class="help-block">If you are reporting multiple levels of projects in RSR, you can specify whether this is a core or sub-project here.<br/>
                         So for example: is this project part of a larger project or programme.</p>
                     </div>
-
-
                     <div class="form-group">
-                        <label class="control-label" for="projectDescription">Project description</label>
-                        <textarea id="projectDescription" class="form-control" name="textarea" placeholder="Type in the project description"></textarea>
+                        <label for="defaultAidType" class="control-label">Default aid type</label>
+                        <div class="select-group">
+                            <select name="defaultAidType" id="defaultAidType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="A01">A01 - General budget support</option>
+                                <option value="A02">A02 - Sector budget support</option>
+                            </select>
+                        </div>
                     </div>
-
+                    <div class="form-group">
+                        <label for="defaultFlowType" class="control-label">Default flow type</label>
+                        <div class="select-group">
+                            <select name="defaultFlowType" id="defaultFlowType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="10">10 - ODA</option>
+                                <option value="20">20 - OOF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="defaultTiedStatus" class="control-label">Default tied status</label>
+                        <div class="select-group">
+                            <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="3">3 - Partially tied</option>
+                                <option value="4">4 - Tied</option>
+                                <option value="5">5 - Untied</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="collaborationType" class="control-label">Collaboration type</label>
+                        <div class="select-group">
+                            <select name="collaborationType" id="collaborationType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="1">1 - Bilateral</option>
+                                <option value="2">2 - Multilateral</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="defaultFinanceType" class="control-label">Default finance type</label>
+                        <div class="select-group">
+                            <select name="defaultFinanceType" id="defaultFinanceType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="110">110 - Aid grant excluding debt reorganisation</option>
+                                <option value="111">111 - Subsidies to national private investors</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <!--*************************************** FORM STEP 2 **********************************************-->
                 <div class="myPanel" id="panel2">
@@ -155,26 +200,64 @@
                     <div class="form-group">
                         <label for="contactName" class="control-label">Name</label>
                         <input type="text" class="form-control" id="contactName" placeholder="Contact Name" />
+                        <p class="help-block hidden">This should be a contact person for the project. (100 characters)</p>
                     </div>                    
                     <div class="form-group">
                         <label for="contactEmail" class="control-label">Email</label>
                         <input type="text" class="form-control" id="contactEmail" placeholder="Contact email" />
+                        <p class="help-block hidden">This should be the email address for the contact person of the project.</p>
                     </div>                    
                     <div class="form-group">
                         <label for="jobTitle" class="control-label">Job title</label>
                         <input type="text" class="form-control" id="jobTitle" placeholder="Job title" />
+                        <p class="help-block hidden">Job title of the contact. (100 characters)</p>
                     </div>                    
                     <div class="form-group">
                         <label for="contactOrg" class="control-label">Organisation</label>
                         <input type="text" class="form-control" id="contactOrg" placeholder="Contact organisation" />
+                        <p class="help-block hidden">The organisation that the contact person works for - this may differ from the reporting organisation of the project. (100 characters)</p>
                     </div>                    
                     <div class="form-group">
                         <label for="contactPhone" class="control-label">Telephone</label>
                         <input type="text" class="form-control" id="contactPhone" placeholder="Contact phone number" />
+                        <p class="help-block hidden">Contact number for the contact. (30 characters)</p>
                     </div>                    
                     <div class="form-group">
                         <label for="contactAddress" class="control-label">Address</label>
                         <input type="text" class="form-control" id="contactAddress" placeholder="Contact address" />
+                        <p class="help-block hidden">Address of the contact. (255 characters)</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactWebsite" class="control-label">Website</label>
+                        <input type="text" class="form-control" id="contactWebsite" placeholder="Contact website" />
+                    </div>
+                    <div class="form-group">
+                        <label for="contactDepartment" class="control-label">Department</label>
+                        <input type="text" class="form-control" id="contactDepartment" placeholder="Contact department" />
+                        <p class="help-block hidden">(100 characters)</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactCountry" class="control-label">Country</label>
+                        <div class="select-group">
+                            <select name="contactCountry" id="contactCountry" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="nl">Netherlands</option>
+                                <option value="se">Sweden</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactState" class="control-label">State</label>
+                        <input type="text" class="form-control" id="contactState" placeholder="Contact state" />
+                        <p class="help-block hidden">(100 characters)</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
+                        </div>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 3 **********************************************-->
@@ -193,6 +276,7 @@
                         </div>
                         <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
                     </div>
+                    <hr/>
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-4">
@@ -217,28 +301,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="partner2" class="control-label">Partner</label>
-                                <input type="text" class="form-control" id="partner2" placeholder="Partner">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="partnerType2" class="control-label">Type</label>
-                                <div class="select-group">
-                                    <select name="partnerType" id="partnerType2" class="form-control">
-                                        <option value="" selected="selected">---------</option>
-                                        <option value="field">Field partner</option>
-                                        <option value="funding">Funding partner</option>
-                                        <option value="sponsor">Sponsor partner</option>
-                                        <option value="support">Support partner</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="fundingAmount2" class="control-label">Funding amount</label>
-                                <input type="text" class="form-control" id="fundingAmount2" placeholder="Funding amount">
-                            </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
                         </div>
                     </div>
                 </div>
@@ -325,26 +393,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="linkType2" class="control-label">Link type</label>
-                                <div class="select-group">
-                                    <select name="partnerType" id="linkType2" class="form-control">
-                                        <option value="" selected="selected">---------</option>
-                                        <option value="1">Akvopedia entry</option>
-                                        <option value="2">External link</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="linkUrl2" class="control-label">Link URL</label>
-                                <input type="text" class="form-control" id="linkUrl2" placeholder="Link URL">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="linkCaption2" class="control-label">Link caption</label>
-                                <input type="text" class="form-control" id="linkCaption2" placeholder="Link caption">
-                            </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another link</a>
                         </div>
                     </div>
                     <div class="form-group">
@@ -395,52 +449,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="control-label" for="document2">Document</label>
-                                <input type="file" class="form-control" id="document2">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="control-label" for="documentUrl2">Document URL</label>
-                                <input type="text" class="form-control" id="documentUrl2" placeholder="Document URL">
-                            </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="control-label" for="documentTitle2">Document title</label>
-                                <input type="text" class="form-control" id="documentTitle2" placeholder="Document title">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="control-label" for="documentFormat2">Document format</label>
-                                <input type="text" class="form-control" id="documentFormat2" placeholder="Document format">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="control-label" for="documentCategory2">Document category</label>
-                                <div class="select-group">
-                                    <select name="partnerType" id="documentCategory2" class="form-control">
-                                        <option value="" selected="selected">---------</option>
-                                        <option value="A01">A01 - Pre- and post-project impact appraisal</option>
-                                        <option value="A02">A02 - Obectives / Purpose of activity</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="control-label" for="documentLanguage2">Document language</label>
-                                <div class="select-group">
-                                    <select name="partnerType" id="documentLanguage2" class="form-control">
-                                        <option value="" selected="selected">---------</option>
-                                        <option value="en">en - English</option>
-                                        <option value="sp">sp - Spanish</option>
-                                    </select>
-                                </div>
-                            </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another document</a>
                         </div>
                     </div>
                 </div>
@@ -452,13 +466,76 @@
                     <div class="form-group">
                         <label for="scope" class="control-label">Project scope</label>
                         <div class="select-group">
-                            <select name="partnerType" id="scope" class="form-control">
+                            <select name="scope" id="scope" class="form-control">
                                 <option value="" selected="selected">---------</option>
                                 <option value="1">1 - Global</option>
                                 <option value="2">2 - Regional</option>
                                 <option value="3">3 - Multi-national</option>
                                 <option value="4">3 - National</option>
                             </select>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="recipientCountry">Recipient country</label>
+                                <div class="select-group">
+                                    <select name="contactCountry" id="recipientCountry" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="nl">Netherlands</option>
+                                        <option value="se">Sweden</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="recipientCountryPercentage">Recipient country percentage</label>
+                                <input type="text" class="form-control" id="recipientCountryPercentage" placeholder="Percentage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another recipient country</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label" for="recipientRegion">Recipient region</label>
+                                <div class="select-group">
+                                    <select name="contactCountry" id="recipientRegion" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="89">89 - Europe, regional</option>
+                                        <option value="189">189 - North of Sahara, regional</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="recipientRegionPercentage">Recipient region percentage</label>
+                                <input type="text" class="form-control" id="recipientRegionPercentage" placeholder="Percentage">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="recipientRegionVocabulary">Recipient region vocabulary</label>
+                                <div class="select-group">
+                                    <select name="contactCountry" id="recipientRegionVocabulary" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - OECD DAC</option>
+                                        <option value="2">2 - UN</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another recipient region</a>
                         </div>
                     </div>
                     <div class="form-group">
@@ -535,11 +612,164 @@
                         <label class="control-label" for="locationActivityDescription">Activity description</label>
                         <textarea id="locationActivityDescription" class="form-control" name="textarea" placeholder="Type in a location activity description"></textarea>
                     </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="locationExactness">Exactness</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="locationExactness" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - Exact</option>
+                                        <option value="2">2 - Approximate</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="locationReach">Reach</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="locationReach" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - Activity</option>
+                                        <option value="2">2 - Intended beneficiaries</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="locationClass">Class</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="locationClass" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - Administrative Region</option>
+                                        <option value="2">2 - Populated Place</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="locationFeatureDesignation">Feature designation</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="locationFeatureDesignation" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="AIRQ">AIRQ - abandoned airfield</option>
+                                        <option value="CMPQ">CMPQ - abandoned camp</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="control-label" for="locationAdministrativeCode">Administrative code</label>
+                                <input type="text" class="form-control" id="locationAdministrativeCode" placeholder="Administrative code">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label" for="locationVocabulary">Administrative vocabulary</label>
+                                <div class="select-group">
+                                    <select name="partnerType" id="locationVocabulary" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="A1">A1 - Global Administrative Unit Layers</option>
+                                        <option value="A2">A2 - UN Second Admninstrative Level Boundary Project</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label" for="locationAdministrativeLevel">Administrative level</label>
+                                <input type="text" class="form-control" id="locationAdministrativeLevel" placeholder="Administrative level">
+                            </div>
+                            <div class="col-md-3">
+                                <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another administrative</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another location</a>
+                        </div>
+                    </div>
                 </div>
                 <!--*************************************** FORM STEP 8 **********************************************-->
                 <div class="myPanel" id="panel8">
                     <div class="formStep stepEight">
                         <h2 class="text-center topMargin"><span>08</span>Focus</h2>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label" for="sectorCode">Sector code</label>
+                                <input type="text" class="form-control" id="sectorCode" placeholder="Sector code">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="sectorPercentage">Sector percentage</label>
+                                <input type="text" class="form-control" id="sectorPercentage" placeholder="Sector percentage">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="sectorVocabulary">Sector vocabulary</label>
+                                <div class="select-group">
+                                    <select name="sectorVocabulary" id="sectorVocabulary" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - OECD DAC CRS Purpose Codes (5 digit)</option>
+                                        <option value="2">2 - OECD DAC CRS Purpose Codes (3 digit)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another sector</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label" for="policyMarker">Policy marker</label>
+                                <div class="select-group">
+                                    <select name="policyMarker" id="policyMarker" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - Gender Equality</option>
+                                        <option value="2">2 - Aid to Environment</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="policyMarkerSignificance">Policy marker significance</label>
+                                <div class="select-group">
+                                    <select name="policyMarkerSignificance" id="policyMarkerSignificance" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="0">0 - not targeted</option>
+                                        <option value="1">1 - significant objective</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="policyMarkerVocabulary">Policy marker vocabulary</label>
+                                <div class="select-group">
+                                    <select name="policyMarkerVocabulary" id="policyMarkerVocabulary" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - OECD DAC CRS</option>
+                                        <option value="99">99 - Reporting Organisation</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>
+                        </div>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 9 **********************************************-->
@@ -547,11 +777,468 @@
                     <div class="formStep stepNine">
                         <h2 class="text-center topMargin"><span>09</span>Finance</h2>
                     </div>
+                    <div class="form-group">
+                        <label for="capitalSpendPercentage" class="control-label">Capital spend percentage</label>
+                        <input type="text" class="form-control" id="capitalSpendPercentage" placeholder="Capital spend percentage" />
+                    </div>
+                    <div class="form-group">
+                        <label for="countryBudgetVocabulary" class="control-label">Country budget vocabulary</label>
+                        <div class="select-group">
+                            <select name="countryBudgetVocabulary" id="countryBudgetVocabulary" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="1">1 - IATI</option>
+                                <option value="2">2 - Country Chart of Accounts</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="budgetItem">Budget item</label>
+                                <div class="select-group">
+                                    <select name="budgetItem" id="budgetItem" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">Capacity buidling</option>
+                                        <option value="2">Sanitation</option>
+                                        <option value="3">Other 1</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="budgetItemOther">Other label extra info</label>
+                                <input type="text" class="form-control" id="budgetItemOther" placeholder="Other label extra info" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="budgetType" class="control-label">Budget type</label>
+                        <div class="select-group">
+                            <select name="budgetType" id="budgetType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="1">1 - Original</option>
+                                <option value="2">2 - Revised</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="budgetItemValue">Budget item value</label>
+                                <input type="number" step="any" class="form-control" id="budgetItemValue" placeholder="Budget item amount" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="budgetItemValueDate">Budget item value date</label>
+                                <input type="text" class="form-control" id="budgetItemValueDate" placeholder="Budget item amount date" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="budgetItemPeriodStart">Budget item period start</label>
+                                <input type="number" step="any" class="form-control" id="budgetItemPeriodStart" placeholder="Budget item period start" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="budgetItemPeriodEnd">Budget item period end</label>
+                                <input type="text" class="form-control" id="budgetItemPeriodEnd" placeholder="Budget item period end" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="countryBudgetItem">Country budget item</label>
+                                <div class="select-group">
+                                    <select name="budgetType" id="countryBudgetItem" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1.1.1">1.1.1 - Executive - executive</option>
+                                        <option value="1.2.1">1.2.1 - Legislative - legislative</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="countryBudgetItemPercentage">Country budget item percentage</label>
+                                <input type="number" step="any" class="form-control" id="countryBudgetItemPercentage" placeholder="Percentage" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another country budget item</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label" for="transactionValue">Transaction value</label>
+                                <input type="number" step="any" class="form-control" id="transactionValue" placeholder="Transaction value">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="transactionDate">Transaction date</label>
+                                <input type="text" class="form-control" id="transactionDate" placeholder="Transaction date">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="transactionValueDate">Transaction value date</label>
+                                <input type="text" class="form-control" id="transactionValueDate" placeholder="Transaction value date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="transactionReference">Transaction reference</label>
+                                <input type="text" class="form-control" id="transactionReference" placeholder="Transaction reference" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="transactionDescription">Transaction description</label>
+                                <input type="text" class="form-control" id="transactionDescription" placeholder="Transaction description" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="providerOrganisation">Provider organisation</label>
+                                <input type="text" class="form-control" id="providerOrganisation" placeholder="Provider organisation" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="providerOrganisationActivityId">Provider organisation activity id</label>
+                                <input type="text" class="form-control" id="providerOrganisationActivityId" placeholder="Provider organisation activity id" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="receiverOrganisation">Receiver organisation</label>
+                                <input type="text" class="form-control" id="receiverOrganisation" placeholder="Receiver organisation" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="receiverOrganisationActivityId">Receiver organisation activity id</label>
+                                <input type="text" class="form-control" id="receiverOrganisationActivityId" placeholder="Receiver organisation activity id" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label class="control-label" for="transactionSector">Transaction sector</label>
+                                <input type="text" class="form-control" id="transactionSector" placeholder="Transaction sector" />
+                            </div>
+                            <div class="col-md-5">
+                                <label class="control-label" for="transactionSectorVocabulary">Transaction sector vocabulary</label>
+                                <div class="select-group">
+                                    <select name="transactionSectorVocabulary" id="transactionSectorVocabulary" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - OECD DAC CRS Purpose Codes (5 digit)</option>
+                                        <option value="2">2 - OECD DAC CRS Purpose Codes (3 digit)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another transaction sector</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionAidType" class="control-label">Transaction aid type</label>
+                        <div class="select-group">
+                            <select name="defaultAidType" id="transactionAidType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="A01">A01 - General budget support</option>
+                                <option value="A02">A02 - Sector budget support</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionDisbursementChannel" class="control-label">Transaction disbursement channel</label>
+                        <div class="select-group">
+                            <select name="transactionDisbursementChannel" id="transactionDisbursementChannel" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="1">1 - Money is disbursed through central Ministry of Finance or Treasury</option>
+                                <option value="2">2 - Money is disbursed directly to the implementing institution and managed through a separate bank account</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionFinanceType" class="control-label">Transaction finance type</label>
+                        <div class="select-group">
+                            <select name="transactionFinanceType" id="transactionFinanceType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="110">110 - Aid grant excluding debt reorganisation</option>
+                                <option value="111">111 - Subsidies to national private investors</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionFlowType" class="control-label">Transaction flow type</label>
+                        <div class="select-group">
+                            <select name="transactionFlowType" id="transactionFlowType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="10">10 - ODA</option>
+                                <option value="20">20 - OOF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionTiedStatus" class="control-label">Transaction tied status</label>
+                        <div class="select-group">
+                            <select name="transactionTiedStatus" id="transactionTiedStatus" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="3">3 - Partially tied</option>
+                                <option value="4">4 - Tied</option>
+                                <option value="5">5 - Untied</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="transactionRecipientCountry">Transaction recipient country</label>
+                        <div class="select-group">
+                            <select name="transactionRecipientCountry" id="transactionRecipientCountry" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="nl">Netherlands</option>
+                                <option value="se">Sweden</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="transactionRecipientRegion">Transaction recipient region</label>
+                                <div class="select-group">
+                                    <select name="transactionRecipientRegion" id="transactionRecipientRegion" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="89">89 - Europe, regional</option>
+                                        <option value="189">189 - North of Sahara, regional</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="transactionRecipientRegionVocabulary">Recipient region vocabulary</label>
+                                <div class="select-group">
+                                    <select name="transactionRecipientRegionVocabulary" id="transactionRecipientRegionVocabulary" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - OECD DAC</option>
+                                        <option value="2">2 - UN</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="plannedDisbursementValue">Planned disbursement value</label>
+                                <input type="number" step="any" class="form-control" id="plannedDisbursementValue" placeholder="Planned disbursement value">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="plannedDisbursementValueDate">Planned disbursement value date</label>
+                                <input type="text" class="form-control" id="plannedDisbursementValueDate" placeholder="Planned disbursement value date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="plannedDisbursementType" class="control-label">Planned disbursement type</label>
+                        <div class="select-group">
+                            <select name="plannedDisbursementType" id="plannedDisbursementType" class="form-control">
+                                <option value="" selected="selected">---------</option>
+                                <option value="1">1 - Original</option>
+                                <option value="2">2 - Revised</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="plannedDisbursementPeriodStart">Planned disbursement period start</label>
+                                <input type="text" class="form-control" id="plannedDisbursementPeriodStart" placeholder="Planned disbursement period start" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="plannedDisbursementPeriodEnd">Planned disbursement period end</label>
+                                <input type="text" class="form-control" id="plannedDisbursementPeriodEnd" placeholder="Planned disbursement period end" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="plannedDisbursementUpdated" class="control-label">Planned disbursement updated</label>
+                        <input type="text" class="form-control" id="plannedDisbursementUpdated" placeholder="Planned disbursement updated" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
+                        </div>
+                    </div>
                 </div>
                 <!--*************************************** FORM STEP 10 **********************************************-->
                 <div class="myPanel" id="panel10">
                     <div class="formStep stepTen">
                         <h2 class="text-center topMargin"><span>10</span>Results</h2>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label" for="resultTitle">Result title</label>
+                                <input type="text" class="form-control" id="resultTitle" placeholder="Result title">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="resultType">Result type</label>
+                                <div class="select-group">
+                                    <select name="resultType" id="resultType" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - Output</option>
+                                        <option value="2">2 - Outcome</option>
+                                        <option value="3">3 - Impact</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="aggregationStatus">Aggregation status</label>
+                                <div class="select-group">
+                                    <select name="aggregationStatus" id="aggregationStatus" class="form-control">
+                                        <option value="0" selected="selected">Unknown</option>
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="resultDescription">Result description</label>
+                        <textarea id="resultDescription" class="form-control" name="textarea" placeholder="Type in the result description"></textarea>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label" for="indicatorTitle">Indicator title</label>
+                                <input type="text" class="form-control" id="indicatorTitle" placeholder="Indicator title">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="indicatorMeasure">Indicator measure</label>
+                                <div class="select-group">
+                                    <select name="indicatorMeasure" id="indicatorMeasure" class="form-control">
+                                        <option value="" selected="selected">---------</option>
+                                        <option value="1">1 - Unit</option>
+                                        <option value="2">2 - Percentage</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="ascending">Ascending</label>
+                                <div class="select-group">
+                                    <select name="ascending" id="ascending" class="form-control">
+                                        <option value="0" selected="selected">Unknown</option>
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="indicatorDescription">Indicator description</label>
+                        <textarea id="indicatorDescription" class="form-control" name="textarea" placeholder="Type in the indicator description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="baselineValue">Baseline value</label>
+                                <input type="number" step="any" class="form-control" id="baselineValue" placeholder="Baseline value">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="baselineYear">Baseline year</label>
+                                <input type="number" class="form-control" id="baselineYear" placeholder="Baseline year">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="baselineComment">Baseline comment</label>
+                        <textarea id="baselineComment" class="form-control" name="textarea" placeholder="Type in the baseline comment"></textarea>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="indicatorPeriodStart">Period start</label>
+                                <input type="text" class="form-control" id="indicatorPeriodStart" placeholder="Period start">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="indicatorPeriodEnd">Period end</label>
+                                <input type="text" class="form-control" id="indicatorPeriodEnd" placeholder="Period end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="indicatorPeriodTargetValue">Target value</label>
+                                <input type="text" class="form-control" id="indicatorPeriodTargetValue" placeholder="Target value">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="indicatorPeriodTargetValueComment">Target value comment</label>
+                                <textarea id="indicatorPeriodTargetValueComment" class="form-control" name="textarea" placeholder="Type in the target value comment"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="control-label" for="indicatorPeriodActualValue">Actual value</label>
+                                <input type="text" class="form-control" id="indicatorPeriodActualValue" placeholder="Target value">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label" for="indicatorPeriodActualValueComment">Actual value comment</label>
+                                <textarea id="indicatorPeriodActualValueComment" class="form-control" name="textarea" placeholder="Type in the actual value comment"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another indicator period</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another indicator</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr/>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#"><span class="glyphicon glyphicon-plus"></span> Add another result</a>
+                        </div>
                     </div>
                 </div>
             </fieldset>
