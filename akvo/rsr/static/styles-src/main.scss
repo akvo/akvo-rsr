@@ -273,7 +273,6 @@ dl {
 label {
     color: $rsrGreen;
     font-weight: normal;
-    @include noWrapTxt;
 }
 
 /****************************************************************************
@@ -547,17 +546,19 @@ nav.navbar-fixed-top {
 }
 
 .help-block {
-    font-size:0.9em;
-    color:rgba($akvoPurple, 0.3);
+    font-size: 0.9em;
+    color: rgba($akvoPurple, 0.3);
 }
+
 .editDate {
     font-style: italic;
     padding: 10px 0 10px 15px;
     margin-bottom: 15px;
     span {
-        color:rgba($akvoBlack,0.3);
+        color: rgba($akvoBlack, 0.3);
     }
 }
+
 #profile {
     .usrAvatar {
         background-color: rgba($akvoBlack, 0);
@@ -1603,7 +1604,7 @@ div.textBlock {
 #filterForm {
     #org-filter-container {
         ul.typeahead-selector {
-            margin: -15px 0 0 0;            
+            margin: -15px 0 0 0;
             padding: 0.25em;
             border-right: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
@@ -1906,6 +1907,81 @@ dd {
         font-size: 1.1em;
         a {
             font-weight: bold;
+        }
+    }
+}
+/* Project Admin */
+
+.projectEdit {
+    h2 {
+        font-weight: normal;
+        text-transform: uppercase;
+        font-size: 1.5em;
+    }
+    .myPanel {
+        padding: 10px 15px;
+        &:nth-child(2n+1) {
+            background: rgba($lightOrange, 0.2);
+        }
+    }
+    .borderBottom {
+        padding-bottom: 25px;
+        border-bottom: 1px solid rgba($akvoPurple, 0.1);
+        margin-bottom: 20px;
+        &.myPanel {
+            margin-bottom: 60px;
+        }
+    }
+    $padding: 10px;
+    $label-font-size: 13px;
+    *,
+    *:before,
+    *:after {
+        box-sizing: border-box;
+    }
+    .control {
+        position: relative;
+        padding-top: $padding + $label-font-size;
+        padding-bottom: $padding;
+        // you proably want to replace these with your grid classes
+        &.small {
+            width: 30%;
+        }
+        &.medium {
+            width: 70%;
+            padding-left: $padding;
+        }
+        &:last-child {
+            border: 0;
+        }
+    }
+    a {
+        &.btn {
+            margin-top: 23px;
+            &.btn-link {
+                margin-top: 0;
+            }
+        }
+    }
+    .col-md-4 a.btn.btn-link, .col-md-3 a.btn.btn-link {
+        margin-top: 23px;
+    }
+    input, textarea, select {
+        & + label {
+            position: absolute;
+            top: 10px;
+            transition: top 0.7s ease, opacity 0.7s ease;
+            opacity: 0;
+            // Some nice styling
+            font-size: $label-font-size;
+            font-weight: 600;
+        }
+        &:valid + label {
+            opacity: 1;
+            top: 3px;
+        }
+        &:focus + label {
+            color: $rsrBlue;
         }
     }
 }

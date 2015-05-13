@@ -118,8 +118,8 @@ urlpatterns = patterns(
     url(r'^myrsr/password_change/$',
         'akvo.rsr.views.my_rsr.password_change', name='password_change'),
 
-    url(r'^myrsr/Admin/$',
-        'akvo.rsr.views.my_rsr.rsr_admin', name='rsr_admin'),
+    url(r'^myrsr/project_admin/$',
+        'akvo.rsr.views.my_rsr.project_admin', name='project_admin'),
 
     # Donations
     url(r'^mollie/report/$',

@@ -91,6 +91,9 @@ img {
   .noStyleUl li {
     padding: 0; }
 
+time {
+  color: #de8929; }
+
 em {
   font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 1.2em;
@@ -248,10 +251,7 @@ dl.dl-horizontal.org_statistics_table dd {
 
 label {
   color: #00a79d;
-  font-weight: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; }
+  font-weight: normal; }
 
 /****************************************************************************
                                 HEADER + NAVIGATION
@@ -487,6 +487,17 @@ nav.navbar-fixed-top {
   background: rgba(32, 32, 36, 0.1) !important; }
   .myProjectList tbody tr.isPublished {
     background: white !important; }
+
+.help-block {
+  font-size: 0.9em;
+  color: rgba(44, 42, 116, 0.3); }
+
+.editDate {
+  font-style: italic;
+  padding: 10px 0 10px 15px;
+  margin-bottom: 15px; }
+  .editDate span {
+    color: rgba(32, 32, 36, 0.3); }
 
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
@@ -1330,7 +1341,7 @@ div.textBlock {
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
 .organisationDetail .orgDescr {
-  background-color: rgba(244, 116, 107, 0.1); }
+  background-color: rgba(244, 116, 107, 0); }
   .organisationDetail .orgDescr p {
     padding-left: 20px; }
 .organisationDetail h1 {
@@ -1522,3 +1533,50 @@ dd.currencyAmount {
     font-size: 1.1em; }
     #cookie-law p a {
       font-weight: bold; }
+
+/* Project Admin */
+.projectEdit h2 {
+  font-weight: normal;
+  text-transform: uppercase;
+  font-size: 1.5em; }
+.projectEdit .myPanel {
+  padding: 10px 15px; }
+  .projectEdit .myPanel:nth-child(2n+1) {
+    background: rgba(253, 242, 232, 0.2); }
+.projectEdit .borderBottom {
+  padding-bottom: 25px;
+  border-bottom: 1px solid rgba(44, 42, 116, 0.1);
+  margin-bottom: 20px; }
+  .projectEdit .borderBottom.myPanel {
+    margin-bottom: 60px; }
+.projectEdit *, .projectEdit *:before, .projectEdit *:after {
+  box-sizing: border-box; }
+.projectEdit .control {
+  position: relative;
+  padding-top: 23px;
+  padding-bottom: 10px; }
+  .projectEdit .control.small {
+    width: 30%; }
+  .projectEdit .control.medium {
+    width: 70%;
+    padding-left: 10px; }
+  .projectEdit .control:last-child {
+    border: 0; }
+.projectEdit a.btn {
+  margin-top: 23px; }
+  .projectEdit a.btn.btn-link {
+    margin-top: 0; }
+.projectEdit .col-md-4 a.btn.btn-link, .projectEdit .col-md-3 a.btn.btn-link {
+  margin-top: 23px; }
+.projectEdit input + label, .projectEdit textarea + label, .projectEdit select + label {
+  position: absolute;
+  top: 10px;
+  transition: top 0.7s ease, opacity 0.7s ease;
+  opacity: 0;
+  font-size: 13px;
+  font-weight: 600; }
+.projectEdit input:valid + label, .projectEdit textarea:valid + label, .projectEdit select:valid + label {
+  opacity: 1;
+  top: 3px; }
+.projectEdit input:focus + label, .projectEdit textarea:focus + label, .projectEdit select:focus + label {
+  color: #2c2a74; }

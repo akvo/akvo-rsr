@@ -14,10 +14,7 @@
                     <li><a href="{% url 'my_details' %}"  class="{% if current_path == '/myrsr/' %}active{% endif %}">My details</a></li>
                     <li><a href="{% url 'my_updates' %}" class="{% if '/myrsr/updates/' in current_path %}active{% endif %}">My updates</a></li>
                     <li><a href="{% url 'my_projects' %}" class="{% if '/myrsr/projects/' in current_path %}active{% endif %}">My projects</a></li>
-                    <li><a href="{% url 'rsr_admin' %}" class="{% if '/myrsr/rsr_admin/' in current_path %}active{% endif %}">Project admin</a></li>
-                    <li><a href="{% url 'my_details' %}"  class="{% if current_path == '/myrsr/' %}active{% endif %}">{% trans 'My details' %}</a></li>
-                    <li><a href="{% url 'my_updates' %}" class="{% if '/myrsr/updates/' in current_path %}active{% endif %}">{% trans 'My updates' %}</a></li>
-                    <li><a href="{% url 'my_projects' %}" class="{% if '/myrsr/projects/' in current_path %}active{% endif %}">{% trans 'My projects' %}</a></li>
+                    <li><a href="{% url 'project_admin' %}" class="{% if '/myrsr/project_admin/' in current_path %}active{% endif %}">{% trans 'Project admin' %}</a></li>
                     {% has_perm 'rsr.iati_management' user as can_manage_iati %}
                     {% if can_manage_iati %}
                     <li><a href="{% url 'my_iati' %}" class="{% if '/myrsr/iati/' in current_path %}active{% endif %}">{% trans "My IATI" %}</a></li>
