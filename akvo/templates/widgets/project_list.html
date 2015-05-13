@@ -15,7 +15,9 @@
       <li class="projectDescrTd">
         <a href="{% url 'widget_project_list'%}{% addparam "order_by" "title" %}" target="_self">
           {% trans "Project" %}
-        </a>
+        </a> {% if projects_count > 100 %}
+          <span class="small">(100 {% trans 'of' %} {{ projects_count }})</span>
+          {% endif %}
       </li>
       <li class="projectLocTd">
         {% trans "Location" %}

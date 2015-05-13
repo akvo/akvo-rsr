@@ -109,7 +109,8 @@ class ProjectListView(BaseWidgetView):
             projects = projects.order_by('title')  # default to project title
 
         context['organisation'] = organisation
-        context['projects'] = projects
+        context['projects_count'] = projects.count()  # Limit to 100 projects
+        context['projects'] = projects[:100]  # Limit to 100 projects
         return context
 
 
