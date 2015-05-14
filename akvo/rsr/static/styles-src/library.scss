@@ -238,3 +238,38 @@ $width-large:  1200px;
   -o-animation: #{$str};
   animation: #{$str};      
 }
+
+$default-transition-property: all !default;
+$default-transition-duration: 1s !default;
+$default-transition-function: null !default;
+$default-transition-delay: null !default;
+$transitionable-prefixed-values: transform, transform-origin !default;
+
+@mixin transition-property($properties...) {
+  $properties: set-arglist-default($properties, $default-transition-property);
+  @include with-each-prefix(css-transitions, $transition-support-threshold) {
+    $props: if($current-prefix, prefixed-for-transition($current-prefix, $properties), $properties);
+    @include prefix-prop(transition-property, $props);
+  }
+}
+
+@mixin transition-duration($durations...) {
+  $durations: set-arglist-default($durations, $default-transition-duration);
+  @include prefixed-properties(css-transitions, $transition-support-threshold, (
+    transition-duration: $durations
+  ));
+}
+
+@mixin transition-timing-function($functions...) {
+  $functions: set-arglist-default($functions, $default-transition-function);
+  @include prefixed-properties(css-transitions, $transition-support-threshold, (
+    transition-timing-function: $functions
+  ));
+}
+
+@mixin transition-delay($delays...) {
+  $delays: set-arglist-default($delays, $default-transition-delay);
+  @include prefixed-properties(css-transitions, $transition-support-threshold, (
+    transition-delay: $delays
+  ));
+}

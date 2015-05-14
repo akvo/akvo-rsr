@@ -1538,17 +1538,50 @@ dd.currencyAmount {
 .projectEdit h2 {
   font-weight: normal;
   text-transform: uppercase;
-  font-size: 1.5em; }
+  font-size: 1.5em;
+  display: block; }
 .projectEdit .myPanel {
-  padding: 10px 15px; }
-  .projectEdit .myPanel:nth-child(2n+1) {
-    background: rgba(253, 242, 232, 0.2); }
+  overflow: hidden;
+  cursor: pointer;
+  line-height: 25px;
+  position: relative; }
+  .projectEdit .myPanel .formBlock {
+    width: 99%;
+    height: 0;
+    display: block;
+    overflow: hidden;
+    box-sizing: border-box;
+    transition: all .5s linear;
+    padding: 10px 15px;
+    margin: 0 auto;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
+  .projectEdit .myPanel input[type='radio']:checked ~ .formBlock {
+    height: auto;
+    overflow: auto;
+    background: rgba(253, 242, 232, 0);
+    box-shadow: 0 0 15px rgba(44, 42, 116, 0.2); }
+.projectEdit input[type='radio'] {
+  display: none; }
+.projectEdit .formStep > label {
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  top: initial;
+  padding: 5px 5px 5px 15px;
+  transition: background 0.1s linear;
+  background: rgba(44, 42, 116, 0.1); }
+  .projectEdit .formStep > label:hover {
+    background: rgba(32, 32, 36, 0.05); }
 .projectEdit .borderBottom {
-  padding-bottom: 25px;
-  border-bottom: 1px solid rgba(44, 42, 116, 0.1);
-  margin-bottom: 20px; }
-  .projectEdit .borderBottom.myPanel {
-    margin-bottom: 60px; }
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(44, 42, 116, 0); }
 .projectEdit *, .projectEdit *:before, .projectEdit *:after {
   box-sizing: border-box; }
 .projectEdit .control {

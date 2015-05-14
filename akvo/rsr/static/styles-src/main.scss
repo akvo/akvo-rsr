@@ -1910,6 +1910,7 @@ dd {
         }
     }
 }
+
 /* Project Admin */
 
 .projectEdit {
@@ -1917,19 +1918,53 @@ dd {
         font-weight: normal;
         text-transform: uppercase;
         font-size: 1.5em;
+        display: block;
     }
     .myPanel {
-        padding: 10px 15px;
-        &:nth-child(2n+1) {
-            background: rgba($lightOrange, 0.2);
+        overflow: hidden;
+        cursor: pointer;
+        line-height: 25px;
+        position: relative;
+        .formBlock {
+            width: 99%;
+            height: 0;
+            display: block;
+            overflow: hidden;
+            box-sizing: border-box;
+            transition: all .5s linear;
+            padding:10px 15px;
+            margin:0 auto;
+            @include border-radius(5px);
         }
-    }
+        input[type='radio']:checked ~ .formBlock {
+                height: auto;
+                overflow: auto;
+                background:rgba($lightOrange,0);
+                box-shadow: 0 0 15px rgba($akvoPurple, 0.2);
+                }
+            }
+        input[type='radio'] {
+            display: none;
+        }
+        .formStep {
+              & > label {
+                @include border-radius(5px);
+                display: block;
+                width:100%;
+                cursor: pointer;
+                top:initial;
+                padding:5px 5px 5px 15px;
+                transition:background 0.1s linear;
+                background:rgba($akvoPurple, 0.1);
+                &:hover {
+                background:rgba($akvoBlack, 0.05);
+                }
+            }   
+        }
     .borderBottom {
-        padding-bottom: 25px;
-        border-bottom: 1px solid rgba($akvoPurple, 0.1);
-        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba($akvoPurple, 0);
         &.myPanel {
-            margin-bottom: 60px;
         }
     }
     $padding: 10px;
