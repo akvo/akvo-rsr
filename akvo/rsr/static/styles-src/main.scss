@@ -1454,6 +1454,25 @@ div.textBlock {
     }
 }
 
+#accordion {
+    .panel-group {
+        .panel-heading {
+            a {
+                &:before {
+                    content: '- ';
+                    position: relative;
+                }
+                &.collapsed {
+                    &:before {
+                        content: '+ ';
+                        top: 1px;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .allUpdates {
     margin-top: 25px;
 }
@@ -1587,7 +1606,7 @@ div.textBlock {
 #filterForm {
     #org-filter-container {
         ul.typeahead-selector {
-            margin: -15px 0 0 0;            
+            margin: -15px 0 0 0;
             padding: 0.25em;
             border-right: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
