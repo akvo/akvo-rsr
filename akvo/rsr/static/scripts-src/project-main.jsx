@@ -228,4 +228,5 @@ React.renderComponent(
     <CarouselInstance source={JSON.parse(document.getElementById("akvo-rsr-carousel").innerHTML)} />,
     document.getElementById('carousel'));
 
+// Open the first accordion item on load
 document.querySelector('#accordion div.panel-group div:first-child div a').click();
