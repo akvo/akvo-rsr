@@ -70,15 +70,41 @@ function getProjectLabels() {
         project_id = labels[i].getElementsByTagName('input')[0].value;
         loadAsync('/rest/v1/project_iati_check/' + project_id + '/?format=json', 0, 3, labels[i]);
     }
+
+    return true;
 }
 
 function loadComponent(component_id) {
     var Container;
 
     Container = React.createClass({displayName: 'Container',
+        getInitialState: function() {
+            return {active_button: true};
+        },
+
+        handleClick: function() {
+            this.setState({active_button: false});
+            getProjectLabels();
+        },
+
         render: function() {
             return (
-                React.DOM.a( {onClick:getProjectLabels}, "Perform checks")
+                React.DOM.p(null, 
+                React.DOM.div( {className:"row"}, 
+                    React.DOM.div( {className:"col-md-8"}, 
+                        "In order to see which of your projects is fully IATI compliant, you can"+' '+
+                        "perform checks by clicking the \"Perform checks\" button. ", React.DOM.br(null),
+                        "Projects with all mandatory IATI information filled in will be"+' '+
+                        "marked ", React.DOM.span( {className:"success"}, "green"), " and projects with missing"+' '+
+                        "information will be marked ", React.DOM.span( {className:"error"}, "red"),"."
+                    ),
+                    React.DOM.div( {className:"col-md-4"}, 
+                        React.DOM.button( {onClick:this.handleClick, className:this.state.active_button ? 'btn btn-primary' : 'btn btn-primary disabled'}, 
+                            this.state.active_button ? 'Perform checks' : 'Performing checks...'
+                        )
+                    )
+                )
+                )
                 );
         }
     });
