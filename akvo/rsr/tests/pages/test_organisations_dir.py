@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from django.conf import settings
 from django.test import Client, TestCase
+from ..utils import contains_template_errors
 
 
 class PingTest(TestCase):
@@ -17,8 +18,12 @@ class PingTest(TestCase):
     def setUp(self):
         """Setup."""
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.resp = self.c.get('/organisations/')
 
     def test_ping(self):
         """Ping /organisations/."""
-        response = self.c.get('/organisations/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.resp.status_code, 200)
+
+    def test_template_markup(self):
+        """Check for common template errors."""
+        self.assertFalse(contains_template_errors(self.resp.content))
