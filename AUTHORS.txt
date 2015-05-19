@@ -18,7 +18,11 @@ The PRIMARY AUTHORS are (and/or have been):
 - Stellan Lagerström
 - Gino Lee
 - Peter van der Linde
+- Gabriel Martin
+- Ruarcc McAloon
+- Iván Perdomo
 - Robert Rochette
+- Dan Rowden
 - Loïc Sans
 - Anna-Marthe Sessink
 - Elizabeth Whiteside
