@@ -1,1 +1,1 @@
-{% load i18n %}{% blocktrans %}[Akvo RSR] {{ user.get_full_name }} has requested to join {{ organisation.name }}{% endblocktrans %}
+{% load i18n %}{% blocktrans with user_name=user.get_full_name organisation_name=organisation.name %}[Akvo RSR] {{ user_name }} has requested to join {{ organisation_name }}{% endblocktrans %}
