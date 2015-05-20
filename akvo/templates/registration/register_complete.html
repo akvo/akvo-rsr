@@ -7,7 +7,7 @@
 {% block maincontent %}
 	<div class="container">
 	    <div class="row">
-	        <h2 class="text-center verticalPadding">{% blocktrans %}Welcome, {{ new_user.first_name }}!{% endblocktrans %}</h2>
+	        <h2 class="text-center verticalPadding">{% trans 'Welcome' %}, {{ new_user.first_name }}!</h2>
 	        <p class="text-center verticalPadding">{% trans 'A confirmation will be sent to you via email. Please click the link in the email to complete the setup of your account.' %}</p>
 	    </div>
 	</div>
