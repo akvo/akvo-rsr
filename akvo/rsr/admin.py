@@ -730,12 +730,13 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
         }),
     )
     filter_horizontal = ('keywords',)
-    list_display = ('title', 'status', 'project_plan_summary', 'latest_update',
+    list_display = ('title', 'status', 'project_plan_summary', 'last_update',
                     'show_current_image', 'is_published', 'show_keywords')
     search_fields = ('title', 'subtitle', 'project_plan_summary')
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
-    readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
+    readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',
+                       'last_update')
 
     def __init__(self, model, admin_site):
         """
@@ -745,10 +746,104 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectAdmin, self).__init__(model, admin_site)
 
-    def get_queryset(self, request):
-        if request.user.is_superuser or request.user.is_admin:
-            return super(ProjectAdmin, self).get_queryset(request)
+    def get_limited_queryset(self, request):
+        """."""
+        return super(ProjectAdmin, self).queryset(request).select_related(
+            'publishingstatus__status').prefetch_related('keywords').filter(
+                partnerships__organisation__employees__user__id=request.user.id
+            ).filter(
+                partnerships__organisation__employees__group__name__in=['Admins', 'Project Editors']
+            )
 
+        # from .models import Project, Organisation
+        # orgs = Organisation.objects.filter(
+        #     partnerships__organisation__employees__user__id=request.user.id
+        # ).filter(
+        #     partnerships__organisation__employees__group__name__in=['Admins', 'Project Editors']
+        # )
+        # print orgs
+        #
+        # projs = []
+        # for org in orgs:
+        #     projs.append(orgs.all_projects())
+        #
+        # print projs
+        # return projs
+
+
+    def get_limited_queryset_old(self, request):
+        """."""
+        print "get_limited_queryset"
+        from .models import Project, Organisation
+        # employments = request.user.approved_employments()
+        # orgs = [employment.organisation for employment in employments]
+
+        qs = Project.objects.only(
+            'title',
+            'status',
+            'project_plan_summary',
+            'last_update',
+            'current_image',
+            # 'published',
+            # 'is_published',
+            'keywords'
+        ).select_related(
+            'publishingstatus__status',
+            # 'partnerships__organisation',
+            # 'partnerships__organisation',
+            # 'last_update__id'
+            # 'partnerships__organisation__employees__user__id'
+        ).prefetch_related(
+            'keywords',
+            # 'partnerships__organisation',
+        ).filter(
+            partnerships__organisation__employees__user__id=request.user.id
+        ).filter(
+            partnerships__organisation__employees__group__name__in=['Admins', 'Project Editors']
+        )
+
+        # qs = Project.objects.select_related(
+        #     'partnerships',
+        #     'publishingstatus__status'
+        # ).prefetch_related(
+        #     'keywords',
+        #     #'partnerships'
+        #     #'partnerships__organisation'
+        # ).filter(
+        #     partnerships__organisation__in=orgs
+        # )
+        # print qs.query
+        return qs
+
+
+    # def get_limited_queryset(self, request):
+    #     """."""
+    #     # print "get_limited_queryset"
+    #     from .models import Project
+    #     user = request.user
+    #     employments = user.approved_employments()
+    #     orgs = [employment.organisation for employment in employments]
+    #     # print orgs
+    #     # qs = Project.objects.filter(partnerships__organisation__in=orgs)
+    #     qs = Project.objects.filter(partnerships__organisation__in=orgs)
+    #     # print len(qs)
+    #     # print qs
+    #     return qs
+
+    # projects = Project.objects.select_related(
+    #     'publishingstatus__status',
+    #     'primary_location',
+    #     'primary_location__country'
+    # ).prefetch_related(
+    #     'last_update'
+    # ).filter(
+    #     partnerships__organisation__id=org_id,
+    #     publishingstatus__status__exact='published'
+    # ).order_by('-id')
+
+    def get_limited_queryset_old(self, request):
+        """."""
+        print "get_limited_queryset_old"
         from .models import Project
         qs = Project.objects.none()
         for employment in request.user.employers.approved():
@@ -756,6 +851,13 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 project_pks = [project.pk for project in employment.organisation.all_projects()]
                 qs = qs | Project.objects.filter(pk__in=project_pks)
         return qs.distinct()
+
+    def get_queryset(self, request):
+        """If superuser or admin return full queryset, otherwise return limited queryset."""
+        if request.user.is_superuser or request.user.is_admin:
+            return super(ProjectAdmin, self).queryset(request).select_related(
+                'publishingstatus__status').prefetch_related('keywords')
+        return self.get_limited_queryset(request)
 
     @csrf_protect_m
     @transaction.atomic
