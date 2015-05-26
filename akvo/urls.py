@@ -17,12 +17,13 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from django.conf.urls.i18n import i18n_patterns
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
 
 admin.autodiscover()
 
-urlpatterns = patterns(
+urlpatterns = i18n_patterns(
     '',
 
     # Home page
