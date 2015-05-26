@@ -1201,6 +1201,13 @@ div.textBlock {
       div.textBlock .udpateComponent .updateLinkTitle:hover {
         color: #ff5500; }
 
+#accordion .panel-group .panel-heading a:before {
+  content: '- ';
+  position: relative; }
+#accordion .panel-group .panel-heading a.collapsed:before {
+  content: '+ ';
+  top: 1px; }
+
 .allUpdates {
   margin-top: 25px; }
 
