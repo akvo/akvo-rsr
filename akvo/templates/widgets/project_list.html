@@ -13,8 +13,14 @@
   <ul class="thead">
       <li class="projectDescrTd">
         <a href="{% url 'widget_project_list'%}{% addparam "order_by" "title" %}" target="_self">
-          {% trans "Project" %}
-        </a>
+          {% trans "Projects" %}
+        </a> {% if projects_count > 100 %}
+          <span style="font-size: 0.8em">
+            {% blocktrans with number_of_projects=projects_count %}
+            (showing first 100 of {{number_of_projects}})
+            {% endblocktrans %}
+            </span>
+          {% endif %}
       </li>
       <li class="projectLocTd">
         {% trans "Location" %}
