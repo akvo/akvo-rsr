@@ -41,6 +41,15 @@
             </form>
         </p>
         {% elif project_count > 0 %}
+        <p>
+            {% blocktrans %}
+            In order to see which of your projects is fully IATI compliant, you can
+            perform checks by clicking the "Perform checks" button. <br/>
+            Projects with all mandatory IATI information filled in will be
+            marked <span class="success">green</span> and projects with missing
+            information will be marked <span class="error">red</span>.
+            {% endblocktrans %}
+        </p>
         <div id="react_iati_checks"></div>
         <p>
             <form method="POST" action="" id="iati_export_form">
@@ -89,6 +98,14 @@
 {% endblock react_js %}
 
 {% block js %}
-  {{ block.super }}
-  {% compressed_js 'my_iati' %}
+    {{ block.super }}
+
+    {# Translation strings #}
+    <script type="application/json" id="perform-checks-text">
+        {
+            "perform_checks": "{% trans 'Perform checks' %}"
+        }
+    </script>
+
+    {% compressed_js 'my_iati' %}
 {% endblock js %}

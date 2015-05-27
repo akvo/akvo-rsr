@@ -5,6 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
+var i18n;
 
 function loadAsync(url, retryCount, retryLimit, label) {
     var xmlHttp;
@@ -16,16 +17,17 @@ function loadAsync(url, retryCount, retryLimit, label) {
 
             if(xmlHttp.status == 200){
                 processResponse(label, xmlHttp.responseText);
+                return true;
             } else {
                 if (retryCount >= retryLimit) {
-                    return;
+                    return false;
                 } else {
                     retryCount = retryCount + 1;
                     loadAsync(url, retryCount, retryLimit);
                 }
             }
         } else {
-            return;
+            return false;
         }
     };
 
@@ -70,8 +72,6 @@ function getProjectLabels() {
         project_id = labels[i].getElementsByTagName('input')[0].value;
         loadAsync('/rest/v1/project_iati_check/' + project_id + '/?format=json', 0, 3, labels[i]);
     }
-
-    return true;
 }
 
 function loadComponent(component_id) {
@@ -88,24 +88,17 @@ function loadComponent(component_id) {
         },
 
         render: function() {
-            return (
-                React.DOM.p(null, 
-                React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-md-8"}, 
-                        "In order to see which of your projects is fully IATI compliant, you can"+' '+
-                        "perform checks by clicking the \"Perform checks\" button. ", React.DOM.br(null),
-                        "Projects with all mandatory IATI information filled in will be"+' '+
-                        "marked ", React.DOM.span( {className:"success"}, "green"), " and projects with missing"+' '+
-                        "information will be marked ", React.DOM.span( {className:"error"}, "red"),"."
-                    ),
-                    React.DOM.div( {className:"col-md-4"}, 
-                        React.DOM.button( {onClick:this.handleClick, className:this.state.active_button ? 'btn btn-primary' : 'btn btn-primary disabled'}, 
-                            this.state.active_button ? 'Perform checks' : 'Performing checks...'
-                        )
+            if (this.state.active_button) {
+                return (
+                    React.DOM.p(null, 
+                        React.DOM.button( {onClick:this.handleClick, className:"btn btn-primary"}, i18n.perform_checks)
                     )
-                )
-                )
-                );
+                    );
+            } else {
+                return (
+                    React.DOM.p(null)
+                    );
+            }
         }
     });
 
@@ -115,4 +108,5 @@ function loadComponent(component_id) {
     );
 }
 
+i18n = JSON.parse(document.getElementById("perform-checks-text").innerHTML);
 loadComponent('react_iati_checks');

@@ -5,6 +5,7 @@ var Button = ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 var Input = ReactBootstrap.Input;
+var i18n;
 
 var ResetModal = React.createClass({
   resetPassword: function() {
