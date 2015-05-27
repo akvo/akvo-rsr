@@ -394,24 +394,10 @@ class SelectOrgForm(forms.Form):
         )
 
 
-class CustomLabelModelChoiceField(forms.ModelMultipleChoiceField):
-    def label_from_instance(self, obj):
-        checks = obj.check_mandatory_fields()
-        if checks[0]:
-            return mark_safe(u'<span class="success">%s</span>' % obj.__unicode__())
-        else:
-            label = obj.__unicode__()
-            for check in checks[1]:
-                if check[0] == u'error':
-                    label += u'<br>- %s' % check[1]
-            return mark_safe(u'<span class="error">%s</span>' % label)
-
-
-
 class IatiExportForm(forms.ModelForm):
     """Form for adding an entry to the IATI export model."""
     is_public = forms.BooleanField(required=False, label=_(u"Show IATI file on organisation page"))
-    projects = CustomLabelModelChoiceField(
+    projects = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
         queryset=Project.objects.all(),
         label=_(u"Select the projects included in the export:")

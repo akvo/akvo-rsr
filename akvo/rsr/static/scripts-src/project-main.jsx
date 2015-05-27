@@ -10,7 +10,8 @@ var Accordion = ReactBootstrap.Accordion,
     Carousel = ReactBootstrap.Carousel,
     CarouselInstance,
     CarouselItem = ReactBootstrap.CarouselItem,
-    Panel = ReactBootstrap.Panel;
+    Panel = ReactBootstrap.Panel,
+    i18n;
 
 Indicator = React.createClass({
   render: function () {

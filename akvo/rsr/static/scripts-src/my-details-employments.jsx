@@ -19,7 +19,8 @@ var AddEmploymentForm,
     OrganisationInput,
     ResponseModal,
     initial_data,
-    request_link;
+    request_link,
+    i18n;
 
 
 

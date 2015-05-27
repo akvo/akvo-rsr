@@ -34,6 +34,7 @@ from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
+from .project_iati_checks import ProjectIatiCheckView
 from .project_location import ProjectLocationViewSet, MapProjectLocationViewSet
 from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
@@ -85,6 +86,7 @@ __all__ = [
     'ProjectContactViewSet',
     'ProjectDocumentViewSet',
     'ProjectExtraViewSet',
+    'ProjectIatiCheckView',
     'ProjectLocationViewSet',
     'ProjectUpdateExtraViewSet',
     'ProjectUpdateLocationViewSet',

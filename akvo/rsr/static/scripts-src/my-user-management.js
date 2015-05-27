@@ -19,7 +19,8 @@ var ApproveModal,
     Table = ReactBootstrap.Table,
     TriggerModal,
     UserTable,
-    initial_data;
+    initial_data,
+    i18n;
 
 
 DeleteModal = React.createClass({displayName: 'DeleteModal',
