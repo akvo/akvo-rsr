@@ -97,7 +97,7 @@ class ProjectListView(BaseWidgetView):
         ).filter(
             partnerships__organisation__id=org_id,
             publishingstatus__status__exact='published'
-        ).order_by('-id')
+        ).order_by('-id').distinct()
 
         if order_by == 'status':
             projects = projects.order_by('status', 'title')
