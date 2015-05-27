@@ -415,6 +415,8 @@ nav.navbar-fixed-top {
       nav.navbar-fixed-top .navbar-nav.navbar-right li a.active {
         background: none;
         color: #ff5500; }
+    nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
+      margin-top: 10px; }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   .navbar-header {

@@ -71,6 +71,19 @@
         </li>
         <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
+        <li>
+          <div class="dropdown langDropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
+              language
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">English</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Français</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Espanol</a></li>
+            </ul>
+          </div>
+        </li>
       </ul>
     </div>
   </div>
