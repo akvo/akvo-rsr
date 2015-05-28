@@ -55,7 +55,7 @@ Employment = React.createClass({
       );
     } else {
       return (
-        <li>{this.props.employment.organisation_full.name} <i>(Not approved)</i></li>
+        <li>{this.props.employment.organisation_full.name} <i>({i18n.not_approved_text})</i></li>
       );
     }
   }
