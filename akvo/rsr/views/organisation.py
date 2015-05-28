@@ -59,6 +59,12 @@ def directory(request):
 
     # Yank Organisation collection
     all_organisations = _organisation_directory_coll(request)
+
+    # Easter egg feature
+    show_reporting = request.GET.get('reporting', False)
+    if show_reporting:
+        all_organisations = all_organisations.filter(can_become_reporting=True)
+
     f = OrganisationFilter(qs, queryset=all_organisations)
 
     # Build page
