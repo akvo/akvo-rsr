@@ -219,7 +219,8 @@ class Project(TimestampsMixin, models.Model):
 
     # synced projects
     sync_owner = models.ForeignKey(
-        'Organisation', limit_choices_to={'can_become_reporting': True},
+        'Organisation',
+        # limit_choices_to={'can_become_reporting': True},
         verbose_name=_(u'reporting organisation'),
         related_name='reporting_projects', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Select the reporting organisation of the project.')
