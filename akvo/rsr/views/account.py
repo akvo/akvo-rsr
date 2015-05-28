@@ -19,7 +19,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden)
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
 from registration.models import RegistrationProfile
@@ -102,7 +102,7 @@ def sign_in(request):
         if form.is_valid():
             login(request, form.get_user())
             next_page = request.GET.get('next')
-            return HttpResponseRedirect(next_page) if next_page else HttpResponseRedirect('/myrsr')
+            return HttpResponseRedirect(next_page) if next_page else redirect('my_details')
     # Password reset on sign in page
     elif request.method == "POST" and 'email' in request.POST:
         reset_form = PasswordResetForm(data=request.POST)
@@ -116,7 +116,7 @@ def sign_in(request):
 def sign_out(request):
     """Log out resouce."""
     logout(request)
-    return HttpResponseRedirect('/')
+    return redirect('index')
 
 
 def api_key_xml_response(user, orgs):
