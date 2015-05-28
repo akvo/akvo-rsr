@@ -101,8 +101,7 @@ def import_orgs(xml_file):
                     action = "failed"
                     internal_org_id.delete()
                     referenced_org.delete()
-                    print(u"*** UNABLE TO CREATE NEW ORGANISATION! "
-                           "Reason: {message}.".format(e.message))
+                    print(u"*** UNABLE TO CREATE NEW ORGANISATION! ")
             name = element.findtext("name")
             referenced_org.name, referenced_org.long_name = name[:25], name
             referenced_org.description = element.findtext("description") or "N/A"

@@ -44,7 +44,7 @@ class IatiExport(TimestampsMixin, models.Model):
         verbose_name_plural = _(u'IATI exports')
 
     def show_status(self):
-        if not self.status in STATUS_CODE.keys():
+        if self.status not in STATUS_CODE.keys():
             return _(u'unknown status')
         else:
             return STATUS_CODE[int(self.status)]

@@ -30,6 +30,11 @@ def sectors():
     return sectors_list
 
 
+def get_orgs():
+    orgs = list(Organisation.objects.all().values_list('id', 'name', flat=False))
+    return [('', 'All')] + orgs
+
+
 def remove_empty_querydict_items(request_get):
     # querydicts are immutable
     getvars = request_get.copy()
@@ -91,10 +96,7 @@ class ProjectFilter(django_filters.FilterSet):
         label=_(u'Search'),
         name='title')
 
-    def get_orgs():
-        orgs = list(Organisation.objects.all().values_list('id', 'name',
-                                                           flat=False))
-        return ([('', 'All')] + orgs)
+
 
     organisation = django_filters.ChoiceFilter(
         choices=get_orgs(),
@@ -113,11 +115,6 @@ class ProjectUpdateFilter(django_filters.FilterSet):
         choices=M49_CODES,
         label=_(u'location'),
         action=filter_m49)
-
-    def get_orgs():
-        orgs = list(Organisation.objects.all().values_list('id', 'name',
-                                                           flat=False))
-        return ([('', 'All')] + orgs)
 
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),

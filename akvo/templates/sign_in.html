@@ -17,9 +17,13 @@
             <form method="post" action="" name="registrationForm">
                 {% csrf_token %}
                 {% bootstrap_form_errors form type='non_fields' %}
-                {% for field in form %}
-                    {% bootstrap_field field %}
-                {% endfor %}
+                <div class="form-group">
+                  <label class="control-label" for="id_username">{% trans 'Email'%}</label>
+                  <input class="form-control" id="id_username" maxlength="254" name="username" placeholder="Email" required="required" title="" type="text" />
+                </div>
+                <div class="form-group">
+                  <label class="control-label" for="id_password">{% trans 'Password' %}</label>
+                  <input class="form-control" id="id_password" name="password" placeholder="Password" required="required" title="" type="password" /></div>
                 {% buttons %}
                     <button type="submit" class="btn btn-primary center-block">
                         <i class="fa fa-sign-in"></i> {% trans 'Login' %}

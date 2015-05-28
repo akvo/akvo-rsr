@@ -26,6 +26,7 @@ CHECKS = [
     'related_activity',
     'legacy_data',
     'conditions',
+    'results',
     'crs_add',
     'fss',
 ]
@@ -618,15 +619,18 @@ class V201Checks(object):
 
         for result in self.project.results.all():
             if not result.type:
-                checks.append((u'warning', u'result (id: %s) has no type '
+                self.all_checks_passed = False
+                checks.append((u'error', u'result (id: %s) has no type '
                                            u'specified' % str(result.pk)))
 
             if not result.title:
                 checks.append((u'warning', u'result (id: %s) has no title '
                                            u'specified' % str(result.pk)))
 
-            if not result.indicators.all():
-                checks.append((u'warning', u'result (id: %s) has no indicators' % str(result.pk)))
+            if not result.indicators.all() and not result.description:
+                self.all_checks_passed = False
+                checks.append((u'error', u'result (id: %s) has no description and no '
+                                           u'indicator(s)' % str(result.pk)))
 
             for indicator in result.indicators.all():
                 if not indicator.measure:

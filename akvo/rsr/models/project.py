@@ -12,7 +12,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max, Sum
 from django.db.models.signals import post_save
-from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -219,7 +219,9 @@ class Project(TimestampsMixin, models.Model):
 
     # synced projects
     sync_owner = models.ForeignKey(
-        'Organisation', verbose_name=_(u'reporting organisation'),
+        'Organisation',
+        limit_choices_to={'can_become_reporting': True},
+        verbose_name=_(u'reporting organisation'),
         related_name='reporting_projects', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Select the reporting organisation of the project.')
     )
@@ -384,8 +386,8 @@ class Project(TimestampsMixin, models.Model):
         ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
 
     def get_funds(self):
-        """ All money given to a project, including pending donations"""
-        return self.get_donations() + self.get_pending_donations() + self.get_pledged()
+        """ All money given to a project"""
+        return self.get_donations() + self.get_pledged()
 
     def update_funds(self):
         "Update de-normalized field"
@@ -411,7 +413,7 @@ class Project(TimestampsMixin, models.Model):
         return counter.count or 0
 
 
-    class QuerySet(QuerySet):
+    class QuerySet(DjangoQuerySet):
 
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
@@ -773,7 +775,7 @@ class Project(TimestampsMixin, models.Model):
         partners_info = {}
         for partnership in Partnership.objects.filter(project=self):
             funding_amount = partnership.funding_amount if partnership.funding_amount else None
-            if not partnership.organisation in partners_info.keys():
+            if partnership.organisation not in partners_info.keys():
                 partners_info[partnership.organisation] = [[partnership], funding_amount]
             else:
                 partners_info[partnership.organisation][0].append(partnership)

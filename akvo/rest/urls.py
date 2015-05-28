@@ -86,6 +86,9 @@ urlpatterns = patterns(
     url(r'^user/(?P<pk>[0-9]+)/request_organisation/$',
         views.request_organisation,
         name='user_request_organisation'),
+    url(r'^project_iati_check/(?P<pk>[0-9]+)/$',
+        views.ProjectIatiCheckView.as_view(),
+        name='project_iati_check'),
 )
 
 # Typeahead
