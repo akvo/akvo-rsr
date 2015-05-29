@@ -19,7 +19,8 @@ var AddEmploymentForm,
     OrganisationInput,
     ResponseModal,
     initial_data,
-    request_link;
+    request_link,
+    i18n;
 
 
 
@@ -55,7 +56,7 @@ Employment = React.createClass({displayName: 'Employment',
       );
     } else {
       return (
-        React.DOM.li(null, this.props.employment.organisation_full.name, " ", React.DOM.i(null, "(Not approved)"))
+        React.DOM.li(null, this.props.employment.organisation_full.name, " ", React.DOM.i(null, "(",i18n.not_approved_text,")"))
       );
     }
   }

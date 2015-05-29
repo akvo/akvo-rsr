@@ -88,9 +88,10 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
 
     fieldsets = (
         (_(u'General information'), {'fields': (
-            'name', 'long_name', 'partner_types', 'organisation_type', 'new_organisation_type',
-            'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id', 'public_iati_file',
-            'language', 'content_owner', 'allow_edit',)}),
+            'name', 'long_name', 'partner_types', 'organisation_type',
+            'new_organisation_type', 'can_become_reporting', 'logo', 'url', 'facebook',
+            'twitter', 'linkedin', 'iati_org_id', 'public_iati_file', 'language', 'content_owner',
+            'allow_edit',)}),
         (_(u'Contact information'),
             {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
@@ -100,7 +101,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     exclude = ('internal_org_ids',)
     # note that readonly_fields is changed by get_readonly_fields()
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
-    readonly_fields = ('created_at', 'last_modified_at',)
+    # readonly_fields = ('created_at', 'last_modified_at',)
     list_display = ('name', 'long_name', 'website', 'language')
     search_fields = ('name', 'long_name')
 
@@ -118,6 +119,13 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                                                                                      self.opts)):
             return list(self.list_display) + ['allowed_partner_types']
         return super(OrganisationAdmin, self).get_list_display(request)
+
+    def get_readonly_fields(self, request, obj=None):
+        """Make sure only super users can set the ability to become a reporting org"""
+        if request.user.is_superuser:
+            return ['created_at', 'last_modified_at']
+        else:
+            return ['created_at', 'last_modified_at', 'can_become_reporting']
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
@@ -730,25 +738,21 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
         }),
     )
     filter_horizontal = ('keywords',)
-    list_display = ('title', 'status', 'project_plan_summary', 'latest_update',
+    list_display = ('title', 'status', 'project_plan_summary', 'last_update',
                     'show_current_image', 'is_published', 'show_keywords')
     search_fields = ('title', 'subtitle', 'project_plan_summary')
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
-    readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',)
+    readonly_fields = ('budget', 'funds',  'funds_needed', 'created_at', 'last_modified_at',
+                       'last_update')
 
     def __init__(self, model, admin_site):
-        """
-        Override to add self.formfield_overrides.
-        Needed to get the ImageField working in the admin.
-        """
+        """To support ImageField override to add self.formfield_overrides."""
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectAdmin, self).__init__(model, admin_site)
 
-    def get_queryset(self, request):
-        if request.user.is_superuser or request.user.is_admin:
-            return super(ProjectAdmin, self).get_queryset(request)
-
+    def get_limited_queryset(self, request):
+        """Queryset filtered on connected organisation and only for Admin and Project Editors."""
         from .models import Project
         qs = Project.objects.none()
         for employment in request.user.employers.approved():
@@ -756,6 +760,24 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 project_pks = [project.pk for project in employment.organisation.all_projects()]
                 qs = qs | Project.objects.filter(pk__in=project_pks)
         return qs.distinct()
+
+    def get_limited_queryset_slq_style(self, request):
+        """Slower than the non sql alternative, might be able to make it fast somehow."""
+        return super(ProjectAdmin, self).queryset(request).select_related(
+            'publishingstatus__status'
+        ).prefetch_related('keywords').filter(
+
+            partnerships__organisation__employees__user__id=request.user.id
+        ).filter(
+            partnerships__organisation__employees__group__name__in=['Admins', 'Project Editors']
+        )
+
+    def get_queryset(self, request):
+        """If superuser or admin return full queryset, otherwise return limited queryset."""
+        if request.user.is_superuser or request.user.is_admin:
+            return super(ProjectAdmin, self).queryset(request).select_related(
+                'publishingstatus__status').prefetch_related('keywords')
+        return self.get_limited_queryset(request)
 
     @csrf_protect_m
     @transaction.atomic
@@ -1018,7 +1040,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
                                'piwik_id',))),
         (u'Style and content',
-            dict(fields=('about_box', 'about_image', 'custom_css', 'custom_logo',
+            dict(fields=('all_maps', 'about_box', 'about_image', 'custom_css', 'custom_logo',
                          'custom_favicon',))),
         (u'Languages and translation', dict(fields=('default_language', 'ui_translation',
                                                     'google_translation',))),

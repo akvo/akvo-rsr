@@ -10,7 +10,8 @@ var Accordion = ReactBootstrap.Accordion,
     Carousel = ReactBootstrap.Carousel,
     CarouselInstance,
     CarouselItem = ReactBootstrap.CarouselItem,
-    Panel = ReactBootstrap.Panel;
+    Panel = ReactBootstrap.Panel,
+    i18n;
 
 Indicator = React.createClass({displayName: 'Indicator',
   render: function () {
@@ -227,3 +228,6 @@ React.renderComponent(
 React.renderComponent(
     CarouselInstance( {source:JSON.parse(document.getElementById("akvo-rsr-carousel").innerHTML)} ),
     document.getElementById('carousel'));
+
+// Open the first accordion item on load
+document.querySelector('#accordion div.panel-group div:first-child div a').click();

@@ -108,7 +108,7 @@ class Organisation(TimestampsMixin, models.Model):
     )
     logo = ImageField(_(u'logo'), blank=True, upload_to=image_path,
                       help_text=_(u'Logos should be approximately 360x270 pixels '
-                                  u'(approx. 100-200kB in size) on a white background.'),
+                                  u'(approx. 100-200kB in size) on a white background.')
     )
     url = models.URLField(
         blank=True,
@@ -164,6 +164,11 @@ class Organisation(TimestampsMixin, models.Model):
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )
+    can_become_reporting = models.BooleanField(
+        _(u'Reportable'),
+        help_text=_(u'Organisation is allowed to become a reporting organisation. '
+                    u'Can be set by superusers.'),
+        default=False)
 
     objects = OrgManager()
 

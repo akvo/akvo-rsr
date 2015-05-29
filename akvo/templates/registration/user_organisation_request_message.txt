@@ -1,14 +1,14 @@
 {% load i18n %}
 
-{% blocktrans %}
-Organisation: {{ organisation.name }}
+{% blocktrans with organisation_name=organisation.name user_name=user.get_full_name user_email=user.email %}
+Organisation: {{ organisation_name }}
 
-A new user has requested to join {{ organisation.name }} in the Akvo RSR system.
+A new user has requested to join {{ organisation_name }} in the Akvo RSR system.
 
-Name: {{ user.get_full_name }}
-Email: {{ user.email }}
+Name: {{ user_name }}
+Email: {{ user_email }}
 
-Linked support partners of {{ organisation.name }}:
+Linked support partners of {{ organisation_name }}:
 {% endblocktrans %}
 {% for partner in organisation.support_partners %}
 - {{ partner.name }}

@@ -1,1 +1,1 @@
-{% load i18n %}{% blocktrans %}[Akvo RSR] Your request to join {{organisation.long_name}} has been approved{% endblocktrans %}
+{% load i18n %}{% blocktrans with org_name=organisation.long_name %}[Akvo RSR] Your request to join {{org_name}} has been approved{% endblocktrans %}

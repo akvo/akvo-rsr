@@ -17,12 +17,17 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from django.conf.urls.i18n import i18n_patterns
 
 from paypal.standard.ipn.views import ipn as paypal_ipn
 
 admin.autodiscover()
 
-urlpatterns = patterns(
+####################################################################################
+### Internationalisation URLs                                                    ###
+####################################################################################
+
+urlpatterns = i18n_patterns(
     '',
 
     # Home page
@@ -41,9 +46,6 @@ urlpatterns = patterns(
 
     url(r'^project/(?P<project_id>\d+)/report/$',
         'akvo.rsr.views.project.report', name='project-report'),
-
-    url(r'^project/(?P<project_id>\d+)/iati/$',
-        'akvo.rsr.views.project.iati', name='project-iati'),
 
     url(r'^project/(?P<project_id>\d+)/widgets/$',
         'akvo.rsr.views.project.widgets', name='project-widgets'),
@@ -152,10 +154,43 @@ urlpatterns = patterns(
 
     # Admin
     (r'^admin/', include(admin.site.urls)),
+)
+
+####################################################################################
+### Non-internationalisation URLs                                                ###
+####################################################################################
+
+urlpatterns += patterns(
+    '',
+
+    # IATI file
+    url(r'^project/(?P<project_id>\d+)/iati/$',
+        'akvo.rsr.views.project.iati', name='project-iati'),
+
+    # TastyPie API
+    (r'^api/', include(named_api('v1').urls)),
 
     # Django Rest Framework urls
     (r'^rest/v1/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
+
+    # RSS
+    url(r'^rss/updates/(?P<project_id>\d+)/$',
+        ProjectUpdates(),
+        name="rss_project_updates"),
+
+    url(r'^rss/org-updates/(?P<org_id>\d+)/$',
+        OrganisationUpdates(),
+        name="rss_org_updates"),
+
+    url(r'^rss/all-updates/$',
+        AllProjectUpdates(),
+        name="rss_all_updates"),
+
+    # Auth token for mobile apps
+    url(r'^auth/token/$',
+        'akvo.rsr.views.account.api_key',
+        name="auth_token"),
 
     # Widgets
     url(r'^widgets/projects/map/$',
@@ -189,31 +224,6 @@ urlpatterns = patterns(
     url(r'^widgets/project-small/random/$',
         widget_views.RandomProjectSmallView.as_view(),
         name="widget_random_project_small"),
-
-    # RSS
-    url(r'^rss/updates/(?P<project_id>\d+)/$',
-        ProjectUpdates(),
-        name="rss_project_updates"),
-
-    url(r'^rss/org-updates/(?P<org_id>\d+)/$',
-        OrganisationUpdates(),
-        name="rss_org_updates"),
-
-    url(r'^rss/all-updates/$',
-        AllProjectUpdates(),
-        name="rss_all_updates"),
-
-    # Auth token for mobile apps
-    url(r'^auth/token/$',
-        'akvo.rsr.views.account.api_key',
-        name="auth_token"),
-
-)
-
-# TastyPie API
-urlpatterns += patterns(
-    '',
-    (r'^api/', include(named_api('v1').urls)),
 )
 
 

@@ -431,6 +431,9 @@ nav.navbar-fixed-top {
                         color: $anchorLinkHover;
                     }
                 }
+                .langDropdown {
+                    margin-top: 10px;
+                }
             }
         }
     }
@@ -1466,6 +1469,25 @@ div.textBlock {
             }
             &:hover {
                 color: $anchorLinkHover;
+            }
+        }
+    }
+}
+
+#accordion {
+    .panel-group {
+        .panel-heading {
+            a {
+                &:before {
+                    content: '- ';
+                    position: relative;
+                }
+                &.collapsed {
+                    &:before {
+                        content: '+ ';
+                        top: 1px;
+                    }
+                }
             }
         }
     }
