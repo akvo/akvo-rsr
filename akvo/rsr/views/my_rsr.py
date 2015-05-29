@@ -15,14 +15,14 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.template import RequestContext
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
-from ..models import Country, Organisation, Employment
+from ..models import Country, Organisation, Employment, Project
 
 
 @login_required
@@ -125,10 +125,16 @@ def my_projects(request):
     return render(request, 'myrsr/my_projects.html', context)
 
 @login_required
-def project_admin(request):
+def project_admin(request, project_id):
     """."""
 
-    context = {}
+    project = get_object_or_404(Project, pk=project_id)
+    siblings = project.siblings()
+    context = {
+        'id': project_id,
+        'project': project,
+        'siblings': siblings,
+    }
     return render(request, 'myrsr/project_admin.html', context)
     
 @login_required

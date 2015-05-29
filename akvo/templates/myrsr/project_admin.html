@@ -4,6 +4,7 @@
 {% block myrsr_main %}
     <h4>{% trans 'Project admin' %}</h4>
     <!--*************************************** FORM Container **********************************************-->
+
     <div class="formOverviewInfo">
         <div class="editDate">
             <span>Date created:</span>
@@ -40,21 +41,52 @@
                     </div>
                     <div class="formBlock">
                         <div class="control form-group control">
-                            <input type="text" class="form-control" id="projectTitle" placeholder="Project title"  required />
+                            <input type="text" class="form-control" id="projectTitle" placeholder="Project title"  value="{{project.title}}" required />
                             <label for="projectTitle" class="control-label">Project title</label>
                             <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
                         </div>
                         <div class="form-group control">
-                            <input type="text" class="form-control" id="projectSubTitle" placeholder="Project subtitle"   required />
+                            <input type="text" class="form-control" id="projectSubTitle" placeholder="Project subtitle" value="{{project.subtitle}}"  required />
                             <label for="projectSubTitle" class="control-label">Project subtitle</label>
                             <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)</p>
                         </div>
                         <div class="form-group control">
-                            <input type="text" class="form-control" id="iatiID" placeholder="iati ID"  required />
+                            <input type="text" class="form-control" id="iatiID" placeholder="iati ID"  value="{{project.iati_activity_id}}" required />
                             <label for="iatiID" class="control-label">IATI identifier</label>
                             <p class="help-block">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
                             Note that 'projects' in this form are the same as 'activities' in IATI.</p>
                         </div>
+
+                        {% for p in siblings %}
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="relatedProject" placeholder="Related project" value="{{p.title}}"required />
+                                        <label for="partner" class="control-label">Related project</label>
+                                        <p class="help-block hidden">A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.</p>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="relatedProjectIatiId" placeholder="Related project IATI identifier" value="{{p.iati_activity_id}}"required />
+                                        <label for="relatedProjectIatiId" class="control-label">Related project IATI identifier</label>
+                                        <p class="help-block hidden">The IATI activity identifier for the related project. Fill this in if the related project does not exist in RSR.</p>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <div class="select-group">
+                                            <select name="relation" id="relation" class="form-control" required>
+                                                <option value="" >Type:</option>
+                                                <option value="1">1 - Parent</option>
+                                                <option value="2">2 - Child</option>
+                                                <option value="3" selected="selected">3 - Sibling</option>
+                                                <option value="4">4 - Co-funded</option>
+                                                <option value="5">5 - Third party</option>
+                                            </select>
+                                            <label for="relation" class="control-label">Type</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-4 control">
