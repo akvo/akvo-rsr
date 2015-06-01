@@ -200,30 +200,39 @@
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control" required>
-                                        <option value="" selected="selected">Default tied status:</option>
-                                        <option value="3">3 - Partially tied</option>
-                                        <option value="4">4 - Tied</option>
-                                        <option value="5">5 - Untied</option>
+                                        <option value="" {% if not project.default_tied_status %} selected="selected" {% endif %}>Default tied status:</option>
+                                        {% for entry in tied_status %}
+                                            {% if not entry.0 == "code" %}
+                                                <option value="{{entry.0}}" {% if project.default_tied_status == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.1}}</option>
+                                            {% endif %}
+                                        {% endfor %} 
                                     </select>
-                                    <label for="defaultTiedStatus" class="control-label">Default tied status</label>
+                                    <label for="defaultTiedStatus" class="control-label">Default flow type</label>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="collaborationType" id="collaborationType" class="form-control" required>
-                                        <option value="" selected="selected">Collaboration type:</option>
-                                        <option value="1">1 - Bilateral</option>
-                                        <option value="2">2 - Multilateral</option>
+                                        <option value="" {% if not project.collaboration_type %} selected="selected" {% endif %}>Collaboration type:</option>
+                                        {% for entry in collaboration_type %}
+                                            {% if not entry.0 == "code" %}
+                                                <option value="{{entry.0}}" {% if project.collaboration_type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.1}}</option>
+                                            {% endif %}
+                                        {% endfor %} 
                                     </select>
                                     <label for="collaborationType" class="control-label">Collaboration type</label>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="defaultFinanceType" id="defaultFinanceType" class="form-control" required>
                                         <option value="" selected="selected">Default finance type:</option>
-                                        <option value="110">110 - Aid grant excluding debt reorganisation</option>
-                                        <option value="111">111 - Subsidies to national private investors</option>
+                                        {% for entry in finance_type %}
+                                            {% if not entry.0 == "code" %}
+                                                <option value="{{entry.0}}" {% if project.default_finance_type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.2}}</option>
+                                            {% endif %}
+                                        {% endfor %} 
                                     </select>
                                     <label for="defaultFinanceType" class="control-label">Default finance type</label>
                                 </div>
