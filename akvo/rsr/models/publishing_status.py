@@ -28,51 +28,86 @@ class PublishingStatus(models.Model):
     def clean(self):
         """Projects can only be published, when several checks have been performed."""
         if self.status == 'published':
+            validation_errors = []
+
             if not self.project.title:
-                raise ValidationError(_('Projects need to have a title.'))
+                validation_errors.append(
+                    ValidationError(_('Projects need to have a title.'),
+                                    code='title')
+                )
 
             if not self.project.subtitle:
-                raise ValidationError(_('Projects need to have a subtitle.'))
+                validation_errors.append(
+                    ValidationError(_('Projects need to have a subtitle.'),
+                                    code='subtitle')
+                )
 
             if not self.project.project_plan_summary:
-                raise ValidationError(
-                    _('Projects need to have the project plan summary filled in.')
+                validation_errors.append(
+                    ValidationError(_('Projects need to have the project plan summary filled in.'),
+                                    code='summary')
                 )
 
             if not self.project.sustainability:
-                raise ValidationError(
-                    _('Projects need to have the sustainability field filled in.')
+                validation_errors.append(
+                    ValidationError(_('Projects need to have the sustainability field filled in.'),
+                                    code='sustainability')
                 )
 
             if not self.project.goals_overview:
-                raise ValidationError(
-                    _('Projects need to have the goals overview field filled in.')
+                validation_errors.append(
+                    ValidationError(_('Projects need to have the goals overview field filled in.'),
+                                    code='goals_overview')
                 )
 
             if not self.project.partners:
-                raise ValidationError(_('Projects need to have at least one valid partner.'))
+                validation_errors.append(
+                    ValidationError(_('Projects need to have at least one valid partner.'),
+                                    code='partners')
+                )
             elif not self.project.partnerships.filter(
                     partner_type__in=['field', 'funding', 'support']
             ).exists():
-                raise ValidationError(
-                    _('Projects need to have at least one field, funding or support partner.')
+                validation_errors.append(
+                    ValidationError(
+                        _('Projects need to have at least one field, funding or support partner.'),
+                        code='partners'
+                    )
                 )
 
             if not self.project.sync_owner:
-                raise ValidationError(_('Projects need to have a reporting organisation.'))
+                validation_errors.append(
+                    ValidationError(_('Projects need to have a reporting organisation.'),
+                                    code='reporting_org')
+                )
 
             if not self.project.current_image:
-                raise ValidationError(_('Projects need to have a photo.'))
+                validation_errors.append(
+                    ValidationError(_('Projects need to have a photo.'),
+                                    code='current_image')
+                )
 
             if not self.project.locations.all():
-                raise ValidationError(_('Projects need to have at least one location.'))
+                validation_errors.append(
+                    ValidationError(_('Projects need to have at least one location.'),
+                                    code='location')
+                )
 
             if not self.project.budget_items.all():
-                raise ValidationError(_('Projects need to have at least one budget item.'))
-            elif not self.project.budget_items.filter(amount__gt=0).exists():
-                raise ValidationError(
-                    _('Projects need to have at least one budget item with an amount.')
+                validation_errors.append(
+                    ValidationError(_('Projects need to have at least one budget item.'),
+                                    code='budget_item')
                 )
+            elif not self.project.budget_items.filter(amount__gt=0).exists():
+                validation_errors.append(
+                    ValidationError(
+                        _('Projects need to have at least one budget item with an amount.'),
+                        code='budget_item'
+                    )
+                )
+
+            if validation_errors:
+                raise ValidationError(validation_errors)
 
     class Meta:
         app_label = 'rsr'

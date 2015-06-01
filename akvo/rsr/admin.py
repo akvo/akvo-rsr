@@ -304,30 +304,11 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
         self._non_form_errors = ErrorList(errors)
 
 
-class RSR_PartnershipInlineForm(forms.ModelForm):
-
-    def clean_partner_type(self):
-        partner_types = get_model('rsr', 'PartnerType').objects.all()
-        partner_types_dict = {partner_type.id: partner_type.label for partner_type in partner_types}
-        allowed = [partner_type.pk for partner_type in self.cleaned_data['organisation'].partner_types.all()]
-        # always allow field and funding partnerships
-        allowed.extend([u'field', u'funding'])
-        allowed = list(set(allowed))
-        data = self.cleaned_data['partner_type']
-        if data not in allowed:
-            raise forms.ValidationError("{org} is not allowed to be a {partner_type_label}".format(
-                org=self.cleaned_data['organisation'],
-                partner_type_label=partner_types_dict[data]
-            ))
-        return data
-
-
 class PartnershipInline(NestedTabularInline):
 
     model = get_model('rsr', 'Partnership')
     fields = ('organisation', 'partner_type', 'funding_amount', 'internal_id')
     extra = 0
-    form = RSR_PartnershipInlineForm
     formset = RSR_PartnershipInlineFormFormSet
     formfield_overrides = {
         ValidXMLCharField: {'widget': TextInput(attrs={'size': '20'})},
