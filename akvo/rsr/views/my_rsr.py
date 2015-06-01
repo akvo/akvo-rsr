@@ -140,7 +140,6 @@ def project_admin(request, project_id):
     context = {
         'id': project_id,
         'project': project,
-        'siblings': siblings,
         'aid_types': aid_types,
         'flow_types': flow_types,
         'tied_status': tied_status,
