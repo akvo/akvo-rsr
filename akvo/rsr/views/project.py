@@ -304,7 +304,10 @@ def main(request, project_id):
     # timeline_data = _get_timeline_data(project)
 
     reporting_org = project.reporting_org()
-    reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
+    if reporting_org:
+        reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
+    else:
+        reporting_org_info = None
     partners = _get_project_partners(project)
 
     context = {

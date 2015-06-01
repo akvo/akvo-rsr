@@ -306,8 +306,11 @@ class Organisation(TimestampsMixin, models.Model):
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
         from .partnership import Partnership
-        return [ps.partner_type for ps in Partnership.objects.filter(project=project,
-                                                                     organisation=self)]
+        partner_types = []
+        for ps in Partnership.objects.filter(project=project, organisation=self):
+            if ps.partner_type:
+                partner_types.append(ps.partner_type)
+        return partner_types
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has

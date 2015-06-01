@@ -80,7 +80,7 @@ class ProjectLocation(BaseLocation):
     # the project that's related to this location
     location_target = models.ForeignKey('Project', null=True, related_name='locations')
     country = models.ForeignKey(
-        'Country', verbose_name=_(u'country'), help_text=_(u'Select the country.')
+        'Country', verbose_name=_(u'country'), help_text=_(u'Select the country.'), blank=True
     )
 
     # Extra IATI fields

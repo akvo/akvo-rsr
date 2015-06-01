@@ -41,11 +41,11 @@ class Partnership(models.Model):
     PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='partnerships',
+        'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', blank=True,
         help_text=_(u'Select an organisation that is taking an active role in the project.'))
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = ValidXMLCharField(
-        _(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,
+        _(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES, blank=True,
         help_text=_(u'Select the role that the organisation is taking within the project.'))
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
