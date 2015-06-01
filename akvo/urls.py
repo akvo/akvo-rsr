@@ -123,6 +123,9 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/project_admin/$',
         'akvo.rsr.views.my_rsr.project_admin', name='project_admin'),
 
+    url(r'^myrsr/project_admin/(?P<project_id>\d+)/$',
+        'akvo.rsr.views.my_rsr.project_admin', name='project_admin_project'),
+
     # Donations
     url(r'^mollie/report/$',
         'akvo.rsr.views.donate.mollie_report',

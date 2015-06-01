@@ -1,0 +1,29 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-4 control">
+            <input type="text" class="form-control" id="relatedProject" placeholder="Related project" required 
+            {% if rp %} value={{rp.project.title}} {%endif %} />
+            <label for="partner" class="control-label">Related project</label>
+            <p class="help-block hidden">A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.</p>
+        </div>
+        <div class="col-md-4 control">
+            <input type="text" class="form-control" id="relatedProjectIatiId" placeholder="Related project IATI identifier" required 
+            {% if rp %} value="{{rp.project.iati_activity_id}}" {%endif %} />
+            <label for="relatedProjectIatiId" class="control-label">Related project IATI identifier</label>
+            <p class="help-block hidden">The IATI activity identifier for the related project. Fill this in if the related project does not exist in RSR.</p>
+        </div>
+        <div class="col-md-4 control">
+            <div class="select-group">
+                <select name="relation" id="relation" class="form-control" required>
+                    <option value="" {% if not rp.relation %} selected="selected" {% endif %}>Type:</option>
+                    <option value="1" {% if rp.relation|add:0 == 1 %} selected="selected" {% endif %}>1 - Parent</option>
+                    <option value="2" {% if rp.relation|add:0 == 2 %} selected="selected" {% endif %}>2 - Child</option>
+                    <option value="3" {% if rp.relation|add:0 == 3 %} selected="selected" {% endif %}>3 - Sibling</option>
+                    <option value="4" {% if rp.relation|add:0 == 4 %} selected="selected" {% endif %}>4 - Co-funded</option>
+                    <option value="5" {% if rp.relation|add:0 == 5 %} selected="selected" {% endif %}>5 - Third party</option>
+                </select>
+                <label for="relation" class="control-label">Type</label>
+            </div>
+        </div>
+    </div>
+</div>
