@@ -24,6 +24,8 @@ from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
 from ..models import Country, Organisation, Employment, Project
 
+from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE)
+
 
 @login_required
 def my_details(request):
@@ -129,11 +131,16 @@ def project_admin(request, project_id):
     """."""
 
     project = get_object_or_404(Project, pk=project_id)
+    aid_types = AID_TYPE
+    flow_types = FLOW_TYPE    
+    
     siblings = project.siblings()
     context = {
         'id': project_id,
         'project': project,
         'siblings': siblings,
+        'aid_types': aid_types,
+        'flow_types': flow_types,        
     }
     return render(request, 'myrsr/project_admin.html', context)
     
