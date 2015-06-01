@@ -137,7 +137,6 @@ def project_admin(request, project_id):
     collaboration_type = COLLABORATION_TYPE
     finance_type = FINANCE_TYPE  
     
-    siblings = project.siblings()
     context = {
         'id': project_id,
         'project': project,
