@@ -1,0 +1,33 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-4 control">
+            <select name="partner" class="form-control" id="partner" placeholder="Partner">
+                <option {% if not partnership %} selected="selected" {% endif %}>Partner:</option>
+                {% for org in organisation %}
+                    <option value="{{org.id}}" 
+                    {% if partnership.organisation.name == org.name %} selected="selected" {% endif %}>
+                        {{org.name}}
+                    </option>
+                {% endfor %}
+            </select>
+            <label for="partner" class="control-label">Partner</label>
+        </div>
+        <div class="col-md-4 control">
+            <div class="select-group">
+                <select name="partnerType" id="partnerType" class="form-control">
+                    <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>Type:</option>
+                    <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>Field partner</option>
+                    <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>Funding partner</option>
+                    <option value="sponsor" {% if partnership.partner_type == 'sponsor' %} selected="selected" {% endif %}>Sponsor partner</option>
+                    <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>Support partner</option>
+                </select>
+                <label for="partnerType" class="control-label">Type</label>
+            </div>
+        </div>
+        <div class="col-md-4 control">
+            <input type="text" class="form-control" id="fundingAmount" placeholder="Funding amount"
+            {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
+            <label for="fundingAmount" class="control-label">Funding amount</label>
+        </div>
+    </div>
+</div>

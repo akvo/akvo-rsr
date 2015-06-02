@@ -139,6 +139,7 @@ def project_admin(request, project_id):
     finance_type = FINANCE_TYPE  
     contact_type = CONTACT_TYPE
     country = Country.objects.all()
+    organisation = Organisation.objects.all()
     
     context = {
         'id': project_id,
@@ -150,6 +151,7 @@ def project_admin(request, project_id):
         'finance_type': finance_type, 
         'contact_type': contact_type,   
         'country': country,  
+        'organisation': organisation,
     }
     return render(request, 'myrsr/project_admin.html', context)
     

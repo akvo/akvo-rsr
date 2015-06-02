@@ -277,43 +277,38 @@
                                 <span class="sr-only">10% Complete (success)</span>10%
                             </div>
                         </div>
-                    <div class="formBlock">
-                        <div class="form-group control">
-                            <input type="text" class="form-control" id="reportingOrganisation" placeholder="Reporting organisation">
-                            <label for="reportingOrganisation" class="control-label">Reporting organisation</label>
-                        </div>
-                        <div class="form-group control">
-                            <div class="checkbox">
-                                <label for="secondaryReporter" class="control-label">
-                                    <input id="secondaryReporter" type="checkbox" name="secondaryReporter">Secondary reporter</label>
+                        <div class="formBlock">
+                            <div class="form-group control">
+                                <select class="form-control" id="reportingOrganisation" placeholder="Reporting organisation"
+                                {% if project.reporting_org %} value="{{project.reporting_org}}" {% endif %}>
+                                    <option {% if not project.reporting_org %} selected="selected" {% endif %}>Reporting organisation:</option>
+                                    {% for org in organisation %}
+                                        <option value="{{org.id}}" 
+                                        {% if project.reporting_org.name == org.name %} selected="selected" {% endif %}>
+                                            {{org.name}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <label for="reportingOrganisation" class="control-label">Reporting organisation</label>
+                            </div>
+                            <div class="form-group control">
+                                <div class="checkbox">
+                                    <label for="secondaryReporter" class="control-label">
+                                        <input id="secondaryReporter" type="checkbox" name="secondaryReporter"
+                                        {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
+                                            Secondary reporter
+                                        </label>
                                 </div>
                                 <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
                             </div>
                             <hr/>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="partner" placeholder="Partner">
-                                        <label for="partner" class="control-label">Partner</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <div class="select-group">
-                                            <select name="partnerType" id="partnerType" class="form-control">
-                                                <option value="" selected="selected">Type</option>
-                                                <option value="field">Field partner</option>
-                                                <option value="funding">Funding partner</option>
-                                                <option value="sponsor">Sponsor partner</option>
-                                                <option value="support">Support partner</option>
-                                            </select>
-                                            <label for="partnerType" class="control-label">Type</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="fundingAmount" placeholder="Funding amount">
-                                        <label for="fundingAmount" class="control-label">Funding amount</label>
-                                    </div>
-                                </div>
-                            </div>
+                            {% if project.partnerships.all %}
+                                {% for partnership in project.partnerships.all %}
+                                    {% include "myrsr/project_admin_partials/partner_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                    {% include "myrsr/project_admin_partials/partner_input.html" %}
+                            {% endif %}                             
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
