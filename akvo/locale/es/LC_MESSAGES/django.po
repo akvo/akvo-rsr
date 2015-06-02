@@ -5,15 +5,16 @@
 # Translators:
 # Anke van Lenteren <anke@vanlenteren.com>, 2011, 2012
 # iop <isabel.ordonez@gmail.com>, 2011-2012
+# Kasper <kasper@akvo.org>, 2015
 # Roverts <laura@akvo.org>, 2015
 # Thomas Bjelkeman-Pettersson <thomas@bjelkeman.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-23 16:48+0200\n"
-"PO-Revision-Date: 2015-05-20 20:41+0000\n"
-"Last-Translator: Roverts <laura@akvo.org>\n"
+"POT-Creation-Date: 2015-06-02 12:02+0200\n"
+"PO-Revision-Date: 2015-06-02 10:28+0000\n"
+"Last-Translator: Kasper <kasper@akvo.org>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.com/projects/p/akvo-rsr/language/es_CL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +22,7 @@ msgstr ""
 "Language: es_CL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: utils.py:130
+#: utils.py:143
 msgid "Thank you from Akvo.org!"
 msgstr "¡Gracias de parte de Akvo.org!"
 
@@ -160,7 +161,7 @@ msgstr "estados de actividad"
 #: codelists/models/file_format.py:16 codelists/models/finance_type.py:15
 #: codelists/models/location_type.py:15
 #: codelists/models/organisation_registration_agency.py:15
-#: codelists/models/sector.py:15 rsr/filters.py:69 rsr/models/benchmark.py:16
+#: codelists/models/sector.py:15 rsr/filters.py:74 rsr/models/benchmark.py:16
 #: rsr/models/category.py:34 rsr/models/project_document.py:54
 msgid "category"
 msgstr "categoría"
@@ -210,7 +211,7 @@ msgid "version"
 msgstr "versión"
 
 #: codelists/models/budget_identifier.py:17 codelists/models/sector.py:27
-#: rsr/filters.py:81 rsr/filters.py:130 rsr/models/sector.py:71
+#: rsr/filters.py:86 rsr/filters.py:127 rsr/models/sector.py:71
 #: rsr/models/transaction.py:122
 msgid "sector"
 msgstr "sector"
@@ -251,7 +252,7 @@ msgstr "vocabularios del identificador de presupuesto"
 msgid "budget types"
 msgstr "tipos de presupuesto"
 
-#: codelists/models/collaboration_type.py:25 rsr/models/project.py:258
+#: codelists/models/collaboration_type.py:25 rsr/models/project.py:260
 msgid "collaboration type"
 msgstr "tipo de colaboració"
 
@@ -647,73 +648,72 @@ msgstr "Contraseña antigua incorrecta."
 msgid "Passwords do not match."
 msgstr "Las contraseñas no coinciden."
 
-#: rest/views/user.py:86
+#: rest/views/user.py:101
 msgid "User already linked to this organisation"
 msgstr "Usuario ya vinculado a esta organización."
 
-#: rsr/admin.py:78
+#: rsr/admin.py:90
 msgid "General information"
 msgstr "Información general"
 
-#: rsr/admin.py:82 templates/organisation_main.html:59
+#: rsr/admin.py:95 templates/organisation_main.html:59
 msgid "Contact information"
 msgstr "Información de contacto"
 
-#: rsr/admin.py:83
+#: rsr/admin.py:97
 msgid "About the organisation"
 msgstr "Acerca de la organización"
 
-#: rsr/admin.py:163
+#: rsr/admin.py:184
 msgid ""
 "The 'total' budget item cannot be used in combination with other budget "
 "items."
 msgstr "El elemento 'total' del presupuesto no puede usarse en combinación con otros elementos del presupuesto."
 
-#: rsr/admin.py:264
+#: rsr/admin.py:286
 msgid "Your organisation should be somewhere here."
 msgstr "Su organización debe estar aquí en algún lugar."
 
-#: rsr/admin.py:278
-#, python-brace-format
-msgid "{org} has duplicate partner types of the same kind."
-msgstr "{org} tiene tipos de socios duplicados de la misma clase."
+#: rsr/admin.py:302
+msgid "{} has duplicate partner types of the same kind."
+msgstr "{} tiene tipos de parejas duplicadas de la misma clase."
 
-#: rsr/admin.py:563 rsr/admin.py:916
+#: rsr/admin.py:595 rsr/admin.py:964
 msgid "General Information"
 msgstr "Información general"
 
-#: rsr/admin.py:565
+#: rsr/admin.py:597
 msgid ""
 "This section should contain the top-level information about your project "
 "which will be publicly available and used within searches. Try to keep your "
 "Title and Subtitle short and snappy."
 msgstr "Esta sección debe contener la información de nivel superior sobre su proyecto que estará disponible públicamente y empleada en búsquedas. Procure mantener su título y subtítulo corto y conciso."
 
-#: rsr/admin.py:571
+#: rsr/admin.py:604
 msgid "IATI defaults"
 msgstr "Valores predeterminados de IITA"
 
-#: rsr/admin.py:573
+#: rsr/admin.py:606
 msgid ""
 "Optionally, you can add default information based on the IATI standard."
 msgstr "Como opción, puede añadir información predeterminada basada en el estándar IITA."
 
-#: rsr/admin.py:578
+#: rsr/admin.py:611
 msgid "Contact Information"
 msgstr "Información de contacto"
 
-#: rsr/admin.py:580
+#: rsr/admin.py:613
 msgid ""
 "This section should contain the contact information of your project which "
 "will be publicly available. Try to fill in at least a contact person and "
 "email."
 msgstr "Esta sección debe contener la información de contacto de su proyecto que estará disponible públicamente. Procure facilitar al menos una persona de contacto y una dirección de correo electrónico."
 
-#: rsr/admin.py:585 templates/project_report.html:492
+#: rsr/admin.py:618 templates/project_report.html:492
 msgid "Reporting Organisation"
 msgstr "Organización informante"
 
-#: rsr/admin.py:587
+#: rsr/admin.py:620
 msgid ""
 "Indicate the reporting organisation of this project. This organisation must "
 "be existing already in Akvo RSR. If the organisation does not exist in the "
@@ -722,11 +722,11 @@ msgid ""
 "target=\"_blank\">support@akvo.org</a>."
 msgstr "Indique la organización informante de este proyecto. Esta organización debe existir ya en Akvo RSR. Si no existiera en el sistema, envíe los datos de la organización, incluyendo su nombre, dirección, logotipo, persona de contacto y sitio web a <a href=\"mailto:support@akvo.org\" target=\"_blank\">support@akvo.org</a>."
 
-#: rsr/admin.py:594
+#: rsr/admin.py:627
 msgid "Project Partners"
 msgstr "Socios del proyecto"
 
-#: rsr/admin.py:596
+#: rsr/admin.py:629
 msgid ""
 "Add each of the partners you are working with on your project. These "
 "organisations must be existing already in Akvo RSR. If you are working with "
@@ -735,11 +735,11 @@ msgid ""
 " href=\"mailto:support@akvo.org\" target=\"_blank\">support@akvo.org</a>."
 msgstr "Añada cada uno de los socios con los que trabaja en el proyecto. Estas organizaciones deben existir ya en Akvo RSR. Si trabaja con algún socio que no exista en el sistema, envíe los datos de la organización, incluyendo su nombre, dirección, logotipo, persona de contacto y sitio web a <a href=\"mailto:support@akvo.org\" target=\"_blank\">support@akvo.org</a>."
 
-#: rsr/admin.py:603
+#: rsr/admin.py:636
 msgid "Project Information"
 msgstr "Información del proyecto"
 
-#: rsr/admin.py:605
+#: rsr/admin.py:638
 msgid ""
 "Here you can complete the in-depth descriptive details regarding your "
 "project, its history and plans for the future. Both The Project Plan and "
@@ -747,11 +747,11 @@ msgid ""
 "your project there."
 msgstr "Aquí podrá facilitar los datos descriptivos más detallados sobre su proyecto, su trayectoria y planes de futuro. Tanto el plan del proyecto como los campos de sostenibilidad son ilimitados, permitiéndole añadir más datos sobre su proyecto."
 
-#: rsr/admin.py:612
+#: rsr/admin.py:645
 msgid "Project Photo"
 msgstr "Fotografía del proyecto"
 
-#: rsr/admin.py:614
+#: rsr/admin.py:647
 msgid ""
 "Adding a photo to your project is important to be able to correctly "
 "visualise the project on the web. Please upload an image that represents the"
@@ -759,11 +759,11 @@ msgid ""
 " able to use this image publicly before uploading."
 msgstr "Es importante añadir una foto a su proyecto para poder visualizarlo correctamente en en la web. Suba una imagen que represente claramente su proyecto. Antes de subirla, asegúrese de tener los derechos de autor y licencias necesarios para usar esta imagen públicamente."
 
-#: rsr/admin.py:620
+#: rsr/admin.py:653
 msgid "Project Documents"
 msgstr "Documentos del proyecto"
 
-#: rsr/admin.py:622
+#: rsr/admin.py:655
 msgid ""
 "You can add any additional supporting documents to your project here. This "
 "could be in the form of annual reports, baseline surveys, contextual "
@@ -771,11 +771,11 @@ msgid ""
 "more about the projects activities."
 msgstr "Puede añadir más documentos acreditativos a su proyecto aquí. Esto puede hacerse mediante informes anuales, encuestas de referencia, información contextual o cualquier otro informe o resume que ayude a los usuarios a comprender mejor las actividades de los proyectos."
 
-#: rsr/admin.py:628
+#: rsr/admin.py:661
 msgid "Project Scope"
 msgstr "Ámbito del proyecto"
 
-#: rsr/admin.py:630
+#: rsr/admin.py:663
 msgid ""
 "The scope of the project refers to the geographical area that the project is"
 " active within.<br><br>Also add the physical locations where the project is "
@@ -786,11 +786,11 @@ msgid ""
 "correct place."
 msgstr "El ámbito del proyecto hace referencia al área geográfica en la que está activo.<br><br>Añada también las ubicaciones físicas de implementación del proyecto. Estas aparecerán en el mapa de la página de su proyecto. Utilice el enlace a <a href=\"http://mygeoposition.com/\" target=\"_blank\">http://mygeoposition.com/</a> para obtener las coordenadas de sus ubicaciones, dado que son los elementos que aseguran la correcta localización del marcador."
 
-#: rsr/admin.py:638
+#: rsr/admin.py:671
 msgid "Project Focus"
 msgstr "Enfoque del proyecto"
 
-#: rsr/admin.py:640
+#: rsr/admin.py:673
 msgid ""
 "The project focus aims to define the broad areas of the project activities. "
 "This ensures that the project can be collectively grouped with other similar"
@@ -803,22 +803,22 @@ msgid ""
 "target=\"_blank\">DAC-3 sector codes</a>"
 msgstr "El enfoque del proyecto aspira a definir las amplias áreas que ocupan las actividades del mismo. Esto garantiza que el proyecto pueda agruparse colectivamente con otros para aprovechar al máximo los recursos existentes.<br><br>Introduzca el código de los sectores de implementación del proyecto. Consulte estas listas para obtener los códigos de los sectores DAC-5 y DAC-3:<br>- <a href=\"http://iatistandard.org/201/codelists/Sector/\" target=\"_blank\">Códigos del sector DAC-5</a><br>- <a href=\"http://iatistandard.org/201/codelists/SectorCategory/\" target=\"_blank\">Códigos del sector DAC-3</a>"
 
-#: rsr/admin.py:651
+#: rsr/admin.py:684
 msgid "Project Financials - Budgets"
 msgstr "Aspectos financieros del proyecto: presupuestos"
 
-#: rsr/admin.py:653
+#: rsr/admin.py:686
 msgid ""
 "You can define the budget information as a total for the whole project or "
 "within sections and periods to provide more granular information about where"
 " the project funds are being spent."
 msgstr "Puede definir la información presupuestaria como un total para todo el proyecto o por secciones y periodos, a fin de ofrecer información más detallada sobre la distribución de los fondos del proyecto."
 
-#: rsr/admin.py:658
+#: rsr/admin.py:691
 msgid "Project Financials - Transactions"
 msgstr "Aspectos financieros del proyecto: transacciones"
 
-#: rsr/admin.py:660
+#: rsr/admin.py:693
 msgid ""
 "Transactions refer to the actual transfers of funds between organisations "
 "related to the funding and expenditure of the project. This information is "
@@ -829,12 +829,12 @@ msgid ""
 "project."
 msgstr "Las transacciones hacen referencia a las transferencias reales de fondos entre organizaciones relacionadas con la financiación y gastos del proyecto. Esta información es de vital importancia para definir la cadena de financiación dentro del sector de ayudas al desarrollo y puede ayudar a perfilar la imagen general. Proporcionar esta información también puede resultar beneficioso para aportar transparencia a los gastos a lo largo de periodos que se reflejan en los resultados obtenidos para el proyecto."
 
-#: rsr/admin.py:668 templates/project_main.html:137
+#: rsr/admin.py:701 templates/project_main.html:145
 #: templates/project_report.html:423
 msgid "Results"
 msgstr "Resultados"
 
-#: rsr/admin.py:670
+#: rsr/admin.py:703
 msgid ""
 "Here you can record the projected and achieved results for your project. "
 "Results are ordered within a hierarchy that helps to provide a structure "
@@ -850,11 +850,11 @@ msgid ""
 "After saving the project, the indicator (period) will be shown."
 msgstr "Aquí podrá registrar los resultados proyectados y alcanzados para su proyecto. Los resultados se ordenan conforme a una jerarquía que ayuda a proporcionar una estructura bajo la que presentar sus resultados. En el nivel superior de resultados se encuentran las metas de su proyecto. Estas deben ser los objetivos de alto nivel del proyecto y no es necesario que sean directamente cuantificables, pero sí deben aportar contexto.<br><br>Por cada meta puede definirse un indicador. Los indicadores deben ser elementos que puedan cuantificarse y evaluarse a medida que el proyecto avanza y finaliza. Cada indicador puede recibir uno o más plazos de consecución. Estos plazos deberán incluir las fechas desde las que se evalúa el indicador.<br><br><strong>Aviso importante:</strong> Si un resultado no muestra un indicador o su plazo, guarde antes el proyecto. Después de guardar el proyecto se mostrará el indicador (o su plazo)."
 
-#: rsr/admin.py:682 templates/organisation_directory.html:83
+#: rsr/admin.py:715 templates/organisation_directory.html:83
 msgid "Additional Information"
 msgstr "Información adicional"
 
-#: rsr/admin.py:684
+#: rsr/admin.py:717
 msgid ""
 "You can add links to your project such as Organisation Websites or Akvopedia"
 " articles containing relevant information to improve the information "
@@ -864,20 +864,20 @@ msgid ""
 "that you do not want to be visible on your project page."
 msgstr "Puede añadir vínculos a su proyecto, como webs de organizaciones o artículos de Akvopedia con información relevante, para mejorar la información disponible a aquellos que visiten su proyecto. También puede añadir notas al proyecto. Estas notas solo serán visibles dentro de esta administración, por lo que podrán utilizarse para identificar información que falta, datos específicos de contacto o cambios de estado que no desea hacer visibles en su página del proyecto."
 
-#: rsr/admin.py:692
+#: rsr/admin.py:725
 msgid "Additional IATI Information"
 msgstr "Información adicional sobre IITA"
 
-#: rsr/admin.py:694
+#: rsr/admin.py:727
 msgid ""
 "Optionally, you can add additional information based on the IATI standard."
 msgstr "Como opción, puede añadir información adicional basada en el estándar IITA."
 
-#: rsr/admin.py:698 templates/project_report.html:130
+#: rsr/admin.py:731 templates/project_report.html:130
 msgid "Keywords"
 msgstr "Palabras clave"
 
-#: rsr/admin.py:700
+#: rsr/admin.py:733
 msgid ""
 "Add keywords belonging to your project. These keywords must be existing "
 "already in Akvo RSR. If you want to use a keyword that does not exist in the"
@@ -885,32 +885,32 @@ msgid ""
 "target=\"_blank\">support@akvo.org</a>."
 msgstr "Añada palabras clave pertenecientes a su proyecto. Estas palabras deben existir ya en Akvo RSR. Si desea usar una palabra clave no existente en el sistema, contacte con <a href=\"mailto:support@akvo.org\" target=\"_blank\">support@akvo.org</a>."
 
-#: rsr/admin.py:821
+#: rsr/admin.py:869
 #, python-format
 msgid "Add %s"
 msgstr "Añada %s"
 
-#: rsr/admin.py:850
+#: rsr/admin.py:898
 msgid "Personal info"
 msgstr "Información personal"
 
-#: rsr/admin.py:851
+#: rsr/admin.py:899
 msgid "Permissions"
 msgstr "Permisos"
 
-#: rsr/admin.py:854
+#: rsr/admin.py:902
 msgid "Important dates"
 msgstr "Fechas importantes"
 
-#: rsr/admin.py:919
+#: rsr/admin.py:967
 msgid "Content"
 msgstr "Contenido"
 
-#: rsr/admin.py:922
+#: rsr/admin.py:970
 msgid "Image and video"
 msgstr "Imagen y vídeo"
 
-#: rsr/admin.py:994
+#: rsr/admin.py:1048
 msgid "Project selection"
 msgstr "Selección de proyecto"
 
@@ -960,43 +960,51 @@ msgstr "Coordenada de latitud."
 msgid "Longitude coordinate."
 msgstr "Coordenada de longitud."
 
-#: rsr/filters.py:74 rsr/filters.py:114 rsr/filters.py:147
+#: rsr/filters.py:22 rsr/filters.py:35 rsr/filters.py:71 rsr/filters.py:84
+#: rsr/filters.py:85 rsr/filters.py:90 rsr/filters.py:125 rsr/filters.py:126
+#: templates/project_directory.html:196
+msgid "All"
+msgstr "Todos"
+
+#: rsr/filters.py:79 rsr/filters.py:116 rsr/filters.py:144
 #: rsr/models/location.py:124
 msgid "location"
 msgstr "ubicación"
 
-#: rsr/filters.py:86 rsr/models/iati_export.py:37 rsr/models/project.py:98
+#: rsr/filters.py:91 rsr/models/iati_export.py:37 rsr/models/project.py:98
 msgid "status"
 msgstr "estado"
 
-#: rsr/filters.py:91 rsr/filters.py:135 rsr/filters.py:152
+#: rsr/filters.py:96 rsr/filters.py:132 rsr/filters.py:149
 msgid "Search"
 msgstr "Búsqueda"
 
-#: rsr/filters.py:101 rsr/filters.py:124 rsr/models/employment.py:24
-#: rsr/models/organisation.py:375 rsr/models/partner_site.py:51
+#: rsr/filters.py:103 rsr/filters.py:121 rsr/models/employment.py:24
+#: rsr/models/organisation.py:380 rsr/models/partner_site.py:51
 #: rsr/models/partnership.py:44 rsr/models/project_contact.py:35
+#: templates/project_directory.html:195
 msgid "organisation"
 msgstr "organización"
 
 #: rsr/forms.py:32 rsr/forms.py:35 rsr/forms.py:119
-#: templates/project_report.html:576 templates/sign_in.html:36
+#: templates/project_report.html:576 templates/sign_in.html:21
+#: templates/sign_in.html.py:45
 #: templates/donate/donation_confirmation_email.html:29
-#: templates/myrsr/user_management.html:70
+#: templates/myrsr/user_management.html:75
 msgid "Email"
 msgstr "Correo electrónico"
 
 #: rsr/forms.py:39 rsr/forms.py:42 rsr/forms.py:127
-#: templates/myrsr/user_management.html:71
+#: templates/myrsr/user_management.html:76
 msgid "First name"
 msgstr "Nombre"
 
 #: rsr/forms.py:46 rsr/forms.py:49 rsr/forms.py:134
-#: templates/myrsr/user_management.html:72
+#: templates/myrsr/user_management.html:77
 msgid "Last name"
 msgstr "Apellido"
 
-#: rsr/forms.py:53 rsr/forms.py:55
+#: rsr/forms.py:53 rsr/forms.py:55 templates/sign_in.html:25
 msgid "Password"
 msgstr "Contraseña"
 
@@ -1025,15 +1033,16 @@ msgid "Repeat new password"
 msgstr "Repetir la nueva contraseña"
 
 #: rsr/forms.py:179 templates/project_report.html:556
-#: templates/project_widgets2.html:48 templates/myrsr/my_details.html:81
+#: templates/project_widgets2.html:48 templates/myrsr/my_details.html:86
+#: templates/myrsr/user_management.html:78
 msgid "Organisation"
 msgstr "Organización"
 
-#: rsr/forms.py:186 templates/myrsr/my_details.html:83
+#: rsr/forms.py:186 templates/myrsr/my_details.html:88
 msgid "Job title (optional)"
 msgstr "Cargo (opcional)"
 
-#: rsr/forms.py:193 templates/myrsr/my_details.html:82
+#: rsr/forms.py:193 templates/myrsr/my_details.html:87
 msgid "Country (optional)"
 msgstr "País (opcional)"
 
@@ -1112,15 +1121,15 @@ msgstr "¡Debe escribir la misma dirección de correo cada vez!"
 msgid "Select your organisation"
 msgstr "Seleccione su organización"
 
-#: rsr/forms.py:413
+#: rsr/forms.py:399
 msgid "Show IATI file on organisation page"
 msgstr "Mostrar el archivo IITA en la página de la organización"
 
-#: rsr/forms.py:417
+#: rsr/forms.py:403
 msgid "Select the projects included in the export:"
 msgstr "Seleccione los proyectos incluidos en la exportación:"
 
-#: rsr/forms.py:440
+#: rsr/forms.py:426
 msgid "Reporting organisation or user not found."
 msgstr "Organización informante o usuario no encontrado"
 
@@ -3495,7 +3504,7 @@ msgstr "no es un carácter permitido"
 #: rsr/models/budget_item.py:87 rsr/models/country.py:51 rsr/models/goal.py:15
 #: rsr/models/legacy_data.py:15 rsr/models/link.py:25
 #: rsr/models/partnership.py:46 rsr/models/planned_disbursement.py:19
-#: rsr/models/policy_marker.py:21 rsr/models/project.py:883
+#: rsr/models/policy_marker.py:21 rsr/models/project.py:885
 #: rsr/models/project_comment.py:17 rsr/models/project_condition.py:19
 #: rsr/models/project_contact.py:19 rsr/models/project_document.py:24
 #: rsr/models/project_update.py:40 rsr/models/region.py:21
@@ -3556,7 +3565,7 @@ msgstr "etiqueta de elemento presupuestario"
 msgid "budget item labels"
 msgstr "etiquetas de elemento presupuestario"
 
-#: rsr/models/budget_item.py:39 rsr/models/project.py:276
+#: rsr/models/budget_item.py:39 rsr/models/project.py:278
 msgid "project budget"
 msgstr "presupuesto del proyecto"
 
@@ -3748,7 +3757,7 @@ msgstr "otros marcadores de RSD"
 
 #: rsr/models/employment.py:25 rsr/models/iati_export.py:33
 #: rsr/models/project_comment.py:18 rsr/models/project_update.py:42
-#: rsr/models/user.py:112
+#: rsr/models/user.py:108
 msgid "user"
 msgstr "usuario"
 
@@ -3886,12 +3895,12 @@ msgstr "completado"
 msgid "cancelled"
 msgstr "cancelado"
 
-#: rsr/models/iati_export.py:30 rsr/models/project.py:222
+#: rsr/models/iati_export.py:30 rsr/models/project.py:224
 msgid "reporting organisation"
 msgstr "organización informante"
 
-#: rsr/models/iati_export.py:35 rsr/models/project.py:884
-#: templates/organisation_directory.html:84 templates/myrsr/my_iati.html:75
+#: rsr/models/iati_export.py:35 rsr/models/project.py:886
+#: templates/organisation_directory.html:84 templates/myrsr/my_iati.html:85
 msgid "projects"
 msgstr "proyectos"
 
@@ -3949,8 +3958,8 @@ msgid ""
 msgstr "¿Cuál es el objetivo del proyecto: aumentar o reducir el valor del indicador?"
 
 #: rsr/models/indicator.py:33
-msgid "You can further define the indicator here. (255 characters)"
-msgstr "Aquí podrá definir aún más el indicador. (255 caracteres)"
+msgid "You can further define the indicator here. (2000 characters)"
+msgstr "Puede definir aún más el indicador de aquí. (2000 caracteres)"
 
 #: rsr/models/indicator.py:36
 msgid "baseline year"
@@ -3973,8 +3982,8 @@ msgid "baseline comment"
 msgstr "comentario base"
 
 #: rsr/models/indicator.py:45
-msgid "You can further define the baseline here. (255 characters)"
-msgstr "Aquí podrá definir aún más la base. (255 caracteres)"
+msgid "You can further define the baseline here. (2000 characters)"
+msgstr "Puede definir aún más la línea de base aquí. (2000 caracteres)"
 
 #: rsr/models/indicator.py:56 rsr/models/indicator.py:61
 msgid "indicator"
@@ -4009,8 +4018,8 @@ msgid "target comment"
 msgstr "comentario objetivo"
 
 #: rsr/models/indicator.py:77
-msgid "You can comment on the target value here. (255 characters)"
-msgstr "Aquí puede realizar comentarios sobre el valor objetivo. (255 caracteres)"
+msgid "You can comment on the target value here. (2000 characters)"
+msgstr "Puede comentar sobre el valor objetivo aquí. (2000 caracteres)"
 
 #: rsr/models/indicator.py:80
 msgid "actual value"
@@ -4027,8 +4036,8 @@ msgid "actual comment"
 msgstr "comentario real"
 
 #: rsr/models/indicator.py:86
-msgid "You can comment on the actual value here. (255 characters)"
-msgstr "Aquí puede realizar comentarios sobre el valor real. (255 caracteres)"
+msgid "You can comment on the actual value here. (2000 characters)"
+msgstr "Puede comentar sobre el valor real aquí. (2000 caracteres)"
 
 #: rsr/models/indicator.py:94
 msgid "indicator period"
@@ -4056,7 +4065,7 @@ msgid "{rec_org_name}'s internal ID for {ref_org_name}: {identifier}"
 msgstr "ID interna de {rec_org_name} para {ref_org_name}: {identifier}"
 
 #: rsr/models/invoice.py:92 rsr/models/organisation.py:150
-#: rsr/models/project_update.py:83 rsr/models/user.py:100
+#: rsr/models/project_update.py:83 rsr/models/user.py:96
 msgid "Notes and comments"
 msgstr "Notas y comentarios"
 
@@ -4357,7 +4366,17 @@ msgstr "Cuando no esté permitido editar manualmente, los administradores socios
 msgid "Show latest exported IATI file on organisation page."
 msgstr "Mostrar el archivo IITA exportado más reciente en la página de la organización."
 
-#: rsr/models/organisation.py:376 rsr/models/user.py:97 rsr/models/user.py:150
+#: rsr/models/organisation.py:168
+msgid "Reportable"
+msgstr "Denunciable"
+
+#: rsr/models/organisation.py:169
+msgid ""
+"Organisation is allowed to become a reporting organisation. Can be set by "
+"superusers."
+msgstr "Se permite Organización para convertirse en una organización informante. Puede ser fijado por los superusuarios."
+
+#: rsr/models/organisation.py:381 rsr/models/user.py:93 rsr/models/user.py:138
 msgid "organisations"
 msgstr "organizaciones"
 
@@ -4379,7 +4398,7 @@ msgstr "Premium Plus"
 
 #: rsr/models/organisation_account.py:31 rsr/models/project.py:75
 #: templates/partials/widgets/project_status.html:21
-#: templates/widgets/project_list.html:69
+#: templates/widgets/project_list.html:74
 msgid "Archived"
 msgstr "Archivado"
 
@@ -4555,15 +4574,19 @@ msgstr "Cancelar selección para listar todos los proyectos en esta página de A
 msgid "Exclude projects with selected keyword(s)"
 msgstr "Excluir proyectos con la palabra(s) clave seleccionada"
 
-#: rsr/models/partner_site.py:157
+#: rsr/models/partner_site.py:155
+msgid "Show all projects, updates and organisations on the maps."
+msgstr "Mostrar todos los proyectos, actualizaciones y organizaciones en los mapas."
+
+#: rsr/models/partner_site.py:160
 msgid "Akvo page for {}"
 msgstr "Página de Akvo para {} "
 
-#: rsr/models/partner_site.py:208
+#: rsr/models/partner_site.py:211
 msgid "Akvo page"
 msgstr "Página de Akvo"
 
-#: rsr/models/partner_site.py:209
+#: rsr/models/partner_site.py:212
 msgid "Akvo pages"
 msgstr "Páginas de Akvo"
 
@@ -4714,32 +4737,32 @@ msgstr "Actividad secundaria"
 msgid "Lower Sub Activity"
 msgstr "Actividad secundaria inferior"
 
-#: rsr/models/project.py:70 templates/myrsr/user_management.html:69
+#: rsr/models/project.py:70 templates/myrsr/user_management.html:74
 #: templates/partials/widgets/project_status.html:25
-#: templates/widgets/project_list.html:70
+#: templates/widgets/project_list.html:75
 msgid "None"
 msgstr "Ninguna"
 
 #: rsr/models/project.py:71 templates/partials/widgets/project_status.html:5
-#: templates/widgets/project_list.html:65
+#: templates/widgets/project_list.html:70
 msgid "Needs funding"
 msgstr "Precisa financiación"
 
 #: rsr/models/project.py:72 templates/organisation_main.html:105
 #: templates/partials/widgets/project_status.html:9
-#: templates/widgets/project_list.html:66
+#: templates/widgets/project_list.html:71
 msgid "Active"
 msgstr "Activo"
 
 #: rsr/models/project.py:73 templates/organisation_main.html:107
 #: templates/partials/project_budget.html:4
 #: templates/partials/widgets/project_status.html:13
-#: templates/widgets/project_list.html:67
+#: templates/widgets/project_list.html:72
 msgid "Complete"
 msgstr "Completo"
 
 #: rsr/models/project.py:74 templates/organisation_main.html:108
-#: templates/widgets/project_list.html:68
+#: templates/widgets/project_list.html:73
 msgid "Cancelled"
 msgstr "Cancelado"
 
@@ -4934,25 +4957,25 @@ msgid ""
 "donate to this project and the donate button will not be shown."
 msgstr "Mostrar el botón de donaciones para este proyecto. Si no está seleccionado, no será posible realizar donaciones a este proyecto y no se mostrará el botón de donaciones."
 
-#: rsr/models/project.py:224
+#: rsr/models/project.py:226
 msgid "Select the reporting organisation of the project."
 msgstr "Seleccione la organización informante del proyecto."
 
-#: rsr/models/project.py:227
+#: rsr/models/project.py:229
 msgid "secondary reporter"
 msgstr "informante secundario"
 
-#: rsr/models/project.py:228
+#: rsr/models/project.py:230
 msgid ""
 "This indicates whether the reporting organisation is a secondary publisher: "
 "publishing data for which it is not directly responsible."
 msgstr "Esto indica si la organización informante es una editora secundaria: que publica datos de los que no es directamente responsable."
 
-#: rsr/models/project.py:234
+#: rsr/models/project.py:236
 msgid "IATI Project Identifier"
 msgstr "Identificador de proyecto de IITA"
 
-#: rsr/models/project.py:235
+#: rsr/models/project.py:237
 msgid ""
 "This should be the official unique IATI Identifier for the project. The "
 "identifier consists of the IATI organisation identifier and the "
@@ -4963,50 +4986,50 @@ msgid ""
 "create</a>"
 msgstr "Este debe ser el identificador de IITA exclusivo oficial del proyecto. El identificador consta del identificador de la organización IITA y del identificador (interno de la organización) del proyecto. Por ejemplo: NL-KVK-31156201-TZ1234. (100 caracteres)<br>Observe que, en este formulario, 'proyectos' son lo mismo que 'actividades' en IITA<br><a href=\"http://iatistandard.org/activity-standard/iati-activities/iati-activity/iati-identifier\" target=\"_blank\">Cómo crear</a>"
 
-#: rsr/models/project.py:245
+#: rsr/models/project.py:247
 msgid "hierarchy"
 msgstr "jerarquía"
 
-#: rsr/models/project.py:246
+#: rsr/models/project.py:248
 msgid ""
 "If you are reporting multiple levels of projects in RSR, you can specify "
 "whether this is a core or sub-project here.<br>So for example: is this "
 "project part of a larger project or programme."
 msgstr "Si informa de múltiples niveles de proyectos en RSR, podrá especificar sin aquí se trata de un proyecto principal o secundario.<br>Así, por ejemplo: ¿forma este proyecto parte de otro mayor o de un programa?"
 
-#: rsr/models/project.py:251
+#: rsr/models/project.py:253
 msgid "project scope"
 msgstr "alcance del proyecto"
 
-#: rsr/models/project.py:252
+#: rsr/models/project.py:254
 msgid "Select the geographical scope of the project."
 msgstr "Seleccione el alcance geográfico del proyecto."
 
-#: rsr/models/project.py:255
+#: rsr/models/project.py:257
 msgid "capital spend percentage"
 msgstr "porcentaje de gasto de capital"
 
-#: rsr/models/project.py:260
+#: rsr/models/project.py:262
 msgid "default aid type"
 msgstr "tipo de ayuda predeterminado"
 
-#: rsr/models/project.py:262
+#: rsr/models/project.py:264
 msgid "default finance type"
 msgstr "tipo de financiación predeterminado"
 
-#: rsr/models/project.py:264
+#: rsr/models/project.py:266
 msgid "default flow type"
 msgstr "tipo de flujo predeterminado"
 
-#: rsr/models/project.py:266
+#: rsr/models/project.py:268
 msgid "default tied status"
 msgstr "estado vinculado predeterminado"
 
-#: rsr/models/project.py:269
+#: rsr/models/project.py:271
 msgid "country budget vocabulary"
 msgstr "vocabulario presupuestario del país"
 
-#: rsr/models/project.py:630
+#: rsr/models/project.py:632
 msgid "No update yet"
 msgstr "No hay ninguna actualización aún"
 
@@ -5311,8 +5334,8 @@ msgstr "estado de agregación"
 
 #: rsr/models/result.py:34
 msgid ""
-"You can provide further information of the result here. (255 characters)"
-msgstr "Aquí puede facilitar más información sobre el resultado. (255 caracteres)"
+"You can provide further information of the result here. (2000 characters)"
+msgstr "Puede proporcionar más información del resultado aquí. (2000 caracteres)"
 
 #: rsr/models/result.py:51
 msgid "results"
@@ -5404,86 +5427,86 @@ msgstr "sector de la transacció"
 msgid "transaction sectors"
 msgstr "sectores de la transacció"
 
-#: rsr/models/user.py:71
+#: rsr/models/user.py:67
 msgid "username"
 msgstr "nombre de usuario"
 
-#: rsr/models/user.py:72
+#: rsr/models/user.py:68
 msgid "email address"
 msgstr "dirección de correo electrónico"
 
-#: rsr/models/user.py:73
+#: rsr/models/user.py:69
 msgid "first name"
 msgstr "nombre"
 
-#: rsr/models/user.py:74
+#: rsr/models/user.py:70
 msgid "last name"
 msgstr "apellido"
 
-#: rsr/models/user.py:76 rsr/models/user.py:176
+#: rsr/models/user.py:72 rsr/models/user.py:164
 msgid "active"
 msgstr "activo"
 
-#: rsr/models/user.py:77
+#: rsr/models/user.py:73
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr "Designa si este usuario debe tratarse como activo. Cancele esta selección en lugar de eliminar las cuentas."
 
-#: rsr/models/user.py:81
+#: rsr/models/user.py:77
 msgid "staff"
 msgstr "personal"
 
-#: rsr/models/user.py:82
+#: rsr/models/user.py:78
 msgid "Designates whether the user can log into this admin site."
 msgstr "Designe si el usuario puede iniciar sesión en este sitio administrativo."
 
-#: rsr/models/user.py:85
+#: rsr/models/user.py:81
 msgid "admin"
 msgstr "administració"
 
-#: rsr/models/user.py:86
+#: rsr/models/user.py:82
 msgid ""
 "Designates whether the user is a general RSR admin. To be used only for Akvo"
 " employees."
 msgstr "Designa si el usuario es un administrador general de RSR. Para su uso exclusivo por parte de empleados de Akvo."
 
-#: rsr/models/user.py:90 rsr/models/user.py:198
+#: rsr/models/user.py:86 rsr/models/user.py:186
 msgid "support user"
 msgstr "usuario compatible"
 
-#: rsr/models/user.py:91
+#: rsr/models/user.py:87
 msgid ""
 "Designates whether the user is a support user. To be used for users willing "
 "to receive notifications when a new user registers for their organisation."
 msgstr "Designa si el usuario es o no compatible. Destinado a usuarios dispuestos a recibir notificaciones de registro de nuevos usuarios en su organización."
 
-#: rsr/models/user.py:95
+#: rsr/models/user.py:91
 msgid "date joined"
 msgstr "fecha de ingreso"
 
-#: rsr/models/user.py:101
+#: rsr/models/user.py:97
 msgid "avatar"
 msgstr "avatar"
 
-#: rsr/models/user.py:102
+#: rsr/models/user.py:98
 msgid "The avatar should be less than 500 kb in size."
 msgstr "El avatar debe tener un tamaño inferior a 500 kb."
 
-#: rsr/models/user.py:113 templates/organisation_directory.html:85
+#: rsr/models/user.py:109 templates/organisation_directory.html:85
 msgid "users"
 msgstr "usuarios"
 
-#: rsr/models/user.py:136
+#: rsr/models/user.py:124
 msgid "full name"
 msgstr "nombre completo"
 
-#: rsr/models/user.py:193
+#: rsr/models/user.py:181
 msgid "rsr admin"
 msgstr "administrador de rsr"
 
-#: rsr/models/user.py:213 rsr/models/user.py:236 rsr/models/user.py:259
-#: rsr/models/user.py:282
+#: rsr/models/user.py:201 rsr/models/user.py:224 rsr/models/user.py:247
+#: rsr/models/user.py:270
 msgid "organisation admin"
 msgstr "administrador de la organizació"
 
@@ -5536,24 +5559,23 @@ msgstr "Akvo Really Simple Reporting es una web y un sistema con base Android qu
 msgid "Home"
 msgstr "Inicio"
 
-#: templates/base.html:104
+#: templates/base.html:101
 msgid ""
 "This website uses cookies to improve your experience. By continuing to "
 "browse the site you are agreeing to our use of cookies, as detailed in our "
 msgstr "Este sitio web usa cookies para mejorar su experiencia. Si continúa navegando por el sitio significará que acepta nuestro uso de cookies, como se detalla en nuestra"
 
-#: templates/base.html:105
+#: templates/base.html:102
 msgid "privacy and cookies policy"
 msgstr "política de privacidad y cookies"
 
-#: templates/base.html:106
+#: templates/base.html:103
 msgid "Accept"
 msgstr "Acepto"
 
 #: templates/organisation_directory.html:3
 #: templates/organisation_directory.html:126
-#: templates/project_directory.html:188
-#: templates/myrsr/user_management.html:73 templates/navigation/header.html:52
+#: templates/project_directory.html:193 templates/navigation/header.html:53
 msgid "Organisations"
 msgstr "Organizaciones"
 
@@ -5564,22 +5586,22 @@ msgid ""
 msgstr "Filtre la siguiente lista de organizaciones buscando por nombre, organización o sector"
 
 #: templates/organisation_directory.html:20
-#: templates/project_directory.html:19 templates/update_directory.html:20
+#: templates/project_directory.html:18 templates/update_directory.html:19
 msgid "Update list"
 msgstr "Lista actualizada"
 
 #: templates/organisation_directory.html:23
-#: templates/project_directory.html:22 templates/update_directory.html:23
+#: templates/project_directory.html:21 templates/update_directory.html:22
 msgid "Advanced filters"
 msgstr "Filtros avanzados"
 
 #: templates/organisation_directory.html:27
-#: templates/project_directory.html:25 templates/update_directory.html:26
+#: templates/project_directory.html:24 templates/update_directory.html:25
 msgid "Reset all filters"
 msgstr "Restablecer todos los filtros"
 
 #: templates/organisation_directory.html:45
-#: templates/project_directory.html:57 templates/update_directory.html:49
+#: templates/project_directory.html:57 templates/update_directory.html:48
 msgid "Close this"
 msgstr "Cerrar esto"
 
@@ -5638,8 +5660,8 @@ msgid "Funding"
 msgstr "Financiació"
 
 #: templates/organisation_main.html:123 templates/organisation_main.html:143
-#: templates/project_directory.html:3 templates/project_directory.html:187
-#: templates/navigation/header.html:40
+#: templates/project_directory.html:3 templates/project_directory.html:192
+#: templates/navigation/header.html:41 templates/widgets/project_list.html:16
 msgid "Projects"
 msgstr "Proyectos"
 
@@ -5663,10 +5685,14 @@ msgstr "Aún se necesita"
 msgid "US Dollars"
 msgstr "Dólares norteamericanos"
 
-#: templates/project_directory.html:13
+#: templates/project_directory.html:12
 msgid ""
 "Refine the project list below by searching by name, organisation or sector"
 msgstr "Friltre la siguiente lista de proyectos buscando por nombre, organización o sector"
+
+#: templates/project_directory.html:56
+msgid "Apply filter"
+msgstr "Aplicar filtro"
 
 #: templates/project_directory.html:69
 #, python-format
@@ -5677,14 +5703,14 @@ msgid ""
 msgstr "\n          Viendo %(start_index)s - %(end_index)s de %(paginator_count)s proyectos\n      "
 
 #: templates/project_directory.html:109 templates/project_directory.html:129
-#: templates/project_directory.html:147 templates/project_main.html:40
+#: templates/project_directory.html:147 templates/project_main.html:42
 #: templates/project_report.html:212
 msgid "Sectors"
 msgstr "Sectores"
 
 #: templates/project_directory.html:111 templates/project_directory.html:131
 #: templates/project_directory.html:150 templates/project_main.html:31
-#: templates/myrsr/my_projects.html:39 templates/widgets/project_list.html:25
+#: templates/myrsr/my_projects.html:39 templates/widgets/project_list.html:30
 msgid "Status"
 msgstr "Estado"
 
@@ -5703,8 +5729,8 @@ msgid "of"
 msgstr "de"
 
 #: templates/project_directory.html:120 templates/project_directory.html:140
-#: templates/project_main.html:70 templates/donate/donate_step3.html:26
-#: templates/partials/project_budget.html:19
+#: templates/project_main.html:76 templates/donate/donate_step3.html:26
+#: templates/partials/project_budget.html:22
 #: templates/partials/widgets/project_donate_button.html:4
 msgid "Donate"
 msgstr "Donar"
@@ -5713,7 +5739,7 @@ msgstr "Donar"
 msgid "No updates"
 msgstr "Ninguna actualizació"
 
-#: templates/project_directory.html:189 templates/project_report.html:179
+#: templates/project_directory.html:194 templates/project_report.html:179
 msgid "Locations"
 msgstr "Ubicaciones"
 
@@ -5731,7 +5757,7 @@ msgstr "Financiación del proyecto"
 
 #: templates/project_finance.html:29
 #: templates/partials/widgets/project_funding.html:5
-#: templates/widgets/project_list.html:35
+#: templates/widgets/project_list.html:40
 msgid "Budget"
 msgstr "Presupuesto"
 
@@ -5739,7 +5765,7 @@ msgstr "Presupuesto"
 msgid "Funded"
 msgstr "Financiado"
 
-#: templates/project_finance.html:31
+#: templates/project_finance.html:31 templates/partials/project_budget.html:17
 msgid "Funds needed"
 msgstr "Precisa financiación"
 
@@ -5785,89 +5811,89 @@ msgstr "Esta es una vista borrador del proyecto que solo pueden visualizar los a
 msgid "Project summary"
 msgstr "Resumen del proyecto"
 
-#: templates/project_main.html:33
+#: templates/project_main.html:34
 msgid "Hierarchy"
 msgstr "Jerarquía"
 
-#: templates/project_main.html:34
+#: templates/project_main.html:35
 #, python-format
 msgid ""
 "\n"
-"                This project has %(parents_count)s parent projects, %(children_count)s child projects and %(siblings_count)s sibling projects\n"
-"                "
-msgstr "\n                Este proyecto tiene %(parents_count)s proyectos principales, %(children_count)s proyectos secundarios y %(siblings_count)s proyectos hermanos\n                "
+"                  This project has %(parents_count)s parent projects, %(children_count)s child projects and %(siblings_count)s sibling projects\n"
+"                  "
+msgstr "\nEste proyecto tiene %(parents_count)s proyectos de padres, %(children_count)s proyectos infantiles y %(siblings_count)s de proyectos de hermanos"
 
-#: templates/project_main.html:37
+#: templates/project_main.html:38
 msgid "View full hierarchy"
 msgstr "Ver jerarquía completa"
 
-#: templates/project_main.html:44
+#: templates/project_main.html:47
 msgid "Reporting organisation"
 msgstr "Organización informante"
 
-#: templates/project_main.html:54
+#: templates/project_main.html:57
 #, python-format
 msgid "+ %(partners_count)s partners"
 msgstr "+ %(partners_count)s socios"
 
-#: templates/project_main.html:61
+#: templates/project_main.html:68
 msgid "financial info"
 msgstr "informarción financiera"
 
-#: templates/project_main.html:68
-msgid "Budget Needed"
-msgstr "Precisa presupuesto"
-
-#: templates/project_main.html:84
+#: templates/project_main.html:69 templates/project_main.html.py:90
 msgid "See all financial info"
 msgstr "Ver toda la información financiera"
 
-#: templates/project_main.html:102
+#: templates/project_main.html:74
+msgid "Budget Needed"
+msgstr "Precisa presupuesto"
+
+#: templates/project_main.html:108
 msgid "Latest project updates"
 msgstr "Actualizaciones del proyecto más recientes"
 
-#: templates/project_main.html:106 templates/update_add.html:62
+#: templates/project_main.html:113 templates/update_add.html:62
 #: templates/update_main.html:91
 msgid "See all updates for this project."
 msgstr "Ver todas las actualizaciones de este proyecto"
 
-#: templates/project_main.html:127
+#: templates/project_main.html:135
 msgid "End date unknown"
 msgstr "Fecha de finalización desconocida"
 
-#: templates/project_main.html:128
+#: templates/project_main.html:136
 msgid "Start date unknown"
 msgstr "Fecha de inicio desconocida"
 
-#: templates/project_main.html:129
+#: templates/project_main.html:137
 msgid "actual"
 msgstr "real"
 
-#: templates/project_main.html:130
+#: templates/project_main.html:138
 msgid "target"
 msgstr "objetivo"
 
-#: templates/project_main.html:131 templates/project_report.html:117
+#: templates/project_main.html:139 templates/project_report.html:117
 msgid "Background"
 msgstr "Trayectoria"
 
-#: templates/project_main.html:132
+#: templates/project_main.html:140
 msgid "Current situation"
 msgstr "Situación actual"
 
-#: templates/project_main.html:133
+#: templates/project_main.html:141
 msgid "Goals overview"
 msgstr "Resumen de objetivos"
 
-#: templates/project_main.html:134
+#: templates/project_main.html:142
 msgid "Project plan"
 msgstr "Plan del proyecto"
 
-#: templates/project_main.html:135 templates/project_report.html:125
+#: templates/project_main.html:143 templates/project_report.html:125
 msgid "Sustainability"
 msgstr "Sostenibilidad"
 
-#: templates/project_main.html:136
+#: templates/project_main.html:144
 msgid "Target group"
 msgstr "Grupo objetivo"
 
@@ -6291,6 +6317,11 @@ msgstr "Actualizaciones para %(project)s"
 msgid "Project updates"
 msgstr "Actualizaciones del proyecto"
 
+#: templates/project_updates.html:40 templates/update_directory.html:87
+#: templates/update_main.html:23 templates/update_main.html.py:75
+msgid "by"
+msgstr "por"
+
 #: templates/project_widgets.html:5 templates/project_widgets2.html:5
 msgid "widget selection"
 msgstr "selección de widget"
@@ -6382,7 +6413,6 @@ msgstr "Paso 2 de 3: Ajustes"
 #: templates/project_widgets2.html:26 templates/donate/donate_thanks.html:29
 #: templates/myrsr/my_projects.html:39 templates/myrsr/my_updates.html:24
 #: templates/partials/widgets/header.html:5
-#: templates/widgets/project_list.html:17
 msgid "Project"
 msgstr "Proyecto"
 
@@ -6453,26 +6483,31 @@ msgstr "Regresar a la selección de widget"
 msgid "Sign in to your Akvo RSR account"
 msgstr "Inicie sesión en su cuenta de Akvo RSR"
 
-#: templates/sign_in.html:20
+#: templates/sign_in.html:14 templates/navigation/header.html:67
+#: templates/registration/password_reset_complete.html:11
+msgid "Sign in"
+msgstr "Inicio de sesión"
+
+#: templates/sign_in.html:29
 msgid "Login"
 msgstr "Inicio de sesión"
 
-#: templates/sign_in.html:34
+#: templates/sign_in.html:43
 #: templates/registration/password_reset_confirm.html:4
 msgid "Reset your password"
 msgstr "Restablezca su contraseña"
 
-#: templates/sign_in.html:35
+#: templates/sign_in.html:44
 msgid ""
 "Fill in your email address in the field below. We will send you instructions"
 " on how to reset your password."
 msgstr "Introduzca su dirección de correo electrónico en el siguiente campo. Le enviaremos instrucciones para restablecer su contraseña."
 
-#: templates/sign_in.html:37
+#: templates/sign_in.html:46
 msgid "Reset password"
 msgstr "Restablecer la contraseña"
 
-#: templates/sign_in.html:38
+#: templates/sign_in.html:47
 msgid "I forgot my password"
 msgstr "He olvidado mi contraseña"
 
@@ -6480,7 +6515,7 @@ msgstr "He olvidado mi contraseña"
 msgid "Edit an update"
 msgstr "Editar una actualización"
 
-#: templates/update_add.html:13 templates/navigation/header.html:61
+#: templates/update_add.html:13 templates/navigation/header.html:62
 msgid "Add an update"
 msgstr "Añadir una actualización"
 
@@ -6523,27 +6558,23 @@ msgstr "Añadir actualización"
 msgid "Previous updates of this project"
 msgstr "Actualizaciones anteriores de este proyecto"
 
-#: templates/update_directory.html:3 templates/update_directory.html.py:135
-#: templates/navigation/header.html:46
+#: templates/update_directory.html:3 templates/update_directory.html.py:134
+#: templates/navigation/header.html:47
 msgid "Updates"
 msgstr "Actualizaciones"
 
-#: templates/update_directory.html:14
+#: templates/update_directory.html:13
 msgid ""
 "Refine the update list below by searching by name, organisation or sector"
 msgstr "Filtre la siguiente lista de actualizaciones buscando por nombre, organización o sector"
 
-#: templates/update_directory.html:62
+#: templates/update_directory.html:61
 #, python-format
 msgid ""
 "\n"
 "            Viewing %(start_index)s - %(end_index)s of %(paginator_count)s updates\n"
 "        "
 msgstr "\n            Viendo %(start_index)s - %(end_index)s de %(paginator_count)s actualizaciones\n        "
-
-#: templates/update_main.html:23
-msgid "by"
-msgstr "por"
 
 #: templates/update_main.html:23
 msgid "via"
@@ -6982,7 +7013,7 @@ msgid "Project to which you donated"
 msgstr "Proyecto al que donó"
 
 #: templates/donate/donate_thanks.html:30 templates/myrsr/my_projects.html:39
-#: templates/widgets/project_list.html:21
+#: templates/widgets/project_list.html:26
 msgid "Location"
 msgstr "Ubicación"
 
@@ -7062,98 +7093,98 @@ msgstr "Gracias"
 msgid "The Akvo team"
 msgstr "El equipo Akvo"
 
-#: templates/myrsr/my_details.html:5 templates/navigation/header.html:70
+#: templates/myrsr/my_details.html:5 templates/navigation/header.html:71
 msgid "MyRSR"
 msgstr "MyRSR"
 
-#: templates/myrsr/my_details.html:17 templates/myrsr/myrsr_base.html:14
+#: templates/myrsr/my_details.html:22 templates/myrsr/myrsr_base.html:14
 msgid "My details"
 msgstr "Mis datos"
 
-#: templates/myrsr/my_details.html:36
+#: templates/myrsr/my_details.html:41
 msgid "Update details"
 msgstr "Actualizar los datos"
 
-#: templates/myrsr/my_details.html:77
+#: templates/myrsr/my_details.html:82
 msgid "is larger than the allowed limit"
 msgstr "es mayor que el límite permitido"
 
-#: templates/myrsr/my_details.html:78 templates/myrsr/password_change.html:34
-#: templates/myrsr/user_management.html:62
+#: templates/myrsr/my_details.html:83 templates/myrsr/password_change.html:34
+#: templates/myrsr/user_management.html:67
 msgid "Close"
 msgstr "Cerrar"
 
-#: templates/myrsr/my_details.html:79
+#: templates/myrsr/my_details.html:84
 msgid "Your details have been updated."
 msgstr "Sus datos se han actualizado."
 
-#: templates/myrsr/my_details.html:80
+#: templates/myrsr/my_details.html:85
 msgid "Not approved"
 msgstr "No aprobado"
 
-#: templates/myrsr/my_details.html:84
+#: templates/myrsr/my_details.html:89
 msgid "Linking user to organisation..."
 msgstr "Vinculando al usuario con la organización..."
 
-#: templates/myrsr/my_details.html:85
+#: templates/myrsr/my_details.html:90
 msgid "Request successful"
 msgstr "Solicitud correcta"
 
-#: templates/myrsr/my_details.html:86
+#: templates/myrsr/my_details.html:91
 msgid "Request failed"
 msgstr "Solicitud fallida"
 
-#: templates/myrsr/my_details.html:87
+#: templates/myrsr/my_details.html:92
 msgid "Your request is now pending and will have to be approved."
 msgstr "Su solicitud está ahora pendiente y deberá recibir aprobación."
 
-#: templates/myrsr/my_details.html:88
+#: templates/myrsr/my_details.html:93
 msgid ""
 "You are already connected to this organisation. Only one connection per "
 "organisation is allowed."
 msgstr "Usted ya está conectado a esta organización. Solo se permite una conexión por organización."
 
-#: templates/myrsr/my_details.html:89
+#: templates/myrsr/my_details.html:94
 msgid "Could not connect to organisation."
 msgstr "No ha sido posible conectarle a la organización."
 
-#: templates/myrsr/my_details.html:90
+#: templates/myrsr/my_details.html:95
 msgid "Retrieving country information..."
 msgstr "Recuperar información del país..."
 
-#: templates/myrsr/my_details.html:91
+#: templates/myrsr/my_details.html:96
 msgid "Retrieving organisation information..."
 msgstr "Recuperar información de la organización..."
 
-#: templates/myrsr/my_details.html:92
+#: templates/myrsr/my_details.html:97
 msgid "Found multiple organisations named"
 msgstr "Se han encontrado varias organizaciones con ese nombre"
 
-#: templates/myrsr/my_details.html:93
+#: templates/myrsr/my_details.html:98
 msgid "Please send a mail to support@akvo.org to get this resolved."
 msgstr "Envíe un correo electrónico a support@akvo.org para resolver este asunto."
 
-#: templates/myrsr/my_details.html:94
+#: templates/myrsr/my_details.html:99
 msgid "Could not find organisation"
 msgstr "No ha sido posible encontrar la organización"
 
-#: templates/myrsr/my_details.html:95
+#: templates/myrsr/my_details.html:100
 msgid "Sending request"
 msgstr "Enviando solicitud"
 
-#: templates/myrsr/my_details.html:96
+#: templates/myrsr/my_details.html:101
 msgid "Waiting..."
 msgstr "Esperando..."
 
-#: templates/myrsr/my_details.html:97
+#: templates/myrsr/my_details.html:102
 msgid "Connect with your employer"
 msgstr "Conectar con su empleador"
 
-#: templates/myrsr/my_details.html:98
+#: templates/myrsr/my_details.html:103
 msgid "Request to join"
 msgstr "Solicitud de ingreso"
 
-#: templates/myrsr/my_details.html:99
+#: templates/myrsr/my_details.html:104
 msgid "My organisations"
 msgstr "Mis organizaciones"
 
@@ -7195,36 +7226,51 @@ msgstr "Dado que su cuenta está conectada a múltiples organizaciones, seleccio
 msgid "Select organisation"
 msgstr "Seleccionar una organización"
 
-#: templates/myrsr/my_iati.html:52
+#: templates/myrsr/my_iati.html:45
+msgid ""
+"\n"
+"            In order to see which of your projects is fully IATI compliant, you can\n"
+"            perform checks by clicking the \"Perform checks\" button. <br/>\n"
+"            Projects with all mandatory IATI information filled in will be\n"
+"            marked <span class=\"success\">green</span> and projects with missing\n"
+"            information will be marked <span class=\"error\">red</span>.\n"
+"            "
+msgstr "\nCon el fin de ver cuáles de sus proyectos es totalmente compatible con la IITA, puede\nrealizar controles haciendo clic en el botón \"Realizar controles\". <br/>\nLos proyectos con toda la información obligatoria IITA rellenado serán\nmarcada <span class=\"success\">verdes</span> y proyectos con faltante\ninformación estará marcado <span class=\"error\">rojo</ span>."
+
+#: templates/myrsr/my_iati.html:62
 msgid "Create IATI file"
 msgstr "Crear archivo IITA"
 
-#: templates/myrsr/my_iati.html:60
+#: templates/myrsr/my_iati.html:70
 msgid "Your organisation does not report any projects yet. "
 msgstr "Su organización aún no refleja ningún proyecto."
 
-#: templates/myrsr/my_iati.html:61
+#: templates/myrsr/my_iati.html:71
 msgid ""
 "Set your organisation to reporting organisation of a project to create an "
 "IATI file for the project."
 msgstr "Configure su organización como informante de un proyecto para crear un archivo IITA para el proyecto."
 
-#: templates/myrsr/my_iati.html:62
+#: templates/myrsr/my_iati.html:72
 #, python-format
 msgid "Go to the projects admin <a href=%(admin_link)s>here</a>."
 msgstr "Vaya a la administración de proyectos <a href=%(admin_link)s>aquí</a>."
 
-#: templates/myrsr/my_iati.html:68
+#: templates/myrsr/my_iati.html:78
 msgid "Existing IATI exports"
 msgstr "Exportaciones IITA existentes"
 
-#: templates/myrsr/my_iati.html:74
+#: templates/myrsr/my_iati.html:84
 msgid "View IATI file"
 msgstr "Ver archivo IITA"
 
-#: templates/myrsr/my_iati.html:77
+#: templates/myrsr/my_iati.html:87
 msgid "No IATI file"
 msgstr "Ningún archivo IITA"
+
+#: templates/myrsr/my_iati.html:106
+msgid "Perform checks"
+msgstr "Realizar controles"
 
 #: templates/myrsr/my_projects.html:3
 msgid "MyRSR - my projects"
@@ -7267,7 +7313,7 @@ msgstr "No publicar"
 msgid "Publish"
 msgstr "Publicar"
 
-#: templates/myrsr/my_projects.html:77 templates/widgets/project_list.html:28
+#: templates/myrsr/my_projects.html:77 templates/widgets/project_list.html:33
 msgid "Update"
 msgstr "Actualizar"
 
@@ -7326,7 +7372,7 @@ msgstr "Su búsqueda - %(q_search)s - no coincide con ninguna actualización."
 msgid "You have not placed any updates yet."
 msgstr "Aún no ha colocado ninguna actualización."
 
-#: templates/myrsr/myrsr_base.html:23 templates/myrsr/user_management.html:8
+#: templates/myrsr/myrsr_base.html:23 templates/myrsr/user_management.html:13
 msgid "User management"
 msgstr "Gestión de usuarios"
 
@@ -7350,11 +7396,11 @@ msgstr "Actualizar contraseña"
 msgid "Password has been updated."
 msgstr "La contraseña se ha actualizado."
 
-#: templates/myrsr/user_management.html:12
+#: templates/myrsr/user_management.html:17
 msgid "You don't have the rights to manage users."
 msgstr "No posee derechos para gestionar usuarios."
 
-#: templates/myrsr/user_management.html:31
+#: templates/myrsr/user_management.html:36
 #, python-format
 msgid ""
 "\n"
@@ -7362,48 +7408,48 @@ msgid ""
 "          "
 msgstr "\n              Viendo %(start_index)s - %(end_index)s de %(paginator_count)s usuarios\n          "
 
-#: templates/myrsr/user_management.html:40
+#: templates/myrsr/user_management.html:45
 #, python-format
 msgid "Your search - %(q)s - did not match any users."
 msgstr "Su búsqueda - %(q)s - no coincide con ningún usuario."
 
-#: templates/myrsr/user_management.html:42
+#: templates/myrsr/user_management.html:47
 msgid "No users that you can manage."
 msgstr "No existen usuarios que pueda gestionar."
 
-#: templates/myrsr/user_management.html:59
+#: templates/myrsr/user_management.html:64
 msgid "Remove user from organisation"
 msgstr "Eliminar al usuario de la organización"
 
-#: templates/myrsr/user_management.html:60
+#: templates/myrsr/user_management.html:65
 msgid "Are you sure you want to remove"
 msgstr "¿Está seguro de que desea eliminar"
 
-#: templates/myrsr/user_management.html:61
+#: templates/myrsr/user_management.html:66
 msgid "from"
 msgstr "de"
 
-#: templates/myrsr/user_management.html:63
+#: templates/myrsr/user_management.html:68
 msgid "Remove"
 msgstr "Eliminar"
 
-#: templates/myrsr/user_management.html:64
+#: templates/myrsr/user_management.html:69
 msgid "Are you sure you want to approve"
 msgstr "¿Está seguro de que desea aprobar"
 
-#: templates/myrsr/user_management.html:65
+#: templates/myrsr/user_management.html:70
 msgid "Approve"
 msgstr "Aprobar"
 
-#: templates/myrsr/user_management.html:66
+#: templates/myrsr/user_management.html:71
 msgid "at"
 msgstr "en"
 
-#: templates/myrsr/user_management.html:67
+#: templates/myrsr/user_management.html:72
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: templates/myrsr/user_management.html:68
+#: templates/myrsr/user_management.html:73
 msgid "in"
 msgstr "en"
 
@@ -7431,20 +7477,16 @@ msgstr "Términos del servicio"
 msgid "Provide feedback"
 msgstr "Ofrecer opinión"
 
-#: templates/navigation/header.html:17
+#: templates/navigation/header.html:18
 msgid "Toggle navigation"
 msgstr "Conmutar navegació"
 
-#: templates/navigation/header.html:65 templates/registration/register.html:20
+#: templates/navigation/header.html:66 templates/registration/register.html:9
+#: templates/registration/register.html:20
 msgid "Register"
 msgstr "Registro"
 
-#: templates/navigation/header.html:66
-#: templates/registration/password_reset_complete.html:11
-msgid "Sign in"
-msgstr "Inicio de sesión"
-
-#: templates/navigation/header.html:72
+#: templates/navigation/header.html:73
 msgid "Sign out"
 msgstr "Desconexión"
 
@@ -7527,6 +7569,7 @@ msgid "IATI"
 msgstr "IITA"
 
 #: templates/partials/project_header.html:10
+#: templates/partials/project_header.html:65
 msgid "Show map"
 msgstr "Mostrar mapa"
 
@@ -7547,6 +7590,10 @@ msgstr "Mostrar informe de datos completo"
 msgid "Print this page"
 msgstr "Imprimir esta página"
 
+#: templates/partials/project_header.html:62
+msgid "Hide map"
+msgstr "Ocultar mapa"
+
 #: templates/partials/widgets/header.html:6
 msgid "powered by"
 msgstr "desarrollado por"
@@ -7556,7 +7603,7 @@ msgid "Raised"
 msgstr "Presentado"
 
 #: templates/partials/widgets/project_funding.html:13
-#: templates/widgets/project_list.html:38
+#: templates/widgets/project_list.html:43
 msgid "Needed"
 msgstr "Necesario"
 
@@ -7620,22 +7667,21 @@ msgstr "[Akvo RSR] Activar su cuenta"
 #, python-format
 msgid ""
 "\n"
-"Dear %(user.get_full_name)s,\n"
+"Dear %(user_name)s,\n"
 "\n"
-"Your request to join %(organisation.long_name)s on Akvo RSR has been approved.\n"
+"Your request to join %(org_name)s on Akvo RSR has been approved.\n"
 "\n"
 "Please visit the MyRSR section to view your projects and add updates to the projects here:\n"
 "http://%(site)s/myrsr/\n"
 "\n"
 "Thank you,\n"
 "Akvo.org\n"
-msgstr "\nEstimado %(user.get_full_name)s,\n\nSu solicitud de ingreso en %(organisation.long_name)s en Akvo RSR ha sido aprobada.\n\nVisite la sección MyRSR para visualizar sus proyectos y añadir actualizaciones a los proyectos aquí:\nhttp://%(site)s/myrsr/\n\nGracias,\nAkvo.org\n"
+msgstr "\nEstimado %(user_name)s,\n\nSu solicitud para unirse %(org_name)s en Akvo RSR ha sido aprobado.\n\nPor favor, visite la sección MyRSR para ver sus proyectos y añadir cambios a los proyectos aquí:\nhttp://%(site)s/myrsr/\n\nGracias,\nAkvo.org\n"
 
 #: templates/registration/approved_email_subject.txt:1
 #, python-format
-msgid ""
-"[Akvo RSR] Your request to join %(organisation.long_name)s has been approved"
-msgstr "[Akvo RSR] Su solicitud de ingreso en %(organisation.long_name)s ha sido aprobada"
+msgid "[Akvo RSR] Your request to join %(org_name)s has been approved"
+msgstr "[Akvo RSR] Su solicitud para unirse %(org_name)s ha sido aprobado"
 
 #: templates/registration/password_reset_complete.html:4
 msgid "Password reset complete"
@@ -7694,9 +7740,8 @@ msgid "Registration complete"
 msgstr "Registro completo"
 
 #: templates/registration/register_complete.html:10
-#, python-format
-msgid "Welcome, %(new_user.first_name)s!"
-msgstr "¡Bienvenido, %(new_user.first_name)s!"
+msgid "Welcome"
+msgstr "Bienvenida"
 
 #: templates/registration/register_complete.html:11
 msgid ""
@@ -7708,15 +7753,15 @@ msgstr "Se enviará una confirmación a su correo electrónico. Por favor, haga 
 #, python-format
 msgid ""
 "\n"
-"Organisation: %(organisation.name)s\n"
+"Organisation: %(organisation_name)s\n"
 "\n"
-"A new user has requested to join %(organisation.name)s in the Akvo RSR system.\n"
+"A new user has requested to join %(organisation_name)s in the Akvo RSR system.\n"
 "\n"
-"Name: %(user.get_full_name)s\n"
-"Email: %(user.email)s\n"
+"Name: %(user_name)s\n"
+"Email: %(user_email)s\n"
 "\n"
-"Linked support partners of %(organisation.name)s:\n"
-msgstr "\nOrganización: %(organisation.name)s\n\nUn nuevo usuario ha solicitado el ingreso en %(organisation.name)s en el sistema Akvo RSR.\n\nNombre: %(user.get_full_name)s\nCorreo electrónico: %(user.email)s\n\nSocios de apoyo vinculados de %(organisation.name)s:\n"
+"Linked support partners of %(organisation_name)s:\n"
+msgstr "\nOrganización: %(organisation_name)s\n\nUn nuevo usuario ha solicitado unirse %(organisation_name)s en el system Akvo RSR.\n\nNombre: %(user_name)s\nEmail: %(user_email)s\n\nSocios de apoyo vinculados de %(organisation_name)s:\n"
 
 #: templates/registration/user_organisation_request_message.txt:17
 #, python-format
@@ -7731,28 +7776,34 @@ msgstr "\nCompruebe los credenciales de este usuario y actívelo aquí:\nhttp://
 
 #: templates/registration/user_organisation_request_subject.txt:1
 #, python-format
-msgid ""
-"[Akvo RSR] %(user.get_full_name)s has requested to join "
-"%(organisation.name)s"
-msgstr "[Akvo RSR] %(user.get_full_name)s ha solicitado el ingreso en %(organisation.name)s"
+msgid "[Akvo RSR] %(user_name)s has requested to join %(organisation_name)s"
+msgstr "[Akvo RSR] %(user_name)s ha solicitado unirse %(organisation_name)s"
 
 #: templates/widgets/base.html:6
 msgid "Akvo widget"
 msgstr "Widget de Akvo"
 
-#: templates/widgets/project_list.html:31
+#: templates/widgets/project_list.html:19
+#, python-format
+msgid ""
+"\n"
+"            (showing first 100 of %(number_of_projects)s)\n"
+"            "
+msgstr "\n(mostrando primero 100 de %(number_of_projects)s)"
+
+#: templates/widgets/project_list.html:36
 msgid "Partners"
 msgstr "Socios"
 
-#: templates/widgets/project_list.html:57
+#: templates/widgets/project_list.html:62
 msgid "See full description"
 msgstr "Consultar la descripción completa"
 
-#: templates/widgets/project_list.html:73
+#: templates/widgets/project_list.html:78
 msgid "Last Update"
 msgstr "Última actualización"
 
-#: templates/widgets/project_list.html:79
+#: templates/widgets/project_list.html:84
 msgid "Not yet"
 msgstr "Aún no"
 
