@@ -329,31 +329,31 @@
                         </div>
                         <div class="formBlock">
                             <div class="form-group control">
-                                <textarea id="summary" class="form-control" name="textarea" placeholder="Type in summary of the project plan"></textarea>
+                                <textarea id="summary" class="form-control" name="textarea" placeholder="Type in summary of the project plan">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
                                 <label class="control-label" for="summary">Summary of project plan</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="background" class="form-control" name="textarea" placeholder="Type in background"></textarea>
+                                <textarea id="background" class="form-control" name="textarea" placeholder="Type in background">{% if project.background %}{{project.background}}{% endif %}</textarea>
                                 <label class="control-label" for="background">Background</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="currentSituation" class="form-control" name="textarea" placeholder="Type in current situation"></textarea>
+                                <textarea id="currentSituation" class="form-control" name="textarea" placeholder="Type in current situation">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
                                 <label class="control-label" for="currentSituation">Current situation</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="projectPlan" class="form-control" name="textarea" placeholder="Type in project plan"></textarea>
+                                <textarea id="projectPlan" class="form-control" name="textarea" placeholder="Type in project plan">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
                                 <label class="control-label" for="projectPlan">Project plan</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="targetGroup" class="form-control" name="textarea" placeholder="Type in target group"></textarea>
+                                <textarea id="targetGroup" class="form-control" name="textarea" placeholder="Type in target group">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
                                 <label class="control-label" for="targetGroup">Target group</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="sustainability" class="form-control" name="textarea" placeholder="Type in sustainability"></textarea>
+                                <textarea id="sustainability" class="form-control" name="textarea" placeholder="Type in sustainability">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
                                 <label class="control-label" for="sustainability">Sustainability</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="goalsOverview" class="form-control" name="textarea" placeholder="Type in goals overview"></textarea>
+                                <textarea id="goalsOverview" class="form-control" name="textarea" placeholder="Type in goals overview">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
                                 <label class="control-label" for="goalsOverview">Goals overview</label>
                             </div>
                         </div>
