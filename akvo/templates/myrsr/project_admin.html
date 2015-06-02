@@ -29,132 +29,134 @@
                 <div class="myPanel borderBottom" id="panel1">
                     <div class="formStep stepOne">
                         <label for="stepOne"><h4>01 - General information</h4></label>
-                        <input type="radio" name="step" id="stepOne" checked >                        <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
-                            <span class="sr-only">30% Complete (success)</span>30%
-                        </div>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
-                            <span class="sr-only">30% Complete (success)</span>30%
-                        </div>
-                    </div>
-                    <div class="formBlock">
-                        <div class="control form-group control">
-                            <input type="text" class="form-control" id="projectTitle" placeholder="Project title" 
-                            {% if project.title %} value="{{project.title}}" {% endif %}
-                            />
-                            <label for="projectTitle" class="control-label">Project title</label>
-                            <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
-                        </div>
-                        <div class="form-group control">
-                            <input type="text" class="form-control" id="projectSubTitle" placeholder="Project subtitle"
-                            {% if project.subtitle %} value="{{project.subtitle}}" {% endif %} />
-                            <label for="projectSubTitle" class="control-label">Project subtitle</label>
-                            <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)</p>
-                        </div>
-                        <div class="form-group control">
-                            <input type="text" class="form-control" id="iatiID" placeholder="iati ID"
-                            {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
-                            <label for="iatiID" class="control-label">IATI identifier</label>
-                            <p class="help-block">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
-                            Note that 'projects' in this form are the same as 'activities' in IATI.</p>
-                        </div>
-
-                        {% if project.related_projects.all %}
-                            {% for rp in project.related_projects.all %}
-                                {% include "myrsr/project_admin_partials/related_project_input.html" %}
-                            {% endfor %}
-                        {% else %}
-                                {% include "myrsr/project_admin_partials/related_project_input.html" %}
-                        {% endif %}
-                        <div class="row">
-                            <div class="col-md-6 col-md-offset-3 text-center">
-                                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
+                        <input type="radio" name="step" id="stepOne" checked >
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+                                <span class="sr-only">30% Complete (success)</span>30%
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="select-group control">
-                                <select name="projectStatus" id="projectStatus" class="form-control">
-                                    <option value="" {% if not project.status %} selected="selected"{% endif %}>Status:</option>
-                                    <option value="No" {% if project.status == "N" %} selected="selected"{% endif %}>None</option>
-                                    <option value="NF" {% if project.status == "H" %} selected="selected"{% endif %}>Needs funding</option>
-                                    <option value="AC" {% if project.status == "A" %} selected="selected"{% endif %}>Active</option>
-                                    <option value="" {% if project.status == "C" %} selected="selected"{% endif %}>Complete</option>
-                                    <option value="" {% if project.status == "L" %} selected="selected"{% endif %}>Cancelled</option>
-                                    <option value="" {% if project.status == "R" %} selected="selected"{% endif %}>Archived</option>
-                                </select>
-                                <label for="projectStatus" class="control-label">Status</label>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+                                <span class="sr-only">30% Complete (success)</span>30%
                             </div>
-                            <p class="help-block">
-                            There are four different project statuses:</p>
-                            <ol class="help-block">
-                                <li>Needs funding: projects that still need funding.</li>
-                                <li>Active: projects that started with the implementation phase.</li>
-                                <li>Completed: projects that have been finished.</li>
-                                <li>Cancelled: projects that were never fully implemented or carried out.</li>
-                            </ol>
                         </div>
-                        <div class="form-group">
+                        <div class="formBlock">
+                            <div class="control form-group control">
+                                <input type="text" class="form-control" id="projectTitle" placeholder="Project title" 
+                                {% if project.title %} value="{{project.title}}" {% endif %}
+                                />
+                                <label for="projectTitle" class="control-label">Project title</label>
+                                <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
+                            </div>
+                            <div class="form-group control">
+                                <input type="text" class="form-control" id="projectSubTitle" placeholder="Project subtitle"
+                                {% if project.subtitle %} value="{{project.subtitle}}" {% endif %} />
+                                <label for="projectSubTitle" class="control-label">Project subtitle</label>
+                                <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)</p>
+                            </div>
+                            <div class="form-group control">
+                                <input type="text" class="form-control" id="iatiID" placeholder="iati ID"
+                                {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
+                                <label for="iatiID" class="control-label">IATI identifier</label>
+                                <p class="help-block">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
+                                Note that 'projects' in this form are the same as 'activities' in IATI.</p>
+                            </div>
+                            {% if project.related_projects.all %}
+                                {% for rp in project.related_projects.all %}
+                                    {% include "myrsr/project_admin_partials/related_project_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                    {% include "myrsr/project_admin_partials/related_project_input.html" %}
+                            {% endif %}
                             <div class="row">
-                                <div class="col-md-6 control">
-                                    <input type="date" class="form-control ll-skin-melon" id="eventFromPlanned" placeholder="From (planned)"
-                                    {% if project.date_start_planned %} value="{{project.date_start_planned|date:'c'}}" {% endif %} />
-                                    <label for="eventFromPlanned" class="control-label">Start Date (planned):</label>
-                                </div>
-                                <div class="col-md-6 control">
-                                    <input type="date" class="form-control" id="eventEndPlanned" placeholder="To (planned)"
-                                    {% if project.date_end_planned %} value="{{project.date_end_planned|date:'c'}}" {% endif %} />
-                                    <label for="eventEndPlanned" class="control-label">End Date (planned):</label>
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6 control">
-                                    <input type="date" class="form-control ll-skin-melon" id="eventFromActual" placeholder="From (Actual)"
-                                    {% if project.date_start_actual %} value="{{project.date_start_actual|date:'c'}}" {% endif %} />
-                                    <label for="eventFromActual" class="control-label">Start Date (Actual):</label>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectStatus" id="projectStatus" class="form-control">
+                                        <option value="" {% if not project.status %} selected="selected"{% endif %}>Status:</option>
+                                        <option value="No" {% if project.status == "N" %} selected="selected"{% endif %}>None</option>
+                                        <option value="NF" {% if project.status == "H" %} selected="selected"{% endif %}>Needs funding</option>
+                                        <option value="AC" {% if project.status == "A" %} selected="selected"{% endif %}>Active</option>
+                                        <option value="" {% if project.status == "C" %} selected="selected"{% endif %}>Complete</option>
+                                        <option value="" {% if project.status == "L" %} selected="selected"{% endif %}>Cancelled</option>
+                                        <option value="" {% if project.status == "R" %} selected="selected"{% endif %}>Archived</option>
+                                    </select>
+                                    <label for="projectStatus" class="control-label">Status</label>
                                 </div>
-                                <div class="col-md-6 control">
-                                    <input type="date" class="form-control" id="eventEndActual" placeholder="To (Actual)"
-                                    {% if project.date_end_actual %} value="{{project.date_end_actual|date:'c'}}" {% endif %} />
-                                    <label for="eventEndActual" class="control-label">End Date (Actual):</label>
+                                <p class="help-block">
+                                There are four different project statuses:</p>
+                                <ol class="help-block">
+                                    <li>Needs funding: projects that still need funding.</li>
+                                    <li>Active: projects that started with the implementation phase.</li>
+                                    <li>Completed: projects that have been finished.</li>
+                                    <li>Cancelled: projects that were never fully implemented or carried out.</li>
+                                </ol>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="date" class="form-control ll-skin-melon" id="eventFromPlanned" placeholder="From (planned)"
+                                        {% if project.date_start_planned %} value="{{project.date_start_planned|date:'c'}}" {% endif %} />
+                                        <label for="eventFromPlanned" class="control-label">Start Date (planned):</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="date" class="form-control" id="eventEndPlanned" placeholder="To (planned)"
+                                        {% if project.date_end_planned %} value="{{project.date_end_planned|date:'c'}}" {% endif %} />
+                                        <label for="eventEndPlanned" class="control-label">End Date (planned):</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="select-group control">
-                                <select name="projectStatus" id="language" class="form-control">
-                                    <option value="" {% if not project.language %} selected="selected" {% endif %}>Language:</option>
-                                    <option value="GER" {% if project.language == 'de'%} selected="selected" {% endif %}>German</option>
-                                    <option value="EN" {% if project.language == 'en'%} selected="selected" {% endif %}>English</option>
-                                    <option value="FR" {% if project.language == 'fr'%} selected="selected" {% endif %}>French</option>
-                                    <option value="SP" {% if project.language == 'es'%} selected="selected" {% endif %}>Spanish</option>
-                                    <option value="DU" {% if project.language == 'nl'%} selected="selected" {% endif %}>Dutch</option>
-                                    <option value="RU" {% if project.language == 'ru'%} selected="selected" {% endif %}>Russian</option>
-                                </select>
-                                <label for="language" class="control-label">Language</label>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="date" class="form-control ll-skin-melon" id="eventFromActual" placeholder="From (Actual)"
+                                        {% if project.date_start_actual %} value="{{project.date_start_actual|date:'c'}}" {% endif %} />
+                                        <label for="eventFromActual" class="control-label">Start Date (Actual):</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="date" class="form-control" id="eventEndActual" placeholder="To (Actual)"
+                                        {% if project.date_end_actual %} value="{{project.date_end_actual|date:'c'}}" {% endif %} />
+                                        <label for="eventEndActual" class="control-label">End Date (Actual):</label>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="help-block">The main language of the project.</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="select-group control">
-                                <select name="projectCurrency" id="projectCurrency" class="form-control">
-                                    <option value="" {% if not project.currency %} selected="selected" {% endif %}>Currency:</option>
-                                    <option value="us" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
-                                    <option value="pound">£</option>
-                                    <option value="eur" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
-                                </select>
-                                <label for="projectCurrency" class="control-label">Currency</label>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectStatus" id="language" class="form-control">
+                                        <option value="" {% if not project.language %} selected="selected" {% endif %}>Language:</option>
+                                        <option value="GER" {% if project.language == 'de'%} selected="selected" {% endif %}>German</option>
+                                        <option value="EN" {% if project.language == 'en'%} selected="selected" {% endif %}>English</option>
+                                        <option value="FR" {% if project.language == 'fr'%} selected="selected" {% endif %}>French</option>
+                                        <option value="SP" {% if project.language == 'es'%} selected="selected" {% endif %}>Spanish</option>
+                                        <option value="DU" {% if project.language == 'nl'%} selected="selected" {% endif %}>Dutch</option>
+                                        <option value="RU" {% if project.language == 'ru'%} selected="selected" {% endif %}>Russian</option>
+                                    </select>
+                                    <label for="language" class="control-label">Language</label>
+                                </div>
+                                <p class="help-block">The main language of the project.</p>
                             </div>
-                            <p class="help-block hidden">The default currency for this project. Used in all financial aspects of the project.</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label for="donateBtn" class="control-label">
-                                    <input id="donateBtn" type="checkbox" name="donateBtn"
-                                    {% if project.donate_button %} checked {% endif %}>Donate button</label>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control">
+                                        <option value="" {% if not project.currency %} selected="selected" {% endif %}>Currency:</option>
+                                        <option value="us" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
+                                        <option value="pound">£</option>
+                                        <option value="eur" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
+                                    </select>
+                                    <label for="projectCurrency" class="control-label">Currency</label>
+                                </div>
+                                <p class="help-block hidden">The default currency for this project. Used in all financial aspects of the project.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label for="donateBtn" class="control-label">
+                                        <input id="donateBtn" type="checkbox" name="donateBtn"
+                                        {% if project.donate_button %} checked {% endif %}>
+                                        Donate button
+                                    </label>
                                 </div>
                                 <p class="help-block hidden">Show donate button for this project. If not selected, it is not possible to donate to this project and the donate button will not be shown.</p>
                             </div>
