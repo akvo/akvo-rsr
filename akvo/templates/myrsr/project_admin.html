@@ -227,7 +227,7 @@
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="defaultFinanceType" id="defaultFinanceType" class="form-control" required>
-                                        <option value="" selected="selected">Default finance type:</option>
+                                        <option value="" {% if not project.default_finance_type %} selected="selected" {% endif %}>Default finance type:</option>
                                         {% for entry in finance_type %}
                                             {% if not entry.0 == "code" %}
                                                 <option value="{{entry.0}}" {% if project.default_finance_type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.2}}</option>
@@ -244,86 +244,28 @@
                 <div class="myPanel borderBottom" id="panel2">
                     <div class="formStep stepTwo">
                         <label for="stepTwo"><h4>02 - Contact information</h4></label>
-                        <input type="radio" name="step" id="stepTwo">                        <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            <span class="sr-only">0% Complete (success)</span>0%
-                        </div>
-                    </div>                      
-                    <div class="formBlock">
-                    <div class="form-group control">
-                        <div class="select-group">
-                            <select name="contactType" id="contactType" class="form-control" required>
-                                <option value="" selected="selected">Type:</option>
-                                <option value="1">1 - General Enquiries</option>
-                                <option value="2">2 - Project Management</option>
-                                <option value="3">3 - Financial Management</option>
-                                <option value="4">4 - Communications</option>
-                            </select>
-                            <label for="projectStatus" class="control-label">Type</label>
-                        </div>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="contactName" placeholder="Contact Name" required>
-                        <label for="contactName" class="control-label">Name</label>
-                        <p class="help-block hidden">This should be a contact person for the project. (100 characters)</p>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="contactEmail" placeholder="Contact email" required>
-                        <label for="contactEmail" class="control-label">Email</label>
-                        <p class="help-block hidden">This should be the email address for the contact person of the project.</p>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="jobTitle" placeholder="Job title" required>
-                        <label for="jobTitle" class="control-label">Job title</label>
-                        <p class="help-block hidden">Job title of the contact. (100 characters)</p>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="contactOrg" placeholder="Contact organisation" required>
-                        <label for="contactOrg" class="control-label">Organisation</label>
-                        <p class="help-block hidden">The organisation that the contact person works for - this may differ from the reporting organisation of the project. (100 characters)</p>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="contactPhone" placeholder="Contact phone number"  required>
-                        <label for="contactPhone" class="control-label">Telephone</label>
-                        <p class="help-block hidden">Contact number for the contact. (30 characters)</p>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="contactAddress" placeholder="Contact address"  required>
-                        <label for="contactAddress" class="control-label">Address</label>
-                        <p class="help-block hidden">Address of the contact. (255 characters)</p>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="contactWebsite" placeholder="Contact website"  required>
-                        <label for="contactWebsite" class="control-label">Website</label>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="contactDepartment" placeholder="Contact department"  required>
-                        <label for="contactDepartment" class="control-label">Department</label>
-                        <p class="help-block hidden">(100 characters)</p>
-                    </div>
-                    <div class="form-group">
-                        <div class="select-group control">
-                            <select name="contactCountry" id="contactCountry" class="form-control" required>
-                                <option value="" selected="selected">Country:</option>
-                                <option value="nl">Netherlands</option>
-                                <option value="se">Sweden</option>
-                            </select>
-                            <label for="contactCountry" class="control-label">Country</label>
-                        </div>
-                    </div>
-                    <div class="form-group control">
-                        <input type="text" class="form-control" id="contactState" placeholder="Contact state" required>
-                        <label for="contactState" class="control-label">State</label>
-                        <p class="help-block hidden">(100 characters)</p>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-3 text-center">
-                            <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
-                        </div>
+                        <input type="radio" name="step" id="stepTwo">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only">0% Complete (success)</span>0%
+                            </div>
+                        </div>  
+                        <div class="formBlock">
+                            {% if project.contacts.all %}
+                                {% for contact in project.contacts.all %}
+                                    {% include "myrsr/project_admin_partials/contact_information_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                    {% include "myrsr/project_admin_partials/contact_information_input.html" %}
+                            {% endif %} 
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
+                                </div>
+                            </div>                             
+                        </div>                                    
                     </div>
                 </div>
-            </div>
-        </div>
         <!--*************************************** FORM STEP 3 **********************************************-->
         <div class="myPanel borderBottom" id="panel3">
             <div class="formStep stepThree">

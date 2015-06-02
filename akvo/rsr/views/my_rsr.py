@@ -24,7 +24,8 @@ from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
 from ..models import Country, Organisation, Employment, Project
 
-from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATUS, COLLABORATION_TYPE, FINANCE_TYPE)
+from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATUS, COLLABORATION_TYPE,
+                                                FINANCE_TYPE, CONTACT_TYPE)
 
 
 @login_required
@@ -136,6 +137,8 @@ def project_admin(request, project_id):
     tied_status = TIED_STATUS
     collaboration_type = COLLABORATION_TYPE
     finance_type = FINANCE_TYPE  
+    contact_type = CONTACT_TYPE
+    country = Country.objects.all()
     
     context = {
         'id': project_id,
@@ -144,7 +147,9 @@ def project_admin(request, project_id):
         'flow_types': flow_types,
         'tied_status': tied_status,
         'collaboration_type': collaboration_type,
-        'finance_type': finance_type,      
+        'finance_type': finance_type, 
+        'contact_type': contact_type,   
+        'country': country,  
     }
     return render(request, 'myrsr/project_admin.html', context)
     
