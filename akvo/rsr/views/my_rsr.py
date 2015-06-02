@@ -25,7 +25,7 @@ from ...utils import pagination, filter_query_string
 from ..models import Country, Organisation, Employment, Project
 
 from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATUS, COLLABORATION_TYPE,
-                                                FINANCE_TYPE, CONTACT_TYPE)
+                                                FINANCE_TYPE, CONTACT_TYPE, DOCUMENT_CATEGORY, LANGUAGE)
 
 
 @login_required
@@ -140,6 +140,8 @@ def project_admin(request, project_id):
     contact_type = CONTACT_TYPE
     country = Country.objects.all()
     organisation = Organisation.objects.all()
+    document_category = DOCUMENT_CATEGORY
+    language = LANGUAGE
     
     context = {
         'id': project_id,
@@ -152,6 +154,8 @@ def project_admin(request, project_id):
         'contact_type': contact_type,   
         'country': country,  
         'organisation': organisation,
+        'document_category': document_category,
+        'language': language,
     }
     return render(request, 'myrsr/project_admin.html', context)
     

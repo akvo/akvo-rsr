@@ -406,80 +406,26 @@
                         </div>
                         <div class="formBlock">
                             <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4 control">
-                                        <div class="select-group">
-                                            <select name="partnerType" id="linkType" class="form-control">
-                                                <option value="" selected="selected">Link type:</option>
-                                                <option value="1">Akvopedia entry</option>
-                                                <option value="2">External link</option>
-                                            </select>
-                                            <label for="linkType" class="control-label">Link type</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="linkUrl" placeholder="Link URL">
-                                        <label for="linkUrl" class="control-label">Link URL</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="linkCaption" placeholder="Link caption">
-                                        <label for="linkCaption" class="control-label">Link caption</label>
-                                    </div>
-                                </div>
+                                {% if project.links.all %}
+                                    {% for link in project.links.all %}
+                                        {% include "myrsr/project_admin_partials/link_input.html" %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% include "myrsr/project_admin_partials/link_input.html" %}
+                                {% endif %}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another link</a>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="file" class="form-control" id="document">
-                                        <label class="control-label" for="document">Document</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="documentUrl" placeholder="Document URL">
-                                        <label class="control-label" for="documentUrl">Document URL</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="documentTitle" placeholder="Document title">
-                                        <label class="control-label" for="documentTitle">Document title</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="documentFormat" placeholder="Document format">
-                                        <label class="control-label" for="documentFormat">Document format</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="partnerType" id="documentCategory" class="form-control">
-                                                <option value="" selected="selected">Document category</option>
-                                                <option value="A01">A01 - Pre- and post-project impact appraisal</option>
-                                                <option value="A02">A02 - Obectives / Purpose of activity</option>
-                                            </select>
-                                            <label class="control-label" for="documentCategory">Document category</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="partnerType" id="documentLanguage" class="form-control">
-                                                <option value="" selected="selected">Document language</option>
-                                                <option value="en">en - English</option>
-                                                <option value="sp">sp - Spanish</option>
-                                            </select>
-                                            <label class="control-label" for="documentLanguage">Document language</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                {% if project.documents.all %}
+                                    {% for document in project.documents.all %}
+                                        {% include "myrsr/project_admin_partials/document_input.html" %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% include "myrsr/project_admin_partials/document_input.html" %}
+                                {% endif %}                            
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another document</a>

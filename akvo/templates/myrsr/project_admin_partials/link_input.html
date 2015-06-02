@@ -1,0 +1,22 @@
+<div class="row">
+    <div class="col-md-4 control">
+        <div class="select-group">
+            <select name="partnerType" id="linkType" class="form-control">
+                <option value="" {% if not link %} selected="selected" {% endif %}>Link type:</option>
+                <option value="A" {% if link.kind == "A" %} selected="selected" {% endif %}>Akvopedia entry</option>
+                <option value="E" {% if link.kind == "E" %} selected="selected" {% endif %}>External link</option>
+            </select>
+            <label for="linkType" class="control-label">Link type</label>
+        </div>
+    </div>
+    <div class="col-md-4 control">
+        <input type="text" class="form-control" id="linkUrl" placeholder="Link URL"
+        {% if link.url %} value="{{link.url}}" {% endif %}>
+        <label for="linkUrl" class="control-label">Link URL</label>
+    </div>
+    <div class="col-md-4 control">
+        <input type="text" class="form-control" id="linkCaption" placeholder="Link caption"
+        {% if link.caption %} value="{{link.caption}}" {% endif %}>
+        <label for="linkCaption" class="control-label">Link caption</label>
+    </div>
+</div>
