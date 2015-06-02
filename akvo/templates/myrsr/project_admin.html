@@ -223,7 +223,6 @@
                                     <label for="collaborationType" class="control-label">Collaboration type</label>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="defaultFinanceType" id="defaultFinanceType" class="form-control" required>
@@ -266,223 +265,233 @@
                         </div>                                    
                     </div>
                 </div>
-        <!--*************************************** FORM STEP 3 **********************************************-->
-        <div class="myPanel borderBottom" id="panel3">
-            <div class="formStep stepThree">
-                <label for="stepThree"><h4>03 - Partners</h4></label>
-                <input type="radio" name="step" id="stepThree">                        
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">
-                        <span class="sr-only">10% Complete (success)</span>10%
-                    </div>
-                </div>
-            <div class="formBlock">
-                <div class="form-group control">
-                    <input type="text" class="form-control" id="reportingOrganisation" placeholder="Reporting organisation" required>
-                    <label for="reportingOrganisation" class="control-label">Reporting organisation</label>
-                </div>
-                <div class="form-group control">
-                    <div class="checkbox">
-                        <label for="secondaryReporter" class="control-label">
-                            <input id="secondaryReporter" type="checkbox" name="secondaryReporter">Secondary reporter</label>
-                        </div>
-                        <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
-                    </div>
-                    <hr/>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-4 control">
-                                <input type="text" class="form-control" id="partner" placeholder="Partner" required>
-                                <label for="partner" class="control-label">Partner</label>
+                <!--*************************************** FORM STEP 3 **********************************************-->
+                <div class="myPanel borderBottom" id="panel3">
+                    <div class="formStep stepThree">
+                        <label for="stepThree"><h4>03 - Partners</h4></label>
+                        <input type="radio" name="step" id="stepThree">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only">10% Complete (success)</span>10%
                             </div>
-                            <div class="col-md-4 control">
-                                <div class="select-group">
-                                    <select name="partnerType" id="partnerType" class="form-control" required>
-                                        <option value="" selected="selected">Type</option>
-                                        <option value="field">Field partner</option>
-                                        <option value="funding">Funding partner</option>
-                                        <option value="sponsor">Sponsor partner</option>
-                                        <option value="support">Support partner</option>
-                                    </select>
-                                    <label for="partnerType" class="control-label">Type</label>
+                        </div>
+                    <div class="formBlock">
+                        <div class="form-group control">
+                            <input type="text" class="form-control" id="reportingOrganisation" placeholder="Reporting organisation" required>
+                            <label for="reportingOrganisation" class="control-label">Reporting organisation</label>
+                        </div>
+                        <div class="form-group control">
+                            <div class="checkbox">
+                                <label for="secondaryReporter" class="control-label">
+                                    <input id="secondaryReporter" type="checkbox" name="secondaryReporter">Secondary reporter</label>
+                                </div>
+                                <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="partner" placeholder="Partner" required>
+                                        <label for="partner" class="control-label">Partner</label>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <div class="select-group">
+                                            <select name="partnerType" id="partnerType" class="form-control" required>
+                                                <option value="" selected="selected">Type</option>
+                                                <option value="field">Field partner</option>
+                                                <option value="funding">Funding partner</option>
+                                                <option value="sponsor">Sponsor partner</option>
+                                                <option value="support">Support partner</option>
+                                            </select>
+                                            <label for="partnerType" class="control-label">Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="fundingAmount" placeholder="Funding amount" required>
+                                        <label for="fundingAmount" class="control-label">Funding amount</label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 control">
-                                <input type="text" class="form-control" id="fundingAmount" placeholder="Funding amount" required>
-                                <label for="fundingAmount" class="control-label">Funding amount</label>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-3 text-center">
-                            <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
-                        </div>
-                    </div>
                 </div>
-            </div>
-        </div>
-        <!--*************************************** FORM STEP 4 **********************************************-->
-        <div class="myPanel borderBottom" id="panel4">
-            <div class="formStep stepFour">
-                <label for="stepFour"><h4>04 - Descriptions</h4></label>
-                <input type="radio" name="step" id="stepFour">                        <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                    <span class="sr-only">20% Complete (success)</span>20%
-                </div>
-            </div>
-            <div class="formBlock">
-                <div class="form-group control">
-                    <textarea id="summary" class="form-control" name="textarea" placeholder="Type in summary of the project plan" required></textarea>
-                    <label class="control-label" for="summary">Summary of project plan</label>
-                </div>
-                <div class="form-group control">
-                    <textarea id="background" class="form-control" name="textarea" placeholder="Type in background" required></textarea>
-                    <label class="control-label" for="background">Background</label>
-                </div>
-                <div class="form-group control">
-                    <textarea id="currentSituation" class="form-control" name="textarea" placeholder="Type in current situation" required></textarea>
-                    <label class="control-label" for="currentSituation">Current situation</label>
-                </div>
-                <div class="form-group control">
-                    <textarea id="projectPlan" class="form-control" name="textarea" placeholder="Type in project plan" required></textarea>
-                    <label class="control-label" for="projectPlan">Project plan</label>
-                </div>
-                <div class="form-group control">
-                    <textarea id="targetGroup" class="form-control" name="textarea" placeholder="Type in target group" required></textarea>
-                    <label class="control-label" for="targetGroup">Target group</label>
-                </div>
-                <div class="form-group control">
-                    <textarea id="sustainability" class="form-control" name="textarea" placeholder="Type in sustainability" required></textarea>
-                    <label class="control-label" for="sustainability">Sustainability</label>
-                </div>
-                <div class="form-group control">
-                    <textarea id="goalsOverview" class="form-control" name="textarea" placeholder="Type in goals overview" required></textarea>
-                    <label class="control-label" for="goalsOverview">Goals overview</label>
-                </div>
-            </div></div></div>
-            <!--*************************************** FORM STEP 5 **********************************************-->
-            <div class="myPanel borderBottom" id="panel5">
-                <div class="formStep stepFive">
-                    <label for="stepFive"><h4>05 - Photo</h4></label>
-                    <input type="radio" name="step" id="stepFive">                        <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                        <span class="sr-only">30% Complete (success)</span>40%
-                    </div>
-                </div>
-                <div class="formBlock">
-                    <div class="form-group control">
-                        <input type="file" class="form-control" id="photo" required>
-                        <label class="control-label" for="photo">Photo</label>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-6 control">
-                                <input type="text" class="form-control" id="photoCaption" placeholder="Photo caption" required>
-                                <label for="photoCaption" class="control-label">Photo caption</label>
+                <!--*************************************** FORM STEP 4 **********************************************-->
+                <div class="myPanel borderBottom" id="panel4">
+                    <div class="formStep stepFour">
+                        <label for="stepFour"><h4>04 - Descriptions</h4></label>
+                        <input type="radio" name="step" id="stepFour">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only">20% Complete (success)</span>20%
                             </div>
-                            <div class="col-md-6 control">
-                                <input type="text" class="form-control" id="photoCredit" placeholder="Photo credit" required>
-                                <label for="photoCredit" class="control-label">Photo credit</label>
+                        </div>
+                        <div class="formBlock">
+                            <div class="form-group control">
+                                <textarea id="summary" class="form-control" name="textarea" placeholder="Type in summary of the project plan" required></textarea>
+                                <label class="control-label" for="summary">Summary of project plan</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="background" class="form-control" name="textarea" placeholder="Type in background" required></textarea>
+                                <label class="control-label" for="background">Background</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="currentSituation" class="form-control" name="textarea" placeholder="Type in current situation" required></textarea>
+                                <label class="control-label" for="currentSituation">Current situation</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="projectPlan" class="form-control" name="textarea" placeholder="Type in project plan" required></textarea>
+                                <label class="control-label" for="projectPlan">Project plan</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="targetGroup" class="form-control" name="textarea" placeholder="Type in target group" required></textarea>
+                                <label class="control-label" for="targetGroup">Target group</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="sustainability" class="form-control" name="textarea" placeholder="Type in sustainability" required></textarea>
+                                <label class="control-label" for="sustainability">Sustainability</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="goalsOverview" class="form-control" name="textarea" placeholder="Type in goals overview" required></textarea>
+                                <label class="control-label" for="goalsOverview">Goals overview</label>
                             </div>
                         </div>
                     </div>
-                </div></div></div>
+                </div>
+                <!--*************************************** FORM STEP 5 **********************************************-->
+                <div class="myPanel borderBottom" id="panel5">
+                    <div class="formStep stepFive">
+                        <label for="stepFive"><h4>05 - Photo</h4></label>
+                        <input type="radio" name="step" id="stepFive">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                <span class="sr-only">30% Complete (success)</span>40%
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <div class="form-group control">
+                                <input type="file" class="form-control" id="photo" required>
+                                <label class="control-label" for="photo">Photo</label>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="photoCaption" placeholder="Photo caption" required>
+                                        <label for="photoCaption" class="control-label">Photo caption</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="photoCredit" placeholder="Photo credit" required>
+                                        <label for="photoCredit" class="control-label">Photo credit</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!--*************************************** FORM STEP 6 **********************************************-->
                 <div class="myPanel borderBottom" id="panel6">
                     <div class="formStep stepSix">
                         <label for="stepSix"><h4>06 - Links and documents</h4></label>
-                        <input type="radio" name="step" id="stepSix">                        <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                            <span class="sr-only">60% Complete (success)</span>60%
+                        <input type="radio" name="step" id="stepSix">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                <span class="sr-only">60% Complete (success)</span>60%
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4 control">
+                                        <div class="select-group">
+                                            <select name="partnerType" id="linkType" class="form-control" required>
+                                                <option value="" selected="selected">Link type:</option>
+                                                <option value="1">Akvopedia entry</option>
+                                                <option value="2">External link</option>
+                                            </select>
+                                            <label for="linkType" class="control-label">Link type</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="linkUrl" placeholder="Link URL" required>
+                                        <label for="linkUrl" class="control-label">Link URL</label>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="linkCaption" placeholder="Link caption" required>
+                                        <label for="linkCaption" class="control-label">Link caption</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another link</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="file" class="form-control" id="document" required>
+                                        <label class="control-label" for="document">Document</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="documentUrl" placeholder="Document URL" required>
+                                        <label class="control-label" for="documentUrl">Document URL</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="documentTitle" placeholder="Document title" required>
+                                        <label class="control-label" for="documentTitle">Document title</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="documentFormat" placeholder="Document format" required>
+                                        <label class="control-label" for="documentFormat">Document format</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="select-group control">
+                                            <select name="partnerType" id="documentCategory" class="form-control" required>
+                                                <option value="" selected="selected">Document category</option>
+                                                <option value="A01">A01 - Pre- and post-project impact appraisal</option>
+                                                <option value="A02">A02 - Obectives / Purpose of activity</option>
+                                            </select>
+                                            <label class="control-label" for="documentCategory">Document category</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="select-group control">
+                                            <select name="partnerType" id="documentLanguage" class="form-control" required>
+                                                <option value="" selected="selected">Document language</option>
+                                                <option value="en">en - English</option>
+                                                <option value="sp">sp - Spanish</option>
+                                            </select>
+                                            <label class="control-label" for="documentLanguage">Document language</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another document</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="formBlock">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-4 control">
-                                    <div class="select-group">
-                                        <select name="partnerType" id="linkType" class="form-control" required>
-                                            <option value="" selected="selected">Link type:</option>
-                                            <option value="1">Akvopedia entry</option>
-                                            <option value="2">External link</option>
-                                        </select>
-                                        <label for="linkType" class="control-label">Link type</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 control">
-                                    <input type="text" class="form-control" id="linkUrl" placeholder="Link URL" required>
-                                    <label for="linkUrl" class="control-label">Link URL</label>
-                                </div>
-                                <div class="col-md-4 control">
-                                    <input type="text" class="form-control" id="linkCaption" placeholder="Link caption" required>
-                                    <label for="linkCaption" class="control-label">Link caption</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-md-offset-3 text-center">
-                                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another link</a>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6 control">
-                                    <input type="file" class="form-control" id="document" required>
-                                    <label class="control-label" for="document">Document</label>
-                                </div>
-                                <div class="col-md-6 control">
-                                    <input type="text" class="form-control" id="documentUrl" placeholder="Document URL" required>
-                                    <label class="control-label" for="documentUrl">Document URL</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6 control">
-                                    <input type="text" class="form-control" id="documentTitle" placeholder="Document title" required>
-                                    <label class="control-label" for="documentTitle">Document title</label>
-                                </div>
-                                <div class="col-md-6 control">
-                                    <input type="text" class="form-control" id="documentFormat" placeholder="Document format" required>
-                                    <label class="control-label" for="documentFormat">Document format</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="select-group control">
-                                        <select name="partnerType" id="documentCategory" class="form-control" required>
-                                            <option value="" selected="selected">Document category</option>
-                                            <option value="A01">A01 - Pre- and post-project impact appraisal</option>
-                                            <option value="A02">A02 - Obectives / Purpose of activity</option>
-                                        </select>
-                                        <label class="control-label" for="documentCategory">Document category</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="select-group control">
-                                        <select name="partnerType" id="documentLanguage" class="form-control" required>
-                                            <option value="" selected="selected">Document language</option>
-                                            <option value="en">en - English</option>
-                                            <option value="sp">sp - Spanish</option>
-                                        </select>
-                                        <label class="control-label" for="documentLanguage">Document language</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-md-offset-3 text-center">
-                                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another document</a>
-                            </div>
-                        </div></div></div>
-                    </div>
-                    <!--*************************************** FORM STEP 7 **********************************************-->
-                    <div class="myPanel borderBottom" id="panel7">
-                        <div class="formStep stepSeven">
-                            <label for="stepSeven"><h4>07 - Locations</h4></label>
-                            <input type="radio" name="step" id="stepSeven">                        <div class="progress">
+                </div>
+                <!--*************************************** FORM STEP 7 **********************************************-->
+                <div class="myPanel borderBottom" id="panel7">
+                    <div class="formStep stepSeven">
+                        <label for="stepSeven"><h4>07 - Locations</h4></label>
+                        <input type="radio" name="step" id="stepSeven">
+                        <div class="progress">
                             <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
                                 <span class="sr-only">30% Complete (success)</span>30%
                             </div>
@@ -705,570 +714,580 @@
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another location</a>
                                 </div>
                             </div>
-                        </div></div></div>
-                        <!--*************************************** FORM STEP 8 **********************************************-->
-                        <div class="myPanel borderBottom" id="panel8">
-                            <div class="formStep stepEight">
-                                <label for="stepEight"><h4>08 - Focus</h4></label>
-                                <input type="radio" name="step" id="stepEight">                        <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
-                                    <span class="sr-only">30% Complete (success)</span>30%
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 8 **********************************************-->
+                <div class="myPanel borderBottom" id="panel8">
+                    <div class="formStep stepEight">
+                        <label for="stepEight"><h4>08 - Focus</h4></label>
+                        <input type="radio" name="step" id="stepEight">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+                                <span class="sr-only">30% Complete (success)</span>30%
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="sectorCode" placeholder="Sector code" required>
+                                        <label class="control-label" for="sectorCode">Sector code</label>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="sectorPercentage" placeholder="Sector percentage" required>
+                                        <label class="control-label" for="sectorPercentage">Sector percentage</label>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <div class="select-group">
+                                            <select name="sectorVocabulary" id="sectorVocabulary" class="form-control" required>
+                                                <option value="" selected="selected">Sector vocabulary:</option>
+                                                <option value="1">1 - OECD DAC CRS Purpose Codes (5 digit)</option>
+                                                <option value="2">2 - OECD DAC CRS Purpose Codes (3 digit)</option>
+                                            </select>
+                                            <label class="control-label" for="sectorVocabulary">Sector vocabulary</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="formBlock">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-4 control">
-                                            <input type="text" class="form-control" id="sectorCode" placeholder="Sector code" required>
-                                            <label class="control-label" for="sectorCode">Sector code</label>
-                                        </div>
-                                        <div class="col-md-4 control">
-                                            <input type="text" class="form-control" id="sectorPercentage" placeholder="Sector percentage" required>
-                                            <label class="control-label" for="sectorPercentage">Sector percentage</label>
-                                        </div>
-                                        <div class="col-md-4 control">
-                                            <div class="select-group">
-                                                <select name="sectorVocabulary" id="sectorVocabulary" class="form-control" required>
-                                                    <option value="" selected="selected">Sector vocabulary:</option>
-                                                    <option value="1">1 - OECD DAC CRS Purpose Codes (5 digit)</option>
-                                                    <option value="2">2 - OECD DAC CRS Purpose Codes (3 digit)</option>
-                                                </select>
-                                                <label class="control-label" for="sectorVocabulary">Sector vocabulary</label>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another sector</a>
                                 </div>
+                            </div>
+                            <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 col-md-offset-3 text-center">
-                                        <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another sector</a>
+                                    <div class="col-md-4">
+                                        <div class="select-group control">
+                                            <select name="policyMarker" id="policyMarker" class="form-control" required>
+                                                <option value="" selected="selected">Policy marker:</option>
+                                                <option value="1">1 - Gender Equality</option>
+                                                <option value="2">2 - Aid to Environment</option>
+                                            </select>
+                                            <label class="control-label" for="policyMarker">Policy marker</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="select-group control">
-                                                <select name="policyMarker" id="policyMarker" class="form-control" required>
-                                                    <option value="" selected="selected">Policy marker:</option>
-                                                    <option value="1">1 - Gender Equality</option>
-                                                    <option value="2">2 - Aid to Environment</option>
-                                                </select>
-                                                <label class="control-label" for="policyMarker">Policy marker</label>
-                                            </div>
+                                    <div class="col-md-4">
+                                        <div class="select-group control">
+                                            <select name="policyMarkerSignificance" id="policyMarkerSignificance" class="form-control" required>
+                                                <option value="" selected="selected">Policy marker significance</option>
+                                                <option value="0">0 - not targeted</option>
+                                                <option value="1">1 - significant objective</option>
+                                            </select>
+                                            <label class="control-label" for="policyMarkerSignificance">Policy marker significance</label>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="select-group control">
-                                                <select name="policyMarkerSignificance" id="policyMarkerSignificance" class="form-control" required>
-                                                    <option value="" selected="selected">Policy marker significance</option>
-                                                    <option value="0">0 - not targeted</option>
-                                                    <option value="1">1 - significant objective</option>
-                                                </select>
-                                                <label class="control-label" for="policyMarkerSignificance">Policy marker significance</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="select-group control">
-                                                <select name="policyMarkerVocabulary" id="policyMarkerVocabulary" class="form-control" required>
-                                                    <option value="" selected="selected">Policy marker vocabulary</option>
-                                                    <option value="1">1 - OECD DAC CRS</option>
-                                                    <option value="99">99 - Reporting Organisation</option>
-                                                </select>
-                                                <label class="control-label" for="policyMarkerVocabulary">Policy marker vocabulary</label>
-                                            </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="select-group control">
+                                            <select name="policyMarkerVocabulary" id="policyMarkerVocabulary" class="form-control" required>
+                                                <option value="" selected="selected">Policy marker vocabulary</option>
+                                                <option value="1">1 - OECD DAC CRS</option>
+                                                <option value="99">99 - Reporting Organisation</option>
+                                            </select>
+                                            <label class="control-label" for="policyMarkerVocabulary">Policy marker vocabulary</label>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 9 **********************************************-->
+                <div class="myPanel borderBottom" id="panel9">
+                    <div class="formStep stepNine">
+                        <label for="stepNine"><h4>09 - Finance</h4></label>
+                        <input type="radio" name="step" id="stepNine">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
+                                <span class="sr-only">70% Complete (success)</span>70%
+                            </div>
+                        </div>
+                        <div class="formBlock"> 
+                            <div class="form-group control">
+                                <input type="text" class="form-control" id="capitalSpendPercentage" placeholder="Capital spend percentage" required>
+                                <label for="capitalSpendPercentage" class="control-label">Capital spend percentage</label>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="countryBudgetVocabulary" id="countryBudgetVocabulary" class="form-control" required>
+                                        <option value="" selected="selected">Country budget vocabulary</option>
+                                        <option value="1">1 - IATI</option>
+                                        <option value="2">2 - Country Chart of Accounts</option>
+                                    </select>
+                                    <label for="countryBudgetVocabulary" class="control-label">Country budget vocabulary</label>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 col-md-offset-3 text-center">
-                                        <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>
+                                    <div class="col-md-6">
+                                        <div class="select-group control">
+                                            <select name="budgetItem" id="budgetItem" class="form-control" required>
+                                                <option value="" selected="selected">Budget item</option>
+                                                <option value="1">Capacity buidling</option>
+                                                <option value="2">Sanitation</option>
+                                                <option value="3">Other 1</option>
+                                            </select>
+                                            <label class="control-label" for="budgetItem">Budget item</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="budgetItemOther" placeholder="Other label extra info" required>
+                                        <label class="control-label" for="budgetItemOther">Other label extra info</label>
                                     </div>
                                 </div>
-                            </div></div></div>
-                            <!--*************************************** FORM STEP 9 **********************************************-->
-                            <div class="myPanel borderBottom" id="panel9">
-                                <div class="formStep stepNine">
-                                    <label for="stepNine"><h4>09 - Finance</h4></label>
-                                    <input type="radio" name="step" id="stepNine">                        
-                                    <div class="progress">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
-                                        <span class="sr-only">70% Complete (success)</span>70%
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="budgetType" id="budgetType" class="form-control" required>
+                                        <option value="" selected="selected">Budget type</option>
+                                        <option value="1">1 - Original</option>
+                                        <option value="2">2 - Revised</option>
+                                    </select>
+                                    <label for="budgetType" class="control-label">Budget type</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="number" step="any" class="form-control" id="budgetItemValue" placeholder="Budget item amount"  required>
+                                        <label class="control-label" for="budgetItemValue">Budget item value</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="budgetItemValueDate" placeholder="Budget item amount date"  required>
+                                        <label class="control-label" for="budgetItemValueDate">Budget item value date</label>
                                     </div>
                                 </div>
-                                <div class="formBlock"> 
-                                    <div class="form-group control">
-                                        <input type="text" class="form-control" id="capitalSpendPercentage" placeholder="Capital spend percentage" required>
-                                        <label for="capitalSpendPercentage" class="control-label">Capital spend percentage</label>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="number" step="any" class="form-control" id="budgetItemPeriodStart" placeholder="Budget item period start" required>
+                                        <label class="control-label" for="budgetItemPeriodStart">Budget item period start</label>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="budgetItemPeriodEnd" placeholder="Budget item period end" required>
+                                        <label class="control-label" for="budgetItemPeriodEnd">Budget item period end</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="select-group control">
-                                            <select name="countryBudgetVocabulary" id="countryBudgetVocabulary" class="form-control" required>
-                                                <option value="" selected="selected">Country budget vocabulary</option>
-                                                <option value="1">1 - IATI</option>
-                                                <option value="2">2 - Country Chart of Accounts</option>
+                                            <select name="budgetType" id="countryBudgetItem" class="form-control" required>
+                                                <option value="" selected="selected">Country budget item</option>
+                                                <option value="1.1.1">1.1.1 - Executive - executive</option>
+                                                <option value="1.2.1">1.2.1 - Legislative - legislative</option>
                                             </select>
-                                            <label for="countryBudgetVocabulary" class="control-label">Country budget vocabulary</label>
+                                            <label class="control-label" for="countryBudgetItem">Country budget item</label>
                                         </div>
                                     </div>
-                                    <hr/>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="select-group control">
-                                                    <select name="budgetItem" id="budgetItem" class="form-control" required>
-                                                        <option value="" selected="selected">Budget item</option>
-                                                        <option value="1">Capacity buidling</option>
-                                                        <option value="2">Sanitation</option>
-                                                        <option value="3">Other 1</option>
-                                                    </select>
-                                                    <label class="control-label" for="budgetItem">Budget item</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="budgetItemOther" placeholder="Other label extra info" required>
-                                                <label class="control-label" for="budgetItemOther">Other label extra info</label>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-6 control">
+                                        <input type="number" step="any" class="form-control" id="countryBudgetItemPercentage" placeholder="Percentage" required/>
+                                        <label class="control-label" for="countryBudgetItemPercentage">Country budget item percentage</label>
                                     </div>
-                                    <div class="form-group">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another country budget item</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4 control">
+                                        <input type="number" step="any" class="form-control" id="transactionValue" placeholder="Transaction value" required/>
+                                        <label class="control-label" for="transactionValue">Transaction value</label>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="transactionDate" placeholder="Transaction date" required/>
+                                        <label class="control-label" for="transactionDate">Transaction date</label>
+                                    </div>
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="transactionValueDate" placeholder="Transaction value date" required/>
+                                        <label class="control-label" for="transactionValueDate">Transaction value date</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="transactionReference" placeholder="Transaction reference"  required>
+                                        <label class="control-label" for="transactionReference">Transaction reference</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="transactionDescription" placeholder="Transaction description"  required>
+                                        <label class="control-label" for="transactionDescription">Transaction description</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="providerOrganisation" placeholder="Provider organisation" required>
+                                        <label class="control-label" for="providerOrganisation">Provider organisation</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="providerOrganisationActivityId" placeholder="Provider organisation activity id" required>
+                                        <label class="control-label" for="providerOrganisationActivityId">Provider organisation activity id</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="receiverOrganisation" placeholder="Receiver organisation" required>
+                                        <label class="control-label" for="receiverOrganisation">Receiver organisation</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="receiverOrganisationActivityId" placeholder="Receiver organisation activity id" required>
+                                        <label class="control-label" for="receiverOrganisationActivityId">Receiver organisation activity id</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="transactionSector" placeholder="Transaction sector" required>
+                                        <label class="control-label" for="transactionSector">Transaction sector</label>
+                                    </div>
+                                    <div class="col-md-4">
                                         <div class="select-group control">
-                                            <select name="budgetType" id="budgetType" class="form-control" required>
-                                                <option value="" selected="selected">Budget type</option>
-                                                <option value="1">1 - Original</option>
-                                                <option value="2">2 - Revised</option>
+                                            <select name="transactionSectorVocabulary" id="transactionSectorVocabulary" class="form-control" required>
+                                                <option value="" selected="selected">Transaction sector vocabulary:</option>
+                                                <option value="1">1 - OECD DAC CRS Purpose Codes (5 digit)</option>
+                                                <option value="2">2 - OECD DAC CRS Purpose Codes (3 digit)</option>
                                             </select>
-                                            <label for="budgetType" class="control-label">Budget type</label>
+                                            <label class="control-label" for="transactionSectorVocabulary">Transaction sector vocabulary</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6 control">
-                                                <input type="number" step="any" class="form-control" id="budgetItemValue" placeholder="Budget item amount"  required>
-                                                <label class="control-label" for="budgetItemValue">Budget item value</label>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="budgetItemValueDate" placeholder="Budget item amount date"  required>
-                                                <label class="control-label" for="budgetItemValueDate">Budget item value date</label>
-                                            </div>
+                                    <div class="col-md-4">
+                                        <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another transaction sector</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="defaultAidType" id="transactionAidType" class="form-control" required>
+                                        <option value="" selected="selected">Transaction aid type:</option>
+                                        <option value="A01">A01 - General budget support</option>
+                                        <option value="A02">A02 - Sector budget support</option>
+                                    </select>
+                                    <label for="transactionAidType" class="control-label">Transaction aid type</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="transactionDisbursementChannel" id="transactionDisbursementChannel" class="form-control" required>
+                                        <option value="" selected="selected">Transaction disbursement channel:</option>
+                                        <option value="1">1 - Money is disbursed through central Ministry of Finance or Treasury</option>
+                                        <option value="2">2 - Money is disbursed directly to the implementing institution and managed through a separate bank account</option>
+                                    </select>
+                                    <label for="transactionDisbursementChannel" class="control-label">Transaction disbursement channel</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="transactionFinanceType" id="transactionFinanceType" class="form-control" required>
+                                        <option value="" selected="selected">Transaction finance type:</option>
+                                        <option value="110">110 - Aid grant excluding debt reorganisation</option>
+                                        <option value="111">111 - Subsidies to national private investors</option>
+                                    </select>
+                                    <label for="transactionFinanceType" class="control-label">Transaction finance type</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="transactionFlowType" id="transactionFlowType" class="form-control" required>
+                                        <option value="" selected="selected">Transaction flow type:</option>
+                                        <option value="10">10 - ODA</option>
+                                        <option value="20">20 - OOF</option>
+                                    </select>
+                                    <label for="transactionFlowType" class="control-label">Transaction flow type</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="transactionTiedStatus" id="transactionTiedStatus" class="form-control" required>
+                                        <option value="" selected="selected">Transaction tied status:</option>
+                                        <option value="3">3 - Partially tied</option>
+                                        <option value="4">4 - Tied</option>
+                                        <option value="5">5 - Untied</option>
+                                    </select>
+                                    <label for="transactionTiedStatus" class="control-label">Transaction tied status</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="transactionRecipientCountry" id="transactionRecipientCountry" class="form-control" required>
+                                        <option value="" selected="selected">Transaction recipient country:</option>
+                                        <option value="nl">Netherlands</option>
+                                        <option value="se">Sweden</option>
+                                    </select>
+                                    <label class="control-label" for="transactionRecipientCountry">Transaction recipient country</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <div class="select-group">
+                                            <select name="transactionRecipientRegion" id="transactionRecipientRegion" class="form-control" required>
+                                                <option value="" selected="selected">Transaction recipient region:</option>
+                                                <option value="89">89 - Europe, regional</option>
+                                                <option value="189">189 - North of Sahara, regional</option>
+                                            </select>
+                                            <label class="control-label" for="transactionRecipientRegion">Transaction recipient region</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6 control">
-                                                <input type="number" step="any" class="form-control" id="budgetItemPeriodStart" placeholder="Budget item period start" required>
-                                                <label class="control-label" for="budgetItemPeriodStart">Budget item period start</label>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="budgetItemPeriodEnd" placeholder="Budget item period end" required>
-                                                <label class="control-label" for="budgetItemPeriodEnd">Budget item period end</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 col-md-offset-3 text-center">
-                                            <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="select-group control">
-                                                    <select name="budgetType" id="countryBudgetItem" class="form-control" required>
-                                                        <option value="" selected="selected">Country budget item</option>
-                                                        <option value="1.1.1">1.1.1 - Executive - executive</option>
-                                                        <option value="1.2.1">1.2.1 - Legislative - legislative</option>
-                                                    </select>
-                                                    <label class="control-label" for="countryBudgetItem">Country budget item</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="number" step="any" class="form-control" id="countryBudgetItemPercentage" placeholder="Percentage" required/>
-                                                <label class="control-label" for="countryBudgetItemPercentage">Country budget item percentage</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 col-md-offset-3 text-center">
-                                            <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another country budget item</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-4 control">
-                                                <input type="number" step="any" class="form-control" id="transactionValue" placeholder="Transaction value" required/>
-                                                <label class="control-label" for="transactionValue">Transaction value</label>
-                                            </div>
-                                            <div class="col-md-4 control">
-                                                <input type="text" class="form-control" id="transactionDate" placeholder="Transaction date" required/>
-                                                <label class="control-label" for="transactionDate">Transaction date</label>
-                                            </div>
-                                            <div class="col-md-4 control">
-                                                <input type="text" class="form-control" id="transactionValueDate" placeholder="Transaction value date" required/>
-                                                <label class="control-label" for="transactionValueDate">Transaction value date</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="transactionReference" placeholder="Transaction reference"  required>
-                                                <label class="control-label" for="transactionReference">Transaction reference</label>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="transactionDescription" placeholder="Transaction description"  required>
-                                                <label class="control-label" for="transactionDescription">Transaction description</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="providerOrganisation" placeholder="Provider organisation" required>
-                                                <label class="control-label" for="providerOrganisation">Provider organisation</label>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="providerOrganisationActivityId" placeholder="Provider organisation activity id" required>
-                                                <label class="control-label" for="providerOrganisationActivityId">Provider organisation activity id</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="receiverOrganisation" placeholder="Receiver organisation" required>
-                                                <label class="control-label" for="receiverOrganisation">Receiver organisation</label>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="receiverOrganisationActivityId" placeholder="Receiver organisation activity id" required>
-                                                <label class="control-label" for="receiverOrganisationActivityId">Receiver organisation activity id</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-4 control">
-                                                <input type="text" class="form-control" id="transactionSector" placeholder="Transaction sector" required>
-                                                <label class="control-label" for="transactionSector">Transaction sector</label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="select-group control">
-                                                    <select name="transactionSectorVocabulary" id="transactionSectorVocabulary" class="form-control" required>
-                                                        <option value="" selected="selected">Transaction sector vocabulary:</option>
-                                                        <option value="1">1 - OECD DAC CRS Purpose Codes (5 digit)</option>
-                                                        <option value="2">2 - OECD DAC CRS Purpose Codes (3 digit)</option>
-                                                    </select>
-                                                    <label class="control-label" for="transactionSectorVocabulary">Transaction sector vocabulary</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another transaction sector</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
+                                    <div class="col-md-6">
                                         <div class="select-group control">
-                                            <select name="defaultAidType" id="transactionAidType" class="form-control" required>
-                                                <option value="" selected="selected">Transaction aid type:</option>
-                                                <option value="A01">A01 - General budget support</option>
-                                                <option value="A02">A02 - Sector budget support</option>
+                                            <select name="transactionRecipientRegionVocabulary" id="transactionRecipientRegionVocabulary" class="form-control" required>
+                                                <option value="" selected="selected">Recipient region vocabulary:</option>
+                                                <option value="1">1 - OECD DAC</option>
+                                                <option value="2">2 - UN</option>
                                             </select>
-                                            <label for="transactionAidType" class="control-label">Transaction aid type</label>
+                                            <label class="control-label" for="transactionRecipientRegionVocabulary">Recipient region vocabulary</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="number" step="any" class="form-control" id="plannedDisbursementValue" placeholder="Planned disbursement value" required>
+                                        <label class="control-label" for="plannedDisbursementValue">Planned disbursement value</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="plannedDisbursementValueDate" placeholder="Planned disbursement value date" required>
+                                        <label class="control-label" for="plannedDisbursementValueDate">Planned disbursement value date</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="plannedDisbursementType" id="plannedDisbursementType" class="form-control" required>
+                                        <option value="" selected="selected">Planned disbursement type:</option>
+                                        <option value="1">1 - Original</option>
+                                        <option value="2">2 - Revised</option>
+                                    </select>
+                                    <label for="plannedDisbursementType" class="control-label">Planned disbursement type</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="plannedDisbursementPeriodStart" placeholder="Planned disbursement period start" required>
+                                        <label class="control-label" for="plannedDisbursementPeriodStart">Planned disbursement period start</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="plannedDisbursementPeriodEnd" placeholder="Planned disbursement period end" required>
+                                        <label class="control-label" for="plannedDisbursementPeriodEnd">Planned disbursement period end</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group control">
+                                <input type="text" class="form-control" id="plannedDisbursementUpdated" placeholder="Planned disbursement updated" required>
+                                <label for="plannedDisbursementUpdated" class="control-label">Planned disbursement updated</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 10 **********************************************-->
+                <div class="myPanel borderBottom" id="panel10">
+                    <div class="formStep stepTen">
+                        <label for="stepTen"><h4>10 - Results</h4></label>
+                        <input type="radio" name="step" id="stepTen">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+                                <span class="sr-only">30% Complete (success)</span>30%
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="select-group control">
-                                            <select name="transactionDisbursementChannel" id="transactionDisbursementChannel" class="form-control" required>
-                                                <option value="" selected="selected">Transaction disbursement channel:</option>
-                                                <option value="1">1 - Money is disbursed through central Ministry of Finance or Treasury</option>
-                                                <option value="2">2 - Money is disbursed directly to the implementing institution and managed through a separate bank account</option>
+                                            <select name="resultType" id="conditionType" class="form-control" required>
+                                                <option value="" selected="selected">Condition type:</option>
+                                                <option value="1">1 - Policy</option>
+                                                <option value="2">2 - Performance</option>
+                                                <option value="3">3 - Fiduciary</option>
                                             </select>
-                                            <label for="transactionDisbursementChannel" class="control-label">Transaction disbursement channel</label>
+                                            <label class="control-label" for="conditionType">Condition type</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="col-md-6 control">
+                                        <textarea id="condition" class="form-control" name="textarea" placeholder="Type in the condition" required></textarea>
+                                        <label class="control-label" for="condition">Condition</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another condition</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="resultTitle" placeholder="Result title" required>
+                                        <label class="control-label" for="resultTitle">Result title</label>
+                                    </div>
+                                    <div class="col-md-4">
                                         <div class="select-group control">
-                                            <select name="transactionFinanceType" id="transactionFinanceType" class="form-control" required>
-                                                <option value="" selected="selected">Transaction finance type:</option>
-                                                <option value="110">110 - Aid grant excluding debt reorganisation</option>
-                                                <option value="111">111 - Subsidies to national private investors</option>
+                                            <select name="resultType" id="resultType" class="form-control" required>
+                                                <option value="" selected="selected">Result type</option>
+                                                <option value="1">1 - Output</option>
+                                                <option value="2">2 - Outcome</option>
+                                                <option value="3">3 - Impact</option>
                                             </select>
-                                            <label for="transactionFinanceType" class="control-label">Transaction finance type</label>
+                                            <label class="control-label" for="resultType">Result type</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="col-md-4 control">
+                                        <div class="select-group">
+                                            <select name="aggregationStatus" id="aggregationStatus" class="form-control" required>
+                                                <option value="" selected="selected">Aggregation status</option>
+                                                <option value="0">Unknown</option>
+                                                <option value="1">Yes</option>
+                                                <option value="2">No</option>
+                                            </select>
+                                            <label class="control-label" for="aggregationStatus">Aggregation status</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="resultDescription" class="form-control" name="textarea" placeholder="Type in the result description" required></textarea>
+                                <label class="control-label" for="resultDescription">Result description</label>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4 control">
+                                        <input type="text" class="form-control" id="indicatorTitle" placeholder="Indicator title" required>
+                                        <label class="control-label" for="indicatorTitle">Indicator title</label>
+                                    </div>
+                                    <div class="col-md-4">
                                         <div class="select-group control">
-                                            <select name="transactionFlowType" id="transactionFlowType" class="form-control" required>
-                                                <option value="" selected="selected">Transaction flow type:</option>
-                                                <option value="10">10 - ODA</option>
-                                                <option value="20">20 - OOF</option>
+                                            <select name="indicatorMeasure" id="indicatorMeasure" class="form-control" required>
+                                                <option value="" selected="selected">Indicator measure:</option>
+                                                <option value="1">1 - Unit</option>
+                                                <option value="2">2 - Percentage</option>
                                             </select>
-                                            <label for="transactionFlowType" class="control-label">Transaction flow type</label>
+                                            <label class="control-label" for="indicatorMeasure">Indicator measure</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="col-md-4">
                                         <div class="select-group control">
-                                            <select name="transactionTiedStatus" id="transactionTiedStatus" class="form-control" required>
-                                                <option value="" selected="selected">Transaction tied status:</option>
-                                                <option value="3">3 - Partially tied</option>
-                                                <option value="4">4 - Tied</option>
-                                                <option value="5">5 - Untied</option>
+                                            <select name="ascending" id="ascending" class="form-control" required>
+                                                <option value="" selected="selected">Ascending:</option>
+                                                <option value="0">Unknown</option>
+                                                <option value="1">Yes</option>
+                                                <option value="2">No</option>
                                             </select>
-                                            <label for="transactionTiedStatus" class="control-label">Transaction tied status</label>
+                                            <label class="control-label" for="ascending">Ascending</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="select-group control">
-                                            <select name="transactionRecipientCountry" id="transactionRecipientCountry" class="form-control" required>
-                                                <option value="" selected="selected">Transaction recipient country:</option>
-                                                <option value="nl">Netherlands</option>
-                                                <option value="se">Sweden</option>
-                                            </select>
-                                            <label class="control-label" for="transactionRecipientCountry">Transaction recipient country</label>
-                                        </div>
+                                </div>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="indicatorDescription" class="form-control" name="textarea" placeholder="Type in the indicator description" required></textarea>
+                                <label class="control-label" for="indicatorDescription">Indicator description</label>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="number" step="any" class="form-control" id="baselineValue" placeholder="Baseline value" required>
+                                        <label class="control-label" for="baselineValue">Baseline value</label>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6 control">
-                                                <div class="select-group">
-                                                    <select name="transactionRecipientRegion" id="transactionRecipientRegion" class="form-control" required>
-                                                        <option value="" selected="selected">Transaction recipient region:</option>
-                                                        <option value="89">89 - Europe, regional</option>
-                                                        <option value="189">189 - North of Sahara, regional</option>
-                                                    </select>
-                                                    <label class="control-label" for="transactionRecipientRegion">Transaction recipient region</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="select-group control">
-                                                    <select name="transactionRecipientRegionVocabulary" id="transactionRecipientRegionVocabulary" class="form-control" required>
-                                                        <option value="" selected="selected">Recipient region vocabulary:</option>
-                                                        <option value="1">1 - OECD DAC</option>
-                                                        <option value="2">2 - UN</option>
-                                                    </select>
-                                                    <label class="control-label" for="transactionRecipientRegionVocabulary">Recipient region vocabulary</label>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-6 control">
+                                        <input type="number" class="form-control" id="baselineYear" placeholder="Baseline year" required>
+                                        <label class="control-label" for="baselineYear">Baseline year</label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6 col-md-offset-3 text-center">
-                                            <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
-                                        </div>
+                                </div>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="baselineComment" class="form-control" name="textarea" placeholder="Type in the baseline comment" required></textarea>
+                                <label class="control-label" for="baselineComment">Baseline comment</label>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="indicatorPeriodStart" placeholder="Period start" required>
+                                        <label class="control-label" for="indicatorPeriodStart">Period start</label>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6 control">
-                                                <input type="number" step="any" class="form-control" id="plannedDisbursementValue" placeholder="Planned disbursement value" required>
-                                                <label class="control-label" for="plannedDisbursementValue">Planned disbursement value</label>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="plannedDisbursementValueDate" placeholder="Planned disbursement value date" required>
-                                                <label class="control-label" for="plannedDisbursementValueDate">Planned disbursement value date</label>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="indicatorPeriodEnd" placeholder="Period end" required>
+                                        <label class="control-label" for="indicatorPeriodEnd">Period end</label>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="select-group control">
-                                            <select name="plannedDisbursementType" id="plannedDisbursementType" class="form-control" required>
-                                                <option value="" selected="selected">Planned disbursement type:</option>
-                                                <option value="1">1 - Original</option>
-                                                <option value="2">2 - Revised</option>
-                                            </select>
-                                            <label for="plannedDisbursementType" class="control-label">Planned disbursement type</label>
-                                        </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="indicatorPeriodTargetValue" placeholder="Target value" required>
+                                        <label class="control-label" for="indicatorPeriodTargetValue">Target value</label>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="plannedDisbursementPeriodStart" placeholder="Planned disbursement period start" required>
-                                                <label class="control-label" for="plannedDisbursementPeriodStart">Planned disbursement period start</label>
-                                            </div>
-                                            <div class="col-md-6 control">
-                                                <input type="text" class="form-control" id="plannedDisbursementPeriodEnd" placeholder="Planned disbursement period end" required>
-                                                <label class="control-label" for="plannedDisbursementPeriodEnd">Planned disbursement period end</label>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-6 control">
+                                        <textarea id="indicatorPeriodTargetValueComment" class="form-control" name="textarea" placeholder="Type in the target value comment" required></textarea>
+                                        <label class="control-label" for="indicatorPeriodTargetValueComment">Target value comment</label>
                                     </div>
-                                    <div class="form-group control">
-                                        <input type="text" class="form-control" id="plannedDisbursementUpdated" placeholder="Planned disbursement updated" required>
-                                        <label for="plannedDisbursementUpdated" class="control-label">Planned disbursement updated</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control" id="indicatorPeriodActualValue" placeholder="Target value" required>
+                                        <label class="control-label" for="indicatorPeriodActualValue">Actual value</label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6 col-md-offset-3 text-center">
-                                            <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
-                                        </div>
+                                    <div class="col-md-6 control">
+                                        <textarea id="indicatorPeriodActualValueComment" class="form-control" name="textarea" placeholder="Type in the actual value comment" required></textarea>
+                                        <label class="control-label" for="indicatorPeriodActualValueComment">Actual value comment</label>
                                     </div>
-                                </div></div></div>
-                                <!--*************************************** FORM STEP 10 **********************************************-->
-                                <div class="myPanel borderBottom" id="panel10">
-                                    <div class="formStep stepTen">
-                                        <label for="stepTen"><h4>10 - Results</h4></label>
-                                        <input type="radio" name="step" id="stepTen">                        <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
-                                            <span class="sr-only">30% Complete (success)</span>30%
-                                        </div>
-                                    </div>
-                                    <div class="formBlock">
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="select-group control">
-                                                        <select name="resultType" id="conditionType" class="form-control" required>
-                                                            <option value="" selected="selected">Condition type:</option>
-                                                            <option value="1">1 - Policy</option>
-                                                            <option value="2">2 - Performance</option>
-                                                            <option value="3">3 - Fiduciary</option>
-                                                        </select>
-                                                        <label class="control-label" for="conditionType">Condition type</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 control">
-                                                    <textarea id="condition" class="form-control" name="textarea" placeholder="Type in the condition" required></textarea>
-                                                    <label class="control-label" for="condition">Condition</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 col-md-offset-3 text-center">
-                                                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another condition</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-md-4 control">
-                                                    <input type="text" class="form-control" id="resultTitle" placeholder="Result title" required>
-                                                    <label class="control-label" for="resultTitle">Result title</label>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="select-group control">
-                                                        <select name="resultType" id="resultType" class="form-control" required>
-                                                            <option value="" selected="selected">Result type</option>
-                                                            <option value="1">1 - Output</option>
-                                                            <option value="2">2 - Outcome</option>
-                                                            <option value="3">3 - Impact</option>
-                                                        </select>
-                                                        <label class="control-label" for="resultType">Result type</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4 control">
-                                                    <div class="select-group">
-                                                        <select name="aggregationStatus" id="aggregationStatus" class="form-control" required>
-                                                            <option value="" selected="selected">Aggregation status</option>
-                                                            <option value="0">Unknown</option>
-                                                            <option value="1">Yes</option>
-                                                            <option value="2">No</option>
-                                                        </select>
-                                                        <label class="control-label" for="aggregationStatus">Aggregation status</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group control">
-                                            <textarea id="resultDescription" class="form-control" name="textarea" placeholder="Type in the result description" required></textarea>
-                                            <label class="control-label" for="resultDescription">Result description</label>
-                                        </div>
-                                        <hr/>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-md-4 control">
-                                                    <input type="text" class="form-control" id="indicatorTitle" placeholder="Indicator title" required>
-                                                    <label class="control-label" for="indicatorTitle">Indicator title</label>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="select-group control">
-                                                        <select name="indicatorMeasure" id="indicatorMeasure" class="form-control" required>
-                                                            <option value="" selected="selected">Indicator measure:</option>
-                                                            <option value="1">1 - Unit</option>
-                                                            <option value="2">2 - Percentage</option>
-                                                        </select>
-                                                        <label class="control-label" for="indicatorMeasure">Indicator measure</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="select-group control">
-                                                        <select name="ascending" id="ascending" class="form-control" required>
-                                                            <option value="" selected="selected">Ascending:</option>
-                                                            <option value="0">Unknown</option>
-                                                            <option value="1">Yes</option>
-                                                            <option value="2">No</option>
-                                                        </select>
-                                                        <label class="control-label" for="ascending">Ascending</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group control">
-                                            <textarea id="indicatorDescription" class="form-control" name="textarea" placeholder="Type in the indicator description" required></textarea>
-                                            <label class="control-label" for="indicatorDescription">Indicator description</label>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-md-6 control">
-                                                    <input type="number" step="any" class="form-control" id="baselineValue" placeholder="Baseline value" required>
-                                                    <label class="control-label" for="baselineValue">Baseline value</label>
-                                                </div>
-                                                <div class="col-md-6 control">
-                                                    <input type="number" class="form-control" id="baselineYear" placeholder="Baseline year" required>
-                                                    <label class="control-label" for="baselineYear">Baseline year</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group control">
-                                            <textarea id="baselineComment" class="form-control" name="textarea" placeholder="Type in the baseline comment" required></textarea>
-                                            <label class="control-label" for="baselineComment">Baseline comment</label>
-                                        </div>
-                                        <hr/>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-md-6 control">
-                                                    <input type="text" class="form-control" id="indicatorPeriodStart" placeholder="Period start" required>
-                                                    <label class="control-label" for="indicatorPeriodStart">Period start</label>
-                                                </div>
-                                                <div class="col-md-6 control">
-                                                    <input type="text" class="form-control" id="indicatorPeriodEnd" placeholder="Period end" required>
-                                                    <label class="control-label" for="indicatorPeriodEnd">Period end</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-md-6 control">
-                                                    <input type="text" class="form-control" id="indicatorPeriodTargetValue" placeholder="Target value" required>
-                                                    <label class="control-label" for="indicatorPeriodTargetValue">Target value</label>
-                                                </div>
-                                                <div class="col-md-6 control">
-                                                    <textarea id="indicatorPeriodTargetValueComment" class="form-control" name="textarea" placeholder="Type in the target value comment" required></textarea>
-                                                    <label class="control-label" for="indicatorPeriodTargetValueComment">Target value comment</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-md-6 control">
-                                                    <input type="text" class="form-control" id="indicatorPeriodActualValue" placeholder="Target value" required>
-                                                    <label class="control-label" for="indicatorPeriodActualValue">Actual value</label>
-                                                </div>
-                                                <div class="col-md-6 control">
-                                                    <textarea id="indicatorPeriodActualValueComment" class="form-control" name="textarea" placeholder="Type in the actual value comment" required></textarea>
-                                                    <label class="control-label" for="indicatorPeriodActualValueComment">Actual value comment</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 col-md-offset-3 text-center">
-                                                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another indicator period</a>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 col-md-offset-3 text-center">
-                                                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another indicator</a>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 col-md-offset-3 text-center">
-                                                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another result</a>
-                                            </div>
-                                        </div>
-                                    </div></div></div>
-                                </fieldset>
-                            </form>
-                        </section>
-                    {% endblock %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another indicator period</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another indicator</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another result</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+{% endblock %}
