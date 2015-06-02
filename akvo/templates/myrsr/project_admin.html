@@ -371,17 +371,22 @@
                         </div>
                         <div class="formBlock">
                             <div class="form-group control">
+                                {% if project.current_image %}
+                                    <img src="{{project.current_image.url}}" class="current-project-photo">
+                                {% endif %}
                                 <input type="file" class="form-control" id="photo">
                                 <label class="control-label" for="photo">Photo</label>
                             </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="photoCaption" placeholder="Photo caption">
+                                        <input type="text" class="form-control" id="photoCaption" placeholder="Photo caption"
+                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %}>
                                         <label for="photoCaption" class="control-label">Photo caption</label>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="photoCredit" placeholder="Photo credit">
+                                        <input type="text" class="form-control" id="photoCredit" placeholder="Photo credit"
+                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %}>
                                         <label for="photoCredit" class="control-label">Photo credit</label>
                                     </div>
                                 </div>
