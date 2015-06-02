@@ -10,9 +10,10 @@ var i18n;
 var ResetModal = React.createClass({displayName: 'ResetModal',
   resetPassword: function() {
     form_data = this.getFormData();
+    url = '/' + AKVO_RSR.language + '/sign_in/';
     $.ajax({
       type: "POST",
-      url: "/sign_in/",
+      url: this.url,
       data : form_data,
       success: function(data) {
         this.props.onRequestHide();
