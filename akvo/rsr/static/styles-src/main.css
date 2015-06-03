@@ -449,11 +449,18 @@ nav.navbar-fixed-top {
                 nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
                   background: rgba(255, 85, 0, 0.1); } } }
 
-/*  Allow language dropdown menu to extend the height of the nav container.
-    Otherwise, we get a scrollbar in the nav area on small screens */
-@media only screen and (max-width: 768px) {
+.navbar .container {
+  /* nav menu overflows to two lines in spanish and french unless container width
+        is increased slightly just above the threshold for switching to dropdown */ }
+  @media only screen and (max-width: 1200px) and (min-width: 1024px) {
+    .navbar .container {
+      min-width: 1000px; } }
   .navbar .container .navbar-collapse.in {
-    overflow-y: initial; } }
+    /*  Allow language dropdown menu to extend the height of the nav container.
+                    Otherwise, we get a scrollbar in the nav area on small screens */ }
+    @media only screen and (max-width: 768px) {
+      .navbar .container .navbar-collapse.in {
+        overflow-y: initial; } }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   .navbar-header {

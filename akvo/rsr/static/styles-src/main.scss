@@ -470,12 +470,17 @@ nav.navbar-fixed-top {
     }
 }
 
-/*  Allow language dropdown menu to extend the height of the nav container.
-    Otherwise, we get a scrollbar in the nav area on small screens */
 .navbar {
     .container {
+        /* nav menu overflows to two lines in spanish and french unless container width
+        is increased slightly just above the threshold for switching to dropdown */
+        @media only screen and (max-width: $width-large) and (min-width: $width-middle) {
+            min-width: 1000px;
+        }
         .navbar-collapse {
             &.in {
+                /*  Allow language dropdown menu to extend the height of the nav container.
+                    Otherwise, we get a scrollbar in the nav area on small screens */                
                 @include responsive(small-max-screens) {
                     overflow-y: initial;
                 }
