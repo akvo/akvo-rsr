@@ -51,11 +51,15 @@ def directory(request):
     filter_class = show_filter_class(qs, ['location', 'partner', 'sector', ])
 
     # Yank projectupdate collection
-    f = ProjectUpdateFilter(qs, queryset=_update_directory_coll(request))
+    all_updates = _update_directory_coll(request)
+    f = ProjectUpdateFilter(qs, queryset=all_updates)
 
     # Build page
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, f.qs.distinct(), 10)
+
+    # Get updates to be displayed on the map
+    map_updates = all_updates if request.rsr_page and request.rsr_page.all_maps else page
 
     return render(request, 'update_directory.html', {
         'updates_count': f.qs.distinct().count(),
@@ -64,8 +68,9 @@ def directory(request):
         'page_range': page_range,
         'paginator': paginator,
         'show_filters': filter_class,
-        'q': filter_query_string(qs)
-        })
+        'q': filter_query_string(qs),
+        'map_updates': map_updates,
+    })
 
 
 def main(request, project_id, update_id):

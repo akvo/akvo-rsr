@@ -98,14 +98,14 @@ def create_organisation(bundle, bundle_field_to_use):
     if bundle_field_to_use == FIELD_IATI_ORG_ID:
         kwargs[FIELD_IATI_ORG_ID] = bundle.data[FIELD_IATI_ORG_ID]
         try:
-            logger.debug("Trying to create an org with kwargs: {kwargs}".format(kwargs=kwargs))
+            logger.debug("Trying to create an org")
             organisation = Organisation.objects.create(**kwargs)
         except Exception, e:
-            logger.exception('{message} Locals:\n {locals}\n\n'.format(message=e.message, locals=locals(), ))
+            logger.exception('%s' % e.message)
     # otherwise fall back to using the reporting_org's internal ID
     elif bundle_field_to_use == FIELD_INTERNAL_ORG_ID:
         try:
-            logger.debug("Trying to create an org with kwargs: {kwargs}".format(kwargs=kwargs))
+            logger.debug("Trying to create an org")
             organisation = Organisation.objects.create(**kwargs)
             our_organisation = Organisation.objects.get(iati_org_id=bundle.data[FIELD_REPORTING_ORG])
             InternalOrganisationID.objects.create(
@@ -114,7 +114,7 @@ def create_organisation(bundle, bundle_field_to_use):
                 identifier=bundle.data[FIELD_INTERNAL_ORG_ID],
             )
         except Exception, e:
-            logger.exception('{message} Locals:\n {locals}\n\n'.format(message=e.message, locals=locals(), ))
+            logger.exception('%s' % e.message)
     return organisation
 
 

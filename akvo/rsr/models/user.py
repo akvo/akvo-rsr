@@ -308,7 +308,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             return True
         # Only Partner admins on the list of "limiters" list may edit
         else:
-            if self.get_is_org_admin() and self.organisation in partner_admins_allowed:
+            if self.organisation in partner_admins_allowed:
                 return True
         return False
 

@@ -1,3 +1,5 @@
+{% load l10n %}
+
 <div class= "rsr_map" id="{{ map_id }}" style="width:{{width}};height:{{height}};"></div>
 <script>
  var {{ map_id }} = {
@@ -5,11 +7,11 @@
    {
        'url': '{{location.url}}',
        'text': '{{location.text}}',
-       'latitude': '{{location.latitude}}',
+       'latitude': '{{location.latitude|unlocalize}}',
        'pk': '{{location.pk}}',
        'image': '{{location.image}}',
        'type': '{{location.type}}',
-       'longitude': '{{location.longitude}}',
+       'longitude': '{{location.longitude|unlocalize}}',
        'icon': '{{location.icon}}',
    },
    {% endfor %}],

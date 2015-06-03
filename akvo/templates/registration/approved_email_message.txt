@@ -1,9 +1,9 @@
 {% load i18n %}
 
-{% blocktrans %}
-Dear {{ user.get_full_name }},
+{% blocktrans with user_name=user.get_full_name org_name=organisation.long_name %}
+Dear {{user_name}},
 
-Your request to join {{organisation.long_name}} on Akvo RSR has been approved.
+Your request to join {{org_name}} on Akvo RSR has been approved.
 
 Please visit the MyRSR section to view your projects and add updates to the projects here:
 http://{{ site }}/myrsr/

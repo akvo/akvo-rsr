@@ -59,10 +59,10 @@
        googleMap.load();
        $( "#project-map" ).removeClass('initial');
      }
-     $('.map-toggle').html('HIDE MAP -');
+     $('.map-toggle').html('{% trans 'Hide map' %} -');
    } else {
      $( "#project-map" ).slideToggle('slow');
-     $('.map-toggle').html('SHOW MAP +');
+     $('.map-toggle').html('{% trans 'Show map' %} +');
    }
  };
 </script>

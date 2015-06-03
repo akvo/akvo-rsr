@@ -7,6 +7,8 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
+import datetime
+
 from os.path import basename, splitext
 
 from rsr.models import *

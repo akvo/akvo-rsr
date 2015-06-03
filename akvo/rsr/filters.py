@@ -19,7 +19,7 @@ from akvo.utils import codelist_choices
 
 from django.utils.translation import ugettext_lazy as _
 
-ANY_CHOICE = (('', 'All'), )
+ANY_CHOICE = (('', _('All')), )
 
 
 def sectors():
@@ -28,6 +28,11 @@ def sectors():
         if Project.objects.filter(sectors__sector_code=sector[0]):
             sectors_list.append(sector)
     return sectors_list
+
+
+def get_orgs():
+    orgs = list(Organisation.objects.all().values_list('id', 'name', flat=False))
+    return [('', _('All'))] + orgs
 
 
 def remove_empty_querydict_items(request_get):
@@ -63,7 +68,7 @@ def filter_m49(queryset, value):
 
 class ProjectFilter(django_filters.FilterSet):
     category = django_filters.ChoiceFilter(
-        choices=([('', 'All')] +
+        choices=([('', _('All'))] +
                  list(Category.objects.all().values_list('id', 'name',
                                                          flat=False))),
         label=_(u'category'),
@@ -76,13 +81,13 @@ class ProjectFilter(django_filters.FilterSet):
     )
 
     sector = django_filters.ChoiceFilter(
-        initial='All',
-        choices=([('', 'All')] + sectors()),
+        initial=_('All'),
+        choices=([('', _('All'))] + sectors()),
         label=_(u'sector'),
         name='sectors__sector_code')
 
     status = django_filters.ChoiceFilter(
-        initial='All',
+        initial=_('All'),
         label=_(u'status'),
         choices=ANY_CHOICE + Project.STATUSES)
 
@@ -91,10 +96,7 @@ class ProjectFilter(django_filters.FilterSet):
         label=_(u'Search'),
         name='title')
 
-    def get_orgs():
-        orgs = list(Organisation.objects.all().values_list('id', 'name',
-                                                           flat=False))
-        return ([('', 'All')] + orgs)
+
 
     organisation = django_filters.ChoiceFilter(
         choices=get_orgs(),
@@ -114,19 +116,14 @@ class ProjectUpdateFilter(django_filters.FilterSet):
         label=_(u'location'),
         action=filter_m49)
 
-    def get_orgs():
-        orgs = list(Organisation.objects.all().values_list('id', 'name',
-                                                           flat=False))
-        return ([('', 'All')] + orgs)
-
     partner = django_filters.ChoiceFilter(
         choices=get_orgs(),
         label=_(u'organisation'),
         name='project__partners__id')
 
     sector = django_filters.ChoiceFilter(
-        initial='All',
-        choices=([('', 'All')] + sectors()),
+        initial=_('All'),
+        choices=([('', _('All'))] + sectors()),
         label=_(u'sector'),
         name='project__sectors__sector_code')
 

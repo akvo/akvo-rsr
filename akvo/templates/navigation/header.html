@@ -5,6 +5,7 @@
 {% url 'update-directory' as update_url %}
 {% url 'organisation-directory' as organisation_url %}
 {% url 'my_details' as myrsr_url %}
+{% url 'index' as index_url %}
 
 {% with current_path=request.path|slice:":6" project_path=project_url|slice:":6" organisation_path=organisation_url|slice:":6" update_path=update_url|slice:":6" myrsr_path=myrsr_url|slice:":6" %}
 <style>.navbar .active {color: #2A6297;}</style>
@@ -20,7 +21,7 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="navbar-brand" href="{% firstof rsr_page.return_url '/' %}">
+      <a class="navbar-brand" href="{% firstof rsr_page.return_url index_url %}">
         {% if rsr_page.logo %}
           {% img rsr_page 125 60 organisation.name %}
         {% elif rsr_page.organisation %}
@@ -71,6 +72,22 @@
         </li>
         <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
+        <li>
+          <div class="dropdown langDropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
+              <img src="{{STATIC_URL}}images/flags/128/{{LANGUAGE_CODE}}.png" width="20" height="20" />
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              {% get_language_info_list for LANGUAGES as languages %}
+              {% for language in languages %}
+                {% if not language.code == LANGUAGE_CODE %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/{{language.code}}/{{current_path_without_lang}}"><img src="{{STATIC_URL}}images/flags/128/{{language.code}}.png" width="20" height="20" /> {{ language.name_local|title }}</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
       </ul>
     </div>
   </div>

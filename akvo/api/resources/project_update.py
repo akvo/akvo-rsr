@@ -54,18 +54,18 @@ class ProjectUpdateResource(ConditionalFullResource):
         )
 
     def dehydrate(self, bundle):
-            """ Revert the field names "created_at" and "last_modified_at" to the old "time" and "time_last_updated"
-                respectively to keep the API signature stable
-            """
-            # TODO: remove this for v2 of API
-            bundle = super(ProjectUpdateResource, self).dehydrate(bundle)
-            bundle.data['time'] = bundle.data['created_at']
-            bundle.data['time_last_updated'] = bundle.data['last_modified_at']
-            del bundle.data['created_at']
-            del bundle.data['last_modified_at']
-            if isinstance(bundle.data['time'], bool): bundle.data['time'] = None
-            if isinstance(bundle.data['time_last_updated'], bool): bundle.data['time_last_updated'] = None
-            return bundle
+        """ Revert the field names "created_at" and "last_modified_at" to the old "time" and "time_last_updated"
+            respectively to keep the API signature stable
+        """
+        # TODO: remove this for v2 of API
+        bundle = super(ProjectUpdateResource, self).dehydrate(bundle)
+        bundle.data['time'] = bundle.data['created_at']
+        bundle.data['time_last_updated'] = bundle.data['last_modified_at']
+        del bundle.data['created_at']
+        del bundle.data['last_modified_at']
+        if isinstance(bundle.data['time'], bool): bundle.data['time'] = None
+        if isinstance(bundle.data['time_last_updated'], bool): bundle.data['time_last_updated'] = None
+        return bundle
 
 
 class ProjectUpdateResourceExtra(ProjectUpdateResource):
@@ -145,9 +145,10 @@ class ProjectUpdateResourceExtra(ProjectUpdateResource):
             'nullable': False,
             'blank': False,
             'readonly': True,
-            'help_text': "A custom related resource with parts of data from user and the organisation the user belongs to. "
-                "Includes the fields full_name, organisation and resource_uri of user and absolute_url, long_name, name and resource_uri "
-                "of organisation.",
+            'help_text': "A custom related resource with parts of data from user and the "
+                         "organisation the user belongs to. Includes the fields full_name, "
+                         "organisation and resource_uri of user and absolute_url, long_name, name "
+                         "and resource_uri of organisation.",
             'unique': False,
         }
         return data

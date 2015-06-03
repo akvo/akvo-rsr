@@ -8,7 +8,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum
-from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet as DjangoQuerySet
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -108,7 +108,7 @@ class Organisation(TimestampsMixin, models.Model):
     )
     logo = ImageField(_(u'logo'), blank=True, upload_to=image_path,
                       help_text=_(u'Logos should be approximately 360x270 pixels '
-                                  u'(approx. 100-200kB in size) on a white background.'),
+                                  u'(approx. 100-200kB in size) on a white background.')
     )
     url = models.URLField(
         blank=True,
@@ -164,6 +164,11 @@ class Organisation(TimestampsMixin, models.Model):
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )
+    can_become_reporting = models.BooleanField(
+        _(u'Reportable'),
+        help_text=_(u'Organisation is allowed to become a reporting organisation. '
+                    u'Can be set by superusers.'),
+        default=False)
 
     objects = OrgManager()
 
@@ -171,7 +176,7 @@ class Organisation(TimestampsMixin, models.Model):
     def get_absolute_url(self):
         return ('organisation-main', (), {'organisation_id': self.pk})
 
-    class QuerySet(QuerySet):
+    class QuerySet(DjangoQuerySet):
         def has_location(self):
             return self.filter(primary_location__isnull=False)
 
