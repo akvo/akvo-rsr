@@ -1,0 +1,44 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="select-group control">
+                <select name="contactCountry" id="recipientRegion" class="form-control">
+                    <option value="" {% if not rr.region %} selected="selected" {% endif %}>Recipient region:</option>
+                    {% for r in region %}
+                        {% if not code == "code" %}
+                            <option value="{{r.0}}" {% if rr.region = r.0 %} selected="selected" {% endif %}>
+                                {{r.0}} - {{r.1}}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <label class="control-label" for="recipientRegion">Recipient region</label>
+            </div>
+        </div>
+        <div class="col-md-6 control">
+            <input type="text" class="form-control" id="recipientRegionPercentage" placeholder="Percentage"
+            {% if rr.percentage %} value="{{rr.percentage}}" {% endif %}>
+            <label class="control-label" for="recipientRegionPercentage">Recipient region percentage</label>
+        </div>
+        <div class="col-md-6">
+            <div class="select-group control">
+                <select name="contactCountry" id="recipientRegionVocabulary" class="form-control">
+                    <option value="" {% if not rr.region_vocabulary %} selected="selected" {% endif %}>Recipient region vocabulary</option>
+                    {% for rv in region_vocabulary %}
+                        {% if not code == "code" %}
+                            <option value="{{rv.0}}" {% if rr.region_vocabulary = rv.0 %} selected="selected" {% endif %}>
+                                {{rv.0}} - {{rv.1}}
+                            </option>
+                        {% endif %}
+                    {% endfor %}                  
+                </select>
+                <label class="control-label" for="recipientRegionVocabulary">Recipient region vocabulary</label>
+            </div>
+        </div>
+         <div class="col-md-6 control">
+            <input type="text" class="form-control" id="recipientRegionDescription" placeholder="Region description"
+            {% if rr.text %} value="{{rr.text}}" {% endif %}>
+            <label class="control-label" for="recipientRegionDescription">Recipient region descriptione</label>
+        </div>           
+    </div>
+</div>

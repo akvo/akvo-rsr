@@ -25,7 +25,10 @@ from ...utils import pagination, filter_query_string
 from ..models import Country, Organisation, Employment, Project
 
 from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATUS, COLLABORATION_TYPE,
-                                                FINANCE_TYPE, CONTACT_TYPE, DOCUMENT_CATEGORY, LANGUAGE)
+                                                FINANCE_TYPE, CONTACT_TYPE, DOCUMENT_CATEGORY, LANGUAGE,
+                                                ACTIVITY_SCOPE, COUNTRY, REGION, REGION_VOCABULARY, GEOGRAPHIC_EXACTNESS,
+                                                GEOGRAPHIC_LOCATION_REACH, GEOGRAPHIC_LOCATION_CLASS, LOCATION_TYPE, 
+                                                GEOGRAPHIC_VOCABULARY,)
 
 
 @login_required
@@ -142,6 +145,15 @@ def project_admin(request, project_id):
     organisation = Organisation.objects.all()
     document_category = DOCUMENT_CATEGORY
     language = LANGUAGE
+    activity_scope = ACTIVITY_SCOPE
+    codelist_country = COUNTRY
+    region = REGION
+    region_vocabulary = REGION_VOCABULARY
+    geographic_exactness = GEOGRAPHIC_EXACTNESS
+    geographic_location_reach = GEOGRAPHIC_LOCATION_REACH
+    geographic_location_class = GEOGRAPHIC_LOCATION_CLASS
+    location_type = LOCATION_TYPE
+    geographic_vocabulary = GEOGRAPHIC_VOCABULARY
     
     context = {
         'id': project_id,
@@ -156,6 +168,15 @@ def project_admin(request, project_id):
         'organisation': organisation,
         'document_category': document_category,
         'language': language,
+        'activity_scope': activity_scope,
+        'codelist_country': codelist_country,
+        'region': region,
+        'region_vocabulary': region_vocabulary,
+        'geographic_exactness': geographic_exactness,
+        'geographic_location_reach': geographic_location_reach,
+        'geographic_location_class': geographic_location_class,
+        'location_type': location_type,
+        'geographic_vocabulary': geographic_vocabulary,
     }
     return render(request, 'myrsr/project_admin.html', context)
     
