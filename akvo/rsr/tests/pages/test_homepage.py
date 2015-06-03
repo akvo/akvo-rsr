@@ -22,5 +22,5 @@ class PingTest(TestCase):
         """Ping /."""
         response = self.c.get('/', follow=True)
         expected_host = settings.RSR_DOMAIN
-        self.assertRedirects(response=response, expected_url='/projects/', status_code=302,
+        self.assertRedirects(response=response, expected_url='/en/projects/', status_code=302,
                              target_status_code=200, host=expected_host)

@@ -89,7 +89,7 @@ class Transaction(models.Model):
     )
 
     def __unicode__(self):
-        return self.value
+        return unicode(self.value)
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
