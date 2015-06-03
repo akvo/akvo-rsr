@@ -137,8 +137,11 @@ rules.add_perm('rsr.change_category', is_rsr_admin)
 rules.add_perm('rsr.add_focusarea', is_rsr_admin)
 rules.add_perm('rsr.change_focusarea', is_rsr_admin)
 
-rules.add_perm('rsr.add_indicator', is_rsr_admin)
-rules.add_perm('rsr.change_indicator', is_rsr_admin)
+rules.add_perm('rsr.add_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.add_keyword', is_rsr_admin)
 rules.add_perm('rsr.change_keyword', is_rsr_admin)
