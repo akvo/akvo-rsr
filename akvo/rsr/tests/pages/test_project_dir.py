@@ -19,10 +19,17 @@ class PingTest(TestCase):
         """Setup."""
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
         self.resp = self.c.get('/projects/')
+        self.en_resp = self.c.get('/en/projects/')
+        self.es_resp = self.c.get('/es/projects/')
 
     def test_ping(self):
         """Ping /projects/."""
-        self.assertEqual(self.resp.status_code, 200)
+        self.assertEqual(self.en_resp.status_code, 200)
+        self.assertEqual(self.es_resp.status_code, 200)
+
+    def test_redirect(self):
+        """Test /projects/ redirect"""
+        self.assertEqual(self.resp.status_code, 302)
 
     def test_template_markup(self):
         """Check for common template errors."""

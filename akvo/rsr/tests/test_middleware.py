@@ -135,9 +135,10 @@ class ValidAkvoPageTestCase(TestCase):
 
     def test_valid_partner_site(self):
         """."""
-        valid_resp = self.c.get('/')
+        valid_resp = self.c.get('/', follow=True)
         expected_host = "partner1.{}".format(settings.AKVOAPP_DOMAIN)
-        self.assertRedirects(response=valid_resp, expected_url="/projects/",
+        # print valid_resp.redirect_chain
+        self.assertRedirects(response=valid_resp, expected_url="/en/projects/",
                              status_code=302, target_status_code=200, host=expected_host)
 
 
@@ -161,9 +162,9 @@ class ValidCnameAkvoPageTestCase(TestCase):
 
     def test_valid_partner_site(self):
         """."""
-        valid_resp = self.c.get('/')
+        valid_resp = self.c.get('/', follow=True)
         # expected_host = "partner1.{}".format(settings.AKVOAPP_DOMAIN)
-        self.assertRedirects(response=valid_resp, expected_url="/projects/",
+        self.assertRedirects(response=valid_resp, expected_url="/en/projects/",
                              status_code=302, target_status_code=200, host=self.cname)
 
 
