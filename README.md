@@ -2,6 +2,8 @@ README.md v1.3, 9 April 2014 [ogl, adriancollier]
 
 # Akvo Really Simple Reporting (Akvo RSR)
 
+![Build status](http://ci.akvo.org/app/rest/builds/buildType:(id:SanitationCompass_Test)/statusIcon)
+
 [![Code Health](https://landscape.io/github/akvo/akvo-rsr/develop/landscape.svg?style=flat)](https://landscape.io/github/akvo/akvo-rsr/develop)
 
 Akvo Foundation is a non-profit foundation that builds open source internet and mobile phone software which is used to make international development cooperation and governance more effective and transparent.
