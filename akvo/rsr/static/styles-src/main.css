@@ -417,6 +417,50 @@ nav.navbar-fixed-top {
         color: #ff5500; }
     nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
       margin-top: 10px; }
+      @media only screen and (max-width: 768px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
+          padding-left: 15px;
+          padding-right: 15px; } }
+      @media only screen and (max-width: 1024px) and (min-width: 768px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu {
+          position: initial;
+          float: none; } }
+      @media only screen and (max-width: 768px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu {
+          background-color: #FFF;
+          border: 1px solid rgba(0, 0, 0, 0.14902);
+          box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+          -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a {
+            color: #00aaff;
+            font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+            border: thin solid transparent; }
+            nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a:hover {
+              color: #ff5500; }
+            nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
+              color: #72742a;
+              font-weight: bold;
+              background: rgba(255, 85, 0, 0.1);
+              -moz-border-radius: 3px;
+              -o-border-radius: 3px;
+              -webkit-border-radius: 3px;
+              border-radius: 3px; }
+              @media only screen and (max-width: 1024px) {
+                nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
+                  background: rgba(255, 85, 0, 0.1); } } }
+
+.navbar .container {
+  /* nav menu overflows to two lines in spanish and french unless container width
+        is increased slightly just above the threshold for switching to dropdown */ }
+  @media only screen and (max-width: 1200px) and (min-width: 1024px) {
+    .navbar .container {
+      min-width: 1000px; } }
+  .navbar .container .navbar-collapse.in {
+    /*  Allow language dropdown menu to extend the height of the nav container.
+                    Otherwise, we get a scrollbar in the nav area on small screens */ }
+    @media only screen and (max-width: 768px) {
+      .navbar .container .navbar-collapse.in {
+        overflow-y: initial; } }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   .navbar-header {

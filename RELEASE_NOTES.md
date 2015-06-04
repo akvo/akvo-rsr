@@ -7,6 +7,39 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
 
+Akvo RSR version 3.3.1 Gaborone Hotfix
+---
+
+Thursday 4th June 2015, kasperbrandt
+
+Bug Fixes
+---
+
+### Fix permissions for results
+We noticed that result indicators and indicator periods were not showing up for non-superusers in the RSR admin. This was due to the fact that the permissions for adjusting indicators and indicator periods were not set correctly and has been adjusted.
+
+Github issue: [#1604](https://github.com/akvo/akvo-rsr/issues/1604).
+
+### Admin crashes when transaction information filled in
+When a project had transaction information filled in, the RSR admin would crash and show an 'Internal Server Error'. This has been fixed.
+
+Github issue: [#1602](https://github.com/akvo/akvo-rsr/issues/1602).
+
+### Updates and organisations listing pages for Akvo Pages
+Akvo Pages that show projects based on keywords showed all updates and organisations, instead of only the relevant ones. This has been addressed and fixed.
+
+Github issue: [#1600](https://github.com/akvo/akvo-rsr/issues/1600).
+
+### Minor UI issue with translations header on small windows
+For Spanish and French translations, the navigation header would sometimes display incorrectly. This has been fixed by adjusting the CSS.
+
+Github issue: [#1596](https://github.com/akvo/akvo-rsr/issues/1596).
+
+### Fix broken tests
+Some tests were failing because we now have a different URL pattern due to translations, e.g. '/en/projects/' instead of '/projects/'. The tests have been updated to deal with the new translations.
+
+Github issue: [#1595](https://github.com/akvo/akvo-rsr/issues/1595).
+
 Akvo RSR version 3.3 Gaborone
 ---
 
@@ -89,8 +122,6 @@ Github issue: [#1559](https://github.com/akvo/akvo-rsr/issues/1559).
 We have added a new step to perform unit tests during the deployment to the Test and UAT servers.
 
 Github issue: [#1581](https://github.com/akvo/akvo-rsr/issues/1581).
-
-
 
 Akvo RSR version 3.2.3 Flying Fish Cove Hotfix
 ---
