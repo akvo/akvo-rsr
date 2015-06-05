@@ -676,67 +676,25 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="sectorCode" placeholder="Sector code">
-                                        <label class="control-label" for="sectorCode">Sector code</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="sectorPercentage" placeholder="Sector percentage">
-                                        <label class="control-label" for="sectorPercentage">Sector percentage</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <div class="select-group">
-                                            <select name="sectorVocabulary" id="sectorVocabulary" class="form-control">
-                                                <option value="" selected="selected">Sector vocabulary:</option>
-                                                <option value="1">1 - OECD DAC CRS Purpose Codes (5 digit)</option>
-                                                <option value="2">2 - OECD DAC CRS Purpose Codes (3 digit)</option>
-                                            </select>
-                                            <label class="control-label" for="sectorVocabulary">Sector vocabulary</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {% if project.sectors.all %}
+                                {% for sector in project.sectors.all %}
+                                    {% include "myrsr/project_admin_partials/sector_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                {% include "myrsr/project_admin_partials/sector_input.html" %}
+                            {% endif %}
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another sector</a>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="select-group control">
-                                            <select name="policyMarker" id="policyMarker" class="form-control">
-                                                <option value="" selected="selected">Policy marker:</option>
-                                                <option value="1">1 - Gender Equality</option>
-                                                <option value="2">2 - Aid to Environment</option>
-                                            </select>
-                                            <label class="control-label" for="policyMarker">Policy marker</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="select-group control">
-                                            <select name="policyMarkerSignificance" id="policyMarkerSignificance" class="form-control">
-                                                <option value="" selected="selected">Policy marker significance</option>
-                                                <option value="0">0 - not targeted</option>
-                                                <option value="1">1 - significant objective</option>
-                                            </select>
-                                            <label class="control-label" for="policyMarkerSignificance">Policy marker significance</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="select-group control">
-                                            <select name="policyMarkerVocabulary" id="policyMarkerVocabulary" class="form-control">
-                                                <option value="" selected="selected">Policy marker vocabulary</option>
-                                                <option value="1">1 - OECD DAC CRS</option>
-                                                <option value="99">99 - Reporting Organisation</option>
-                                            </select>
-                                            <label class="control-label" for="policyMarkerVocabulary">Policy marker vocabulary</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {% if project.policy_markers.all %}
+                                {% for marker in project.policy_markers.all %}
+                                    {% include "myrsr/project_admin_partials/policy_marker_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                {% include "myrsr/project_admin_partials/policy_marker_input.html" %}
+                            {% endif %}
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>

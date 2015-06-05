@@ -28,7 +28,8 @@ from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATU
                                                 FINANCE_TYPE, CONTACT_TYPE, DOCUMENT_CATEGORY, LANGUAGE,
                                                 ACTIVITY_SCOPE, COUNTRY, REGION, REGION_VOCABULARY, GEOGRAPHIC_EXACTNESS,
                                                 GEOGRAPHIC_LOCATION_REACH, GEOGRAPHIC_LOCATION_CLASS, LOCATION_TYPE, 
-                                                GEOGRAPHIC_VOCABULARY,)
+                                                GEOGRAPHIC_VOCABULARY, SECTOR_VOCABULARY, POLICY_MARKER,
+                                                POLICY_SIGNIFICANCE, POLICY_MARKER_VOCABULARY)
 
 
 @login_required
@@ -154,6 +155,10 @@ def project_admin(request, project_id):
     geographic_location_class = GEOGRAPHIC_LOCATION_CLASS
     location_type = LOCATION_TYPE
     geographic_vocabulary = GEOGRAPHIC_VOCABULARY
+    sector_vocabulary = SECTOR_VOCABULARY
+    policy_marker = POLICY_MARKER
+    policy_significance = POLICY_SIGNIFICANCE
+    policy_marker_vocabulary = POLICY_MARKER_VOCABULARY
     
     context = {
         'id': project_id,
@@ -177,6 +182,10 @@ def project_admin(request, project_id):
         'geographic_location_class': geographic_location_class,
         'location_type': location_type,
         'geographic_vocabulary': geographic_vocabulary,
+        'sector_vocabulary': sector_vocabulary,
+        'policy_marker': policy_marker,
+        'policy_significance': policy_significance,
+        'policy_marker_vocabulary': policy_marker_vocabulary,
     }
     return render(request, 'myrsr/project_admin.html', context)
     

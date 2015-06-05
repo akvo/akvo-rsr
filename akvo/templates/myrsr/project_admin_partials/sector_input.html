@@ -1,0 +1,36 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-6 control">
+            <input type="text" class="form-control" id="sectorCode" placeholder="Sector code"
+            {% if sector.sector_code %} value="{{sector.sector_code}}" {% endif %}>
+            <label class="control-label" for="sectorCode">Sector code</label>
+        </div>
+        <div class="col-md-6 control">
+            <input type="text" class="form-control" id="sectorPercentage" placeholder="Sector percentage"
+            {% if sector.percentage %} value="{{sector.percentage}}" {% endif %}>
+            <label class="control-label" for="sectorPercentage">Sector percentage</label>
+        </div>
+        <div class="col-md-6 control">
+            <div class="select-group">
+                <select name="sectorVocabulary" id="sectorVocabulary" class="form-control">
+                    <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}>
+                        Sector vocabulary:
+                    </option>
+                    {% for sv in sector_vocabulary %}
+                        {% if not sv.0 == "code" %}
+                            <option value="sv.0" {% if sv.0 == sector.vocabulary %} selected="selected" {% endif %}>
+                                {{sv.0}} - {{sv.2}}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <label class="control-label" for="sectorVocabulary">Sector vocabulary</label>
+            </div>
+        </div>
+        <div class="col-md-6 control">
+            <input type="text" class="form-control" id="sectorDescription" placeholder="Sector description"
+            {% if sector.text %} value="{{sector.text}}" {% endif %}>
+            <label class="control-label" for="sectorDescription">Sector description</label>
+        </div>        
+    </div>
+</div>
