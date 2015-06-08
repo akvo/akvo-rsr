@@ -30,7 +30,7 @@ from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATU
                                                 GEOGRAPHIC_LOCATION_REACH, GEOGRAPHIC_LOCATION_CLASS, LOCATION_TYPE, 
                                                 GEOGRAPHIC_VOCABULARY, SECTOR_VOCABULARY, POLICY_MARKER,
                                                 POLICY_SIGNIFICANCE, POLICY_MARKER_VOCABULARY, BUDGET_IDENTIFIER_VOCABULARY,
-                                                BUDGET_TYPE)
+                                                BUDGET_TYPE, BUDGET_IDENTIFIER)
 
 
 @login_required
@@ -164,6 +164,7 @@ def project_admin(request, project_id):
     policy_marker_vocabulary = POLICY_MARKER_VOCABULARY
     country_budget_vocabulary = BUDGET_IDENTIFIER_VOCABULARY
     budget_type = BUDGET_TYPE
+    budget_identifier = BUDGET_IDENTIFIER
     
     context = {
         'id': project_id,
@@ -194,6 +195,8 @@ def project_admin(request, project_id):
         'country_budget_vocabulary': country_budget_vocabulary,
         'budget_item_labels': budget_item_labels,
         'budget_type': budget_type,
+        'budget_identifier': budget_identifier,
+
     }
 
     return render(request, 'myrsr/project_admin.html', context)

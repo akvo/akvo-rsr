@@ -750,187 +750,28 @@
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="budgetType" id="countryBudgetItem" class="form-control">
-                                                <option value="" selected="selected">Country budget item</option>
-                                                <option value="1.1.1">1.1.1 - Executive - executive</option>
-                                                <option value="1.2.1">1.2.1 - Legislative - legislative</option>
-                                            </select>
-                                            <label class="control-label" for="countryBudgetItem">Country budget item</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="number" step="any" class="form-control" id="countryBudgetItemPercentage" placeholder="Percentage"/>
-                                        <label class="control-label" for="countryBudgetItemPercentage">Country budget item percentage</label>
-                                    </div>
-                                </div>
-                            </div>
+                            <hr>
+                            {% if project.country_budget_items.all %}
+                                {% for item in project.country_budget_items.all %}
+                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                {% include "myrsr/project_admin_partials/country_budget_item_input.html" %}
+                            {% endif %}  
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another country budget item</a>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4 control">
-                                        <input type="number" step="any" class="form-control" id="transactionValue" placeholder="Transaction value"/>
-                                        <label class="control-label" for="transactionValue">Transaction value</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="transactionDate" placeholder="Transaction date"/>
-                                        <label class="control-label" for="transactionDate">Transaction date</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="transactionValueDate" placeholder="Transaction value date"/>
-                                        <label class="control-label" for="transactionValueDate">Transaction value date</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="transactionReference" placeholder="Transaction reference" >
-                                        <label class="control-label" for="transactionReference">Transaction reference</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="transactionDescription" placeholder="Transaction description" >
-                                        <label class="control-label" for="transactionDescription">Transaction description</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="providerOrganisation" placeholder="Provider organisation">
-                                        <label class="control-label" for="providerOrganisation">Provider organisation</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="providerOrganisationActivityId" placeholder="Provider organisation activity id">
-                                        <label class="control-label" for="providerOrganisationActivityId">Provider organisation activity id</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="receiverOrganisation" placeholder="Receiver organisation">
-                                        <label class="control-label" for="receiverOrganisation">Receiver organisation</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="receiverOrganisationActivityId" placeholder="Receiver organisation activity id">
-                                        <label class="control-label" for="receiverOrganisationActivityId">Receiver organisation activity id</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="transactionSector" placeholder="Transaction sector">
-                                        <label class="control-label" for="transactionSector">Transaction sector</label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="select-group control">
-                                            <select name="transactionSectorVocabulary" id="transactionSectorVocabulary" class="form-control">
-                                                <option value="" selected="selected">Transaction sector vocabulary:</option>
-                                                <option value="1">1 - OECD DAC CRS Purpose Codes (5 digit)</option>
-                                                <option value="2">2 - OECD DAC CRS Purpose Codes (3 digit)</option>
-                                            </select>
-                                            <label class="control-label" for="transactionSectorVocabulary">Transaction sector vocabulary</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another transaction sector</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="defaultAidType" id="transactionAidType" class="form-control">
-                                        <option value="" selected="selected">Transaction aid type:</option>
-                                        <option value="A01">A01 - General budget support</option>
-                                        <option value="A02">A02 - Sector budget support</option>
-                                    </select>
-                                    <label for="transactionAidType" class="control-label">Transaction aid type</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="transactionDisbursementChannel" id="transactionDisbursementChannel" class="form-control">
-                                        <option value="" selected="selected">Transaction disbursement channel:</option>
-                                        <option value="1">1 - Money is disbursed through central Ministry of Finance or Treasury</option>
-                                        <option value="2">2 - Money is disbursed directly to the implementing institution and managed through a separate bank account</option>
-                                    </select>
-                                    <label for="transactionDisbursementChannel" class="control-label">Transaction disbursement channel</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="transactionFinanceType" id="transactionFinanceType" class="form-control">
-                                        <option value="" selected="selected">Transaction finance type:</option>
-                                        <option value="110">110 - Aid grant excluding debt reorganisation</option>
-                                        <option value="111">111 - Subsidies to national private investors</option>
-                                    </select>
-                                    <label for="transactionFinanceType" class="control-label">Transaction finance type</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="transactionFlowType" id="transactionFlowType" class="form-control">
-                                        <option value="" selected="selected">Transaction flow type:</option>
-                                        <option value="10">10 - ODA</option>
-                                        <option value="20">20 - OOF</option>
-                                    </select>
-                                    <label for="transactionFlowType" class="control-label">Transaction flow type</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="transactionTiedStatus" id="transactionTiedStatus" class="form-control">
-                                        <option value="" selected="selected">Transaction tied status:</option>
-                                        <option value="3">3 - Partially tied</option>
-                                        <option value="4">4 - Tied</option>
-                                        <option value="5">5 - Untied</option>
-                                    </select>
-                                    <label for="transactionTiedStatus" class="control-label">Transaction tied status</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="transactionRecipientCountry" id="transactionRecipientCountry" class="form-control">
-                                        <option value="" selected="selected">Transaction recipient country:</option>
-                                        <option value="nl">Netherlands</option>
-                                        <option value="se">Sweden</option>
-                                    </select>
-                                    <label class="control-label" for="transactionRecipientCountry">Transaction recipient country</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <div class="select-group">
-                                            <select name="transactionRecipientRegion" id="transactionRecipientRegion" class="form-control">
-                                                <option value="" selected="selected">Transaction recipient region:</option>
-                                                <option value="89">89 - Europe, regional</option>
-                                                <option value="189">189 - North of Sahara, regional</option>
-                                            </select>
-                                            <label class="control-label" for="transactionRecipientRegion">Transaction recipient region</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="transactionRecipientRegionVocabulary" id="transactionRecipientRegionVocabulary" class="form-control">
-                                                <option value="" selected="selected">Recipient region vocabulary:</option>
-                                                <option value="1">1 - OECD DAC</option>
-                                                <option value="2">2 - UN</option>
-                                            </select>
-                                            <label class="control-label" for="transactionRecipientRegionVocabulary">Recipient region vocabulary</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <hr>
+                            {{project.transactions.all}}
+                            {% if project.transactions.all %}
+                                {% for transaction in project.transactions.all %}
+                                    {% include "myrsr/project_admin_partials/transaction_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                {% include "myrsr/project_admin_partials/transaction_input.html" %}
+                            {% endif %}                             
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
