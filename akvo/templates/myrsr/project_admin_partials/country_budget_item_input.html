@@ -1,0 +1,32 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="select-group control">
+                <select name="budgetType" id="countryBudgetItem" class="form-control">
+                    <option value="" {% if not item.code %} selected="selected" {% endif %}>
+                        Country budget item
+                    </option>
+                    {% for bi in budget_identifier %}
+                        {% if not bi.0 == "code" %}
+                           <option value="{{bt.0}}"
+                           {% if item.code == bi.0 %} selected="selected" {% endif %}>
+                                {{bi.0}} - {{bi.2}}
+                            </option> 
+                        {% endif %}
+                    {% endfor %}                      
+                </select>
+                <label class="control-label" for="countryBudgetItem">Country budget item</label>
+            </div>
+        </div>
+        <div class="col-md-4 control">
+            <input type="text" step="any" class="form-control" id="countryBudgetItemDescription" placeholder="Description"
+            {% if item.description %} value="{{item.description}}" {% endif %}>
+            <label class="control-label" for="countryBudgetItemDescription">Country budget item description</label>
+        </div>        
+        <div class="col-md-4 control">
+            <input type="number" step="any" class="form-control" id="countryBudgetItemPercentage" placeholder="Percentage"
+            {% if item.percentage %} value="{{item.percentage}}" {% endif %}>
+            <label class="control-label" for="countryBudgetItemPercentage">Country budget item percentage</label>
+        </div>
+    </div>
+</div>

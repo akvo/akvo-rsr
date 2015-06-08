@@ -279,9 +279,10 @@
                         </div>
                         <div class="formBlock">
                             <div class="form-group control">
-                                <select class="form-control" id="reportingOrganisation" placeholder="Reporting organisation"
-                                {% if project.reporting_org %} value="{{project.reporting_org}}" {% endif %}>
-                                    <option {% if not project.reporting_org %} selected="selected" {% endif %}>Reporting organisation:</option>
+                                <select class="form-control" id="reportingOrganisation" placeholder="Reporting organisation">
+                                    <option {% if not project.reporting_org %} selected="selected" {% endif %}>                                       
+                                        Reporting organisation:
+                                    </option>
                                     {% for org in organisation %}
                                         <option value="{{org.id}}" 
                                         {% if project.reporting_org.name == org.name %} selected="selected" {% endif %}>
@@ -764,7 +765,6 @@
                                 </div>
                             </div>
                             <hr>
-                            {{project.transactions.all}}
                             {% if project.transactions.all %}
                                 {% for transaction in project.transactions.all %}
                                     {% include "myrsr/project_admin_partials/transaction_input.html" %}
@@ -777,44 +777,13 @@
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="number" step="any" class="form-control" id="plannedDisbursementValue" placeholder="Planned disbursement value">
-                                        <label class="control-label" for="plannedDisbursementValue">Planned disbursement value</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="plannedDisbursementValueDate" placeholder="Planned disbursement value date">
-                                        <label class="control-label" for="plannedDisbursementValueDate">Planned disbursement value date</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="plannedDisbursementType" id="plannedDisbursementType" class="form-control">
-                                        <option value="" selected="selected">Planned disbursement type:</option>
-                                        <option value="1">1 - Original</option>
-                                        <option value="2">2 - Revised</option>
-                                    </select>
-                                    <label for="plannedDisbursementType" class="control-label">Planned disbursement type</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="plannedDisbursementPeriodStart" placeholder="Planned disbursement period start">
-                                        <label class="control-label" for="plannedDisbursementPeriodStart">Planned disbursement period start</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="plannedDisbursementPeriodEnd" placeholder="Planned disbursement period end">
-                                        <label class="control-label" for="plannedDisbursementPeriodEnd">Planned disbursement period end</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group control">
-                                <input type="text" class="form-control" id="plannedDisbursementUpdated" placeholder="Planned disbursement updated">
-                                <label for="plannedDisbursementUpdated" class="control-label">Planned disbursement updated</label>
-                            </div>
+                            {% if project.planned_disbursements.all %}
+                                {% for pd in project.planned_disbursements.all %}
+                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                {% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}
+                            {% endif %}                             
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
