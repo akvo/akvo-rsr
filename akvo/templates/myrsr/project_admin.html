@@ -715,73 +715,36 @@
                         </div>
                         <div class="formBlock"> 
                             <div class="form-group control">
-                                <input type="text" class="form-control" id="capitalSpendPercentage" placeholder="Capital spend percentage">
+                                <input type="number" class="form-control" id="capitalSpendPercentage" placeholder="Capital spend percentage"
+                                {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
                                 <label for="capitalSpendPercentage" class="control-label">Capital spend percentage</label>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="countryBudgetVocabulary" id="countryBudgetVocabulary" class="form-control">
-                                        <option value="" selected="selected">Country budget vocabulary</option>
-                                        <option value="1">1 - IATI</option>
-                                        <option value="2">2 - Country Chart of Accounts</option>
+                                        <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}>
+                                            Country budget vocabulary
+                                        </option>
+                                        {% for cbv in country_budget_vocabulary %}
+                                            {% if not cbv.0 == "code" %}
+                                               <option value="{{cbv.0}}"
+                                               {% if project.country_budget_vocabulary == cbv.0 %} selected="selected" {% endif %}>
+                                                    {{cbv.0}} - {{cbv.1}}
+                                                </option> 
+                                            {% endif %}
+                                        {% endfor %}                                        
                                     </select>
                                     <label for="countryBudgetVocabulary" class="control-label">Country budget vocabulary</label>
                                 </div>
                             </div>
                             <hr/>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="budgetItem" id="budgetItem" class="form-control">
-                                                <option value="" selected="selected">Budget item</option>
-                                                <option value="1">Capacity buidling</option>
-                                                <option value="2">Sanitation</option>
-                                                <option value="3">Other 1</option>
-                                            </select>
-                                            <label class="control-label" for="budgetItem">Budget item</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="budgetItemOther" placeholder="Other label extra info">
-                                        <label class="control-label" for="budgetItemOther">Other label extra info</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="budgetType" id="budgetType" class="form-control">
-                                        <option value="" selected="selected">Budget type</option>
-                                        <option value="1">1 - Original</option>
-                                        <option value="2">2 - Revised</option>
-                                    </select>
-                                    <label for="budgetType" class="control-label">Budget type</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="number" step="any" class="form-control" id="budgetItemValue" placeholder="Budget item amount" >
-                                        <label class="control-label" for="budgetItemValue">Budget item value</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="budgetItemValueDate" placeholder="Budget item amount date" >
-                                        <label class="control-label" for="budgetItemValueDate">Budget item value date</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="number" step="any" class="form-control" id="budgetItemPeriodStart" placeholder="Budget item period start">
-                                        <label class="control-label" for="budgetItemPeriodStart">Budget item period start</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="budgetItemPeriodEnd" placeholder="Budget item period end">
-                                        <label class="control-label" for="budgetItemPeriodEnd">Budget item period end</label>
-                                    </div>
-                                </div>
-                            </div>
+                            {% if project.budget_items.all %}
+                                {% for item in project.budget_items.all %}
+                                    {% include "myrsr/project_admin_partials/budget_item_input.html" %}
+                                {% endfor %}
+                            {% else %}
+                                {% include "myrsr/project_admin_partials/budget_item_input.html" %}
+                            {% endif %}                            
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>

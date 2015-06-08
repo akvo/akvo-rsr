@@ -22,14 +22,15 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
-from ..models import Country, Organisation, Employment, Project
+from ..models import Country, Organisation, Employment, Project, BudgetItemLabel
 
 from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATUS, COLLABORATION_TYPE,
                                                 FINANCE_TYPE, CONTACT_TYPE, DOCUMENT_CATEGORY, LANGUAGE,
                                                 ACTIVITY_SCOPE, COUNTRY, REGION, REGION_VOCABULARY, GEOGRAPHIC_EXACTNESS,
                                                 GEOGRAPHIC_LOCATION_REACH, GEOGRAPHIC_LOCATION_CLASS, LOCATION_TYPE, 
                                                 GEOGRAPHIC_VOCABULARY, SECTOR_VOCABULARY, POLICY_MARKER,
-                                                POLICY_SIGNIFICANCE, POLICY_MARKER_VOCABULARY)
+                                                POLICY_SIGNIFICANCE, POLICY_MARKER_VOCABULARY, BUDGET_IDENTIFIER_VOCABULARY,
+                                                BUDGET_TYPE)
 
 
 @login_required
@@ -136,6 +137,8 @@ def project_admin(request, project_id):
     """."""
 
     project = get_object_or_404(Project, pk=project_id)
+    budget_item_labels = BudgetItemLabel.objects.all()
+
     aid_types = AID_TYPE
     flow_types = FLOW_TYPE
     tied_status = TIED_STATUS
@@ -159,6 +162,8 @@ def project_admin(request, project_id):
     policy_marker = POLICY_MARKER
     policy_significance = POLICY_SIGNIFICANCE
     policy_marker_vocabulary = POLICY_MARKER_VOCABULARY
+    country_budget_vocabulary = BUDGET_IDENTIFIER_VOCABULARY
+    budget_type = BUDGET_TYPE
     
     context = {
         'id': project_id,
@@ -186,7 +191,11 @@ def project_admin(request, project_id):
         'policy_marker': policy_marker,
         'policy_significance': policy_significance,
         'policy_marker_vocabulary': policy_marker_vocabulary,
+        'country_budget_vocabulary': country_budget_vocabulary,
+        'budget_item_labels': budget_item_labels,
+        'budget_type': budget_type,
     }
+
     return render(request, 'myrsr/project_admin.html', context)
     
 @login_required
