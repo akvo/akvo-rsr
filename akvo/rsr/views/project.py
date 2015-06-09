@@ -31,9 +31,6 @@ from .utils import apply_keywords, org_projects
 
 def _all_projects():
     """Return all active projects."""
-    # return Project.objects.published().select_related().prefetch_related(
-    #     'partners').order_by('-id')
-
     return Project.objects.published().select_related(
         'publishingstatus__status',
         'sync_owner',
@@ -46,14 +43,14 @@ def _all_projects():
         'partners',
     ).order_by('-id')
 
+
 def _page_projects(page):
     """Dig out the list of projects to use.
 
     First get a list based on page settings (orgs or all projects). Then apply
     keywords filtering / exclusion.
     """
-    org = page.organisation
-    projects = org_projects(org) if page.partner_projects else _all_projects()
+    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
     return apply_keywords(page, projects)
 
 

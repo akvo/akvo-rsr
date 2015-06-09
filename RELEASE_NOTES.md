@@ -7,6 +7,122 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
 
+Akvo RSR version 3.3.1 Gaborone Hotfix
+---
+
+Thursday 4th June 2015, kasperbrandt
+
+Bug Fixes
+---
+
+### Fix permissions for results
+We noticed that result indicators and indicator periods were not showing up for non-superusers in the RSR admin. This was due to the fact that the permissions for adjusting indicators and indicator periods were not set correctly and has been adjusted.
+
+Github issue: [#1604](https://github.com/akvo/akvo-rsr/issues/1604).
+
+### Admin crashes when transaction information filled in
+When a project had transaction information filled in, the RSR admin would crash and show an 'Internal Server Error'. This has been fixed.
+
+Github issue: [#1602](https://github.com/akvo/akvo-rsr/issues/1602).
+
+### Updates and organisations listing pages for Akvo Pages
+Akvo Pages that show projects based on keywords showed all updates and organisations, instead of only the relevant ones. This has been addressed and fixed.
+
+Github issue: [#1600](https://github.com/akvo/akvo-rsr/issues/1600).
+
+### Minor UI issue with translations header on small windows
+For Spanish and French translations, the navigation header would sometimes display incorrectly. This has been fixed by adjusting the CSS.
+
+Github issue: [#1596](https://github.com/akvo/akvo-rsr/issues/1596).
+
+### Fix broken tests
+Some tests were failing because we now have a different URL pattern due to translations, e.g. '/en/projects/' instead of '/projects/'. The tests have been updated to deal with the new translations.
+
+Github issue: [#1595](https://github.com/akvo/akvo-rsr/issues/1595).
+
+Akvo RSR version 3.3 Gaborone
+---
+
+Wednesday 3rd June 2015, kasperbrandt
+
+New & Noteworthy
+---
+
+### French and Spanish translations
+Besides the default English language, RSR is now fully available in French and Spanish.
+
+Github issue: [#948](https://github.com/akvo/akvo-rsr/issues/948).
+
+### Reportable organisations
+We have implemented a new setting in order to control which organisations can be marked as a reporting organisation. The 'Reportable' setting is available in the organisation admin, but only for superusers. All organisations that are currently marked as reporting organisation have been set to reportable by default.
+
+In addition, we have added an overview of all organisations that are indicated as reportable. This overview is available at [http://rsr.akvo.org/organisations/?reporting=true](http://rsr.akvo.org/organisations/?reporting=true).
+
+Github issue: [#1341](https://github.com/akvo/akvo-rsr/issues/1341).
+
+### Sign in with email
+It was, and still is, possible to sign in with either an email address or RSR username. However, for new registrations we only ask an email address. Therefore we have changed the sign in page so that it now displays 'Email address'.
+
+Github issue: [#1399](https://github.com/akvo/akvo-rsr/issues/1399).
+
+### Add 'Funds needed' to projects listing
+In case a project needs funding and has the donation button activated, we display the actual funds needed on the projects listing page.
+
+Github issue: [#1507](https://github.com/akvo/akvo-rsr/issues/1507).
+
+### Show all points on maps for Akvo Pages
+We have added a new setting for Akvo Pages, allowing all pins to be shown on the maps of projects, updates and organisations listing pages. For performance reasons this should not be activated for any Akvo Pages, but only for the ones with less than 100 projects.
+
+Github issue: [#1563](https://github.com/akvo/akvo-rsr/issues/1563).
+
+### Descriptions on project page
+The first panel of the descriptions at the bottom of the project page is now folded out by default. In addition, we have added a + or - to indicate whether a panel is folded out or not.
+
+Github issue: [#1572](https://github.com/akvo/akvo-rsr/issues/1572).
+
+Bug Fixes
+---
+
+### Improve IATI export
+The IATI export functionality, as introduced in v3.2, caused time-outs for organisations with more than approximately 100 projects. This was caused by the IATI checks being carried out when loading the page.
+
+We have changed this page so that it now includes a 'Perform checks' button. Instead of performing all checks upon page load, the checks can now be performed after the page is loaded.
+
+Github issue: [#1447](https://github.com/akvo/akvo-rsr/issues/1447).
+
+### Pending donations not counted as funds
+We used to count pending donations as funds, assuming that these donations would be added to the funds eventually. However, as some donations never finalised, this caused confusion among our users and therefore the pending donations do not count as funds anymore.
+
+Github issue: [#1533](https://github.com/akvo/akvo-rsr/issues/1533).
+
+### Correct information in user registration emails
+Because of a bug in the translations, essential information was missing in user registration emails. We have fixed this, also in several other places where information was missing.
+
+Github issue: [#1564](https://github.com/akvo/akvo-rsr/issues/1564).
+
+Under the Hood
+---
+
+### Landscape.io checks
+We perform checks on the code in our Github repository by making use of [landscape.io](https://landscape.io/). We have now improved our code so that all checks pass and the code health is 100%.
+
+Github issue: [#1450](https://github.com/akvo/akvo-rsr/issues/1450), [#1551](https://github.com/akvo/akvo-rsr/issues/1551).
+
+### Tests for common markup errors
+We have added automatic unit tests for the discovery of common errors in the markup.
+
+Github issue: [#1555](https://github.com/akvo/akvo-rsr/issues/1555).
+
+### Performance improvements
+We have improved the performance of the project list widget and the project overview in the RSR admin.
+
+Github issue: [#1559](https://github.com/akvo/akvo-rsr/issues/1559).
+
+### Perform tests during deployment
+We have added a new step to perform unit tests during the deployment to the Test and UAT servers.
+
+Github issue: [#1581](https://github.com/akvo/akvo-rsr/issues/1581).
+
 Akvo RSR version 3.2.3 Flying Fish Cove Hotfix
 ---
 

@@ -433,6 +433,59 @@ nav.navbar-fixed-top {
                 }
                 .langDropdown {
                     margin-top: 10px;
+                    @include responsive(small-max-screens) {
+                        padding-left: 15px;
+                        padding-right: 15px;
+                    }
+
+                    .dropdown-menu {
+                        @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
+                            position: initial;
+                            float: none;
+                        }
+                        @include responsive(small-max-screens) {
+                            background-color: #FFF;
+                            border: 1px solid rgba(0, 0, 0, 0.14902);
+                            box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                            -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                            a {
+                                color: $anchorLink;
+                                font-family: $titleFont;
+                                border: thin solid transparent;
+                                &:hover {
+                                    color: $anchorLinkHover;
+                                }
+                                &.active {
+                                    color: complement($rsrBlue);
+                                    font-weight: bold;
+                                    background: rgba($anchorLinkHover, 0.1);
+                                    @include border-radius(3px);
+                                    @include responsive(tablets) {
+                                        background: rgba($anchorLinkHover, 0.1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.navbar {
+    .container {
+        /* nav menu overflows to two lines in spanish and french unless container width
+        is increased slightly just above the threshold for switching to dropdown */
+        @media only screen and (max-width: $width-large) and (min-width: $width-middle) {
+            min-width: 1000px;
+        }
+        .navbar-collapse {
+            &.in {
+                /*  Allow language dropdown menu to extend the height of the nav container.
+                    Otherwise, we get a scrollbar in the nav area on small screens */                
+                @include responsive(small-max-screens) {
+                    overflow-y: initial;
                 }
             }
         }

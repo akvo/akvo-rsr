@@ -5,6 +5,8 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
+var i18n;
+
 function loadAsync(url, retryCount, retryLimit) {
     var xmlHttp;
 
@@ -41,7 +43,7 @@ function processResponse(response) {
     // Add an "All" entry so user can reset filter
     allEntry = {};
     allEntry.id = "";
-    allEntry.name = "All";
+    allEntry.name = i18n.all_text;
     orgs.unshift(allEntry);    
 
     currentFilter = getCurrentOrgFilter(orgs);
@@ -129,7 +131,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
         render: function() {
             return (
                 React.DOM.div(null, 
-                    React.DOM.label( {className:'control-label'}, "organisation")
+                    React.DOM.label( {className:'control-label'}, i18n.organisation_text)
                 )
             );
         }
@@ -164,5 +166,8 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
         document.getElementById('org-filter-container')
     );
 }
+
+// Initial data
+i18n = JSON.parse(document.getElementById("typeahead-header-text").innerHTML);
 
 loadAsync('/rest/v1/typeaheads/organisations?format=json', 0, 3);

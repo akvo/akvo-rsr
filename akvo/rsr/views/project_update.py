@@ -25,14 +25,16 @@ def _all_updates():
     return ProjectUpdate.objects.select_related().order_by('-id')
 
 
+def _all_projects():
+    """Return all active projects."""
+    return Project.objects.published().select_related('project_updates').order_by('-id')
+
+
 def _page_updates(page):
     """Dig out the list or project updates to use."""
-    org = page.organisation
-    if page.partner_projects:
-        projects = apply_keywords(page, org_projects(org))
-        return projects.all_updates().order_by('-id')
-    else:
-        return _all_updates()
+    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
+    keyword_projects = apply_keywords(page, projects)
+    return keyword_projects.all_updates().select_related()
 
 
 def _update_directory_coll(request):
