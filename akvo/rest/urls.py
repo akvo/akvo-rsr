@@ -91,6 +91,14 @@ urlpatterns = patterns(
         name='project_iati_check'),
 )
 
+# Project admin
+urlpatterns += patterns(
+    '',
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_1/$',
+        views.project_admin_step1,
+        name='project_admin_step1'),
+)
+
 # Typeahead
 urlpatterns += patterns(
     '',
