@@ -23,9 +23,7 @@
         </div>
     </div>
     <section class="panels projectEdit">
-        <form role="form" id="adminstep1" action="javascript: submitstep1()">
-            {% csrf_token %}
-            <fieldset>
+        <fieldset>
                 <!--*************************************** FORM STEP 1 **********************************************-->
                 <div class="myPanel borderBottom" id="panel1">
                     <div class="formStep stepOne">
@@ -42,6 +40,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <form role="form" id="adminstep1" action="javascript: submitstep1()">
                             <div class="control form-group control">
                                 <input type="text" class="form-control" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}"/>
                                 <label for="projectTitle" class="control-label">Project title</label>
@@ -75,13 +74,12 @@
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="projectStatus" id="projectStatus" class="form-control">
-                                        <option value="" {% if not project.status %} selected="selected"{% endif %}>Status:</option>
-                                        <option value="No" {% if project.status == "N" %} selected="selected"{% endif %}>None</option>
-                                        <option value="NF" {% if project.status == "H" %} selected="selected"{% endif %}>Needs funding</option>
-                                        <option value="AC" {% if project.status == "A" %} selected="selected"{% endif %}>Active</option>
-                                        <option value="" {% if project.status == "C" %} selected="selected"{% endif %}>Complete</option>
-                                        <option value="" {% if project.status == "L" %} selected="selected"{% endif %}>Cancelled</option>
-                                        <option value="" {% if project.status == "R" %} selected="selected"{% endif %}>Archived</option>
+                                        <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}>None</option>
+                                        <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>Needs funding</option>
+                                        <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>Active</option>
+                                        <option value="C" {% if project.status == "C" %} selected="selected"{% endif %}>Complete</option>
+                                        <option value="L" {% if project.status == "L" %} selected="selected"{% endif %}>Cancelled</option>
+                                        <option value="R" {% if project.status == "R" %} selected="selected"{% endif %}>Archived</option>
                                     </select>
                                     <label for="projectStatus" class="control-label">Status</label>
                                 </div>
@@ -124,14 +122,13 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectStatus" id="language" class="form-control">
-                                        <option value="" {% if not project.language %} selected="selected" {% endif %}>Language:</option>
-                                        <option value="GER" {% if project.language == 'de'%} selected="selected" {% endif %}>German</option>
-                                        <option value="EN" {% if project.language == 'en'%} selected="selected" {% endif %}>English</option>
-                                        <option value="FR" {% if project.language == 'fr'%} selected="selected" {% endif %}>French</option>
-                                        <option value="SP" {% if project.language == 'es'%} selected="selected" {% endif %}>Spanish</option>
-                                        <option value="DU" {% if project.language == 'nl'%} selected="selected" {% endif %}>Dutch</option>
-                                        <option value="RU" {% if project.language == 'ru'%} selected="selected" {% endif %}>Russian</option>
+                                    <select name="projectLanguage" id="projectLanguage" class="form-control">
+                                        <option value="de" {% if project.language == 'de'%} selected="selected" {% endif %}>German</option>
+                                        <option value="en" {% if project.language == 'en'%} selected="selected" {% endif %}>English</option>
+                                        <option value="fr" {% if project.language == 'fr'%} selected="selected" {% endif %}>French</option>
+                                        <option value="es" {% if project.language == 'es'%} selected="selected" {% endif %}>Spanish</option>
+                                        <option value="nl" {% if project.language == 'nl'%} selected="selected" {% endif %}>Dutch</option>
+                                        <option value="ru" {% if project.language == 'ru'%} selected="selected" {% endif %}>Russian</option>
                                     </select>
                                     <label for="language" class="control-label">Language</label>
                                 </div>
@@ -140,24 +137,12 @@
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="projectCurrency" id="projectCurrency" class="form-control">
-                                        <option value="" {% if not project.currency %} selected="selected" {% endif %}>Currency:</option>
-                                        <option value="us" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
-                                        <option value="pound">£</option>
-                                        <option value="eur" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
+                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
+                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
                                     </select>
                                     <label for="projectCurrency" class="control-label">Currency</label>
                                 </div>
                                 <p class="help-block hidden">The default currency for this project. Used in all financial aspects of the project.</p>
-                            </div>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label for="donateBtn" class="control-label">
-                                        <input id="donateBtn" type="checkbox" name="donateBtn"
-                                        {% if project.donate_button %} checked {% endif %}>
-                                        Donate button
-                                    </label>
-                                </div>
-                                <p class="help-block hidden">Show donate button for this project. If not selected, it is not possible to donate to this project and the donate button will not be shown.</p>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
@@ -237,12 +222,11 @@
                                     <label for="defaultFinanceType" class="control-label">Default finance type</label>
                                 </div>
                             </div>
-                            <input type="submit" class="btn btn-info" value="Save title">
+                            <input type="submit" class="btn btn-info" value="Save">
+                            </form>
                         </div>
                     </div>
                 </div>
-                </fieldset>
-            </form>
                 <!--*************************************** FORM STEP 2 **********************************************-->
                 <div class="myPanel borderBottom" id="panel2">
                     <div class="formStep stepTwo">
@@ -864,12 +848,17 @@
         function submitstep1() {
             var form, form_data, request;
 
+            // Collect form data
             form = document.querySelector('#adminstep1');
             form_data = serialize(form);
+            form_data += '&eventFromPlanned=' + document.querySelector('#eventFromPlanned').value;
+            form_data += '&eventFromActual=' + document.querySelector('#eventFromActual').value;
+            form_data += '&eventEndPlanned=' + document.querySelector('#eventEndPlanned').value;
+            form_data += '&eventEndActual=' + document.querySelector('#eventEndActual').value;
+
+            // Create request
             request = new XMLHttpRequest();
-
             request.open('POST', '{% url 'project_admin_step1' project.pk %}?format=json', true);
-
             request.setRequestHeader("X-CSRFToken", csrftoken);
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
