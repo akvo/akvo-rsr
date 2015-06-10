@@ -23,7 +23,8 @@
         </div>
     </div>
     <section class="panels projectEdit">
-        <form role="form" id="">
+        <form role="form" id="adminstep1" action="javascript: submitstep1()">
+            {% csrf_token %}
             <fieldset>
                 <!--*************************************** FORM STEP 1 **********************************************-->
                 <div class="myPanel borderBottom" id="panel1">
@@ -42,20 +43,18 @@
                         </div>
                         <div class="formBlock">
                             <div class="control form-group control">
-                                <input type="text" class="form-control" id="projectTitle" placeholder="Project title" 
-                                {% if project.title %} value="{{project.title}}" {% endif %}
-                                />
+                                <input type="text" class="form-control" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}"/>
                                 <label for="projectTitle" class="control-label">Project title</label>
                                 <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control" id="projectSubTitle" placeholder="Project subtitle"
+                                <input type="text" class="form-control" name="projectSubTitle" id="projectSubTitle" placeholder="Project subtitle"
                                 {% if project.subtitle %} value="{{project.subtitle}}" {% endif %} />
                                 <label for="projectSubTitle" class="control-label">Project subtitle</label>
                                 <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)</p>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control" id="iatiID" placeholder="iati ID"
+                                <input type="text" class="form-control" name="iatiId" id="iatiID" placeholder="iati ID"
                                 {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
                                 <label for="iatiID" class="control-label">IATI identifier</label>
                                 <p class="help-block">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
@@ -98,12 +97,12 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon" id="eventFromPlanned" placeholder="From (planned)"
+                                        <input type="date" class="form-control ll-skin-melon" name="eventFromPlanned" id="eventFromPlanned" placeholder="From (planned)"
                                         {% if project.date_start_planned %} value="{{project.date_start_planned|date:'c'}}" {% endif %} />
                                         <label for="eventFromPlanned" class="control-label">Start Date (planned):</label>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control" id="eventEndPlanned" placeholder="To (planned)"
+                                        <input type="date" class="form-control" name="eventEndPlanned" id="eventEndPlanned" placeholder="To (planned)"
                                         {% if project.date_end_planned %} value="{{project.date_end_planned|date:'c'}}" {% endif %} />
                                         <label for="eventEndPlanned" class="control-label">End Date (planned):</label>
                                     </div>
@@ -112,12 +111,12 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon" id="eventFromActual" placeholder="From (Actual)"
+                                        <input type="date" class="form-control ll-skin-melon" name="eventFromActual" id="eventFromActual" placeholder="From (Actual)"
                                         {% if project.date_start_actual %} value="{{project.date_start_actual|date:'c'}}" {% endif %} />
                                         <label for="eventFromActual" class="control-label">Start Date (Actual):</label>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control" id="eventEndActual" placeholder="To (Actual)"
+                                        <input type="date" class="form-control" name="eventEndActual" id="eventEndActual" placeholder="To (Actual)"
                                         {% if project.date_end_actual %} value="{{project.date_end_actual|date:'c'}}" {% endif %} />
                                         <label for="eventEndActual" class="control-label">End Date (Actual):</label>
                                     </div>
@@ -238,14 +237,17 @@
                                     <label for="defaultFinanceType" class="control-label">Default finance type</label>
                                 </div>
                             </div>
+                            <input type="submit" class="btn btn-info" value="Save title">
                         </div>
                     </div>
                 </div>
+                </fieldset>
+            </form>
                 <!--*************************************** FORM STEP 2 **********************************************-->
                 <div class="myPanel borderBottom" id="panel2">
                     <div class="formStep stepTwo">
                         <label for="stepTwo"><h4>02 - Contact information</h4></label>
-                        <input type="radio" name="step" id="stepTwo">                        
+                        <input type="radio" name="step" id="stepTwo">
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only">0% Complete (success)</span>0%
@@ -969,4 +971,59 @@
             </fieldset>
         </form>
     </section>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
+
+    <script type="application/javascript">
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function submitstep1() {
+            var form, form_data, request;
+
+            form = document.querySelector('#adminstep1');
+            form_data = serialize(form);
+            request = new XMLHttpRequest();
+
+            request.open('POST', '{% url 'project_admin_step1' project.pk %}?format=json', true);
+
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+              if (request.status >= 200 && request.status < 400) {
+                // Success!
+                return false;
+              } else {
+                // We reached our target server, but it returned an error
+                return false;
+              }
+            };
+
+            request.onerror = function() {
+              // There was a connection error of some sort
+            };
+
+            request.send(form_data);
+        }
+    </script>
 {% endblock %}
