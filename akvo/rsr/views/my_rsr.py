@@ -30,7 +30,8 @@ from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATU
                                                 GEOGRAPHIC_LOCATION_REACH, GEOGRAPHIC_LOCATION_CLASS, LOCATION_TYPE, 
                                                 GEOGRAPHIC_VOCABULARY, SECTOR_VOCABULARY, POLICY_MARKER,
                                                 POLICY_SIGNIFICANCE, POLICY_MARKER_VOCABULARY, BUDGET_IDENTIFIER_VOCABULARY,
-                                                BUDGET_TYPE, BUDGET_IDENTIFIER, DISBURSEMENT_CHANNEL)
+                                                BUDGET_TYPE, BUDGET_IDENTIFIER, DISBURSEMENT_CHANNEL, CONDITION_TYPE,
+                                                RESULT_TYPE, INDICATOR_MEASURE)
 
 
 @login_required
@@ -166,6 +167,9 @@ def project_admin(request, project_id):
     budget_type = BUDGET_TYPE
     budget_identifier = BUDGET_IDENTIFIER
     disbursement_channel = DISBURSEMENT_CHANNEL
+    condition_type = CONDITION_TYPE
+    result_type = RESULT_TYPE
+    indicator_measure = INDICATOR_MEASURE
     
     context = {
         'id': project_id,
@@ -198,6 +202,9 @@ def project_admin(request, project_id):
         'budget_type': budget_type,
         'budget_identifier': budget_identifier,
         'disbursement_channel': disbursement_channel,
+        'condition_type': condition_type,
+        'result_type': result_type,
+        'indicator_measure': indicator_measure,
 
     }
 

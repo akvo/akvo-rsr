@@ -1,0 +1,26 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="select-group control">
+                <select name="conditionType" id="conditionType" class="form-control">
+                    <option value="" {% if not condition.type %} selected="selected" {% endif %}>
+                        Condition type:
+                    </option>
+                    {% for ct in condition_type %}
+                        {% if not ct.0 == "code" %}
+                           <option value="{{ct.0}}"
+                           {% if condition.type == ct.0 %} selected="selected" {% endif %}>
+                                {{ct.0}} - {{ct.1}}
+                            </option> 
+                        {% endif %}
+                    {% endfor %}                     
+                </select>
+                <label class="control-label" for="conditionType">Condition type</label>
+            </div>
+        </div>
+        <div class="col-md-6 control">
+            <textarea id="condition" class="form-control" name="condition" placeholder="Type in the condition">{% if condition.text %}{{condition.text}}{% endif %}</textarea>
+            <label class="control-label" for="condition">Condition</label>
+        </div>
+    </div>
+</div>

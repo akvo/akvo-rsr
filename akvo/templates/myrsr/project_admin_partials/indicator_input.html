@@ -1,0 +1,81 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-4 control">
+            <input type="text" class="form-control" id="indicatorTitle" placeholder="Indicator title"
+            {% if indicator.title %} value="{{indicator.title}}" {% endif %}>
+            <label class="control-label" for="indicatorTitle">Indicator title</label>
+        </div>
+        <div class="col-md-4">
+            <div class="select-group control">
+                <select name="indicatorMeasure" id="indicatorMeasure" class="form-control">
+                    <option value="" {% if not indicator.measure %} selected="selected" {% endif %}>
+                        Indicator measure:
+                    </option>
+                    {% for result in indicator_measure %}
+                        {% if not result.0 == "code" %}
+                           <option value="{{result.0}}"
+                           {% if indicator.measure == result.0 %} selected="selected" {% endif %}>
+                                {{result.0}} - {{result.1}}
+                            </option> 
+                        {% endif %}
+                    {% endfor %}                     
+                </select>
+                <label class="control-label" for="indicatorMeasure">Indicator measure</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="select-group control">
+                <select name="ascending" id="ascending" class="form-control">
+                    <option value="">Ascending:</option>
+                    <option value="0" {% if indicator.ascending|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}>
+                        Unknown
+                    </option>
+                    <option value="1" {% if indicator.ascending|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>
+                        Yes
+                    </option>
+                    <option value="2" {% if indicator.ascending|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>
+                        No
+                    </option>
+                </select>
+                <label class="control-label" for="ascending">Ascending</label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group control">
+    <textarea id="indicatorDescription" class="form-control" name="textarea"
+    placeholder="Type in the indicator description">{{indicator.description}}</textarea>
+    <label class="control-label" for="indicatorDescription">Indicator description</label>
+</div>
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-6 control">
+            <input type="number" step="any" class="form-control" id="baselineValue" placeholder="Baseline value"
+            {% if indicator.baseline_value %} value="{{indicator.baseline_value}}" {% endif %}>
+            <label class="control-label" for="baselineValue">Baseline value</label>
+        </div>
+        <div class="col-md-6 control">
+            <input type="number" class="form-control" id="baselineYear" placeholder="Baseline year"
+            {% if indicator.baseline_year %} value="{{indicator.baseline_year}}" {% endif %}>
+            <label class="control-label" for="baselineYear">Baseline year</label>
+        </div>
+    </div>
+</div>
+<div class="form-group control">
+    <textarea id="baselineComment" class="form-control" name="textarea"
+    placeholder="Type in the baseline comment">{{indicator.baseline_comment}}</textarea>
+    <label class="control-label" for="baselineComment">Baseline comment</label>
+</div>
+<hr/>
+{% if indicator.periods.all  %}
+    {% for period in indicator.periods.all %}
+        {% include "myrsr/project_admin_partials/indicator_period_input.html" %}
+    {% endfor %}
+{% else %}
+    {% include "myrsr/project_admin_partials/indicator_period_input.html" %}
+{% endif %} 
+<div class="row">
+    <div class="col-md-6 col-md-offset-3 text-center">
+        <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another indicator period</a>
+    </div>
+</div>

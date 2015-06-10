@@ -1,0 +1,42 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-6 control">
+            <input type="date" class="form-control" id="indicatorPeriodStart" placeholder="Period start"
+            {% if period.period_start %} value="{{period.period_start|date:'c'}}" {% endif %}>
+            <label class="control-label" for="indicatorPeriodStart">Period start</label>
+        </div>
+        <div class="col-md-6 control">
+            <input type="date" class="form-control" id="indicatorPeriodEnd" placeholder="Period end"
+            {% if period.period_end %} value="{{period.period_end|date:'c'}}" {% endif %}>
+            <label class="control-label" for="indicatorPeriodEnd">Period end</label>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-6 control">
+            <input type="number" class="form-control" id="indicatorPeriodTargetValue" placeholder="Target value"
+            {% if period.target_value %} value="{{period.target_value}}" {% endif %}>
+            <label class="control-label" for="indicatorPeriodTargetValue">Target value</label>
+        </div>
+        <div class="col-md-6 control">
+            <textarea id="indicatorPeriodTargetValueComment" class="form-control" name="textarea"
+            placeholder="Type in the target value comment">{{period.target_comment}}</textarea>
+            <label class="control-label" for="indicatorPeriodTargetValueComment">Target value comment</label>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-6 control">
+            <input type="text" class="form-control" id="indicatorPeriodActualValue" placeholder="Actual value"
+            {% if period.actual_value %} value="{{period.actual_value}}" {% endif %}>
+            <label class="control-label" for="indicatorPeriodActualValue">Actual value</label>
+        </div>
+        <div class="col-md-6 control">
+            <textarea id="indicatorPeriodActualValueComment" class="form-control" name="textarea"
+            placeholder="Type in the actual value comment">{{period.actual_comment}}</textarea>
+            <label class="control-label" for="indicatorPeriodActualValueComment">Actual value comment</label>
+        </div>
+    </div>
+</div>
