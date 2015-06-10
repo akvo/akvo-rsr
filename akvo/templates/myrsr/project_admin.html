@@ -59,16 +59,18 @@
                                 <p class="help-block">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
                                 Note that 'projects' in this form are the same as 'activities' in IATI.</p>
                             </div>
-                            {% if project.related_projects.all %}
-                                {% for rp in project.related_projects.all %}
-                                    {% include "myrsr/project_admin_partials/related_project_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                    {% include "myrsr/project_admin_partials/related_project_input.html" %}
-                            {% endif %}
+                            <div class="related-project-container">
+                                {% if project.related_projects.all %}
+                                    {% for rp in project.related_projects.all %}
+                                        {% include "myrsr/project_admin_partials/related_project_input.html" %}
+                                    {% endfor %}
+                                {% else %}
+                                        {% include "myrsr/project_admin_partials/related_project_input.html" %}
+                                {% endif %}
+                            </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
+                                    <a href="#" class="btn btn-link" id="add-related-project"><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -238,16 +240,18 @@
                             </div>
                         </div>  
                         <div class="formBlock">
-                            {% if project.contacts.all %}
-                                {% for contact in project.contacts.all %}
-                                    {% include "myrsr/project_admin_partials/contact_information_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                    {% include "myrsr/project_admin_partials/contact_information_input.html" %}
-                            {% endif %} 
+                            <div class="contact-information-container">
+                                {% if project.contacts.all %}
+                                    {% for contact in project.contacts.all %}
+                                        {% include "myrsr/project_admin_partials/contact_information_input.html" %}
+                                    {% endfor %}
+                                {% else %}
+                                        {% include "myrsr/project_admin_partials/contact_information_input.html" %}
+                                {% endif %}
+                            </div> 
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
+                                    <a href="#" class="btn btn-link" id="add-contact-information"><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
                                 </div>
                             </div>                             
                         </div>                                    
@@ -289,16 +293,18 @@
                                 <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
                             </div>
                             <hr/>
-                            {% if project.partnerships.all %}
-                                {% for partnership in project.partnerships.all %}
-                                    {% include "myrsr/project_admin_partials/partner_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                    {% include "myrsr/project_admin_partials/partner_input.html" %}
-                            {% endif %}                             
+                            <div class="partner-container">
+                                {% if project.partnerships.all %}
+                                    {% for partnership in project.partnerships.all %}
+                                        {% include "myrsr/project_admin_partials/partner_input.html" %}
+                                    {% endfor %}
+                                {% else %}
+                                        {% include "myrsr/project_admin_partials/partner_input.html" %}
+                                {% endif %}    
+                            </div>                         
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
+                                    <a href="#" class="btn btn-link" id="add-partner"><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
                                 </div>
                             </div>
                         </div>
@@ -393,29 +399,33 @@
                         </div>
                         <div class="formBlock">
                             <div class="form-group">
-                                {% if project.links.all %}
-                                    {% for link in project.links.all %}
+                                <div class="link-container">
+                                    {% if project.links.all %}
+                                        {% for link in project.links.all %}
+                                            {% include "myrsr/project_admin_partials/link_input.html" %}
+                                        {% endfor %}
+                                    {% else %}
                                         {% include "myrsr/project_admin_partials/link_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/link_input.html" %}
-                                {% endif %}
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another link</a>
+                                    {% endif %}
                                 </div>
                             </div>
-                                {% if project.documents.all %}
-                                    {% for document in project.documents.all %}
-                                        {% include "myrsr/project_admin_partials/document_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/document_input.html" %}
-                                {% endif %}                            
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another document</a>
+                                    <a href="#" class="btn btn-link" id="add-link"><span class="glyphicon glyphicon-plus"></span> Add another link</a>
+                                </div>
+                            </div>
+                                <div class="document-container">
+                                    {% if project.documents.all %}
+                                        {% for document in project.documents.all %}
+                                            {% include "myrsr/project_admin_partials/document_input.html" %}
+                                        {% endfor %}
+                                    {% else %}
+                                        {% include "myrsr/project_admin_partials/document_input.html" %}
+                                    {% endif %}   
+                                </div>                         
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link" id="add-document"><span class="glyphicon glyphicon-plus"></span> Add another document</a>
                                 </div>
                             </div>
                         </div>
@@ -449,30 +459,34 @@
                                     <label for="scope" class="control-label">Project scope</label>
                                 </div>
                             </div>
-                            <hr/>       
-                            {% if project.recipient_countries.all %}
-                                {% for rc in project.recipient_countries.all %}
+                            <hr/>    
+                            <div class="recipient-country-container">   
+                                {% if project.recipient_countries.all %}
+                                    {% for rc in project.recipient_countries.all %}
+                                        {% include "myrsr/project_admin_partials/recipient_country_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/recipient_country_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/recipient_country_input.html" %}
-                            {% endif %}  
+                                {% endif %} 
+                            </div> 
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another recipient country</a>
+                                    <a href="#" class="btn btn-link" id="add-recipient-country"><span class="glyphicon glyphicon-plus"></span> Add another recipient country</a>
                                 </div>
                             </div>
                             <hr/> 
-                            {% if project.recipient_regions.all %}
-                                {% for rr in project.recipient_regions.all %}
+                            <div class="recipient-region-container">
+                                {% if project.recipient_regions.all %}
+                                    {% for rr in project.recipient_regions.all %}
+                                        {% include "myrsr/project_admin_partials/recipient_region_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/recipient_region_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/recipient_region_input.html" %}
-                            {% endif %}                             
+                                {% endif %}
+                            </div>                             
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another recipient region</a>
+                                    <a href="#" class="btn btn-link" id="add-recipient-region"><span class="glyphicon glyphicon-plus"></span> Add another recipient region</a>
                                 </div>
                             </div>
                             <hr/>
@@ -637,16 +651,18 @@
                                     </div>
                                 </div>
                             </div>
-                            {% if project.primary_location.administratives.all %}
-                                {% for admin in project.primary_location.administratives.all %}
+                            <div class="location-adminstrative-container">
+                                {% if project.primary_location.administratives.all %}
+                                    {% for admin in project.primary_location.administratives.all %}
+                                        {% include "myrsr/project_admin_partials/location_adminstrative_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/location_adminstrative_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/location_adminstrative_input.html" %}
-                            {% endif %}
+                                {% endif %}
+                            </div>    
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another location</a>
+                                    <a href="#" class="btn btn-link" id="add-location-adminstrative"><span class="glyphicon glyphicon-plus"></span> Add another location</a>
                                 </div>
                             </div>
                         </div>
@@ -663,28 +679,32 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            {% if project.sectors.all %}
-                                {% for sector in project.sectors.all %}
+                            <div class="sector-container">
+                                {% if project.sectors.all %}
+                                    {% for sector in project.sectors.all %}
+                                        {% include "myrsr/project_admin_partials/sector_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/sector_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/sector_input.html" %}
-                            {% endif %}
+                                {% endif %}
+                            </div>    
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another sector</a>
+                                    <a href="#" class="btn btn-link" id="add-sector"><span class="glyphicon glyphicon-plus"></span> Add another sector</a>
                                 </div>
                             </div>
-                            {% if project.policy_markers.all %}
-                                {% for marker in project.policy_markers.all %}
+                            <div class="policy-marker-container">
+                                {% if project.policy_markers.all %}
+                                    {% for marker in project.policy_markers.all %}
+                                        {% include "myrsr/project_admin_partials/policy_marker_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/policy_marker_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/policy_marker_input.html" %}
-                            {% endif %}
+                                {% endif %}
+                            </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>
+                                    <a href="#" class="btn btn-link" id="add-policy-marker"> <span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>
                                 </div>
                             </div>
                         </div>
@@ -725,54 +745,62 @@
                                 </div>
                             </div>
                             <hr/>
-                            {% if project.budget_items.all %}
-                                {% for item in project.budget_items.all %}
+                            <div class="budget-item-container">
+                                {% if project.budget_items.all %}
+                                    {% for item in project.budget_items.all %}
+                                        {% include "myrsr/project_admin_partials/budget_item_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/budget_item_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/budget_item_input.html" %}
-                            {% endif %}                            
+                                {% endif %} 
+                            </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>
+                                    <a href="#" class="btn btn-link" id="add-budget-item"><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>
                                 </div>
                             </div>
                             <hr>
-                            {% if project.country_budget_items.all %}
-                                {% for item in project.country_budget_items.all %}
+                            <div class="country-budget-item-container">
+                                {% if project.country_budget_items.all %}
+                                    {% for item in project.country_budget_items.all %}
+                                        {% include "myrsr/project_admin_partials/country_budget_item_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/country_budget_item_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/country_budget_item_input.html" %}
-                            {% endif %}  
+                                {% endif %}  
+                            </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another country budget item</a>
+                                    <a href="#" class="btn btn-link" id="add-country-budget-item"><span class="glyphicon glyphicon-plus"></span> Add another country budget item</a>
                                 </div>
                             </div>
                             <hr>
-                            {% if project.transactions.all %}
-                                {% for transaction in project.transactions.all %}
+                            <div class="transaction-container">
+                                {% if project.transactions.all %}
+                                    {% for transaction in project.transactions.all %}
+                                        {% include "myrsr/project_admin_partials/transaction_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/transaction_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/transaction_input.html" %}
-                            {% endif %}                             
+                                {% endif %}
+                            </div>                             
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
+                                    <a href="#" class="btn btn-link" id="add-transaction"><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
                                 </div>
                             </div>
-                            {% if project.planned_disbursements.all %}
-                                {% for pd in project.planned_disbursements.all %}
+                            <div class="planned-disbursement-container">
+                                {% if project.planned_disbursements.all %}
+                                    {% for pd in project.planned_disbursements.all %}
+                                        {% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}
-                            {% endif %}                             
+                                {% endif %} 
+                            </div>                            
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
+                                    <a href="#" class="btn btn-link" id="add-planned-disbursement"><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
                                 </div>
                             </div>
                         </div>
@@ -789,28 +817,32 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            {% if project.conditions.all %}
-                                {% for condition in project.conditions.all %}
+                            <div class="condition-container">
+                                {% if project.conditions.all %}
+                                    {% for condition in project.conditions.all %}
+                                        {% include "myrsr/project_admin_partials/condition_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/condition_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/condition_input.html" %}
-                            {% endif %} 
+                                {% endif %} 
+                            </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another condition</a>
+                                    <a href="#" class="btn btn-link" id="add-condition"><span class="glyphicon glyphicon-plus"></span> Add another condition</a>
                                 </div>
                             </div>
-                            {% if project.results.all %}
-                                {% for result in project.results.all %}
+                            <div class="result-container">
+                                {% if project.results.all %}
+                                    {% for result in project.results.all %}
+                                        {% include "myrsr/project_admin_partials/result_input.html" %}
+                                    {% endfor %}
+                                {% else %}
                                     {% include "myrsr/project_admin_partials/result_input.html" %}
-                                {% endfor %}
-                            {% else %}
-                                {% include "myrsr/project_admin_partials/result_input.html" %}
-                            {% endif %}                            
+                                {% endif %}
+                            </div>                            
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another result</a>
+                                    <a href="#" class="btn btn-link" id="add-result"><span class="glyphicon glyphicon-plus"></span> Add another result</a>
                                 </div>
                             </div>
                         </div>
@@ -825,6 +857,63 @@
     {{ block.super }}
 
     <script type="text/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
+
+    <script type="text/template" id="related-project-input">{% include "myrsr/project_admin_partials/related_project_input.html" %}</script>
+    <script type="text/template" id="budget-item-input">{% include "myrsr/project_admin_partials/budget_item_input.html" %}</script>
+    <script type="text/template" id="condition-input">{% include "myrsr/project_admin_partials/condition_input.html" %}</script> 
+    <script type="text/template" id="contact-information-input">{% include "myrsr/project_admin_partials/contact_information_input.html" %}</script> 
+    <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_admin_partials/country_budget_item_input.html" %}</script> 
+    <script type="text/template" id="document-input">{% include "myrsr/project_admin_partials/document_input.html" %}</script> 
+    <script type="text/template" id="indicator-input">{% include "myrsr/project_admin_partials/indicator_input.html" %}</script> 
+    <script type="text/template" id="indicator-period-input">{% include "myrsr/project_admin_partials/indicator_period_input.html" %}</script> 
+    <script type="text/template" id="link-input">{% include "myrsr/project_admin_partials/link_input.html" %}</script> 
+    <script type="text/template" id="location-adminstrative-input">{% include "myrsr/project_admin_partials/location_adminstrative_input.html"%}</script> 
+    <script type="text/template" id="partner-input">{% include "myrsr/project_admin_partials/partner_input.html" %}</script> 
+    <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}</script> 
+    <script type="text/template" id="policy-marker-input">{% include "myrsr/project_admin_partials/policy_marker_input.html" %}</script> 
+    <script type="text/template" id="recipient-country-input">{% include "myrsr/project_admin_partials/recipient_country_input.html" %}</script> 
+    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_admin_partials/recipient_region_input.html" %}</script> 
+    <script type="text/template" id="related-project-input">{% include "myrsr/project_admin_partials/related_project_input.html" %}</script> 
+    <script type="text/template" id="result-input">{% include "myrsr/project_admin_partials/result_input.html" %}</script> 
+    <script type="text/template" id="sector-input">{% include "myrsr/project_admin_partials/sector_input.html" %}</script> 
+    <script type="text/template" id="transaction-input">{% include "myrsr/project_admin_partials/transaction_input.html" %}</script> 
+    <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_admin_partials/transaction_sector_input.html" %}</script>                               
+
+    <script type="application/javascript">
+        // Injecting partials
+
+        var partials = ['related-project', 'budget-item', 'condition', 'contact-information', 
+            'country-budget-item','document', 'indicator', 'indicator-period', 'link', 'partner', 
+            'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region', 
+            'related-project','result', 'sector', 'transaction', 'transaction-sector'];
+
+        for (var i=0; i < partials.length; i++) {
+            var name = partials[i];            
+            var buttonSelector = '#add-' + name;
+
+            document.querySelector(buttonSelector).onclick = getOnClick(name);
+
+        }
+
+        function getOnClick(name) {
+            var onclick = function(e) {
+                e.preventDefault();
+
+                var markupSelector = '#' + name + '-input';
+                var containerSelector = '.' + name + '-container';
+
+                var markup = document.querySelector(markupSelector).innerHTML;                
+
+                var partial = document.createElement('div');
+                partial.innerHTML = markup;
+
+                document.querySelector(containerSelector).appendChild(partial);                    
+            };
+
+            return onclick;
+        }        
+        
+    </script>   
 
     <script type="application/javascript">
         function getCookie(name) {
@@ -879,4 +968,5 @@
             request.send(form_data);
         }
     </script>
+    
 {% endblock %}

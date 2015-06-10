@@ -1,35 +1,37 @@
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-3 control">
-            <input type="text" class="form-control" id="locationAdministrativeCode" placeholder="Administrative code"
-            {% if admin.code %} value="{{admin.code}}" {% endif %}>
-            <label class="control-label" for="locationAdministrativeCode">Administrative code</label>
-        </div>
-        <div class="col-md-3">
-            <div class="select-group control">
-                <select name="partnerType" id="locationVocabulary" class="form-control">
-                    <option value="" {% if not admin.vocabulary %} selected="selected" {% endif %}>
-                        Administrative vocabulary
-                    </option>
-                     {% for gv in geographic_vocabulary %}
-                        {% if not gv.0 == "code" %}
-                           <option value="{{glr.0}}"
-                           {% if admin.vocabulary == gv.0 %} selected="selected" {% endif %}>
-                                {{gv.0}} - {{gv.1}}
-                            </option> 
-                        {% endif %}
-                    {% endfor %}
-                </select>
-                <label class="control-label" for="locationVocabulary">Administrative vocabulary</label>
+<div class="location-adminstrative-input">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-3 control">
+                <input type="text" class="form-control" id="locationAdministrativeCode" placeholder="Administrative code"
+                {% if admin.code %} value="{{admin.code}}" {% endif %}>
+                <label class="control-label" for="locationAdministrativeCode">Administrative code</label>
             </div>
-        </div>
-        <div class="col-md-3 control">
-            <input type="text" class="form-control" id="locationAdministrativeLevel" placeholder="Administrative level"
-            {% if admin.level %} value="{{admin.level}}" {% endif %}>
-            <label class="control-label" for="locationAdministrativeLevel">Administrative level</label>
-        </div>
-        <div class="col-md-3">
-            <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another administrative</a>
+            <div class="col-md-3">
+                <div class="select-group control">
+                    <select name="partnerType" id="locationVocabulary" class="form-control">
+                        <option value="" {% if not admin.vocabulary %} selected="selected" {% endif %}>
+                            Administrative vocabulary
+                        </option>
+                         {% for gv in geographic_vocabulary %}
+                            {% if not gv.0 == "code" %}
+                               <option value="{{glr.0}}"
+                               {% if admin.vocabulary == gv.0 %} selected="selected" {% endif %}>
+                                    {{gv.0}} - {{gv.1}}
+                                </option> 
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label class="control-label" for="locationVocabulary">Administrative vocabulary</label>
+                </div>
+            </div>
+            <div class="col-md-3 control">
+                <input type="text" class="form-control" id="locationAdministrativeLevel" placeholder="Administrative level"
+                {% if admin.level %} value="{{admin.level}}" {% endif %}>
+                <label class="control-label" for="locationAdministrativeLevel">Administrative level</label>
+            </div>
+            <div class="col-md-3">
+                <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another administrative</a>
+            </div>
         </div>
     </div>
 </div>

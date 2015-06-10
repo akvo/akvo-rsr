@@ -1,77 +1,79 @@
-<div class="form-group control">
-    <div class="select-group">
-        <select name="contactType" id="contactType" class="form-control" required>
-            <option value="" {% if not contact.type %} selected="selected" {% endif %}>Contact type:</option>
-            {% for entry in contact_type %}
-                {% if not entry.0 == "code" %}
-                    <option value="{{entry.0}}" {% if contact.type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.2}}</option>
-                {% endif %}
-            {% endfor %}                 
-        </select>
-        <label for="projectStatus" class="control-label">Type</label>
+<div class="contact-information-item">
+    <div class="form-group control">
+        <div class="select-group">
+            <select name="contactType" id="contactType" class="form-control" required>
+                <option value="" {% if not contact.type %} selected="selected" {% endif %}>Contact type:</option>
+                {% for entry in contact_type %}
+                    {% if not entry.0 == "code" %}
+                        <option value="{{entry.0}}" {% if contact.type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.2}}</option>
+                    {% endif %}
+                {% endfor %}                 
+            </select>
+            <label for="projectStatus" class="control-label">Type</label>
+        </div>
     </div>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="contactName" placeholder="Contact Name" required
-    {% if contact.person_name %} value="{{contact.person_name}}" {% endif %}>
-    <label for="contactName" class="control-label">Name</label>
-    <p class="help-block hidden">This should be a contact person for the project. (100 characters)</p>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="contactEmail" placeholder="Contact email" required
-    {% if contact.email %} value="{{contact.email}}" {% endif %}>
-    <label for="contactEmail" class="control-label">Email</label>
-    <p class="help-block hidden">This should be the email address for the contact person of the project.</p>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="jobTitle" placeholder="Job title" required
-    {% if contact.job_title %} value="{{contact.job_title}}" {% endif %}>
-    <label for="jobTitle" class="control-label">Job title</label>
-    <p class="help-block hidden">Job title of the contact. (100 characters)</p>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="contactOrg" placeholder="Contact organisation" required
-    {% if contact.organisation %} value="{{contact.organisation}}" {% endif %}>
-    <label for="contactOrg" class="control-label">Organisation</label>
-    <p class="help-block hidden">The organisation that the contact person works for - this may differ from the reporting organisation of the project. (100 characters)</p>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="contactPhone" placeholder="Contact phone number"  required
-    {% if contact.telephone %} value="{{contact.telephone}}" {% endif %}>
-    <label for="contactPhone" class="control-label">Telephone</label>
-    <p class="help-block hidden">Contact number for the contact. (30 characters)</p>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="contactAddress" placeholder="Contact address"  required
-    {% if contact.mailing_address %} value="{{contact.mailing_address}}" {% endif %}>
-    <label for="contactAddress" class="control-label">Address</label>
-    <p class="help-block hidden">Address of the contact. (255 characters)</p>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="contactWebsite" placeholder="Contact website"  required
-    {% if contact.website %} value="{{contact.website}}" {% endif %}>
-    <label for="contactWebsite" class="control-label">Website</label>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="contactDepartment" placeholder="Contact department"  required
-    {% if contact.department %} value="{{contact.department}}" {% endif %}>
-    <label for="contactDepartment" class="control-label">Department</label>
-    <p class="help-block hidden">(100 characters)</p>
-</div>
-<div class="form-group">
-    <div class="select-group control">
-        <select name="contactCountry" id="contactCountry" class="form-control" required>
-            <option value="" {% if not contact.country %} selected="selected" {% endif %}>Country:</option>
-            {% for entry in country %}
-                <option value="{{entry.id}}" {% if contact.country.name == entry.name %} selected="selected" {% endif %}>{{entry.name}}</option>
-            {% endfor %}                  
-        </select>
-        <label for="contactCountry" class="control-label">Country</label>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="contactName" placeholder="Contact Name" required
+        {% if contact.person_name %} value="{{contact.person_name}}" {% endif %}>
+        <label for="contactName" class="control-label">Name</label>
+        <p class="help-block hidden">This should be a contact person for the project. (100 characters)</p>
     </div>
-</div>
-<div class="form-group control">
-    <input type="text" class="form-control" id="contactState" placeholder="Contact state" required
-    {% if contact.state %} value="{{contact.state}}" {% endif %}>
-    <label for="contactState" class="control-label">State</label>
-    <p class="help-block hidden">(100 characters)</p>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="contactEmail" placeholder="Contact email" required
+        {% if contact.email %} value="{{contact.email}}" {% endif %}>
+        <label for="contactEmail" class="control-label">Email</label>
+        <p class="help-block hidden">This should be the email address for the contact person of the project.</p>
+    </div>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="jobTitle" placeholder="Job title" required
+        {% if contact.job_title %} value="{{contact.job_title}}" {% endif %}>
+        <label for="jobTitle" class="control-label">Job title</label>
+        <p class="help-block hidden">Job title of the contact. (100 characters)</p>
+    </div>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="contactOrg" placeholder="Contact organisation" required
+        {% if contact.organisation %} value="{{contact.organisation}}" {% endif %}>
+        <label for="contactOrg" class="control-label">Organisation</label>
+        <p class="help-block hidden">The organisation that the contact person works for - this may differ from the reporting organisation of the project. (100 characters)</p>
+    </div>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="contactPhone" placeholder="Contact phone number"  required
+        {% if contact.telephone %} value="{{contact.telephone}}" {% endif %}>
+        <label for="contactPhone" class="control-label">Telephone</label>
+        <p class="help-block hidden">Contact number for the contact. (30 characters)</p>
+    </div>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="contactAddress" placeholder="Contact address"  required
+        {% if contact.mailing_address %} value="{{contact.mailing_address}}" {% endif %}>
+        <label for="contactAddress" class="control-label">Address</label>
+        <p class="help-block hidden">Address of the contact. (255 characters)</p>
+    </div>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="contactWebsite" placeholder="Contact website"  required
+        {% if contact.website %} value="{{contact.website}}" {% endif %}>
+        <label for="contactWebsite" class="control-label">Website</label>
+    </div>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="contactDepartment" placeholder="Contact department"  required
+        {% if contact.department %} value="{{contact.department}}" {% endif %}>
+        <label for="contactDepartment" class="control-label">Department</label>
+        <p class="help-block hidden">(100 characters)</p>
+    </div>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="contactCountry" id="contactCountry" class="form-control" required>
+                <option value="" {% if not contact.country %} selected="selected" {% endif %}>Country:</option>
+                {% for entry in country %}
+                    <option value="{{entry.id}}" {% if contact.country.name == entry.name %} selected="selected" {% endif %}>{{entry.name}}</option>
+                {% endfor %}                  
+            </select>
+            <label for="contactCountry" class="control-label">Country</label>
+        </div>
+    </div>
+    <div class="form-group control">
+        <input type="text" class="form-control" id="contactState" placeholder="Contact state" required
+        {% if contact.state %} value="{{contact.state}}" {% endif %}>
+        <label for="contactState" class="control-label">State</label>
+        <p class="help-block hidden">(100 characters)</p>
+    </div>
 </div>

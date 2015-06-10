@@ -1,31 +1,33 @@
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-4 control">
-            <input type="text" class="form-control" id="transactionSector" placeholder="Transaction sector"
-            {% if sector.code %} value="{{sector.code}}" {% endif %}>            
-            <label class="control-label" for="transactionSector">Transaction sector</label>
-        </div>
-        <div class="col-md-4">
-            <div class="select-group control">
-                <select name="transactionSectorVocabulary" id="transactionSectorVocabulary" class="form-control">
-                    <option value="" {% if not sector.code %} selected="selected" {% endif %}>
-                        Transaction sector vocabulary:
-                    </option>
-                     {% for s in sector_vocabulary %}
-                        {% if not s.0 == "code" %}
-                            <option value="{{s.0}}" {% if sector.vocabulary == s.0 %} selected="selected" {% endif %}>
-                                {{s.0}} - {{s.2}}
-                            </option>
-                        {% endif %}
-                    {% endfor %}                    
-                </select>
-                <label class="control-label" for="transactionSectorVocabulary">Transaction sector vocabulary</label>
+<div class="transaction-sector-item">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-4 control">
+                <input type="text" class="form-control" id="transactionSector" placeholder="Transaction sector"
+                {% if sector.code %} value="{{sector.code}}" {% endif %}>            
+                <label class="control-label" for="transactionSector">Transaction sector</label>
             </div>
+            <div class="col-md-4">
+                <div class="select-group control">
+                    <select name="transactionSectorVocabulary" id="transactionSectorVocabulary" class="form-control">
+                        <option value="" {% if not sector.code %} selected="selected" {% endif %}>
+                            Transaction sector vocabulary:
+                        </option>
+                         {% for s in sector_vocabulary %}
+                            {% if not s.0 == "code" %}
+                                <option value="{{s.0}}" {% if sector.vocabulary == s.0 %} selected="selected" {% endif %}>
+                                    {{s.0}} - {{s.2}}
+                                </option>
+                            {% endif %}
+                        {% endfor %}                    
+                    </select>
+                    <label class="control-label" for="transactionSectorVocabulary">Transaction sector vocabulary</label>
+                </div>
+            </div>
+            <div class="col-md-4 control">
+                <input type="text" class="form-control" id="transactionSectorDescription" placeholder="Transaction sector description"
+                {% if sector.text %} value="{{sector.text}}" {% endif %}>            
+                <label class="control-label" for="transactionSector">Transaction sector</label>
+            </div>        
         </div>
-        <div class="col-md-4 control">
-            <input type="text" class="form-control" id="transactionSectorDescription" placeholder="Transaction sector description"
-            {% if sector.text %} value="{{sector.text}}" {% endif %}>            
-            <label class="control-label" for="transactionSector">Transaction sector</label>
-        </div>        
     </div>
 </div>

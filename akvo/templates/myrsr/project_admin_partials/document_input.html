@@ -1,58 +1,60 @@
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-6 control">
-            <input type="file" class="form-control" id="document">
-            <label class="control-label" for="document">Document</label>
-        </div>
-        <div class="col-md-6 control">
-            <input type="text" class="form-control" id="documentUrl" placeholder="Document URL"
-            {% if document.url %} value="{{document.url}}" {% endif %}>
-            <label class="control-label" for="documentUrl">Document URL</label>
-        </div>
-    </div>
-</div>
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-6 control">
-            <input type="text" class="form-control" id="documentTitle" placeholder="Document title"
-            {% if document.title %} value="{{document.title}}" {% endif %}>
-            <label class="control-label" for="documentTitle">Document title</label>
-        </div>
-        <div class="col-md-6 control">
-            <input type="text" class="form-control" id="documentFormat" placeholder="Document format"
-            {% if document.format %} value="{{document.format}}" {% endif %}>
-            <label class="control-label" for="documentFormat">Document format</label>
-        </div>
-    </div>
-</div>
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="select-group control">
-                <select name="partnerType" id="documentCategory" class="form-control">
-                    <option value="" {% if not document.category %} selected="selected" {% endif %}>Document category:</option>
-                    {% for category in document_category %}
-                        {% if not category.0 == "code" %}
-                            <option value="{{category.0}}" {% if document.category == category.0 %} selected="selected" {% endif %}>{{category.0}} - {{category.2}}</option>                            
-                        {% endif %}
-                    {% endfor %}
-                </select>
-                <label class="control-label" for="documentCategory">Document category</label>
+<div class="document-item">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <input type="file" class="form-control" id="document">
+                <label class="control-label" for="document">Document</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="text" class="form-control" id="documentUrl" placeholder="Document URL"
+                {% if document.url %} value="{{document.url}}" {% endif %}>
+                <label class="control-label" for="documentUrl">Document URL</label>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="select-group control">
-                <select name="partnerType" id="documentLanguage" class="form-control">
-                    <option value="" {% if not document.language %} selected="selected" {% endif %}>Document language:</option>
-                    {% for lan in language %}
-                        {% if not lan.0 == "code" %}
-                            <option value="{{lan.0}}" {% if document.language == lan.0 %} selected="selected" {% endif %}>{{lan.1}}</option>          
-                        {% endif %}
-                    {% endfor %}                    
-                    <option value="en">en - English</option>
-                    <option value="sp">sp - Spanish</option>
-                </select>
-                <label class="control-label" for="documentLanguage">Document language</label>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <input type="text" class="form-control" id="documentTitle" placeholder="Document title"
+                {% if document.title %} value="{{document.title}}" {% endif %}>
+                <label class="control-label" for="documentTitle">Document title</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="text" class="form-control" id="documentFormat" placeholder="Document format"
+                {% if document.format %} value="{{document.format}}" {% endif %}>
+                <label class="control-label" for="documentFormat">Document format</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="select-group control">
+                    <select name="partnerType" id="documentCategory" class="form-control">
+                        <option value="" {% if not document.category %} selected="selected" {% endif %}>Document category:</option>
+                        {% for category in document_category %}
+                            {% if not category.0 == "code" %}
+                                <option value="{{category.0}}" {% if document.category == category.0 %} selected="selected" {% endif %}>{{category.0}} - {{category.2}}</option>                            
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label class="control-label" for="documentCategory">Document category</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="select-group control">
+                    <select name="partnerType" id="documentLanguage" class="form-control">
+                        <option value="" {% if not document.language %} selected="selected" {% endif %}>Document language:</option>
+                        {% for lan in language %}
+                            {% if not lan.0 == "code" %}
+                                <option value="{{lan.0}}" {% if document.language == lan.0 %} selected="selected" {% endif %}>{{lan.1}}</option>          
+                            {% endif %}
+                        {% endfor %}                    
+                        <option value="en">en - English</option>
+                        <option value="sp">sp - Spanish</option>
+                    </select>
+                    <label class="control-label" for="documentLanguage">Document language</label>
+                </div>
             </div>
         </div>
     </div>

@@ -1,50 +1,52 @@
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-6 control">
-            <input type="number" step="any" class="form-control" id="plannedDisbursementValue" placeholder="Planned disbursement value"
-            {% if pd.value %} value="{{pd.value}}" {% endif %}>
-            <label class="control-label" for="plannedDisbursementValue">Planned disbursement value</label>
-        </div>
-        <div class="col-md-6 control">
-            <input type="date" class="form-control" id="plannedDisbursementValueDate" placeholder="Planned disbursement value date"
-            {% if pd.value_date %} value="{{pd.value_date|date:'c'}}" {% endif %}>
-            <label class="control-label" for="plannedDisbursementValueDate">Planned disbursement value date</label>
-        </div>
-    </div>
-</div>
-<div class="form-group">
-    <div class="select-group control">
-        <select name="plannedDisbursementType" id="plannedDisbursementType" class="form-control">
-            <option value="" {% if not pd.type %} selected="selected" {% endif %}>
-                Planned disbursement type:
-            </option>
-            {% for entry in budget_type %}
-                {% if not entry.0 == "code" %}
-                    <option value="{{entry.0}}" {% if pd.type == entry.0 %} selected="selected" {% endif %}>
-                        {{entry.0}} - {{entry.2}}
-                    </option>
-                {% endif %}
-            {% endfor %}  
-        </select>
-        <label for="plannedDisbursementType" class="control-label">Planned disbursement type</label>
-    </div>
-</div>
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-6 control">
-            <input type="date" class="form-control" id="plannedDisbursementPeriodStart" placeholder="Planned disbursement period start"
-            {% if pd.period_start %} value="{{pd.period_start|date:'c'}}" {% endif %}>
-            <label class="control-label" for="plannedDisbursementPeriodStart">Planned disbursement period start</label>
-        </div>
-        <div class="col-md-6 control">
-            <input type="date" class="form-control" id="plannedDisbursementPeriodEnd" placeholder="Planned disbursement period end"
-            {% if pd.period_end %} value="{{pd.period_end|date:'c'}}" {% endif %}>
-            <label class="control-label" for="plannedDisbursementPeriodEnd">Planned disbursement period end</label>
+<div class="planned-disbursement-item">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <input type="number" step="any" class="form-control" id="plannedDisbursementValue" placeholder="Planned disbursement value"
+                {% if pd.value %} value="{{pd.value}}" {% endif %}>
+                <label class="control-label" for="plannedDisbursementValue">Planned disbursement value</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="date" class="form-control" id="plannedDisbursementValueDate" placeholder="Planned disbursement value date"
+                {% if pd.value_date %} value="{{pd.value_date|date:'c'}}" {% endif %}>
+                <label class="control-label" for="plannedDisbursementValueDate">Planned disbursement value date</label>
+            </div>
         </div>
     </div>
-</div>
-<div class="form-group control">
-    <input type="date" class="form-control" id="plannedDisbursementUpdated" placeholder="Planned disbursement updated"
-    {% if pd.updated %} value="{{pd.updated|date:'c'}}" {% endif %}>
-    <label for="plannedDisbursementUpdated" class="control-label">Planned disbursement updated</label>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="plannedDisbursementType" id="plannedDisbursementType" class="form-control">
+                <option value="" {% if not pd.type %} selected="selected" {% endif %}>
+                    Planned disbursement type:
+                </option>
+                {% for entry in budget_type %}
+                    {% if not entry.0 == "code" %}
+                        <option value="{{entry.0}}" {% if pd.type == entry.0 %} selected="selected" {% endif %}>
+                            {{entry.0}} - {{entry.2}}
+                        </option>
+                    {% endif %}
+                {% endfor %}  
+            </select>
+            <label for="plannedDisbursementType" class="control-label">Planned disbursement type</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <input type="date" class="form-control" id="plannedDisbursementPeriodStart" placeholder="Planned disbursement period start"
+                {% if pd.period_start %} value="{{pd.period_start|date:'c'}}" {% endif %}>
+                <label class="control-label" for="plannedDisbursementPeriodStart">Planned disbursement period start</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="date" class="form-control" id="plannedDisbursementPeriodEnd" placeholder="Planned disbursement period end"
+                {% if pd.period_end %} value="{{pd.period_end|date:'c'}}" {% endif %}>
+                <label class="control-label" for="plannedDisbursementPeriodEnd">Planned disbursement period end</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group control">
+        <input type="date" class="form-control" id="plannedDisbursementUpdated" placeholder="Planned disbursement updated"
+        {% if pd.updated %} value="{{pd.updated|date:'c'}}" {% endif %}>
+        <label for="plannedDisbursementUpdated" class="control-label">Planned disbursement updated</label>
+    </div>
 </div>

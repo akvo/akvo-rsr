@@ -1,71 +1,73 @@
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="select-group control">
-                <select name="budgetItem" id="budgetItem" class="form-control">
-                    <option value="" {% if not item.label %} selected="selected" {% endif %}>
-                        Budget item
-                    </option>
-                    {% for bi in budget_item_labels %}
-                           <option value="{{bi.pk}}"
-                           {% if item.label.label == bi.label %} selected="selected" {% endif %}>
-                                {{bi.label}}
-                            </option> 
-                    {% endfor %} 
-                </select>
-                <label class="control-label" for="budgetItem">Budget item</label>
+<div class="budget-item">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="select-group control">
+                    <select name="budgetItem" id="budgetItem" class="form-control">
+                        <option value="" {% if not item.label %} selected="selected" {% endif %}>
+                            Budget item
+                        </option>
+                        {% for bi in budget_item_labels %}
+                               <option value="{{bi.pk}}"
+                               {% if item.label.label == bi.label %} selected="selected" {% endif %}>
+                                    {{bi.label}}
+                                </option> 
+                        {% endfor %} 
+                    </select>
+                    <label class="control-label" for="budgetItem">Budget item</label>
+                </div>
+            </div>
+            <div class="col-md-6 control">
+                <input type="text" class="form-control" id="budgetItemOther" placeholder="Other label extra info"
+                {% if item.other_extra %} value="{{item.other_extra}}" {% endif %}>
+                <label class="control-label" for="budgetItemOther">Other label extra info</label>
             </div>
         </div>
-        <div class="col-md-6 control">
-            <input type="text" class="form-control" id="budgetItemOther" placeholder="Other label extra info"
-            {% if item.other_extra %} value="{{item.other_extra}}" {% endif %}>
-            <label class="control-label" for="budgetItemOther">Other label extra info</label>
+    </div>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="budgetType" id="budgetType" class="form-control">
+                <option value="" {% if not item.type %} selected="selected" {% endif %}>
+                    Budget type
+                </option>
+                {% for bt in budget_type %}
+                    {% if not bt.0 == "code" %}
+                       <option value="{{bt.0}}"
+                       {% if item.type == bt.0 %} selected="selected" {% endif %}>
+                            {{bt.0}} - {{bt.1}}
+                        </option> 
+                    {% endif %}
+                {% endfor %}             
+            </select>
+            <label for="budgetType" class="control-label">Budget type</label>
         </div>
     </div>
-</div>
-<div class="form-group">
-    <div class="select-group control">
-        <select name="budgetType" id="budgetType" class="form-control">
-            <option value="" {% if not item.type %} selected="selected" {% endif %}>
-                Budget type
-            </option>
-            {% for bt in budget_type %}
-                {% if not bt.0 == "code" %}
-                   <option value="{{bt.0}}"
-                   {% if item.type == bt.0 %} selected="selected" {% endif %}>
-                        {{bt.0}} - {{bt.1}}
-                    </option> 
-                {% endif %}
-            {% endfor %}             
-        </select>
-        <label for="budgetType" class="control-label">Budget type</label>
-    </div>
-</div>
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-6 control">
-            <input type="number" step="any" class="form-control" id="budgetItemValue" placeholder="Budget item amount"
-            {% if item.amount %} value="{{item.amount}}" {% endif %}>
-            <label class="control-label" for="budgetItemValue">Budget item value</label>
-        </div>
-        <div class="col-md-6 control">
-            <input type="date" class="form-control" id="budgetItemValueDate" placeholder="Budget item amount date"
-            {% if item.value_date %} value="{{item.value_date|date:'c'}}" {% endif %}>
-            <label class="control-label" for="budgetItemValueDate">Budget item value date</label>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <input type="number" step="any" class="form-control" id="budgetItemValue" placeholder="Budget item amount"
+                {% if item.amount %} value="{{item.amount}}" {% endif %}>
+                <label class="control-label" for="budgetItemValue">Budget item value</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="date" class="form-control" id="budgetItemValueDate" placeholder="Budget item amount date"
+                {% if item.value_date %} value="{{item.value_date|date:'c'}}" {% endif %}>
+                <label class="control-label" for="budgetItemValueDate">Budget item value date</label>
+            </div>
         </div>
     </div>
-</div>
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-6 control">
-            <input type="date" step="any" class="form-control" id="budgetItemPeriodStart" placeholder="Budget item period start"
-            {% if item.period_start %} value="{{item.period_start|date:'c'}}" {% endif %}>
-            <label class="control-label" for="budgetItemPeriodStart">Budget item period start</label>
-        </div>
-        <div class="col-md-6 control">
-            <input type="date" class="form-control" id="budgetItemPeriodEnd" placeholder="Budget item period end"
-            {% if item.period_end %} value="{{item.period_end|date:'c'}}" {% endif %}>            
-            <label class="control-label" for="budgetItemPeriodEnd">Budget item period end</label>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <input type="date" step="any" class="form-control" id="budgetItemPeriodStart" placeholder="Budget item period start"
+                {% if item.period_start %} value="{{item.period_start|date:'c'}}" {% endif %}>
+                <label class="control-label" for="budgetItemPeriodStart">Budget item period start</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="date" class="form-control" id="budgetItemPeriodEnd" placeholder="Budget item period end"
+                {% if item.period_end %} value="{{item.period_end|date:'c'}}" {% endif %}>            
+                <label class="control-label" for="budgetItemPeriodEnd">Budget item period end</label>
+            </div>
         </div>
     </div>
 </div>

@@ -1,29 +1,31 @@
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="select-group control">
-                <select name="contactCountry" id="recipientCountry" class="form-control">
-                    <option value="" {% if not rc %} selected="selected" {% endif %}>Recipient country:</option>
-                    {% for c in codelist_country %}
-                        {% if not c.0 == "code" %}
-                            <option value="{{c.0}}" {% if rc.country == c.0 %} selected="selected" {% endif %}>
-                                {{c.0}} - {{c.1}}
-                            </option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-                <label class="control-label" for="recipientCountry">Recipient country</label>
+<div class="recipient-country-item">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="select-group control">
+                    <select name="contactCountry" id="recipientCountry" class="form-control">
+                        <option value="" {% if not rc %} selected="selected" {% endif %}>Recipient country:</option>
+                        {% for c in codelist_country %}
+                            {% if not c.0 == "code" %}
+                                <option value="{{c.0}}" {% if rc.country == c.0 %} selected="selected" {% endif %}>
+                                    {{c.0}} - {{c.1}}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <label class="control-label" for="recipientCountry">Recipient country</label>
+                </div>
             </div>
+            <div class="col-md-4 control">
+                <input type="text" class="form-control" id="recipientCountryPercentage" placeholder="Percentage"
+                {% if rc.percentage %} value="{{rc.percentage}}" {% endif %}>
+                <label class="control-label" for="recipientCountryPercentage">Recipient country percentage</label>
+            </div>
+             <div class="col-md-4 control">
+                <input type="text" class="form-control" id="recipientCountryDescription" placeholder="Country description"
+                {% if rc.text %} value="{{rc.text}}" {% endif %}>
+                <label class="control-label" for="recipientCountryDescription">Recipient country descriptione</label>
+            </div>       
         </div>
-        <div class="col-md-4 control">
-            <input type="text" class="form-control" id="recipientCountryPercentage" placeholder="Percentage"
-            {% if rc.percentage %} value="{{rc.percentage}}" {% endif %}>
-            <label class="control-label" for="recipientCountryPercentage">Recipient country percentage</label>
-        </div>
-         <div class="col-md-4 control">
-            <input type="text" class="form-control" id="recipientCountryDescription" placeholder="Country description"
-            {% if rc.text %} value="{{rc.text}}" {% endif %}>
-            <label class="control-label" for="recipientCountryDescription">Recipient country descriptione</label>
-        </div>       
     </div>
 </div>

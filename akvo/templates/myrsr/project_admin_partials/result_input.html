@@ -1,62 +1,66 @@
-<div class="form-group">
-    <div class="row">
-        <div class="col-md-4 control">
-            <input type="text" class="form-control" id="resultTitle" placeholder="Result title"
-            {% if result.title %} value="{{result.title}}" {% endif %}>
-            <label class="control-label" for="resultTitle">Result title</label>
-        </div>
-        <div class="col-md-4">
-            <div class="select-group control">
-                <select name="resultType" id="resultType" class="form-control">
-                    <option value="" {% if not result.type %} selected="selected" {% endif %}>
-                        Result type
-                    </option>
-                    {% for rt in result_type %}
-                        {% if not rt.0 == "code" %}
-                           <option value="{{rt.0}}"
-                           {% if result.type == rt.0 %} selected="selected" {% endif %}>
-                                {{rt.0}} - {{rt.1}}
-                            </option> 
-                        {% endif %}
-                    {% endfor %}                       
-                </select>
-                <label class="control-label" for="resultType">Result type</label>
+<div class="result-item">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-4 control">
+                <input type="text" class="form-control" id="resultTitle" placeholder="Result title"
+                {% if result.title %} value="{{result.title}}" {% endif %}>
+                <label class="control-label" for="resultTitle">Result title</label>
             </div>
-        </div>
-        <div class="col-md-4 control">
-            <div class="select-group">
-                <select name="aggregationStatus" id="aggregationStatus" class="form-control">
-                    <option value="">Aggregation status</option>
-                    <option value="0" {% if result.aggregation_status|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}>
-                        Unknown
-                    </option>
-                    <option value="1" {% if result.aggregation_status|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>
-                        Yes
-                    </option>
-                    <option value="2" {% if result.aggregation_status|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>
-                        No
-                    </option>
-                </select>
-                <label class="control-label" for="aggregationStatus">Aggregation status</label>
+            <div class="col-md-4">
+                <div class="select-group control">
+                    <select name="resultType" id="resultType" class="form-control">
+                        <option value="" {% if not result.type %} selected="selected" {% endif %}>
+                            Result type
+                        </option>
+                        {% for rt in result_type %}
+                            {% if not rt.0 == "code" %}
+                               <option value="{{rt.0}}"
+                               {% if result.type == rt.0 %} selected="selected" {% endif %}>
+                                    {{rt.0}} - {{rt.1}}
+                                </option> 
+                            {% endif %}
+                        {% endfor %}                       
+                    </select>
+                    <label class="control-label" for="resultType">Result type</label>
+                </div>
+            </div>
+            <div class="col-md-4 control">
+                <div class="select-group">
+                    <select name="aggregationStatus" id="aggregationStatus" class="form-control">
+                        <option value="">Aggregation status</option>
+                        <option value="0" {% if result.aggregation_status|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}>
+                            Unknown
+                        </option>
+                        <option value="1" {% if result.aggregation_status|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>
+                            Yes
+                        </option>
+                        <option value="2" {% if result.aggregation_status|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>
+                            No
+                        </option>
+                    </select>
+                    <label class="control-label" for="aggregationStatus">Aggregation status</label>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="form-group control">
-    <textarea id="resultDescription" class="form-control" name="resultDescription"
-    placeholder="Type in the result description">{{result.description}}</textarea>
-    <label class="control-label" for="resultDescription">Result description</label>
-</div>
-<hr/>
-{% if result.indicators.all  %}
-    {% for indicator in result.indicators.all %}
-        {% include "myrsr/project_admin_partials/indicator_input.html" %}
-    {% endfor %}
-{% else %}
-    {% include "myrsr/project_admin_partials/indicator_input.html" %}
-{% endif %} 
-<div class="row">
-    <div class="col-md-6 col-md-offset-3 text-center">
-        <a href="#" class="btn btn-link"><span class="glyphicon glyphicon-plus"></span> Add another indicator</a>
+    <div class="form-group control">
+        <textarea id="resultDescription" class="form-control" name="resultDescription"
+        placeholder="Type in the result description">{{result.description}}</textarea>
+        <label class="control-label" for="resultDescription">Result description</label>
+    </div>
+    <hr/>
+    <div class="indicator-container">
+        {% if result.indicators.all  %}
+            {% for indicator in result.indicators.all %}
+                {% include "myrsr/project_admin_partials/indicator_input.html" %}
+            {% endfor %}
+        {% else %}
+            {% include "myrsr/project_admin_partials/indicator_input.html" %}
+        {% endif %} 
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center">
+            <a href="#" class="btn btn-link" id="add-indicator"><span class="glyphicon glyphicon-plus"></span> Add another indicator</a>
+        </div>
     </div>
 </div>
