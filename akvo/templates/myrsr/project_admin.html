@@ -888,19 +888,19 @@
             'related-project','result', 'sector', 'transaction', 'transaction-sector'];
 
         for (var i=0; i < partials.length; i++) {
-            var name = partials[i];            
-            var buttonSelector = '#add-' + name;
+            var pName = partials[i];            
+            var buttonSelector = '#add-' + pName;
 
-            document.querySelector(buttonSelector).onclick = getOnClick(name);
+            document.querySelector(buttonSelector).onclick = getOnClick(pName);
 
         }
 
-        function getOnClick(name) {
+        function getOnClick(pName) {
             var onclick = function(e) {
                 e.preventDefault();
 
-                var markupSelector = '#' + name + '-input';
-                var containerSelector = '.' + name + '-container';
+                var markupSelector = '#' + pName + '-input';
+                var containerSelector = '.' + pName + '-container';
 
                 var markup = document.querySelector(markupSelector).innerHTML;                
 
