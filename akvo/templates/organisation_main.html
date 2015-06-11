@@ -12,7 +12,13 @@
         </div>
         <div class="col-sm-12 orgLogo">
           {% if organisation.logo %}
-            <a href="{{organisation.logo.url}}" target="_blank">{% img organisation 350 250 organisation.name %}</a>
+            {% if organisation.url %}
+              <a href="{{organisation.url}}" target="_blank">
+                {% img organisation 350 250 organisation.name %}
+              </a>
+            {% else %}
+              {% img organisation 350 250 organisation.name %}
+            {% endif %}
           {% endif %}
         </div>
       </div>
@@ -143,7 +149,7 @@
           <dt>{% trans 'Projects' %}</dt>
           <dd>{{organisation.dollar_projects_count}}</dd>
           <dt>{% trans 'Currency used' %}</dt>
-          <dd>{% trans 'US Dollars' %}</dd>          
+          <dd>{% trans 'US Dollars' %}</dd>
           <dt>{% trans 'Pledged' %}</dt>
           <dd>
           ${{organisation.dollars_pledged|floatformat:2|intcomma}}
