@@ -3,12 +3,14 @@
         <div class="row">
             <div class="col-md-4 control">
                 <input type="text" class="form-control" id="relatedProject" placeholder="Related project"
+                name="relatedProject{% if rp %}-{{ rp.pk }}{% endif %}"
                 {% if rp %} value={{rp.project.title}} {%endif %} />
                 <label for="partner" class="control-label">Related project</label>
                 <p class="help-block hidden">A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.</p>
             </div>
             <div class="col-md-4 control">
                 <input type="text" class="form-control" id="relatedProjectIatiId" placeholder="Related project IATI identifier"
+                name="relatedProjectIatiId{% if rp %}-{{ rp.pk }}{% endif %}"
                 {% if rp %} value="{{rp.project.iati_activity_id}}" {%endif %} />
                 <label for="relatedProjectIatiId" class="control-label">Related project IATI identifier</label>
                 <p class="help-block hidden">The IATI activity identifier for the related project. Fill this in if the related project does not exist in RSR.</p>
