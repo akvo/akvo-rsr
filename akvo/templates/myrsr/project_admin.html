@@ -9,11 +9,11 @@
         <div class="editDate">
             <span>Date created:</span>
             <time datetime="YYYY-MM-DDThh:mm:ssTZD">
-            April 20, 2015, 4:23 p.m.
+            {{ project.created_at }}
             </time><br/>
-            <span>Date Modified:</span>
+            <span>Date modified:</span>
             <time datetime="YYYY-MM-DDThh:mm:ssTZD">
-            April 20, 2015, 4:23 p.m.
+            {{ project.last_modified_at }}
             </time>
         </div>
         <div class="progress overview">
@@ -41,19 +41,19 @@
                         </div>
                         <div class="formBlock">
                             <form role="form" id="adminstep1" action="javascript: submitstep1()">
-                            <div class="control form-group control">
-                                <input type="text" class="form-control" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}"/>
+                            <div class="form-group control">
+                                <input type="text" class="form-control" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45" />
                                 <label for="projectTitle" class="control-label">Project title</label>
                                 <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control" name="projectSubTitle" id="projectSubTitle" placeholder="Project subtitle"
+                                <input type="text" class="form-control" name="projectSubTitle" id="projectSubTitle" placeholder="Project subtitle" maxlength="75"
                                 {% if project.subtitle %} value="{{project.subtitle}}" {% endif %} />
                                 <label for="projectSubTitle" class="control-label">Project subtitle</label>
                                 <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)</p>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control" name="iatiId" id="iatiID" placeholder="iati ID"
+                                <input type="text" class="form-control" name="iatiId" id="iatiID" placeholder="iati ID" maxlength="100"
                                 {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
                                 <label for="iatiID" class="control-label">IATI identifier</label>
                                 <p class="help-block">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
@@ -224,7 +224,12 @@
                                     <label for="defaultFinanceType" class="control-label">Default finance type</label>
                                 </div>
                             </div>
-                            <input type="submit" class="btn btn-info" value="Save">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <input type="submit" class="btn btn-info" value="Save">
+                                </div>
+                                <div id="savingstep1"></div>
+                            </div>
                             </form>
                         </div>
                     </div>
@@ -934,7 +939,60 @@
 
         var csrftoken = getCookie('csrftoken');
 
+        function savingStep(saving, step) {
+            var div, div_id;
+
+            div_id = '#savingstep' + step;
+            div = document.querySelector(div_id);
+
+            if (saving) {
+                div.innerHTML = 'Saving...';
+            } else {
+                div.innerHTML = '';
+            }
+        }
+
+        function removeErrors(form) {
+            var error_elements, form_elements;
+
+            error_elements = form.getElementsByClassName('error');
+            form_elements = form.getElementsByClassName('has-error');
+
+            while(error_elements.length > 0){
+                error_elements[0].parentNode.removeChild(error_elements[0]);
+            }
+
+            for (var j = 0; j < form_elements.length; j++) {
+                form_elements[j].className =
+                        form_elements[j].className.replace( /(?:^|\s)has-error(?!\S)/g , '' );
+            }
+        }
+
+        function addErrors(errors) {
+            for (var i = 0; i < errors.length; i++) {
+                var error, form_group, labels, span, textnode;
+
+                error = errors[i];
+                form_group = document.querySelector('#' + error.name).parentNode;
+                form_group.className += ' has-error';
+
+                labels = form_group.getElementsByTagName('label');
+                span = document.createElement("span");
+                textnode = document.createTextNode(' (' + error.error + ')');
+                span.appendChild(textnode);
+                span.className = 'error';
+                labels[0].appendChild(span);
+
+                if (i === 0) {
+                    document.getElementById(error.name).scrollIntoView();
+                    window.scrollBy(0, -100);
+                }
+            }
+        }
+
         function submitstep1() {
+            savingStep(true, 1);
+
             var form, form_data, request;
 
             // Collect form data
@@ -952,17 +1010,26 @@
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
             request.onload = function() {
-              if (request.status >= 200 && request.status < 400) {
-                // Success!
-                return false;
-              } else {
-                // We reached our target server, but it returned an error
-                return false;
-              }
+                if (request.status >= 200 && request.status < 400) {
+                    var response;
+
+                    removeErrors(form);
+                    response = JSON.parse(request.responseText);
+                    addErrors(response.errors);
+
+                    savingStep(false, 1);
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    savingStep(false, 1);
+                    return false;
+                }
             };
 
             request.onerror = function() {
-              // There was a connection error of some sort
+                // There was a connection error of some sort
+                savingStep(false, 1);
+                return false;
             };
 
             request.send(form_data);
