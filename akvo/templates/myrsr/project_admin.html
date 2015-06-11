@@ -653,18 +653,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="location-adminstrative-container">
+                            <div class="location-administrative-container">
                                 {% if project.primary_location.administratives.all %}
                                     {% for admin in project.primary_location.administratives.all %}
-                                        {% include "myrsr/project_admin_partials/location_adminstrative_input.html" %}
+                                        {% include "myrsr/project_admin_partials/location_administrative_input.html" %}
                                     {% endfor %}
                                 {% else %}
-                                    {% include "myrsr/project_admin_partials/location_adminstrative_input.html" %}
+                                    {% include "myrsr/project_admin_partials/location_administrative_input.html" %}
                                 {% endif %}
                             </div>    
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link" id="add-location-adminstrative"><span class="glyphicon glyphicon-plus"></span> Add another location</a>
+                                    <a href="#" class="btn btn-link" id="add-location-administrative"><span class="glyphicon glyphicon-plus"></span> Add another location</a>
                                 </div>
                             </div>
                         </div>
@@ -870,7 +870,7 @@
     <script type="text/template" id="indicator-input">{% include "myrsr/project_admin_partials/indicator_input.html" %}</script> 
     <script type="text/template" id="indicator-period-input">{% include "myrsr/project_admin_partials/indicator_period_input.html" %}</script> 
     <script type="text/template" id="link-input">{% include "myrsr/project_admin_partials/link_input.html" %}</script> 
-    <script type="text/template" id="location-adminstrative-input">{% include "myrsr/project_admin_partials/location_adminstrative_input.html"%}</script> 
+    <script type="text/template" id="location-administrative-input">{% include "myrsr/project_admin_partials/location_administrative_input.html"%}</script> 
     <script type="text/template" id="partner-input">{% include "myrsr/project_admin_partials/partner_input.html" %}</script> 
     <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}</script> 
     <script type="text/template" id="policy-marker-input">{% include "myrsr/project_admin_partials/policy_marker_input.html" %}</script> 
