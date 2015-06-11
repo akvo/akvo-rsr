@@ -499,21 +499,22 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="latitude" placeholder="Latitude"
-                                        {% if project.primary_location.latitude %} value="{{project.primary_location.latitude}}" {% endif %}>
+                                        <input type="text" class="form-control" id="latitude" name="latitude"
+                                        placeholder="Latitude" {% if project.primary_location.latitude %}
+                                        value="{{project.primary_location.latitude}}" {% endif %}>
                                         <label class="control-label" for="latitude">Latitude</label>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="longitude" placeholder="Longitude"
-                                        {% if project.primary_location.longitude %} value="{{project.primary_location.longitude}}" {% endif %}>
+                                        <input type="text" class="form-control" id="longitude" name="longitude"
+                                        placeholder="Longitude" {% if project.primary_location.longitude %}
+                                        value="{{project.primary_location.longitude}}" {% endif %}>
                                         <label class="control-label" for="longitude">Longitude</label>
                                     </div>
                                 </div>
                             </div>
-                            {{country.code}}
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="partnerType" id="country" class="form-control">
+                                    <select name="country" id="country" class="form-control">
                                         <option value="" {% if not project.primary_location.country %} selected="selected" {% endif %}>Country:</option>
                                         {% for country in country %}
                                             <option value="{{country.code}}"
@@ -528,64 +529,59 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="city" placeholder="City"
+                                        <input type="text" class="form-control" id="city" name="city" placeholder="City"
                                         {% if project.primary_location.city %} value="{{project.primary_location.city}}" {% endif %}>
                                         <label class="control-label" for="city">City</label>
                                     </div>
                                     <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="postalCode" placeholder="Postal code"
+                                        <input type="text" class="form-control" id="postalCode" name="postalCode" placeholder="Postal code"
                                         {% if project.primary_location.postcode %} value="{{project.primary_location.postcode}}" {% endif %}>
                                         <label class="control-label" for="postalCode">Postal code</label>
                                     </div>
                                     <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="state" placeholder="State"
+                                        <input type="text" class="form-control" id="state" name="state" placeholder="State"
                                         {% if project.primary_location.state %} value="{{project.primary_location.state}}" {% endif %}>
                                         <label class="control-label" for="state">State</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control" id="address1" placeholder="Address 1"
-                                {% if project.primary_location.address_1 %} value="{{project.primary_location.address_1}}" {% endif %}>
+                                <input type="text" class="form-control" id="address1" placeholder="Address 1" {% if project.primary_location.address_1 %} value="{{project.primary_location.address_1}}" {% endif %}>
                                 <label class="control-label" for="address1">Address 1</label>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control" id="address2" placeholder="Address 2"
-                                {% if project.primary_location.address_2 %} value="{{project.primary_location.address_2}}" {% endif %}>
+                                <input type="text" class="form-control" id="address2" placeholder="Address 2" {% if project.primary_location.address_2 %} value="{{project.primary_location.address_2}}" {% endif %}>
                                 <label class="control-label" for="address2">Address 2</label>
                             </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="locationReference" placeholder="Reference"
-                                        {% if project.primary_location.reference %} value="{{project.primary_location.reference}}" {% endif %}>
+                                        <input type="text" class="form-control" id="locationReference" name="locationReference" placeholder="Reference" {% if project.primary_location.reference %} value="{{project.primary_location.reference}}" {% endif %}>
                                         <label class="control-label" for="locationReference">Reference</label>
                                     </div>
                                     <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="locationCode" placeholder="Code"
-                                        {% if project.primary_location.location_code %} value="{{project.primary_location.location_code}}" {% endif %}>
+                                        <input type="text" class="form-control" id="locationCode" name="locationCode" placeholder="Code" {% if project.primary_location.location_code %} value="{{project.primary_location.location_code}}" {% endif %}>
                                         <label class="control-label" for="locationCode">Code</label>
                                     </div>
                                     <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="locationName" placeholder="Name"
-                                        {% if project.primary_location.name %} value="{{project.primary_location.name}}" {% endif %}>
+                                        <input type="text" class="form-control" id="locationName" name="locationName" placeholder="Name" {% if project.primary_location.name %} value="{{project.primary_location.name}}" {% endif %}>
                                         <label class="control-label" for="locationName">Name</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group control">
-                                <textarea id="locationDescription" class="form-control" name="textarea" placeholder="Type in a location description">{{project.primary_location.description}}</textarea>
+                                <textarea id="locationDescription" class="form-control" name="locationDescription" placeholder="Type in a location description">{{project.primary_location.description}}</textarea>
                                 <label class="control-label" for="locationDescription">Description</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="locationActivityDescription" class="form-control" name="textarea" placeholder="Type in a location activity description">{{project.primary_location.activity_description}}</textarea>
+                                <textarea id="locationActivityDescription" class="form-control" name="locationActivityDescription" placeholder="Type in a location activity description">{{project.primary_location.activity_description}}</textarea>
                                 <label class="control-label" for="locationActivityDescription">Activity description</label>
                             </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="select-group control">
-                                            <select name="partnerType" id="locationExactness" class="form-control">
+                                            <select name="locationExactness" id="locationExactness" class="form-control">
                                                 <option value="" {% if not project.primary_location.exactness %} selected="selected" {% endif %}>
                                                     Exactness:
                                                 </option>
@@ -603,7 +599,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="select-group control">
-                                            <select name="partnerType" id="locationReach" class="form-control">
+                                            <select name="locationReach" id="locationReach" class="form-control">
                                                 <option value="" {% if not project.primary_location.location_reach %} selected="selected" {% endif %}>
                                                     Reach:
                                                 </option>
@@ -625,7 +621,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="select-group control">
-                                            <select name="partnerType" id="locationClass" class="form-control">
+                                            <select name="locationClass" id="locationClass" class="form-control">
                                                 <option value="" selected="selected">Class</option>
                                                 {% for glc in geographic_location_class%}
                                                     {% if not glc.0 == "code" %}
@@ -641,7 +637,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="select-group control">
-                                            <select name="partnerType" id="locationFeatureDesignation" class="form-control">
+                                            <select name="locationFeatureDesignation" id="locationFeatureDesignation" class="form-control">
                                                 <option value="" selected="selected">Feature designation</option>
                                                 {% for gfd in location_type %}
                                                     {% if not gfd.0 == "code" %}
