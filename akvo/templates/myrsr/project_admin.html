@@ -936,9 +936,15 @@
                     });                                           
 
                     function addCountToName(el) {
-                        var existingName = el.attr('name');
-                        var newName = existingName + '-add-' + partialsCount[pName];
-                        el.attr('name', newName);                        
+                        var oldName = el.attr('name');
+                        var newName = oldName + '-add-' + partialsCount[pName];
+
+                        el.attr('name', newName);
+
+                        var oldID = el.attr('id');
+                        var newID = oldID + '-add-' + partialsCount[pName];
+
+                        el.attr('id', newID);                        
                     }
 
                     document.querySelector(containerSelector).appendChild(partial);  
