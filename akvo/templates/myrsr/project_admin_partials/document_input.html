@@ -2,11 +2,13 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="file" class="form-control" id="document">
+                <input type="file" class="form-control" id="document{% if document %}-{{ document.pk }}{% endif %}"
+                name="document{% if document %}-{{ document.pk }}{% endif %}">
                 <label class="control-label" for="document">Document</label>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="documentUrl" placeholder="Document URL"
+                <input type="text" class="form-control" id="documentUrl{% if document %}-{{ document.pk }}{% endif %}"
+                name="documentUrl{% if document %}-{{ document.pk }}{% endif %}" placeholder="Document URL"
                 {% if document.url %} value="{{document.url}}" {% endif %}>
                 <label class="control-label" for="documentUrl">Document URL</label>
             </div>
@@ -15,12 +17,14 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="documentTitle" placeholder="Document title"
+                <input type="text" class="form-control" id="documentTitle{% if document %}-{{ document.pk }}{% endif %}"
+                name="documentTitle{% if document %}-{{ document.pk }}{% endif %}" placeholder="Document title"
                 {% if document.title %} value="{{document.title}}" {% endif %}>
                 <label class="control-label" for="documentTitle">Document title</label>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="documentFormat" placeholder="Document format"
+                <input type="text" class="form-control" id="documentFormat{% if document %}-{{ document.pk }}{% endif %}"
+                name="documentFormat{% if document %}-{{ document.pk }}{% endif %}" placeholder="Document format"
                 {% if document.format %} value="{{document.format}}" {% endif %}>
                 <label class="control-label" for="documentFormat">Document format</label>
             </div>
@@ -30,7 +34,8 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="partnerType" id="documentCategory" class="form-control">
+                    <select class="form-control" id="documentCategory{% if document %}-{{ document.pk }}{% endif %}"
+                    name="documentCategory{% if document %}-{{ document.pk }}{% endif %}">
                         <option value="" {% if not document.category %} selected="selected" {% endif %}>Document category:</option>
                         {% for category in document_category %}
                             {% if not category.0 == "code" %}
@@ -43,7 +48,8 @@
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="partnerType" id="documentLanguage" class="form-control">
+                    <select class="form-control" id="documentLanguage{% if document %}-{{ document.pk }}{% endif %}"
+                    name="documentLanguage{% if document %}-{{ document.pk }}{% endif %}">
                         <option value="" {% if not document.language %} selected="selected" {% endif %}>Document language:</option>
                         {% for lan in language %}
                             {% if not lan.0 == "code" %}
