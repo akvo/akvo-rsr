@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="policyMarker" id="policyMarker" class="form-control">
+                    <select name="policyMarker{% if marker %}-{{ marker.pk }}{% endif %}" id="policyMarker{% if marker %}-{{ marker.pk }}{% endif %}" class="form-control">
                         <option value="" {% if not marker.policy_marker %} selected="selected" {% endif %}>
                             Policy marker:
                         </option>
@@ -20,7 +20,7 @@
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="policyMarkerSignificance" id="policyMarkerSignificance" class="form-control">
+                    <select name="policyMarkerSignificance{% if marker %}-{{ marker.pk }}{% endif %}" id="policyMarkerSignificance{% if marker %}-{{ marker.pk }}{% endif %}" class="form-control">
                         <option value="" {% if not marker.significance %} selected="selected" {% endif %}>
                             Policy marker significance
                         </option>
@@ -37,7 +37,7 @@
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="policyMarkerVocabulary" id="policyMarkerVocabulary" class="form-control">
+                    <select name="policyMarkerVocabulary{% if marker %}-{{ marker.pk }}{% endif %}" id="policyMarkerVocabulary{% if marker %}-{{ marker.pk }}{% endif %}" class="form-control">
                         <option value="" {% if not marker.vocabulary %} selected="selected" {% endif %}>
                             Policy marker vocabulary
                         </option>
@@ -53,8 +53,7 @@
                 </div>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="policyMarkerDescription" placeholder="Policy marker description"
-                {% if marker.description %} value="{{marker.description}}" {% endif %}>
+                <input type="text" class="form-control" id="policyMarkerDescription{% if marker %}-{{ marker.pk }}{% endif %}" name="policyMarkerDescription{% if marker %}-{{ marker.pk }}{% endif %}" placeholder="Policy marker description" {% if marker.description %} value="{{marker.description}}" {% endif %}>
                 <label class="control-label" for="policyMarkerVocabulary">Policy marker description</label>
             </div>         
         </div>
