@@ -2,7 +2,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <select name="partner" class="form-control" id="partner" placeholder="Partner">
+                <select name="partner{% if partnership %}-{{ partnership.pk }}{% endif %}" class="form-control" id="partner" placeholder="Partner">
                     <option {% if not partnership %} selected="selected" {% endif %}>Partner:</option>
                     {% for org in organisation %}
                         <option value="{{org.id}}" 
@@ -15,7 +15,7 @@
             </div>
             <div class="col-md-4 control">
                 <div class="select-group">
-                    <select name="partnerType" id="partnerType" class="form-control">
+                    <select name="partnerType{% if partnership %}-{{ partnership.pk }}{% endif %}" id="partnerType" class="form-control">
                         <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>Type:</option>
                         <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>Field partner</option>
                         <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>Funding partner</option>
@@ -27,6 +27,7 @@
             </div>
             <div class="col-md-4 control">
                 <input type="text" class="form-control" id="fundingAmount" placeholder="Funding amount"
+                name="fundingAmount{% if partnership %}-{{ partnership.pk }}{% endif %}"
                 {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
                 <label for="fundingAmount" class="control-label">Funding amount</label>
             </div>
