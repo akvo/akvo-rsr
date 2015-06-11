@@ -929,7 +929,11 @@
 
                     $(partial).find('select').each( function() {
                         addCountToName($(this));
-                    });                    
+                    });
+
+                    $(partial).find('textarea').each( function() {
+                        addCountToName($(this));
+                    });                                           
 
                     function addCountToName(el) {
                         var existingName = el.attr('name');
