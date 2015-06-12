@@ -15,12 +15,12 @@
                     <dl class="dl-horizontal">
                         {% for budget_item in project.budget_items.all %}
                         {% if 'other' in budget_item.label.label and budget_item.other_extra %}
-                        <dt>{{budget_item.other_extra}}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat:2|intcomma}}</dd>
+                        <dt>{{budget_item.other_extra}}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat:0|intcomma}}</dd>
                         {% else %}
-                        <dt>{{budget_item.label.label}}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat:2|intcomma}}</dd>
+                        <dt>{{budget_item.label.label}}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{budget_item.amount|floatformat:0|intcomma}}</dd>
                         {% endif %}
                         {% endfor %}
-                        <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.budget|floatformat:2|intcomma}}</dd>
+                        <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.budget|floatformat:0|intcomma}}</dd>
                     </dl>
                 </div>
                 <div class="col-sm-4">
