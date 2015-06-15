@@ -1556,6 +1556,15 @@ section.projectPartners .row {
 dd.currencyAmount {
   margin-left: auto; }
 
+/* Project report page */
+@media only screen and (max-width: 768px) {
+  .projectReport {
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto; } }
+.projectReport .participatingOrganisations th, .projectReport .reportingOrganisation th {
+  width: 8em; }
+
 /* Cookie */
 #cookie-law {
   position: fixed;
