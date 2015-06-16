@@ -1570,8 +1570,17 @@ dd.currencyAmount {
     max-width: 95%;
     margin-left: auto;
     margin-right: auto; } }
-.projectReport .participatingOrganisations th, .projectReport .reportingOrganisation th {
-  width: 8em; }
+@media only screen and (min-width: 992px) {
+  .projectReport table {
+    table-layout: fixed; }
+    .projectReport table th {
+      word-break: break-word; }
+      @media only screen and (max-width: 1200px) {
+        .projectReport table th {
+          width: 90px; } }
+      @media only screen and (min-width: 1200px) {
+        .projectReport table th {
+          width: 120px; } } }
 
 /* Project update page */
 .updateText {

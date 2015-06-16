@@ -1972,10 +1972,19 @@ dd {
         margin-right: auto;
     }
 
-    .participatingOrganisations,
-    .reportingOrganisation {
-        th {
-            width: 8em;
+    @media only screen and (min-width: $width-medium) {
+        table {
+            table-layout: fixed;
+
+            th {
+                @media only screen and (max-width: $width-large) {
+                    width: 90px;
+                }
+                @media only screen and (min-width: $width-large) {
+                    width: 120px;
+                }                
+                word-break: break-word;
+            }
         }
     }
 }
