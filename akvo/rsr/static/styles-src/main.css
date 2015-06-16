@@ -1565,6 +1565,10 @@ dd.currencyAmount {
 .projectReport .participatingOrganisations th, .projectReport .reportingOrganisation th {
   width: 8em; }
 
+/* Project update page */
+.updateText {
+  white-space: pre-line; }
+
 /* Cookie */
 #cookie-law {
   position: fixed;
