@@ -596,6 +596,20 @@ nav.navbar-fixed-top {
             }
         }
     }
+
+    div.twoColumns.clearfix {
+        @media only screen and (min-width:$width-large) {
+            min-width: 170px;
+        }
+
+        > a {
+            min-width: 70px;
+        }
+    }
+}
+
+div.paginationWrap {
+    clear: both;
 }
 
 #profile {
