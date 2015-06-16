@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='keyword',
             name='logo',
-            field=sorl.thumbnail.fields.ImageField(help_text='Add your keyword logo here. You can only add one logo. The logo will be shown on the project page, but not on Akvo Pages.<br/>The logo should be about 1 MB in size, and should preferably be in JPG format.', upload_to=akvo.rsr.models.keyword.logo_path, verbose_name='logo', blank=True),
+            field=sorl.thumbnail.fields.ImageField(help_text='Add your keyword logo here. You can only add one logo. The logo will be shown on the project page, but not on Akvo Pages.<br/>The logo should be about 1 MB in size, and should preferably be 75x75 pixels and in PNG or JPG format.', upload_to=akvo.rsr.models.keyword.logo_path, verbose_name='logo', blank=True),
             preserve_default=True,
         ),
     ]

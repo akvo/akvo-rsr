@@ -24,8 +24,8 @@ class Keyword(models.Model):
         _('logo'), blank=True, upload_to=logo_path,
         help_text=_(u'Add your keyword logo here. You can only add one logo. '
                     u'The logo will be shown on the project page, but not on Akvo Pages.<br/>'
-                    u'The logo should be about 1 MB in size, and should preferably be in '
-                    u'JPG format.'),
+                    u'The logo should be about 1 MB in size, and should preferably be 75x75 '
+                    u'pixels and in PNG or JPG format.'),
     )
 
     def __unicode__(self):

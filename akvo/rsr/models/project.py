@@ -880,6 +880,16 @@ class Project(TimestampsMixin, models.Model):
     def check_mandatory_fields(self, version='2.01'):
         return check_export_fields(self, version)
 
+    def keyword_logos(self):
+        """Return the keywords of the project which have a logo."""
+        return self.keywords.exclude(logo='')
+
+        # logos = []
+        # for keyword in self.keywords.all():
+        #     if keyword.logo:
+        #         logos.append(keyword)
+        # return logos
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project')
