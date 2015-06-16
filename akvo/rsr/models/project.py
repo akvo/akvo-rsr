@@ -884,12 +884,6 @@ class Project(TimestampsMixin, models.Model):
         """Return the keywords of the project which have a logo."""
         return self.keywords.exclude(logo='')
 
-        # logos = []
-        # for keyword in self.keywords.all():
-        #     if keyword.logo:
-        #         logos.append(keyword)
-        # return logos
-
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project')
