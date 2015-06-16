@@ -60,13 +60,11 @@
                                 Note that 'projects' in this form are the same as 'activities' in IATI.</p>
                             </div>
                             <div class="related-project-container">
-                                {% if project.related_projects.all %}
-                                    {% for rp in project.related_projects.all %}
-                                        {% include "myrsr/project_admin_partials/related_project_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                        {% include "myrsr/project_admin_partials/related_project_input.html" %}
-                                {% endif %}
+                                {% for rp in project.related_projects.all %}
+                                    {% include "myrsr/project_admin_partials/related_project_input.html" with key=rp.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/related_project_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -900,7 +898,7 @@
             for (var i=0; i < partials.length; i++) {
                 var partialName = partials[i];
 
-                partialsCount[partialName] = 0;
+                partialsCount[partialName] = 1;
             }
 
             for (var i=0; i < partials.length; i++) {
