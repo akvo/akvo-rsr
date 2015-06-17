@@ -60,14 +60,13 @@
                                 Note that 'projects' in this form are the same as 'activities' in IATI.</p>
                             </div>
                             <div class="related-project-container">
-                                {% if project.related_projects.all %}
-                                    {% for rp in project.related_projects.all %}
-                                        {% include "myrsr/project_admin_partials/related_project_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                        {% include "myrsr/project_admin_partials/related_project_input.html" %}
-                                {% endif %}
+                                {% for rp in project.related_projects.all %}
+                                    {% include "myrsr/project_admin_partials/related_project_input.html" with key=rp.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/related_project_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>
+                            <hr/>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link" id="add-related-project"><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
@@ -901,7 +900,7 @@
             for (var i=0; i < partials.length; i++) {
                 var partialName = partials[i];
 
-                partialsCount[partialName] = 0;
+                partialsCount[partialName] = 1;
             }
 
             for (var i=0; i < partials.length; i++) {
@@ -923,6 +922,13 @@
 
                     var partial = document.createElement('div');
                     partial.innerHTML = markup;
+
+                    $(partial).find('div.parent').each( function() {
+                        var oldID = $(this).attr('id');
+                        var newID = oldID + '-add-' + partialsCount[pName];
+
+                        $(this).attr('id', newID);
+                    });
 
                     $(partial).find('input').each( function() {
                         addCountToName($(this));
@@ -1027,6 +1033,38 @@
             }
         }
 
+        function replaceNames(newObjects) {
+            for (var i = 0; i < newObjects.length; i++) {
+                var parentNode, parentNodeId, newParentNodeId, inputs, selects, textareas;
+
+                parentNode = document.getElementById(newObjects[i].div_id);
+                newParentNodeId = parentNode.getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                parentNode.setAttribute("id", newParentNodeId);
+
+                inputs = parentNode.getElementsByTagName("input");
+                selects = parentNode.getElementsByTagName("select");
+                textareas = parentNode.getElementsByTagName("textarea");
+
+                for (var j=0; j < inputs.length; j++) {
+                    var newInputId = inputs[j].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                    inputs[j].setAttribute("id", newInputId);
+                    inputs[j].setAttribute("name", newInputId);
+                }
+
+                for (var k=0; k < selects.length; k++) {
+                    var newSelectId = selects[k].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                    selects[k].setAttribute("id", newSelectId);
+                    selects[k].setAttribute("name", newSelectId);
+                }
+
+                for (var l=0; l < textareas.length; l++) {
+                    var newTextareaId = textareas[k].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                    textareas[k].setAttribute("id", newTextareaId);
+                    textareas[k].setAttribute("name", newTextareaId);
+                }
+            }
+        }
+
         function submitstep1() {
             savingStep(true, 1);
 
@@ -1052,6 +1090,7 @@
 
                     removeErrors(form);
                     response = JSON.parse(request.responseText);
+                    replaceNames(response.new_objects);
                     addErrors(response.errors);
 
                     savingStep(false, 1);
@@ -1070,6 +1109,54 @@
             };
 
             request.send(form_data);
+        }
+
+        function deleteItem(itemId, itemType, parentDiv) {
+            var request;
+
+            // Create request
+            request = new XMLHttpRequest();
+            request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    parentDiv.parentNode.removeChild(parentDiv);
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                return false;
+            };
+
+            request.send();
+        }
+
+        function removePartial(node) {
+            var parentDiv, idArray;
+
+            parentDiv = node.closest(".parent");
+            idArray = parentDiv.getAttributeNode("id").value.split("-");
+
+            if (idArray[idArray.length - 2] === 'add') {
+                parentDiv.parentNode.removeChild(parentDiv);
+            } else {
+                var itemId, itemType;
+
+                itemId = idArray[idArray.length - 1];
+                idArray.pop();
+                itemType = idArray.join();
+
+                deleteItem(itemId, itemType, parentDiv);
+            }
+
+            return false;
         }
     </script>
     

@@ -5,7 +5,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, RelatedProject
 
 from django.http import HttpResponseForbidden
 
@@ -24,6 +24,7 @@ def project_admin_step1(request, pk=None):
 
     data = request.POST
     errors = []
+    new_objects = []
 
     # Title
     project.title = data['projectTitle']
@@ -158,6 +159,53 @@ def project_admin_step1(request, pk=None):
         error = str(e).capitalize()
         errors.append({'name': 'defaultFinanceType', 'error': error})
 
-    # TODO: Related projects
+    # Related projects
+    for key in data.keys():
+        if 'related-project-project-' in key:
+            rp = None
+            rp_id = key.split('-', 3)[3]
 
-    return Response({'errors': errors})
+            if 'add' in rp_id and (data['related-project-iati-identifier-' + rp_id]
+                                   or data['related-project-relation-' + rp_id]):
+                rp = RelatedProject.objects.create(project=project)
+                new_objects.append(
+                    {
+                        'old_id': 'add-' + rp_id[-1],
+                        'new_id': str(rp.pk),
+                        'div_id': 'related_project-add-' + rp_id[-1],
+                    }
+                )
+            elif not 'add' in rp_id:
+                try:
+                    rp = RelatedProject.objects.get(pk=int(rp_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+            if rp:
+                # TODO: Related project
+
+                # Related project IATI identifier
+                rp_iati_id_key = 'related-project-iati-identifier-' + rp_id
+                rp.related_iati_id = data[rp_iati_id_key]
+                try:
+                    rp.save(update_fields=["related_iati_id"])
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': rp_iati_id_key, 'error': error})
+
+                # Related project relation
+                rp_relation_key = 'related-project-relation-' + rp_id
+                rp.relation = data[rp_relation_key]
+                try:
+                    rp.save(update_fields=["relation"])
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': rp_relation_key, 'error': error})
+
+    return Response(
+        {
+            'errors': errors,
+            'new_objects': new_objects,
+        }
+    )
