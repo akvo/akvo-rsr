@@ -24,6 +24,7 @@ def project_admin_step1(request, pk=None):
 
     data = request.POST
     errors = []
+    new_objects = []
 
     # Title
     project.title = data['projectTitle']
@@ -164,9 +165,17 @@ def project_admin_step1(request, pk=None):
             rp = None
             rp_id = key.split('-', 3)[3]
 
-            if 'add' in rp_id:
+            if 'add' in rp_id and (data['related-project-iati-identifier-' + rp_id]
+                                   or data['related-project-relation-' + rp_id]):
                 rp = RelatedProject.objects.create(project=project)
-            else:
+                new_objects.append(
+                    {
+                        'old_id': 'add-' + rp_id[-1],
+                        'new_id': str(rp.pk),
+                        'div_id': 'related_project-add-' + rp_id[-1],
+                    }
+                )
+            elif not 'add' in rp_id:
                 try:
                     rp = RelatedProject.objects.get(pk=int(rp_id))
                 except Exception as e:
@@ -194,4 +203,9 @@ def project_admin_step1(request, pk=None):
                     error = str(e).capitalize()
                     errors.append({'name': rp_relation_key, 'error': error})
 
-    return Response({'errors': errors})
+    return Response(
+        {
+            'errors': errors,
+            'new_objects': new_objects,
+        }
+    )
