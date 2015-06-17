@@ -291,7 +291,11 @@
                     <tbody>
                         {% for budget_item in project.budget_items.all %}
                         <tr>
-                            <td>{{budget_item.label}}</td>
+                            {% if 'other' in budget_item.label.label and budget_item.other_extra %}
+                                <td>{{budget_item.other_extra}}</td>
+                            {% else %}
+                                <td>{{budget_item.label}}</td>
+                            {% endif %}
                             <td>{{budget_item.iati_type}}</td>
                             <td>{{budget_item.amount}}</td>
                             <td>{{budget_item.iati_currency}}</td>
