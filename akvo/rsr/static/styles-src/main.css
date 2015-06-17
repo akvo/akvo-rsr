@@ -1497,6 +1497,8 @@ div.textBlock {
       margin-bottom: 1em; } }
 
 /* Financial details page */
+section.projectFinancial .currentFunders dl > dd {
+  text-align: right; }
 @media only screen and (max-width: 768px) {
   section.projectFinancial {
     width: 95%;

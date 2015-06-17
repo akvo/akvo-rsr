@@ -1862,6 +1862,15 @@ div.textBlock {
 /* Financial details page */
 
 section.projectFinancial {
+
+    .currentFunders {
+        dl {
+            > dd {
+                text-align: right;
+            }
+        }
+    }
+
     @include responsive(small-max-screens) {
         width: 95%;
         max-width: 450px;
