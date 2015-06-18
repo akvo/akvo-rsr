@@ -25,7 +25,7 @@
     <section class="panels projectEdit">
         <fieldset>
                 <!--*************************************** FORM STEP 1 **********************************************-->
-                <div class="myPanel borderBottom" id="panel1">
+                <div class="myPanel borderBottom" id="panel1" onclick="scrollTo('panel1')">
                     <div class="formStep stepOne">
                         <label for="stepOne"><h4>01 - General information</h4></label>
                         <input type="radio" name="step" id="stepOne" checked >
@@ -224,7 +224,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 2 **********************************************-->
-                <div class="myPanel borderBottom" id="panel2">
+                <div class="myPanel borderBottom" id="panel2" onclick="scrollTo('panel2')">
                     <div class="formStep stepTwo">
                         <label for="stepTwo"><h4>02 - Contact information</h4></label>
                         <input type="radio" name="step" id="stepTwo">
@@ -258,7 +258,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 3 **********************************************-->
-                <div class="myPanel borderBottom" id="panel3">
+                <div class="myPanel borderBottom" id="panel3" onclick="scrollTo('panel3')">
                     <div class="formStep stepThree">
                         <label for="stepThree"><h4>03 - Partners</h4></label>
                         <input type="radio" name="step" id="stepThree">                        
@@ -308,7 +308,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 4 **********************************************-->
-                <div class="myPanel borderBottom" id="panel4">
+                <div class="myPanel borderBottom" id="panel4" onclick="scrollTo('panel4')">
                     <div class="formStep stepFour">
                         <label for="stepFour"><h4>04 - Descriptions</h4></label>
                         <input type="radio" name="step" id="stepFour">                        
@@ -358,7 +358,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 5 **********************************************-->
-                <div class="myPanel borderBottom" id="panel5">
+                <div class="myPanel borderBottom" id="panel5" onclick="scrollTo('panel5')">
                     <div class="formStep stepFive">
                         <label for="stepFive"><h4>05 - Photo</h4></label>
                         <input type="radio" name="step" id="stepFive">                        
@@ -393,7 +393,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 6 **********************************************-->
-                <div class="myPanel borderBottom" id="panel6">
+                <div class="myPanel borderBottom" id="panel6" onclick="scrollTo('panel6')">
                     <div class="formStep stepSix">
                         <label for="stepSix"><h4>06 - Links and documents</h4></label>
                         <input type="radio" name="step" id="stepSix">
@@ -437,7 +437,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 7 **********************************************-->
-                <div class="myPanel borderBottom" id="panel7">
+                <div class="myPanel borderBottom" id="panel7" onclick="scrollTo('panel7')">
                     <div class="formStep stepSeven">
                         <label for="stepSeven"><h4>07 - Locations</h4></label>
                         <input type="radio" name="step" id="stepSeven">
@@ -642,7 +642,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 8 **********************************************-->
-                <div class="myPanel borderBottom" id="panel8">
+                <div class="myPanel borderBottom" id="panel8" onclick="scrollTo('panel8')">
                     <div class="formStep stepEight">
                         <label for="stepEight"><h4>08 - Focus</h4></label>
                         <input type="radio" name="step" id="stepEight">
@@ -684,7 +684,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 9 **********************************************-->
-                <div class="myPanel borderBottom" id="panel9">
+                <div class="myPanel borderBottom" id="panel9" onclick="scrollTo('panel9')">
                     <div class="formStep stepNine">
                         <label for="stepNine"><h4>09 - Finance</h4></label>
                         <input type="radio" name="step" id="stepNine">                        
@@ -780,7 +780,7 @@
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 10 **********************************************-->
-                <div class="myPanel borderBottom" id="panel10">
+                <div class="myPanel borderBottom" id="panel10" onclick="scrollTo('panel10')">
                     <div class="formStep stepTen">
                         <label for="stepTen"><h4>10 - Results</h4></label>
                         <input type="radio" name="step" id="stepTen">
@@ -1131,6 +1131,11 @@
             }
 
             return false;
+        }
+
+        function scrollTo(div_id) {
+            document.getElementById(div_id).scrollIntoView();
+            window.scrollBy(0, -100);
         }
     </script>
     
