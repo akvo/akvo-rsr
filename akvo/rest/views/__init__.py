@@ -31,6 +31,7 @@ from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
 from .project_admin import (project_admin_step1,
+                            project_admin_step2,
                             project_admin_step4)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
@@ -96,6 +97,7 @@ __all__ = [
     'ProjectUpViewSet',
     'ProjectViewSet',
     'project_admin_step1',
+    'project_admin_step2',
     'project_admin_step4',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',

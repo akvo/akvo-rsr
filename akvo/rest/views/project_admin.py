@@ -5,7 +5,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Project, RelatedProject
+from akvo.rsr.models import Country, Project, ProjectContact, RelatedProject
 
 from django.http import HttpResponseForbidden
 
@@ -115,6 +115,119 @@ def project_admin_step1(request, pk=None):
 
     return Response(
         {
+            'errors': errors,
+            'new_objects': new_objects,
+        }
+    )
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step2(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    data = request.POST
+    errors = []
+    new_objects = []
+
+    # Contacts
+    for key in data.keys():
+        if 'contact-type-' in key:
+            contact = None
+            contact_id = key.split('-', 2)[2]
+
+            if 'add' in contact_id and (data['contact-type-' + contact_id]
+                                        or data['contact-name-' + contact_id]
+                                        or data['contact-email-' + contact_id]
+                                        or data['contact-job-title-' + contact_id]
+                                        or data['contact-organisation-' + contact_id]
+                                        or data['contact-phone-' + contact_id]
+                                        or data['contact-address-' + contact_id]
+                                        or data['contact-website-' + contact_id]
+                                        or data['contact-department-' + contact_id]
+                                        or data['contact-country-' + contact_id]
+                                        or data['contact-state-' + contact_id]):
+                contact = ProjectContact.objects.create(project=project)
+                new_objects.append(
+                    {
+                        'old_id': 'add-' + contact_id[-1],
+                        'new_id': str(contact.pk),
+                        'div_id': 'project_contact-add-' + contact_id[-1],
+                    }
+                )
+            elif not 'add' in contact_id:
+                try:
+                    contact = ProjectContact.objects.get(pk=int(contact_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+            if contact:
+                contact_type_key = 'contact-type-' + contact_id
+                errors = save_field(
+                    contact, 'type', contact_type_key, data[contact_type_key], errors
+                )
+
+                contact_name_key = 'contact-name-' + contact_id
+                errors = save_field(
+                    contact, 'person_name', contact_name_key, data[contact_name_key], errors
+                )
+
+                contact_email_key = 'contact-email-' + contact_id
+                errors = save_field(
+                    contact, 'email', contact_email_key, data[contact_email_key], errors
+                )
+
+                contact_job_title_key = 'contact-job-title-' + contact_id
+                errors = save_field(
+                    contact, 'job_title', contact_job_title_key, data[contact_job_title_key], errors
+                )
+
+                contact_organisation_key = 'contact-organisation-' + contact_id
+                errors = save_field(
+                    contact, 'organisation', contact_organisation_key,
+                    data[contact_organisation_key], errors
+                )
+
+                contact_phone_key = 'contact-phone-' + contact_id
+                errors = save_field(
+                    contact, 'telephone', contact_phone_key, data[contact_phone_key], errors
+                )
+
+                contact_address_key = 'contact-address-' + contact_id
+                errors = save_field(
+                    contact, 'mailing_address', contact_address_key, data[contact_address_key],
+                    errors
+                )
+
+                contact_website_key = 'contact-website-' + contact_id
+                errors = save_field(
+                    contact, 'website', contact_website_key, data[contact_website_key], errors
+                )
+
+                contact_department_key = 'contact-department-' + contact_id
+                errors = save_field(
+                    contact, 'department', contact_department_key, data[contact_department_key],
+                    errors
+                )
+
+                contact_country_key = 'contact-country-' + contact_id
+                if data[contact_country_key]:
+                    country = Country.objects.get(pk=int(data[contact_country_key]))
+                else:
+                    country = None
+                errors = save_field(contact, 'country', contact_country_key, country, errors)
+
+                contact_state_key = 'contact-state-' + contact_id
+                errors = save_field(
+                    contact, 'state', contact_state_key, data[contact_state_key], errors
+                )
+
+    return Response({
             'errors': errors,
             'new_objects': new_objects,
         }

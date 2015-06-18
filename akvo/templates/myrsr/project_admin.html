@@ -234,20 +234,26 @@
                             </div>
                         </div>  
                         <div class="formBlock">
+                            <form role="form" id="admin-step-2" action="javascript: submitStep(2)">
                             <div class="contact-information-container">
-                                {% if project.contacts.all %}
-                                    {% for contact in project.contacts.all %}
-                                        {% include "myrsr/project_admin_partials/contact_information_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                        {% include "myrsr/project_admin_partials/contact_information_input.html" %}
-                                {% endif %}
+                                {% for contact in project.contacts.all %}
+                                    {% include "myrsr/project_admin_partials/contact_information_input.html" with key=contact.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/contact_information_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div> 
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link" id="add-contact-information"><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
                                 </div>
-                            </div>                             
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep2"></div>
+                            </div>
+                            </form>
                         </div>                                    
                     </div>
                 </div>
