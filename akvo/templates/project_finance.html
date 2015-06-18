@@ -11,7 +11,7 @@
 	    <div class="container">
 	    	<div class="row verticalPadding">
                 <div class="col-sm-4">
-                    <h4 class="">{% trans "Project financial details" %}:</h4>
+                    <h4 class="">{% trans "Project budget" %}:</h4>
                     <dl class="dl-horizontal">
                         {% for budget_item in project.budget_items.all %}
                         {% if 'other' in budget_item.label.label and budget_item.other_extra %}
@@ -55,7 +55,7 @@
                         <dt>{% trans "Donations" %}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{% if project.all_donations_amount_received %}{{project.all_donations_amount_received|floatformat:0|intcomma}}{% else %}0{% endif %}</dd>
                         <hr>
                         <dt>{% trans "Total funded" %}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.funds|floatformat:0|intcomma}}</dd>
-                        <dt>{% trans "Budget" %}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.budget|floatformat:0|intcomma}}</dd>                        
+                        <dt>{% trans "Project budget" %}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{project.budget|floatformat:0|intcomma}}</dd>                        
                         <dt class="totalFinance">{% trans "Funds needed" %}:</dt>
                         <dd class="totalFinance currencyAmount">
                             <span class="currency"> {{project.get_currency_display}}</span>{% if project.funds_needed >= 0 %}{{project.funds_needed|floatformat:0|intcomma}}{% else %}0{% endif %}
