@@ -37,10 +37,8 @@
                     <select class="form-control" id="documentCategory{% if document %}-{{ document.pk }}{% endif %}"
                     name="documentCategory{% if document %}-{{ document.pk }}{% endif %}">
                         <option value="" {% if not document.category %} selected="selected" {% endif %}>Document category:</option>
-                        {% for category in document_category %}
-                            {% if not category.0 == "code" %}
-                                <option value="{{category.0}}" {% if document.category == category.0 %} selected="selected" {% endif %}>{{category.0}} - {{category.2}}</option>                            
-                            {% endif %}
+                        {% for category in document_categories %}
+                            <option value="{{ category.code }}" {% if document.category == category.code %} selected="selected" {% endif %}>{{ category.code }} - {{ category.name }}</option>
                         {% endfor %}
                     </select>
                     <label class="control-label" for="documentCategory">Document category</label>
@@ -51,13 +49,9 @@
                     <select class="form-control" id="documentLanguage{% if document %}-{{ document.pk }}{% endif %}"
                     name="documentLanguage{% if document %}-{{ document.pk }}{% endif %}">
                         <option value="" {% if not document.language %} selected="selected" {% endif %}>Document language:</option>
-                        {% for lan in language %}
-                            {% if not lan.0 == "code" %}
-                                <option value="{{lan.0}}" {% if document.language == lan.0 %} selected="selected" {% endif %}>{{lan.1}}</option>          
-                            {% endif %}
-                        {% endfor %}                    
-                        <option value="en">en - English</option>
-                        <option value="sp">sp - Spanish</option>
+                        {% for language in languages %}
+                            <option value="{{ language.code }}" {% if document.language == language.code %} selected="selected" {% endif %}>{{ language.code }} - {{ language.name }}</option>
+                        {% endfor %}
                     </select>
                     <label class="control-label" for="documentLanguage">Document language</label>
                 </div>

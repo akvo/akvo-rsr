@@ -3,10 +3,8 @@
         <div class="select-group">
             <select name="contactType{% if contact %}-{{ contact.pk }}{% endif %}" id="contactType" class="form-control">
                 <option value="" {% if not contact.type %} selected="selected" {% endif %}>Contact type:</option>
-                {% for entry in contact_type %}
-                    {% if not entry.0 == "code" %}
-                        <option value="{{entry.0}}" {% if contact.type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.2}}</option>
-                    {% endif %}
+                {% for contact_type in contact_types %}
+                    <option value="{{ contact_type.code }}" {% if contact.type == contact_type.code %} selected="selected" {% endif %}>{{ contact_type.code }} - {{ contact_type.name }}</option>
                 {% endfor %}                 
             </select>
             <label for="projectStatus" class="control-label">Type</label>
@@ -72,8 +70,8 @@
             <select name="contactCountry{% if contact %}-{{ contact.pk }}{% endif %}"
             id="contactCountry{% if contact %}-{{ contact.pk }}{% endif %}" class="form-control">
                 <option value="" {% if not contact.country %} selected="selected" {% endif %}>Country:</option>
-                {% for entry in country %}
-                    <option value="{{entry.id}}" {% if contact.country.name == entry.name %} selected="selected" {% endif %}>{{entry.name}}</option>
+                {% for country in countries %}
+                    <option value="{{ country.id }}" {% if contact.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
                 {% endfor %}                  
             </select>
             <label for="contactCountry" class="control-label">Country</label>

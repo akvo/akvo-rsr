@@ -7,15 +7,14 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import json
-
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
@@ -24,14 +23,18 @@ from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
 from ..models import Country, Organisation, Employment, Project, BudgetItemLabel
 
-from akvo.codelists.store.codelists_v201 import (AID_TYPE, FLOW_TYPE, TIED_STATUS, COLLABORATION_TYPE,
-                                                FINANCE_TYPE, CONTACT_TYPE, DOCUMENT_CATEGORY, LANGUAGE,
-                                                ACTIVITY_SCOPE, COUNTRY, REGION, REGION_VOCABULARY, GEOGRAPHIC_EXACTNESS,
-                                                GEOGRAPHIC_LOCATION_REACH, GEOGRAPHIC_LOCATION_CLASS, LOCATION_TYPE, 
-                                                GEOGRAPHIC_VOCABULARY, SECTOR_VOCABULARY, POLICY_MARKER,
-                                                POLICY_SIGNIFICANCE, POLICY_MARKER_VOCABULARY, BUDGET_IDENTIFIER_VOCABULARY,
-                                                BUDGET_TYPE, BUDGET_IDENTIFIER, DISBURSEMENT_CHANNEL, CONDITION_TYPE,
-                                                RESULT_TYPE, INDICATOR_MEASURE)
+from akvo.codelists.models import (
+    ActivityScope, AidType, BudgetIdentifier, BudgetIdentifierVocabulary, BudgetType,
+    CollaborationType, ConditionType, ContactType, DisbursementChannel, DocumentCategory,
+    FinanceType, FlowType, GeographicExactness, GeographicLocationClass, GeographicLocationReach,
+    GeographicalPrecision, GeographicVocabulary, IndicatorMeasure, Language, LocationType,
+    PolicyMarker, PolicyMarkerVocabulary, PolicySignificance, Region, RegionVocabulary, ResultType,
+    SectorVocabulary, TiedStatus, Version
+)
+
+from akvo.codelists.models import Country as IatiCountry
+
+import json
 
 
 @login_required
@@ -135,77 +138,100 @@ def my_projects(request):
 
 @login_required
 def project_admin(request, project_id):
-    """."""
+    """The project admin."""
+    try:
+        project = Project.objects.select_related(
+            'publishingstatus__status',
+            'sync_owner',
+            'primary_location',
+            'primary_location__country'
+            'locations',
+            'partnerships',
+            'partnerships__organisation',
+            'sectors',
+            'partners',
+        ).get(pk=project_id)
+    except:
+        return Http404
 
-    project = get_object_or_404(Project, pk=project_id)
     budget_item_labels = BudgetItemLabel.objects.all()
+    countries = Country.objects.only('name').all()
 
-    aid_types = AID_TYPE
-    flow_types = FLOW_TYPE
-    tied_status = TIED_STATUS
-    collaboration_type = COLLABORATION_TYPE
-    finance_type = FINANCE_TYPE  
-    contact_type = CONTACT_TYPE
-    country = Country.objects.all()
-    organisation = Organisation.objects.all()
-    document_category = DOCUMENT_CATEGORY
-    language = LANGUAGE
-    activity_scope = ACTIVITY_SCOPE
-    codelist_country = COUNTRY
-    region = REGION
-    region_vocabulary = REGION_VOCABULARY
-    geographic_exactness = GEOGRAPHIC_EXACTNESS
-    geographic_location_reach = GEOGRAPHIC_LOCATION_REACH
-    geographic_location_class = GEOGRAPHIC_LOCATION_CLASS
-    location_type = LOCATION_TYPE
-    geographic_vocabulary = GEOGRAPHIC_VOCABULARY
-    sector_vocabulary = SECTOR_VOCABULARY
-    policy_marker = POLICY_MARKER
-    policy_significance = POLICY_SIGNIFICANCE
-    policy_marker_vocabulary = POLICY_MARKER_VOCABULARY
-    country_budget_vocabulary = BUDGET_IDENTIFIER_VOCABULARY
-    budget_type = BUDGET_TYPE
-    budget_identifier = BUDGET_IDENTIFIER
-    disbursement_channel = DISBURSEMENT_CHANNEL
-    condition_type = CONDITION_TYPE
-    result_type = RESULT_TYPE
-    indicator_measure = INDICATOR_MEASURE
+    # IATI codelists
+    def get_codelist(codelist, version):
+        """Retrieve the codelist from the codelist models."""
+        return codelist.objects.only('code', 'name', 'version').filter(version=version)
+
+    iati_version = Version.objects.get(code=settings.IATI_VERSION)
+
+    activity_scopes = get_codelist(ActivityScope, iati_version)
+    aid_types = get_codelist(AidType, iati_version)
+    budget_identifiers = get_codelist(BudgetIdentifier, iati_version)
+    budget_identifier_vocabularies = get_codelist(BudgetIdentifierVocabulary, iati_version)
+    budget_types = get_codelist(BudgetType, iati_version)
+    collaboration_types = get_codelist(CollaborationType, iati_version)
+    condition_types = get_codelist(ConditionType, iati_version)
+    contact_types = get_codelist(ContactType, iati_version)
+    document_categories = get_codelist(DocumentCategory, iati_version)
+    disbursement_channels = get_codelist(DisbursementChannel, iati_version)
+    finance_types = get_codelist(FinanceType, iati_version)
+    flow_types = get_codelist(FlowType, iati_version)
+    geographical_precisions = get_codelist(GeographicalPrecision, iati_version)
+    geographic_exactnesses = get_codelist(GeographicExactness, iati_version)
+    geographic_location_classes = get_codelist(GeographicLocationClass, iati_version)
+    geographic_location_reaches = get_codelist(GeographicLocationReach, iati_version)
+    geographic_vocabularies = get_codelist(GeographicVocabulary, iati_version)
+    iati_countries = get_codelist(IatiCountry, iati_version)
+    indicator_measures = get_codelist(IndicatorMeasure, iati_version)
+    languages = get_codelist(Language, iati_version)
+    location_types = get_codelist(LocationType, iati_version)
+    policy_markers = get_codelist(PolicyMarker, iati_version)
+    policy_marker_vocabularies = get_codelist(PolicyMarkerVocabulary, iati_version)
+    policy_significances = get_codelist(PolicySignificance, iati_version)
+    regions = get_codelist(Region, iati_version)
+    region_vocabularies = get_codelist(RegionVocabulary, iati_version)
+    result_types = get_codelist(ResultType, iati_version)
+    sector_vocabularies = get_codelist(SectorVocabulary, iati_version)
+    tied_statuses = get_codelist(TiedStatus, iati_version)
     
     context = {
         'id': project_id,
         'project': project,
-        'aid_types': aid_types,
-        'flow_types': flow_types,
-        'tied_status': tied_status,
-        'collaboration_type': collaboration_type,
-        'finance_type': finance_type, 
-        'contact_type': contact_type,   
-        'country': country,  
-        'organisation': organisation,
-        'document_category': document_category,
-        'language': language,
-        'activity_scope': activity_scope,
-        'codelist_country': codelist_country,
-        'region': region,
-        'region_vocabulary': region_vocabulary,
-        'geographic_exactness': geographic_exactness,
-        'geographic_location_reach': geographic_location_reach,
-        'geographic_location_class': geographic_location_class,
-        'location_type': location_type,
-        'geographic_vocabulary': geographic_vocabulary,
-        'sector_vocabulary': sector_vocabulary,
-        'policy_marker': policy_marker,
-        'policy_significance': policy_significance,
-        'policy_marker_vocabulary': policy_marker_vocabulary,
-        'country_budget_vocabulary': country_budget_vocabulary,
-        'budget_item_labels': budget_item_labels,
-        'budget_type': budget_type,
-        'budget_identifier': budget_identifier,
-        'disbursement_channel': disbursement_channel,
-        'condition_type': condition_type,
-        'result_type': result_type,
-        'indicator_measure': indicator_measure,
 
+        # RSR codes
+        'budget_item_labels': budget_item_labels,
+        'countries': countries,
+
+        # IATI codelists
+        'activity_scopes': activity_scopes,
+        'aid_types': aid_types,
+        'budget_identifiers': budget_identifiers,
+        'budget_identifier_vocabularies': budget_identifier_vocabularies,
+        'budget_types': budget_types,
+        'collaboration_types': collaboration_types,
+        'condition_types': condition_types,
+        'contact_types': contact_types,
+        'document_categories': document_categories,
+        'disbursement_channels': disbursement_channels,
+        'finance_types': finance_types,
+        'flow_types': flow_types,
+        'geographical_precisions': geographical_precisions,
+        'geographic_exactnesses': geographic_exactnesses,
+        'geographic_location_classes': geographic_location_classes,
+        'geographic_location_reaches': geographic_location_reaches,
+        'geographic_vocabularies': geographic_vocabularies,
+        'iati_countries': iati_countries,
+        'indicator_measures': indicator_measures,
+        'languages': languages,
+        'location_types': location_types,
+        'policy_markers': policy_markers,
+        'policy_marker_vocabularies': policy_marker_vocabularies,
+        'policy_significances': policy_significances,
+        'regions': regions,
+        'region_vocabularies': region_vocabularies,
+        'result_types': result_types,
+        'tied_statuses': tied_statuses,
+        'sector_vocabularies': sector_vocabularies,
     }
 
     return render(request, 'myrsr/project_admin.html', context)

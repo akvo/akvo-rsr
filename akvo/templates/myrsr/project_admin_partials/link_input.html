@@ -3,7 +3,7 @@
         <div class="col-md-4 control">
             <div class="select-group">
                 <select name="linkType{% if link %}-{{ link.pk }}{% endif %}" id="linkType{% if link %}-{{ link.pk }}{% endif %}" class="form-control">
-                    <option value="" {% if not link %} selected="selected" {% endif %}>Link type:</option>
+                    <option value="" {% if not link.kind %} selected="selected" {% endif %}>Link type:</option>
                     <option value="A" {% if link.kind == "A" %} selected="selected" {% endif %}>Akvopedia entry</option>
                     <option value="E" {% if link.kind == "E" %} selected="selected" {% endif %}>External link</option>
                 </select>

@@ -8,16 +8,9 @@
             <div class="col-md-4">
                 <div class="select-group control">
                     <select name="locationVocabulary{% if admin %}-{{ admin.pk }}{% endif %}" id="locationVocabulary{% if admin %}-{{ admin.pk }}{% endif %}" class="form-control">
-                        <option value="" {% if not admin.vocabulary %} selected="selected" {% endif %}>
-                            Administrative vocabulary
-                        </option>
-                         {% for gv in geographic_vocabulary %}
-                            {% if not gv.0 == "code" %}
-                               <option value="{{glr.0}}"
-                               {% if admin.vocabulary == gv.0 %} selected="selected" {% endif %}>
-                                    {{gv.0}} - {{gv.1}}
-                                </option> 
-                            {% endif %}
+                        <option value="" {% if not admin.vocabulary %} selected="selected" {% endif %}>Administrative vocabulary</option>
+                         {% for vocabulary in geographic_vocabularies %}
+                            <option value="{{ vocabulary.code }}" {% if admin.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                         {% endfor %}
                     </select>
                     <label class="control-label" for="locationVocabulary">Administrative vocabulary</label>

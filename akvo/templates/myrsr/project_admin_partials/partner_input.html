@@ -5,12 +5,14 @@
                 <select name="partner{% if partnership %}-{{ partnership.pk }}{% endif %}" class="form-control"
                 id="partner{% if partnership %}-{{ partnership.pk }}{% endif %}" placeholder="Partner">
                     <option {% if not partnership %} selected="selected" {% endif %}>Partner:</option>
-                    {% for org in organisation %}
+                    {% comment %}
+                    {% for org in organisations %}
                         <option value="{{org.id}}" 
                         {% if partnership.organisation.name == org.name %} selected="selected" {% endif %}>
                             {{org.name}}
                         </option>
                     {% endfor %}
+                    {% endcomment %}
                 </select>
                 <label for="partner" class="control-label">Partner</label>
             </div>

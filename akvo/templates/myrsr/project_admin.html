@@ -162,10 +162,8 @@
                                 <div class="select-group control">
                                     <select name="defaultAidType" id="defaultAidType" class="form-control"> 
                                         <option value="" {% if not project.default_aid_type %} selected="selected" {% endif %}>Default aid type:</option>                                      
-                                        {% for entry in aid_types %}
-                                            {% if not entry.0 == "code" %}
-                                                <option value="{{entry.0}}" {% if project.default_aid_type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.2}}</option>
-                                            {% endif %}
+                                        {% for aid_type in aid_types %}
+                                            <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %} selected="selected" {% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
                                         {% endfor %} 
                                     </select>
                                     <label for="defaultAidType" class="control-label">Default aid type</label>
@@ -175,10 +173,8 @@
                                 <div class="select-group control">
                                     <select name="defaultFlowType" id="defaultFlowType" class="form-control">
                                         <option value="" {% if not project.default_flow_type %} selected="selected" {% endif %}>Default flow type:</option>
-                                        {% for entry in flow_types %}
-                                            {% if not entry.0 == "code" %}
-                                                <option value="{{entry.0}}" {% if project.default_flow_type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.1}}</option>
-                                            {% endif %}
+                                        {% for flow_type in flow_types %}
+                                            <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %} selected="selected" {% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
                                         {% endfor %} 
                                     </select>
                                     <label for="defaultFlowType" class="control-label">Default flow type</label>
@@ -188,23 +184,19 @@
                                 <div class="select-group control">
                                     <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control">
                                         <option value="" {% if not project.default_tied_status %} selected="selected" {% endif %}>Default tied status:</option>
-                                        {% for entry in tied_status %}
-                                            {% if not entry.0 == "code" %}
-                                                <option value="{{entry.0}}" {% if project.default_tied_status == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.1}}</option>
-                                            {% endif %}
+                                        {% for tied_status in tied_statuses %}
+                                            <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %} selected="selected" {% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
                                         {% endfor %} 
                                     </select>
-                                    <label for="defaultTiedStatus" class="control-label">Default flow type</label>
+                                    <label for="defaultTiedStatus" class="control-label">Default tied status</label>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="collaborationType" id="collaborationType" class="form-control">
                                         <option value="" {% if not project.collaboration_type %} selected="selected" {% endif %}>Collaboration type:</option>
-                                        {% for entry in collaboration_type %}
-                                            {% if not entry.0 == "code" %}
-                                                <option value="{{entry.0}}" {% if project.collaboration_type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.1}}</option>
-                                            {% endif %}
+                                        {% for collaboration_type in collaboration_types %}
+                                            <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %} selected="selected" {% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
                                         {% endfor %} 
                                     </select>
                                     <label for="collaborationType" class="control-label">Collaboration type</label>
@@ -214,10 +206,8 @@
                                 <div class="select-group control">
                                     <select name="defaultFinanceType" id="defaultFinanceType" class="form-control">
                                         <option value="" {% if not project.default_finance_type %} selected="selected" {% endif %}>Default finance type:</option>
-                                        {% for entry in finance_type %}
-                                            {% if not entry.0 == "code" %}
-                                                <option value="{{entry.0}}" {% if project.default_finance_type == entry.0 %} selected="selected" {% endif %}>{{entry.0}} - {{entry.2}}</option>
-                                            {% endif %}
+                                        {% for finance_type in finance_types %}
+                                            <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %} selected="selected" {% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
                                         {% endfor %} 
                                     </select>
                                     <label for="defaultFinanceType" class="control-label">Default finance type</label>
@@ -273,17 +263,13 @@
                         </div>
                         <div class="formBlock">
                             <div class="form-group control">
-                                <select class="form-control" id="reportingOrganisation" placeholder="Reporting organisation"
-                                name="reportinOrganisation">
-                                    <option {% if not project.reporting_org %} selected="selected" {% endif %}>                                       
-                                        Reporting organisation:
-                                    </option>
-                                    {% for org in organisation %}
-                                        <option value="{{org.id}}" 
-                                        {% if project.reporting_org.name == org.name %} selected="selected" {% endif %}>
-                                            {{org.name}}
-                                        </option>
+                                <select class="form-control" id="reportingOrganisation" placeholder="Reporting organisation" name="reportinOrganisation">
+                                    <option {% if not project.reporting_org %} selected="selected" {% endif %}>Reporting organisation:</option>
+                                    {% comment %}
+                                    {% for org in organisations %}
+                                        <option value="{{ org.id }}" {% if project.reporting_org == org %} selected="selected" {% endif %}>{{ org.name }}</option>
                                     {% endfor %}
+                                    {% endcomment %}
                                 </select>
                                 <label for="reportingOrganisation" class="control-label">Reporting organisation</label>
                             </div>
@@ -450,15 +436,9 @@
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="scope" id="scope" class="form-control">
-                                        <option value="" {% if not project.project_scope %} selected="selected" {% endif %}>
-                                            Project scope
-                                        </option>
-                                        {% for scope in activity_scope %}
-                                            {% if not scope.0 == "code" %}
-                                                <option value="{{scope.0}}" {% if project.project_scope == scope.0 %} selected="selected" {% endif %}>
-                                                    {{scope.0}} - {{scope.1}}
-                                                </option>
-                                            {% endif %}
+                                        <option value="" {% if not project.project_scope %} selected="selected" {% endif %}>Project scope:</option>
+                                        {% for scope in activity_scopes %}
+                                            <option value="{{ scope.code }}" {% if project.project_scope == scope.code %} selected="selected" {% endif %}>{{ scope.code }} - {{ scope.name }}</option>
                                         {% endfor %}                                        
                                     </select>
                                     <label for="scope" class="control-label">Project scope</label>
@@ -515,11 +495,8 @@
                                 <div class="select-group control">
                                     <select name="country" id="country" class="form-control">
                                         <option value="" {% if not project.primary_location.country %} selected="selected" {% endif %}>Country:</option>
-                                        {% for country in country %}
-                                            <option value="{{country.code}}"
-                                            {% if project.primary_location.country == country %} selected="selected" {% endif %}>
-                                                {{country.name}}
-                                            </option>
+                                        {% for country in countries %}
+                                            <option value="{{ country.id }}" {% if project.primary_location.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
                                         {% endfor %}
                                     </select>
                                     <label for="scope" class="control-label">Country</label>
@@ -581,16 +558,9 @@
                                     <div class="col-md-6">
                                         <div class="select-group control">
                                             <select name="locationExactness" id="locationExactness" class="form-control">
-                                                <option value="" {% if not project.primary_location.exactness %} selected="selected" {% endif %}>
-                                                    Exactness:
-                                                </option>
-                                                {% for ge in geographic_exactness %}
-                                                    {% if not ge.0 == "code" %}
-                                                       <option value="{{ge.0}}" 
-                                                       {% if project.primary_location.exactness == ge.0 %} selected="selected" {% endif %}>
-                                                            {{ge.0}} - {{ge.1}}
-                                                        </option> 
-                                                    {% endif %}
+                                                <option value="" {% if not project.primary_location.exactness %} selected="selected" {% endif %}>Exactness:</option>
+                                                {% for exactness in geographic_exactnesses %}
+                                                    <option value="{{ exactness.code }}" {% if project.primary_location.exactness == exactness.code %} selected="selected" {% endif %}>{{ exactness.code }} - {{ exactness.name }}</option>
                                                 {% endfor %}
                                             </select>
                                             <label class="control-label" for="locationExactness">Exactness</label>
@@ -599,16 +569,9 @@
                                     <div class="col-md-6">
                                         <div class="select-group control">
                                             <select name="locationReach" id="locationReach" class="form-control">
-                                                <option value="" {% if not project.primary_location.location_reach %} selected="selected" {% endif %}>
-                                                    Reach:
-                                                </option>
-                                                {% for glr in geographic_location_reach%}
-                                                    {% if not glr.0 == "code" %}
-                                                       <option value="{{glr.0}}"
-                                                       {% if project.primary_location.location_reach == glr.0 %} selected="selected" {% endif %}>
-                                                            {{glr.0}} - {{glr.1}}
-                                                        </option> 
-                                                    {% endif %}
+                                                <option value="" {% if not project.primary_location.location_reach %} selected="selected" {% endif %}>Reach:</option>
+                                                {% for reach in geographic_location_reaches %}
+                                                    <option value="{{ reach.code }}" {% if project.primary_location.location_reach == reach.code %} selected="selected" {% endif %}>{{ reach.code }} - {{ reach.name }}</option>
                                                 {% endfor %}
                                             </select>
                                             <label class="control-label" for="locationReach">Reach</label>
@@ -621,14 +584,9 @@
                                     <div class="col-md-6">
                                         <div class="select-group control">
                                             <select name="locationClass" id="locationClass" class="form-control">
-                                                <option value="" selected="selected">Class</option>
-                                                {% for glc in geographic_location_class%}
-                                                    {% if not glc.0 == "code" %}
-                                                       <option value="{{glr.0}}"
-                                                       {% if project.primary_location.location_class == glc.0 %} selected="selected" {% endif %}>
-                                                            {{glc.0}} - {{glc.1}}
-                                                        </option> 
-                                                    {% endif %}
+                                                <option value="" {% if not project.primary_location.location_class %} selected="selected" {% endif %}>Class:</option>
+                                                {% for class in geographic_location_classes %}
+                                                    <option value="{{ class.code }}" {% if project.primary_location.location_class == class.code %} selected="selected" {% endif %}>{{ class.code }} - {{ class.name }}</option>
                                                 {% endfor %}
                                             </select>
                                             <label class="control-label" for="locationClass">Class</label>
@@ -638,13 +596,8 @@
                                         <div class="select-group control">
                                             <select name="locationFeatureDesignation" id="locationFeatureDesignation" class="form-control">
                                                 <option value="" selected="selected">Feature designation</option>
-                                                {% for gfd in location_type %}
-                                                    {% if not gfd.0 == "code" %}
-                                                       <option value="{{glr.0}}"
-                                                       {% if project.primary_location.feature_designation == gfd.0 %} selected="selected" {% endif %}>
-                                                            {{gfd.0}} - {{gfd.1}}
-                                                        </option> 
-                                                    {% endif %}
+                                                {% for location_type in location_types %}
+                                                    <option value="{{ location_type.code }}" {% if project.primary_location.feature_designation == location_type.code %} selected="selected" {% endif %}>{{ location_type.code }} - {{ location_type.name }}</option>
                                                 {% endfor %}
                                             </select>
                                             <label class="control-label" for="locationFeatureDesignation">Feature designation</label>

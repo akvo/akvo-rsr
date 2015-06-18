@@ -5,12 +5,8 @@
                 <div class="select-group control">
                     <select name="recipientCountry{% if rc %}-{{ rc.pk }}{% endif %}" id="recipientCountry{% if rc %}-{{ rc.pk }}{% endif %}" class="form-control">
                         <option value="" {% if not rc %} selected="selected" {% endif %}>Recipient country:</option>
-                        {% for c in codelist_country %}
-                            {% if not c.0 == "code" %}
-                                <option value="{{c.0}}" {% if rc.country == c.0 %} selected="selected" {% endif %}>
-                                    {{c.0}} - {{c.1}}
-                                </option>
-                            {% endif %}
+                        {% for country in iati_countries %}
+                            <option value="{{ country.code }}" {% if rc.country == country.code %} selected="selected" {% endif %}>{{ country.code }} - {{ country.name }}</option>
                         {% endfor %}
                     </select>
                     <label class="control-label" for="recipientCountry">Recipient country</label>
@@ -26,7 +22,7 @@
                 <input type="text" class="form-control" id="recipientCountryDescription"
                 name="recipientCountryDescription{% if rc %}-{{ rc.pk }}{% endif %}" placeholder="Country description"
                 {% if rc.text %} value="{{rc.text}}" {% endif %}>
-                <label class="control-label" for="recipientCountryDescription">Recipient country descriptione</label>
+                <label class="control-label" for="recipientCountryDescription">Recipient country description</label>
             </div>       
         </div>
     </div>

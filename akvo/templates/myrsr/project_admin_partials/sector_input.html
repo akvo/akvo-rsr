@@ -12,15 +12,9 @@
             <div class="col-md-6 control">
                 <div class="select-group">
                     <select name="sectorVocabulary{% if sector %}-{{ sector.pk }}{% endif %}" id="sectorVocabulary{% if sector %}-{{ sector.pk }}{% endif %}" class="form-control">
-                        <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}>
-                            Sector vocabulary:
-                        </option>
-                        {% for sv in sector_vocabulary %}
-                            {% if not sv.0 == "code" %}
-                                <option value="sv.0" {% if sv.0 == sector.vocabulary %} selected="selected" {% endif %}>
-                                    {{sv.0}} - {{sv.2}}
-                                </option>
-                            {% endif %}
+                        <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}>Sector vocabulary:</option>
+                        {% for vocabulary in sector_vocabularies %}
+                            <option value="{{ vocabulary.code }}" {% if sector.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                         {% endfor %}
                     </select>
                     <label class="control-label" for="sectorVocabulary">Sector vocabulary</label>
