@@ -1499,6 +1499,8 @@ div.textBlock {
 /* Financial details page */
 section.projectFinancial .currentFunders dl > dd {
   text-align: right; }
+section.projectFinancial .donationBreak {
+  display: none; }
 @media only screen and (max-width: 768px) {
   section.projectFinancial {
     width: 95%;
@@ -1510,7 +1512,14 @@ section.projectFinancial .currentFunders dl > dd {
 @media only screen and (max-width: 992px) {
   @media only screen and (min-width: 768px) {
     section.projectFinancial .dl-horizontal dt {
-      width: initial; } } }
+      width: initial; }
+    section.projectFinancial .donationBreak {
+      display: initial;
+      clear: both; }
+    section.projectFinancial .currentFunders dd.donation {
+      float: right; }
+    section.projectFinancial .currentFunders dt.donation {
+      clear: both; } } }
 
 /* Project Partners details page */
 section.projectPartners .title {

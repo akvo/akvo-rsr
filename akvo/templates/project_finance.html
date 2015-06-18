@@ -39,7 +39,7 @@
                     <h4>{% trans "Donations" %}:</h4>
                     <dl class="dl-horizontal">
                         {% for donation in project.all_donations %}
-                        <dt>{% if donation.is_anonymous %}{% trans "Anonymous" %}{% else %}{{donation.name}}{% endif %}:</dt><dd class="currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{donation.amount_received|floatformat:0|intcomma}}</dd>
+                        <dt class="donation">{% if donation.is_anonymous %}{% trans "Anonymous" %}{% else %}{{donation.name}}{% endif %}:</dt><br class="donationBreak"><dd class="currencyAmount donation"><span class="currency"> ({% trans "excl. fee" %}: {{project.get_currency_display}}</span>{{donation.donation_fee|floatformat:0|intcomma}}) <span class="currency">{{project.get_currency_display}}</span>{{donation.amount_received|floatformat:0|intcomma}}</dd>
                         {% empty %}
                         <dt>{% trans "No donations" %}</dt><dd></dd>
                         {% endfor %}
