@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="adminstep1" action="javascript: submitstep1()">
+                            <form role="form" id="admin-step-1" action="javascript: submitStep(1)">
                             <div class="form-group control">
                                 <input type="text" class="form-control" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45" />
                                 <label for="projectTitle" class="control-label">Project title</label>
@@ -215,7 +215,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <input type="submit" class="btn btn-info" value="Save">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
                                 </div>
                                 <div id="savingstep1"></div>
                             </div>
@@ -312,6 +312,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <form role="form" id="admin-step-4" action="javascript: submitStep(4)">
                             <div class="form-group control">
                                 <textarea id="summary" class="form-control" name="summary" placeholder="Type in summary of the project plan">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
                                 <label class="control-label" for="summary">Summary of project plan</label>
@@ -340,6 +341,13 @@
                                 <textarea id="goalsOverview" class="form-control" name="goalsOverview" placeholder="Type in goals overview">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
                                 <label class="control-label" for="goalsOverview">Goals overview</label>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep4"></div>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1018,22 +1026,29 @@
             }
         }
 
-        function submitstep1() {
-            savingStep(true, 1);
+        function submitStep(step) {
+            savingStep(true, step);
 
-            var form, form_data, request;
+            var api_url, form, form_data, form_div, request;
 
             // Collect form data
-            form = document.querySelector('#adminstep1');
+            form_div = '#admin-step-' + step;
+            form = document.querySelector(form_div);
             form_data = serialize(form);
-            form_data += '&eventFromPlanned=' + document.querySelector('#eventFromPlanned').value;
-            form_data += '&eventFromActual=' + document.querySelector('#eventFromActual').value;
-            form_data += '&eventEndPlanned=' + document.querySelector('#eventEndPlanned').value;
-            form_data += '&eventEndActual=' + document.querySelector('#eventEndActual').value;
+
+            // Custom code per step
+            if (step === 1) {
+                form_data += '&eventFromPlanned=' + document.querySelector('#eventFromPlanned').value;
+                form_data += '&eventFromActual=' + document.querySelector('#eventFromActual').value;
+                form_data += '&eventEndPlanned=' + document.querySelector('#eventEndPlanned').value;
+                form_data += '&eventEndActual=' + document.querySelector('#eventEndActual').value;
+            }
 
             // Create request
+            api_url = '/rest/v1/project/{{ project.pk }}/admin_step_' + step + '/?format=json';
+
             request = new XMLHttpRequest();
-            request.open('POST', '{% url 'project_admin_step1' project.pk %}?format=json', true);
+            request.open('POST', api_url, true);
             request.setRequestHeader("X-CSRFToken", csrftoken);
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
@@ -1046,18 +1061,18 @@
                     replaceNames(response.new_objects);
                     addErrors(response.errors);
 
-                    savingStep(false, 1);
+                    savingStep(false, step);
                     return false;
                 } else {
                     // We reached our target server, but it returned an error
-                    savingStep(false, 1);
+                    savingStep(false, step);
                     return false;
                 }
             };
 
             request.onerror = function() {
                 // There was a connection error of some sort
-                savingStep(false, 1);
+                savingStep(false, step);
                 return false;
             };
 

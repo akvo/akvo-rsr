@@ -13,6 +13,18 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+
+def save_field(project, field, form_field, form_data, errors):
+    setattr(project, field, form_data)
+
+    try:
+        project.save(update_fields=[field])
+    except Exception as e:
+        errors.append({'name': form_field, 'error': str(e).capitalize()})
+
+    return errors
+
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def project_admin_step1(request, pk=None):
@@ -26,138 +38,46 @@ def project_admin_step1(request, pk=None):
     errors = []
     new_objects = []
 
-    # Title
-    project.title = data['projectTitle']
-    try:
-        project.save(update_fields=["title"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'projectTitle', 'error': error})
+    errors = save_field(project, 'title', 'projectTitle', data['projectTitle'], errors)
+    errors = save_field(project, 'subtitle', 'projectSubTitle', data['projectSubTitle'], errors)
+    errors = save_field(project, 'iati_activity_id', 'iatiId', data['iatiId'], errors)
+    errors = save_field(project, 'status', 'projectStatus', data['projectStatus'], errors)
 
-    # Subtitle
-    project.subtitle = data['projectSubTitle']
-    try:
-        project.save(update_fields=["subtitle"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'projectSubTitle', 'error': error})
+    date_start_planned = data['eventFromPlanned'] if data['eventFromPlanned'] else None
+    errors = save_field(
+        project, 'date_start_planned', 'eventFromPlanned', date_start_planned, errors
+    )
 
-    # IATI Identifier
-    project.iati_activity_id = data['iatiId']
-    try:
-        project.save(update_fields=["iati_activity_id"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'iatiId', 'error': error})
+    date_start_actual = data['eventFromActual'] if data['eventFromActual'] else None
+    errors = save_field(project, 'date_start_actual', 'eventFromActual', date_start_actual, errors)
 
-    # Status
-    project.status = data['projectStatus']
-    try:
-        project.save(update_fields=["status"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'projectStatus', 'error': error})
+    date_end_planned = data['eventEndPlanned'] if data['eventEndPlanned'] else None
+    errors = save_field(project, 'date_end_planned', 'eventEndPlanned', date_end_planned, errors)
 
-    # Start date (planned)
-    date_start_planned = data['eventFromPlanned']
-    project.date_start_planned = date_start_planned if date_start_planned else None
-    try:
-        project.save(update_fields=["date_start_planned"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'eventFromPlanned', 'error': error})
+    date_end_actual = data['eventEndActual'] if data['eventEndActual'] else None
+    errors = save_field(project, 'date_end_actual', 'eventEndActual', date_end_actual, errors)
 
-    # Start date (actual)
-    date_start_actual = data['eventFromActual']
-    project.date_start_actual = date_start_actual if date_start_actual else None
-    try:
-        project.save(update_fields=["date_start_actual"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'eventFromActual', 'error': error})
+    errors = save_field(project, 'language', 'projectLanguage', data['projectLanguage'], errors)
+    errors = save_field(project, 'currency', 'projectCurrency', data['projectCurrency'], errors)
 
-    # End date (planned)
-    date_end_planned = data['eventEndPlanned']
-    project.date_end_planned = date_end_planned if date_end_planned else None
-    try:
-        project.save(update_fields=["date_end_planned"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'eventEndPlanned', 'error': error})
+    hierarchy = data['projectHierarchy'] if data['projectHierarchy'] else None
+    errors = save_field(project, 'hierarchy', 'projectHierarchy', hierarchy, errors)
 
-    # End date (actual)
-    date_end_actual = data['eventEndActual']
-    project.date_end_actual = date_end_actual if date_end_actual else None
-    try:
-        project.save(update_fields=["date_end_actual"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'eventEndActual', 'error': error})
-
-    # Language
-    project.language = data['projectLanguage']
-    try:
-        project.save(update_fields=["language"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'projectLanguage', 'error': error})
-
-    # Currency
-    project.currency = data['projectCurrency']
-    try:
-        project.save(update_fields=["currency"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'projectCurrency', 'error': error})
-
-    # Hierarchy
-    hierarchy = data['projectHierarchy']
-    project.hierarchy = int(hierarchy) if hierarchy else None
-    try:
-        project.save(update_fields=["hierarchy"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'projectHierarchy', 'error': error})
-
-    # Default aid type
-    project.default_aid_type = data['defaultAidType']
-    try:
-        project.save(update_fields=["default_aid_type"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'defaultAidType', 'error': error})
-
-    # Default flow type
-    project.default_flow_type = data['defaultFlowType']
-    try:
-        project.save(update_fields=["default_flow_type"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'defaultFlowType', 'error': error})
-
-    # Default tied status
-    project.default_tied_status = data['defaultTiedStatus']
-    try:
-        project.save(update_fields=["default_tied_status"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'defaultTiedStatus', 'error': error})
-
-    # Default collaboration type
-    project.collaboration_type = data['collaborationType']
-    try:
-        project.save(update_fields=["collaboration_type"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'collaborationType', 'error': error})
-
-    # Default finance type
-    project.default_finance_type = data['defaultFinanceType']
-    try:
-        project.save(update_fields=["default_finance_type"])
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'defaultFinanceType', 'error': error})
+    errors = save_field(
+        project, 'default_aid_type', 'defaultAidType', data['defaultAidType'], errors
+    )
+    errors = save_field(
+        project, 'default_flow_type', 'defaultFlowType', data['defaultFlowType'], errors
+    )
+    errors = save_field(
+        project, 'default_tied_status', 'defaultTiedStatus', data['defaultTiedStatus'], errors
+    )
+    errors = save_field(
+        project, 'collaboration_type', 'collaborationType', data['collaborationType'], errors
+    )
+    errors = save_field(
+        project, 'default_finance_type', 'defaultFinanceType', data['defaultFinanceType'], errors
+    )
 
     # Related projects
     for key in data.keys():
@@ -185,26 +105,46 @@ def project_admin_step1(request, pk=None):
             if rp:
                 # TODO: Related project
 
-                # Related project IATI identifier
                 rp_iati_id_key = 'related-project-iati-identifier-' + rp_id
-                rp.related_iati_id = data[rp_iati_id_key]
-                try:
-                    rp.save(update_fields=["related_iati_id"])
-                except Exception as e:
-                    error = str(e).capitalize()
-                    errors.append({'name': rp_iati_id_key, 'error': error})
+                errors = save_field(
+                    rp, 'related_iati_id', rp_iati_id_key, data[rp_iati_id_key], errors
+                )
 
-                # Related project relation
                 rp_relation_key = 'related-project-relation-' + rp_id
-                rp.relation = data[rp_relation_key]
-                try:
-                    rp.save(update_fields=["relation"])
-                except Exception as e:
-                    error = str(e).capitalize()
-                    errors.append({'name': rp_relation_key, 'error': error})
+                errors = save_field(rp, 'relation', rp_relation_key, data[rp_relation_key], errors)
 
     return Response(
         {
+            'errors': errors,
+            'new_objects': new_objects,
+        }
+    )
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step4(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    data = request.POST
+    errors = []
+    new_objects = []
+
+    errors = save_field(project, 'project_plan_summary', 'summary', data['summary'], errors)
+    errors = save_field(project, 'background', 'background', data['background'], errors)
+    errors = save_field(
+        project, 'current_status', 'currentSituation', data['currentSituation'], errors
+    )
+    errors = save_field(project, 'project_plan_summary', 'projectPlan', data['projectPlan'], errors)
+    errors = save_field(project, 'target_group', 'targetGroup', data['targetGroup'], errors)
+    errors = save_field(project, 'sustainability', 'sustainability', data['sustainability'], errors)
+    errors = save_field(project, 'goals_overview', 'goalsOverview', data['goalsOverview'], errors)
+
+    return Response({
             'errors': errors,
             'new_objects': new_objects,
         }
