@@ -1,5 +1,5 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n bootstrap3 rsr_utils %}
+{% load i18n bootstrap3 rsr_utils thumbnail %}
 {% block title %}{% trans 'MyRSR - Project Admin' %}{% endblock %}
 {% block myrsr_main %}
     <h4>{% trans 'Project admin' %}</h4>
@@ -378,9 +378,14 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <div class="form-group control">
+                            <form role="form" id="admin-step-5" action="javascript: submitStep(5)">
+                            <div class="form-group control" id="photo-container">
                                 {% if project.current_image %}
-                                    <img src="{{project.current_image.url}}" class="current-project-photo">
+                                    {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
+                                        <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
+                                    {% endthumbnail %}
+{#                                    <img src="{{project.current_image.url}}" class="current-project-photo" id="img-photo">#}
+                                    <a onclick="deletePhoto(this);" class="btn btn-link" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>
                                 {% endif %}
                                 <input type="file" class="form-control" id="photo" name="photo">
                                 <label class="control-label" for="photo">Photo</label>
@@ -399,6 +404,13 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep5"></div>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1052,10 +1064,34 @@
             }
         }
 
+        function replacePhoto(photo) {
+            if (photo !== null) {
+                var img_photo, photo_container, add_html;
+
+                img_photo = document.querySelector('#img-photo');
+
+                if (img_photo !== null) {
+                    var delete_link;
+
+                    img_photo.parentNode.removeChild(img_photo);
+                    delete_link = document.querySelector('#delete-photo');
+
+                    if (delete_link !== null) {
+                        delete_link.parentNode.removeChild(delete_link);
+                    }
+                }
+
+                photo_container = document.querySelector('#photo-container');
+                add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a onclick="deletePhoto(this);" class="btn btn-link" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>'
+
+                photo_container.innerHTML = add_html + photo_container.innerHTML;
+            }
+        }
+
         function submitStep(step) {
             savingStep(true, step);
 
-            var api_url, form, form_data, form_div, request;
+            var api_url, form, form_data, form_div, request, file_request;
 
             // Collect form data
             form_div = '#admin-step-' + step;
@@ -1103,6 +1139,41 @@
             };
 
             request.send(form_data);
+
+            if (step === 5) {
+                var formData = new FormData();
+                formData.append("photo", document.getElementById("photo").files[0]);
+
+                file_request = new XMLHttpRequest();
+                file_request.open("POST", api_url);
+                file_request.setRequestHeader("X-CSRFToken", csrftoken);
+
+                file_request.onload = function() {
+                    if (file_request.status >= 200 && file_request.status < 400) {
+                        var response;
+
+                        removeErrors(form);
+                        response = JSON.parse(file_request.responseText);
+                        replacePhoto(response.new_image);
+                        addErrors(response.errors);
+
+                        savingStep(false, step);
+                        return false;
+                    } else {
+                        // We reached our target server, but it returned an error
+                        savingStep(false, step);
+                        return false;
+                    }
+                };
+
+                file_request.onerror = function() {
+                    // There was a connection error of some sort
+                    savingStep(false, step);
+                    return false;
+                };
+
+                file_request.send(formData);
+            }
         }
 
         function deleteItem(itemId, itemType, parentDiv) {
@@ -1117,6 +1188,42 @@
             request.onload = function() {
                 if (request.status >= 200 && request.status < 400) {
                     parentDiv.parentNode.removeChild(parentDiv);
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                return false;
+            };
+
+            request.send();
+        }
+
+        function deletePhoto() {
+            var api_url, request;
+
+            // Create request
+            api_url = '/rest/v1/project/{{ project.pk }}/admin_delete_photo/?format=json';
+
+            request = new XMLHttpRequest();
+            request.open('POST', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    var imgNode, aNode;
+
+                    imgNode = document.querySelector('#img-photo');
+                    imgNode.parentNode.removeChild(imgNode);
+
+                    aNode = document.querySelector('#delete-photo');
+                    aNode.parentNode.removeChild(aNode);
+
                     return false;
                 } else {
                     // We reached our target server, but it returned an error
@@ -1149,8 +1256,6 @@
 
                 deleteItem(itemId, itemType, parentDiv);
             }
-
-            return false;
         }
 
         function scrollTo(div_id) {

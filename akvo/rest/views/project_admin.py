@@ -13,6 +13,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from sorl.thumbnail import get_thumbnail
+
 
 def save_field(project, field, form_field, form_data, errors):
     setattr(project, field, form_data)
@@ -23,6 +25,20 @@ def save_field(project, field, form_field, form_data, errors):
         errors.append({'name': form_field, 'error': str(e).capitalize()})
 
     return errors
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_delete_photo(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    errors = save_field(project, 'current_image', 'photo', '', [])
+
+    return Response({'errors': errors})
 
 
 @api_view(['POST'])
@@ -260,5 +276,44 @@ def project_admin_step4(request, pk=None):
     return Response({
             'errors': errors,
             'new_objects': new_objects,
+        }
+    )
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step5(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    data = request.POST
+    files = request.FILES
+    errors = []
+    new_objects = []
+    new_image = None
+
+    if not files and 'photo' not in data.keys():
+        errors = save_field(
+            project, 'current_image_caption', 'photoCaption', data['photoCaption'], errors
+        )
+        errors = save_field(
+            project, 'current_image_credit', 'photoCredit', data['photoCredit'], errors
+        )
+
+    elif 'photo' in files.keys():
+        errors = save_field(project, 'current_image', 'photo', files['photo'], errors)
+        if not errors:
+            new_image = get_thumbnail(
+                project.current_image, '250x250', format="PNG", upscale=True
+            ).url
+
+    return Response(
+        {
+            'errors': errors,
+            'new_objects': new_objects,
+            'new_image': new_image,
         }
     )
