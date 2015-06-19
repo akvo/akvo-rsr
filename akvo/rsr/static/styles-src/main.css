@@ -1659,7 +1659,7 @@ dd.currencyAmount {
     overflow: hidden;
     box-sizing: border-box;
     transition: all .5s linear;
-    padding: 10px 15px;
+    padding: 5px 15px;
     margin: 0 auto;
     -moz-border-radius: 5px;
     -o-border-radius: 5px;
@@ -1674,7 +1674,7 @@ dd.currencyAmount {
   display: none; }
 .projectEdit .formStep {
   position: relative; }
-  .projectEdit .formStep > label {
+  .projectEdit .formStep > div > label {
     -moz-border-radius: 5px;
     -o-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -1686,7 +1686,7 @@ dd.currencyAmount {
     padding: 5px 5px 5px 15px;
     transition: background 0.1s linear;
     background: rgba(44, 42, 116, 0.1); }
-    .projectEdit .formStep > label:hover {
+    .projectEdit .formStep > div > label:hover {
       background: rgba(32, 32, 36, 0.05); }
   .projectEdit .formStep .progress {
     position: absolute;

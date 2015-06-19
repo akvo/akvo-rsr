@@ -2072,7 +2072,7 @@ dd {
             overflow: hidden;
             box-sizing: border-box;
             transition: all .5s linear;
-            padding: 10px 15px;
+            padding: 5px 15px;
             margin: 0 auto;
             @include border-radius(5px);
         }
@@ -2088,7 +2088,7 @@ dd {
     }
     .formStep {
         position: relative;
-        & > label {
+        & > div > label {
             @include border-radius(5px);
             display: block;
             width: 100%;
