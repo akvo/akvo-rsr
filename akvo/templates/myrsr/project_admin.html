@@ -991,12 +991,9 @@
 
     // How many times to attempt an API call for the typeaheads
     var MAX_RETRIES = 2;
-
     var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
     var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
-
     var responses = {};
-
     responses[projectsAPIUrl] = null;
     responses[orgsAPIUrl] = null;
 
@@ -1038,14 +1035,12 @@
 
     function processResponse(response, selector, valueId, label, help, placeholder) {
         var typeaheadOptions = response.results;
-
         var typeaheadCallback = function(option) {
             var el;
 
             el = $("input." + this.childID);
             el.attr('value', option.id);
         };
-
         var displayOption = function(option, index) {
             return option.title;
         };

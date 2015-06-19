@@ -39,12 +39,10 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, 
         document.querySelector('.' + selector)
     );
 
-    var savedResult;
-
     if (valueId !== null) {
         for (var i = 0; i < typeaheadOptions.length; i++) {
             if (parseInt(typeaheadOptions[i].id, 10) == parseInt(valueId, 10)) {
-                savedResult = typeaheadOptions[i];
+                var savedResult = typeaheadOptions[i];
                 $('.' + selector + ' .typeahead' + ' input').attr('value', savedResult.id);
                 $('.' + selector + ' .typeahead' + ' input').prop('value', savedResult.title);   
             }
