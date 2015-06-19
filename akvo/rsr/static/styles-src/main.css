@@ -533,6 +533,14 @@ nav.navbar-fixed-top {
   background: rgba(32, 32, 36, 0.1) !important; }
   .myProjectList tbody tr.isPublished {
     background: white !important; }
+@media only screen and (min-width: 1200px) {
+  .myProjectList div.twoColumns.clearfix {
+    min-width: 170px; } }
+.myProjectList div.twoColumns.clearfix > a {
+  min-width: 70px; }
+
+div.paginationWrap {
+  clear: both; }
 
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
@@ -1489,6 +1497,10 @@ div.textBlock {
       margin-bottom: 1em; } }
 
 /* Financial details page */
+section.projectFinancial .currentFunders dl > dd {
+  text-align: right; }
+section.projectFinancial .donationBreak {
+  display: none; }
 @media only screen and (max-width: 768px) {
   section.projectFinancial {
     width: 95%;
@@ -1500,7 +1512,14 @@ div.textBlock {
 @media only screen and (max-width: 992px) {
   @media only screen and (min-width: 768px) {
     section.projectFinancial .dl-horizontal dt {
-      width: initial; } } }
+      width: initial; }
+    section.projectFinancial .donationBreak {
+      display: initial;
+      clear: both; }
+    section.projectFinancial .currentFunders dd.donation {
+      float: right; }
+    section.projectFinancial .currentFunders dt.donation {
+      clear: both; } } }
 
 /* Project Partners details page */
 section.projectPartners .title {
@@ -1555,6 +1574,28 @@ section.projectPartners .row {
 
 dd.currencyAmount {
   margin-left: auto; }
+
+/* Project report page */
+@media only screen and (max-width: 768px) {
+  .projectReport {
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto; } }
+@media only screen and (min-width: 992px) {
+  .projectReport table {
+    table-layout: fixed; }
+    .projectReport table th {
+      word-break: break-word; }
+      @media only screen and (max-width: 1200px) {
+        .projectReport table th {
+          width: 90px; } }
+      @media only screen and (min-width: 1200px) {
+        .projectReport table th {
+          width: 120px; } } }
+
+/* Project update page */
+.updateText {
+  white-space: pre-line; }
 
 /* Cookie */
 #cookie-law {
