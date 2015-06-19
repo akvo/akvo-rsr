@@ -252,7 +252,7 @@ def project_admin_step4(request, pk=None):
     errors = save_field(
         project, 'current_status', 'currentSituation', data['currentSituation'], errors
     )
-    errors = save_field(project, 'project_plan_summary', 'projectPlan', data['projectPlan'], errors)
+    errors = save_field(project, 'project_plan', 'projectPlan', data['projectPlan'], errors)
     errors = save_field(project, 'target_group', 'targetGroup', data['targetGroup'], errors)
     errors = save_field(project, 'sustainability', 'sustainability', data['sustainability'], errors)
     errors = save_field(project, 'goals_overview', 'goalsOverview', data['goalsOverview'], errors)
