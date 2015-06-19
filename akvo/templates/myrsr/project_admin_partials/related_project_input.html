@@ -3,11 +3,11 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="related-project-project{% if key %}-{{ key }}{% endif %}" placeholder="Related project"
-                name="related-project-project{% if key %}-{{ key }}{% endif %}"
-                {% if rp %} value={{ rp.related_project.title }} {% endif %} />
-                <label for="related-project-project{% if key %}-{{ key }}{% endif %}" class="control-label">Related project</label>
-                <p class="help-block hidden">A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.</p>
+                <div class="related-project-input related-project-project{% if key %}-{{ key }}{% endif %} typeahead-container"
+                data-child-id="related-project-project{% if key %}-{{ key }}{% endif %}"
+                data-value="{% if rp.project.id %}{{rp.project.id}}{% endif %}"
+                data-count-class="related-project-project">
+                </div>
             </div>
             <div class="col-md-4 control">
                 <input type="text" class="form-control" id="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"

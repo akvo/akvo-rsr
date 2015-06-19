@@ -1,5 +1,5 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n bootstrap3 rsr_utils thumbnail %}
+{% load i18n bootstrap3 rsr_utils thumbnail compressed%}
 {% block title %}{% trans 'MyRSR - Project Admin' %}{% endblock %}
 {% block myrsr_main %}
     <h4>{% trans 'Project admin' %}</h4>
@@ -939,7 +939,11 @@
 
                     $(partial).find('textarea').each( function() {
                         addCountToName($(this));
-                    });                                           
+                    });     
+
+                    $(partial).find('.typeahead-container').each( function() {
+                        addCountToClass($(this));
+                    })                                      
 
                     function addCountToName(el) {
                         var oldName = el.attr('name');
@@ -953,14 +957,140 @@
                         el.attr('id', newID);                        
                     }
 
+                    // The typeahead containers need to have the unique identifying appended
+                    // to the class rather than the id, so handle that separately
+                    function addCountToClass(el) {
+                        var oldClass = el.data('count-class');
+                        var newClass = oldClass + '-add-' + partialsCount[pName];
+
+                        el.removeClass(oldClass);
+                        el.addClass(newClass);
+
+                        el.data('child-id', newClass);
+                    }                    
+
                     document.querySelector(containerSelector).appendChild(partial);  
-                    partialsCount[pName] += 1;                  
+                    partialsCount[pName] += 1;      
+
+                    updateTypeaheads();            
                 };
 
                 return onclick;
             }  
         });       
     </script>   
+ 
+    {% block react_js %}
+        <script src="//fb.me/react-0.12.0.js"></script>
+    {% endblock react_js %}
+    {% compressed_js 'react_typeahead' %}
+    {% compressed_js 'myrsr_admin_typeahead' %}       
+
+    <script type="application/javascript">
+    // TYPEAHEADS
+
+    // How many times to attempt an API call for the typeaheads
+    var MAX_RETRIES = 2;
+
+    var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
+    var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
+
+    var responses = {};
+
+    responses[projectsAPIUrl] = null;
+    responses[orgsAPIUrl] = null;
+
+    function loadAsync(url, retryCount, retryLimit, callback) {
+        var xmlHttp;
+
+        // If we already have the response cached, don't fetch it again
+        if (responses[url] !== null) {
+            callback(responses[url]);
+            return;
+        }
+
+        xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+
+                if (xmlHttp.status == 200){
+                    var response = JSON.parse(xmlHttp.responseText);
+                    responses[url] = response;
+                    callback(response);
+                } else {
+                    if (retryCount >= retryLimit) {
+                        // we should load the project list from localstorage here
+                        return;
+                    } else {
+                        retryCount = retryCount + 1;
+                        loadAsync(url, retryCount, retryLimit);
+                    }
+                }
+            } else {
+                return;
+            }            
+        };
+
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+    }
+
+    function processResponse(response, selector, valueId, label, help, placeholder) {
+        var typeaheadOptions = response.results;
+
+        var typeaheadCallback = function(option) {
+            var el;
+
+            el = $("input." + this.childID);
+            el.attr('value', option.id);
+        };
+
+        var displayOption = function(option, index) {
+            return option.title;
+        };
+
+        buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, valueId, label, help);
+    }
+
+    function getCallback(selector, valueId, label, help, placeholder) {
+        var output = function(response) {
+            processResponse(response, selector, valueId, label, help, placeholder);
+        };
+
+        return output;
+    }
+
+    $(document).ready(function() {
+        updateTypeaheads();
+    });   
+
+    function updateTypeaheads() {
+        $('.related-project-input').each( function() {
+
+            // Check if we've already rendered this typeahead
+            if ($(this).hasClass('has-typeahead')) {
+                return;
+            }
+
+            // The id we'll give the input once it's been rendered
+            var childSelector = $(this).data('child-id');
+            var valueId = null;            
+            var labelText = 'Related project';
+            var helpText = 'A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.';
+            var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                        labelText + '</label>';
+            var help = '<p class="help-block hidden">' + helpText + '</p>';
+            var placeholder = 'Related project:';
+
+            if ($(this).data('value') !== "") {
+                valueId = $(this).data('value');
+            }
+
+            loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, valueId, label, help, placeholder));
+        });
+    } 
+    </script>
 
     <script type="application/javascript">
         function getCookie(name) {
