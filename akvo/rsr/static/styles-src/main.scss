@@ -483,7 +483,7 @@ nav.navbar-fixed-top {
         .navbar-collapse {
             &.in {
                 /*  Allow language dropdown menu to extend the height of the nav container.
-                    Otherwise, we get a scrollbar in the nav area on small screens */                
+                    Otherwise, we get a scrollbar in the nav area on small screens */
                 @include responsive(small-max-screens) {
                     overflow-y: initial;
                 }
@@ -1675,31 +1675,36 @@ div.textBlock {
     }
 }
 
-/* Project Directory Typeahead Styling */
+/* Typeahead Styling */
+
+ul.typeahead-selector {
+    margin: 0;
+    padding: 0.25em;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    background-color: #fff;
+    list-style: none;
+    @include border-radius(4px);
+    li {
+        padding-left: 6px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        &:hover,
+        &.hover {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        a {
+            color: rgb(85, 85, 85);
+        }
+    }
+}
+
 #filterForm {
     #org-filter-container {
-        ul.typeahead-selector {
+        ul.typeahead-container {
             margin: -15px 0 0 0;
-            padding: 0.25em;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            border-left: 1px solid #ccc;
-            background-color: #fff;
-            list-style: none;
-            @include border-radius(4px);
-            li {
-                padding-left: 6px;
-                padding-top: 4px;
-                padding-bottom: 4px;
-                &:hover,
-                &.hover {
-                    font-weight: bold;
-                    cursor: pointer;
-                }
-                a {
-                    color: rgb(85, 85, 85);
-                }
-            }
         }
     }
 }
@@ -2019,7 +2024,7 @@ dd {
             width: 50%;
             background: rgba($progressNot, 1);
             color: white;
-        }        
+        }
         &[aria-valuenow="60"] {
             width: 60%;
             background: rgba($progressNot, 1);
@@ -2047,12 +2052,14 @@ dd {
         }
     }
 }
+
 .formOverviewInfo {
-    border: 1px solid rgba(52,52,56,0.1);
+    border: 1px solid rgba(52, 52, 56, 0.1);
     padding: 10px;
     margin-bottom: 15px;
     @include border-radius(5px);
 }
+
 .projectEdit {
     h2 {
         font-weight: normal;
