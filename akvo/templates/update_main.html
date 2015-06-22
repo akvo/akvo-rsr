@@ -52,7 +52,7 @@
 
 
                         {% autoescape off %}
-                        <p class="topMargin">{{ update.text|force_escape|urlize|apply_markup:"markdown" }}</p>
+                        <div class="updateText topMargin">{{ update.text|force_escape|urlize|apply_markup:"markdown" }}</div>
                     {% endautoescape %}
                 </div>
             </div>

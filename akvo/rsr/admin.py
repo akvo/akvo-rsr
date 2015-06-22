@@ -1120,7 +1120,7 @@ admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
 
 class KeywordAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Keyword')
-    list_display = ('label',)
+    list_display = ('label', 'logo')
 
 admin.site.register(get_model('rsr', 'Keyword'), KeywordAdmin)
 

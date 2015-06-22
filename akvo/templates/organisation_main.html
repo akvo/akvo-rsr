@@ -108,17 +108,71 @@
     <div class="col-md-4">
       <h2><a href="{% url 'project-directory' %}?organisation={{organisation.pk}}">{% trans 'Projects in RSR' %}</a></h2>
       <dl class="dl-horizontal">
-        <dt>{% trans 'Active' %}</dt><dd>{{organisation.published_projects.status_active.count}}</dd>
-        <dt>{% trans 'Need funding' %}</dt><dd>{{organisation.published_projects.status_onhold.count}}</dd>
-        <dt>{% trans 'Complete' %}</dt><dd>{{organisation.published_projects.status_complete.count}}</dd>
-        <dt>{% trans 'Cancelled' %}</dt><dd>{{organisation.published_projects.status_cancelled.count}}</dd>
-        <dt>{% trans 'Total projects' %}</dt><dd>{{organisation.published_projects.count}}</dd>
+        <dt>{% trans 'Active' %}</dt>
+        <dd>
+          {% if organisation.published_projects.status_active.count %}
+            <a href="{% url 'project-directory' %}?organisation={{organisation.pk}}&amp;status=A">
+              {{organisation.published_projects.status_active.count}}
+            </a>
+          {% else %}
+            {{organisation.published_projects.status_active.count}}
+          {% endif %}
+        </dd>
+        <dt>{% trans 'Need funding' %}</dt>
+        <dd>
+          {% if organisation.published_projects.status_onhold.count %}
+            <a href="{% url 'project-directory' %}?organisation={{organisation.pk}}&amp;status=H">
+              {{organisation.published_projects.status_onhold.count}}
+            </a>
+          {% else %}
+            {{organisation.published_projects.status_onhold.count}}
+          {% endif %}
+        </dd>
+        <dt>{% trans 'Complete' %}</dt>
+        <dd>
+          {% if organisation.published_projects.status_complete.count %}
+            <a href="{% url 'project-directory' %}?organisation={{organisation.pk}}&amp;status=C">
+              {{organisation.published_projects.status_complete.count}}
+            </a>
+          {% else %}
+            {{organisation.published_projects.status_complete.count}}
+          {% endif %}
+        </dd>
+        <dt>{% trans 'Cancelled' %}</dt>
+        <dd>
+          {% if organisation.published_projects.status_cancelled.count %}
+            <a href="{% url 'project-directory' %}?organisation={{organisation.pk}}&amp;status=L">
+              {{organisation.published_projects.status_cancelled.count}}
+            </a>
+          {% else %}
+            {{organisation.published_projects.status_cancelled.count}}
+          {% endif %}
+        </dd>
+        <dt>{% trans 'Total projects' %}</dt>
+        <dd>
+          {% if organisation.published_projects %}
+            <a href="{% url 'project-directory' %}?organisation={{organisation.pk}}">
+              {{organisation.published_projects.count}}
+            </a>
+          {% else %}
+            {{organisation.published_projects.count}}
+          {% endif %}
+        </dd>
       </dl>
     </div>
     <div class="col-md-4">
       <h2><a href="{% url 'update-directory' %}?partner={{organisation.pk}}">{% trans 'Updates in RSR' %}</a></h2>
       <dl class="dl-horizontal">
-        <dt>{% trans 'Total updates' %}</dt><dd>{{organisation.published_projects.all_updates.count}}</dd>
+        <dt>{% trans 'Total updates' %}</dt>
+        <dd>
+          {% if organisation.published_projects.all_updates.count %}
+          <a href="{% url 'update-directory' %}?partner={{ organisation.id }}">
+            {{organisation.published_projects.all_updates.count}}
+          </a>
+          {% else %}
+          {{organisation.published_projects.all_updates.count}}
+          {% endif %}
+        </dd>
       </dl>
     </div>
     <div class="col-md-4">
