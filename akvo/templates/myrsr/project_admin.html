@@ -1229,6 +1229,16 @@
                 form_data += '&eventFromActual=' + document.querySelector('#eventFromActual').value;
                 form_data += '&eventEndPlanned=' + document.querySelector('#eventEndPlanned').value;
                 form_data += '&eventEndActual=' + document.querySelector('#eventEndActual').value;
+
+                var related_projects = form.getElementsByClassName('related-project-input');
+
+                for (var i=0; i < related_projects.length; i++) {
+                    var input, input_id;
+
+                    input = related_projects[i].getElementsByTagName('input')[0];
+                    input_id = input.getAttribute("id");
+                    form_data += '&value-' + input_id + '=' + input.getAttribute("value");
+                }
             }
 
             // Create request

@@ -97,11 +97,12 @@ def project_admin_step1(request, pk=None):
 
     # Related projects
     for key in data.keys():
-        if 'related-project-project-' in key:
+        if 'value-related-project-project-' in key:
             rp = None
-            rp_id = key.split('-', 3)[3]
+            rp_id = key.split('-', 4)[4]
 
-            if 'add' in rp_id and (data['related-project-iati-identifier-' + rp_id]
+            if 'add' in rp_id and (data['value-related-project-project-' + rp_id]
+                                   or data['related-project-iati-identifier-' + rp_id]
                                    or data['related-project-relation-' + rp_id]):
                 rp = RelatedProject.objects.create(project=project)
                 new_objects.append(
@@ -119,7 +120,13 @@ def project_admin_step1(request, pk=None):
                     errors.append({'name': key, 'error': error})
 
             if rp:
-                # TODO: Related project
+                rp_project = 'value-related-project-project-' + rp_id
+                try:
+                    project = Project.objects.get(pk=data[rp_project])
+                    errors = save_field(rp, 'related_project', rp_project, project, errors)
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': rp_project, 'error': error})
 
                 rp_iati_id_key = 'related-project-iati-identifier-' + rp_id
                 errors = save_field(
