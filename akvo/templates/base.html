@@ -2,13 +2,6 @@
 {% load url from future %}
 {% load compressed %}
 
-{% if rsr_page.google_translation %}
-  <style>
-    .nav {padding-top:39px}
-    .navbar-brand {margin-top:39px}
-  </style>
-{% endif %}
-
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
   <head>
@@ -70,7 +63,7 @@
     {% block head_js %}{% endblock %}
   </head>
 
-  <body>
+  <body {% if rsr_page.google_translation %} class="translationBarActive" {% endif %}>
     {% include 'navigation/header.html' %}
 
     {% block maincontent %}{% endblock %}
