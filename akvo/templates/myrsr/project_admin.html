@@ -1233,11 +1233,17 @@
                 var related_projects = form.getElementsByClassName('related-project-input');
 
                 for (var i=0; i < related_projects.length; i++) {
-                    var input, input_id;
+                    var input, input_id, input_value;
 
                     input = related_projects[i].getElementsByTagName('input')[0];
                     input_id = input.getAttribute("id");
-                    form_data += '&value-' + input_id + '=' + input.getAttribute("value");
+                    if (input.value !== '') {
+                        input_value = input.getAttribute("value")
+                    } else {
+                        input_value = ''
+                    }
+
+                    form_data += '&value-' + input_id + '=' + input_value;
                 }
             }
 

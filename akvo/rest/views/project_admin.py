@@ -122,11 +122,14 @@ def project_admin_step1(request, pk=None):
             if rp:
                 rp_project = 'value-related-project-project-' + rp_id
                 try:
-                    project = Project.objects.get(pk=data[rp_project])
-                    errors = save_field(rp, 'related_project', rp_project, project, errors)
+                    rp_rp = Project.objects.get(pk=data[rp_project]) if data[rp_project] else None
+                    errors = save_field(
+                        rp, 'related_project', 'related-project-project-' + str(rp.pk), rp_rp,
+                        errors
+                    )
                 except Exception as e:
                     error = str(e).capitalize()
-                    errors.append({'name': rp_project, 'error': error})
+                    errors.append({'name': 'related-project-project-' + str(rp.pk), 'error': error})
 
                 rp_iati_id_key = 'related-project-iati-identifier-' + rp_id
                 errors = save_field(
