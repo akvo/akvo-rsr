@@ -1597,6 +1597,12 @@ dd.currencyAmount {
 .updateText {
   white-space: pre-line; }
 
+/* Google translation bar styles */
+body.translationBarActive .nav {
+  padding-top: 39px; }
+body.translationBarActive .navbar-brand {
+  margin-top: 39px; }
+
 /* Cookie */
 #cookie-law {
   position: fixed;
