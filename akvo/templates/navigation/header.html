@@ -72,6 +72,7 @@
         </li>
         <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
+        {% if not rsr_page or not rsr_page.google_translation %}
         <li>
           <div class="dropdown langDropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
@@ -88,7 +89,7 @@
             </ul>
           </div>
         </li>
-        {% if rsr_page and rsr_page.google_translation = True %}
+        {% else %}
           <li>
             <div class="dropdown langDropdown">
               <div id="google_translate_element"></div>
