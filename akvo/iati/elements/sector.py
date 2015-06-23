@@ -31,9 +31,6 @@ def sector(project):
             if sec.percentage:
                 element.attrib['percentage'] = str(sec.percentage)
 
-            if sec.text:
-                element.text = sec.text
-
             sector_elements.append(element)
 
     return sector_elements
