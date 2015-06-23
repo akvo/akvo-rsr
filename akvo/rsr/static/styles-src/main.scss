@@ -2027,10 +2027,16 @@ body {
         .navbar-brand {
             margin-top: 39px;
         }
-        article {
+        article,
+        .updateMain,
+        .organisationDetail,
+        #map {
             padding-top: 39px;
         }
-        div.skiptranslate ~ article {
+        div.skiptranslate ~ article,
+        div.skiptranslate ~ .updateMain,
+        div.skiptranslate ~ .organisationDetail,
+        div.skiptranslate ~ #map {
             padding-top: 0px;
         }
     }
