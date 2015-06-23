@@ -72,6 +72,7 @@
         </li>
         <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
+        {% comment %}
         <li>
           <div class="dropdown langDropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
@@ -88,6 +89,7 @@
             </ul>
           </div>
         </li>
+        {% endcomment %}
         {% if rsr_page and rsr_page.google_translation = True %}
           <li>
             <div class="dropdown langDropdown">
@@ -105,6 +107,23 @@
                 }
                 </script>
                 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+            </div>
+          </li>
+        {% else %}
+          <li>
+            <div class="dropdown langDropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
+                <img src="{{STATIC_URL}}images/flags/128/{{LANGUAGE_CODE}}.png" width="20" height="20" />
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                  {% if not language.code == LANGUAGE_CODE %}
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="/{{language.code}}/{{current_path_without_lang}}"><img src="{{STATIC_URL}}images/flags/128/{{language.code}}.png" width="20" height="20" /> {{ language.name_local|title }}</a></li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
             </div>
           </li>
         {% endif %}
