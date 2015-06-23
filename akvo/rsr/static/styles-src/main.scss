@@ -2022,12 +2022,23 @@ dd {
 body {
     &.translationBarActive {
         .nav {
-            padding-top:39px;
+            padding-top: 39px;
         }
-
-       .navbar-brand {
-            margin-top:39px
-       }
+        .navbar-brand {
+            margin-top: 39px;
+        }
+        article,
+        .updateMain,
+        .organisationDetail,
+        #map {
+            padding-top: 39px;
+        }
+        div.skiptranslate ~ article,
+        div.skiptranslate ~ .updateMain,
+        div.skiptranslate ~ .organisationDetail,
+        div.skiptranslate ~ #map {
+            padding-top: 0px;
+        }
     }
 }
 

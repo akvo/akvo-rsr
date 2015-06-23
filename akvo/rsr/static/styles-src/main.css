@@ -1602,6 +1602,10 @@ body.translationBarActive .nav {
   padding-top: 39px; }
 body.translationBarActive .navbar-brand {
   margin-top: 39px; }
+body.translationBarActive article, body.translationBarActive .updateMain, body.translationBarActive .organisationDetail, body.translationBarActive #map {
+  padding-top: 39px; }
+body.translationBarActive div.skiptranslate ~ article, body.translationBarActive div.skiptranslate ~ .updateMain, body.translationBarActive div.skiptranslate ~ .organisationDetail, body.translationBarActive div.skiptranslate ~ #map {
+  padding-top: 0px; }
 
 /* Cookie */
 #cookie-law {
