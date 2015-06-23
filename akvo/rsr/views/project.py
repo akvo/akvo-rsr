@@ -469,8 +469,10 @@ def partners(request, project_id):
 def finance(request, project_id):
     """."""
     project = get_object_or_404(Project, pk=project_id)
+    pledged = project.get_pledged()
     context = {
-        'project': project
+        'project': project,
+        'pledged': pledged,
     }
     return render(request, 'project_finance.html', context)
 

@@ -624,8 +624,9 @@ class V201Checks(object):
                                            u'specified' % str(result.pk)))
 
             if not result.title:
-                checks.append((u'warning', u'result (id: %s) has no title '
-                                           u'specified' % str(result.pk)))
+                self.all_checks_passed = False
+                checks.append((u'error', u'result (id: %s) has no title '
+                                         u'specified' % str(result.pk)))
 
             if not result.indicators.all() and not result.description:
                 self.all_checks_passed = False
@@ -634,12 +635,14 @@ class V201Checks(object):
 
             for indicator in result.indicators.all():
                 if not indicator.measure:
-                    checks.append((u'warning', u'indicator (id: %s) has no measure '
-                                               u'specified' % str(indicator.pk)))
+                    self.all_checks_passed = False
+                    checks.append((u'error', u'indicator (id: %s) has no measure '
+                                             u'specified' % str(indicator.pk)))
 
                 if not indicator.title:
-                    checks.append((u'warning', u'indicator (id: %s) has no title '
-                                               u'specified' % str(indicator.pk)))
+                    self.all_checks_passed = False
+                    checks.append((u'error', u'indicator (id: %s) has no title '
+                                             u'specified' % str(indicator.pk)))
 
                 if (indicator.baseline_value and not indicator.baseline_year) or \
                         (not indicator.baseline_value and indicator.baseline_year):
