@@ -15,7 +15,7 @@ Wednesday 24th June 2015, kasperbrandt
 New & Noteworthy
 ---
 ### Google Translate for Akvo Pages
-After the release of v3, the Google Translate function had been removed in favour of native RSR translations fir static content. Now, the Google Translate widget is back in for Akvo Pages, which makes it possible to translate a whole page, including dynamic content. 
+After the release of v3, the Google Translate function had been removed in favour of native RSR translations for static content. Now, the Google Translate widget is back in for Akvo Pages, which makes it possible to translate a whole page, including dynamic content. 
 
 Since RSR also has translations of its' own, the language selector for these translation won't be displayed when the Google Translate function is activated.
 
@@ -24,9 +24,9 @@ The Google Translate function can be set per Akvo Page, in the admin.
 Github issue: [#1617](https://github.com/akvo/akvo-rsr/issues/1617).
 
 ### Consortia projects
-In RSR, projects belonging to a consortium used to be indicated with a sponsor partner. However, after the implementation of keywords, it is now possible to tag a project with a keyword to indicate if it belongs to a consortium. And also to indicate if it should be displayed on an Akvo Page or not.
+In RSR, projects belonging to a consortium used to be indicated with a sponsor partner. However, after the implementation of keywords, it is possible to tag a project with a keyword to indicate if it belongs to a consortium. And also to indicate if it should be displayed on an Akvo Page or not.
 
-We have now added an option to add a logo to a keyword. If a project is linked to a keyword and the keyword has a logo, then this logo will be displayed in the project header on core RSR (not on Akvo Pages), with a maximum of 2 logos.
+We have now added an option to add a logo to a keyword. If a project is linked to a keyword and the keyword has a logo, then this logo will be displayed in the project header on RSR (but not on Akvo Pages), with a maximum of 2 logos.
 
 Github issue: [#1616](https://github.com/akvo/akvo-rsr/issues/1616).
 
@@ -38,9 +38,9 @@ Github issue: [#1508](https://github.com/akvo/akvo-rsr/issues/1508).
 Bug Fixes
 ---
 ### IATI Export improvements
-We have noticed that the IATI export did not always produce valid IATI v2.01 files. Therefore we have made some slight changes in the export function, and the checks, to make sure the created IATI exports are valid.
+We noticed that the IATI export did not always produce valid IATI v2.01 files. Therefore we have made some slight changes in the export function, and the checks, to make sure the created IATI exports are always valid when the checks succeed.
 
-Also, the project list on the My IATI section is black by default, so that it's clear when the checks have been performed and the projects have turned either green or red. In addition, '(not published)' is added to the project title when a project is not publised. And finally, the errors returned for projects with missing information are added to the project list while the checks are performed.
+Also, the projects in the project list of the My IATI section are black by default, so that it's clear when the checks have been performed and the projects have turned either green or red. In addition, '(not published)' is added to the project title when a project is not publised. And finally, the errors returned for projects with missing information are added to the project list while the checks are performed.
 
 Github issue: [#1618](https://github.com/akvo/akvo-rsr/issues/1618).
 
