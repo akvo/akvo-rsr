@@ -112,14 +112,14 @@ class V201Checks(object):
                 if partnership.partner_type and (org.iati_org_id or org_name):
                     valid_partner = True
                 if not partnership.partner_type:
-                    checks.append((u'warning', u'missing role for partner %s' % org_name))
+                    checks.append((u'error', u'missing role for partner %s' % org_name))
                 if not org.iati_org_id:
                     checks.append((u'warning', u'partner %s has no IATI identifier' % org_name))
                 if not org_name:
                     checks.append((u'warning', u'%s partner has no organisation '
                                                u'name' % partnership.partner_type))
             else:
-                checks.append((u'warning', u'partnership has no organisation'))
+                checks.append((u'error', u'partnership has no organisation'))
 
         if valid_partner:
             checks.insert(0, (u'success', u'has at least one valid partner'))
@@ -247,13 +247,13 @@ class V201Checks(object):
 
         for location in self.project.locations.all():
             if location.location_code and not location.vocabulary:
-                checks.append((u'warning', u'location (id: %s) has code, '
-                                           u'but no vocabulary' % str(location.pk)))
+                checks.append((u'error', u'location (id: %s) has code, '
+                                         u'but no vocabulary' % str(location.pk)))
 
             for administrative in location.administratives.all():
                 if administrative.code and not administrative.vocabulary:
-                    checks.append((u'warning', u'administrative location (id: %s) has code, '
-                                               u'but no vocabulary' % str(administrative.pk)))
+                    checks.append((u'error', u'administrative location (id: %s) has code, '
+                                             u'but no vocabulary' % str(administrative.pk)))
 
         if self.project.locations.all() and not checks:
             checks.append((u'success', u'has valid location(s)'))
@@ -356,7 +356,7 @@ class V201Checks(object):
 
         if self.project.country_budget_items.all():
             if not self.project.country_budget_vocabulary:
-                checks.append((u'warning', u'vocabulary for country budget items not specified'))
+                checks.append((u'error', u'vocabulary for country budget items not specified'))
 
         if self.project.country_budget_items.all().count() > 1:
             percentage = 0
@@ -382,11 +382,11 @@ class V201Checks(object):
 
         for policy_marker in self.project.policy_markers.all():
             if not policy_marker.policy_marker:
-                checks.append((u'warning', u'policy marker (id: %s) has no '
-                                           u'code' % str(policy_marker.pk)))
+                checks.append((u'error', u'policy marker (id: %s) has no '
+                                         u'code' % str(policy_marker.pk)))
             if not policy_marker.significance:
-                checks.append((u'warning', u'policy marker (id: %s) has no '
-                                           u'significance' % str(policy_marker.pk)))
+                checks.append((u'error', u'policy marker (id: %s) has no '
+                                         u'significance' % str(policy_marker.pk)))
 
         if self.project.policy_markers.all() and not checks:
             checks.append((u'success', u'has valid policy marker(s)'))
@@ -405,18 +405,18 @@ class V201Checks(object):
 
         for budget in self.project.budget_items.all():
             if not budget.amount:
-                checks.append((u'warning', u'budget (id: %s) has no amount' % str(budget.pk)))
+                checks.append((u'error', u'budget (id: %s) has no amount' % str(budget.pk)))
             if not budget.period_start:
-                checks.append((u'warning', u'budget (id: %s) has no start date' % str(budget.pk)))
+                checks.append((u'error', u'budget (id: %s) has no start date' % str(budget.pk)))
             if not budget.period_end:
-                checks.append((u'warning', u'budget (id: %s) has no end date' % str(budget.pk)))
+                checks.append((u'error', u'budget (id: %s) has no end date' % str(budget.pk)))
             if budget.period_start and budget.period_end \
                     and budget.period_start > budget.period_end:
-                checks.append((u'warning', u'budget (id: %s) has a start date before the '
-                                           u'end date' % str(budget.pk)))
+                checks.append((u'error', u'budget (id: %s) has a start date before the '
+                                         u'end date' % str(budget.pk)))
             if not budget.currency and not self.project.currency:
-                checks.append((u'warning', u'budget (id: %s) has no currency and no default '
-                                           u'currency specified' % str(budget.pk)))
+                checks.append((u'error', u'budget (id: %s) has no currency and no default '
+                                         u'currency specified' % str(budget.pk)))
 
         if self.project.budget_items.all() and not checks:
             checks.append((u'success', u'has valid budget items'))
@@ -435,20 +435,17 @@ class V201Checks(object):
 
         for pd in self.project.planned_disbursements.all():
             if not pd.amount:
-                checks.append((u'warning', u'planned disbursement (id: %s) has '
-                                           u'no amount' % str(pd.pk)))
+                checks.append((u'error', u'planned disbursement (id: %s) has '
+                                         u'no amount' % str(pd.pk)))
             if not pd.period_start:
-                checks.append((u'warning', u'planned disbursement (id: %s) has no start '
-                                           u'date' % str(pd.pk)))
-            if not pd.period_end:
-                checks.append((u'warning', u'planned disbursement (id: %s) has no end '
-                                           u'date' % str(pd.pk)))
+                checks.append((u'error', u'planned disbursement (id: %s) has no start '
+                                         u'date' % str(pd.pk)))
             if pd.period_start and pd.period_end and pd.period_start > pd.period_end:
-                checks.append((u'warning', u'planned disbursement (id: %s) has a start '
-                                           u'date before the end date' % str(pd.pk)))
+                checks.append((u'error', u'planned disbursement (id: %s) has a start '
+                                         u'date before the end date' % str(pd.pk)))
             if not pd.currency and not self.project.currency:
-                checks.append((u'warning', u'planned disbursement (id: %s) has no currency and no '
-                                           u'default currency specified' % str(pd.pk)))
+                checks.append((u'error', u'planned disbursement (id: %s) has no currency and no '
+                                         u'default currency specified' % str(pd.pk)))
 
         if self.project.planned_disbursements.all() and not checks:
             checks.append((u'success', u'has valid planned disbursements'))
@@ -467,20 +464,20 @@ class V201Checks(object):
 
         for t in self.project.transactions.all():
             if not t.transaction_type:
-                checks.append((u'warning', u'transaction (id: %s) has no type' % str(t.pk)))
+                checks.append((u'error', u'transaction (id: %s) has no type' % str(t.pk)))
 
             if not t.transaction_date:
-                checks.append((u'warning', u'transaction (id: %s) has no date' % str(t.pk)))
+                checks.append((u'error', u'transaction (id: %s) has no date' % str(t.pk)))
             elif t.transaction_date > date.today():
-                checks.append((u'warning', u'transaction (id: %s) has a date in '
-                                           u'the future' % str(t.pk)))
+                checks.append((u'error', u'transaction (id: %s) has a date in '
+                                         u'the future' % str(t.pk)))
 
             if t.value:
-                checks.append((u'warning', u'transaction (id: %s) has no value' % str(t.pk)))
+                checks.append((u'error', u'transaction (id: %s) has no value' % str(t.pk)))
 
             if not (t.currency or self.project.currency):
-                checks.append((u'warning', u'transaction (id: %s) has no currency and no default '
-                                           u'currency specified' % str(t.pk)))
+                checks.append((u'error', u'transaction (id: %s) has no currency and no default '
+                                         u'currency specified' % str(t.pk)))
 
             if t.receiver_organisation and not t.receiver_organisation.iati_org_id:
                 checks.append((u'warning', u'receiver organisation of transaction (id: %s) has no '
@@ -505,20 +502,20 @@ class V201Checks(object):
 
         for doc in self.project.documents.all():
             if not (doc.url or doc.document):
-                checks.append((u'warning', u'document link (id: %s) has no url or document '
-                                           u'specified' % str(doc.pk)))
+                checks.append((u'error', u'document link (id: %s) has no url or document '
+                                         u'specified' % str(doc.pk)))
 
             if not doc.format:
-                checks.append((u'warning', u'document link (id: %s) has no format '
-                                           u'specified' % str(doc.pk)))
+                checks.append((u'error', u'document link (id: %s) has no format '
+                                         u'specified' % str(doc.pk)))
 
             if not doc.title:
-                checks.append((u'warning', u'document link (id: %s) has no title '
-                                           u'specified' % str(doc.pk)))
+                checks.append((u'error', u'document link (id: %s) has no title '
+                                         u'specified' % str(doc.pk)))
 
             if not doc.category:
-                checks.append((u'warning', u'document link (id: %s) has no category '
-                                           u'specified' % str(doc.pk)))
+                checks.append((u'error', u'document link (id: %s) has no category '
+                                         u'specified' % str(doc.pk)))
 
         if self.project.documents.all() and not checks:
             checks.append((u'success', u'has valid document(s)'))
@@ -535,29 +532,29 @@ class V201Checks(object):
 
         for related in self.project.related_projects.all():
             if not (related.related_project or related.related_iati_id):
-                checks.append((u'warning', u'related project or IATI identifier not specified'))
+                checks.append((u'error', u'related project or IATI identifier not specified'))
             elif not (related.related_project.iati_activity_id or related.related_iati_id):
-                checks.append((u'warning', u'related project (id: %s) has no IATI identifier and '
-                                           u'no IATI identifier '
-                                           u'specified' % str(related.related_project.pk)))
+                checks.append((u'error', u'related project (id: %s) has no IATI identifier and '
+                                         u'no IATI identifier '
+                                         u'specified' % str(related.related_project.pk)))
 
             if not related.relation:
-                checks.append((u'warning', u'relation missing for related project'))
+                checks.append((u'error', u'relation missing for related project'))
 
         for related_to in self.project.related_to_projects.all():
             if not (related_to.project or related_to.related_iati_id):
-                checks.append((u'warning', u'related to project or IATI identifier not specified'))
+                checks.append((u'error', u'related to project or IATI identifier not specified'))
             elif not (related_to.project.iati_activity_id or related_to.related_iati_id):
-                checks.append((u'warning', u'related to project (id: %s) has no IATI identifier '
-                                           u'and no IATI identifier '
-                                           u'specified' % str(related_to.project.pk)))
+                checks.append((u'error', u'related to project (id: %s) has no IATI identifier '
+                                         u'and no IATI identifier '
+                                         u'specified' % str(related_to.project.pk)))
 
             if not related_to.relation:
-                checks.append((u'warning', u'relation missing for related to project'))
+                checks.append((u'error', u'relation missing for related to project'))
 
         if (self.project.related_projects.all() or self.project.related_to_projects.all()) \
                 and not checks:
-            checks.append((u'success', u'has valid document(s)'))
+            checks.append((u'success', u'has valid related project(s)'))
 
         return checks
 
@@ -571,12 +568,12 @@ class V201Checks(object):
 
         for ld in self.project.legacy_data.all():
             if not ld.name:
-                checks.append((u'warning', u'legacy data (id: %s) has no name '
-                                           u'specified' % str(ld.pk)))
+                checks.append((u'error', u'legacy data (id: %s) has no name '
+                                         u'specified' % str(ld.pk)))
 
             if not ld.value:
-                checks.append((u'warning', u'legacy data (id: %s) has no value '
-                                           u'specified' % str(ld.pk)))
+                checks.append((u'error', u'legacy data (id: %s) has no value '
+                                         u'specified' % str(ld.pk)))
 
         if self.project.legacy_data.all() and not checks:
             checks.append((u'success', u'has valid legacy data'))
@@ -594,12 +591,12 @@ class V201Checks(object):
 
         for condition in self.project.conditions.all():
             if not condition.type:
-                checks.append((u'warning', u'condition (id: %s) has no type '
-                                           u'specified' % str(condition.pk)))
+                checks.append((u'error', u'condition (id: %s) has no type '
+                                         u'specified' % str(condition.pk)))
 
             if not condition.text:
-                checks.append((u'warning', u'condition (id: %s) has no description '
-                                           u'specified' % str(condition.pk)))
+                checks.append((u'error', u'condition (id: %s) has no description '
+                                         u'specified' % str(condition.pk)))
 
         if self.project.conditions.all() and not checks:
             checks.append((u'success', u'has valid condition(s)'))
@@ -621,17 +618,16 @@ class V201Checks(object):
             if not result.type:
                 self.all_checks_passed = False
                 checks.append((u'error', u'result (id: %s) has no type '
-                                           u'specified' % str(result.pk)))
+                                         u'specified' % str(result.pk)))
 
             if not result.title:
                 self.all_checks_passed = False
                 checks.append((u'error', u'result (id: %s) has no title '
                                          u'specified' % str(result.pk)))
 
-            if not result.indicators.all() and not result.description:
+            if not result.indicators.all():
                 self.all_checks_passed = False
-                checks.append((u'error', u'result (id: %s) has no description and no '
-                                           u'indicator(s)' % str(result.pk)))
+                checks.append((u'error', u'result (id: %s) has no indicator(s)' % str(result.pk)))
 
             for indicator in result.indicators.all():
                 if not indicator.measure:
@@ -646,16 +642,20 @@ class V201Checks(object):
 
                 if (indicator.baseline_value and not indicator.baseline_year) or \
                         (not indicator.baseline_value and indicator.baseline_year):
-                    checks.append((u'warning', u'indicator (id: %s) baseline has no value or year '
-                                               u'specified' % str(indicator.pk)))
+                    checks.append((u'error', u'indicator (id: %s) baseline has no value or year '
+                                             u'specified' % str(indicator.pk)))
 
                 for period in indicator.periods.all():
-                    if not (period.period_start or period.period_end):
-                        checks.append((u'warning', u'indicator period (id: %s) has no start and '
-                                                   u'end date specified' % str(period.pk)))
-                    elif period.period_start > period.period_end:
-                        checks.append((u'warning', u'indicator period (id: %s) has a start date '
-                                                   u'later than the end date' % str(period.pk)))
+                    if not period.period_start:
+                        checks.append((u'error', u'indicator period (id: %s) has no start '
+                                                 u'date specified' % str(period.pk)))
+                    if not period.period_end:
+                        checks.append((u'error', u'indicator period (id: %s) has no end '
+                                                 u'date specified' % str(period.pk)))
+                    if period.period_start and period.period_end and \
+                            period.period_start > period.period_end:
+                        checks.append((u'error', u'indicator period (id: %s) has a start date '
+                                                 u'later than the end date' % str(period.pk)))
 
         if self.project.results.all() and not checks:
             checks.append((u'success', u'has valid result(s)'))
@@ -678,24 +678,24 @@ class V201Checks(object):
             c = self.project.crsadd
             for flag in c.other_flags.all():
                 if not flag.code:
-                    checks.append((u'warning', u'CRS other flag (id: %s) has no code '
-                                               u'specified' % str(flag.pk)))
+                    checks.append((u'error', u'CRS other flag (id: %s) has no code '
+                                             u'specified' % str(flag.pk)))
 
                 if not flag.significance:
-                    checks.append((u'warning', u'CRS other flag (id: %s) has no significance '
-                                               u'specified' % str(flag.pk)))
+                    checks.append((u'error', u'CRS other flag (id: %s) has no significance '
+                                             u'specified' % str(flag.pk)))
 
             if not c.loan_status_year and \
                     (c.loan_status_currency or c.loan_status_value_date or c.interest_received
                      or c.principal_outstanding or c.principal_arrears or c.interest_arrears):
-                checks.append((u'warning', u'CRS (id: %s) has no loan status year '
-                                           u'specified' % str(c.pk)))
+                checks.append((u'error', u'CRS (id: %s) has no loan status year '
+                                         u'specified' % str(c.pk)))
 
             if not (c.loan_status_currency or self.project.currency) and \
                     (c.loan_status_year or c.loan_status_value_date or c.interest_received
                      or c.principal_outstanding or c.principal_arrears or c.interest_arrears):
-                checks.append((u'warning', u'CRS (id: %s) has no loan status currency specified '
-                                           u'and no default currency specified' % str(c.pk)))
+                checks.append((u'error', u'CRS (id: %s) has no loan status currency specified '
+                                         u'and no default currency specified' % str(c.pk)))
 
             if not checks:
                 checks.append((u'success', u'has valid CRS'))
@@ -713,22 +713,22 @@ class V201Checks(object):
 
         if hasattr(self.project, 'fss'):
             if not self.project.fss.extraction_date:
-                checks.append((u'warning', u'FSS (id: %s) has no extraction date '
-                                           u'specified' % str(self.project.fss.pk)))
+                checks.append((u'error', u'FSS (id: %s) has no extraction date '
+                                         u'specified' % str(self.project.fss.pk)))
 
             for forecast in self.project.fss.forecasts.all():
                 if not forecast.value:
-                    checks.append((u'warning', u'FSS forecast (id: %s) has no value '
-                                               u'specified' % str(forecast.pk)))
+                    checks.append((u'error', u'FSS forecast (id: %s) has no value '
+                                             u'specified' % str(forecast.pk)))
 
                 if not forecast.year:
-                    checks.append((u'warning', u'FSS forecast (id: %s) has no year '
-                                               u'specified' % str(forecast.pk)))
+                    checks.append((u'error', u'FSS forecast (id: %s) has no year '
+                                             u'specified' % str(forecast.pk)))
 
                 if not (forecast.currency or self.project.currency):
-                    checks.append((u'warning', u'FSS forecast (id: %s) has no currency specified '
-                                               u'and no default currency '
-                                               u'specified' % str(forecast.pk)))
+                    checks.append((u'error', u'FSS forecast (id: %s) has no currency specified '
+                                             u'and no default currency '
+                                             u'specified' % str(forecast.pk)))
 
             if not checks:
                 checks.append((u'success', u'has valid FSS'))
