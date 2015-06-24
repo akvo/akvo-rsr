@@ -1035,6 +1035,9 @@ admin.site.register(get_model('rsr', 'paymentgatewayselector'), PaymentGatewaySe
 
 
 class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
+
+    """Defines the RSR Pages admin."""
+
     fieldsets = (
         (u'General', dict(fields=('organisation', 'enabled',))),
         (u'HTTP', dict(fields=('hostname', 'cname', 'custom_return_url', 'custom_return_url_text',
@@ -1042,8 +1045,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         (u'Style and content',
             dict(fields=('all_maps', 'about_box', 'about_image', 'custom_css', 'custom_logo',
                          'custom_favicon',))),
-        (u'Languages and translation', dict(fields=('default_language', 'ui_translation',
-                                                    'google_translation',))),
+        (u'Languages and translation', dict(fields=('google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
         (_(u'Project selection'), {
             'description': u'{}'.format(
@@ -1051,15 +1053,15 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                 u'Select the projects to be shown on your Site.'
                 u'</p>'
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
-                u'The default setting selects all projects associated with the organisation of the Site. '
-                u'</p>'
+                u'The default setting selects all projects associated with the organisation of '
+                u'the Site.</p>'
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
-                u'De-selecting the "Show only projects of partner" check-box shows all projects in RSR. '
-                u'This is meant to be used with the keywords below, '
+                u'De-selecting the "Show only projects of partner" check-box shows all projects '
+                u'in RSR. This is meant to be used with the keywords below, '
                 u'thus selecting only projects associated with the selected keywords. '
                 u'<br/>If keywords are added to a Site showing only projects of a partner, '
-                u'the selection will be further filtered by only showing associated projects with those keywords.'
-                u'</p>'
+                u'the selection will be further filtered by only showing associated projects '
+                u'with those keywords.</p>'
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
                 u'When "Exclude projects with selected keyword is checked" '
                 u'projects with the chosen keywords are instead excluded from the list.'
@@ -1075,9 +1077,11 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     readonly_fields = ('created_at', 'last_modified_at',)
 
     def get_fieldsets(self, request, obj=None):
-        # don't show the notes field unless you are superuser or admin
+        """Don't show the notes field unless you are superuser or admin.
+
         # note that this is somewhat fragile as it relies on adding/removing from the _first_
         # fieldset
+        """
         if request.user.is_superuser or request.user.is_admin:
             self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
         else:
@@ -1091,7 +1095,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         )
 
     def get_list_display(self, request):
-        # see the notes fields in the change list if you are superuser or admin
+        """"See the notes fields in the change list if you are superuser or admin."""
         if request.user.is_superuser or request.user.is_admin:
             return list(self.list_display) + ['notes']
         return super(PartnerSiteAdmin, self).get_list_display(request)
@@ -1116,7 +1120,7 @@ admin.site.register(get_model('rsr', 'partnersite'), PartnerSiteAdmin)
 
 class KeywordAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Keyword')
-    list_display = ('label',)
+    list_display = ('label', 'logo')
 
 admin.site.register(get_model('rsr', 'Keyword'), KeywordAdmin)
 

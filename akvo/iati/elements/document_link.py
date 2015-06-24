@@ -21,9 +21,10 @@ def document_link(project):
         current_image_element.attrib['url'] = "http://rsr.akvo.org" + project.current_image.url
         current_image_element.attrib['format'] = "image/jpeg"
 
+        title_element = etree.SubElement(current_image_element, "title")
+        narrative_element = etree.SubElement(title_element, "narrative")
+
         if project.current_image_caption or project.current_image_credit:
-            title_element = etree.SubElement(current_image_element, "title")
-            narrative_element = etree.SubElement(title_element, "narrative")
             if project.current_image_caption and project.current_image_credit:
                 narrative_element.text = "%s, credit: %s" % (
                     project.current_image_caption,
@@ -33,6 +34,8 @@ def document_link(project):
                 narrative_element.text = project.current_image_caption
             elif project.current_image_credit:
                 narrative_element.text = "Credit: %s" % (project.current_image_credit,)
+        else:
+            narrative_element.text = "Project photo"
 
         category_element = etree.SubElement(current_image_element, "category")
         category_element.attrib['code'] = "A12"
@@ -45,10 +48,9 @@ def document_link(project):
             link_element.attrib['url'] = link.url
             link_element.attrib['format'] = "application/http"
 
-            if link.caption:
-                title_element = etree.SubElement(link_element, "title")
-                narrative_element = etree.SubElement(title_element, "narrative")
-                narrative_element.text = link.caption
+            title_element = etree.SubElement(link_element, "title")
+            narrative_element = etree.SubElement(title_element, "narrative")
+            narrative_element.text = link.caption if link.caption else "Project link"
 
             category_element = etree.SubElement(link_element, "category")
             category_element.attrib['code'] = "A12"
@@ -67,10 +69,9 @@ def document_link(project):
             if document.format:
                 document_element.attrib['format'] = document.format
 
-            if document.title:
-                title_element = etree.SubElement(document_element, "title")
-                narrative_element = etree.SubElement(title_element, "narrative")
-                narrative_element.text = document.title
+            title_element = etree.SubElement(document_element, "title")
+            narrative_element = etree.SubElement(title_element, "narrative")
+            narrative_element.text = document.title if document.title else "Project document"
 
             if document.category:
                 category_element = etree.SubElement(document_element, "category")
@@ -87,10 +88,9 @@ def document_link(project):
         update_element.attrib['url'] = "http://rsr.akvo.org/project/%s/update/%s/" % (str(project.pk), str(update.pk))
         update_element.attrib['format'] = "application/http"
 
-        if update.title:
-            title_element = etree.SubElement(update_element, "title")
-            narrative_element = etree.SubElement(title_element, "narrative")
-            narrative_element.text = update.title
+        title_element = etree.SubElement(update_element, "title")
+        narrative_element = etree.SubElement(title_element, "narrative")
+        narrative_element.text = update.title if update.title else "Project update"
 
         category_element = etree.SubElement(update_element, "category")
         category_element.attrib['code'] = "A12"

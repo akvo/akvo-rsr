@@ -63,7 +63,7 @@
     {% block head_js %}{% endblock %}
   </head>
 
-  <body>
+  <body {% if rsr_page.google_translation %} class="translationBarActive" {% endif %}>
     {% include 'navigation/header.html' %}
 
     {% block maincontent %}{% endblock %}
