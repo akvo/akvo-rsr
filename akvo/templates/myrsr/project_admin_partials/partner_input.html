@@ -2,19 +2,11 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <select name="partner{% if partnership %}-{{ partnership.pk }}{% endif %}" class="form-control"
-                id="partner{% if partnership %}-{{ partnership.pk }}{% endif %}" placeholder="Partner">
-                    <option {% if not partnership %} selected="selected" {% endif %}>Partner:</option>
-                    {% comment %}
-                    {% for org in organisations %}
-                        <option value="{{org.id}}" 
-                        {% if partnership.organisation.name == org.name %} selected="selected" {% endif %}>
-                            {{org.name}}
-                        </option>
-                    {% endfor %}
-                    {% endcomment %}
-                </select>
-                <label for="partner" class="control-label">Partner</label>
+                <div class="partner-input partner{% if key %}-{{ key }}{% endif %} typeahead-container"
+                data-child-id="partner{% if key %}-{{ key }}{% endif %}"
+                data-value="{% if partnership.organisation.id %}{{partnership.organisation.id}}{% endif %}"
+                data-count-class="partner">
+                </div>                
             </div>
             <div class="col-md-4 control">
                 <div class="select-group">

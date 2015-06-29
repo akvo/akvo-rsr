@@ -275,15 +275,11 @@
                         </div>
                         <div class="formBlock">
                             <div class="form-group control">
-                                <select class="form-control" id="reportingOrganisation" placeholder="Reporting organisation" name="reportinOrganisation">
-                                    <option {% if not project.reporting_org %} selected="selected" {% endif %}>Reporting organisation:</option>
-                                    {% comment %}
-                                    {% for org in organisations %}
-                                        <option value="{{ org.id }}" {% if project.reporting_org == org %} selected="selected" {% endif %}>{{ org.name }}</option>
-                                    {% endfor %}
-                                    {% endcomment %}
-                                </select>
-                                <label for="reportingOrganisation" class="control-label">Reporting organisation</label>
+                                <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
+                                data-child-id="reportingOrganisation"
+                                data-value="{% if project.reporting_org %}{{project.reporting_org.id}}{% endif %}"
+                                data-count-class="reportingOrganisation">
+                                </div>                                
                             </div>
                             <div class="form-group control">
                                 <div class="checkbox">
@@ -299,10 +295,10 @@
                             <div class="partner-container">
                                 {% if project.partnerships.all %}
                                     {% for partnership in project.partnerships.all %}
-                                        {% include "myrsr/project_admin_partials/partner_input.html" %}
+                                        {% include "myrsr/project_admin_partials/partner_input.html" with key=partnership.pk %}
                                     {% endfor %}
                                 {% else %}
-                                        {% include "myrsr/project_admin_partials/partner_input.html" %}
+                                        {% include "myrsr/project_admin_partials/partner_input.html" with key='add-0' %}
                                 {% endif %}    
                             </div>                         
                             <div class="row">
@@ -1021,7 +1017,7 @@
                         return;
                     } else {
                         retryCount = retryCount + 1;
-                        loadAsync(url, retryCount, retryLimit);
+                        loadAsync(url, retryCount, retryLimit, callback);
                     }
                 }
             } else {
@@ -1033,7 +1029,7 @@
         xmlHttp.send();
     }
 
-    function processResponse(response, selector, valueId, label, help, placeholder) {
+    function processResponse(response, selector, valueId, label, help, placeholder, filterOption) {
         var typeaheadOptions = response.results;
         var typeaheadCallback = function(option) {
             var el;
@@ -1042,15 +1038,15 @@
             el.attr('value', option.id);
         };
         var displayOption = function(option, index) {
-            return option.title;
+            return option[filterOption];
         };
 
-        buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, valueId, label, help);
+        buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, valueId, label, help, filterOption);
     }
 
-    function getCallback(selector, valueId, label, help, placeholder) {
+    function getCallback(selector, valueId, label, help, placeholder, filterOption) {
         var output = function(response) {
-            processResponse(response, selector, valueId, label, help, placeholder);
+            processResponse(response, selector, valueId, label, help, placeholder, filterOption);
         };
 
         return output;
@@ -1068,6 +1064,9 @@
                 return;
             }
 
+            // The name of the property holding the text value we want to display in the typeahead
+            var filterOption = 'title';
+
             // The id we'll give the input once it's been rendered
             var childSelector = $(this).data('child-id');
             var valueId = null;            
@@ -1082,7 +1081,61 @@
                 valueId = $(this).data('value');
             }
 
-            loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, valueId, label, help, placeholder));
+            loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, valueId, label, help, placeholder, filterOption));
+        });
+
+        $('.reportingOrganisation-input').each( function() {
+
+            // Check if we've already rendered this typeahead
+            if ($(this).hasClass('has-typeahead')) {
+                return;
+            }
+
+            // The name of the property holding the text value we want to display in the typeahead
+            var filterOption = 'name';            
+
+            // The id we'll give the input once it's been rendered
+            var childSelector = $(this).data('child-id');
+            var valueId = null;            
+            var labelText = 'Reporting organisation';
+            var helpText = 'Indicate the reporting organisation of this project. This organisation must be existing already in Akvo RSR.';
+            var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                        labelText + '</label>';
+            var help = '<p class="help-block hidden">' + helpText + '</p>';
+            var placeholder = 'Reporting organisation:';
+
+            if ($(this).data('value') !== "") {
+                valueId = $(this).data('value');
+            }
+
+            loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, valueId, label, help, placeholder, filterOption));
+        });
+
+        $('.partner-input').each( function() {
+
+            // Check if we've already rendered this typeahead
+            if ($(this).hasClass('has-typeahead')) {
+                return;
+            }
+
+            // The name of the property holding the text value we want to display in the typeahead
+            var filterOption = 'name';            
+
+            // The id we'll give the input once it's been rendered
+            var childSelector = $(this).data('child-id');
+            var valueId = null;            
+            var labelText = 'Partner';
+            var helpText = '';
+            var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                        labelText + '</label>';
+            var help = '<p class="help-block hidden">' + helpText + '</p>';
+            var placeholder = 'Partner:';
+
+            if ($(this).data('value') !== "") {
+                valueId = $(this).data('value');
+            }
+
+            loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, valueId, label, help, placeholder, filterOption));
         });
     } 
     </script>
