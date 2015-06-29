@@ -1,0 +1,22 @@
+{% load compressed i18n %}
+
+{% if partners > 1 %}
+<a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
+  title="
+  {% for partner, types in partners.items %}
+    <div class='extra-partner-entry'>
+      {% if partner.logo %}
+        <a href='{% url 'organisation-main' partner.pk %}'>
+          <img src='{{partner.logo.url}}' class='extra-partner-entry'></a>
+      {% endif %}
+      <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
+      ({{ types|join:", "|capfirst }})
+    </div>
+  {% endfor %}
+  "
+  data-placement="right" data-container="article" data-class="foo">
+  {% blocktrans with partners_count=partners|length|add:"-1" %}
+    + {{partners_count}} partners
+    {% endblocktrans %}
+  </a>
+{% endif %}

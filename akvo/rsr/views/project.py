@@ -64,7 +64,6 @@ def _project_directory_coll(request):
 
 def directory(request):
     """The project list view."""
-
     qs = remove_empty_querydict_items(request.GET)
 
     # Set show_filters to "in" if any filter is selected
