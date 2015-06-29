@@ -993,6 +993,19 @@
     responses[projectsAPIUrl] = null;
     responses[orgsAPIUrl] = null;
 
+    var localStorageName = 'cachedAPIResponses';
+    var localStorageResponses = localStorage.getItem(localStorageName);
+
+    try {
+        localStorageResponses = JSON.parse(localStorageResponses);
+    } catch (error) {
+        localStorageResponses = {};
+    }
+
+    // How long a cached API response can stay in localStorage before we consider it stale
+    var MAX_LOCALSTORAGE_DAYS = 30;
+    var MAX_LOCALSTORAGE_AGE = MAX_LOCALSTORAGE_DAYS * 24 * 60 * 60 * 1000;    
+
     function loadAsync(url, retryCount, retryLimit, callback) {
         var xmlHttp;
 
@@ -1000,6 +1013,32 @@
         if (responses[url] !== null) {
             callback(responses[url]);
             return;
+        }
+
+        // If the response is in localStorage, don't fetch it again
+        if (localStorageResponses !== null && localStorageResponses !== '') {
+            if (localStorageResponses[url] !== undefined) {
+                var response = localStorageResponses[url];
+
+                if (isFresh(response.date, MAX_LOCALSTORAGE_AGE)) {
+                    callback(response.json);
+                    return;
+                }
+            }
+        }
+
+        function isFresh(writeDate, maxAge) {
+            var currentDate, age;
+            
+            currentDate = new Date();
+            currentDate = currentDate.getTime();
+            age = currentDate - writeDate;
+
+            if (age <= maxAge) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         xmlHttp = new XMLHttpRequest();
@@ -1010,6 +1049,7 @@
                 if (xmlHttp.status == 200){
                     var response = JSON.parse(xmlHttp.responseText);
                     responses[url] = response;
+                    updateLocalStorage(url, response);
                     callback(response);
                 } else {
                     if (retryCount >= retryLimit) {
@@ -1027,6 +1067,27 @@
 
         xmlHttp.open("GET", url, true);
         xmlHttp.send();
+
+        function updateLocalStorage(url, response) {
+            var output, writeDate, lsData;
+
+            if (localStorageResponses === null || localStorageResponses === '') {
+                localStorageResponses = {};
+            }
+
+            output = {};
+
+            writeDate = new Date();
+            writeDate = writeDate.getTime();
+            output.date = writeDate;
+            output.json = response;
+
+            localStorageResponses[url] = output;
+
+            lsData = JSON.stringify(localStorageResponses);
+
+            localStorage.setItem(localStorageName, lsData);
+        }
     }
 
     function processResponse(response, selector, valueId, label, help, placeholder, filterOption) {
