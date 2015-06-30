@@ -1730,3 +1730,5 @@ dd.currencyAmount {
   top: 0px; }
 .projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label {
   color: #2c2a74; }
+.projectEdit .delete-object-button {
+  color: #d9534f; }
