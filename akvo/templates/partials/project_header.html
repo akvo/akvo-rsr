@@ -17,7 +17,7 @@
             {% if not rsr_page and project.keyword_logos %}
             <div class="col-sm-2 shareBlock">
                 {% for keyword in project.keyword_logos|slice:":2" %}
-                    {% img keyword 75 75 keyword.label %}
+                    {% img keyword 125 60 keyword.label %}
                 {% endfor %}
             </div>
             {% endif %}
