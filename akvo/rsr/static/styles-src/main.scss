@@ -2181,4 +2181,14 @@ dd {
     .delete-object-button {
         color: rgba($progressWarning, 1);
     }
+    .info-icon {
+        padding-left: 0.5em;
+        cursor: pointer;
+        cursor: hand;
+        font-size: 120%;
+
+        &.activated {
+            color: rgba(44, 42, 116, 0.3);
+        }
+    }
 }

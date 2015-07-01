@@ -1521,5 +1521,68 @@
             }, 1);
         }
     </script>
+
+    <script type="application/javascript">
+
+    // Add an "info" glyphicon to each label
+    // Hovering over the glyphicon shows the help text
+
+    $(document).ready(function() {
+        $('.projectEdit label.control-label').each( function() {
+            var output, helpBlockIsLabelSibling, iconClasses, helpBlockFromLabel;
+
+            // Assume that the help block is a sibling of the label element
+            helpBlockIsLabelSibling = true;
+
+            if ($(this).parent().find('.help-block').length === 0) {
+                if ($(this).parent().parent().find('.help-block').length === 1) {
+                    helpBlockIsLabelSibling = false;
+                } else {
+
+                    // There is no help block for this label
+                    return;                    
+                }
+            }          
+
+            if (helpBlockIsLabelSibling) {
+                helpBlockFromLabel = $(this).parent().find('.help-block');
+            } else {
+                helpBlockFromLabel = $(this).parent().parent().find('.help-block');
+            }
+
+            iconClasses = 'glyphicon glyphicon-info-sign info-icon';
+
+            if (helpBlockFromLabel.is(':visible')) {
+                iconClasses += ' activated';
+            }
+
+            output = '<span class="' + iconClasses + '"></span>';
+
+            $(this).append(output);
+
+            $(this).find('.info-icon').on('click mouseenter', '', function() {
+                var helpBlock;
+
+                if (helpBlockIsLabelSibling) {
+                    helpBlock = $(this).parent().parent().find('.help-block');
+                } else {
+                    helpBlock = $(this).parent().parent().parent().find('.help-block');
+                }
+
+                if (helpBlock.is(':visible')) {
+
+                    // It's already shown, do nothing
+                    return;
+                }
+
+                helpBlock.hide();
+                helpBlock.removeClass('hidden');
+                helpBlock.fadeIn();
+                $(this).addClass('activated');
+            });
+        });
+    }); 
+
+    </script>
     
 {% endblock %}
