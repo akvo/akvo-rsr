@@ -511,153 +511,18 @@
                                 </div>
                             </div>
                             <hr/>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="latitude" name="latitude"
-                                        placeholder="Latitude" {% if project.primary_location.latitude %}
-                                        value="{{project.primary_location.latitude}}" {% endif %}>
-                                        <label class="control-label" for="latitude">Latitude</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="longitude" name="longitude"
-                                        placeholder="Longitude" {% if project.primary_location.longitude %}
-                                        value="{{project.primary_location.longitude}}" {% endif %}>
-                                        <label class="control-label" for="longitude">Longitude</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="country" id="country" class="form-control">
-                                        <option value="" {% if not project.primary_location.country %} selected="selected" {% endif %}>Country:</option>
-                                        {% for country in countries %}
-                                            <option value="{{ country.id }}" {% if project.primary_location.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <label for="scope" class="control-label">Country</label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="city" name="city" placeholder="City"
-                                        {% if project.primary_location.city %} value="{{project.primary_location.city}}" {% endif %}>
-                                        <label class="control-label" for="city">City</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="postalCode" name="postalCode" placeholder="Postal code"
-                                        {% if project.primary_location.postcode %} value="{{project.primary_location.postcode}}" {% endif %}>
-                                        <label class="control-label" for="postalCode">Postal code</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="state" name="state" placeholder="State"
-                                        {% if project.primary_location.state %} value="{{project.primary_location.state}}" {% endif %}>
-                                        <label class="control-label" for="state">State</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group control">
-                                <input type="text" class="form-control" id="address1" placeholder="Address 1" {% if project.primary_location.address_1 %} value="{{project.primary_location.address_1}}" {% endif %}>
-                                <label class="control-label" for="address1">Address 1</label>
-                            </div>
-                            <div class="form-group control">
-                                <input type="text" class="form-control" id="address2" placeholder="Address 2" {% if project.primary_location.address_2 %} value="{{project.primary_location.address_2}}" {% endif %}>
-                                <label class="control-label" for="address2">Address 2</label>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="locationReference" name="locationReference" placeholder="Reference" {% if project.primary_location.reference %} value="{{project.primary_location.reference}}" {% endif %}>
-                                        <label class="control-label" for="locationReference">Reference</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="locationCode" name="locationCode" placeholder="Code" {% if project.primary_location.location_code %} value="{{project.primary_location.location_code}}" {% endif %}>
-                                        <label class="control-label" for="locationCode">Code</label>
-                                    </div>
-                                    <div class="col-md-4 control">
-                                        <input type="text" class="form-control" id="locationName" name="locationName" placeholder="Name" {% if project.primary_location.name %} value="{{project.primary_location.name}}" {% endif %}>
-                                        <label class="control-label" for="locationName">Name</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group control">
-                                <textarea id="locationDescription" class="form-control" name="locationDescription" placeholder="Type in a location description">{{project.primary_location.description}}</textarea>
-                                <label class="control-label" for="locationDescription">Description</label>
-                            </div>
-                            <div class="form-group control">
-                                <textarea id="locationActivityDescription" class="form-control" name="locationActivityDescription" placeholder="Type in a location activity description">{{project.primary_location.activity_description}}</textarea>
-                                <label class="control-label" for="locationActivityDescription">Activity description</label>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="locationExactness" id="locationExactness" class="form-control">
-                                                <option value="" {% if not project.primary_location.exactness %} selected="selected" {% endif %}>Exactness:</option>
-                                                {% for exactness in geographic_exactnesses %}
-                                                    <option value="{{ exactness.code }}" {% if project.primary_location.exactness == exactness.code %} selected="selected" {% endif %}>{{ exactness.code }} - {{ exactness.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <label class="control-label" for="locationExactness">Exactness</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="locationReach" id="locationReach" class="form-control">
-                                                <option value="" {% if not project.primary_location.location_reach %} selected="selected" {% endif %}>Reach:</option>
-                                                {% for reach in geographic_location_reaches %}
-                                                    <option value="{{ reach.code }}" {% if project.primary_location.location_reach == reach.code %} selected="selected" {% endif %}>{{ reach.code }} - {{ reach.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <label class="control-label" for="locationReach">Reach</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="locationClass" id="locationClass" class="form-control">
-                                                <option value="" {% if not project.primary_location.location_class %} selected="selected" {% endif %}>Class:</option>
-                                                {% for class in geographic_location_classes %}
-                                                    <option value="{{ class.code }}" {% if project.primary_location.location_class == class.code %} selected="selected" {% endif %}>{{ class.code }} - {{ class.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <label class="control-label" for="locationClass">Class</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="select-group control">
-                                            <select name="locationFeatureDesignation" id="locationFeatureDesignation" class="form-control">
-                                                <option value="" selected="selected">Feature designation</option>
-                                                {% for location_type in location_types %}
-                                                    <option value="{{ location_type.code }}" {% if project.primary_location.feature_designation == location_type.code %} selected="selected" {% endif %}>{{ location_type.code }} - {{ location_type.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <label class="control-label" for="locationFeatureDesignation">Feature designation</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="location-administrative-container">
-                                {% if project.primary_location.administratives.all %}
-                                    {% for admin in project.primary_location.administratives.all %}
-                                        {% include "myrsr/project_admin_partials/location_administrative_input.html" %}
+                            <div class="project-location-container">                         
+                                {% if project.locations.all %}
+                                    {% for location in project.locations.all %}
+                                        {% include "myrsr/project_admin_partials/project_location_input.html" with key=location.pk %}
                                     {% endfor %}
                                 {% else %}
-                                    {% include "myrsr/project_admin_partials/location_administrative_input.html" %}
-                                {% endif %}
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <a href="#" class="btn btn-link" id="add-location-administrative"><span class="glyphicon glyphicon-plus"></span> Add another administrative</a>
-                                </div>
-                            </div>                               
+                                    {% include "myrsr/project_admin_partials/project_location_input.html" with key='add-0' %}
+                                {% endif %}    
+                            </div>                                                       
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link" id="add-location"><span class="glyphicon glyphicon-plus"></span> Add another location</a>
+                                    <a href="#" class="btn btn-link" id="add-project-location"><span class="glyphicon glyphicon-plus"></span> Add another project location</a>
                                 </div>
                             </div>
                         </div>
@@ -869,6 +734,7 @@
     <script type="text/template" id="indicator-input">{% include "myrsr/project_admin_partials/indicator_input.html" %}</script> 
     <script type="text/template" id="indicator-period-input">{% include "myrsr/project_admin_partials/indicator_period_input.html" %}</script> 
     <script type="text/template" id="link-input">{% include "myrsr/project_admin_partials/link_input.html" %}</script> 
+    <script type="text/template" id="project-location-input">{% include "myrsr/project_admin_partials/project_location_input.html" %}</script>     
     <script type="text/template" id="location-administrative-input">{% include "myrsr/project_admin_partials/location_administrative_input.html"%}</script> 
     <script type="text/template" id="partner-input">{% include "myrsr/project_admin_partials/partner_input.html" %}</script> 
     <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}</script> 
@@ -887,7 +753,8 @@
             var partials = ['related-project', 'budget-item', 'condition', 'contact-information', 
                 'country-budget-item','document', 'indicator', 'indicator-period', 'link', 'partner', 
                 'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region', 
-                'related-project','result', 'sector', 'transaction', 'transaction-sector', 'location-administrative'];
+                'related-project','result', 'sector', 'transaction', 'transaction-sector', 'location-administrative',
+                'project-location'];
 
             var partialsCount = {};
 
@@ -903,7 +770,6 @@
                 var buttonSelector = '#add-' + pName;
 
                 document.querySelector(buttonSelector).onclick = getOnClick(pName);
-
             }
 
             function getOnClick(pName) {
