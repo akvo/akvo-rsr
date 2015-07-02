@@ -11,44 +11,54 @@ window.AKVO_RSR.analytics = {
 
     if (resp.length > 0) {
       $('#footer_analytics').append(
-        resp[0].nb_hits
+        resp[0].nb_visits
       );
     } else {
       console.log('No hits');
     }
   },
 
-  backendUrl: function(url) {
+
+  backendUrl: function(url, isPage) {
     // Constructs the backend url
-    var segment, resource;
+    var segment, resource, token, site, today, period;
 
     resource = "http://analytics.akvo.org/" + "index.php?module=API&method=Actions.getPageUrls";
-    segment = "segment=pageUrl==" + encodeURIComponent(url);
-    token = "token_auth=" + "XXX";
+    segment = "segment=pageUrl" + encodeURIComponent("==" + url);
+    // segment = "segment=pageUrl%3D%40" + encodeURIComponent(url);
+    token = "token_auth=" + "3ae549f4e3fb9dbaa02e48f0d3aceb23"; // read only token
+    site = isPage? "idSite=30" : "idSite=26"; // match Piwik
+
+    today = new Date();
+    period = "period=month&date=" + [
+      today.getFullYear(), today.getMonth() + 1, today.getUTCDate()
+    ].join('-');
+
     return [
       resource,
-      "idSite=26",
-      "period=month&date=2015-05-01",
+      segment,
+      site,
+      period,
       "format=json",
       "filter_limit=5000&flat=1",
       token,
-      segment,
       "callback=?"
     ].join('&');
+
   },
 
-  getAnalytics: function(url, callback) {
+  getAnalytics: function(url, isPage, callback) {
     // Inits a json request and hands that to the render callback.
     $.getJSON(
-      this.backendUrl(url),
+      this.backendUrl(url, isPage),
       function(data) {
         callback(data);
     });
   },
 
-  hits: function(url) {
+  hits: function(url, isPage) {
     // Adds number of hits to the document.
-    return this.getAnalytics(url, this.render);
+    return this.getAnalytics(url, isPage, this.render);
   }
 
 };

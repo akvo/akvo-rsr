@@ -73,6 +73,7 @@
     <script type="application/javascript">
       var AKVO_RSR = {};
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
+      AKVO_RSR.isPage = {{ rsr_page|yesno:"true,false,false" }}
     </script>
 
     {# jQuery #}
@@ -85,7 +86,7 @@
 
     {% compressed_js 'rsr_lib' %}
     {% compressed_js 'rsr' %}
-    
+
 
     <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
 

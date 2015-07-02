@@ -168,7 +168,14 @@ $(document).ready(function() {
   });
 
   // Add number of hits to page
-  window.AKVO_RSR.analytics.hits(window.location.href);
+  // window.AKVO_RSR.analytics.hits(
+  //   window.location.href,
+  //   window.AKVO_RSR.isPage
+  // );
 
+  window.AKVO_RSR.analytics.hits(
+    "http://commonsites.akvoapp.org/widgets/project-narrow/807/?style=dark",
+    true
+  );
 
 });
