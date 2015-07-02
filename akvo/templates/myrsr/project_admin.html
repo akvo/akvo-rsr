@@ -834,7 +834,9 @@
                     document.querySelector(containerSelector).appendChild(partial);  
                     partialsCount[pName] += 1;      
 
-                    updateTypeaheads();            
+                    // Add any typeaheads and help icons for the new project partial
+                    updateTypeaheads();
+                    updateHelpIcons(containerSelector);                              
                 };
 
                 return onclick;
@@ -1394,8 +1396,21 @@
     // Hovering over the glyphicon shows the help text
 
     $(document).ready(function() {
-        $('.projectEdit label.control-label').each( function() {
+        var pageContainer;
+
+        pageContainer = '.projectEdit';
+        updateHelpIcons(pageContainer);
+    }); 
+
+    function updateHelpIcons(container) {
+        $(container + ' label.control-label').each( function() {
             var output, helpBlockIsLabelSibling, iconClasses, helpBlockFromLabel;
+
+            if ($(this).hasClass('has-icon')) {
+
+                // We've already processed this label. Do nothing.
+                return;
+            }
 
             // Assume that the help block is a sibling of the label element
             helpBlockIsLabelSibling = true;
@@ -1446,8 +1461,12 @@
                 helpBlock.fadeIn();
                 $(this).addClass('activated');
             });
-        });
-    }); 
+
+            // Mark the label as processed to avoid adding extra help icons to it later
+
+            $(this).addClass('has-icon');
+        });        
+    }
 
     </script>
     
