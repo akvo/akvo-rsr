@@ -1739,3 +1739,36 @@ dd.currencyAmount {
   font-size: 120%; }
   .projectEdit .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
+.projectEdit label.progress-bar[aria-valuenow="0"] {
+  background: #d9534f;
+  color: #d9534f; }
+.projectEdit label.progress-bar[aria-valuenow="10"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="20"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="30"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="40"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="50"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="60"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="70"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="80"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="90"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="100"] {
+  background: #5cb85c;
+  color: white; }
