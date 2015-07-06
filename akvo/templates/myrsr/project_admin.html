@@ -1442,7 +1442,7 @@
 
             $(this).append(output);
 
-            $(this).find('.info-icon').on('click mouseenter', '', function() {
+            $(this).find('.info-icon').on('mouseenter', '', function() {
                 var helpBlock;
 
                 if (helpBlockIsLabelSibling) {
@@ -1451,17 +1451,57 @@
                     helpBlock = $(this).parent().parent().parent().find('.help-block');
                 }
 
-                if (helpBlock.is(':visible')) {
-
-                    // It's already shown, do nothing
-                    return;
-                }
-
                 helpBlock.hide();
                 helpBlock.removeClass('hidden');
                 helpBlock.fadeIn();
                 $(this).addClass('activated');
+                $(this).addClass('hovering');
             });
+
+            $(this).find('.info-icon').on('mouseleave', '', function() {
+                var helpBlock;
+
+                if (helpBlockIsLabelSibling) {
+                    helpBlock = $(this).parent().parent().find('.help-block');
+                } else {
+                    helpBlock = $(this).parent().parent().parent().find('.help-block');
+                }
+
+                helpBlock.fadeOut();
+                helpBlock.addClass('hidden');
+                $(this).removeClass('activated');
+                $(this).removeClass('hovering');
+            });   
+
+            // Set up a click listener for touch devices that don't support hovering
+
+            $(this).find('.info-icon').on('click', '', function() {
+                var helpBlock;
+
+                if (helpBlockIsLabelSibling) {
+                    helpBlock = $(this).parent().parent().find('.help-block');
+                } else {
+                    helpBlock = $(this).parent().parent().parent().find('.help-block');
+                }
+
+                if ($(this).hasClass('hovering')) {
+
+                    // Device supports hovering, do nothing
+                    return;
+                }
+
+                if ($(this).hasClass('activated')) {
+                    helpBlock.fadeOut();
+                    helpBlock.addClass('hidden');     
+                    $(this).removeClass('activated');              
+                } else {
+                    helpBlock.hide();
+                    helpBlock.removeClass('hidden');
+                    helpBlock.fadeIn();
+                    $(this).addClass('activated');                    
+                }
+
+            });                             
 
             // Mark the label as processed to avoid adding extra help icons to it later
 
