@@ -6,38 +6,67 @@
 
 window.AKVO_RSR.analytics = {
 
-  render: function(resp) {
-    // Renders the resp data to the DOM.
+  render: function(resp, parseFn) {
+    //  render the hits on the page.
+    var hits = parseFn(resp);
 
-    if (resp.length > 0) {
-      $('#footer_analytics').append(
-        resp[0].nb_visits
-      );
-    } else {
-      console.log('No hits');
-    }
+    $("#footer_analytics").append(
+      "<span class='projectLocation' style='color:#888;'>" +
+        AKVO_RSR.i18n.strings.visits + ": " + hits + "</span><br><br>"
+    );
+
   },
 
+  parse: function(data) {
+    // Aggregate Piwik data for multiple langauges
 
-  backendUrl: function(url, isPage) {
-    // Constructs the backend url
-    var segment, resource, token, site, today, period;
+    return _.reduce(data, function(hits, n) {
+      return hits + n.nb_visits;
+    }, 0);
+
+  },
+
+  success: function(resp, renderFn, parseFn) {
+    // Dispatch on success
+
+    if (resp.length > 0) {
+      renderFn(resp, parseFn);
+    }
+
+  },
+
+  segments: function(host, path) {
+    // Return segment for bare, en, es & fr
+    var barePath, pattern, urls;
+
+    pattern = /\/en\/|\/es\/|\/fr\//i;
+    barePath = path.replace(pattern, "/");
+
+    urls = [encodeURIComponent(window.location.protocol + "//" + host + barePath)];
+    _(AKVO_RSR.i18n.languages).forEach(function(langCode) {
+      urls.push(
+        encodeURIComponent(window.location.protocol + "//" + host + "/" + langCode + barePath)
+      );
+    });
+    return urls;
+
+  },
+
+  backendUrl: function(host, path) {
+    // Construct url for the Piwik API
+    var resource, segment, siteId, period, token;
 
     resource = "http://analytics.akvo.org/" + "index.php?module=API&method=Actions.getPageUrls";
-    segment = "segment=pageUrl" + encodeURIComponent("==" + url);
-    // segment = "segment=pageUrl%3D%40" + encodeURIComponent(url);
-    token = "token_auth=" + "3ae549f4e3fb9dbaa02e48f0d3aceb23"; // read only token
-    site = isPage? "idSite=30" : "idSite=26"; // match Piwik
-
-    today = new Date();
-    period = "period=month&date=" + [
-      today.getFullYear(), today.getMonth() + 1, today.getUTCDate()
-    ].join('-');
+    segment = "segment=pageUrl==" + this.segments(host, path).join(",pageUrl==");
+    piwikId = (typeof AKVO_RSR.page !== "undefined") ? AKVO_RSR.page.piwikId : 1;
+    siteId = "idSite=" + piwikId;
+    period = "period=range&date=2013-05-30,yesterday";
+    token = "token_auth=" + "3ae549f4e3fb9dbaa02e48f0d3aceb23"; // read-only token
 
     return [
       resource,
       segment,
-      site,
+      siteId,
       period,
       "format=json",
       "filter_limit=5000&flat=1",
@@ -47,18 +76,34 @@ window.AKVO_RSR.analytics = {
 
   },
 
-  getAnalytics: function(url, isPage, callback) {
-    // Inits a json request and hands that to the render callback.
+
+  getReport: function(callback, renderFn, parseFn) {
+    // Inits request to the Piwik API and hands that to the success callback.
+
     $.getJSON(
-      this.backendUrl(url, isPage),
+      this.backendUrl(
+        // prod
+        // window.location.hostname,
+        // window.location.pathname
+
+        // dev values
+        "projects.commonsites.net",
+        "/en/project/2330/"
+      ),
       function(data) {
-        callback(data);
-    });
+        callback(data, renderFn, parseFn);
+      });
   },
 
-  hits: function(url, isPage) {
-    // Adds number of hits to the document.
-    return this.getAnalytics(url, isPage, this.render);
+  hits: function() {
+    // Get some hits on the page.
+
+    return this.getReport(
+      this.success,
+      this.render,
+      this.parse
+    );
+
   }
 
 };
