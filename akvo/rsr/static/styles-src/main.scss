@@ -606,6 +606,10 @@ nav.navbar-fixed-top {
     color: rgba($akvoPurple, 0.3);
 }
 
+.charsLeft {
+    @extend .help-block;
+}
+
 .editDate {
     font-style: italic;
     padding: 10px 0 10px 15px;

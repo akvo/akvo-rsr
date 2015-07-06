@@ -39,7 +39,7 @@
                         <div class="formBlock">
                             <form role="form" id="admin-step-1" action="javascript: submitStep(1)">
                             <div class="form-group control">
-                                <input type="text" class="form-control" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45" />
+                                <input type="text" class="form-control validate" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45"/>
                                 <label for="projectTitle" class="control-label">Project title</label>
                                 <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
                             </div>
@@ -836,7 +836,8 @@
                     updateTypeaheads();
                     updateHelpIcons(containerSelector);
                     setSectionChangeListener($(containerSelector).closest('.formStep'));
-                    setSectionCompletionPercentage($(containerSelector).closest('.formStep'));                             
+                    setSectionCompletionPercentage($(containerSelector).closest('.formStep'));
+                    setValidationListeners();                             
                 };
 
                 return onclick;
@@ -1645,7 +1646,6 @@
         }
 
         completionPercentage = (numInputsCompleted / numInputs) * 100;
-        console.log(completionPercentage);
         if (completionPercentage > 89 && completionPercentage < 100) {
 
             /** We should only show 100% when the figure is actually 100%.
@@ -1713,6 +1713,65 @@
         setAllSectionsChangeListerner();
     });
 
+    </script>
+
+    <script type="application/javascript">
+    /* INPUT VALIDATION
+    ** Validate all inputs with the given class
+    ** Display validation status to the user in real time
+    */
+
+    function setValidationListeners() {
+        $('input').each( function() {
+            var listener;
+
+            if ($(this).hasClass('validation-listener')) {
+
+                // We've already set the listener for this element, do nothing
+                return;
+            }
+
+            // Max character counts for text inputs
+            if ($(this).attr('type') === 'text' && $(this).attr('maxlength')) {
+                listener = getLengthListener($(this));            
+                $(this).on('input', function() {
+                    listener();
+                });
+                $(this).on('focusout', function() {
+                    $(this).parent().find('.charsLeft').hide();
+                });
+            }
+        });
+
+        function getLengthListener(el) {
+            var output = function() {
+                var maxLength, currentLength, charsLeft, charMessage;
+
+                maxLength = parseInt(el.attr('maxlength'), 10);
+                currentLength = el.val().length;
+                charsLeft = maxLength - currentLength;
+                charMessage = '';
+
+                if (el.parent().find('.charsLeft').length === 0) {
+                    el.parent().append('<span class="charsLeft"></span>');
+                }
+
+                if (charsLeft === 1) {
+                    charMessage = ' character remaining';
+                } else {
+                    charMessage = ' characters remaining';
+                }
+
+                el.parent().find('.charsLeft').show().text(charsLeft + charMessage);
+            };
+
+            return output;
+        }    
+    }
+
+    $(document).ready( function() {
+        setValidationListeners();
+    });
     </script>
     
 {% endblock %}

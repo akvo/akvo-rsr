@@ -534,7 +534,7 @@ nav.navbar-fixed-top {
   .myProjectList tbody tr.isPublished {
     background: white !important; }
 
-.help-block {
+.help-block, .charsLeft {
   font-size: 0.9em;
   color: rgba(44, 42, 116, 0.3); }
 
