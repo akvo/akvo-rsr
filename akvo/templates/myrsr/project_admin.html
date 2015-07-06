@@ -1618,7 +1618,7 @@
     }    
 
     function setSectionCompletionPercentage(section) {
-        var numInputs, numInputsCompleted, completionPercentage, roundedCompletionPercentage;
+        var numInputs, numInputsCompleted, completionPercentage, roundedCompletionPercentage, completionClass;
 
         numInputs = 0;
         numInputsCompleted = 0;
@@ -1645,19 +1645,21 @@
             });
         }
 
-        completionPercentage = (numInputsCompleted / numInputs) * 100;
-        if (completionPercentage > 89 && completionPercentage < 100) {
+        completionPercentage = Math.floor((numInputsCompleted / numInputs) * 100);
+        section.find('.progress-bar').attr('aria-valuenow', completionPercentage);
+        section.find('.progress .sr-only').text(completionPercentage + '% Complete');
+        section.find('.progress .progress-percentage').text(completionPercentage + '%');
+        section.find('div.progress-bar').width(completionPercentage + '%');
 
-            /** We should only show 100% when the figure is actually 100%.
-            * To avoid "rounding up" to 100%, set the percentage to 89 if 
-            * it's higher than 89 but less than 100 */
-            completionPercentage = 89;
+        if (completionPercentage === 0) {
+            completionClass = 'empty';
+        } else if (completionPercentage < 100) {
+            completionClass = 'incomplete';
+        } else if (completionPercentage === 100) {
+            completionClass = 'complete';
         }
-        roundedCompletionPercentage = Math.ceil(completionPercentage / 10) * 10;
 
-        section.find('.progress-bar').attr('aria-valuenow', roundedCompletionPercentage);
-        section.find('.progress .sr-only').text(roundedCompletionPercentage + '% Complete');
-        section.find('.progress .progress-percentage').text(roundedCompletionPercentage + '%');
+        section.find('div.progress-bar').attr('data-completion', completionClass);
     }
 
     function setSectionChangeListener(section) {

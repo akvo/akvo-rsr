@@ -1999,60 +1999,17 @@ dd {
 
 .progress {
     .progress-bar {
-        &[aria-valuenow="0"] {
-            width: 100%;
+        &[data-completion='empty'] {
             background: rgba($progressWarning, 0);
-            color: $progressWarning;
         }
-        &[aria-valuenow="10"] {
-            width: 10%;
-            background: rgba($progressWarning, 1);
-            color: white;
-        }
-        &[aria-valuenow="20"] {
-            width: 20%;
-            background: rgba($progressWarning, 1);
-            color: white;
-        }
-        &[aria-valuenow="30"] {
-            width: 30%;
-            background: rgba($progressWarning, 1);
-            color: white;
-        }
-        &[aria-valuenow="40"] {
-            width: 40%;
+        &[data-completion='incomplete'] {
             background: rgba($progressNot, 1);
-            color: white;
         }
-        &[aria-valuenow="50"] {
-            width: 50%;
-            background: rgba($progressNot, 1);
-            color: white;
-        }
-        &[aria-valuenow="60"] {
-            width: 60%;
-            background: rgba($progressNot, 1);
-            color: white;
-        }
-        &[aria-valuenow="70"] {
-            width: 70%;
+        &[data-completion='complete'] {
             background: rgba($progressSuccess, 1);
-            color: white;
-        }
-        &[aria-valuenow="80"] {
-            width: 80%;
-            background: rgba($progressSuccess, 1);
-            color: white;
-        }
-        &[aria-valuenow="90"] {
-            width: 90%;
-            background: rgba($progressSuccess, 1);
-            color: white;
-        }
-        &[aria-valuenow="100"] {
-            width: 100%;
-            background: rgba($progressSuccess, 1);
-            color: white;
+        }        
+        .progress-percentage {
+            display: none;
         }
     }
 }
