@@ -1467,8 +1467,9 @@
                     helpBlock = $(this).parent().parent().parent().find('.help-block');
                 }
 
-                helpBlock.fadeOut();
-                helpBlock.addClass('hidden');
+                helpBlock.fadeOut(400, function() {
+                    helpBlock.addClass('hidden');
+                });
                 $(this).removeClass('activated');
                 $(this).removeClass('hovering');
             });   
