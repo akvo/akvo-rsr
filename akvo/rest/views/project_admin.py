@@ -5,7 +5,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Country, Project, ProjectContact, RelatedProject
+from akvo.rsr.models import Country, Link, Project, ProjectContact, ProjectDocument, RelatedProject
 
 from django.http import HttpResponseForbidden
 
@@ -25,6 +25,21 @@ def save_field(project, field, form_field, form_data, errors):
         errors.append({'name': form_field, 'error': str(e).capitalize()})
 
     return errors
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_delete_document(request, project_pk=None, document_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    document = ProjectDocument.objects.get(pk=document_pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    errors = save_field(document, 'document', 'document-document-' + str(document_pk), '', [])
+
+    return Response({'errors': errors})
 
 
 @api_view(['POST'])
@@ -325,5 +340,148 @@ def project_admin_step5(request, pk=None):
             'errors': errors,
             'new_objects': new_objects,
             'new_image': new_image,
+        }
+    )
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step6(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    data = request.POST
+    files = request.FILES
+    errors = []
+    new_objects = []
+
+    if not files and not any(data_key.startswith('document-document-') for data_key in data.keys()):
+        # Links
+        for key in data.keys():
+            if 'link-type-' in key:
+                link = None
+                link_id = key.split('-', 2)[2]
+
+                if 'add' in link_id and (data['link-type-' + link_id]
+                                         or data['link-url-' + link_id]
+                                         or data['link-caption-' + link_id]):
+                    link = Link.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': 'add-' + link_id[-1],
+                            'new_id': str(link.pk),
+                            'div_id': 'link-add-' + link_id[-1],
+                        }
+                    )
+                elif not 'add' in link_id:
+                    try:
+                        link = Link.objects.get(pk=int(link_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if link:
+                    link_type_key = 'link-type-' + link_id
+                    errors = save_field(link, 'kind', link_type_key, data[link_type_key], errors)
+
+                    link_url_key = 'link-url-' + link_id
+                    errors = save_field(link, 'url', link_url_key, data[link_url_key], errors)
+
+                    link_caption_key = 'link-caption-' + link_id
+                    errors = save_field(
+                        link, 'caption', link_caption_key, data[link_caption_key], errors
+                    )
+
+        # Documents
+        for key in data.keys():
+            if 'document-url-' in key:
+                document = None
+                document_id = key.split('-', 2)[2]
+
+                if 'add' in document_id and (data['document-url-' + document_id]
+                                             or data['document-title-' + document_id]
+                                             or data['document-format-' + document_id]
+                                             or data['document-category-' + document_id]
+                                             or data['document-language-' + document_id]):
+                    document = ProjectDocument.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': 'add-' + document_id[-1],
+                            'new_id': str(document.pk),
+                            'div_id': 'project_document-add-' + document_id[-1],
+                        }
+                    )
+                elif not 'add' in document_id:
+                    try:
+                        document = ProjectDocument.objects.get(pk=int(document_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if document:
+                    document_url_key = 'document-url-' + document_id
+                    errors = save_field(
+                        document, 'url', document_url_key, data[document_url_key], errors
+                    )
+
+                    document_title_key = 'document-title-' + document_id
+                    errors = save_field(
+                        document, 'title', document_title_key, data[document_title_key], errors
+                    )
+
+                    document_format_key = 'document-format-' + document_id
+                    errors = save_field(
+                        document, 'format', document_format_key, data[document_format_key], errors
+                    )
+
+                    document_category_key = 'document-category-' + document_id
+                    errors = save_field(
+                        document, 'category', document_category_key, data[document_category_key],
+                        errors
+                    )
+
+                    document_language_key = 'document-language-' + document_id
+                    errors = save_field(
+                        document, 'language', document_language_key, data[document_language_key],
+                        errors
+                    )
+
+    elif any(file_key.startswith('document-document-') for file_key in files.keys()):
+        for key in files.keys():
+            document = None
+            document_id = key.split('-', 2)[2]
+
+            if 'add' in document_id:
+                document = ProjectDocument.objects.create(project=project)
+                new_objects.append(
+                    {
+                        'old_id': 'add-' + document_id[-1],
+                        'new_id': str(document.pk),
+                        'div_id': 'project_document-add-' + document_id[-1],
+                    }
+                )
+            elif not 'add' in document_id:
+                try:
+                    document = ProjectDocument.objects.get(pk=int(document_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+            document_document_key = 'document-document-' + document_id
+            errors = save_field(
+                document, 'document', document_document_key, files[document_document_key], errors
+            )
+            # if not errors:
+            #     new_image = get_thumbnail(
+            #         project.current_image, '250x250', format="PNG", upscale=True
+            #     ).url
+
+    return Response(
+        {
+            'errors': errors,
+            'new_objects': new_objects,
         }
     )

@@ -375,7 +375,6 @@
                                     {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
                                         <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
                                     {% endthumbnail %}
-{#                                    <img src="{{project.current_image.url}}" class="current-project-photo" id="img-photo">#}
                                     <a onclick="deletePhoto(this);" class="btn btn-link delete-object-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>
                                 {% endif %}
                                 <input type="file" class="form-control" id="photo" name="photo">
@@ -418,15 +417,14 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <form role="form" id="admin-step-6" action="javascript: submitStep(6)">
                             <div class="form-group">
                                 <div class="link-container">
-                                    {% if project.links.all %}
-                                        {% for link in project.links.all %}
-                                            {% include "myrsr/project_admin_partials/link_input.html" %}
-                                        {% endfor %}
-                                    {% else %}
-                                        {% include "myrsr/project_admin_partials/link_input.html" %}
-                                    {% endif %}
+                                    {% for link in project.links.all %}
+                                        {% include "myrsr/project_admin_partials/link_input.html" with key=link.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_admin_partials/link_input.html" with key='add-0' %}
+                                    {% endfor %}
                                 </div>
                             </div>
                             <div class="row">
@@ -435,19 +433,24 @@
                                 </div>
                             </div>
                                 <div class="document-container">
-                                    {% if project.documents.all %}
-                                        {% for document in project.documents.all %}
-                                            {% include "myrsr/project_admin_partials/document_input.html" %}
-                                        {% endfor %}
-                                    {% else %}
-                                        {% include "myrsr/project_admin_partials/document_input.html" %}
-                                    {% endif %}   
+                                    {% for document in project.documents.all %}
+                                        {% include "myrsr/project_admin_partials/document_input.html" with key=document.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_admin_partials/document_input.html" with key='add-0' %}
+                                    {% endfor %}
                                 </div>                         
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link" id="add-document"><span class="glyphicon glyphicon-plus"></span> Add another document</a>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep6"></div>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1186,10 +1189,56 @@
                 }
 
                 photo_container = document.querySelector('#photo-container');
-                add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a onclick="deletePhoto(this);" class="btn btn-link" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>'
+                add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a onclick="deletePhoto(this);" class="btn btn-link" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>';
 
                 photo_container.innerHTML = add_html + photo_container.innerHTML;
             }
+        }
+
+        function saveDocuments(form, api_url, step, new_objects) {
+            var documentFormData, documents, file_request;
+
+            documentFormData = new FormData();
+            documents = form.querySelectorAll('*[id^="document-document-"]');
+
+            for (var i=0; i < documents.length; i++) {
+                var document_id, document_files;
+                document_id = documents[i].getAttribute("id");
+                document_files = document.getElementById(document_id).files;
+
+                if (document_files !== undefined) {
+                    documentFormData.append(document_id, document_files[0]);
+                }
+            }
+
+            file_request = new XMLHttpRequest();
+            file_request.open("POST", api_url);
+            file_request.setRequestHeader("X-CSRFToken", csrftoken);
+
+            file_request.onload = function() {
+                if (file_request.status >= 200 && file_request.status < 400) {
+                    var response;
+
+                    removeErrors(form);
+                    response = JSON.parse(file_request.responseText);
+                    addErrors(response.errors);
+
+                    savingStep(false, step);
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    savingStep(false, step);
+                    return false;
+                }
+            };
+
+            file_request.onerror = function() {
+                // There was a connection error of some sort
+                savingStep(false, step);
+                return false;
+            };
+
+            file_request.send(documentFormData);
         }
 
         function submitStep(step) {
@@ -1242,6 +1291,10 @@
                     response = JSON.parse(request.responseText);
                     replaceNames(response.new_objects);
                     addErrors(response.errors);
+
+                    if (step === 6) {
+                        saveDocuments(form, api_url, step, response.new_objects);
+                    }
 
                     savingStep(false, step);
                     return false;
@@ -1342,6 +1395,42 @@
                     imgNode.parentNode.removeChild(imgNode);
 
                     aNode = document.querySelector('#delete-photo');
+                    aNode.parentNode.removeChild(aNode);
+
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                return false;
+            };
+
+            request.send();
+        }
+
+        function deleteDocument(document_id) {
+            var api_url, request;
+
+            // Create request
+            api_url = '/rest/v1/project/{{ project.pk }}/admin_delete_document/' + document_id + '/?format=json';
+
+            request = new XMLHttpRequest();
+            request.open('POST', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    var docNode, aNode;
+
+                    docNode = document.querySelector('#document-document-url-' + document_id);
+                    docNode.parentNode.removeChild(docNode);
+
+                    aNode = document.querySelector('#delete-document-document-' + document_id);
                     aNode.parentNode.removeChild(aNode);
 
                     return false;

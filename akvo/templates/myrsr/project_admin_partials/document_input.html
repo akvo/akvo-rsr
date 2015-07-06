@@ -1,32 +1,27 @@
-<div class="document-item">
+<div class="document-item parent" id="project_document{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="file" class="form-control" id="document{% if document %}-{{ document.pk }}{% endif %}"
-                name="document{% if document %}-{{ document.pk }}{% endif %}">
-                <label class="control-label" for="document">Document</label>
+                <input type="file" class="form-control" id="document-document{% if key %}-{{ key }}{% endif %}" name="document-document{% if key %}-{{ key }}{% endif %}">
+                <label class="control-label" for="document-document{% if key %}-{{ key }}{% endif %}">Document</label>
+                {% if document.document %}<a href="{{ document.document.url }}" target="_blank" id="document-document-url{% if key %}-{{ key }}{% endif %}">{{ document.document.url }}</a>
+                <a onclick="deleteDocument({% if key %}{{ key }}{% endif %});" class="btn btn-link delete-object-button" id="delete-document-document{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete document</a>{% endif %}
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="documentUrl{% if document %}-{{ document.pk }}{% endif %}"
-                name="documentUrl{% if document %}-{{ document.pk }}{% endif %}" placeholder="Document URL"
-                {% if document.url %} value="{{document.url}}" {% endif %}>
-                <label class="control-label" for="documentUrl">Document URL</label>
+                <input type="text" class="form-control" id="document-url{% if key %}-{{ key }}{% endif %}" name="document-url{% if key %}-{{ key }}{% endif %}" placeholder="Document URL" {% if document.url %} value="{{document.url}}" {% endif %}>
+                <label class="control-label" for="document-url{% if key %}-{{ key }}{% endif %}">Document URL</label>
             </div>
         </div>
     </div>
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="documentTitle{% if document %}-{{ document.pk }}{% endif %}"
-                name="documentTitle{% if document %}-{{ document.pk }}{% endif %}" placeholder="Document title"
-                {% if document.title %} value="{{document.title}}" {% endif %}>
-                <label class="control-label" for="documentTitle">Document title</label>
+                <input type="text" class="form-control" id="document-title{% if key %}-{{ key }}{% endif %}" name="document-title{% if key %}-{{ key }}{% endif %}" placeholder="Document title" {% if document.title %} value="{{document.title}}" {% endif %}>
+                <label class="control-label" for="document-title{% if key %}-{{ key }}{% endif %}">Document title</label>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="documentFormat{% if document %}-{{ document.pk }}{% endif %}"
-                name="documentFormat{% if document %}-{{ document.pk }}{% endif %}" placeholder="Document format"
-                {% if document.format %} value="{{document.format}}" {% endif %}>
-                <label class="control-label" for="documentFormat">Document format</label>
+                <input type="text" class="form-control" id="document-format{% if key %}-{{ key }}{% endif %}" name="document-format{% if key %}-{{ key }}{% endif %}" placeholder="Document format" {% if document.format %} value="{{document.format}}" {% endif %}>
+                <label class="control-label" for="document-format{% if key %}-{{ key }}{% endif %}">Document format</label>
             </div>
         </div>
     </div>
@@ -34,28 +29,32 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select class="form-control" id="documentCategory{% if document %}-{{ document.pk }}{% endif %}"
-                    name="documentCategory{% if document %}-{{ document.pk }}{% endif %}">
+                    <select class="form-control" id="document-category{% if key %}-{{ key }}{% endif %}" name="document-category{% if key %}-{{ key }}{% endif %}">
                         <option value="" {% if not document.category %} selected="selected" {% endif %}>Document category:</option>
                         {% for category in document_categories %}
                             <option value="{{ category.code }}" {% if document.category == category.code %} selected="selected" {% endif %}>{{ category.code }} - {{ category.name }}</option>
                         {% endfor %}
                     </select>
-                    <label class="control-label" for="documentCategory">Document category</label>
+                    <label class="control-label" for="document-category{% if key %}-{{ key }}{% endif %}">Document category</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select class="form-control" id="documentLanguage{% if document %}-{{ document.pk }}{% endif %}"
-                    name="documentLanguage{% if document %}-{{ document.pk }}{% endif %}">
+                    <select class="form-control" id="document-language{% if key %}-{{ key }}{% endif %}" name="document-language{% if key %}-{{ key }}{% endif %}">
                         <option value="" {% if not document.language %} selected="selected" {% endif %}>Document language:</option>
                         {% for language in languages %}
                             <option value="{{ language.code }}" {% if document.language == language.code %} selected="selected" {% endif %}>{{ language.code }} - {{ language.name }}</option>
                         {% endfor %}
                     </select>
-                    <label class="control-label" for="documentLanguage">Document language</label>
+                    <label class="control-label" for="document-language{% if key %}-{{ key }}{% endif %}">Document language</label>
                 </div>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center" id="delete-document{% if key %}-{{ key }}{% endif %}">
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-document{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete document link</a>
+        </div>
+    </div>
+    <hr/>
 </div>

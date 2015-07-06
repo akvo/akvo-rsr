@@ -30,11 +30,13 @@ from .partnership import PartnershipViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
-from .project_admin import (project_admin_delete_photo,
+from .project_admin import (project_admin_delete_document,
+                            project_admin_delete_photo,
                             project_admin_step1,
                             project_admin_step2,
                             project_admin_step4,
-                            project_admin_step5)
+                            project_admin_step5,
+                            project_admin_step6)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
@@ -98,11 +100,13 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
     'ProjectViewSet',
+    'project_admin_delete_document',
     'project_admin_delete_photo',
     'project_admin_step1',
     'project_admin_step2',
     'project_admin_step4',
     'project_admin_step5',
+    'project_admin_step6',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
