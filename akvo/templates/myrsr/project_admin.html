@@ -53,7 +53,7 @@
                                 <input type="text" class="form-control" name="iatiId" id="iatiID" placeholder="iati ID" maxlength="100"
                                 {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
                                 <label for="iatiID" class="control-label">IATI identifier</label>
-                                <p class="help-block">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
+                                <p class="help-block hidden">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
                                 Note that 'projects' in this form are the same as 'activities' in IATI.</p>
                             </div>
                             <div class="related-project-container">
@@ -81,9 +81,9 @@
                                     </select>
                                     <label for="projectStatus" class="control-label">Status</label>
                                 </div>
-                                <p class="help-block">
+                                <p class="help-block hidden">
                                 There are four different project statuses:</p>
-                                <ol class="help-block">
+                                <ol class="help-block hidden">
                                     <li>Needs funding: projects that still need funding.</li>
                                     <li>Active: projects that started with the implementation phase.</li>
                                     <li>Completed: projects that have been finished.</li>
@@ -130,7 +130,7 @@
                                     </select>
                                     <label for="language" class="control-label">Language</label>
                                 </div>
-                                <p class="help-block">The main language of the project.</p>
+                                <p class="help-block hidden">The main language of the project.</p>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
@@ -152,7 +152,7 @@
                                     </select>
                                     <label for="projectHierarchy" class="control-label">Hierarchy</label>
                                 </div>
-                                <p class="help-block">If you are reporting multiple levels of projects in RSR, you can specify whether this is a core or sub-project here.<br/>
+                                <p class="help-block hidden">If you are reporting multiple levels of projects in RSR, you can specify whether this is a core or sub-project here.<br/>
                                 So for example: is this project part of a larger project or programme.</p>
                             </div>
                             <div class="form-group">
