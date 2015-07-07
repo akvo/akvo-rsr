@@ -60,7 +60,7 @@ window.AKVO_RSR.analytics = {
     segment = "segment=pageUrl==" + this.segments(host, path).join(",pageUrl==");
     siteId = "idSite=" + AKVO_RSR.piwik.idSite;
     period = "period=range&date=2013-05-30,yesterday";
-    token = "token_auth=" + AKVO_RSR.piwik.authToken; //"3ae549f4e3fb9dbaa02e48f0d3aceb23"; // read-only token
+    token = "token_auth=" + AKVO_RSR.piwik.authToken; // Should be a read-only token
 
     return [
       resource,
@@ -95,7 +95,6 @@ window.AKVO_RSR.analytics = {
 
   hits: function() {
     // Get some hits on the page.
-    // piwikId = (typeof AKVO_RSR.page !== "undefined") ? AKVO_RSR.page.piwikId : 1;
     if (typeof AKVO_RSR.piwik.disabled === "undefined") {
       return this.getReport(
         this.success,
@@ -103,7 +102,6 @@ window.AKVO_RSR.analytics = {
         this.parse
       );
     } else {
-      console.log(typeof AKVO_RSR.piwik.disabled);
       console.log("Piwik reporting disabled");
     }
 
