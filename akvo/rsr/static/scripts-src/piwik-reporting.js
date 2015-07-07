@@ -56,7 +56,7 @@ window.AKVO_RSR.analytics = {
     // Construct url for the Piwik API
     var resource, segment, siteId, period, token;
 
-    resource = "http://analytics.akvo.org/" + "index.php?module=API&method=Actions.getPageUrls";
+    resource = AKVO_RSR.piwik.apiUrl + "index.php?module=API&method=Actions.getPageUrls";
     segment = "segment=pageUrl==" + this.segments(host, path).join(",pageUrl==");
     siteId = "idSite=" + AKVO_RSR.piwik.idSite;
     period = "period=range&date=2013-05-30,yesterday";

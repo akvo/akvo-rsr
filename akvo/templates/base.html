@@ -75,6 +75,7 @@
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
       AKVO_RSR.piwik = {
         "authToken": "{{ piwik_auth_token }}",
+        "apiUrl": "{{ piwik_url }}",
         "idSite": {% if rsr_page and rsr_page.piwik_id %}{{ rsr_page.piwik_id }}{% else %}1{% endif %}
         {% if piwik_disable_hits %},
         "disabled": true
