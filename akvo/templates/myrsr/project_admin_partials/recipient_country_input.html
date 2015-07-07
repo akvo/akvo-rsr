@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="select-group control">
-                    <select name="recipientCountry{% if rc %}-{{ rc.pk }}{% endif %}" id="recipientCountry{% if rc %}-{{ rc.pk }}{% endif %}" class="form-control">
+                    <select name="recipientCountry{% if rc %}-{{ rc.pk }}{% endif %}" id="recipientCountry{% if rc %}-{{ rc.pk }}{% endif %}" class="form-control priority3">
                         <option value="" {% if not rc %} selected="selected" {% endif %}>Recipient country:</option>
                         {% for country in iati_countries %}
                             <option value="{{ country.code }}" {% if rc.country == country.code %} selected="selected" {% endif %}>{{ country.code }} - {{ country.name }}</option>
@@ -13,13 +13,13 @@
                 </div>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="recipientCountryPercentage"
+                <input type="text" class="form-control priority3" id="recipientCountryPercentage"
                 name="recipientCountryPercentage{% if rc %}-{{ rc.pk }}{% endif %}" placeholder="Percentage"
                 {% if rc.percentage %} value="{{rc.percentage}}" {% endif %}>
                 <label class="control-label" for="recipientCountryPercentage">Recipient country percentage</label>
             </div>
              <div class="col-md-4 control">
-                <input type="text" class="form-control" id="recipientCountryDescription"
+                <input type="text" class="form-control priority3" id="recipientCountryDescription"
                 name="recipientCountryDescription{% if rc %}-{{ rc.pk }}{% endif %}" placeholder="Country description"
                 {% if rc.text %} value="{{rc.text}}" {% endif %}>
                 <label class="control-label" for="recipientCountryDescription">Recipient country description</label>

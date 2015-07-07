@@ -1,9 +1,9 @@
-function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, valueId, label, help, filterOption) {
+function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
     var Typeahead, TypeaheadLabel, TypeaheadContainer;
 
     Typeahead = ReactTypeahead.Typeahead;   
 
-    var inputClass = selector + " form-control";
+    var inputClass = selector + " form-control " + childClass;
 
     TypeaheadContainer = React.createClass({
         render: function() {

@@ -2,17 +2,17 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <input type="number" step="any" class="form-control" id="transactionValue" placeholder="Transaction value"
+                <input type="number" step="any" class="form-control priority3" id="transactionValue" placeholder="Transaction value"
                 {% if transaction.value %} value="{{transaction.value}}" {% endif %}>
                 <label class="control-label" for="transactionValue">Transaction value</label>
             </div>
             <div class="col-md-4 control">
-                <input type="date" class="form-control" id="transactionDate" placeholder="Transaction date"
+                <input type="date" class="form-control priority3" id="transactionDate" placeholder="Transaction date"
                 {% if transaction.transaction_date %} value="{{transaction.transaction_date|date:'c'}}" {% endif %}>
                 <label class="control-label" for="transactionDate">Transaction date</label>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="transactionValueDate" placeholder="Transaction value date"
+                <input type="text" class="form-control priority3" id="transactionValueDate" placeholder="Transaction value date"
                 {% if transaction.value_date %} value="{{transaction.value_date|date:'c'}}" {% endif %}>
                 <label class="control-label" for="transactionValueDate">Transaction value date</label>
             </div>
@@ -21,12 +21,12 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="transactionReference" placeholder="Transaction reference"
+                <input type="text" class="form-control priority3" id="transactionReference" placeholder="Transaction reference"
                 {% if transaction.reference %} value="{{transaction.reference}}" {% endif %}>
                 <label class="control-label" for="transactionReference">Transaction reference</label>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="transactionDescription" placeholder="Transaction description"
+                <input type="text" class="form-control priority3" id="transactionDescription" placeholder="Transaction description"
                 {% if transaction.description %} value="{{transaction.description}}" {% endif %}>
                 <label class="control-label" for="transactionDescription">Transaction description</label>
             </div>
@@ -35,7 +35,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <select class="form-control" id="providerOrganisation" placeholder="Provider organisation">
+                <select class="form-control priority3" id="providerOrganisation" placeholder="Provider organisation">
                     <option {% if not transaction.provider_organisation %} selected="selected" {% endif %}>
                         Provider organisation:
                     </option>
@@ -49,7 +49,7 @@
                 <label class="control-label" for="providerOrganisation">Provider organisation</label>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="providerOrganisationActivityId" placeholder="Provider organisation activity id"
+                <input type="text" class="form-control priority3" id="providerOrganisationActivityId" placeholder="Provider organisation activity id"
                 {% if transaction.provider_organisation_activity %} value="{{transaction.provider_organisation_activity}}" {% endif %}>
                 <label class="control-label" for="providerOrganisationActivityId">Provider organisation activity id</label>
             </div>
@@ -58,7 +58,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <select class="form-control" id="receiverOrganisation" placeholder="Receiver organisation">
+                <select class="form-control priority3" id="receiverOrganisation" placeholder="Receiver organisation">
                     <option {% if not transaction.receiver_organisation %} selected="selected" {% endif %}>
                         Receiver organisation:
                     </option>
@@ -72,7 +72,7 @@
                 <label class="control-label" for="receiverOrganisation">Receiver organisation</label>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="receiverOrganisationActivityId" placeholder="Receiver organisation activity id"
+                <input type="text" class="form-control priority3" id="receiverOrganisationActivityId" placeholder="Receiver organisation activity id"
                 {% if transaction.receiver_organisation_activity %} value="{{transaction.receiver_organisation_activity}}" {% endif %}>
                 <label class="control-label" for="receiverOrganisationActivityId">Receiver organisation activity id</label>
             </div>
@@ -92,7 +92,7 @@
     </div>
     <div class="form-group">
         <div class="select-group control">
-            <select name="defaultAidType" id="transactionAidType" class="form-control">
+            <select name="defaultAidType" id="transactionAidType" class="form-control priority3">
                 <option value="" {% if not transaction.aid_type %} selected="selected" {% endif %}>
                     Transaction aid type:
                 </option>
@@ -109,7 +109,7 @@
     </div>
     <div class="form-group">
         <div class="select-group control">
-            <select name="transactionDisbursementChannel" id="transactionDisbursementChannel" class="form-control">
+            <select name="transactionDisbursementChannel" id="transactionDisbursementChannel" class="form-control priority3">
                 <option value="" {% if not transaction.disbursement_channel %} selected="selected" {% endif %}>
                     Transaction disbursement channel:
                 </option>
@@ -126,7 +126,7 @@
     </div>
     <div class="form-group">
         <div class="select-group control">
-            <select name="transactionFinanceType" id="transactionFinanceType" class="form-control">
+            <select name="transactionFinanceType" id="transactionFinanceType" class="form-control priority3">
                 <option value="" {% if not transaction.finance_type %} selected="selected" {% endif %}>Transaction finance type:</option>
                 {% for entry in finance_type %}
                     {% if not entry.0 == "code" %}
@@ -141,7 +141,7 @@
     </div>
     <div class="form-group">
         <div class="select-group control">
-            <select name="transactionFlowType" id="transactionFlowType" class="form-control">
+            <select name="transactionFlowType" id="transactionFlowType" class="form-control priority3">
                 <option value="" {% if not transaction.flow_type %} selected="selected" {% endif %}>Transaction flow type:</option>
                 {% for entry in flow_types %}
                     {% if not entry.0 == "code" %}
@@ -156,7 +156,7 @@
     </div>
     <div class="form-group">
         <div class="select-group control">
-            <select name="transactionTiedStatus" id="transactionTiedStatus" class="form-control">
+            <select name="transactionTiedStatus" id="transactionTiedStatus" class="form-control priority3">
                 <option value="" {% if not transaction.tied_status %} selected="selected" {% endif %}>Transaction tied status:</option>
                 {% for entry in tied_status %}
                     {% if not entry.0 == "code" %}
@@ -171,7 +171,7 @@
     </div>
     <div class="form-group">
         <div class="select-group control">
-            <select name="transactionRecipientCountry" id="transactionRecipientCountry" class="form-control">
+            <select name="transactionRecipientCountry" id="transactionRecipientCountry" class="form-control priority3">
                 <option value="" {% if not transaction.recipient_country %} selected="selected" {% endif %}>Transaction recipient country:</option>
                 {% for entry in codelist_country %}
                     {% if not entry.0 == "code" %}
@@ -188,7 +188,7 @@
         <div class="row">
             <div class="col-md-6 control">
                 <div class="select-group">
-                    <select name="transactionRecipientRegion" id="transactionRecipientRegion" class="form-control">
+                    <select name="transactionRecipientRegion" id="transactionRecipientRegion" class="form-control priority3">
                         <option value="" {% if not transaction.recipient_region %} selected="selected" {% endif %}>Transaction recipient region:</option>
                         {% for entry in region %}
                             {% if not entry.0 == "code" %}
@@ -203,7 +203,7 @@
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="transactionRecipientRegionVocabulary" id="transactionRecipientRegionVocabulary" class="form-control">
+                    <select name="transactionRecipientRegionVocabulary" id="transactionRecipientRegionVocabulary" class="form-control priority3">
                         <option value="" {% if not transaction.recipient_region_vobacbulary %} selected="selected" {% endif %}>Recipient region vocabulary:</option>
                         {% for entry in region_vocabulary %}
                             {% if not entry.0 == "code" %}

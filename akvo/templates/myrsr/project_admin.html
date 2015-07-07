@@ -39,18 +39,18 @@
                         <div class="formBlock">
                             <form role="form" id="admin-step-1" action="javascript: submitStep(1)">
                             <div class="form-group control">
-                                <input type="text" class="form-control validate" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45"/>
+                                <input type="text" class="form-control validate priority1" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45"/>
                                 <label for="projectTitle" class="control-label">Project title</label>
                                 <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control" name="projectSubTitle" id="projectSubTitle" placeholder="Project subtitle" maxlength="75"
+                                <input type="text" class="form-control priority1" name="projectSubTitle" id="projectSubTitle" placeholder="Project subtitle" maxlength="75"
                                 {% if project.subtitle %} value="{{project.subtitle}}" {% endif %} />
                                 <label for="projectSubTitle" class="control-label">Project subtitle</label>
                                 <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)</p>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control" name="iatiId" id="iatiID" placeholder="iati ID" maxlength="100"
+                                <input type="text" class="form-control priority2" name="iatiId" id="iatiID" placeholder="iati ID" maxlength="100"
                                 {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
                                 <label for="iatiID" class="control-label">IATI identifier</label>
                                 <p class="help-block hidden">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
@@ -71,7 +71,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectStatus" id="projectStatus" class="form-control">
+                                    <select name="projectStatus" id="projectStatus" class="form-control priority1">
                                         <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}>None</option>
                                         <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>Needs funding</option>
                                         <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>Active</option>
@@ -93,12 +93,12 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon" name="eventFromPlanned" id="eventFromPlanned" placeholder="From (planned)"
+                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromPlanned" id="eventFromPlanned" placeholder="From (planned)"
                                         {% if project.date_start_planned %} value="{{project.date_start_planned|date:'c'}}" {% endif %} />
                                         <label for="eventFromPlanned" class="control-label">Start Date (planned):</label>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control" name="eventEndPlanned" id="eventEndPlanned" placeholder="To (planned)"
+                                        <input type="date" class="form-control priority2" name="eventEndPlanned" id="eventEndPlanned" placeholder="To (planned)"
                                         {% if project.date_end_planned %} value="{{project.date_end_planned|date:'c'}}" {% endif %} />
                                         <label for="eventEndPlanned" class="control-label">End Date (planned):</label>
                                     </div>
@@ -107,12 +107,12 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon" name="eventFromActual" id="eventFromActual" placeholder="From (Actual)"
+                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromActual" id="eventFromActual" placeholder="From (Actual)"
                                         {% if project.date_start_actual %} value="{{project.date_start_actual|date:'c'}}" {% endif %} />
                                         <label for="eventFromActual" class="control-label">Start Date (Actual):</label>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control" name="eventEndActual" id="eventEndActual" placeholder="To (Actual)"
+                                        <input type="date" class="form-control priority2" name="eventEndActual" id="eventEndActual" placeholder="To (Actual)"
                                         {% if project.date_end_actual %} value="{{project.date_end_actual|date:'c'}}" {% endif %} />
                                         <label for="eventEndActual" class="control-label">End Date (Actual):</label>
                                     </div>
@@ -120,7 +120,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectLanguage" id="projectLanguage" class="form-control">
+                                    <select name="projectLanguage" id="projectLanguage" class="form-control priority2">
                                         <option value="de" {% if project.language == 'de'%} selected="selected" {% endif %}>German</option>
                                         <option value="en" {% if project.language == 'en'%} selected="selected" {% endif %}>English</option>
                                         <option value="fr" {% if project.language == 'fr'%} selected="selected" {% endif %}>French</option>
@@ -134,7 +134,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectCurrency" id="projectCurrency" class="form-control">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority1">
                                         <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
                                         <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
                                     </select>
@@ -144,7 +144,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control">
+                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2">
                                         <option value="" {% if not project.hierarchy %} selected="selected" {% endif %}>Hierarchy:</option>
                                         <option value="1" {% if project.hierarchy|add:0 == 1 %} selected="selected" {% endif %}>Core activity</option>
                                         <option value="2" {% if project.hierarchy|add:0 == 2 %} selected="selected" {% endif %}>Sub activity</option>
@@ -157,7 +157,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="defaultAidType" id="defaultAidType" class="form-control"> 
+                                    <select name="defaultAidType" id="defaultAidType" class="form-control priority3"> 
                                         <option value="" {% if not project.default_aid_type %} selected="selected" {% endif %}>Default aid type:</option>                                      
                                         {% for aid_type in aid_types %}
                                             <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %} selected="selected" {% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
@@ -168,7 +168,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="defaultFlowType" id="defaultFlowType" class="form-control">
+                                    <select name="defaultFlowType" id="defaultFlowType" class="form-control priority3">
                                         <option value="" {% if not project.default_flow_type %} selected="selected" {% endif %}>Default flow type:</option>
                                         {% for flow_type in flow_types %}
                                             <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %} selected="selected" {% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
@@ -179,7 +179,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control">
+                                    <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control priority3">
                                         <option value="" {% if not project.default_tied_status %} selected="selected" {% endif %}>Default tied status:</option>
                                         {% for tied_status in tied_statuses %}
                                             <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %} selected="selected" {% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
@@ -190,7 +190,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="collaborationType" id="collaborationType" class="form-control">
+                                    <select name="collaborationType" id="collaborationType" class="form-control priority3">
                                         <option value="" {% if not project.collaboration_type %} selected="selected" {% endif %}>Collaboration type:</option>
                                         {% for collaboration_type in collaboration_types %}
                                             <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %} selected="selected" {% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
@@ -201,7 +201,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="defaultFinanceType" id="defaultFinanceType" class="form-control">
+                                    <select name="defaultFinanceType" id="defaultFinanceType" class="form-control priority3">
                                         <option value="" {% if not project.default_finance_type %} selected="selected" {% endif %}>Default finance type:</option>
                                         {% for finance_type in finance_types %}
                                             <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %} selected="selected" {% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
@@ -273,6 +273,7 @@
                             <div class="form-group control">
                                 <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
                                 data-child-id="reportingOrganisation"
+                                data-child-class="priority1"
                                 data-value="{% if project.reporting_org %}{{project.reporting_org.id}}{% endif %}"
                                 data-count-class="reportingOrganisation">
                                 </div>                                
@@ -280,7 +281,7 @@
                             <div class="form-group control">
                                 <div class="checkbox">
                                     <label for="secondaryReporter" class="control-label">
-                                        <input id="secondaryReporter" type="checkbox" name="secondaryReporter"
+                                        <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
                                         {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
                                             Secondary reporter
                                         </label>
@@ -325,31 +326,31 @@
                         <div class="formBlock">
                             <form role="form" id="admin-step-4" action="javascript: submitStep(4)">
                             <div class="form-group control">
-                                <textarea id="summary" class="form-control" name="summary" placeholder="Type in summary of the project plan">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
+                                <textarea id="summary" class="form-control priority1" name="summary" placeholder="Type in summary of the project plan">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
                                 <label class="control-label" for="summary">Summary of project plan</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="background" class="form-control" name="background" placeholder="Type in background">{% if project.background %}{{project.background}}{% endif %}</textarea>
+                                <textarea id="background" class="form-control priority2" name="background" placeholder="Type in background">{% if project.background %}{{project.background}}{% endif %}</textarea>
                                 <label class="control-label" for="background">Background</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="currentSituation" class="form-control" name="currentSituation" placeholder="Type in current situation">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
+                                <textarea id="currentSituation" class="form-control priority2" name="currentSituation" placeholder="Type in current situation">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
                                 <label class="control-label" for="currentSituation">Current situation</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="projectPlan" class="form-control" name="projectPlan" placeholder="Type in project plan">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
+                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" placeholder="Type in project plan">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
                                 <label class="control-label" for="projectPlan">Project plan</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="targetGroup" class="form-control" name="targetGroup" placeholder="Type in target group">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
+                                <textarea id="targetGroup" class="form-control priority2" name="targetGroup" placeholder="Type in target group">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
                                 <label class="control-label" for="targetGroup">Target group</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="sustainability" class="form-control" name="sustainability" placeholder="Type in sustainability">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
+                                <textarea id="sustainability" class="form-control priority2" name="sustainability" placeholder="Type in sustainability">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
                                 <label class="control-label" for="sustainability">Sustainability</label>
                             </div>
                             <div class="form-group control">
-                                <textarea id="goalsOverview" class="form-control" name="goalsOverview" placeholder="Type in goals overview">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
+                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" placeholder="Type in goals overview">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
                                 <label class="control-label" for="goalsOverview">Goals overview</label>
                             </div>
                             <div class="row">
@@ -383,18 +384,18 @@
                                     {% endthumbnail %}
                                     <a onclick="deletePhoto(this);" class="btn btn-link delete-object-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>
                                 {% endif %}
-                                <input type="file" class="form-control" id="photo" name="photo">
+                                <input type="file" class="form-control priority1" id="photo" name="photo">
                                 <label class="control-label" for="photo">Photo</label>
                             </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="photoCaption" placeholder="Photo caption" name="photoCaption"
+                                        <input type="text" class="form-control priority2" id="photoCaption" placeholder="Photo caption" name="photoCaption"
                                         {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %}>
                                         <label for="photoCaption" class="control-label">Photo caption</label>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="text" class="form-control" id="photoCredit" placeholder="Photo credit" name="photoCredit"
+                                        <input type="text" class="form-control priority2" id="photoCredit" placeholder="Photo credit" name="photoCredit"
                                         {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %}>
                                         <label for="photoCredit" class="control-label">Photo credit</label>
                                     </div>
@@ -475,7 +476,7 @@
                         <div class="formBlock">
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="scope" id="scope" class="form-control">
+                                    <select name="scope" id="scope" class="form-control priority3">
                                         <option value="" {% if not project.project_scope %} selected="selected" {% endif %}>Project scope:</option>
                                         {% for scope in activity_scopes %}
                                             <option value="{{ scope.code }}" {% if project.project_scope == scope.code %} selected="selected" {% endif %}>{{ scope.code }} - {{ scope.name }}</option>
@@ -590,13 +591,13 @@
                         </div>
                         <div class="formBlock"> 
                             <div class="form-group control">
-                                <input type="number" class="form-control" id="capitalSpendPercentage" placeholder="Capital spend percentage"
+                                <input type="number" class="form-control priority3" id="capitalSpendPercentage" placeholder="Capital spend percentage"
                                 {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
                                 <label for="capitalSpendPercentage" class="control-label">Capital spend percentage</label>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="countryBudgetVocabulary" id="countryBudgetVocabulary" class="form-control">
+                                    <select name="countryBudgetVocabulary" id="countryBudgetVocabulary" class="form-control priority3">
                                         <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}>
                                             Country budget vocabulary
                                         </option>
@@ -965,7 +966,7 @@
         }
     }
 
-    function processResponse(response, selector, valueId, label, help, placeholder, filterOption) {
+    function processResponse(response, selector, childClass, valueId, label, help, placeholder, filterOption) {
         var typeaheadOptions = response.results;
         var typeaheadCallback = function(option) {
             var el;
@@ -977,12 +978,12 @@
             return option[filterOption];
         };
 
-        buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, valueId, label, help, filterOption);
+        buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption);
     }
 
-    function getCallback(selector, valueId, label, help, placeholder, filterOption) {
+    function getCallback(selector, childClass, valueId, label, help, placeholder, filterOption) {
         var output = function(response) {
-            processResponse(response, selector, valueId, label, help, placeholder, filterOption);
+            processResponse(response, selector, childClass, valueId, label, help, placeholder, filterOption);
         };
 
         return output;
@@ -1005,6 +1006,7 @@
 
             // The id we'll give the input once it's been rendered
             var childSelector = $(this).data('child-id');
+            var childClass = $(this).data('child-class');
             var valueId = null;            
             var labelText = 'Related project';
             var helpText = 'A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.';
@@ -1017,7 +1019,7 @@
                 valueId = $(this).data('value');
             }
 
-            loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, valueId, label, help, placeholder, filterOption));
+            loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
         });
 
         $('.reportingOrganisation-input').each( function() {
@@ -1032,6 +1034,7 @@
 
             // The id we'll give the input once it's been rendered
             var childSelector = $(this).data('child-id');
+            var childClass = $(this).data('child-class');
             var valueId = null;            
             var labelText = 'Reporting organisation';
             var helpText = 'Indicate the reporting organisation of this project. This organisation must be existing already in Akvo RSR.';
@@ -1044,7 +1047,7 @@
                 valueId = $(this).data('value');
             }
 
-            loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, valueId, label, help, placeholder, filterOption));
+            loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
         });
 
         $('.partner-input').each( function() {
@@ -1059,6 +1062,7 @@
 
             // The id we'll give the input once it's been rendered
             var childSelector = $(this).data('child-id');
+            var childClass = $(this).data('child-class');
             var valueId = null;            
             var labelText = 'Partner';
             var helpText = '';
@@ -1071,7 +1075,7 @@
                 valueId = $(this).data('value');
             }
 
-            loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, valueId, label, help, placeholder, filterOption));
+            loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
         });
     } 
     </script>

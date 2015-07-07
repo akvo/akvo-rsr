@@ -4,6 +4,7 @@
             <div class="col-md-4 control">
                 <div class="partner-input partner{% if key %}-{{ key }}{% endif %} typeahead-container"
                 data-child-id="partner{% if key %}-{{ key }}{% endif %}"
+                data-child-class="priority1"
                 data-value="{% if partnership.organisation.id %}{{partnership.organisation.id}}{% endif %}"
                 data-count-class="partner">
                 </div>                
@@ -11,7 +12,7 @@
             <div class="col-md-4 control">
                 <div class="select-group">
                     <select name="partner-type{% if key %}-{{ key }}{% endif %}"
-                    id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control" onchange="toggleFunding(this)">
+                    id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)">
                         <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>Type:</option>
                         <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>Field partner</option>
                         <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>Funding partner</option>
@@ -24,7 +25,7 @@
             <div class="col-md-4 control">
                 <div class="input-group">
                     <span class="input-group-addon">{{ project.get_currency_display }}</span>
-                    <input type="text" class="form-control" id="funding-amount{% if key %}-{{ key }}{% endif %}"
+                    <input type="text" class="form-control priority1" id="funding-amount{% if key %}-{{ key }}{% endif %}"
                     placeholder="Funding amount" name="funding-amount{% if key %}-{{ key }}{% endif %}"
                     {% if partnership %}value="{{partnership.funding_amount}}"{% endif %}
                     {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>

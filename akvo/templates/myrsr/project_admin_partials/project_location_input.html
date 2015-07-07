@@ -2,13 +2,13 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="latitude{% if key %}-{{ key }}{% endif %}" name="latitude{% if key %}-{{ key }}{% endif %}"
+                <input type="text" class="form-control priority1" id="latitude{% if key %}-{{ key }}{% endif %}" name="latitude{% if key %}-{{ key }}{% endif %}"
                 placeholder="Latitude" {% if location.latitude %}
                 value="{{location.latitude}}" {% endif %}>
                 <label class="control-label" for="latitude">Latitude</label>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="longitude{% if key %}-{{ key }}{% endif %}" name="longitude{% if key %}-{{ key }}{% endif %}"
+                <input type="text" class="form-control priority1" id="longitude{% if key %}-{{ key }}{% endif %}" name="longitude{% if key %}-{{ key }}{% endif %}"
                 placeholder="Longitude" {% if location.longitude %}
                 value="{{location.longitude}}" {% endif %}>
                 <label class="control-label" for="longitude">Longitude</label>
@@ -17,7 +17,7 @@
     </div>
     <div class="form-group">
         <div class="select-group control">
-            <select name="country{% if key %}-{{ key }}{% endif %}" id="country{% if key %}-{{ key }}{% endif %}" class="form-control">
+            <select name="country{% if key %}-{{ key }}{% endif %}" id="country{% if key %}-{{ key }}{% endif %}" class="form-control priority1">
                 <option value="" {% if not location.country %} selected="selected" {% endif %}>Country:</option>
                 {% for country in countries %}
                     <option value="{{ country.id }}" {% if location.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
@@ -29,59 +29,59 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="city{% if key %}-{{ key }}{% endif %}" name="city{% if key %}-{{ key }}{% endif %}" placeholder="City"
+                <input type="text" class="form-control priority2" id="city{% if key %}-{{ key }}{% endif %}" name="city{% if key %}-{{ key }}{% endif %}" placeholder="City"
                 {% if location.city %} value="{{location.city}}" {% endif %}>
                 <label class="control-label" for="city">City</label>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="postalCode{% if key %}-{{ key }}{% endif %}" name="postalCode{% if key %}-{{ key }}{% endif %}" placeholder="Postal code"
+                <input type="text" class="form-control priority2" id="postalCode{% if key %}-{{ key }}{% endif %}" name="postalCode{% if key %}-{{ key }}{% endif %}" placeholder="Postal code"
                 {% if location.postcode %} value="{{location.postcode}}" {% endif %}>
                 <label class="control-label" for="postalCode">Postal code</label>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="state{% if key %}-{{ key }}{% endif %}" name="state{% if key %}-{{ key }}{% endif %}" placeholder="State"
+                <input type="text" class="form-control priority2" id="state{% if key %}-{{ key }}{% endif %}" name="state{% if key %}-{{ key }}{% endif %}" placeholder="State"
                 {% if location.state %} value="{{location.state}}" {% endif %}>
                 <label class="control-label" for="state">State</label>
             </div>
         </div>
     </div>
     <div class="form-group control">
-        <input type="text" class="form-control" id="address1{% if key %}-{{ key }}{% endif %}" name="address1{% if key %}-{{ key }}{% endif %}" placeholder="Address 1" {% if location.address_1 %} value="{{location.address_1}}" {% endif %}>
+        <input type="text" class="form-control priority2" id="address1{% if key %}-{{ key }}{% endif %}" name="address1{% if key %}-{{ key }}{% endif %}" placeholder="Address 1" {% if location.address_1 %} value="{{location.address_1}}" {% endif %}>
         <label class="control-label" for="address1">Address 1</label>
     </div>
     <div class="form-group control">
-        <input type="text" class="form-control" id="address2{% if key %}-{{ key }}{% endif %}" name="address2{% if key %}-{{ key }}{% endif %}" placeholder="Address 2" {% if location.address_2 %} value="{{location.address_2}}" {% endif %}>
+        <input type="text" class="form-control priority2" id="address2{% if key %}-{{ key }}{% endif %}" name="address2{% if key %}-{{ key }}{% endif %}" placeholder="Address 2" {% if location.address_2 %} value="{{location.address_2}}" {% endif %}>
         <label class="control-label" for="address2">Address 2</label>
     </div>
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="locationReference{% if key %}-{{ key }}{% endif %}" name="locationReference{% if key %}-{{ key }}{% endif %}" placeholder="Reference" {% if location.reference %} value="{{location.reference}}" {% endif %}>
+                <input type="text" class="form-control priority3" id="locationReference{% if key %}-{{ key }}{% endif %}" name="locationReference{% if key %}-{{ key }}{% endif %}" placeholder="Reference" {% if location.reference %} value="{{location.reference}}" {% endif %}>
                 <label class="control-label" for="locationReference">Reference</label>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="locationCode{% if key %}-{{ key }}{% endif %}" name="locationCode{% if key %}-{{ key }}{% endif %}" placeholder="Code" {% if location.location_code %} value="{{location.location_code}}" {% endif %}>
+                <input type="text" class="form-control priority3" id="locationCode{% if key %}-{{ key }}{% endif %}" name="locationCode{% if key %}-{{ key }}{% endif %}" placeholder="Code" {% if location.location_code %} value="{{location.location_code}}" {% endif %}>
                 <label class="control-label" for="locationCode">Code</label>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="locationName{% if key %}-{{ key }}{% endif %}" name="locationName{% if key %}-{{ key }}{% endif %}" placeholder="Name" {% if location.name %} value="{{location.name}}" {% endif %}>
+                <input type="text" class="form-control priority3" id="locationName{% if key %}-{{ key }}{% endif %}" name="locationName{% if key %}-{{ key }}{% endif %}" placeholder="Name" {% if location.name %} value="{{location.name}}" {% endif %}>
                 <label class="control-label" for="locationName">Name</label>
             </div>
         </div>
     </div>
     <div class="form-group control">
-        <textarea id="locationDescription{% if key %}-{{ key }}{% endif %}" class="form-control" name="locationDescription{% if key %}-{{ key }}{% endif %}" placeholder="Type in a location description">{{location.description}}</textarea>
+        <textarea id="locationDescription{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="locationDescription{% if key %}-{{ key }}{% endif %}" placeholder="Type in a location description">{{location.description}}</textarea>
         <label class="control-label" for="locationDescription">Description</label>
     </div>
     <div class="form-group control">
-        <textarea id="locationActivityDescription{% if key %}-{{ key }}{% endif %}" class="form-control" name="locationActivityDescription{% if key %}-{{ key }}{% endif %}" placeholder="Type in a location activity description">{{location.activity_description}}</textarea>
+        <textarea id="locationActivityDescription{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="locationActivityDescription{% if key %}-{{ key }}{% endif %}" placeholder="Type in a location activity description">{{location.activity_description}}</textarea>
         <label class="control-label" for="locationActivityDescription">Activity description</label>
     </div>
     <div class="form-group">
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="locationExactness{% if key %}-{{ key }}{% endif %}" id="locationExactness{% if key %}-{{ key }}{% endif %}" class="form-control">
+                    <select name="locationExactness{% if key %}-{{ key }}{% endif %}" id="locationExactness{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
                         <option value="" {% if not location.exactness %} selected="selected" {% endif %}>Exactness:</option>
                         {% for exactness in geographic_exactnesses %}
                             <option value="{{ exactness.code }}" {% if location.exactness == exactness.code %} selected="selected" {% endif %}>{{ exactness.code }} - {{ exactness.name }}</option>
@@ -92,7 +92,7 @@
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="locationReach{% if key %}-{{ key }}{% endif %}" id="locationReach{% if key %}-{{ key }}{% endif %}" class="form-control">
+                    <select name="locationReach{% if key %}-{{ key }}{% endif %}" id="locationReach{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
                         <option value="" {% if not location.location_reach %} selected="selected" {% endif %}>Reach:</option>
                         {% for reach in geographic_location_reaches %}
                             <option value="{{ reach.code }}" {% if location.location_reach == reach.code %} selected="selected" {% endif %}>{{ reach.code }} - {{ reach.name }}</option>
@@ -107,7 +107,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="locationClass{% if key %}-{{ key }}{% endif %}" id="locationClass{% if key %}-{{ key }}{% endif %}" class="form-control">
+                    <select name="locationClass{% if key %}-{{ key }}{% endif %}" id="locationClass{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
                         <option value="" {% if not location.location_class %} selected="selected" {% endif %}>Class:</option>
                         {% for class in geographic_location_classes %}
                             <option value="{{ class.code }}" {% if location.location_class == class.code %} selected="selected" {% endif %}>{{ class.code }} - {{ class.name }}</option>
@@ -118,7 +118,7 @@
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="locationFeatureDesignation{% if key %}-{{ key }}{% endif %}" id="locationFeatureDesignation{% if key %}-{{ key }}{% endif %}" class="form-control">
+                    <select name="locationFeatureDesignation{% if key %}-{{ key }}{% endif %}" id="locationFeatureDesignation{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
                         <option value="" selected="selected">Feature designation</option>
                         {% for location_type in location_types %}
                             <option value="{{ location_type.code }}" {% if location.feature_designation == location_type.code %} selected="selected" {% endif %}>{{ location_type.code }} - {{ location_type.name }}</option>

@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="recipientRegion{% if rc %}-{{ rc.pk }}{% endif %}" id="recipientRegion" class="form-control">
+                    <select name="recipientRegion{% if rc %}-{{ rc.pk }}{% endif %}" id="recipientRegion" class="form-control priority3">
                         <option value="" {% if not rr.region %} selected="selected" {% endif %}>Recipient region:</option>
                         {% for region in regions %}
                             <option value="{{ region.code }}" {% if rr.region == region.code %} selected="selected" {% endif %}>{{ region.code }} - {{ region.name }}</option>
@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="recipientRegionPercentage"
+                <input type="text" class="form-control priority3" id="recipientRegionPercentage"
                 name="recipientRegionPercentage{% if rc %}-{{ rc.pk }}{% endif %}"
                 placeholder="Percentage" {% if rr.percentage %} value="{{rr.percentage}}" {% endif %}>
                 <label class="control-label" for="recipientRegionPercentage">Recipient region percentage</label>
@@ -21,7 +21,7 @@
             <div class="col-md-6">
                 <div class="select-group control">
                     <select name="contactCountry" id="recipientRegionVocabulary"
-                    name="recipientRegionVocabulary{% if rc %}-{{ rc.pk }}{% endif %}" class="form-control">
+                    name="recipientRegionVocabulary{% if rc %}-{{ rc.pk }}{% endif %}" class="form-control priority3">
                         <option value="" {% if not rr.region_vocabulary %} selected="selected" {% endif %}>Recipient region vocabulary</option>
                         {% for vocabulary in region_vocabularies %}
                             <option value="{{ vocabulary.code }}" {% if rr.region_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
@@ -31,7 +31,7 @@
                 </div>
             </div>
              <div class="col-md-6 control">
-                <input type="text" class="form-control" id="recipientRegionDescription"
+                <input type="text" class="form-control priority3" id="recipientRegionDescription"
                 name="recipientRegionDescription{% if rc %}-{{ rc.pk }}{% endif %}"
                 placeholder="Region description" {% if rr.text %} value="{{rr.text}}" {% endif %}>
                 <label class="control-label" for="recipientRegionDescription">Recipient region description</label>

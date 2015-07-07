@@ -2,16 +2,16 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="sectorCode{% if sector %}-{{ sector.pk }}{% endif %}" name="sectorCode{% if sector %}-{{ sector.pk }}{% endif %}" placeholder="Sector code" {% if sector.sector_code %} value="{{sector.sector_code}}" {% endif %}>
+                <input type="text" class="form-control priority1" id="sectorCode{% if sector %}-{{ sector.pk }}{% endif %}" name="sectorCode{% if sector %}-{{ sector.pk }}{% endif %}" placeholder="Sector code" {% if sector.sector_code %} value="{{sector.sector_code}}" {% endif %}>
                 <label class="control-label" for="sectorCode">Sector code</label>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="sectorPercentage{% if sector %}-{{ sector.pk }}{% endif %}" name="sectorPercentage{% if sector %}-{{ sector.pk }}{% endif %}" placeholder="Sector percentage" {% if sector.percentage %} value="{{sector.percentage}}" {% endif %}>
+                <input type="text" class="form-control priority2" id="sectorPercentage{% if sector %}-{{ sector.pk }}{% endif %}" name="sectorPercentage{% if sector %}-{{ sector.pk }}{% endif %}" placeholder="Sector percentage" {% if sector.percentage %} value="{{sector.percentage}}" {% endif %}>
                 <label class="control-label" for="sectorPercentage">Sector percentage</label>
             </div>
             <div class="col-md-6 control">
                 <div class="select-group">
-                    <select name="sectorVocabulary{% if sector %}-{{ sector.pk }}{% endif %}" id="sectorVocabulary{% if sector %}-{{ sector.pk }}{% endif %}" class="form-control">
+                    <select name="sectorVocabulary{% if sector %}-{{ sector.pk }}{% endif %}" id="sectorVocabulary{% if sector %}-{{ sector.pk }}{% endif %}" class="form-control priority2">
                         <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}>Sector vocabulary:</option>
                         {% for vocabulary in sector_vocabularies %}
                             <option value="{{ vocabulary.code }}" {% if sector.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control" id="sectorDescription{% if sector %}-{{ sector.pk }}{% endif %}" name="sectorDescription{% if sector %}-{{ sector.pk }}{% endif %}" placeholder="Sector description" {% if sector.text %} value="{{sector.text}}" {% endif %}>
+                <input type="text" class="form-control priority2" id="sectorDescription{% if sector %}-{{ sector.pk }}{% endif %}" name="sectorDescription{% if sector %}-{{ sector.pk }}{% endif %}" placeholder="Sector description" {% if sector.text %} value="{{sector.text}}" {% endif %}>
                 <label class="control-label" for="sectorDescription">Sector description</label>
             </div>        
         </div>

@@ -5,12 +5,13 @@
             <div class="col-md-4 control">
                 <div class="related-project-input related-project-project{% if key %}-{{ key }}{% endif %} typeahead-container"
                 data-child-id="related-project-project{% if key %}-{{ key }}{% endif %}"
+                data-child-class="priority2"
                 data-value="{% if rp.related_project.id %}{{rp.related_project.id}}{% endif %}"
                 data-count-class="related-project-project">
                 </div>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
+                <input type="text" class="form-control priority3" id="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
                 placeholder="Related project IATI identifier" name="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
                 {% if rp %} value="{{rp.related_iati_id}}" {% endif %} maxlength="100" />
                 <label for="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}" class="control-label">Related project IATI identifier</label>
@@ -18,7 +19,7 @@
             </div>
             <div class="col-md-4 control">
                 <div class="select-group">
-                    <select name="related-project-relation{% if key %}-{{ key }}{% endif %}" id="related-project-relation{% if key %}-{{ key }}{% endif %}" class="form-control">
+                    <select name="related-project-relation{% if key %}-{{ key }}{% endif %}" id="related-project-relation{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
                         <option value="" {% if not rp.relation %} selected="selected" {% endif %}>Type:</option>
                         <option value="1" {% if rp.relation|add:0 == 1 %} selected="selected" {% endif %}>1 - Parent</option>
                         <option value="2" {% if rp.relation|add:0 == 2 %} selected="selected" {% endif %}>2 - Child</option>
