@@ -5,7 +5,8 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Country, Link, Project, ProjectContact, ProjectDocument, RelatedProject
+from akvo.rsr.models import (Country, Link, Organisation, Partnership, Project, ProjectContact,
+                             ProjectDocument, RelatedProject)
 
 from django.http import HttpResponseForbidden
 
@@ -267,6 +268,95 @@ def project_admin_step2(request, pk=None):
                 errors = save_field(
                     contact, 'state', contact_state_key, data[contact_state_key], errors
                 )
+
+    return Response({
+            'errors': errors,
+            'new_objects': new_objects,
+        }
+    )
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step3(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    data = request.POST
+    errors = []
+    new_objects = []
+
+    try:
+        reporting_org = Organisation.objects.get(
+            pk=data['value-reportingOrganisation']
+        ) if data['value-reportingOrganisation'] else None
+        errors = save_field(project, 'sync_owner', 'reportingOrganisation', reporting_org, errors)
+    except Exception as e:
+        error = str(e).capitalize()
+        errors.append({'name': 'reportingOrganisation', 'error': error})
+
+    sec_reporter = True if 'secondaryReporter' in data.keys() else False
+    errors = save_field(
+        project, 'sync_owner_secondary_reporter', 'secondaryReporter', sec_reporter, errors
+    )
+
+    # Partners
+    for key in data.keys():
+        if 'value-partner-' in key:
+            partner = None
+            partner_id = key.split('-', 2)[2]
+
+            if 'add' in partner_id and (data['partner-' + partner_id]
+                                        or data['partner-type-' + partner_id]):
+                partner = Partnership.objects.create(project=project)
+                new_objects.append(
+                    {
+                        'old_id': 'add-' + partner_id[-1],
+                        'new_id': str(partner.pk),
+                        'div_id': 'partnership-add-' + partner_id[-1],
+                    }
+                )
+            elif not 'add' in partner_id:
+                try:
+                    partner = Partnership.objects.get(pk=int(partner_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+            if partner:
+                partner_key = 'value-partner-' + partner_id
+
+                try:
+                    partner_organisation = Organisation.objects.get(
+                        pk=data[partner_key]
+                    ) if data[partner_key] else None
+                    errors = save_field(
+                        partner, 'organisation', 'partner-' + str(partner.pk), partner_organisation,
+                        errors
+                    )
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': partner_key, 'error': error})
+
+                partner_type_key = 'partner-type-' + partner_id
+                errors = save_field(
+                    partner, 'partner_type', partner_type_key, data[partner_type_key], errors
+                )
+
+                partner_funding_key = 'funding-amount-' + partner_id
+                try:
+                    funding_amount = int(
+                        data[partner_funding_key]
+                    ) if data[partner_funding_key] else None
+                    errors = save_field(
+                        partner, 'funding_amount', partner_funding_key, funding_amount, errors
+                    )
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': partner_funding_key, 'error': error})
 
     return Response({
             'errors': errors,

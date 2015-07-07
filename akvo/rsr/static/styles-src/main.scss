@@ -2115,7 +2115,7 @@ dd {
     .col-md-4 a.btn.btn-link, .col-md-3 a.btn.btn-link {
         margin-top: 23px;
     }
-    input, textarea, select {
+    input, textarea, select, div.input-group {
         & + label,
         & + span + label,
         & + ul + label {

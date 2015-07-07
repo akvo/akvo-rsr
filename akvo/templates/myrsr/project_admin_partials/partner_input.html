@@ -1,4 +1,4 @@
-<div class="partner-item">
+<div class="partner-item parent" id="partnership{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
@@ -10,23 +10,33 @@
             </div>
             <div class="col-md-4 control">
                 <div class="select-group">
-                    <select name="partnerType{% if partnership %}-{{ partnership.pk }}{% endif %}"
-                    id="partnerType{% if partnership %}-{{ partnership.pk }}{% endif %}" class="form-control">
+                    <select name="partner-type{% if key %}-{{ key }}{% endif %}"
+                    id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control" onchange="toggleFunding(this)">
                         <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>Type:</option>
                         <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>Field partner</option>
                         <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>Funding partner</option>
                         <option value="sponsor" {% if partnership.partner_type == 'sponsor' %} selected="selected" {% endif %}>Sponsor partner</option>
                         <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>Support partner</option>
                     </select>
-                    <label for="partnerType" class="control-label">Type</label>
+                    <label for="partner-type{% if key %}-{{ key }}{% endif %}" class="control-label">Type</label>
                 </div>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control" id="fundingAmount{% if partnership %}-{{ partnership.pk }}{% endif %}"
-                placeholder="Funding amount" name="fundingAmount{% if partnership %}-{{ partnership.pk }}{% endif %}"
-                {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
-                <label for="fundingAmount" class="control-label">Funding amount</label>
+                <div class="input-group">
+                    <span class="input-group-addon">{{ project.get_currency_display }}</span>
+                    <input type="text" class="form-control" id="funding-amount{% if key %}-{{ key }}{% endif %}"
+                    placeholder="Funding amount" name="funding-amount{% if key %}-{{ key }}{% endif %}"
+                    {% if partnership %}value="{{partnership.funding_amount}}"{% endif %}
+                    {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
+                </div>
+                <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">Funding amount</label>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 text-center" id="delete-partner{% if key %}-{{ key }}{% endif %}">
+                <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-partner{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete partner</a>
+            </div>
+        </div>
+        <hr/>
     </div>
 </div>

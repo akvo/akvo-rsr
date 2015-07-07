@@ -41,7 +41,7 @@ class Partnership(models.Model):
     PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', blank=True,
+        'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', null=True,
         help_text=_(u'Select an organisation that is taking an active role in the project.'))
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = ValidXMLCharField(

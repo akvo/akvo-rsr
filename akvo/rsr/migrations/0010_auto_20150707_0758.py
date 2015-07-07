@@ -18,6 +18,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='budgetitem',
+            name='amount',
+            field=models.DecimalField(default=0, verbose_name='amount', max_digits=10, decimal_places=2),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='budgetitem',
             name='label',
             field=models.ForeignKey(verbose_name='project budget', to='rsr.BudgetItemLabel', help_text="Select the budget item. Use the 'Other' fields to custom budget items.", null=True),
             preserve_default=True,
@@ -55,7 +61,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='partnership',
             name='organisation',
-            field=models.ForeignKey(related_name='partnerships', verbose_name='organisation', blank=True, to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.'),
+            field=models.ForeignKey(related_name='partnerships', verbose_name='organisation', to='rsr.Organisation', help_text='Select an organisation that is taking an active role in the project.', null=True),
             preserve_default=True,
         ),
         migrations.AlterField(

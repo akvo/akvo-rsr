@@ -269,6 +269,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <form role="form" id="admin-step-3" action="javascript: submitStep(3)">
                             <div class="form-group control">
                                 <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
                                 data-child-id="reportingOrganisation"
@@ -288,19 +289,24 @@
                             </div>
                             <hr/>
                             <div class="partner-container">
-                                {% if project.partnerships.all %}
-                                    {% for partnership in project.partnerships.all %}
-                                        {% include "myrsr/project_admin_partials/partner_input.html" with key=partnership.pk %}
-                                    {% endfor %}
-                                {% else %}
-                                        {% include "myrsr/project_admin_partials/partner_input.html" with key='add-0' %}
-                                {% endif %}    
+                                {% for partnership in project.partnerships.all %}
+                                    {% include "myrsr/project_admin_partials/partner_input.html" with key=partnership.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/partner_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>                         
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link" id="add-partner"><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep3"></div>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1274,6 +1280,34 @@
 
                     form_data += '&value-' + input_id + '=' + input_value;
                 }
+            } else if (step === 3) {
+                var reporting_org, reporting_org_value, partners;
+
+                reporting_org = form.querySelector('#reportingOrganisation');
+
+                if (reporting_org.value !== '') {
+                    reporting_org_value = reporting_org.getAttribute("value")
+                } else {
+                    reporting_org_value = ''
+                }
+
+                form_data += '&value-reportingOrganisation=' + reporting_org_value;
+
+                partners = form.getElementsByClassName('partner-input');
+
+                for (var j=0; j < partners.length; j++) {
+                    var partner_input, partner_input_id, partner_input_value;
+
+                    partner_input = partners[j].getElementsByTagName('input')[0];
+                    partner_input_id = partner_input.getAttribute("id");
+                    if (partner_input.value !== '') {
+                        partner_input_value = partner_input.getAttribute("value")
+                    } else {
+                        partner_input_value = ''
+                    }
+
+                    form_data += '&value-' + partner_input_id + '=' + partner_input_value;
+                }
             }
 
             // Create request
@@ -1447,6 +1481,19 @@
             };
 
             request.send();
+        }
+
+        function toggleFunding(node) {
+            var fundingNode, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            fundingNode = parentNode.getElementsByTagName("input")[1];
+
+            if (node.options[node.selectedIndex].value === 'funding') {
+                fundingNode.removeAttribute('disabled');
+            } else {
+                fundingNode.setAttribute('disabled', '');
+            }
         }
 
         function removePartial(node) {
