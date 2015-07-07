@@ -1662,11 +1662,7 @@
 
     // Add a class selector here if you only want inputs with a certain class to count
     // towards the completion percentage. If left blank, all inputs will count.
-    var MEASURE_CLASS = '';
-
-    if (MEASURE_CLASS) {
-        MEASURE_CLASS = MEASURE_CLASS + ' ';
-    }    
+    var MEASURE_CLASS = '.priority1'; 
 
     function setSectionCompletionPercentage(section) {
         var numInputs, numInputsCompleted, completionPercentage, roundedCompletionPercentage, completionClass;
@@ -1677,7 +1673,7 @@
         for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
             var selector;
 
-            selector = '' + MEASURE_CLASS + INPUT_ELEMENTS[i];
+            selector = INPUT_ELEMENTS[i] + MEASURE_CLASS;
 
             section.find(selector).each( function() {
 
@@ -1717,7 +1713,7 @@
         for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
             var selector;
 
-            selector = '' + MEASURE_CLASS + INPUT_ELEMENTS[i];
+            selector = INPUT_ELEMENTS[i] + MEASURE_CLASS;
 
             section.find(selector).each( function() {
                 var listener;
