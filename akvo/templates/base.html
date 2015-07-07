@@ -73,10 +73,22 @@
     <script type="application/javascript">
       var AKVO_RSR = {};
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
+      AKVO_RSR.piwik = {
+        "authToken": "{{ piwik_auth_token }}",
+        "idSite": {% if rsr_page and rsr_page.piwik_id %}{{ rsr_page.piwik_id }}{% else %}1{% endif %}
+        {% if piwik_disable_hits %},
+        "disabled": true
+        {% endif %}
+      }
 
+      {% comment %}
       {% if rsr_page and rsr_page.piwik_id %}
-        AKVO_RSR.page = {"piwikId":  {{ rsr_page.piwik_id }} };
+        AKVO_RSR.page = {
+          "piwikId":  {{ rsr_page.piwik_id }},
+          "piwikAuthToken": "{{ piwik_auth_token }}"
+        };
       {% endif %}
+      {% endcomment %}
 
     </script>
 

@@ -9,6 +9,8 @@
 DEBUG = TEMPLATE_DEBUG = True
 PIPELINE_ENABLED = False
 
+PIWIK_AUTH_TOKEN = "3ae549f4e3fb9dbaa02e48f0d3aceb23"
+
 # Production mode
 # DEBUG = TEMPLATE_DEBUG = False
 # PIPELINE_ENABLED = True

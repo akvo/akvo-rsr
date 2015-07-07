@@ -58,10 +58,9 @@ window.AKVO_RSR.analytics = {
 
     resource = "http://analytics.akvo.org/" + "index.php?module=API&method=Actions.getPageUrls";
     segment = "segment=pageUrl==" + this.segments(host, path).join(",pageUrl==");
-    piwikId = (typeof AKVO_RSR.page !== "undefined") ? AKVO_RSR.page.piwikId : 1;
-    siteId = "idSite=" + piwikId;
+    siteId = "idSite=" + AKVO_RSR.piwik.idSite;
     period = "period=range&date=2013-05-30,yesterday";
-    token = "token_auth=" + "3ae549f4e3fb9dbaa02e48f0d3aceb23"; // read-only token
+    token = "token_auth=" + AKVO_RSR.piwik.authToken; //"3ae549f4e3fb9dbaa02e48f0d3aceb23"; // read-only token
 
     return [
       resource,
@@ -82,13 +81,12 @@ window.AKVO_RSR.analytics = {
 
     $.getJSON(
       this.backendUrl(
-        // prod
-        // window.location.hostname,
-        // window.location.pathname
+        window.location.hostname,
+        window.location.pathname
 
         // dev values
-        "projects.commonsites.net",
-        "/en/project/2330/"
+        // "projects.commonsites.net",
+        // "/en/project/2330/"
       ),
       function(data) {
         callback(data, renderFn, parseFn);
@@ -97,12 +95,17 @@ window.AKVO_RSR.analytics = {
 
   hits: function() {
     // Get some hits on the page.
-
-    return this.getReport(
-      this.success,
-      this.render,
-      this.parse
-    );
+    // piwikId = (typeof AKVO_RSR.page !== "undefined") ? AKVO_RSR.page.piwikId : 1;
+    if (typeof AKVO_RSR.piwik.disabled === "undefined") {
+      return this.getReport(
+        this.success,
+        this.render,
+        this.parse
+      );
+    } else {
+      console.log(typeof AKVO_RSR.piwik.disabled);
+      console.log("Piwik reporting disabled");
+    }
 
   }
 
