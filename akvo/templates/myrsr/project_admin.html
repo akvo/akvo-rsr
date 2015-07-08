@@ -1692,6 +1692,13 @@
             });
         }
 
+        if (numInputs === 0) {
+
+            // There are no mandatory fields, show the section as complete
+            section.find('div.progress-bar').attr('data-completion', 'complete').width('100%');
+            return;
+        }
+
         completionPercentage = Math.floor((numInputsCompleted / numInputs) * 100);
         section.find('.progress-bar').attr('aria-valuenow', completionPercentage);
         section.find('.progress .sr-only').text(completionPercentage + '% Complete');
