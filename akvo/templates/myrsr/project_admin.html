@@ -1816,6 +1816,28 @@
 
             return output;
         }    
+
+        // Mark mandatory fields with an asterisk
+
+        function markMandatoryFields() {
+
+            // Clear any existing markers 
+            $('.mandatory').remove();
+
+            $('.priority1 ~ label').each(function() {
+                var markContainer = '<span class="mandatory">*</span>'
+                var infoSpan = $(this).find('span');
+
+                // Remove the existing info span element
+                $(this).text($(this).text());
+
+                // Add both spans in the correct order
+                $(this).append(markContainer);
+                $(this).append(infoSpan);
+            });     
+        }
+
+        markMandatoryFields();
     }
 
     $(document).ready( function() {
