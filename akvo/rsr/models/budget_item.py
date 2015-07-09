@@ -44,7 +44,7 @@ class BudgetItem(models.Model):
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
     # Translators: This is the amount of an budget item in a currency (€ or $)
-    amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2, default=0)
+    amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2, null=True)
 
     # Extra IATI fields
     type = ValidXMLCharField(

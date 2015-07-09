@@ -39,7 +39,8 @@ from .project_admin import (project_admin_delete_document,
                             project_admin_step5,
                             project_admin_step6,
                             project_admin_step7,
-                            project_admin_step8)
+                            project_admin_step8,
+                            project_admin_step9)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
@@ -116,6 +117,7 @@ __all__ = [
     'project_admin_step6',
     'project_admin_step7',
     'project_admin_step8',
+    'project_admin_step9',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',

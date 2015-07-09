@@ -5,10 +5,10 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import (AdministrativeLocation, Country, Link, Organisation, Partnership,
-                             PolicyMarker, Project, ProjectContact, ProjectDocument,
-                             ProjectLocation, RecipientCountry, RecipientRegion, RelatedProject,
-                             Sector)
+from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel, Country, Link,
+                             Organisation, Partnership, PolicyMarker, Project, ProjectContact,
+                             ProjectDocument, ProjectLocation, RecipientCountry, RecipientRegion,
+                             RelatedProject, Sector)
 
 from decimal import Decimal
 from django.http import HttpResponseForbidden
@@ -1004,6 +1004,123 @@ def project_admin_step8(request, pk=None):
                 pm_desc_key = 'policy-marker-description-' + pm_id
                 errors = save_field(
                     pm, 'description', pm_desc_key, data[pm_desc_key], errors
+                )
+
+    return Response({
+            'errors': errors,
+            'new_objects': new_objects,
+        }
+    )
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step9(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    data = request.POST
+    errors = []
+    new_objects = []
+
+    try:
+        capital_spend_percentage = Decimal(
+            data['capital-spend-percentage']
+        ) if data['capital-spend-percentage'] else None
+        errors = save_field(
+            project, 'capital_spend_percentage', 'capital-spend-percentage',
+            capital_spend_percentage, errors
+        )
+    except Exception as e:
+        error = str(e).capitalize()
+        errors.append({'name': 'capital-spend-percentage', 'error': error})
+
+    errors = save_field(
+        project, 'country_budget_vocabulary', 'country-budget-vocabulary',
+        data['country-budget-vocabulary'], errors
+    )
+
+    # Budget items
+    for key in data.keys():
+        if 'budget-item-type-' in key:
+            budget = None
+            budget_id = key.split('-', 3)[3]
+
+            if 'add' in budget_id and (data['budget-item-value-' + budget_id]
+                                       or data['budget-item-type-' + budget_id]
+                                       or data['budget-item-other-' + budget_id]
+                                       or data['budget-item-label-' + budget_id]
+                                       or data['budget-item-value-date-' + budget_id]
+                                       or data['budget-item-period-start-' + budget_id]
+                                       or data['budget-item-period-end-' + budget_id]):
+
+                budget = BudgetItem.objects.create(project=project)
+                new_objects.append(
+                    {
+                        'old_id': budget_id,
+                        'new_id': str(budget.pk),
+                        'div_id': 'budget_item-' + budget_id,
+                    }
+                )
+            elif not 'add' in budget_id:
+                try:
+                    budget = BudgetItem.objects.get(pk=int(budget_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+            if budget:
+                try:
+                    budget_amount = Decimal(
+                        data['budget-item-value-' + budget_id]
+                    ) if data['budget-item-value-' + budget_id] else None
+                    errors = save_field(
+                        budget, 'amount', 'budget-item-value-' + budget_id, budget_amount, errors
+                    )
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': 'budget-item-value-' + budget_id, 'error': error})
+
+                budget_type_key = 'budget-item-type-' + budget_id
+                errors = save_field(
+                    budget, 'type', budget_type_key, data[budget_type_key], errors
+                )
+
+                budget_other_key = 'budget-item-other-' + budget_id
+                errors = save_field(
+                    budget, 'other_extra', budget_other_key, data[budget_other_key], errors
+                )
+
+                budget_label_key = 'budget-item-label-' + budget_id
+                try:
+                    budget_label = BudgetItemLabel.objects.get(
+                        pk=int(data[budget_label_key])
+                    ) if data[budget_label_key] else None
+                    errors = save_field(
+                        budget, 'label', budget_label_key, budget_label, errors
+                    )
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': budget_label_key, 'error': error})
+
+                budget_valdate_key = 'budget-item-value-date-' + budget_id
+                budget_value_date = data[budget_valdate_key] if data[budget_valdate_key] else None
+                errors = save_field(
+                    budget, 'value_date', budget_valdate_key, budget_value_date, errors
+                )
+
+                budget_pstart_key = 'budget-item-period-start-' + budget_id
+                budget_pstart = data[budget_pstart_key] if data[budget_pstart_key] else None
+                errors = save_field(
+                    budget, 'period_start', budget_pstart_key, budget_pstart, errors
+                )
+
+                budget_pend_key = 'budget-item-period-end-' + budget_id
+                budget_pend = data[budget_pend_key] if data[budget_pend_key] else None
+                errors = save_field(
+                    budget, 'period_end', budget_pend_key, budget_pend, errors
                 )
 
     return Response({

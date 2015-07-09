@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='budgetitem',
             name='amount',
-            field=models.DecimalField(default=0, verbose_name='amount', max_digits=10, decimal_places=2),
+            field=models.DecimalField(null=True, verbose_name='amount', max_digits=10, decimal_places=2),
             preserve_default=True,
         ),
         migrations.AlterField(

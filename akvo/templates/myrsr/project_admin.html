@@ -597,39 +597,33 @@
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
                         </div>
-                        <div class="formBlock"> 
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-9" action="javascript: submitStep(9)">
                             <div class="form-group control">
-                                <input type="number" class="form-control priority3" id="capitalSpendPercentage" placeholder="Capital spend percentage"
+                                <input type="text" class="form-control priority3" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="Capital spend percentage"
                                 {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
-                                <label for="capitalSpendPercentage" class="control-label">Capital spend percentage</label>
+                                <label for="capital-spend-percentage" class="control-label">Capital spend percentage</label>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="countryBudgetVocabulary" id="countryBudgetVocabulary" class="form-control priority3">
+                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3">
                                         <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}>
                                             Country budget vocabulary
                                         </option>
-                                        {% for cbv in country_budget_vocabulary %}
-                                            {% if not cbv.0 == "code" %}
-                                               <option value="{{cbv.0}}"
-                                               {% if project.country_budget_vocabulary == cbv.0 %} selected="selected" {% endif %}>
-                                                    {{cbv.0}} - {{cbv.1}}
-                                                </option> 
-                                            {% endif %}
+                                        {% for vocabulary in budget_identifier_vocabularies %}
+                                            <option value="{{ vocabulary.code }}" {% if project.country_budget_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                                         {% endfor %}                                        
                                     </select>
-                                    <label for="countryBudgetVocabulary" class="control-label">Country budget vocabulary</label>
+                                    <label for="country-budget-vocabulary" class="control-label">Country budget vocabulary</label>
                                 </div>
                             </div>
                             <hr/>
                             <div class="budget-item-container">
-                                {% if project.budget_items.all %}
-                                    {% for item in project.budget_items.all %}
-                                        {% include "myrsr/project_admin_partials/budget_item_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/budget_item_input.html" %}
-                                {% endif %} 
+                                {% for item in project.budget_items.all %}
+                                    {% include "myrsr/project_admin_partials/budget_item_input.html" with key=item.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/budget_item_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -680,6 +674,13 @@
                                     <a href="#" class="btn btn-link add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep9"></div>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1115,7 +1116,7 @@
             if (document.cookie && document.cookie != '') {
                 var cookies = document.cookie.split(';');
                 for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
+                    var cookie = cookies[i].trim();
                     // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -1384,6 +1385,21 @@
                 }
             } else if (step === 7) {
                 form_data += '&level=' + level;
+            } else if (step === 9) {
+                var budgetItems;
+
+                budgetItems = document.querySelectorAll('.budget-item');
+
+                for (var k=0; k < budgetItems.length; k++) {
+                    var nodeId, budgetItemId;
+
+                    nodeId = budgetItems[k].getAttribute('id');
+                    budgetItemId = nodeId.replace('budget_item-', '');
+
+                    form_data += '&budget-item-value-date-' + budgetItemId + '=' + document.querySelector('#budget-item-value-date-' + budgetItemId).value;
+                    form_data += '&budget-item-period-start-' + budgetItemId + '=' + document.querySelector('#budget-item-period-start-' + budgetItemId).value;
+                    form_data += '&budget-item-period-end-' + budgetItemId + '=' + document.querySelector('#budget-item-period-end-' + budgetItemId).value;
+                }
             }
 
             // Create request
