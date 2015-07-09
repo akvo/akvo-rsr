@@ -17,8 +17,8 @@
             </time>
         </div>
         <div class="progress overview">
-            <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                <span class="sr-only">40% Complete (success)</span>40%
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only"></span><span class="progress-percentage"></span>
             </div>
         </div>
     </div>
@@ -1710,10 +1710,31 @@
     var MEASURE_CLASS = '.priority1'; 
 
     function setSectionCompletionPercentage(section) {
-        var numInputs, numInputsCompleted, completionPercentage, roundedCompletionPercentage, completionClass;
+        var inputResults = getInputResults(section);
+        var numInputs = inputResults[0];
+        var numInputsCompleted = inputResults[1];
 
-        numInputs = 0;
-        numInputsCompleted = 0;
+        if (numInputs === 0) {
+
+            // There are no mandatory fields, show the section as complete
+            renderCompletionPercentage(1, 1, section);
+            return;
+        }
+
+        renderCompletionPercentage(numInputsCompleted, numInputs, section);
+    }
+
+    function setPageCompletionPercentage() {
+        var inputResults = getInputResults($('.projectEdit'));
+        var numInputs = inputResults[0];
+        var numInputsCompleted = inputResults[1];
+
+        renderCompletionPercentage(numInputsCompleted, numInputs, $('.formOverviewInfo'));
+    }
+
+    function getInputResults(section) {
+        var numInputs = 0;
+        var numInputsCompleted = 0;
 
         for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
             var selector;
@@ -1735,14 +1756,12 @@
                     numInputsCompleted += 1;
                 }
             });
-        }
+        }    
 
-        if (numInputs === 0) {
+        return [numInputs, numInputsCompleted];
+    }
 
-            // There are no mandatory fields, show the section as complete
-            section.find('div.progress-bar').attr('data-completion', 'complete').width('100%');
-            return;
-        }
+    function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
 
         completionPercentage = Math.floor((numInputsCompleted / numInputs) * 100);
         section.find('.progress-bar').attr('aria-valuenow', completionPercentage);
@@ -1758,8 +1777,8 @@
             completionClass = 'complete';
         }
 
-        section.find('div.progress-bar').attr('data-completion', completionClass);
-    }
+        section.find('div.progress-bar').attr('data-completion', completionClass);        
+    }    
 
     function setSectionChangeListener(section) {
         for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
@@ -1793,6 +1812,7 @@
 
             setSectionCompletionPercentage(currentSection);
             el.addClass('has-listener');
+            setPageCompletionPercentage();
         };
         return listener;
     }
@@ -1812,6 +1832,7 @@
     $(document).ready( function() {
         setAllSectionsCompletionPercentage();
         setAllSectionsChangeListerner();
+        setPageCompletionPercentage();
     });
 
     </script>

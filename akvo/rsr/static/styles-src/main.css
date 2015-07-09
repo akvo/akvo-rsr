@@ -1600,6 +1600,9 @@ dd.currencyAmount {
 .progress .progress-bar .progress-percentage {
   display: none; }
 
+.formOverviewInfo .progress .progress-bar .progress-percentage {
+  display: initial; }
+
 .formOverviewInfo {
   border: 1px solid rgba(52, 52, 56, 0.1);
   padding: 10px;
