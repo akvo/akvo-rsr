@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from __future__ import absolute_import, print_function
 
 from django import template
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from akvo.rsr.models import Keyword, PartnerSite, Project, ProjectUpdate, Organisation
 register = template.Library()
@@ -16,16 +17,22 @@ register = template.Library()
 @register.inclusion_tag('rsr_utils/img.html', takes_context=True)
 def img(context, obj, width, height, alt):
     """Standard way to show image."""
-    geometry = '{}x{}'.format(width, height)
+    img = ""
+    geometry = "{}x{}".format(width, height)
+    default_img = "//placehold.it/{}".format(geometry)
 
-    # Based on type get image
-    img = obj
     if isinstance(obj, Project):
         img = obj.current_image
     elif isinstance(obj, ProjectUpdate):
         img = obj.photo
     elif isinstance(obj, Organisation):
-        img = obj.logo
+        if obj.logo:
+            img = obj.logo
+        else:
+            default_img = "//{}{}{}".format(
+                context["request"].get_host(),
+                getattr(settings, "STATIC_URL"),
+                "images/default-org-logo.jpg")
     elif isinstance(obj, get_user_model()):
         img = obj.avatar
     elif isinstance(obj, PartnerSite):
@@ -33,13 +40,10 @@ def img(context, obj, width, height, alt):
     elif isinstance(obj, Keyword):
         img = obj.logo
 
-    height = '{}.px'.format(height)
-
-    return {'alt': alt,
-            'height': height,
-            'img': img,
-            'geometry': geometry,
-            'width': width}
+    return {"default_img": default_img,
+            "geometry": geometry,
+            "img": img,
+            "alt": alt}
 
 
 @register.inclusion_tag('rsr_utils/vid_img.html', takes_context=True)
