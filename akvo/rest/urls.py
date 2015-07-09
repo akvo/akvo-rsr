@@ -12,6 +12,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 
+router.register(r'administrative_location', views.AdministrativeLocationViewSet)
 router.register(r'benchmark', views.BenchmarkViewSet)
 router.register(r'benchmark_name', views.BenchmarknameViewSet)
 router.register(r'budget_item', views.BudgetItemViewSet)
@@ -118,6 +119,12 @@ urlpatterns += patterns(
     url(r'^project/(?P<pk>[0-9]+)/admin_step_6/$',
         views.project_admin_step6,
         name='project_admin_step6'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_7/$',
+        views.project_admin_step7,
+        name='project_admin_step7'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_8/$',
+        views.project_admin_step8,
+        name='project_admin_step8'),
 )
 
 # Typeahead

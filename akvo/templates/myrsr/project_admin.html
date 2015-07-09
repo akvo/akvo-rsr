@@ -474,6 +474,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <form role="form" id="admin-step-7" action="javascript: submitStep(7, 1)">
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="scope" id="scope" class="form-control priority3">
@@ -486,14 +487,12 @@
                                 </div>
                             </div>
                             <hr/>    
-                            <div class="recipient-country-container">   
-                                {% if project.recipient_countries.all %}
-                                    {% for rc in project.recipient_countries.all %}
-                                        {% include "myrsr/project_admin_partials/recipient_country_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" %}
-                                {% endif %} 
+                            <div class="recipient-country-container">
+                                {% for rc in project.recipient_countries.all %}
+                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" with key=rc.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div> 
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -502,13 +501,11 @@
                             </div>
                             <hr/> 
                             <div class="recipient-region-container">
-                                {% if project.recipient_regions.all %}
-                                    {% for rr in project.recipient_regions.all %}
-                                        {% include "myrsr/project_admin_partials/recipient_region_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/recipient_region_input.html" %}
-                                {% endif %}
+                            {% for rr in project.recipient_regions.all %}
+                                {% include "myrsr/project_admin_partials/recipient_region_input.html" with key=rr.pk %}
+                            {% empty %}
+                                {% include "myrsr/project_admin_partials/recipient_region_input.html" with key='add-0' %}
+                            {% endfor %}
                             </div>                             
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -530,6 +527,13 @@
                                     <a href="#" class="btn btn-link" id="add-project-location"><span class="glyphicon glyphicon-plus"></span> Add another project location</a>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep7"></div>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -546,14 +550,13 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <form role="form" id="admin-step-8" action="javascript: submitStep(8)">
                             <div class="sector-container">
-                                {% if project.sectors.all %}
-                                    {% for sector in project.sectors.all %}
-                                        {% include "myrsr/project_admin_partials/sector_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/sector_input.html" %}
-                                {% endif %}
+                                {% for sector in project.sectors.all %}
+                                    {% include "myrsr/project_admin_partials/sector_input.html" with key=sector.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/sector_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>    
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -561,19 +564,24 @@
                                 </div>
                             </div>
                             <div class="policy-marker-container">
-                                {% if project.policy_markers.all %}
-                                    {% for marker in project.policy_markers.all %}
-                                        {% include "myrsr/project_admin_partials/policy_marker_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/policy_marker_input.html" %}
-                                {% endif %}
+                                {% for marker in project.policy_markers.all %}
+                                    {% include "myrsr/project_admin_partials/policy_marker_input.html" with key=marker.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/policy_marker_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link" id="add-policy-marker"> <span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep8"></div>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1150,17 +1158,31 @@
             }
         }
 
-        function replaceNames(newObjects) {
+        function replaceNames(newObjects, excludeClass) {
             for (var i = 0; i < newObjects.length; i++) {
-                var parentNode, parentNodeId, newParentNodeId, inputs, selects, textareas;
+                var parentNode, newParentNodeId, inputs, selects, textareas, excludedInputs, excludedSelects, excludedTextareas;
 
                 parentNode = document.getElementById(newObjects[i].div_id);
                 newParentNodeId = parentNode.getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
                 parentNode.setAttribute("id", newParentNodeId);
 
-                inputs = parentNode.getElementsByTagName("input");
-                selects = parentNode.getElementsByTagName("select");
-                textareas = parentNode.getElementsByTagName("textarea");
+                if (excludeClass === undefined) {
+                    inputs = parentNode.querySelectorAll('input');
+                    selects = parentNode.querySelectorAll('select');
+                    textareas = parentNode.querySelectorAll('textarea');
+
+                    excludedInputs = [];
+                    excludedSelects = [];
+                    excludedTextareas = [];
+                } else {
+                    inputs = parentNode.querySelectorAll('input:not(.' + excludeClass + ')');
+                    selects = parentNode.querySelectorAll('select:not(.' + excludeClass + ')');
+                    textareas = parentNode.querySelectorAll('textarea:not(.' + excludeClass + ')');
+
+                    excludedInputs = parentNode.querySelectorAll('input.' + excludeClass);
+                    excludedSelects = parentNode.querySelectorAll('select.' + excludeClass);
+                    excludedTextareas = parentNode.querySelectorAll('textarea.' + excludeClass);
+                }
 
                 for (var j=0; j < inputs.length; j++) {
                     var newInputId = inputs[j].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
@@ -1175,9 +1197,36 @@
                 }
 
                 for (var l=0; l < textareas.length; l++) {
-                    var newTextareaId = textareas[k].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
-                    textareas[k].setAttribute("id", newTextareaId);
-                    textareas[k].setAttribute("name", newTextareaId);
+                    var newTextareaId = textareas[l].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                    textareas[l].setAttribute("id", newTextareaId);
+                    textareas[l].setAttribute("name", newTextareaId);
+                }
+
+                for (var m=0; m < excludedInputs.length; m++) {
+                    if (!(excludedInputs[m].hasAttribute(excludeClass))) {
+                        var newExcludedInputId = excludedInputs[m].getAttributeNode("id").value + '-' + newObjects[i].new_id;
+                        excludedInputs[m].setAttribute("id", newExcludedInputId);
+                        excludedInputs[m].setAttribute("name", newExcludedInputId);
+                        excludedInputs[m].setAttribute(excludeClass, "");
+                    }
+                }
+
+                for (var n=0; n < excludedSelects.length; n++) {
+                    if (!(excludedSelects[n].hasAttribute(excludeClass))) {
+                        var newExcludedSelectId = excludedSelects[n].getAttributeNode("id").value + '-' + newObjects[i].new_id;
+                        excludedSelects[n].setAttribute("id", newExcludedSelectId);
+                        excludedSelects[n].setAttribute("name", newExcludedSelectId);
+                        excludedSelects[n].setAttribute(excludeClass, "");
+                    }
+                }
+
+                for (var o=0; o < excludedTextareas.length; o++) {
+                    if (!(excludedTextareas[o].hasAttribute(excludeClass))) {
+                        var newExcludedTextareaId = excludedTextareas[o].getAttributeNode("id").value + '-' + newObjects[i].new_id;
+                        excludedTextareas[o].setAttribute("id", newExcludedTextareaId);
+                        excludedTextareas[o].setAttribute("name", newExcludedTextareaId);
+                        excludedTextareas[o].setAttribute(excludeClass, "");
+                    }
                 }
             }
         }
@@ -1252,7 +1301,7 @@
             file_request.send(documentFormData);
         }
 
-        function submitStep(step) {
+        function submitStep(step, level) {
             savingStep(true, step);
 
             var api_url, form, form_data, form_div, request, file_request;
@@ -1312,6 +1361,8 @@
 
                     form_data += '&value-' + partner_input_id + '=' + partner_input_value;
                 }
+            } else if (step === 7) {
+                form_data += '&level=' + level;
             }
 
             // Create request
@@ -1328,11 +1379,20 @@
 
                     removeErrors(form);
                     response = JSON.parse(request.responseText);
-                    replaceNames(response.new_objects);
+                    if (step === 7 && level < 2) {
+                        replaceNames(response.new_objects, 'administrative');
+                    } else {
+                        replaceNames(response.new_objects);
+                    }
                     addErrors(response.errors);
 
                     if (step === 6) {
                         saveDocuments(form, api_url, step, response.new_objects);
+                    }
+
+                    if (step === 7 && level < 2) {
+                        submitStep(7, level + 1);
+                        return false;
                     }
 
                     savingStep(false, step);
@@ -1741,7 +1801,7 @@
 
             setSectionCompletionPercentage(currentSection);
             el.addClass('has-listener');
-        }
+        };
         return listener;
     }
 

@@ -37,13 +37,17 @@ from .project_admin import (project_admin_delete_document,
                             project_admin_step3,
                             project_admin_step4,
                             project_admin_step5,
-                            project_admin_step6)
+                            project_admin_step6,
+                            project_admin_step7,
+                            project_admin_step8)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
 from .project_iati_checks import ProjectIatiCheckView
-from .project_location import ProjectLocationViewSet, MapProjectLocationViewSet
+from .project_location import (ProjectLocationViewSet,
+                               AdministrativeLocationViewSet,
+                               MapProjectLocationViewSet)
 from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
@@ -61,6 +65,7 @@ from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
 
 __all__ = [
+    'AdministrativeLocationViewSet',
     'approve_employment',
     'BenchmarknameViewSet',
     'BenchmarkViewSet',
@@ -109,6 +114,8 @@ __all__ = [
     'project_admin_step4',
     'project_admin_step5',
     'project_admin_step6',
+    'project_admin_step7',
+    'project_admin_step8',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',

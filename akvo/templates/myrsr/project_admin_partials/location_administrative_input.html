@@ -1,25 +1,31 @@
-<div class="location-administrative-input">
+<div class="location-administrative-input parent" id="administrative_location{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <input type="text" class="form-control priority3" id="locationAdministrativeCode{% if admin %}-{{ admin.pk }}{% endif %}" name="locationAdministrativeCode{% if admin %}-{{ admin.pk }}{% endif %}" placeholder="Administrative code" {% if admin.code %} value="{{admin.code}}" {% endif %}>
-                <label class="control-label" for="locationAdministrativeCode">Administrative code</label>
+                <input type="text" class="form-control priority3 administrative" id="location-administrative-code{% if key %}-{{ key }}{% endif %}" name="location-administrative-code{% if key %}-{{ key }}{% endif %}" placeholder="Administrative code" {% if admin.code %} value="{{admin.code}}" {% endif %} {% if admin %}administrative{% endif %}>
+                <label class="control-label" for="location-administrative-code{% if key %}-{{ key }}{% endif %}">Administrative code</label>
             </div>
             <div class="col-md-4">
                 <div class="select-group control">
-                    <select name="locationVocabulary{% if admin %}-{{ admin.pk }}{% endif %}" id="locationVocabulary{% if admin %}-{{ admin.pk }}{% endif %}" class="form-control priority3">
+                    <select name="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" id="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3 administrative" {% if admin %}administrative{% endif %}>
                         <option value="" {% if not admin.vocabulary %} selected="selected" {% endif %}>Administrative vocabulary</option>
                          {% for vocabulary in geographic_vocabularies %}
                             <option value="{{ vocabulary.code }}" {% if admin.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                         {% endfor %}
                     </select>
-                    <label class="control-label" for="locationVocabulary">Administrative vocabulary</label>
+                    <label class="control-label" for="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}">Administrative vocabulary</label>
                 </div>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control priority3" id="locationAdministrativeLevel{% if admin %}-{{ admin.pk }}{% endif %}" name="locationAdministrativeLevel{% if admin %}-{{ admin.pk }}{% endif %}"placeholder="Administrative level" {% if admin.level %} value="{{admin.level}}" {% endif %}>
-                <label class="control-label" for="locationAdministrativeLevel">Administrative level</label>
+                <input type="text" class="form-control priority3 administrative" id="location-administrative-level{% if key %}-{{ key }}{% endif %}" name="location-administrative-level{% if key %}-{{ key }}{% endif %}" placeholder="Administrative level" {% if admin.level %} value="{{admin.level}}" {% endif %} {% if admin %}administrative{% endif %}>
+                <label class="control-label" for="location-administrative-level{% if key %}-{{ key }}{% endif %}">Administrative level</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 text-center" id="delete-administrative-level{% if key %}-{{ key }}{% endif %}">
+                <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-administrative-level{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete administrative</a>
             </div>
         </div>
     </div>
+    <hr/>
 </div>

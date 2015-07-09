@@ -5,9 +5,12 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import (Country, Link, Organisation, Partnership, Project, ProjectContact,
-                             ProjectDocument, RelatedProject)
+from akvo.rsr.models import (AdministrativeLocation, Country, Link, Organisation, Partnership,
+                             PolicyMarker, Project, ProjectContact, ProjectDocument,
+                             ProjectLocation, RecipientCountry, RecipientRegion, RelatedProject,
+                             Sector)
 
+from decimal import Decimal
 from django.http import HttpResponseForbidden
 
 from rest_framework.decorators import api_view, permission_classes
@@ -348,7 +351,7 @@ def project_admin_step3(request, pk=None):
 
                 partner_funding_key = 'funding-amount-' + partner_id
                 try:
-                    funding_amount = int(
+                    funding_amount = Decimal(
                         data[partner_funding_key]
                     ) if data[partner_funding_key] else None
                     errors = save_field(
@@ -564,6 +567,8 @@ def project_admin_step6(request, pk=None):
             errors = save_field(
                 document, 'document', document_document_key, files[document_document_key], errors
             )
+            # TODO: replace document right after saving
+
             # if not errors:
             #     new_image = get_thumbnail(
             #         project.current_image, '250x250', format="PNG", upscale=True
@@ -571,6 +576,437 @@ def project_admin_step6(request, pk=None):
 
     return Response(
         {
+            'errors': errors,
+            'new_objects': new_objects,
+        }
+    )
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step7(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    data = request.POST
+    errors = []
+    new_objects = []
+
+    if data['level'] == '1':
+
+        errors = save_field(project, 'project_scope', 'scope', data['scope'], errors)
+
+        # Recipient countries
+        for key in data.keys():
+            if 'recipient-country-percentage-' in key:
+                rc = None
+                rc_id = key.split('-', 3)[3]
+
+                if 'add' in rc_id and (data['recipient-country-' + rc_id]
+                                       or data['recipient-country-percentage-' + rc_id]
+                                       or data['recipient-country-description-' + rc_id]):
+                    rc = RecipientCountry.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': 'add-' + rc_id[-1],
+                            'new_id': str(rc.pk),
+                            'div_id': 'recipient_country-add-' + rc_id[-1],
+                        }
+                    )
+                elif not 'add' in rc_id:
+                    try:
+                        rc = RecipientCountry.objects.get(pk=int(rc_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if rc:
+                    recipient_country_key = 'recipient-country-' + rc_id
+                    errors = save_field(
+                        rc, 'country', recipient_country_key, data[recipient_country_key], errors
+                    )
+
+                    rc_percentage_key = 'recipient-country-percentage-' + rc_id
+                    try:
+                        rc_percentage = Decimal(
+                            data[rc_percentage_key]
+                        ) if data[rc_percentage_key] else None
+                        errors = save_field(
+                            rc, 'percentage', rc_percentage_key, rc_percentage, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': rc_percentage_key, 'error': error})
+
+                    rc_description_key = 'recipient-country-description-' + rc_id
+                    errors = save_field(
+                        rc, 'text', rc_description_key, data[rc_description_key], errors
+                    )
+
+        # Recipient regions
+        for key in data.keys():
+            if 'recipient-region-percentage-' in key:
+                rr = None
+                rr_id = key.split('-', 3)[3]
+
+                if 'add' in rr_id and (data['recipient-region-' + rr_id]
+                                       or data['recipient-region-percentage-' + rr_id]
+                                       or data['recipient-region-description-' + rr_id]
+                                       or data['recipient-region-vocabulary-' + rr_id]):
+                    rr = RecipientRegion.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': 'add-' + rr_id[-1],
+                            'new_id': str(rr.pk),
+                            'div_id': 'recipient_region-add-' + rr_id[-1],
+                        }
+                    )
+                elif not 'add' in rr_id:
+                    try:
+                        rr = RecipientRegion.objects.get(pk=int(rr_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if rr:
+                    recipient_region_key = 'recipient-region-' + rr_id
+                    errors = save_field(
+                        rr, 'region', recipient_region_key, data[recipient_region_key], errors
+                    )
+
+                    rr_percentage_key = 'recipient-region-percentage-' + rr_id
+                    try:
+                        rr_percentage = Decimal(
+                            data[rr_percentage_key]
+                        ) if data[rr_percentage_key] else None
+                        errors = save_field(
+                            rr, 'percentage', rr_percentage_key, rr_percentage, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': rr_percentage_key, 'error': error})
+
+                    rr_description_key = 'recipient-region-description-' + rr_id
+                    errors = save_field(
+                        rr, 'text', rr_description_key, data[rr_description_key], errors
+                    )
+
+                    rr_vocabulary_key = 'recipient-region-vocabulary-' + rr_id
+                    errors = save_field(
+                        rr, 'region_vocabulary', rr_vocabulary_key, data[rr_vocabulary_key], errors
+                    )
+
+        # Locations
+        for key in data.keys():
+            if 'location-latitude-' in key:
+                loc = None
+                loc_id = key.split('-', 2)[2]
+
+                if 'add' in loc_id and (data['location-latitude-' + loc_id]
+                                        or data['location-longitude-' + loc_id]
+                                        or data['location-country-' + loc_id]
+                                        or data['location-city-' + loc_id]
+                                        or data['location-postal-code-' + loc_id]
+                                        or data['location-state-' + loc_id]
+                                        or data['location-address1-' + loc_id]
+                                        or data['location-address2-' + loc_id]
+                                        or data['location-reference-' + loc_id]
+                                        or data['location-code-' + loc_id]
+                                        or data['location-description-' + loc_id]
+                                        or data['location-activity-description-' + loc_id]
+                                        or data['location-exactness-' + loc_id]
+                                        or data['location-reach-' + loc_id]
+                                        or data['location-class-' + loc_id]
+                                        or data['location-feature-designation-' + loc_id]):
+                    loc = ProjectLocation.objects.create(location_target=project)
+                    new_objects.append(
+                        {
+                            'old_id': 'add-' + loc_id[-1],
+                            'new_id': str(loc.pk),
+                            'div_id': 'project_location-add-' + loc_id[-1],
+                        }
+                    )
+                elif not 'add' in loc_id:
+                    try:
+                        loc = ProjectLocation.objects.get(pk=int(loc_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': str(loc.pk),
+                            'new_id': str(loc.pk),
+                            'div_id': 'project_location-' + str(loc.pk),
+                        }
+                    )
+
+                if loc:
+                    loc_latitude_key = 'location-latitude-' + loc_id
+                    try:
+                        loc_latitude = Decimal(
+                            data[loc_latitude_key]
+                        ) if data[loc_latitude_key] else None
+                        errors = save_field(
+                            loc, 'latitude', loc_latitude_key, loc_latitude, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': loc_latitude_key, 'error': error})
+
+                    loc_longitude_key = 'location-longitude-' + loc_id
+                    try:
+                        loc_longitude = Decimal(
+                            data[loc_longitude_key]
+                        ) if data[loc_longitude_key] else None
+                        errors = save_field(
+                            loc, 'longitude', loc_longitude_key, loc_longitude, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': loc_longitude_key, 'error': error})
+
+                    loc_country_key = 'location-country-' + loc_id
+                    try:
+                        location_country = Country.objects.get(
+                            pk=int(data[loc_country_key])
+                        ) if data[loc_country_key] else None
+                        errors = save_field(loc, 'country', loc_country_key, location_country, errors)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': loc_country_key, 'error': error})
+
+                    loc_city_key = 'location-city-' + loc_id
+                    errors = save_field(loc, 'city', loc_city_key, data[loc_city_key], errors)
+
+                    loc_postal_code_key = 'location-postal-code-' + loc_id
+                    errors = save_field(
+                        loc, 'postcode', loc_postal_code_key, data[loc_postal_code_key], errors
+                    )
+
+                    loc_state_key = 'location-state-' + loc_id
+                    errors = save_field(loc, 'state', loc_state_key, data[loc_state_key], errors)
+
+                    loc_addr1_key = 'location-address1-' + loc_id
+                    errors = save_field(loc, 'address_1', loc_addr1_key, data[loc_addr1_key], errors)
+
+                    loc_addr2_key = 'location-address2-' + loc_id
+                    errors = save_field(loc, 'address_2', loc_addr2_key, data[loc_addr2_key], errors)
+
+                    loc_ref_key = 'location-reference-' + loc_id
+                    errors = save_field(loc, 'reference', loc_ref_key, data[loc_ref_key], errors)
+
+                    loc_code_key = 'location-code-' + loc_id
+                    errors = save_field(loc, 'location_code', loc_code_key, data[loc_code_key], errors)
+
+                    loc_descr_key = 'location-description-' + loc_id
+                    errors = save_field(loc, 'description', loc_descr_key, data[loc_descr_key], errors)
+
+                    loc_actdescr_key = 'location-activity-description-' + loc_id
+                    errors = save_field(
+                        loc, 'activity_description', loc_actdescr_key, data[loc_actdescr_key], errors
+                    )
+
+                    loc_exac_key = 'location-exactness-' + loc_id
+                    errors = save_field(loc, 'exactness', loc_exac_key, data[loc_exac_key], errors)
+
+                    loc_reach_key = 'location-reach-' + loc_id
+                    errors = save_field(
+                        loc, 'location_reach', loc_reach_key, data[loc_reach_key], errors
+                    )
+
+                    loc_class_key = 'location-class-' + loc_id
+                    errors = save_field(
+                        loc, 'location_class', loc_class_key, data[loc_class_key], errors
+                    )
+
+                    loc_fd_key = 'location-feature-designation-' + loc_id
+                    errors = save_field(
+                        loc, 'feature_designation', loc_fd_key, data[loc_fd_key], errors
+                    )
+
+    elif data['level'] == '2':
+        # Location administratives
+        for key in data.keys():
+            if 'location-administrative-code-' in key:
+                admin = None
+                admin_loc_id = key.split('-', 3)[3]
+
+                if 'add' in admin_loc_id \
+                        and (data['location-administrative-code-' + admin_loc_id]
+                             or data['location-administrative-vocabulary-' + admin_loc_id]
+                             or data['location-administrative-level-' + admin_loc_id]):
+
+                    admin_loc_id_list = admin_loc_id.split('-')
+                    loc_id = admin_loc_id_list.pop()
+                    admin_id = '-'.join(admin_loc_id_list)
+
+                    try:
+                        loc = ProjectLocation.objects.get(pk=str(loc_id))
+                        admin = AdministrativeLocation.objects.create(location=loc)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'location-administrative-code-' + admin_loc_id,
+                                       'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': admin_loc_id,
+                            'new_id': str(admin.pk),
+                            'div_id': 'administrative_location-' + admin_id,
+                        }
+                    )
+                elif not 'add' in admin_loc_id:
+                    try:
+                        admin = AdministrativeLocation.objects.get(pk=int(admin_loc_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if admin:
+                    admin_code_key = 'location-administrative-code-' + admin_loc_id
+                    errors = save_field(
+                        admin, 'code', admin_code_key, data[admin_code_key], errors
+                    )
+
+                    admin_voc_key = 'location-administrative-vocabulary-' + admin_loc_id
+                    errors = save_field(
+                        admin, 'vocabulary', admin_voc_key, data[admin_voc_key], errors
+                    )
+
+                    admin_level_key = 'location-administrative-level-' + admin_loc_id
+                    try:
+                        admin_level = int(data[admin_level_key]) if data[admin_level_key] else None
+                        errors = save_field(
+                            admin, 'level', admin_level_key, admin_level, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': admin_level_key, 'error': error})
+
+    return Response({
+            'errors': errors,
+            'new_objects': new_objects,
+        }
+    )
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step8(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    data = request.POST
+    errors = []
+    new_objects = []
+
+    # Sectors
+    for key in data.keys():
+        if 'sector-code-' in key:
+            sector = None
+            sector_id = key.split('-', 2)[2]
+
+            if 'add' in sector_id and (data['sector-code-' + sector_id]
+                                       or data['sector-percentage-' + sector_id]
+                                       or data['sector-vocabulary-' + sector_id]
+                                       or data['sector-description-' + sector_id]):
+                sector = Sector.objects.create(project=project)
+                new_objects.append(
+                    {
+                        'old_id': sector_id,
+                        'new_id': str(sector.pk),
+                        'div_id': 'sector-' + sector_id,
+                    }
+                )
+            elif not 'add' in sector_id:
+                try:
+                    sector = Sector.objects.get(pk=int(sector_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+            if sector:
+                sector_code_key = 'sector-code-' + sector_id
+                errors = save_field(
+                    sector, 'sector_code', sector_code_key, data[sector_code_key], errors
+                )
+
+                sector_perc_key = 'sector-percentage-' + sector_id
+                try:
+                    sector_percentage = Decimal(
+                        data[sector_perc_key]
+                    ) if data[sector_perc_key] else None
+                    errors = save_field(
+                        sector, 'percentage', sector_perc_key, sector_percentage, errors
+                    )
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': sector_perc_key, 'error': error})
+
+                sector_voc_key = 'sector-vocabulary-' + sector_id
+                errors = save_field(
+                    sector, 'vocabulary', sector_voc_key, data[sector_voc_key], errors
+                )
+
+                sector_desc_key = 'sector-description-' + sector_id
+                errors = save_field(
+                    sector, 'text', sector_desc_key, data[sector_desc_key], errors
+                )
+
+    # Policy markers
+    for key in data.keys():
+        if 'policy-marker-significance-' in key:
+            pm = None
+            pm_id = key.split('-', 3)[3]
+
+            if 'add' in pm_id and (data['policy-marker-' + pm_id]
+                                   or data['policy-marker-significance-' + pm_id]
+                                   or data['policy-marker-vocabulary-' + pm_id]
+                                   or data['policy-marker-description-' + pm_id]):
+                pm = PolicyMarker.objects.create(project=project)
+                new_objects.append(
+                    {
+                        'old_id': pm_id,
+                        'new_id': str(pm.pk),
+                        'div_id': 'policy_marker-' + pm_id,
+                    }
+                )
+            elif not 'add' in pm_id:
+                try:
+                    pm = PolicyMarker.objects.get(pk=int(pm_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+            if pm:
+                policy_marker_key = 'policy-marker-' + pm_id
+                errors = save_field(
+                    pm, 'policy_marker', policy_marker_key, data[policy_marker_key], errors
+                )
+
+                pm_sign_key = 'policy-marker-significance-' + pm_id
+                errors = save_field(
+                    pm, 'significance', pm_sign_key, data[pm_sign_key], errors
+                )
+
+                pm_voc_key = 'policy-marker-vocabulary-' + pm_id
+                errors = save_field(
+                    pm, 'vocabulary', pm_voc_key, data[pm_voc_key], errors
+                )
+
+                pm_desc_key = 'policy-marker-description-' + pm_id
+                errors = save_field(
+                    pm, 'description', pm_desc_key, data[pm_desc_key], errors
+                )
+
+    return Response({
             'errors': errors,
             'new_objects': new_objects,
         }

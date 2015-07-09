@@ -5,6 +5,31 @@ from django.db import models, migrations
 import akvo.rsr.fields
 
 
+def null_locations(apps, schema_editor):
+    Project = apps.get_model("rsr", "Project")
+    Organisation = apps.get_model("rsr", "Organisation")
+    ProjectUpdate = apps.get_model("rsr", "ProjectUpdate")
+    ProjectLocation = apps.get_model("rsr", "ProjectLocation")
+    OrganisationLocation = apps.get_model("rsr", "OrganisationLocation")
+    ProjectUpdateLocation = apps.get_model("rsr", "ProjectUpdateLocation")
+
+    test_project = Project.objects.get(pk=2)
+    test_organisation = Organisation.objects.get(pk=832)
+    test_update = ProjectUpdate.objects.get(pk=7)
+
+    for null_project_location in ProjectLocation.objects.filter(location_target=None):
+        null_project_location.location_target = test_project
+        null_project_location.save()
+
+    for null_org_location in OrganisationLocation.objects.filter(location_target=None):
+        null_org_location.location_target = test_organisation
+        null_org_location.save()
+
+    for null_update_location in ProjectUpdateLocation.objects.filter(location_target=None):
+        null_update_location.location_target = test_update
+        null_update_location.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -12,6 +37,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(
+            null_locations,
+        ),
+
         migrations.RemoveField(
             model_name='project',
             name='project_rating',
@@ -56,6 +85,30 @@ class Migration(migrations.Migration):
             model_name='organisation',
             name='language',
             field=akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The main language of the organisation', max_length=2, verbose_name='language', choices=[(b'en', b'English'), (b'es', b'Spanish'), (b'fr', b'French')]),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='organisationlocation',
+            name='country',
+            field=models.ForeignKey(verbose_name='country', to='rsr.Country', null=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='organisationlocation',
+            name='latitude',
+            field=akvo.rsr.fields.LatitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", null=True, verbose_name='latitude', db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='organisationlocation',
+            name='location_target',
+            field=models.ForeignKey(related_name='locations', to='rsr.Organisation'),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='organisationlocation',
+            name='longitude',
+            field=akvo.rsr.fields.LongitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", null=True, verbose_name='longitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -121,13 +174,49 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projectlocation',
             name='country',
-            field=models.ForeignKey(verbose_name='country', blank=True, to='rsr.Country', help_text='Select the country.'),
+            field=models.ForeignKey(verbose_name='country', to='rsr.Country', help_text='Select the country.', null=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='projectlocation',
+            name='latitude',
+            field=akvo.rsr.fields.LatitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", null=True, verbose_name='latitude', db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='projectlocation',
+            name='location_target',
+            field=models.ForeignKey(related_name='locations', to='rsr.Project'),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='projectlocation',
+            name='longitude',
+            field=akvo.rsr.fields.LongitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", null=True, verbose_name='longitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='projectupdate',
             name='language',
             field=akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The language of the update', max_length=2, choices=[(b'en', b'English'), (b'es', b'Spanish'), (b'fr', b'French')]),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='projectupdatelocation',
+            name='latitude',
+            field=akvo.rsr.fields.LatitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", null=True, verbose_name='latitude', db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='projectupdatelocation',
+            name='location_target',
+            field=models.ForeignKey(related_name='locations', to='rsr.ProjectUpdate'),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='projectupdatelocation',
+            name='longitude',
+            field=akvo.rsr.fields.LongitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", null=True, verbose_name='longitude', db_index=True),
             preserve_default=True,
         ),
         migrations.AlterField(

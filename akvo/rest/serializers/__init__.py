@@ -35,7 +35,8 @@ from .project_comment import ProjectCommentSerializer
 from .project_condition import ProjectConditionSerializer
 from .project_contact import ProjectContactSerializer
 from .project_document import ProjectDocumentSerializer
-from .project_location import ProjectLocationSerializer, MapProjectLocationSerializer
+from .project_location import (ProjectLocationSerializer, AdministrativeLocationSerializer,
+                               MapProjectLocationSerializer)
 from .project_update import (ProjectUpdateSerializer,
                              ProjectUpdateExtraSerializer)
 from .project_update_location import (ProjectUpdateLocationSerializer,
@@ -54,6 +55,7 @@ from .typeahead import (TypeaheadCountrySerializer,
 from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
 
 __all__ = [
+    'AdministrativeLocationSerializer',
     'BenchmarknameSerializer',
     'BenchmarkSerializer',
     'BudgetItemLabelSerializer',
