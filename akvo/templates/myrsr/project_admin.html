@@ -778,12 +778,29 @@
                 partialsCount[partialName] = 1;
             }
 
-            for (var i=0; i < partials.length; i++) {
-                var pName = partials[i];            
-                var buttonSelector = '#add-' + pName;
+            function setPartialOnClicks() {
+                for (var i=0; i < partials.length; i++) {
+                    var pName = partials[i];            
+                    var buttonSelector = '#add-' + pName;
 
-                document.querySelector(buttonSelector).onclick = getOnClick(pName);
+                    $(buttonSelector).each(function() {
+                        var callback;
+
+                        if ($(this).hasClass('has-onclick')) {
+
+                            // already set the onclick, do nothing
+                            return;
+                        }
+                        $(this).addClass('has-onclick');
+                        callback = getOnClick(pName);
+                        $(this).click(function(e) {
+                            callback(e);
+                        });
+                    })
+                }
             }
+
+            setPartialOnClicks();
 
             function getOnClick(pName) {
                 var onclick = function(e) {
@@ -791,6 +808,9 @@
 
                     var markupSelector = '#' + pName + '-input';
                     var containerSelector = '.' + pName + '-container';
+
+                    console.log(markupSelector);
+                    console.log(containerSelector);
 
                     var markup = document.querySelector(markupSelector).innerHTML;                
 
@@ -852,7 +872,10 @@
                     updateHelpIcons(containerSelector);
                     setSectionChangeListener($(containerSelector).closest('.formStep'));
                     setSectionCompletionPercentage($(containerSelector).closest('.formStep'));
-                    setValidationListeners();                             
+                    setValidationListeners();     
+
+                    // Set onClicks for partials again in case this partial contains other partials
+                    setPartialOnClicks();                        
                 };
 
                 return onclick;
