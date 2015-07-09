@@ -1676,6 +1676,8 @@ dd.currencyAmount {
     padding-left: 10px; }
   .projectEdit .control:last-child {
     border: 0; }
+.projectEdit .control-label {
+  min-width: 90%; }
 .projectEdit a.btn {
   margin-top: 23px; }
   .projectEdit a.btn.btn-link {
@@ -1703,6 +1705,11 @@ dd.currencyAmount {
   font-size: 120%; }
   .projectEdit .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
+.projectEdit .mandatory {
+  color: #d9534f;
+  font-size: 125%;
+  margin-left: 4px;
+  margin-right: -4px; }
 .projectEdit label.progress-bar[aria-valuenow="0"] {
   background: #d9534f;
   color: #d9534f; }
