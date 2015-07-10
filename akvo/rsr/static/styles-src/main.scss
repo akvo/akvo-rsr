@@ -2042,6 +2042,20 @@ body {
     }
 }
 
+/* Hit counter for Akvo Pages */
+
+#footer-analytics {
+    text-align: center;
+    .visit-count {
+        display: block;
+        padding-bottom: 2em;
+        color: #888;
+        @media only screen and (min-width: $width-small) and (max-width: $width-middle) {
+            padding-top: 0.5em;
+        }
+    }
+}
+
 /* Cookie */
 
 #cookie-law {

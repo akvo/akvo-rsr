@@ -10,9 +10,9 @@ window.AKVO_RSR.analytics = {
     //  render the hits on the page.
     var hits = parseFn(resp);
 
-    $("#footer_analytics").append(
-      "<span class='projectLocation' style='color:#888;'>" +
-        AKVO_RSR.i18n.strings.visits + ": " + hits + "</span><br><br>"
+    $("#footer-analytics").append(
+      "<span class='visit-count'>" +
+        AKVO_RSR.i18n.strings.visits + ": " + hits + "</span>"
     );
 
   },
