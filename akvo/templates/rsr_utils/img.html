@@ -2,10 +2,10 @@
 
 {% if img %}
     {% thumbnail img geometry format="PNG" upscale=True as im %}
-        <img src="{{im.url}}" />
+        <img src="{{im.url}}" alt="{{alt}}"/>
     {% endthumbnail %}
 {% else %}
-    {% with url='//placehold.it/'|add:geometry %}
-        <img src="{{url}}" alt="" />
-    {% endwith %}
+  {% with url=default_img %}
+    <img src="{{url}}" alt="{{alt}}" />
+  {% endwith %}
 {% endif %}
