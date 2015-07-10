@@ -1,6 +1,6 @@
 {% load compressed i18n %}
 
-{% if partners > 1 %}
+{% if partners|length > 1 %}
 <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
   title="
   {% for partner, types in partners.items %}
