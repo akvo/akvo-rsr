@@ -1044,7 +1044,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
                                'piwik_id',))),
         (u'Style and content',
             dict(fields=('all_maps', 'about_box', 'about_image', 'custom_css', 'custom_logo',
-                         'custom_favicon',))),
+                         'custom_favicon', 'show_keyword_logos',))),
         (u'Languages and translation', dict(fields=('google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
         (_(u'Project selection'), {

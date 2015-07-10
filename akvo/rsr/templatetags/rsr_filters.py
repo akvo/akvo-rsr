@@ -1,16 +1,28 @@
-# Akvo RSR is covered by the GNU Affero General Public License.
-# See more details in the license.txt file located at the root folder of the Akvo RSR module.
-# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+# -*- coding: utf-8 -*-
+"""
+Akvo RSR is covered by the GNU Affero General Public License.
+
+See more details in the license.txt file located at the root folder of the Akvo RSR module.
+For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+"""
+
+import datetime
+import time
 
 from django import template
-register = template.Library()
-
 from django.conf import settings
-
-import time, datetime
 from decimal import Decimal, ROUND_HALF_UP
 
+register = template.Library()
+
 DECIMAL_PLACES = getattr(settings, 'DECIMALS_DECIMAL_PLACES', 2)
+
+
+@register.filter
+def get_item(dictionary, key):
+    """Enable lookup in dicts."""
+    return dictionary.get(key)
+
 
 @register.filter
 def string_to_date(value):
