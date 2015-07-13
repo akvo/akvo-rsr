@@ -73,6 +73,36 @@
     <script type="application/javascript">
       var AKVO_RSR = {};
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
+      AKVO_RSR.piwik = {
+        "authToken": "{{ piwik_auth_token }}",
+        "apiUrl": "{{ piwik_url }}",
+        "idSite": {% if rsr_page and rsr_page.piwik_id %}{{ rsr_page.piwik_id }}{% else %}1{% endif %}
+        {% if piwik_disable_hits %},
+        "disabled": true
+        {% endif %}
+      }
+
+      {% comment %}
+      {% if rsr_page and rsr_page.piwik_id %}
+        AKVO_RSR.page = {
+          "piwikId":  {{ rsr_page.piwik_id }},
+          "piwikAuthToken": "{{ piwik_auth_token }}"
+        };
+      {% endif %}
+      {% endcomment %}
+
+    </script>
+
+    {% get_language_info_list for LANGUAGES as languages %}
+    <script type="application/javascript">
+      AKVO_RSR.i18n = {
+        "languages": [
+          {% for language in languages %}"{{ language.code }}"{% if not forloop.last %},{% endif %}{% endfor %}
+        ],
+        "strings": {
+          "visits": "{% trans 'Visits' %}"
+        }
+      }
     </script>
 
     {# jQuery #}
@@ -83,8 +113,9 @@
     <script src="//fb.me/react-0.10.0.js"></script>
     {% endblock react_js %}
 
-    {% compressed_js 'rsr' %}
     {% compressed_js 'rsr_lib' %}
+    {% compressed_js 'rsr' %}
+
 
     <script src="{{ STATIC_URL }}scripts-src/cookie.js"></script>
 
