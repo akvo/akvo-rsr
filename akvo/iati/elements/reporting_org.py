@@ -22,7 +22,7 @@ def reporting_org(project):
             element.attrib['ref'] = org.iati_org_id
 
         if project.sync_owner_secondary_reporter is not None:
-            element.attrib['secondary_reporter'] = '1' if project.sync_owner_secondary_reporter else '0'
+            element.attrib['secondary-reporter'] = '1' if project.sync_owner_secondary_reporter else '0'
 
         if org.new_organisation_type:
             element.attrib['type'] = str(org.new_organisation_type)

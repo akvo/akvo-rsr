@@ -18,7 +18,7 @@ from lxml import etree
 
 from ..forms import ProjectUpdateForm
 from ..filters import remove_empty_querydict_items, ProjectFilter
-from ..models import Invoice, Project, ProjectUpdate
+from ..models import Invoice, Project, ProjectUpdate, Organisation
 from ...utils import pagination, filter_query_string
 from ...iati.iati_export import IatiXML
 from .utils import apply_keywords, org_projects
@@ -64,7 +64,6 @@ def _project_directory_coll(request):
 
 def directory(request):
     """The project list view."""
-
     qs = remove_empty_querydict_items(request.GET)
 
     # Set show_filters to "in" if any filter is selected
@@ -458,13 +457,20 @@ def search(request):
     context = {'projects': Project.objects.published()}
     return render(request, 'project_search.html', context)
 
+
 def partners(request, project_id):
     """."""
     project = get_object_or_404(Project, pk=project_id)
-    partners = _get_project_partners(project)
+    partner_vals = project.all_partners().values()
+    for partner in partner_vals:
+        id_key = "id".decode('unicode-escape')
+        p = Organisation.objects.get(pk=partner[id_key])
+        partner['partner_types'] = p.has_partner_types(project)
+    partner_types = _get_project_partners(project)
     context = {
         'project': project,
-        'partners': partners
+        'partner_vals': partner_vals,
+        'partner_types': partner_types
     }
     return render(request, 'project_partners.html', context)
 
@@ -472,8 +478,10 @@ def partners(request, project_id):
 def finance(request, project_id):
     """."""
     project = get_object_or_404(Project, pk=project_id)
+    pledged = project.get_pledged()
     context = {
-        'project': project
+        'project': project,
+        'pledged': pledged,
     }
     return render(request, 'project_finance.html', context)
 

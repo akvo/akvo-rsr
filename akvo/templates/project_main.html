@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% load compressed i18n rsr_utils %}
-{% load rsr_filters %}
+{% load compressed i18n rsr_utils rsr_tags %}
+{% load rsr_filters humanize %}
 {% block title %}{{project.title}}{% endblock title%}
 {% block head_js %}
 <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
@@ -53,9 +53,7 @@
                     </a>
                     <div class="media-body">
                       <a href="{% url 'organisation-main' project.reporting_org.pk %}">{{project.reporting_org}}</a>
-                      <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
-                        title="<div class='extra-partner-tooltip'>{% for partner, types in partners.items %}<div class='extra-partner-entry'>{% if partner.logo %}<a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}<a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a> ({% for type in types %}{% if not forloop.first %}, {% endif %}{% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}{% endfor %} partner)<hr></div>{% endfor %}</div>"
-                        data-placement="right" data-container="article" data-class="foo">{% blocktrans with partners_count=partners|length %}+ {{partners_count}} partners{% endblocktrans %}</a>
+                      {% more_link project %}
                       {% if project.reporting_org.primary_location.country %}
                         <div class="projectLocation">
                           <i class="fa fa-map-marker"></i> {{project.reporting_org.primary_location.country}}, {{project.reporting_org.primary_location.country.continent}}
@@ -73,7 +71,8 @@
               {% if project.accepts_donations %}
                 <li class="donateSection text-center topMargin">
                   <dl class="dl-horizontal">
-                    <dt class="totalBudgetLabel">{% trans 'Budget Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed}}</dd>
+                    <dt class="totalBudgetLabel">{% trans 'Total Budget' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.budget|floatformat|intcomma}}</dd>
+                    <dt class="totalBudgetLabel">{% trans 'Funds Needed' %}:</dt><dd class="currencyAmount">{{project.get_currency_display}}{{project.funds_needed|floatformat|intcomma}}</dd>
                   </dl>
                   <a href="{% url 'project-donate' project.id %}" class="btn btn-primary donateButton">{% trans "Donate" %}</a>
                 </li>
@@ -139,12 +138,12 @@
             "actual_text": "{% trans 'actual' %}",
             "target_text": "{% trans 'target' %}",
             "background_text": "{% trans 'Background' %}",
-            "current_situation_text": "{% trans 'Current situation' %}",
+            "current_situation_text": "{% trans 'Situation at start of project' %}",
             "goals_overview_text": "{% trans 'Goals overview' %}",
             "project_plan_text": "{% trans 'Project plan' %}",
             "sustainability_text": "{% trans 'Sustainability' %}",
             "target_group_text": "{% trans 'Target group' %}",
-            "results_text": "{% trans 'Results' %}"
+            "results_text": "{% trans 'Results and indicators' %}"
         }
     </script>
 

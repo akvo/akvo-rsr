@@ -599,6 +599,18 @@ nav.navbar-fixed-top {
             }
         }
     }
+    div.twoColumns.clearfix {
+        @media only screen and (min-width: $width-large) {
+            min-width: 170px;
+        }
+        > a {
+            min-width: 70px;
+        }
+    }
+}
+
+div.paginationWrap {
+    clear: both;
 }
 
 .help-block {
@@ -1874,6 +1886,16 @@ ul.typeahead-selector {
 /* Financial details page */
 
 section.projectFinancial {
+    .currentFunders {
+        dl {
+            > dd {
+                text-align: right;
+            }
+        }
+    }
+    .donationBreak {
+        display: none;
+    }
     @include responsive(small-max-screens) {
         width: 95%;
         max-width: 450px;
@@ -1891,6 +1913,22 @@ section.projectFinancial {
             .dl-horizontal {
                 dt {
                     width: initial;
+                }
+            }
+            .donationBreak {
+                display: initial;
+                clear: both;
+            }
+            .currentFunders {
+                dd {
+                    &.donation {
+                        float: right;
+                    }
+                }
+                dt {
+                    &.donation {
+                        clear: both;
+                    }
                 }
             }
         }
@@ -1971,6 +2009,62 @@ section.projectPartners {
 dd {
     &.currencyAmount {
         margin-left: auto;
+    }
+}
+
+/* Project report page */
+
+.projectReport {
+    @include responsive(small-max-screens) {
+        max-width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @media only screen and (min-width: $width-medium) {
+        table {
+            table-layout: fixed;
+            th {
+                @media only screen and (max-width: $width-large) {
+                    width: 90px;
+                }
+                @media only screen and (min-width: $width-large) {
+                    width: 120px;
+                }
+                word-break: break-word;
+            }
+        }
+    }
+}
+
+/* Project update page */
+
+.updateText {
+    white-space: pre-line;
+}
+
+/* Google translation bar styles */
+
+body {
+    &.translationBarActive {
+        .nav {
+            padding-top: 39px;
+        }
+        .navbar-brand {
+            margin-top: 39px;
+        }
+        article,
+        .updateMain,
+        .organisationDetail,
+        #map {
+            padding-top: 39px;
+        }
+        div.skiptranslate ~ article,
+        div.skiptranslate ~ .updateMain,
+        div.skiptranslate ~ .organisationDetail,
+        div.skiptranslate ~ #map {
+            padding-top: 0px;
+        }
     }
 }
 

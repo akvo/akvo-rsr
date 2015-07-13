@@ -72,6 +72,7 @@
         </li>
         <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
+        {% if not rsr_page or not rsr_page.google_translation %}
         <li>
           <div class="dropdown langDropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
@@ -88,6 +89,26 @@
             </ul>
           </div>
         </li>
+        {% else %}
+          <li>
+            <div class="dropdown langDropdown">
+              <div id="google_translate_element"></div>
+              <script type="text/javascript">
+                function googleTranslateElementInit() {
+                  new google.translate.TranslateElement(
+                    {
+                      pageLanguage: '{{LANGUAGE_CODE}}',
+                      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                      autoDisplay: false,
+                      multilanguagePage: true
+                    },
+                    'google_translate_element');
+                }
+                </script>
+                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+            </div>
+          </li>
+        {% endif %}
       </ul>
     </div>
   </div>
