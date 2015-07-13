@@ -1607,6 +1607,17 @@ body.translationBarActive article, body.translationBarActive .updateMain, body.t
 body.translationBarActive div.skiptranslate ~ article, body.translationBarActive div.skiptranslate ~ .updateMain, body.translationBarActive div.skiptranslate ~ .organisationDetail, body.translationBarActive div.skiptranslate ~ #map {
   padding-top: 0px; }
 
+/* Hit counter for Akvo Pages */
+#footer-analytics {
+  text-align: center; }
+  #footer-analytics .visit-count {
+    display: block;
+    padding-bottom: 2em;
+    color: #888; }
+    @media only screen and (min-width: 768px) and (max-width: 1024px) {
+      #footer-analytics .visit-count {
+        padding-top: 0.5em; } }
+
 /* Cookie */
 #cookie-law {
   position: fixed;

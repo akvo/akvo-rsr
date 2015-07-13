@@ -26,6 +26,9 @@ def extra_context(request, protocol="http"):
     deploy_branch = getattr(settings, 'DEPLOY_BRANCH', 'Unknown')
     deploy_commit_id = getattr(settings, 'DEPLOY_COMMIT_ID', 'Unknown')
     deploy_commit_full_id = getattr(settings, 'DEPLOY_COMMIT_FULL_ID', 'Unknown')
+    piwik_auth_token = getattr(settings, 'PIWIK_AUTH_TOKEN', '')
+    piwik_url = getattr(settings, 'PIWIK_URL', '')
+    piwik_disable_hits = getattr(settings, 'PIWIK_DISABLE_HITS', '')
 
     return dict(
         current_site=current_site,
@@ -33,7 +36,10 @@ def extra_context(request, protocol="http"):
         deploy_tag=deploy_tag,
         deploy_branch=deploy_branch,
         deploy_commit_id=deploy_commit_id,
-        deploy_commit_full_id=deploy_commit_full_id
+        deploy_commit_full_id=deploy_commit_full_id,
+        piwik_auth_token=piwik_auth_token,
+        piwik_url=piwik_url,
+        piwik_disable_hits=piwik_disable_hits
     )
 
 

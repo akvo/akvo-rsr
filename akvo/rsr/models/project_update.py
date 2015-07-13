@@ -40,7 +40,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         'Project', related_name='project_updates', verbose_name=_(u'project')
     )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'))
-    title = ValidXMLCharField(_(u'title'), max_length=50, db_index=True, help_text=_(u'50 characters'))
+    title = ValidXMLCharField(_(u'title'), max_length=80, db_index=True, help_text=_(u'80 characters'))
     text = ValidXMLTextField(_(u'text'), blank=True)
     language = ValidXMLCharField(
         max_length=2, choices=settings.LANGUAGES, default='en',

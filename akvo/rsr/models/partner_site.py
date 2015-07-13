@@ -90,6 +90,8 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'location bar, on tabs and in the bookmark menu.</p>'
         )
     )
+    show_keyword_logos = models.BooleanField(_(u'Show keyword logos on project pages'),
+                                             default=False)
     about_box = ValidXMLTextField(
         _(u'about box text'), max_length=500, blank=True, help_text=_(
             u'Enter HTML that will make up the top left box of the home page. (500 characters)'
