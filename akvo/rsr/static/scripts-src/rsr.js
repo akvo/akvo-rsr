@@ -167,7 +167,4 @@ $(document).ready(function() {
     gMap.load();
   });
 
-  // Kick of hits on the page
-  window.AKVO_RSR.analytics.hits();
-
 });
