@@ -9,7 +9,6 @@
 DEBUG = TEMPLATE_DEBUG = True
 PIPELINE_ENABLED = False
 
-
 # Production mode
 # DEBUG = TEMPLATE_DEBUG = False
 # PIPELINE_ENABLED = True
