@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from .benchmark import BenchmarkSerializer
 from .benchmark_name import BenchmarknameSerializer
-from .budget_item import BudgetItemSerializer
+from .budget_item import BudgetItemSerializer, CountryBudgetItemSerializer
 from .budget_item_label import BudgetItemLabelSerializer
 from .category import CategorySerializer
 from .country import CountrySerializer
@@ -47,7 +47,7 @@ from .region import RecipientRegionSerializer
 from .related_project import RelatedProjectSerializer
 from .result import ResultSerializer
 from .sector import SectorSerializer
-from .transaction import TransactionSerializer
+from .transaction import TransactionSerializer, TransactionSectorSerializer
 from .typeahead import (TypeaheadCountrySerializer,
                         TypeaheadOrganisationSerializer,
                         TypeaheadProjectSerializer,
@@ -62,6 +62,7 @@ __all__ = [
     'BudgetItemSerializer',
     'CategorySerializer',
     'CountrySerializer',
+    'CountryBudgetItemSerializer',
     'EmploymentSerializer',
     'FocusAreaSerializer',
     'GoalSerializer',
@@ -100,6 +101,7 @@ __all__ = [
     'ResultSerializer',
     'SectorSerializer',
     'TransactionSerializer',
+    'TransactionSectorSerializer',
     'TypeaheadCountrySerializer',
     'TypeaheadOrganisationSerializer',
     'TypeaheadProjectSerializer',

@@ -116,7 +116,7 @@ class Transaction(models.Model):
 
 
 class TransactionSector(models.Model):
-    project = models.ForeignKey(
+    transaction = models.ForeignKey(
         'Transaction', verbose_name=_(u'transaction'), related_name='sectors'
     )
     code = ValidXMLCharField(_(u'sector'), blank=True, max_length=5)
@@ -142,4 +142,3 @@ class TransactionSector(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'transaction sector')
         verbose_name_plural = _(u'transaction sectors')
-        unique_together = ('project', 'vocabulary')

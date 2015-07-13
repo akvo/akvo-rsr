@@ -5,10 +5,12 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel, Country, Link,
-                             Organisation, Partnership, PolicyMarker, Project, ProjectContact,
-                             ProjectDocument, ProjectLocation, RecipientCountry, RecipientRegion,
-                             RelatedProject, Sector)
+from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel, Country,
+                             CountryBudgetItem, Indicator, IndicatorPeriod, Link, Organisation,
+                             Partnership, PlannedDisbursement, PolicyMarker, Project,
+                             ProjectCondition, ProjectContact, ProjectDocument, ProjectLocation,
+                             RecipientCountry, RecipientRegion, RelatedProject, Result, Sector,
+                             Transaction, TransactionSector)
 
 from decimal import Decimal
 from django.http import HttpResponseForbidden
@@ -1012,6 +1014,7 @@ def project_admin_step8(request, pk=None):
         }
     )
 
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def project_admin_step9(request, pk=None):
@@ -1025,103 +1028,644 @@ def project_admin_step9(request, pk=None):
     errors = []
     new_objects = []
 
-    try:
-        capital_spend_percentage = Decimal(
-            data['capital-spend-percentage']
-        ) if data['capital-spend-percentage'] else None
-        errors = save_field(
-            project, 'capital_spend_percentage', 'capital-spend-percentage',
-            capital_spend_percentage, errors
-        )
-    except Exception as e:
-        error = str(e).capitalize()
-        errors.append({'name': 'capital-spend-percentage', 'error': error})
+    if data['level'] == '1':
 
-    errors = save_field(
-        project, 'country_budget_vocabulary', 'country-budget-vocabulary',
-        data['country-budget-vocabulary'], errors
+        try:
+            capital_spend_percentage = Decimal(
+                data['capital-spend-percentage']
+            ) if data['capital-spend-percentage'] else None
+            errors = save_field(
+                project, 'capital_spend_percentage', 'capital-spend-percentage',
+                capital_spend_percentage, errors
+            )
+        except Exception as e:
+            error = str(e).capitalize()
+            errors.append({'name': 'capital-spend-percentage', 'error': error})
+
+        errors = save_field(
+            project, 'country_budget_vocabulary', 'country-budget-vocabulary',
+            data['country-budget-vocabulary'], errors
+        )
+
+        # Budget items
+        for key in data.keys():
+            if 'budget-item-type-' in key:
+                budget = None
+                budget_id = key.split('-', 3)[3]
+
+                if 'add' in budget_id and (data['budget-item-value-' + budget_id]
+                                           or data['budget-item-type-' + budget_id]
+                                           or data['budget-item-other-' + budget_id]
+                                           or data['budget-item-label-' + budget_id]
+                                           or data['budget-item-value-date-' + budget_id]
+                                           or data['budget-item-period-start-' + budget_id]
+                                           or data['budget-item-period-end-' + budget_id]):
+
+                    budget = BudgetItem.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': budget_id,
+                            'new_id': str(budget.pk),
+                            'div_id': 'budget_item-' + budget_id,
+                        }
+                    )
+                elif not 'add' in budget_id:
+                    try:
+                        budget = BudgetItem.objects.get(pk=int(budget_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if budget:
+                    try:
+                        budget_amount = Decimal(
+                            data['budget-item-value-' + budget_id]
+                        ) if data['budget-item-value-' + budget_id] else None
+                        errors = save_field(
+                            budget, 'amount', 'budget-item-value-' + budget_id, budget_amount, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'budget-item-value-' + budget_id, 'error': error})
+
+                    budget_type_key = 'budget-item-type-' + budget_id
+                    errors = save_field(
+                        budget, 'type', budget_type_key, data[budget_type_key], errors
+                    )
+
+                    budget_other_key = 'budget-item-other-' + budget_id
+                    errors = save_field(
+                        budget, 'other_extra', budget_other_key, data[budget_other_key], errors
+                    )
+
+                    budget_label_key = 'budget-item-label-' + budget_id
+                    try:
+                        budget_label = BudgetItemLabel.objects.get(
+                            pk=int(data[budget_label_key])
+                        ) if data[budget_label_key] else None
+                        errors = save_field(
+                            budget, 'label', budget_label_key, budget_label, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': budget_label_key, 'error': error})
+
+                    budget_valdate_key = 'budget-item-value-date-' + budget_id
+                    budget_value_date = data[budget_valdate_key] if data[budget_valdate_key] else None
+                    errors = save_field(
+                        budget, 'value_date', budget_valdate_key, budget_value_date, errors
+                    )
+
+                    budget_pstart_key = 'budget-item-period-start-' + budget_id
+                    budget_pstart = data[budget_pstart_key] if data[budget_pstart_key] else None
+                    errors = save_field(
+                        budget, 'period_start', budget_pstart_key, budget_pstart, errors
+                    )
+
+                    budget_pend_key = 'budget-item-period-end-' + budget_id
+                    budget_pend = data[budget_pend_key] if data[budget_pend_key] else None
+                    errors = save_field(
+                        budget, 'period_end', budget_pend_key, budget_pend, errors
+                    )
+
+        # Country budget items
+        for key in data.keys():
+            if 'country-budget-item-' in key:
+                cbi = None
+                cbi_id = key.split('-', 3)[3]
+
+                if 'add' in cbi_id and (data['country-budget-item-' + cbi_id]
+                                        or data['country-budget-description-' + cbi_id]
+                                        or data['country-budget-percentage-' + cbi_id]):
+
+                    cbi = CountryBudgetItem.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': cbi_id,
+                            'new_id': str(cbi.pk),
+                            'div_id': 'country_budget_item-' + cbi_id,
+                        }
+                    )
+                elif not 'add' in cbi_id:
+                    try:
+                        cbi = CountryBudgetItem.objects.get(pk=int(cbi_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if cbi:
+                    cbi_key = 'country-budget-item-' + cbi_id
+                    errors = save_field(cbi, 'code', cbi_key, data[cbi_key], errors)
+
+                    cbi_desc_key = 'country-budget-description-' + cbi_id
+                    errors = save_field(cbi, 'description', cbi_desc_key, data[cbi_desc_key], errors)
+
+                    cbi_perc_key = 'country-budget-percentage-' + cbi_id
+                    try:
+                        cbi_perc = Decimal(data[cbi_perc_key]) if data[cbi_perc_key] else None
+                        errors = save_field(cbi, 'percentage', cbi_perc_key, cbi_perc, errors)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': cbi_perc_key, 'error': error})
+
+        # Transactions
+        for key in data.keys():
+            if 'transaction-value-date-' in key:
+                trans = None
+                trans_id = key.split('-', 3)[3]
+
+                if 'add' in trans_id and (
+                    data['transaction-value-' + trans_id]
+                    or data['transaction-date-' + trans_id]
+                    or data['transaction-value-date-' + trans_id]
+                    or data['transaction-reference-' + trans_id]
+                    or data['transaction-description-' + trans_id]
+                    # or data['transaction-provider-org-' + trans_id]
+                    or data['transaction-provider-org-activity-' + trans_id]
+                    # or data['transaction-receiver-org-' + trans_id]
+                    or data['transaction-receiver-org-activity-' + trans_id]
+                    or data['transaction-aid-type-' + trans_id]
+                    or data['transaction-disbursement-channel-' + trans_id]
+                    or data['transaction-finance-type-' + trans_id]
+                    or data['transaction-flow-type-' + trans_id]
+                    or data['transaction-tied-status-' + trans_id]
+                    or data['transaction-recipient-country-' + trans_id]
+                    or data['transaction-recipient-region-' + trans_id]
+                    or data['transaction-recipient-region-vocabulary-' + trans_id]):
+
+                    trans = Transaction.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': trans_id,
+                            'new_id': str(trans.pk),
+                            'div_id': 'transaction-' + trans_id,
+                        }
+                    )
+                elif not 'add' in trans_id:
+                    try:
+                        trans = Transaction.objects.get(pk=int(trans_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': str(trans.pk),
+                            'new_id': str(trans.pk),
+                            'div_id': 'transaction-' + str(trans.pk),
+                        }
+                    )
+
+                if trans:
+                    trans_value_key = 'transaction-value-' + trans_id
+                    try:
+                        trans_value = Decimal(data[trans_value_key]) if data[trans_value_key] else None
+                        errors = save_field(trans, 'value', trans_value_key, trans_value, errors)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': trans_value_key, 'error': error})
+
+                    trans_date_key = 'transaction-date-' + trans_id
+                    trans_date = data[trans_date_key] if data[trans_date_key] else None
+                    errors = save_field(trans, 'transaction_date', trans_date_key, trans_date, errors)
+
+                    trans_valdate_key = 'transaction-value-date-' + trans_id
+                    trans_valdate = data[trans_valdate_key] if data[trans_valdate_key] else None
+                    errors = save_field(trans, 'value_date', trans_valdate_key, trans_valdate, errors)
+
+                    trans_ref_key = 'transaction-reference-' + trans_id
+                    errors = save_field(trans, 'reference', trans_ref_key, data[trans_ref_key], errors)
+
+                    trans_desc_key = 'transaction-description-' + trans_id
+                    errors = save_field(
+                        trans, 'description', trans_desc_key, data[trans_desc_key], errors
+                    )
+
+                    trans_provorg_act_key = 'transaction-provider-org-activity-' + trans_id
+                    errors = save_field(
+                        trans, 'provider_organisation_activity', trans_provorg_act_key,
+                        data[trans_provorg_act_key], errors
+                    )
+
+                    trans_recorg_act_key = 'transaction-receiver-org-activity-' + trans_id
+                    errors = save_field(
+                        trans, 'receiver_organisation_activity', trans_recorg_act_key,
+                        data[trans_recorg_act_key], errors
+                    )
+
+                    trans_aid_key = 'transaction-aid-type-' + trans_id
+                    errors = save_field(trans, 'aid_type', trans_aid_key, data[trans_aid_key], errors)
+
+                    trans_disb_key = 'transaction-disbursement-channel-' + trans_id
+                    errors = save_field(
+                        trans, 'disbursement_channel', trans_disb_key, data[trans_disb_key], errors
+                    )
+
+                    trans_fin_key = 'transaction-finance-type-' + trans_id
+                    errors = save_field(
+                        trans, 'finance_type', trans_fin_key, data[trans_fin_key], errors
+                    )
+
+                    trans_flow_key = 'transaction-flow-type-' + trans_id
+                    errors = save_field(
+                        trans, 'flow_type', trans_flow_key, data[trans_flow_key], errors
+                    )
+
+                    trans_tied_key = 'transaction-tied-status-' + trans_id
+                    errors = save_field(
+                        trans, 'tied_status', trans_tied_key, data[trans_tied_key], errors
+                    )
+
+                    trans_country_key = 'transaction-recipient-country-' + trans_id
+                    errors = save_field(
+                        trans, 'recipient_country', trans_country_key, data[trans_country_key], errors
+                    )
+
+                    trans_region_key = 'transaction-recipient-region-' + trans_id
+                    errors = save_field(
+                        trans, 'recipient_region', trans_region_key, data[trans_region_key], errors
+                    )
+
+                    trans_regvoc_key = 'transaction-recipient-region-vocabulary-' + trans_id
+                    errors = save_field(
+                        trans, 'recipient_region_vocabulary', trans_regvoc_key, data[trans_regvoc_key],
+                        errors
+                    )
+
+        # Planned disbursements
+        for key in data.keys():
+            if 'planned-disbursement-type-' in key:
+                pd = None
+                pd_id = key.split('-', 3)[3]
+
+                if 'add' in pd_id and (data['planned-disbursement-value-' + pd_id]
+                                       or data['planned-disbursement-value-date-' + pd_id]
+                                       or data['planned-disbursement-type-' + pd_id]
+                                       or data['planned-disbursement-period-start-' + pd_id]
+                                       or data['planned-disbursement-period-end-' + pd_id]):
+
+                    pd = PlannedDisbursement.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': pd_id,
+                            'new_id': str(pd.pk),
+                            'div_id': 'planned_disbursement-' + pd_id,
+                        }
+                    )
+                elif not 'add' in pd_id:
+                    try:
+                        pd = PlannedDisbursement.objects.get(pk=int(pd_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if pd:
+                    pd_value_key = 'planned-disbursement-value-' + pd_id
+                    try:
+                        pd_value = Decimal(data[pd_value_key]) if data[pd_value_key] else None
+                        errors = save_field(pd, 'value', pd_value_key, pd_value, errors)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': pd_value_key, 'error': error})
+
+                    pd_valdat_key = 'planned-disbursement-value-date-' + pd_id
+                    pd_valdat = data[pd_valdat_key] if data[pd_valdat_key] else None
+                    errors = save_field(pd, 'value_date', pd_valdat_key, pd_valdat, errors)
+
+                    pd_type_key = 'planned-disbursement-type-' + pd_id
+                    errors = save_field(pd, 'type', pd_type_key, data[pd_type_key], errors)
+
+                    pd_pstart_key = 'planned-disbursement-period-start-' + pd_id
+                    pd_pstart = data[pd_pstart_key] if data[pd_pstart_key] else None
+                    errors = save_field(pd, 'period_start', pd_pstart_key, pd_pstart, errors)
+
+                    pd_pend_key = 'planned-disbursement-period-end-' + pd_id
+                    pd_pend = data[pd_pend_key] if data[pd_pend_key] else None
+                    errors = save_field(pd, 'value_date', pd_pend_key, pd_pend, errors)
+
+    elif data['level'] == '2':
+        # Transaction sectors
+        for key in data.keys():
+            if 'transaction-sector-vocabulary-' in key:
+                sector = None
+                sector_trans_id = key.split('-', 3)[3]
+
+                if 'add' in sector_trans_id \
+                        and (data['transaction-sector-' + sector_trans_id]
+                             or data['transaction-sector-vocabulary-' + sector_trans_id]
+                             or data['transaction-sector-description-' + sector_trans_id]):
+
+                    sector_trans_id_list = sector_trans_id.split('-')
+                    trans_id = sector_trans_id_list.pop()
+                    sector_id = '-'.join(sector_trans_id_list)
+
+                    try:
+                        trans = Transaction.objects.get(pk=str(trans_id))
+                        sector = TransactionSector.objects.create(transaction=trans)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'transaction-sector-' + sector_trans_id,
+                                       'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': sector_trans_id,
+                            'new_id': str(sector.pk),
+                            'div_id': 'transaction_sector-' + sector_id,
+                        }
+                    )
+                elif not 'add' in sector_trans_id:
+                    try:
+                        sector = TransactionSector.objects.get(pk=int(sector_trans_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if sector:
+                    trans_sector_key = 'transaction-sector-' + sector_trans_id
+                    errors = save_field(
+                        sector, 'code', trans_sector_key, data[trans_sector_key], errors
+                    )
+
+                    sector_voc_key = 'transaction-sector-vocabulary-' + sector_trans_id
+                    errors = save_field(
+                        sector, 'vocabulary', sector_voc_key, data[sector_voc_key], errors
+                    )
+
+                    sector_desc_key = 'transaction-sector-description-' + sector_trans_id
+                    errors = save_field(
+                        sector, 'text', sector_desc_key, data[sector_desc_key], errors
+                    )
+
+    return Response({
+            'errors': errors,
+            'new_objects': new_objects,
+        }
     )
 
-    # Budget items
-    for key in data.keys():
-        if 'budget-item-type-' in key:
-            budget = None
-            budget_id = key.split('-', 3)[3]
 
-            if 'add' in budget_id and (data['budget-item-value-' + budget_id]
-                                       or data['budget-item-type-' + budget_id]
-                                       or data['budget-item-other-' + budget_id]
-                                       or data['budget-item-label-' + budget_id]
-                                       or data['budget-item-value-date-' + budget_id]
-                                       or data['budget-item-period-start-' + budget_id]
-                                       or data['budget-item-period-end-' + budget_id]):
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def project_admin_step10(request, pk=None):
+    project = Project.objects.get(pk=pk)
+    user = request.user
 
-                budget = BudgetItem.objects.create(project=project)
-                new_objects.append(
-                    {
-                        'old_id': budget_id,
-                        'new_id': str(budget.pk),
-                        'div_id': 'budget_item-' + budget_id,
-                    }
-                )
-            elif not 'add' in budget_id:
-                try:
-                    budget = BudgetItem.objects.get(pk=int(budget_id))
-                except Exception as e:
-                    error = str(e).capitalize()
-                    errors.append({'name': key, 'error': error})
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
 
-            if budget:
-                try:
-                    budget_amount = Decimal(
-                        data['budget-item-value-' + budget_id]
-                    ) if data['budget-item-value-' + budget_id] else None
-                    errors = save_field(
-                        budget, 'amount', 'budget-item-value-' + budget_id, budget_amount, errors
+    data = request.POST
+    errors = []
+    new_objects = []
+
+    if data['level'] == '1':
+        # Conditions
+        for key in data.keys():
+            if 'condition-type-' in key:
+                condition = None
+                condition_id = key.split('-', 2)[2]
+
+                if 'add' in condition_id and (data['condition-type-' + condition_id]
+                                              or data['condition-text-' + condition_id]):
+
+                    condition = ProjectCondition.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': condition_id,
+                            'new_id': str(condition.pk),
+                            'div_id': 'project_condition-' + condition_id,
+                        }
                     )
-                except Exception as e:
-                    error = str(e).capitalize()
-                    errors.append({'name': 'budget-item-value-' + budget_id, 'error': error})
+                elif not 'add' in condition_id:
+                    try:
+                        condition = ProjectCondition.objects.get(pk=int(condition_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
 
-                budget_type_key = 'budget-item-type-' + budget_id
-                errors = save_field(
-                    budget, 'type', budget_type_key, data[budget_type_key], errors
-                )
-
-                budget_other_key = 'budget-item-other-' + budget_id
-                errors = save_field(
-                    budget, 'other_extra', budget_other_key, data[budget_other_key], errors
-                )
-
-                budget_label_key = 'budget-item-label-' + budget_id
-                try:
-                    budget_label = BudgetItemLabel.objects.get(
-                        pk=int(data[budget_label_key])
-                    ) if data[budget_label_key] else None
+                if condition:
+                    cond_type_key = 'condition-type-' + condition_id
                     errors = save_field(
-                        budget, 'label', budget_label_key, budget_label, errors
+                        condition, 'type', cond_type_key, data[cond_type_key], errors
                     )
-                except Exception as e:
-                    error = str(e).capitalize()
-                    errors.append({'name': budget_label_key, 'error': error})
 
-                budget_valdate_key = 'budget-item-value-date-' + budget_id
-                budget_value_date = data[budget_valdate_key] if data[budget_valdate_key] else None
-                errors = save_field(
-                    budget, 'value_date', budget_valdate_key, budget_value_date, errors
-                )
+                    cond_text_key = 'condition-text-' + condition_id
+                    errors = save_field(
+                        condition, 'text', cond_text_key, data[cond_text_key], errors
+                    )
 
-                budget_pstart_key = 'budget-item-period-start-' + budget_id
-                budget_pstart = data[budget_pstart_key] if data[budget_pstart_key] else None
-                errors = save_field(
-                    budget, 'period_start', budget_pstart_key, budget_pstart, errors
-                )
+        # Results
+        for key in data.keys():
+            if 'result-title-' in key:
+                result = None
+                result_id = key.split('-', 2)[2]
 
-                budget_pend_key = 'budget-item-period-end-' + budget_id
-                budget_pend = data[budget_pend_key] if data[budget_pend_key] else None
-                errors = save_field(
-                    budget, 'period_end', budget_pend_key, budget_pend, errors
-                )
+                if 'add' in result_id and (data['result-title-' + result_id]
+                                           or data['result-type-' + result_id]
+                                           or data['result-description-' + result_id]):
+
+                    result = Result.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': result_id,
+                            'new_id': str(result.pk),
+                            'div_id': 'result-' + result_id,
+                        }
+                    )
+                elif not 'add' in result_id:
+                    try:
+                        result = Result.objects.get(pk=int(result_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': str(result.pk),
+                            'new_id': str(result.pk),
+                            'div_id': 'result-' + str(result.pk),
+                        }
+                    )
+
+                if result:
+                    res_title_key = 'result-title-' + result_id
+                    errors = save_field(result, 'title', res_title_key, data[res_title_key], errors)
+
+                    res_type_key = 'result-type-' + result_id
+                    errors = save_field(result, 'type', res_type_key, data[res_type_key], errors)
+
+                    res_as_key = 'result-aggregation-status-' + result_id
+                    res_as = data[res_as_key] if data[res_as_key] else None
+                    errors = save_field(result, 'aggregation_status', res_as_key, res_as, errors)
+
+                    res_desc_key = 'result-description-' + result_id
+                    errors = save_field(
+                        result, 'description', res_desc_key, data[res_desc_key], errors
+                    )
+
+    if data['level'] == '2':
+        # Indicators
+        for key in data.keys():
+            if 'indicator-title-' in key:
+                indicator = None
+                ind_res_id = key.split('-', 2)[2]
+
+                if 'add' in ind_res_id and (data['indicator-title-' + ind_res_id]
+                                            or data['indicator-measure-' + ind_res_id]
+                                            or data['indicator-ascending-' + ind_res_id]
+                                            or data['indicator-description-' + ind_res_id]
+                                            or data['indicator-baseline-value-' + ind_res_id]
+                                            or data['indicator-baseline-comment-' + ind_res_id]
+                                            or data['indicator-baseline-year-' + ind_res_id]):
+
+                    ind_res_id_list = ind_res_id.split('-')
+                    result_id = ind_res_id_list.pop()
+                    indicator_id = '-'.join(ind_res_id_list)
+
+                    try:
+                        result = Result.objects.get(pk=str(result_id))
+                        indicator = Indicator.objects.create(result=result)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'indicator-title-' + ind_res_id,
+                                       'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': ind_res_id,
+                            'new_id': str(indicator.pk),
+                            'div_id': 'indicator-' + indicator_id,
+                        }
+                    )
+                elif not 'add' in ind_res_id:
+                    try:
+                        indicator = Indicator.objects.get(pk=int(ind_res_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': str(indicator.pk),
+                            'new_id': str(indicator.pk),
+                            'div_id': 'indicator-' + str(indicator.pk),
+                        }
+                    )
+
+                if indicator:
+                    ind_title_key = 'indicator-title-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'title', ind_title_key, data[ind_title_key], errors
+                    )
+
+                    ind_meas_key = 'indicator-measure-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'measure', ind_meas_key, data[ind_meas_key], errors
+                    )
+
+                    ind_asc_key = 'indicator-ascending-' + ind_res_id
+                    ind_asc = data[ind_asc_key] if data[ind_asc_key] else None
+                    errors = save_field(indicator, 'ascending', ind_asc_key, ind_asc, errors)
+
+                    ind_desc_key = 'indicator-description-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'description', ind_desc_key, data[ind_desc_key], errors
+                    )
+
+                    ind_baseval_key = 'indicator-baseline-value-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'baseline_value', ind_baseval_key, data[ind_baseval_key], errors
+                    )
+
+                    ind_basecom_key = 'indicator-baseline-comment-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'baseline_comment', ind_basecom_key, data[ind_basecom_key],
+                        errors
+                    )
+
+                    ind_baseyear_key = 'indicator-baseline-year-' + ind_res_id
+                    ind_baseyear = data[ind_baseyear_key] if data[ind_baseyear_key] else None
+                    errors = save_field(
+                        indicator, 'baseline_year', ind_basecom_key, ind_baseyear, errors
+                    )
+
+    if data['level'] == '3':
+        # Indicator periods
+        for key in data.keys():
+            if 'indicator-period-target-value-comment-' in key:
+                ip = None
+                ip_ind_id = key.split('-', 5)[5]
+
+                if 'add' in ip_ind_id and (#data['indicator-period-start-' + ip_ind_id]
+                                           #or data['indicator-period-end-' + ip_ind_id]
+                                           data['indicator-period-target-value-' + ip_ind_id]
+                                           or data['indicator-period-target-value-comment-' + ip_ind_id]
+                                           or data['indicator-period-actual-value-' + ip_ind_id]
+                                           or data['indicator-period-actual-value-comment-' + ip_ind_id]):
+
+                    ip_ind_id_list = ip_ind_id.split('-')
+                    indicator_id = ip_ind_id_list.pop()
+                    _result_id = ip_ind_id_list.pop()
+                    ip_id = '-'.join(ip_ind_id_list)
+
+                    try:
+                        indicator = Indicator.objects.get(pk=str(indicator_id))
+                        ip = IndicatorPeriod.objects.create(indicator=indicator)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'indicator-period-start-' + ip_ind_id,
+                                       'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': ip_ind_id,
+                            'new_id': str(ip.pk),
+                            'div_id': 'indicator_period-' + ip_id,
+                        }
+                    )
+
+                elif not 'add' in ip_ind_id:
+                    try:
+                        ip = IndicatorPeriod.objects.get(pk=int(ip_ind_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': str(ip.pk),
+                            'new_id': str(ip.pk),
+                            'div_id': 'indicator_period-' + str(ip.pk),
+                        }
+                    )
+
+                if ip:
+                    # ip_pstart_key = 'indicator-period-start-' + ip_ind_id
+                    # ip_pstart = data[ip_pstart_key] if data[ip_pstart_key] else None
+                    # errors = save_field(ip, 'period_start', ip_pstart_key, ip_pstart, errors)
+                    #
+                    # ip_pend_key = 'indicator-period-end-' + ip_ind_id
+                    # ip_pend = data[ip_pend_key] if data[ip_pend_key] else None
+                    # errors = save_field(ip, 'period_end', ip_pend_key, ip_pend, errors)
+
+                    ip_target_key = 'indicator-period-target-value-' + ip_ind_id
+                    errors = save_field(
+                        ip, 'target_value', ip_target_key, data[ip_target_key], errors
+                    )
+
+                    ip_tarcom_key = 'indicator-period-target-value-comment-' + ip_ind_id
+                    errors = save_field(
+                        ip, 'target_comment', ip_tarcom_key, data[ip_tarcom_key], errors
+                    )
+
+                    ip_actual_key = 'indicator-period-actual-value-' + ip_ind_id
+                    errors = save_field(
+                        ip, 'actual_value', ip_actual_key, data[ip_actual_key], errors
+                    )
+
+                    ip_actcom_key = 'indicator-period-actual-value-comment-' + ip_ind_id
+                    errors = save_field(
+                        ip, 'actual_comment', ip_actcom_key, data[ip_actcom_key], errors
+                    )
 
     return Response({
             'errors': errors,

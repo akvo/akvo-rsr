@@ -1,28 +1,27 @@
-<div class="condition-item">
+<div class="condition-item parent" id="project_condition{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
-                    <select name="conditionType" id="conditionType" class="form-control priority3">
-                        <option value="" {% if not condition.type %} selected="selected" {% endif %}>
-                            Condition type:
-                        </option>
-                        {% for ct in condition_type %}
-                            {% if not ct.0 == "code" %}
-                               <option value="{{ct.0}}"
-                               {% if condition.type == ct.0 %} selected="selected" {% endif %}>
-                                    {{ct.0}} - {{ct.1}}
-                                </option> 
-                            {% endif %}
+                    <select name="condition-type{% if key %}-{{ key }}{% endif %}" id="condition-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                        <option value="" {% if not condition.type %} selected="selected" {% endif %}>Condition type:</option>
+                        {% for entry in condition_types %}
+                            <option value="{{ entry.code }}" {% if condition.type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
                         {% endfor %}                     
                     </select>
-                    <label class="control-label" for="conditionType">Condition type</label>
+                    <label class="control-label" for="condition-type{% if key %}-{{ key }}{% endif %}">Condition type</label>
                 </div>
             </div>
             <div class="col-md-6 control">
-                <textarea id="condition" class="form-control priority3" name="condition" placeholder="Type in the condition">{% if condition.text %}{{condition.text}}{% endif %}</textarea>
-                <label class="control-label" for="condition">Condition</label>
+                <textarea id="condition-text{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="condition-text{% if key %}-{{ key }}{% endif %}" placeholder="Type in the condition">{% if condition.text %}{{condition.text}}{% endif %}</textarea>
+                <label class="control-label" for="condition-text{% if key %}-{{ key }}{% endif %}">Condition</label>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center" id="delete-condition{% if key %}-{{ key }}{% endif %}">
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-condition{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete condition</a>
+        </div>
+    </div>
+    <hr/>
 </div>

@@ -598,7 +598,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-9" action="javascript: submitStep(9)">
+                            <form role="form" id="admin-step-9" action="javascript: submitStep(9, 1)">
                             <div class="form-group control">
                                 <input type="text" class="form-control priority3" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="Capital spend percentage"
                                 {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
@@ -632,13 +632,11 @@
                             </div>
                             <hr>
                             <div class="country-budget-item-container">
-                                {% if project.country_budget_items.all %}
-                                    {% for item in project.country_budget_items.all %}
-                                        {% include "myrsr/project_admin_partials/country_budget_item_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" %}
-                                {% endif %}  
+                                {% for item in project.country_budget_items.all %}
+                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key=item.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -647,13 +645,11 @@
                             </div>
                             <hr>
                             <div class="transaction-container">
-                                {% if project.transactions.all %}
-                                    {% for transaction in project.transactions.all %}
-                                        {% include "myrsr/project_admin_partials/transaction_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/transaction_input.html" %}
-                                {% endif %}
+                                {% for transaction in project.transactions.all %}
+                                    {% include "myrsr/project_admin_partials/transaction_input.html" with key=transaction.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/transaction_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>                             
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -661,13 +657,11 @@
                                 </div>
                             </div>
                             <div class="planned-disbursement-container">
-                                {% if project.planned_disbursements.all %}
-                                    {% for pd in project.planned_disbursements.all %}
-                                        {% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}
-                                {% endif %} 
+                                {% for pd in project.planned_disbursements.all %}
+                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key=pd.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>                            
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -697,14 +691,13 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <form role="form" id="admin-step-10" action="javascript: submitStep(10, 1)">
                             <div class="condition-container">
-                                {% if project.conditions.all %}
-                                    {% for condition in project.conditions.all %}
-                                        {% include "myrsr/project_admin_partials/condition_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/condition_input.html" %}
-                                {% endif %} 
+                                {% for condition in project.conditions.all %}
+                                    {% include "myrsr/project_admin_partials/condition_input.html" with key=condition.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/condition_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
@@ -712,19 +705,24 @@
                                 </div>
                             </div>
                             <div class="result-container">
-                                {% if project.results.all %}
-                                    {% for result in project.results.all %}
-                                        {% include "myrsr/project_admin_partials/result_input.html" %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% include "myrsr/project_admin_partials/result_input.html" %}
-                                {% endif %}
+                                {% for result in project.results.all %}
+                                    {% include "myrsr/project_admin_partials/result_input.html" with key=result.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/result_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>                            
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
                                     <a href="#" class="btn btn-link add-result" id=""><span class="glyphicon glyphicon-plus"></span> Add another result</a>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep10"></div>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -837,7 +835,7 @@
 
                     $(partial).find('.typeahead-container').each( function() {
                         addCountToClass($(this));
-                    })                                      
+                    });
 
                     function addCountToName(el) {
                         var oldName = el.attr('name');
@@ -1386,20 +1384,61 @@
             } else if (step === 7) {
                 form_data += '&level=' + level;
             } else if (step === 9) {
-                var budgetItems;
+                var budgetItems, transactions, plannedDisbursements;
 
                 budgetItems = document.querySelectorAll('.budget-item');
+                transactions = document.querySelectorAll('.transaction-item');
+                plannedDisbursements = document.querySelectorAll('.planned-disbursement-item');
 
                 for (var k=0; k < budgetItems.length; k++) {
-                    var nodeId, budgetItemId;
+                    var budgetItemNodeId, budgetItemId;
 
-                    nodeId = budgetItems[k].getAttribute('id');
-                    budgetItemId = nodeId.replace('budget_item-', '');
+                    budgetItemNodeId = budgetItems[k].getAttribute('id');
+                    budgetItemId = budgetItemNodeId.replace('budget_item-', '');
 
                     form_data += '&budget-item-value-date-' + budgetItemId + '=' + document.querySelector('#budget-item-value-date-' + budgetItemId).value;
                     form_data += '&budget-item-period-start-' + budgetItemId + '=' + document.querySelector('#budget-item-period-start-' + budgetItemId).value;
                     form_data += '&budget-item-period-end-' + budgetItemId + '=' + document.querySelector('#budget-item-period-end-' + budgetItemId).value;
                 }
+
+                for (var l=0; l < transactions.length; l++) {
+                    var transactionNodeId, transactionId;
+
+                    transactionNodeId = transactions[l].getAttribute('id');
+                    transactionId = transactionNodeId.replace('transaction-', '');
+
+                    form_data += '&transaction-date-' + transactionId + '=' + document.querySelector('#transaction-date-' + transactionId).value;
+                    form_data += '&transaction-value-date-' + transactionId + '=' + document.querySelector('#transaction-value-date-' + transactionId).value;
+                }
+
+                for (var m=0; m < plannedDisbursements.length; m++) {
+                    var plannedDisbursementNodeId, plannedDisbursementId;
+
+                    plannedDisbursementNodeId = plannedDisbursements[m].getAttribute('id');
+                    plannedDisbursementId = plannedDisbursementNodeId.replace('planned_disbursement-', '');
+
+                    form_data += '&planned-disbursement-period-start-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-period-start-' + plannedDisbursementId).value;
+                    form_data += '&planned-disbursement-period-end-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-period-end-' + plannedDisbursementId).value;
+                    form_data += '&planned-disbursement-value-date-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-value-date-' + plannedDisbursementId).value;
+                }
+
+                form_data += '&level=' + level;
+            } else if (step === 10) {
+{#                var indicatorPeriods;#}
+{##}
+{#                indicatorPeriods = document.querySelectorAll('.indicator-period-item');#}
+{##}
+{#                for (var n=0; n < indicatorPeriods.length; n++) {#}
+{#                    var periodNodeId, periodId;#}
+{##}
+{#                    periodNodeId = indicatorPeriods[n].getAttribute('id');#}
+{#                    periodId = periodNodeId.replace('indicator_period-', '');#}
+{##}
+{#                    form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;#}
+{#                    form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;#}
+{#                }#}
+
+                form_data += '&level=' + level;
             }
 
             // Create request
@@ -1416,8 +1455,14 @@
 
                     removeErrors(form);
                     response = JSON.parse(request.responseText);
-                    if (step === 7 && level < 2) {
+                    if (step === 7 && level === 1) {
                         replaceNames(response.new_objects, 'administrative');
+                    } else if (step === 9 && level === 1) {
+                        replaceNames(response.new_objects, 'sector');
+                    } else if (step === 10 && level === 1) {
+                        replaceNames(response.new_objects, 'indicator');
+                    } else if (step === 10 && level === 2) {
+                        replaceNames(response.new_objects, 'indicator-period');
                     } else {
                         replaceNames(response.new_objects);
                     }
@@ -1429,6 +1474,16 @@
 
                     if (step === 7 && level < 2) {
                         submitStep(7, level + 1);
+                        return false;
+                    }
+
+                    if (step === 9 && level < 2) {
+                        submitStep(9, level + 1);
+                        return false;
+                    }
+
+                    if (step === 10 && level < 3) {
+                        submitStep(10, level + 1);
                         return false;
                     }
 
@@ -1914,7 +1969,7 @@
             $('.mandatory').remove();
 
             $('.priority1 ~ label').each(function() {
-                var markContainer = '<span class="mandatory">*</span>'
+                var markContainer = '<span class="mandatory">*</span>';
                 var infoSpan = $(this).find('span');
 
                 $(markContainer).insertBefore(infoSpan);

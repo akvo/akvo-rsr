@@ -18,7 +18,7 @@ class PlannedDisbursement(models.Model):
     project = models.ForeignKey(
         'Project', verbose_name=_(u'project'), related_name='planned_disbursements'
     )
-    value = models.DecimalField(_(u'value'), blank=True, max_digits=10, decimal_places=2)
+    value = models.DecimalField(_(u'value'), null=True, blank=True, max_digits=10, decimal_places=2)
     value_date = models.DateField(_(u'value date'), null=True, blank=True)
     currency = ValidXMLCharField(
         _(u'currency'), blank=True, max_length=3, choices=codelist_choices(CURRENCY)

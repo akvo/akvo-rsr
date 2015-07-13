@@ -19,6 +19,7 @@ router.register(r'budget_item', views.BudgetItemViewSet)
 router.register(r'budget_item_label', views.BudgetItemLabelViewSet)
 router.register(r'category', views.CategoryViewSet)
 router.register(r'country', views.CountryViewSet)
+router.register(r'country_budget_item', views.CountryBudgetItemViewSet)
 router.register(r'employment', views.EmploymentViewSet)
 router.register(r'focus_area', views.FocusAreaViewSet)
 router.register(r'goal', views.GoalViewSet)
@@ -64,6 +65,7 @@ router.register(r'related_project', views.RelatedProjectViewSet)
 router.register(r'result', views.ResultViewSet)
 router.register(r'sector', views.SectorViewSet)
 router.register(r'transaction', views.TransactionViewSet)
+router.register(r'transaction_sector', views.TransactionSectorViewSet)
 router.register(r'user', views.UserViewSet)
 
 # Wire up our API using automatic URL routing.
@@ -128,6 +130,9 @@ urlpatterns += patterns(
     url(r'^project/(?P<pk>[0-9]+)/admin_step_9/$',
         views.project_admin_step9,
         name='project_admin_step9'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_10/$',
+        views.project_admin_step10,
+        name='project_admin_step10'),
 )
 
 # Typeahead

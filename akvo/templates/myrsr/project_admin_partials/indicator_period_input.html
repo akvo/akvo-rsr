@@ -1,44 +1,50 @@
-<div class="indicator-period">
+<div class="indicator-period-item parent" id="indicator_period{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="date" class="form-control priority2" id="indicatorPeriodStart" placeholder="Period start"
-                {% if period.period_start %} value="{{period.period_start|date:'c'}}" {% endif %}>
-                <label class="control-label" for="indicatorPeriodStart">Period start</label>
+                <input type="date" class="form-control priority2 indicator indicator-period" name="indicator-period-start{% if key %}-{{ key }}{% endif %}" id="indicator-period-start{% if key %}-{{ key }}{% endif %}" placeholder="Period start"
+                {% if period.period_start %} value="{{period.period_start|date:'c'}}" {% endif %} {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}>
+                <label class="control-label" for="indicator-period-start{% if key %}-{{ key }}{% endif %}">Period start</label>
             </div>
             <div class="col-md-6 control">
-                <input type="date" class="form-control priority2" id="indicatorPeriodEnd" placeholder="Period end"
-                {% if period.period_end %} value="{{period.period_end|date:'c'}}" {% endif %}>
-                <label class="control-label" for="indicatorPeriodEnd">Period end</label>
+                <input type="date" class="form-control priority2 indicator indicator-period" name="indicator-period-end{% if key %}-{{ key }}{% endif %}" id="indicator-period-end{% if key %}-{{ key }}{% endif %}" placeholder="Period end"
+                {% if period.period_end %} value="{{period.period_end|date:'c'}}" {% endif %} {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}>
+                <label class="control-label" for="indicator-period-end{% if key %}-{{ key }}{% endif %}">Period end</label>
             </div>
         </div>
     </div>
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="number" class="form-control priority2" id="indicatorPeriodTargetValue" placeholder="Target value"
-                {% if period.target_value %} value="{{period.target_value}}" {% endif %}>
-                <label class="control-label" for="indicatorPeriodTargetValue">Target value</label>
+                <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-target-value{% if key %}-{{ key }}{% endif %}" placeholder="Target value"
+                {% if period.target_value %} value="{{period.target_value}}" {% endif %} {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}>
+                <label class="control-label" for="indicator-period-target-value{% if key %}-{{ key }}{% endif %}">Target value</label>
             </div>
             <div class="col-md-6 control">
-                <textarea id="indicatorPeriodTargetValueComment" class="form-control priority2" name="textarea"
-                placeholder="Type in the target value comment">{{period.target_comment}}</textarea>
-                <label class="control-label" for="indicatorPeriodTargetValueComment">Target value comment</label>
+                <textarea id="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}"
+                placeholder="Type in the target value comment" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}>{{period.target_comment}}</textarea>
+                <label class="control-label" for="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}">Target value comment</label>
             </div>
         </div>
     </div>
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="text" class="form-control priority2" id="indicatorPeriodActualValue" placeholder="Actual value"
-                {% if period.actual_value %} value="{{period.actual_value}}" {% endif %}>
-                <label class="control-label" for="indicatorPeriodActualValue">Actual value</label>
+                <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}" placeholder="Actual value"
+                {% if period.actual_value %} value="{{period.actual_value}}" {% endif %} {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}>
+                <label class="control-label" for="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}">Actual value</label>
             </div>
             <div class="col-md-6 control">
-                <textarea id="indicatorPeriodActualValueComment" class="form-control priority2" name="textarea"
-                placeholder="Type in the actual value comment">{{period.actual_comment}}</textarea>
-                <label class="control-label" for="indicatorPeriodActualValueComment">Actual value comment</label>
+                <textarea id="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}"
+                placeholder="Type in the actual value comment" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %}>{{period.actual_comment}}</textarea>
+                <label class="control-label" for="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}">Actual value comment</label>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center" id="delete-indicator-period{% if key %}-{{ key }}{% endif %}">
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-indicator-period{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete indicator period</a>
+        </div>
+    </div>
+    <hr/>
 </div>

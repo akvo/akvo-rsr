@@ -1,32 +1,25 @@
-<div class="indicator-item">
+<div class="indicator-item parent" id="indicator{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <input type="text" class="form-control priority2" id="indicatorTitle" placeholder="Indicator title"
-                {% if indicator.title %} value="{{indicator.title}}" {% endif %}>
-                <label class="control-label" for="indicatorTitle">Indicator title</label>
+                <input type="text" class="form-control priority2 indicator" name="indicator-title{% if key %}-{{ key }}{% endif %}" id="indicator-title{% if key %}-{{ key }}{% endif %}" placeholder="Indicator title"
+                {% if indicator.title %} value="{{indicator.title}}" {% endif %} {% if indicator %}indicator{% endif %}>
+                <label class="control-label" for="indicator-title{% if key %}-{{ key }}{% endif %}">Indicator title</label>
             </div>
             <div class="col-md-4">
                 <div class="select-group control">
-                    <select name="indicatorMeasure" id="indicatorMeasure" class="form-control priority2">
-                        <option value="" {% if not indicator.measure %} selected="selected" {% endif %}>
-                            Indicator measure:
-                        </option>
-                        {% for result in indicator_measure %}
-                            {% if not result.0 == "code" %}
-                               <option value="{{result.0}}"
-                               {% if indicator.measure == result.0 %} selected="selected" {% endif %}>
-                                    {{result.0}} - {{result.1}}
-                                </option> 
-                            {% endif %}
+                    <select name="indicator-measure{% if key %}-{{ key }}{% endif %}" id="indicator-measure{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %}>
+                        <option value="" {% if not indicator.measure %} selected="selected" {% endif %}>Indicator measure:</option>
+                        {% for entry in indicator_measures %}
+                            <option value="{{ entry.code }}" {% if indicator.measure == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
                         {% endfor %}                     
                     </select>
-                    <label class="control-label" for="indicatorMeasure">Indicator measure</label>
+                    <label class="control-label" for="indicator-measure{% if key %}-{{ key }}{% endif %}">Indicator measure</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="select-group control">
-                    <select name="ascending" id="ascending" class="form-control priority2">
+                    <select name="indicator-ascending{% if key %}-{{ key }}{% endif %}" id="indicator-ascending{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %}>
                         <option value="">Ascending:</option>
                         <option value="0" {% if indicator.ascending|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}>
                             Unknown
@@ -38,48 +31,52 @@
                             No
                         </option>
                     </select>
-                    <label class="control-label" for="ascending">Ascending</label>
+                    <label class="control-label" for="indicator-ascending{% if key %}-{{ key }}{% endif %}">Ascending</label>
                 </div>
             </div>
         </div>
     </div>
     <div class="form-group control">
-        <textarea id="indicatorDescription" class="form-control priority2" name="textarea"
+        <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %}
         placeholder="Type in the indicator description">{{indicator.description}}</textarea>
-        <label class="control-label" for="indicatorDescription">Indicator description</label>
+        <label class="control-label" for="indicator-description{% if key %}-{{ key }}{% endif %}">Indicator description</label>
     </div>
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="number" step="any" class="form-control priority2" id="baselineValue" placeholder="Baseline value"
-                {% if indicator.baseline_value %} value="{{indicator.baseline_value}}" {% endif %}>
-                <label class="control-label" for="baselineValue">Baseline value</label>
+                <input type="text" class="form-control priority2 indicator" name="indicator-baseline-value{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-value{% if key %}-{{ key }}{% endif %}" placeholder="Baseline value"
+                {% if indicator.baseline_value %} value="{{indicator.baseline_value}}" {% endif %} {% if indicator %}indicator{% endif %}>
+                <label class="control-label" for="indicator-baseline-value{% if key %}-{{ key }}{% endif %}">Baseline value</label>
             </div>
             <div class="col-md-6 control">
-                <input type="number" class="form-control priority2" id="baselineYear" placeholder="Baseline year"
-                {% if indicator.baseline_year %} value="{{indicator.baseline_year}}" {% endif %}>
-                <label class="control-label" for="baselineYear">Baseline year</label>
+                <input type="text" class="form-control priority2 indicator" name="indicator-baseline-year{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-year{% if key %}-{{ key }}{% endif %}" placeholder="Baseline year"
+                {% if indicator.baseline_year %} value="{{indicator.baseline_year}}" {% endif %} {% if indicator %}indicator{% endif %}>
+                <label class="control-label" for="indicator-baseline-year{% if key %}-{{ key }}{% endif %}">Baseline year</label>
             </div>
         </div>
     </div>
     <div class="form-group control">
-        <textarea id="baselineComment" class="form-control priority2" name="textarea"
-        placeholder="Type in the baseline comment">{{indicator.baseline_comment}}</textarea>
-        <label class="control-label" for="baselineComment">Baseline comment</label>
+        <textarea id="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" name="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}"
+        placeholder="Type in the baseline comment" {% if indicator %}indicator{% endif %}>{{indicator.baseline_comment}}</textarea>
+        <label class="control-label" for="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}">Baseline comment</label>
     </div>
     <hr/>
     <div class="indicator-period-container">
-        {% if indicator.periods.all  %}
-            {% for period in indicator.periods.all %}
-                {% include "myrsr/project_admin_partials/indicator_period_input.html" %}
-            {% endfor %}
-        {% else %}
-            {% include "myrsr/project_admin_partials/indicator_period_input.html" %}
-        {% endif %}
+        {% for period in indicator.periods.all %}
+            {% include "myrsr/project_admin_partials/indicator_period_input.html" with key=period.pk %}
+        {% empty %}
+            {% include "myrsr/project_admin_partials/indicator_period_input.html" with key='add-0' %}
+        {% endfor %}
     </div> 
     <div class="row">
         <div class="col-md-6 col-md-offset-3 text-center">
             <a href="#" class="btn btn-link add-indicator-period" id=""><span class="glyphicon glyphicon-plus"></span> Add another indicator period</a>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center" id="delete-indicator{% if key %}-{{ key }}{% endif %}">
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-indicator{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete indicator</a>
+        </div>
+    </div>
+    <hr/>
 </div>

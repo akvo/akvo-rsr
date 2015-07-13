@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from .benchmark import BenchmarkViewSet
 from .benchmark_name import BenchmarknameViewSet
-from .budget_item import BudgetItemViewSet
+from .budget_item import BudgetItemViewSet, CountryBudgetItemViewSet
 from .budget_item_label import BudgetItemLabelViewSet
 from .category import CategoryViewSet
 from .country import CountryViewSet
@@ -40,7 +40,8 @@ from .project_admin import (project_admin_delete_document,
                             project_admin_step6,
                             project_admin_step7,
                             project_admin_step8,
-                            project_admin_step9)
+                            project_admin_step9,
+                            project_admin_step10)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
@@ -57,7 +58,7 @@ from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .result import ResultViewSet
 from .sector import SectorViewSet
-from .transaction import TransactionViewSet
+from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
                         typeahead_project,
@@ -75,6 +76,7 @@ __all__ = [
     'CategoryViewSet',
     'change_password',
     'CountryViewSet',
+    'CountryBudgetItemViewSet',
     'EmploymentViewSet',
     'FocusAreaViewSet',
     'GoalViewSet',
@@ -118,6 +120,7 @@ __all__ = [
     'project_admin_step7',
     'project_admin_step8',
     'project_admin_step9',
+    'project_admin_step10',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
@@ -127,6 +130,7 @@ __all__ = [
     'SectorViewSet',
     'set_group',
     'TransactionViewSet',
+    'TransactionSectorViewSet',
     'typeahead_country',
     'typeahead_organisation',
     'typeahead_project',

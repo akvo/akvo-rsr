@@ -1,32 +1,25 @@
-<div class="result-item">
+<div class="result-item parent" id="result{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
         <div class="row">
             <div class="col-md-4 control">
-                <input type="text" class="form-control priority2" id="resultTitle" placeholder="Result title"
+                <input type="text" class="form-control priority2" name="result-title{% if key %}-{{ key }}{% endif %}" id="result-title{% if key %}-{{ key }}{% endif %}" placeholder="Result title"
                 {% if result.title %} value="{{result.title}}" {% endif %}>
-                <label class="control-label" for="resultTitle">Result title</label>
+                <label class="control-label" for="result-title{% if key %}-{{ key }}{% endif %}">Result title</label>
             </div>
             <div class="col-md-4">
                 <div class="select-group control">
-                    <select name="resultType" id="resultType" class="form-control priority2">
-                        <option value="" {% if not result.type %} selected="selected" {% endif %}>
-                            Result type
-                        </option>
-                        {% for rt in result_type %}
-                            {% if not rt.0 == "code" %}
-                               <option value="{{rt.0}}"
-                               {% if result.type == rt.0 %} selected="selected" {% endif %}>
-                                    {{rt.0}} - {{rt.1}}
-                                </option> 
-                            {% endif %}
+                    <select name="result-type{% if key %}-{{ key }}{% endif %}" id="result-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
+                        <option value="" {% if not result.type %} selected="selected" {% endif %}>Result type</option>
+                        {% for entry in result_types %}
+                            <option value="{{ entry.code }}" {% if result.type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
                         {% endfor %}                       
                     </select>
-                    <label class="control-label" for="resultType">Result type</label>
+                    <label class="control-label" for="result-type{% if key %}-{{ key }}{% endif %}">Result type</label>
                 </div>
             </div>
             <div class="col-md-4 control">
                 <div class="select-group">
-                    <select name="aggregationStatus" id="aggregationStatus" class="form-control priority2">
+                    <select name="result-aggregation-status{% if key %}-{{ key }}{% endif %}" id="result-aggregation-status{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
                         <option value="">Aggregation status</option>
                         <option value="0" {% if result.aggregation_status|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}>
                             Unknown
@@ -38,29 +31,33 @@
                             No
                         </option>
                     </select>
-                    <label class="control-label" for="aggregationStatus">Aggregation status</label>
+                    <label class="control-label" for="result-aggregation-status{% if key %}-{{ key }}{% endif %}">Aggregation status</label>
                 </div>
             </div>
         </div>
     </div>
     <div class="form-group control">
-        <textarea id="resultDescription" class="form-control priority2" name="resultDescription"
+        <textarea id="result-description{% if key %}-{{ key }}{% endif %}" class="form-control priority2" name="result-description{% if key %}-{{ key }}{% endif %}"
         placeholder="Type in the result description">{{result.description}}</textarea>
-        <label class="control-label" for="resultDescription">Result description</label>
+        <label class="control-label" for="result-description{% if key %}-{{ key }}{% endif %}">Result description</label>
     </div>
     <hr/>
     <div class="indicator-container">
-        {% if result.indicators.all  %}
-            {% for indicator in result.indicators.all %}
-                {% include "myrsr/project_admin_partials/indicator_input.html" %}
-            {% endfor %}
-        {% else %}
-            {% include "myrsr/project_admin_partials/indicator_input.html" %}
-        {% endif %} 
+        {% for indicator in result.indicators.all %}
+            {% include "myrsr/project_admin_partials/indicator_input.html" with key=indicator.pk %}
+        {% empty %}
+            {% include "myrsr/project_admin_partials/indicator_input.html" with key='add-0' %}
+        {% endfor %}
     </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3 text-center">
             <a href="#" class="btn btn-link add-indicator" id=""><span class="glyphicon glyphicon-plus"></span> Add another indicator</a>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center" id="delete-result{% if key %}-{{ key }}{% endif %}">
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-result{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete result</a>
+        </div>
+    </div>
+    <hr/>
 </div>

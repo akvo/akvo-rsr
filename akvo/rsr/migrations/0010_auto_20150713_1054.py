@@ -41,6 +41,11 @@ class Migration(migrations.Migration):
             null_locations,
         ),
 
+        migrations.RenameField(
+            model_name='transactionsector',
+            old_name='project',
+            new_name='transaction',
+        ),
         migrations.RemoveField(
             model_name='project',
             name='project_rating',
@@ -127,6 +132,12 @@ class Migration(migrations.Migration):
             model_name='partnersite',
             name='default_language',
             field=akvo.rsr.fields.ValidXMLCharField(default=b'en', max_length=5, verbose_name='Site UI default language', choices=[(b'en', b'English'), (b'es', b'Spanish'), (b'fr', b'French')]),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='planneddisbursement',
+            name='value',
+            field=models.DecimalField(null=True, verbose_name='value', max_digits=10, decimal_places=2, blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -224,5 +235,9 @@ class Migration(migrations.Migration):
             name='relation',
             field=akvo.rsr.fields.ValidXMLCharField(blank=True, help_text="The relation between a project and related project. (E.g. select the 'Parent' relation when the selected project here is the parent of this project).", max_length=1, verbose_name='relation', choices=[('1', '1 - Parent'), ('2', '2 - Child'), ('3', '3 - Sibling'), ('4', '4 - Co-funded'), ('5', '5 - Third Party')]),
             preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='transactionsector',
+            unique_together=set([]),
         ),
     ]
