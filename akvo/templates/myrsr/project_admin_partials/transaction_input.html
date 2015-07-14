@@ -1,0 +1,185 @@
+<div class="transaction-item parent" id="transaction{% if key %}-{{ key }}{% endif %}">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-4 control">
+                <input type="text" class="form-control priority3" name="transaction-value{% if key %}-{{ key }}{% endif %}" id="transaction-value{% if key %}-{{ key }}{% endif %}" placeholder="Transaction value"
+                {% if transaction.value %} value="{{transaction.value}}" {% endif %}>
+                <label class="control-label" for="transaction-value{% if key %}-{{ key }}{% endif %}">Transaction value</label>
+            </div>
+            <div class="col-md-4 control">
+                <input type="date" class="form-control priority3" name="transaction-date{% if key %}-{{ key }}{% endif %}" id="transaction-date{% if key %}-{{ key }}{% endif %}" placeholder="Transaction date"
+                {% if transaction.transaction_date %} value="{{transaction.transaction_date|date:'c'}}" {% endif %}>
+                <label class="control-label" for="transaction-date{% if key %}-{{ key }}{% endif %}">Transaction date</label>
+            </div>
+            <div class="col-md-4 control">
+                <input type="date" class="form-control priority3" name="transaction-value-date{% if key %}-{{ key }}{% endif %}" id="transaction-value-date{% if key %}-{{ key }}{% endif %}" placeholder="Transaction value date"
+                {% if transaction.value_date %} value="{{transaction.value_date|date:'c'}}" {% endif %}>
+                <label class="control-label" for="transaction-value-date{% if key %}-{{ key }}{% endif %}">Transaction value date</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <input type="text" class="form-control priority3" name="transaction-reference{% if key %}-{{ key }}{% endif %}" id="transaction-reference{% if key %}-{{ key }}{% endif %}" placeholder="Transaction reference"
+                {% if transaction.reference %} value="{{transaction.reference}}" {% endif %}>
+                <label class="control-label" for="transaction-reference{% if key %}-{{ key }}{% endif %}">Transaction reference</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="text" class="form-control priority3" name="transaction-description{% if key %}-{{ key }}{% endif %}" id="transaction-description{% if key %}-{{ key }}{% endif %}" placeholder="Transaction description"
+                {% if transaction.description %} value="{{transaction.description}}" {% endif %}>
+                <label class="control-label" for="transaction-description{% if key %}-{{ key }}{% endif %}">Transaction description</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <select class="form-control priority3" name="transaction-provider-org{% if key %}-{{ key }}{% endif %}" id="transaction-provider-org{% if key %}-{{ key }}{% endif %}" placeholder="Provider organisation">
+                    <option {% if not transaction.provider_organisation %} selected="selected" {% endif %}>
+                        Provider organisation:
+                    </option>
+                </select>  
+                <label class="control-label" for="transaction-provider-org{% if key %}-{{ key }}{% endif %}">Provider organisation</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="text" class="form-control priority3" name="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}" id="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}" placeholder="Provider organisation activity id"
+                {% if transaction.provider_organisation_activity %} value="{{transaction.provider_organisation_activity}}" {% endif %}>
+                <label class="control-label" for="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}">Provider organisation activity id</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <select class="form-control priority3" name="transaction-receiver-org{% if key %}-{{ key }}{% endif %}" id="transaction-receiver-org{% if key %}-{{ key }}{% endif %}" placeholder="Receiver organisation">
+                    <option {% if not transaction.receiver_organisation %} selected="selected" {% endif %}>
+                        Receiver organisation:
+                    </option>
+                    {% for org in organisation %}
+                        <option value="{{org.id}}" 
+                        {% if transaction.receiver_organisation.name == org.name %} selected="selected" {% endif %}>
+                            {{org.name}}
+                        </option>
+                    {% endfor %}
+                </select> 
+                <label class="control-label" for="transaction-receiver-org{% if key %}-{{ key }}{% endif %}">Receiver organisation</label>
+            </div>
+            <div class="col-md-6 control">
+                <input type="text" class="form-control priority3" name="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}" id="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}" placeholder="Receiver organisation activity id"
+                {% if transaction.receiver_organisation_activity %} value="{{transaction.receiver_organisation_activity}}" {% endif %}>
+                <label class="control-label" for="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}">Receiver organisation activity id</label>
+            </div>
+        </div>
+    </div>
+    <div class="transaction-sector-container">
+        {% for sector in transaction.sectors.all %}
+            {% include "myrsr/project_admin_partials/transaction_sector_input.html" with key=sector.pk %}
+        {% empty %}
+            {% include "myrsr/project_admin_partials/transaction_sector_input.html" with key='add-0' %}
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <a href="#" class="btn btn-link add-transaction-sector" id=""><span class="glyphicon glyphicon-plus"></span> Add another transaction sector</a>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="transaction-aid-type{% if key %}-{{ key }}{% endif %}" id="transaction-aid-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                <option value="" {% if not transaction.aid_type %} selected="selected" {% endif %}>Transaction aid type:</option>
+                {% for entry in aid_types %}
+                    <option value="{{ entry.code }}" {% if transaction.aid_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                {% endfor %}
+            </select>
+            <label for="transaction-aid-type{% if key %}-{{ key }}{% endif %}" class="control-label">Transaction aid type</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" id="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                <option value="" {% if not transaction.disbursement_channel %} selected="selected" {% endif %}>Transaction disbursement channel:</option>
+                {% for entry in disbursement_channels %}
+                    <option value="{{ entry.code }}" {% if transaction.disbursement_channel == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                {% endfor %}
+            </select>
+            <label for="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" class="control-label">Transaction disbursement channel</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="transaction-finance-type{% if key %}-{{ key }}{% endif %}" id="transaction-finance-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                <option value="" {% if not transaction.finance_type %} selected="selected" {% endif %}>Transaction finance type:</option>
+                {% for entry in finance_types %}
+                    <option value="{{ entry.code }}" {% if transaction.finance_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                {% endfor %} 
+            </select>
+            <label for="transaction-finance-type{% if key %}-{{ key }}{% endif %}" class="control-label">Transaction finance type</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="transaction-flow-type{% if key %}-{{ key }}{% endif %}" id="transaction-flow-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                <option value="" {% if not transaction.flow_type %} selected="selected" {% endif %}>Transaction flow type:</option>
+                {% for entry in flow_types %}
+                    <option value="{{ entry.code }}" {% if transaction.flow_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                {% endfor %} 
+            </select>
+            <label for="transaction-flow-type{% if key %}-{{ key }}{% endif %}" class="control-label">Transaction flow type</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="transaction-tied-status{% if key %}-{{ key }}{% endif %}" id="transaction-tied-status{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                <option value="" {% if not transaction.tied_status %} selected="selected" {% endif %}>Transaction tied status:</option>
+                {% for entry in tied_statuses %}
+                    <option value="{{ entry.code }}" {% if transaction.tied_status == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                {% endfor %} 
+            </select>
+            <label for="transaction-tied-status{% if key %}-{{ key }}{% endif %}" class="control-label">Transaction tied status</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="select-group control">
+            <select name="transaction-recipient-country{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-country{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                <option value="" {% if not transaction.recipient_country %} selected="selected" {% endif %}>Transaction recipient country:</option>
+                {% for entry in iati_countries %}
+                    <option value="{{ entry.code }}" {% if transaction.recipient_country == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                {% endfor %} 
+            </select>
+            <label class="control-label" for="transaction-recipient-country{% if key %}-{{ key }}{% endif %}">Transaction recipient country</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 control">
+                <div class="select-group">
+                    <select name="transaction-recipient-region{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-region{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                        <option value="" {% if not transaction.recipient_region %} selected="selected" {% endif %}>Transaction recipient region:</option>
+                        {% for entry in regions %}
+                            <option value="{{ entry.code }}" {% if transaction.recipient_region == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                        {% endfor %} 
+                    </select>
+                    <label class="control-label" for="transaction-recipient-region{% if key %}-{{ key }}{% endif %}">Transaction recipient region</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="select-group control">
+                    <select name="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                        <option value="" {% if not transaction.recipient_region_vocabulary %} selected="selected" {% endif %}>Recipient region vocabulary:</option>
+                        {% for entry in region_vocabularies %}
+                            <option value="{{ entry.code }}" {% if transaction.recipient_region_vocabulary == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                        {% endfor %} 
+                    </select>
+                    <label class="control-label" for="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}">Recipient region vocabulary</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center" id="delete-transaction{% if key %}-{{ key }}{% endif %}">
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-transaction{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete transaction</a>
+        </div>
+    </div>
+    <hr/>
+</div>

@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Transaction
+from akvo.rsr.models import Transaction, TransactionSector
 
 from .rsr_serializer import BaseRSRSerializer
 
@@ -14,3 +14,9 @@ class TransactionSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Transaction
+
+
+class TransactionSectorSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = TransactionSector

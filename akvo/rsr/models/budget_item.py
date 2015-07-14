@@ -36,7 +36,7 @@ class BudgetItem(models.Model):
 
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='budget_items')
     label = models.ForeignKey(
-        BudgetItemLabel, verbose_name=_(u'project budget'),
+        BudgetItemLabel, verbose_name=_(u'project budget'), null=True,
         help_text=_(u'Select the budget item. Use the \'Other\' fields to custom budget items.')
     )
     other_extra = ValidXMLCharField(
@@ -44,7 +44,7 @@ class BudgetItem(models.Model):
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
     # Translators: This is the amount of an budget item in a currency (€ or $)
-    amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2,)
+    amount = models.DecimalField(_(u'amount'), max_digits=10, decimal_places=2, null=True)
 
     # Extra IATI fields
     type = ValidXMLCharField(

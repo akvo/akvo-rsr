@@ -5,13 +5,12 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Transaction
-from ..serializers import TransactionSerializer
+from akvo.rsr.models import Transaction, TransactionSector
+from ..serializers import TransactionSerializer, TransactionSectorSerializer
 from ..viewsets import BaseRSRViewSet
 
 
 class TransactionViewSet(BaseRSRViewSet):
-
     """Transaction resource."""
 
     queryset = Transaction.objects.all()
@@ -19,3 +18,11 @@ class TransactionViewSet(BaseRSRViewSet):
     filter_fields = (
         'project', 'reference', 'transaction_type', 'currency', 'provider_organisation',
         'receiver_organisation')
+
+
+class TransactionSectorViewSet(BaseRSRViewSet):
+    """Transaction sector resource."""
+
+    queryset = TransactionSector.objects.all()
+    serializer_class = TransactionSectorSerializer
+    filter_fields = ('transaction', 'code')

@@ -9,10 +9,11 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from .benchmark import BenchmarkViewSet
 from .benchmark_name import BenchmarknameViewSet
-from .budget_item import BudgetItemViewSet
+from .budget_item import BudgetItemViewSet, CountryBudgetItemViewSet
 from .budget_item_label import BudgetItemLabelViewSet
 from .category import CategoryViewSet
 from .country import CountryViewSet
+from .custom_field import CustomFieldViewSet
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
@@ -30,12 +31,26 @@ from .partnership import PartnershipViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import ProjectViewSet, ProjectExtraViewSet, ProjectUpViewSet
+from .project_admin import (project_admin_delete_document,
+                            project_admin_delete_photo,
+                            project_admin_step1,
+                            project_admin_step2,
+                            project_admin_step3,
+                            project_admin_step4,
+                            project_admin_step5,
+                            project_admin_step6,
+                            project_admin_step7,
+                            project_admin_step8,
+                            project_admin_step9,
+                            project_admin_step10)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet
 from .project_condition import ProjectConditionViewSet
 from .project_contact import ProjectContactViewSet
 from .project_iati_checks import ProjectIatiCheckView
-from .project_location import ProjectLocationViewSet, MapProjectLocationViewSet
+from .project_location import (ProjectLocationViewSet,
+                               AdministrativeLocationViewSet,
+                               MapProjectLocationViewSet)
 from .project_update import ProjectUpdateViewSet, ProjectUpdateExtraViewSet
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
@@ -44,7 +59,7 @@ from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .result import ResultViewSet
 from .sector import SectorViewSet
-from .transaction import TransactionViewSet
+from .transaction import TransactionViewSet, TransactionSectorViewSet
 from .typeahead import (typeahead_country,
                         typeahead_organisation,
                         typeahead_project,
@@ -53,6 +68,7 @@ from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
 
 __all__ = [
+    'AdministrativeLocationViewSet',
     'approve_employment',
     'BenchmarknameViewSet',
     'BenchmarkViewSet',
@@ -61,6 +77,8 @@ __all__ = [
     'CategoryViewSet',
     'change_password',
     'CountryViewSet',
+    'CountryBudgetItemViewSet',
+    'CustomFieldViewSet',
     'EmploymentViewSet',
     'FocusAreaViewSet',
     'GoalViewSet',
@@ -93,6 +111,18 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
     'ProjectViewSet',
+    'project_admin_delete_document',
+    'project_admin_delete_photo',
+    'project_admin_step1',
+    'project_admin_step2',
+    'project_admin_step3',
+    'project_admin_step4',
+    'project_admin_step5',
+    'project_admin_step6',
+    'project_admin_step7',
+    'project_admin_step8',
+    'project_admin_step9',
+    'project_admin_step10',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
@@ -102,6 +132,7 @@ __all__ = [
     'SectorViewSet',
     'set_group',
     'TransactionViewSet',
+    'TransactionSectorViewSet',
     'typeahead_country',
     'typeahead_organisation',
     'typeahead_project',

@@ -85,12 +85,12 @@ class Project(TimestampsMixin, models.Model):
     }
 
     title = ValidXMLCharField(
-        _(u'title'), max_length=45, db_index=True,
+        _(u'title'), max_length=45, db_index=True, blank=True,
         help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
                     u'Use them to attract attention to what you are doing. (45 characters)')
     )
     subtitle = ValidXMLCharField(
-        _(u'subtitle'), max_length=75,
+        _(u'subtitle'), max_length=75, blank=True,
         help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
                     u'Use them to attract attention to what you are doing. (75 characters)')
     )
@@ -107,9 +107,10 @@ class Project(TimestampsMixin, models.Model):
     )
     partners = models.ManyToManyField(
         'Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',
+        blank=True,
     )
     project_plan_summary = ProjectLimitedTextField(
-        _(u'summary of project plan'), max_length=400,
+        _(u'summary of project plan'), max_length=400, blank=True,
         help_text=_(u'Enter a brief summary. The summary should explain: (400 characters)<br>'
                     u'- Why the project is being carried out;<br>'
                     u'- Where it is taking place;<br>'
@@ -136,7 +137,7 @@ class Project(TimestampsMixin, models.Model):
     )
 
     goals_overview = ProjectLimitedTextField(
-        _(u'goals overview'), max_length=600,
+        _(u'goals overview'), max_length=600, blank=True,
         help_text=_(u'Provide a brief description of the overall project goals. (600 characters)')
     )
     current_status = ProjectLimitedTextField(
@@ -153,7 +154,7 @@ class Project(TimestampsMixin, models.Model):
         )
     )
     sustainability = ValidXMLTextField(
-        _(u'sustainability'),
+        _(u'sustainability'), blank=True,
         help_text=_(u'Describe plans for sustaining/maintaining results after '
                     u'implementation is complete. (unlimited)')
     )
@@ -177,7 +178,6 @@ class Project(TimestampsMixin, models.Model):
         max_length=2, choices=settings.LANGUAGES, default='en',
         help_text=_(u'The main language of the project.')
     )
-    project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = ValidXMLTextField(
         _(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).')
     )
@@ -285,7 +285,7 @@ class Project(TimestampsMixin, models.Model):
         max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
     )
     last_update = models.ForeignKey(
-        ProjectUpdate, related_name='the_project',null=True, on_delete=models.SET_NULL
+        ProjectUpdate, related_name='the_project', null=True, on_delete=models.SET_NULL
     )
 
     # Custom manager

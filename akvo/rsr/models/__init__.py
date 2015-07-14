@@ -24,6 +24,7 @@ from ..signals import (
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
+from .custom_field import CustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
@@ -70,6 +71,7 @@ __all__ = [
     'Country',
     'RecipientCountry',
     'Category',
+    'CustomField',
     'CrsAdd',
     'CrsAddOtherFlag',
     'Employment',
@@ -182,6 +184,10 @@ rules.add_perm('rsr.delete_projectlocation', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_customfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_customfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_customfield', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.add_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)

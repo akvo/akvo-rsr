@@ -1,0 +1,33 @@
+<div class="transaction-sector-item parent" id="transaction_sector{% if key %}-{{ key }}{% endif %}">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-4 control">
+                <input type="text" class="form-control priority2 sector" name="transaction-sector{% if key %}-{{ key }}{% endif %}" id="transaction-sector{% if key %}-{{ key }}{% endif %}" placeholder="Transaction sector"
+                {% if sector.code %} value="{{sector.code}}" {% endif %} {% if sector %}sector{% endif %}>
+                <label class="control-label" for="transaction-sector{% if key %}-{{ key }}{% endif %}">Transaction sector</label>
+            </div>
+            <div class="col-md-4">
+                <div class="select-group control">
+                    <select name="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}" id="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority2 sector" {% if sector %}sector{% endif %}>
+                        <option value="" {% if not sector.code %} selected="selected" {% endif %}>Transaction sector vocabulary:</option>
+                         {% for entry in sector_vocabularies %}
+                             <option value="{{ entry.code }}" {% if sector.vocabulary == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                         {% endfor %}
+                    </select>
+                    <label class="control-label" for="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}">Transaction sector vocabulary</label>
+                </div>
+            </div>
+            <div class="col-md-4 control">
+                <input type="text" class="form-control priority2 sector" name="transaction-sector-description{% if key %}-{{ key }}{% endif %}" id="transaction-sector-description{% if key %}-{{ key }}{% endif %}" placeholder="Transaction sector description"
+                {% if sector.text %} value="{{sector.text}}" {% endif %} {% if sector %}sector{% endif %}>
+                <label class="control-label" for="transaction-sector-description{% if key %}-{{ key }}{% endif %}">Transaction sector</label>
+            </div>        
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center" id="delete-transaction-sector{% if key %}-{{ key }}{% endif %}">
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-transaction-sector{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete transaction sector</a>
+        </div>
+    </div>
+    <hr/>
+</div>

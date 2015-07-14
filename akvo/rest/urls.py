@@ -12,12 +12,15 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 
+router.register(r'administrative_location', views.AdministrativeLocationViewSet)
 router.register(r'benchmark', views.BenchmarkViewSet)
 router.register(r'benchmark_name', views.BenchmarknameViewSet)
 router.register(r'budget_item', views.BudgetItemViewSet)
 router.register(r'budget_item_label', views.BudgetItemLabelViewSet)
 router.register(r'category', views.CategoryViewSet)
 router.register(r'country', views.CountryViewSet)
+router.register(r'country_budget_item', views.CountryBudgetItemViewSet)
+router.register(r'custom_field', views.CustomFieldViewSet)
 router.register(r'employment', views.EmploymentViewSet)
 router.register(r'focus_area', views.FocusAreaViewSet)
 router.register(r'goal', views.GoalViewSet)
@@ -63,6 +66,7 @@ router.register(r'related_project', views.RelatedProjectViewSet)
 router.register(r'result', views.ResultViewSet)
 router.register(r'sector', views.SectorViewSet)
 router.register(r'transaction', views.TransactionViewSet)
+router.register(r'transaction_sector', views.TransactionSectorViewSet)
 router.register(r'user', views.UserViewSet)
 
 # Wire up our API using automatic URL routing.
@@ -89,6 +93,47 @@ urlpatterns = patterns(
     url(r'^project_iati_check/(?P<pk>[0-9]+)/$',
         views.ProjectIatiCheckView.as_view(),
         name='project_iati_check'),
+)
+
+# Project admin
+urlpatterns += patterns(
+    '',
+    url(r'^project/(?P<project_pk>[0-9]+)/admin_delete_document/(?P<document_pk>[0-9]+)/$',
+        views.project_admin_delete_document,
+        name='project_admin_delete_document'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_delete_photo/$',
+        views.project_admin_delete_photo,
+        name='project_admin_delete_photo'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_1/$',
+        views.project_admin_step1,
+        name='project_admin_step1'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_2/$',
+        views.project_admin_step2,
+        name='project_admin_step2'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_3/$',
+        views.project_admin_step3,
+        name='project_admin_step3'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_4/$',
+        views.project_admin_step4,
+        name='project_admin_step4'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_5/$',
+        views.project_admin_step5,
+        name='project_admin_step5'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_6/$',
+        views.project_admin_step6,
+        name='project_admin_step6'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_7/$',
+        views.project_admin_step7,
+        name='project_admin_step7'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_8/$',
+        views.project_admin_step8,
+        name='project_admin_step8'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_9/$',
+        views.project_admin_step9,
+        name='project_admin_step9'),
+    url(r'^project/(?P<pk>[0-9]+)/admin_step_10/$',
+        views.project_admin_step10,
+        name='project_admin_step10'),
 )
 
 # Typeahead

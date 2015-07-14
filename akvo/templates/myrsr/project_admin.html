@@ -1,0 +1,1987 @@
+{% extends "myrsr/myrsr_base.html" %}
+{% load i18n bootstrap3 rsr_utils thumbnail compressed%}
+{% block title %}{% trans 'MyRSR - Project Admin' %}{% endblock %}
+{% block myrsr_main %}
+    <h4>{% trans 'Project admin' %}</h4>
+    <!--*************************************** FORM Container **********************************************-->
+
+    <div class="formOverviewInfo">
+        <div class="editDate">
+            <span>Date created:</span>
+            <time datetime="YYYY-MM-DDThh:mm:ssTZD">
+            {{ project.created_at }}
+            </time><br/>
+            <span>Date modified:</span>
+            <time datetime="YYYY-MM-DDThh:mm:ssTZD">
+            {{ project.last_modified_at }}
+            </time>
+        </div>
+        <div class="progress overview">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only"></span><span class="progress-percentage"></span>
+            </div>
+        </div>
+    </div>
+    <section class="panels projectEdit">
+        <fieldset>
+                <!--*************************************** FORM STEP 1 **********************************************-->
+                <div class="myPanel borderBottom" id="panel1">
+                    <div class="formStep stepOne">
+                        <div onclick="scrollTo('panel1')">
+                            <label for="stepOne" class="stepLabel"><h4>01 - General information</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepOne" checked >
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-1" action="javascript: submitStep(1)">
+                            <div class="form-group control">
+                                <input type="text" class="form-control validate priority1" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45"/>
+                                <label for="projectTitle" class="control-label">Project title</label>
+                                <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
+                            </div>
+                            <div class="form-group control">
+                                <input type="text" class="form-control priority1" name="projectSubTitle" id="projectSubTitle" placeholder="Project subtitle" maxlength="75"
+                                {% if project.subtitle %} value="{{project.subtitle}}" {% endif %} />
+                                <label for="projectSubTitle" class="control-label">Project subtitle</label>
+                                <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)</p>
+                            </div>
+                            <div class="form-group control">
+                                <input type="text" class="form-control priority2" name="iatiId" id="iatiID" placeholder="iati ID" maxlength="100"
+                                {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
+                                <label for="iatiID" class="control-label">IATI identifier</label>
+                                <p class="help-block hidden">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
+                                Note that 'projects' in this form are the same as 'activities' in IATI.</p>
+                            </div>
+                            <div class="related-project-container">
+                                {% for rp in project.related_projects.all %}
+                                    {% include "myrsr/project_admin_partials/related_project_input.html" with key=rp.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/related_project_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectStatus" id="projectStatus" class="form-control priority1">
+                                        <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}>None</option>
+                                        <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>Needs funding</option>
+                                        <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>Active</option>
+                                        <option value="C" {% if project.status == "C" %} selected="selected"{% endif %}>Complete</option>
+                                        <option value="L" {% if project.status == "L" %} selected="selected"{% endif %}>Cancelled</option>
+                                        <option value="R" {% if project.status == "R" %} selected="selected"{% endif %}>Archived</option>
+                                    </select>
+                                    <label for="projectStatus" class="control-label">Status</label>
+                                </div>
+                                <p class="help-block hidden">
+                                There are four different project statuses:</p>
+                                <ol class="help-block hidden">
+                                    <li>Needs funding: projects that still need funding.</li>
+                                    <li>Active: projects that started with the implementation phase.</li>
+                                    <li>Completed: projects that have been finished.</li>
+                                    <li>Cancelled: projects that were never fully implemented or carried out.</li>
+                                </ol>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromPlanned" id="eventFromPlanned" placeholder="From (planned)"
+                                        {% if project.date_start_planned %} value="{{project.date_start_planned|date:'c'}}" {% endif %} />
+                                        <label for="eventFromPlanned" class="control-label">Start Date (planned):</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="date" class="form-control priority2" name="eventEndPlanned" id="eventEndPlanned" placeholder="To (planned)"
+                                        {% if project.date_end_planned %} value="{{project.date_end_planned|date:'c'}}" {% endif %} />
+                                        <label for="eventEndPlanned" class="control-label">End Date (planned):</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromActual" id="eventFromActual" placeholder="From (Actual)"
+                                        {% if project.date_start_actual %} value="{{project.date_start_actual|date:'c'}}" {% endif %} />
+                                        <label for="eventFromActual" class="control-label">Start Date (Actual):</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="date" class="form-control priority2" name="eventEndActual" id="eventEndActual" placeholder="To (Actual)"
+                                        {% if project.date_end_actual %} value="{{project.date_end_actual|date:'c'}}" {% endif %} />
+                                        <label for="eventEndActual" class="control-label">End Date (Actual):</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectLanguage" id="projectLanguage" class="form-control priority2">
+                                        <option value="de" {% if project.language == 'de'%} selected="selected" {% endif %}>German</option>
+                                        <option value="en" {% if project.language == 'en'%} selected="selected" {% endif %}>English</option>
+                                        <option value="fr" {% if project.language == 'fr'%} selected="selected" {% endif %}>French</option>
+                                        <option value="es" {% if project.language == 'es'%} selected="selected" {% endif %}>Spanish</option>
+                                        <option value="nl" {% if project.language == 'nl'%} selected="selected" {% endif %}>Dutch</option>
+                                        <option value="ru" {% if project.language == 'ru'%} selected="selected" {% endif %}>Russian</option>
+                                    </select>
+                                    <label for="language" class="control-label">Language</label>
+                                </div>
+                                <p class="help-block hidden">The main language of the project.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority1">
+                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
+                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
+                                    </select>
+                                    <label for="projectCurrency" class="control-label">Currency</label>
+                                </div>
+                                <p class="help-block hidden">The default currency for this project. Used in all financial aspects of the project.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2">
+                                        <option value="" {% if not project.hierarchy %} selected="selected" {% endif %}>Hierarchy:</option>
+                                        <option value="1" {% if project.hierarchy|add:0 == 1 %} selected="selected" {% endif %}>Core activity</option>
+                                        <option value="2" {% if project.hierarchy|add:0 == 2 %} selected="selected" {% endif %}>Sub activity</option>
+                                        <option value="3" {% if project.hierarchy|add:0 == 3 %} selected="selected" {% endif %}>Lower sub activity</option>
+                                    </select>
+                                    <label for="projectHierarchy" class="control-label">Hierarchy</label>
+                                </div>
+                                <p class="help-block hidden">If you are reporting multiple levels of projects in RSR, you can specify whether this is a core or sub-project here.<br/>
+                                So for example: is this project part of a larger project or programme.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="defaultAidType" id="defaultAidType" class="form-control priority3"> 
+                                        <option value="" {% if not project.default_aid_type %} selected="selected" {% endif %}>Default aid type:</option>                                      
+                                        {% for aid_type in aid_types %}
+                                            <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %} selected="selected" {% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <label for="defaultAidType" class="control-label">Default aid type</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="defaultFlowType" id="defaultFlowType" class="form-control priority3">
+                                        <option value="" {% if not project.default_flow_type %} selected="selected" {% endif %}>Default flow type:</option>
+                                        {% for flow_type in flow_types %}
+                                            <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %} selected="selected" {% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <label for="defaultFlowType" class="control-label">Default flow type</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control priority3">
+                                        <option value="" {% if not project.default_tied_status %} selected="selected" {% endif %}>Default tied status:</option>
+                                        {% for tied_status in tied_statuses %}
+                                            <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %} selected="selected" {% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <label for="defaultTiedStatus" class="control-label">Default tied status</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="collaborationType" id="collaborationType" class="form-control priority3">
+                                        <option value="" {% if not project.collaboration_type %} selected="selected" {% endif %}>Collaboration type:</option>
+                                        {% for collaboration_type in collaboration_types %}
+                                            <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %} selected="selected" {% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <label for="collaborationType" class="control-label">Collaboration type</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="defaultFinanceType" id="defaultFinanceType" class="form-control priority3">
+                                        <option value="" {% if not project.default_finance_type %} selected="selected" {% endif %}>Default finance type:</option>
+                                        {% for finance_type in finance_types %}
+                                            <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %} selected="selected" {% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
+                                        {% endfor %} 
+                                    </select>
+                                    <label for="defaultFinanceType" class="control-label">Default finance type</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep1"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 2 **********************************************-->
+                <div class="myPanel borderBottom" id="panel2">
+                    <div class="formStep stepTwo">
+                        <div onclick="scrollTo('panel2')">
+                            <label for="stepTwo" class="stepLabel"><h4>02 - Contact information</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepTwo">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>  
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-2" action="javascript: submitStep(2)">
+                            <div class="contact-information-container">
+                                {% for contact in project.contacts.all %}
+                                    {% include "myrsr/project_admin_partials/contact_information_input.html" with key=contact.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/contact_information_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep2"></div>
+                            </div>
+                            </form>
+                        </div>                                    
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 3 **********************************************-->
+                <div class="myPanel borderBottom" id="panel3">
+                    <div class="formStep stepThree">
+                        <div onclick="scrollTo('panel3')">
+                            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - Partners</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepThree">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-3" action="javascript: submitStep(3)">
+                            <div class="form-group control">
+                                <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
+                                data-child-id="reportingOrganisation"
+                                data-child-class="priority1"
+                                data-value="{% if project.reporting_org %}{{project.reporting_org.id}}{% endif %}"
+                                data-count-class="reportingOrganisation">
+                                </div>                                
+                            </div>
+                            <div class="form-group control">
+                                <div class="checkbox">
+                                    <label for="secondaryReporter" class="control-label">
+                                        <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
+                                        {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
+                                            Secondary reporter
+                                        </label>
+                                </div>
+                                <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
+                            </div>
+                            <hr/>
+                            <div class="partner-container">
+                                {% for partnership in project.partnerships.all %}
+                                    {% include "myrsr/project_admin_partials/partner_input.html" with key=partnership.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/partner_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>                         
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-partner" id=""><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep3"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 4 **********************************************-->
+                <div class="myPanel borderBottom" id="panel4">
+                    <div class="formStep stepFour">
+                        <div onclick="scrollTo('panel4')">
+                            <label for="stepFour" class="stepLabel"><h4>04 - Descriptions</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepFour">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-4" action="javascript: submitStep(4)">
+                            <div class="form-group control">
+                                <textarea id="summary" class="form-control priority1" name="summary" placeholder="Type in summary of the project plan">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
+                                <label class="control-label" for="summary">Summary of project plan</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="background" class="form-control priority2" name="background" placeholder="Type in background">{% if project.background %}{{project.background}}{% endif %}</textarea>
+                                <label class="control-label" for="background">Background</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="currentSituation" class="form-control priority2" name="currentSituation" placeholder="Type in current situation">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
+                                <label class="control-label" for="currentSituation">Current situation</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" placeholder="Type in project plan">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
+                                <label class="control-label" for="projectPlan">Project plan</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="targetGroup" class="form-control priority2" name="targetGroup" placeholder="Type in target group">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
+                                <label class="control-label" for="targetGroup">Target group</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="sustainability" class="form-control priority2" name="sustainability" placeholder="Type in sustainability">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
+                                <label class="control-label" for="sustainability">Sustainability</label>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" placeholder="Type in goals overview">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
+                                <label class="control-label" for="goalsOverview">Goals overview</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep4"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 5 **********************************************-->
+                <div class="myPanel borderBottom" id="panel5">
+                    <div class="formStep stepFive">
+                        <div onclick="scrollTo('panel5')">
+                            <label for="stepFive" class="stepLabel"><h4>05 - Photo</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepFive">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-5" action="javascript: submitStep(5)">
+                            <div class="form-group control" id="photo-container">
+                                {% if project.current_image %}
+                                    {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
+                                        <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
+                                    {% endthumbnail %}
+                                    <a onclick="deletePhoto(this);" class="btn btn-link delete-object-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>
+                                {% endif %}
+                                <input type="file" class="form-control priority1" id="photo" name="photo">
+                                <label class="control-label" for="photo">Photo</label>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control priority2" id="photoCaption" placeholder="Photo caption" name="photoCaption"
+                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %}>
+                                        <label for="photoCaption" class="control-label">Photo caption</label>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control priority2" id="photoCredit" placeholder="Photo credit" name="photoCredit"
+                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %}>
+                                        <label for="photoCredit" class="control-label">Photo credit</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep5"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 6 **********************************************-->
+                <div class="myPanel borderBottom" id="panel6">
+                    <div class="formStep stepSix">
+                        <div onclick="scrollTo('panel6')">
+                            <label for="stepSix" class="stepLabel"><h4>06 - Links and documents</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepSix">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-6" action="javascript: submitStep(6)">
+                            <div class="form-group">
+                                <div class="link-container">
+                                    {% for link in project.links.all %}
+                                        {% include "myrsr/project_admin_partials/link_input.html" with key=link.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_admin_partials/link_input.html" with key='add-0' %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-link" id=""><span class="glyphicon glyphicon-plus"></span> Add another link</a>
+                                </div>
+                            </div>
+                                <div class="document-container">
+                                    {% for document in project.documents.all %}
+                                        {% include "myrsr/project_admin_partials/document_input.html" with key=document.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_admin_partials/document_input.html" with key='add-0' %}
+                                    {% endfor %}
+                                </div>                         
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-document" id=""><span class="glyphicon glyphicon-plus"></span> Add another document</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep6"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 7 **********************************************-->
+                <div class="myPanel borderBottom" id="panel7">
+                    <div class="formStep stepSeven">
+                        <div onclick="scrollTo('panel7')">
+                            <label for="stepSeven" class="stepLabel"><h4>07 - Locations</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepSeven">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-7" action="javascript: submitStep(7, 1)">
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="scope" id="scope" class="form-control priority3">
+                                        <option value="" {% if not project.project_scope %} selected="selected" {% endif %}>Project scope:</option>
+                                        {% for scope in activity_scopes %}
+                                            <option value="{{ scope.code }}" {% if project.project_scope == scope.code %} selected="selected" {% endif %}>{{ scope.code }} - {{ scope.name }}</option>
+                                        {% endfor %}                                        
+                                    </select>
+                                    <label for="scope" class="control-label">Project scope</label>
+                                </div>
+                            </div>
+                            <hr/>    
+                            <div class="recipient-country-container">
+                                {% for rc in project.recipient_countries.all %}
+                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" with key=rc.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-recipient-country" id=""><span class="glyphicon glyphicon-plus"></span> Add another recipient country</a>
+                                </div>
+                            </div>
+                            <hr/> 
+                            <div class="recipient-region-container">
+                            {% for rr in project.recipient_regions.all %}
+                                {% include "myrsr/project_admin_partials/recipient_region_input.html" with key=rr.pk %}
+                            {% empty %}
+                                {% include "myrsr/project_admin_partials/recipient_region_input.html" with key='add-0' %}
+                            {% endfor %}
+                            </div>                             
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-recipient-region" id=""><span class="glyphicon glyphicon-plus"></span> Add another recipient region</a>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="project-location-container">                         
+                                {% if project.locations.all %}
+                                    {% for location in project.locations.all %}
+                                        {% include "myrsr/project_admin_partials/project_location_input.html" with key=location.pk %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% include "myrsr/project_admin_partials/project_location_input.html" with key='add-0' %}
+                                {% endif %}    
+                            </div>                                                       
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-project-location" id=""><span class="glyphicon glyphicon-plus"></span> Add another project location</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep7"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 8 **********************************************-->
+                <div class="myPanel borderBottom" id="panel8">
+                    <div class="formStep stepEight">
+                        <div onclick="scrollTo('panel8')">
+                            <label for="stepEight" class="stepLabel"><h4>08 - Focus</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepEight">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-8" action="javascript: submitStep(8)">
+                            <div class="sector-container">
+                                {% for sector in project.sectors.all %}
+                                    {% include "myrsr/project_admin_partials/sector_input.html" with key=sector.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/sector_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>    
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-sector" id=""><span class="glyphicon glyphicon-plus"></span> Add another sector</a>
+                                </div>
+                            </div>
+                            <div class="policy-marker-container">
+                                {% for marker in project.policy_markers.all %}
+                                    {% include "myrsr/project_admin_partials/policy_marker_input.html" with key=marker.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/policy_marker_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep8"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 9 **********************************************-->
+                <div class="myPanel borderBottom" id="panel9">
+                    <div class="formStep stepNine">
+                        <div onclick="scrollTo('panel9')">
+                            <label for="stepNine" class="stepLabel"><h4>09 - Finance</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepNine">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-9" action="javascript: submitStep(9, 1)">
+                            <div class="form-group control">
+                                <input type="text" class="form-control priority3" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="Capital spend percentage"
+                                {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
+                                <label for="capital-spend-percentage" class="control-label">Capital spend percentage</label>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3">
+                                        <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}>
+                                            Country budget vocabulary
+                                        </option>
+                                        {% for vocabulary in budget_identifier_vocabularies %}
+                                            <option value="{{ vocabulary.code }}" {% if project.country_budget_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
+                                        {% endfor %}                                        
+                                    </select>
+                                    <label for="country-budget-vocabulary" class="control-label">Country budget vocabulary</label>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="budget-item-container">
+                                {% for item in project.budget_items.all %}
+                                    {% include "myrsr/project_admin_partials/budget_item_input.html" with key=item.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/budget_item_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="country-budget-item-container">
+                                {% for item in project.country_budget_items.all %}
+                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key=item.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> Add another country budget item</a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="transaction-container">
+                                {% for transaction in project.transactions.all %}
+                                    {% include "myrsr/project_admin_partials/transaction_input.html" with key=transaction.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/transaction_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>                             
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
+                                </div>
+                            </div>
+                            <div class="planned-disbursement-container">
+                                {% for pd in project.planned_disbursements.all %}
+                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key=pd.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>                            
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep9"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 10 **********************************************-->
+                <div class="myPanel borderBottom" id="panel10">
+                    <div class="formStep stepTen">
+                        <div onclick="scrollTo('panel10')">
+                            <label for="stepTen" class="stepLabel"><h4>10 - Results</h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepTen">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock">
+                            <form role="form" id="admin-step-10" action="javascript: submitStep(10, 1)">
+                            <div class="condition-container">
+                                {% for condition in project.conditions.all %}
+                                    {% include "myrsr/project_admin_partials/condition_input.html" with key=condition.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/condition_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-condition" id=""><span class="glyphicon glyphicon-plus"></span> Add another condition</a>
+                                </div>
+                            </div>
+                            <div class="result-container">
+                                {% for result in project.results.all %}
+                                    {% include "myrsr/project_admin_partials/result_input.html" with key=result.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/result_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>                            
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <a href="#" class="btn btn-link add-result" id=""><span class="glyphicon glyphicon-plus"></span> Add another result</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                                <div id="savingstep10"></div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="text/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.6/zepto.min.js"></script>
+
+    <script type="text/template" id="related-project-input">{% include "myrsr/project_admin_partials/related_project_input.html" %}</script>
+    <script type="text/template" id="budget-item-input">{% include "myrsr/project_admin_partials/budget_item_input.html" %}</script>
+    <script type="text/template" id="condition-input">{% include "myrsr/project_admin_partials/condition_input.html" %}</script> 
+    <script type="text/template" id="contact-information-input">{% include "myrsr/project_admin_partials/contact_information_input.html" %}</script> 
+    <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_admin_partials/country_budget_item_input.html" %}</script> 
+    <script type="text/template" id="document-input">{% include "myrsr/project_admin_partials/document_input.html" %}</script> 
+    <script type="text/template" id="indicator-input">{% include "myrsr/project_admin_partials/indicator_input.html" %}</script> 
+    <script type="text/template" id="indicator-period-input">{% include "myrsr/project_admin_partials/indicator_period_input.html" %}</script> 
+    <script type="text/template" id="link-input">{% include "myrsr/project_admin_partials/link_input.html" %}</script> 
+    <script type="text/template" id="project-location-input">{% include "myrsr/project_admin_partials/project_location_input.html" %}</script>     
+    <script type="text/template" id="location-administrative-input">{% include "myrsr/project_admin_partials/location_administrative_input.html"%}</script> 
+    <script type="text/template" id="partner-input">{% include "myrsr/project_admin_partials/partner_input.html" %}</script> 
+    <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}</script> 
+    <script type="text/template" id="policy-marker-input">{% include "myrsr/project_admin_partials/policy_marker_input.html" %}</script> 
+    <script type="text/template" id="recipient-country-input">{% include "myrsr/project_admin_partials/recipient_country_input.html" %}</script> 
+    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_admin_partials/recipient_region_input.html" %}</script> 
+    <script type="text/template" id="related-project-input">{% include "myrsr/project_admin_partials/related_project_input.html" %}</script> 
+    <script type="text/template" id="result-input">{% include "myrsr/project_admin_partials/result_input.html" %}</script> 
+    <script type="text/template" id="sector-input">{% include "myrsr/project_admin_partials/sector_input.html" %}</script> 
+    <script type="text/template" id="transaction-input">{% include "myrsr/project_admin_partials/transaction_input.html" %}</script> 
+    <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_admin_partials/transaction_sector_input.html" %}</script>                               
+
+    <script type="application/javascript">
+        $(document).ready( function() {
+
+            var partials = ['related-project', 'budget-item', 'condition', 'contact-information', 
+                'country-budget-item','document', 'indicator', 'indicator-period', 'link', 'partner', 
+                'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region', 
+                'related-project','result', 'sector', 'transaction', 'transaction-sector', 'location-administrative',
+                'project-location'];
+
+            var partialsCount = {};
+
+            // Keep count of how many of each partial we've injected
+            for (var i=0; i < partials.length; i++) {
+                var partialName = partials[i];
+
+                partialsCount[partialName] = 1;
+            }
+
+            function setPartialOnClicks() {
+                for (var i=0; i < partials.length; i++) {
+                    var pName = partials[i];            
+                    var buttonSelector = '.add-' + pName;
+
+                    $(buttonSelector).each(function() {
+                        var callback;
+
+                        if ($(this).hasClass('has-onclick')) {
+
+                            // already set the onclick, do nothing
+                            return;
+                        }
+                        $(this).addClass('has-onclick');
+                        callback = getOnClick(pName, $(this));
+                        $(this).click(function(e) {
+                            callback(e);
+                        });
+                    })
+                }
+            }
+
+            setPartialOnClicks();
+
+            function getOnClick(pName, element) {
+                var onclick = function(e) {
+                    e.preventDefault();
+
+                    var markupSelector = '#' + pName + '-input';
+                    var containerSelector = '.' + pName + '-container';
+                    var container = element.closest(':has(' + containerSelector + ')').find(containerSelector);
+
+                    var markup = document.querySelector(markupSelector).innerHTML;                
+
+                    var partial = document.createElement('div');
+                    partial.innerHTML = markup;
+
+                    $(partial).find('div.parent').each( function() {
+                        var oldID = $(this).attr('id');
+                        var newID = oldID + '-add-' + partialsCount[pName];
+
+                        $(this).attr('id', newID);
+                    });
+
+                    $(partial).find('input').each( function() {
+                        addCountToName($(this));
+                    });
+
+                    $(partial).find('select').each( function() {
+                        addCountToName($(this));
+                    });
+
+                    $(partial).find('textarea').each( function() {
+                        addCountToName($(this));
+                    });     
+
+                    $(partial).find('.typeahead-container').each( function() {
+                        addCountToClass($(this));
+                    });
+
+                    function addCountToName(el) {
+                        var oldName = el.attr('name');
+                        var newName = oldName + '-add-' + partialsCount[pName];
+
+                        el.attr('name', newName);
+
+                        var oldID = el.attr('id');
+                        var newID = oldID + '-add-' + partialsCount[pName];
+
+                        el.attr('id', newID);                        
+                    }
+
+                    // The typeahead containers need to have the unique identifying appended
+                    // to the class rather than the id, so handle that separately
+                    function addCountToClass(el) {
+                        var oldClass = el.data('count-class');
+                        var newClass = oldClass + '-add-' + partialsCount[pName];
+
+                        el.removeClass(oldClass);
+                        el.addClass(newClass);
+
+                        el.data('child-id', newClass);
+                    }                    
+
+                    container.append(partial);
+                    partialsCount[pName] += 1;      
+
+                    // Add any typeaheads, help icons and change listeners for the new project partial
+                    updateTypeaheads();
+                    updateHelpIcons(containerSelector);
+                    setSectionChangeListener($(containerSelector).closest('.formStep'));
+                    setSectionCompletionPercentage($(containerSelector).closest('.formStep'));
+                    setValidationListeners();     
+
+                    // Set onClicks for partials again in case this partial contains other partials
+                    setPartialOnClicks();                        
+                };
+
+                return onclick;
+            }  
+        });       
+    </script>   
+ 
+    {% block react_js %}
+        <script src="//fb.me/react-0.12.0.js"></script>
+    {% endblock react_js %}
+    {% compressed_js 'react_typeahead' %}
+    {% compressed_js 'myrsr_admin_typeahead' %}       
+
+    <script type="application/javascript">
+    // TYPEAHEADS
+
+    // How many times to attempt an API call for the typeaheads
+    var MAX_RETRIES = 2;
+    var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
+    var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
+    var responses = {};
+    responses[projectsAPIUrl] = null;
+    responses[orgsAPIUrl] = null;
+
+    var localStorageName = 'cachedAPIResponses';
+    var localStorageResponses = localStorage.getItem(localStorageName);
+
+    try {
+        localStorageResponses = JSON.parse(localStorageResponses);
+    } catch (error) {
+        localStorageResponses = {};
+    }
+
+    // How long a cached API response can stay in localStorage before we consider it stale
+    var MAX_LOCALSTORAGE_DAYS = 30;
+    var MAX_LOCALSTORAGE_AGE = MAX_LOCALSTORAGE_DAYS * 24 * 60 * 60 * 1000;    
+
+    function loadAsync(url, retryCount, retryLimit, callback) {
+        var xmlHttp;
+
+        // If we already have the response cached, don't fetch it again
+        if (responses[url] !== null) {
+            callback(responses[url]);
+            return;
+        }
+
+        // If the response is in localStorage, don't fetch it again
+        if (localStorageResponses !== null && localStorageResponses !== '') {
+            if (localStorageResponses[url] !== undefined) {
+                var response = localStorageResponses[url];
+
+                if (isFresh(response.date, MAX_LOCALSTORAGE_AGE)) {
+                    callback(response.json);
+                    return;
+                }
+            }
+        }
+
+        function isFresh(writeDate, maxAge) {
+            var currentDate, age;
+            
+            currentDate = new Date();
+            currentDate = currentDate.getTime();
+            age = currentDate - writeDate;
+
+            if (age <= maxAge) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+
+                if (xmlHttp.status == 200){
+                    var response = JSON.parse(xmlHttp.responseText);
+                    responses[url] = response;
+                    updateLocalStorage(url, response);
+                    callback(response);
+                } else {
+                    if (retryCount >= retryLimit) {
+                        // we should load the project list from localstorage here
+                        return;
+                    } else {
+                        retryCount = retryCount + 1;
+                        loadAsync(url, retryCount, retryLimit, callback);
+                    }
+                }
+            } else {
+                return;
+            }            
+        };
+
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+
+        function updateLocalStorage(url, response) {
+            var output, writeDate, lsData;
+
+            if (localStorageResponses === null || localStorageResponses === '') {
+                localStorageResponses = {};
+            }
+
+            output = {};
+
+            writeDate = new Date();
+            writeDate = writeDate.getTime();
+            output.date = writeDate;
+            output.json = response;
+
+            localStorageResponses[url] = output;
+
+            lsData = JSON.stringify(localStorageResponses);
+
+            localStorage.setItem(localStorageName, lsData);
+        }
+    }
+
+    function processResponse(response, selector, childClass, valueId, label, help, placeholder, filterOption) {
+        var typeaheadOptions = response.results;
+        var typeaheadCallback = function(option) {
+            var el;
+
+            el = $("input." + this.childID);
+            el.attr('value', option.id);
+        };
+        var displayOption = function(option, index) {
+            return option[filterOption];
+        };
+
+        buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption);
+    }
+
+    function getCallback(selector, childClass, valueId, label, help, placeholder, filterOption) {
+        var output = function(response) {
+            processResponse(response, selector, childClass, valueId, label, help, placeholder, filterOption);
+        };
+
+        return output;
+    }
+
+    $(document).ready(function() {
+        updateTypeaheads();
+    });   
+
+    function updateTypeaheads() {
+        $('.related-project-input').each( function() {
+
+            // Check if we've already rendered this typeahead
+            if ($(this).hasClass('has-typeahead')) {
+                return;
+            }
+
+            // The name of the property holding the text value we want to display in the typeahead
+            var filterOption = 'title';
+
+            // The id we'll give the input once it's been rendered
+            var childSelector = $(this).data('child-id');
+            var childClass = $(this).data('child-class');
+            var valueId = null;            
+            var labelText = 'Related project';
+            var helpText = 'A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.';
+            var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                        labelText + '</label>';
+            var help = '<p class="help-block hidden">' + helpText + '</p>';
+            var placeholder = 'Related project:';
+
+            if ($(this).data('value') !== "") {
+                valueId = $(this).data('value');
+            }
+
+            loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        });
+
+        $('.reportingOrganisation-input').each( function() {
+
+            // Check if we've already rendered this typeahead
+            if ($(this).hasClass('has-typeahead')) {
+                return;
+            }
+
+            // The name of the property holding the text value we want to display in the typeahead
+            var filterOption = 'name';            
+
+            // The id we'll give the input once it's been rendered
+            var childSelector = $(this).data('child-id');
+            var childClass = $(this).data('child-class');
+            var valueId = null;            
+            var labelText = 'Reporting organisation';
+            var helpText = 'Indicate the reporting organisation of this project. This organisation must be existing already in Akvo RSR.';
+            var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                        labelText + '</label>';
+            var help = '<p class="help-block hidden">' + helpText + '</p>';
+            var placeholder = 'Reporting organisation:';
+
+            if ($(this).data('value') !== "") {
+                valueId = $(this).data('value');
+            }
+
+            loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        });
+
+        $('.partner-input').each( function() {
+
+            // Check if we've already rendered this typeahead
+            if ($(this).hasClass('has-typeahead')) {
+                return;
+            }
+
+            // The name of the property holding the text value we want to display in the typeahead
+            var filterOption = 'name';            
+
+            // The id we'll give the input once it's been rendered
+            var childSelector = $(this).data('child-id');
+            var childClass = $(this).data('child-class');
+            var valueId = null;            
+            var labelText = 'Partner';
+            var helpText = '';
+            var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                        labelText + '</label>';
+            var help = '<p class="help-block hidden">' + helpText + '</p>';
+            var placeholder = 'Partner:';
+
+            if ($(this).data('value') !== "") {
+                valueId = $(this).data('value');
+            }
+
+            loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        });
+    } 
+    </script>
+
+    <script type="application/javascript">
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function savingStep(saving, step) {
+            var div, div_id;
+
+            div_id = '#savingstep' + step;
+            div = document.querySelector(div_id);
+
+            if (saving) {
+                div.innerHTML = 'Saving...';
+            } else {
+                div.innerHTML = '';
+            }
+        }
+
+        function removeErrors(form) {
+            var error_elements, form_elements;
+
+            error_elements = form.getElementsByClassName('error');
+            form_elements = form.getElementsByClassName('has-error');
+
+            while(error_elements.length > 0){
+                error_elements[0].parentNode.removeChild(error_elements[0]);
+            }
+
+            for (var j = 0; j < form_elements.length; j++) {
+                form_elements[j].className =
+                        form_elements[j].className.replace( /(?:^|\s)has-error(?!\S)/g , '' );
+            }
+        }
+
+        function addErrors(errors) {
+            for (var i = 0; i < errors.length; i++) {
+                var error, form_group, labels, span, textnode;
+
+                error = errors[i];
+                form_group = document.querySelector('#' + error.name).parentNode;
+                form_group.className += ' has-error';
+
+                labels = form_group.getElementsByTagName('label');
+                span = document.createElement("span");
+                textnode = document.createTextNode(' (' + error.error + ')');
+                span.appendChild(textnode);
+                span.className = 'error';
+                labels[0].appendChild(span);
+
+                if (i === 0) {
+                    document.getElementById(error.name).scrollIntoView();
+                    window.scrollBy(0, -100);
+                }
+            }
+        }
+
+        function replaceNames(newObjects, excludeClass) {
+            for (var i = 0; i < newObjects.length; i++) {
+                var parentNode, newParentNodeId, inputs, selects, textareas, excludedInputs, excludedSelects, excludedTextareas;
+
+                parentNode = document.getElementById(newObjects[i].div_id);
+                newParentNodeId = parentNode.getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                parentNode.setAttribute("id", newParentNodeId);
+
+                if (excludeClass === undefined) {
+                    inputs = parentNode.querySelectorAll('input');
+                    selects = parentNode.querySelectorAll('select');
+                    textareas = parentNode.querySelectorAll('textarea');
+
+                    excludedInputs = [];
+                    excludedSelects = [];
+                    excludedTextareas = [];
+                } else {
+                    inputs = parentNode.querySelectorAll('input:not(.' + excludeClass + ')');
+                    selects = parentNode.querySelectorAll('select:not(.' + excludeClass + ')');
+                    textareas = parentNode.querySelectorAll('textarea:not(.' + excludeClass + ')');
+
+                    excludedInputs = parentNode.querySelectorAll('input.' + excludeClass);
+                    excludedSelects = parentNode.querySelectorAll('select.' + excludeClass);
+                    excludedTextareas = parentNode.querySelectorAll('textarea.' + excludeClass);
+                }
+
+                for (var j=0; j < inputs.length; j++) {
+                    var newInputId = inputs[j].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                    inputs[j].setAttribute("id", newInputId);
+                    inputs[j].setAttribute("name", newInputId);
+                }
+
+                for (var k=0; k < selects.length; k++) {
+                    var newSelectId = selects[k].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                    selects[k].setAttribute("id", newSelectId);
+                    selects[k].setAttribute("name", newSelectId);
+                }
+
+                for (var l=0; l < textareas.length; l++) {
+                    var newTextareaId = textareas[l].getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
+                    textareas[l].setAttribute("id", newTextareaId);
+                    textareas[l].setAttribute("name", newTextareaId);
+                }
+
+                for (var m=0; m < excludedInputs.length; m++) {
+                    if (!(excludedInputs[m].hasAttribute(excludeClass))) {
+                        var newExcludedInputId = excludedInputs[m].getAttributeNode("id").value + '-' + newObjects[i].new_id;
+                        excludedInputs[m].setAttribute("id", newExcludedInputId);
+                        excludedInputs[m].setAttribute("name", newExcludedInputId);
+                        excludedInputs[m].setAttribute(excludeClass, "");
+                    }
+                }
+
+                for (var n=0; n < excludedSelects.length; n++) {
+                    if (!(excludedSelects[n].hasAttribute(excludeClass))) {
+                        var newExcludedSelectId = excludedSelects[n].getAttributeNode("id").value + '-' + newObjects[i].new_id;
+                        excludedSelects[n].setAttribute("id", newExcludedSelectId);
+                        excludedSelects[n].setAttribute("name", newExcludedSelectId);
+                        excludedSelects[n].setAttribute(excludeClass, "");
+                    }
+                }
+
+                for (var o=0; o < excludedTextareas.length; o++) {
+                    if (!(excludedTextareas[o].hasAttribute(excludeClass))) {
+                        var newExcludedTextareaId = excludedTextareas[o].getAttributeNode("id").value + '-' + newObjects[i].new_id;
+                        excludedTextareas[o].setAttribute("id", newExcludedTextareaId);
+                        excludedTextareas[o].setAttribute("name", newExcludedTextareaId);
+                        excludedTextareas[o].setAttribute(excludeClass, "");
+                    }
+                }
+            }
+        }
+
+        function replacePhoto(photo) {
+            if (photo !== null) {
+                var img_photo, photo_container, add_html;
+
+                img_photo = document.querySelector('#img-photo');
+
+                if (img_photo !== null) {
+                    var delete_link;
+
+                    img_photo.parentNode.removeChild(img_photo);
+                    delete_link = document.querySelector('#delete-photo');
+
+                    if (delete_link !== null) {
+                        delete_link.parentNode.removeChild(delete_link);
+                    }
+                }
+
+                photo_container = document.querySelector('#photo-container');
+                add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a onclick="deletePhoto(this);" class="btn btn-link" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>';
+
+                photo_container.innerHTML = add_html + photo_container.innerHTML;
+            }
+        }
+
+        function saveDocuments(form, api_url, step, new_objects) {
+            var documentFormData, documents, file_request;
+
+            documentFormData = new FormData();
+            documents = form.querySelectorAll('*[id^="document-document-"]');
+
+            for (var i=0; i < documents.length; i++) {
+                var document_id, document_files;
+                document_id = documents[i].getAttribute("id");
+                document_files = document.getElementById(document_id).files;
+
+                if (document_files !== undefined) {
+                    documentFormData.append(document_id, document_files[0]);
+                }
+            }
+
+            file_request = new XMLHttpRequest();
+            file_request.open("POST", api_url);
+            file_request.setRequestHeader("X-CSRFToken", csrftoken);
+
+            file_request.onload = function() {
+                if (file_request.status >= 200 && file_request.status < 400) {
+                    var response;
+
+                    removeErrors(form);
+                    response = JSON.parse(file_request.responseText);
+                    addErrors(response.errors);
+
+                    savingStep(false, step);
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    savingStep(false, step);
+                    return false;
+                }
+            };
+
+            file_request.onerror = function() {
+                // There was a connection error of some sort
+                savingStep(false, step);
+                return false;
+            };
+
+            file_request.send(documentFormData);
+        }
+
+        function submitStep(step, level) {
+            savingStep(true, step);
+
+            var api_url, form, form_data, form_div, request, file_request;
+
+            // Collect form data
+            form_div = '#admin-step-' + step;
+            form = document.querySelector(form_div);
+            form_data = serialize(form);
+
+            // Custom code per step
+            if (step === 1) {
+                form_data += '&eventFromPlanned=' + document.querySelector('#eventFromPlanned').value;
+                form_data += '&eventFromActual=' + document.querySelector('#eventFromActual').value;
+                form_data += '&eventEndPlanned=' + document.querySelector('#eventEndPlanned').value;
+                form_data += '&eventEndActual=' + document.querySelector('#eventEndActual').value;
+
+                var related_projects = form.getElementsByClassName('related-project-input');
+
+                for (var i=0; i < related_projects.length; i++) {
+                    var input, input_id, input_value;
+
+                    input = related_projects[i].getElementsByTagName('input')[0];
+                    input_id = input.getAttribute("id");
+                    if (input.value !== '') {
+                        input_value = input.getAttribute("value")
+                    } else {
+                        input_value = ''
+                    }
+
+                    form_data += '&value-' + input_id + '=' + input_value;
+                }
+            } else if (step === 3) {
+                var reporting_org, reporting_org_value, partners;
+
+                reporting_org = form.querySelector('#reportingOrganisation');
+
+                if (reporting_org.value !== '') {
+                    reporting_org_value = reporting_org.getAttribute("value")
+                } else {
+                    reporting_org_value = ''
+                }
+
+                form_data += '&value-reportingOrganisation=' + reporting_org_value;
+
+                partners = form.getElementsByClassName('partner-input');
+
+                for (var j=0; j < partners.length; j++) {
+                    var partner_input, partner_input_id, partner_input_value;
+
+                    partner_input = partners[j].getElementsByTagName('input')[0];
+                    partner_input_id = partner_input.getAttribute("id");
+                    if (partner_input.value !== '') {
+                        partner_input_value = partner_input.getAttribute("value")
+                    } else {
+                        partner_input_value = ''
+                    }
+
+                    form_data += '&value-' + partner_input_id + '=' + partner_input_value;
+                }
+            } else if (step === 7) {
+                form_data += '&level=' + level;
+            } else if (step === 9) {
+                var budgetItems, transactions, plannedDisbursements;
+
+                budgetItems = document.querySelectorAll('.budget-item');
+                transactions = document.querySelectorAll('.transaction-item');
+                plannedDisbursements = document.querySelectorAll('.planned-disbursement-item');
+
+                for (var k=0; k < budgetItems.length; k++) {
+                    var budgetItemNodeId, budgetItemId;
+
+                    budgetItemNodeId = budgetItems[k].getAttribute('id');
+                    budgetItemId = budgetItemNodeId.replace('budget_item-', '');
+
+                    form_data += '&budget-item-value-date-' + budgetItemId + '=' + document.querySelector('#budget-item-value-date-' + budgetItemId).value;
+                    form_data += '&budget-item-period-start-' + budgetItemId + '=' + document.querySelector('#budget-item-period-start-' + budgetItemId).value;
+                    form_data += '&budget-item-period-end-' + budgetItemId + '=' + document.querySelector('#budget-item-period-end-' + budgetItemId).value;
+                }
+
+                for (var l=0; l < transactions.length; l++) {
+                    var transactionNodeId, transactionId;
+
+                    transactionNodeId = transactions[l].getAttribute('id');
+                    transactionId = transactionNodeId.replace('transaction-', '');
+
+                    form_data += '&transaction-date-' + transactionId + '=' + document.querySelector('#transaction-date-' + transactionId).value;
+                    form_data += '&transaction-value-date-' + transactionId + '=' + document.querySelector('#transaction-value-date-' + transactionId).value;
+                }
+
+                for (var m=0; m < plannedDisbursements.length; m++) {
+                    var plannedDisbursementNodeId, plannedDisbursementId;
+
+                    plannedDisbursementNodeId = plannedDisbursements[m].getAttribute('id');
+                    plannedDisbursementId = plannedDisbursementNodeId.replace('planned_disbursement-', '');
+
+                    form_data += '&planned-disbursement-period-start-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-period-start-' + plannedDisbursementId).value;
+                    form_data += '&planned-disbursement-period-end-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-period-end-' + plannedDisbursementId).value;
+                    form_data += '&planned-disbursement-value-date-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-value-date-' + plannedDisbursementId).value;
+                }
+
+                form_data += '&level=' + level;
+            } else if (step === 10) {
+{#                var indicatorPeriods;#}
+{##}
+{#                indicatorPeriods = document.querySelectorAll('.indicator-period-item');#}
+{##}
+{#                for (var n=0; n < indicatorPeriods.length; n++) {#}
+{#                    var periodNodeId, periodId;#}
+{##}
+{#                    periodNodeId = indicatorPeriods[n].getAttribute('id');#}
+{#                    periodId = periodNodeId.replace('indicator_period-', '');#}
+{##}
+{#                    form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;#}
+{#                    form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;#}
+{#                }#}
+
+                form_data += '&level=' + level;
+            }
+
+            // Create request
+            api_url = '/rest/v1/project/{{ project.pk }}/admin_step_' + step + '/?format=json';
+
+            request = new XMLHttpRequest();
+            request.open('POST', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    var response;
+
+                    removeErrors(form);
+                    response = JSON.parse(request.responseText);
+                    if (step === 7 && level === 1) {
+                        replaceNames(response.new_objects, 'administrative');
+                    } else if (step === 9 && level === 1) {
+                        replaceNames(response.new_objects, 'sector');
+                    } else if (step === 10 && level === 1) {
+                        replaceNames(response.new_objects, 'indicator');
+                    } else if (step === 10 && level === 2) {
+                        replaceNames(response.new_objects, 'indicator-period');
+                    } else {
+                        replaceNames(response.new_objects);
+                    }
+                    addErrors(response.errors);
+
+                    if (step === 6) {
+                        saveDocuments(form, api_url, step, response.new_objects);
+                    }
+
+                    if (step === 7 && level < 2) {
+                        submitStep(7, level + 1);
+                        return false;
+                    }
+
+                    if (step === 9 && level < 2) {
+                        submitStep(9, level + 1);
+                        return false;
+                    }
+
+                    if (step === 10 && level < 3) {
+                        submitStep(10, level + 1);
+                        return false;
+                    }
+
+                    savingStep(false, step);
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    savingStep(false, step);
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                savingStep(false, step);
+                return false;
+            };
+
+            request.send(form_data);
+
+            if (step === 5) {
+                var formData = new FormData();
+                formData.append("photo", document.getElementById("photo").files[0]);
+
+                file_request = new XMLHttpRequest();
+                file_request.open("POST", api_url);
+                file_request.setRequestHeader("X-CSRFToken", csrftoken);
+
+                file_request.onload = function() {
+                    if (file_request.status >= 200 && file_request.status < 400) {
+                        var response;
+
+                        removeErrors(form);
+                        response = JSON.parse(file_request.responseText);
+                        replacePhoto(response.new_image);
+                        addErrors(response.errors);
+
+                        savingStep(false, step);
+                        return false;
+                    } else {
+                        // We reached our target server, but it returned an error
+                        savingStep(false, step);
+                        return false;
+                    }
+                };
+
+                file_request.onerror = function() {
+                    // There was a connection error of some sort
+                    savingStep(false, step);
+                    return false;
+                };
+
+                file_request.send(formData);
+            }
+        }
+
+        function deleteItem(itemId, itemType, parentDiv) {
+            var request;
+
+            // Create request
+            request = new XMLHttpRequest();
+            request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    parentDiv.parentNode.removeChild(parentDiv);
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                return false;
+            };
+
+            request.send();
+        }
+
+        function deletePhoto() {
+            var api_url, request;
+
+            // Create request
+            api_url = '/rest/v1/project/{{ project.pk }}/admin_delete_photo/?format=json';
+
+            request = new XMLHttpRequest();
+            request.open('POST', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    var imgNode, aNode;
+
+                    imgNode = document.querySelector('#img-photo');
+                    imgNode.parentNode.removeChild(imgNode);
+
+                    aNode = document.querySelector('#delete-photo');
+                    aNode.parentNode.removeChild(aNode);
+
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                return false;
+            };
+
+            request.send();
+        }
+
+        function deleteDocument(document_id) {
+            var api_url, request;
+
+            // Create request
+            api_url = '/rest/v1/project/{{ project.pk }}/admin_delete_document/' + document_id + '/?format=json';
+
+            request = new XMLHttpRequest();
+            request.open('POST', api_url, true);
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    var docNode, aNode;
+
+                    docNode = document.querySelector('#document-document-url-' + document_id);
+                    docNode.parentNode.removeChild(docNode);
+
+                    aNode = document.querySelector('#delete-document-document-' + document_id);
+                    aNode.parentNode.removeChild(aNode);
+
+                    return false;
+                } else {
+                    // We reached our target server, but it returned an error
+                    return false;
+                }
+            };
+
+            request.onerror = function() {
+                // There was a connection error of some sort
+                return false;
+            };
+
+            request.send();
+        }
+
+        function toggleFunding(node) {
+            var fundingNode, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            fundingNode = parentNode.getElementsByTagName("input")[1];
+
+            if (node.options[node.selectedIndex].value === 'funding') {
+                fundingNode.removeAttribute('disabled');
+            } else {
+                fundingNode.setAttribute('disabled', '');
+            }
+        }
+
+        function removePartial(node) {
+            var parentDiv, idArray, parentParent;
+
+            parentDiv = node.closest(".parent");
+            idArray = parentDiv.getAttributeNode("id").value.split("-");
+            parentParent = parentDiv.parentNode;
+
+            if (idArray[idArray.length - 2] === 'add') {
+                parentDiv.parentNode.removeChild(parentDiv);
+            } else {
+                var itemId, itemType;
+
+                itemId = idArray[idArray.length - 1];
+                idArray.pop();
+                itemType = idArray.join();
+
+                deleteItem(itemId, itemType, parentDiv);
+            }
+
+            // Update the progress bars to account for the removed inputs
+            setSectionCompletionPercentage($(parentParent.closest('.formStep')));
+        }
+
+        function scrollTo(div_id) {
+            var div = document.getElementById(div_id);
+            setTimeout(function () {
+                div.scrollIntoView();
+                window.scrollBy(0, -100);
+            }, 1);
+        }
+    </script>
+
+    <script type="application/javascript">
+
+    // Add an "info" glyphicon to each label
+    // Clicking the glyphicon shows the help text
+
+    function updateHelpIcons(container) {
+        $(container + ' label.control-label').each( function() {
+            var output, helpBlockIsLabelSibling, iconClasses, helpBlockFromLabel;
+
+            if ($(this).hasClass('has-icon')) {
+
+                // We've already processed this label. Do nothing.
+                return;
+            }
+
+            // Assume that the help block is a sibling of the label element
+            helpBlockIsLabelSibling = true;
+
+            if ($(this).parent().find('.help-block').length === 0) {
+                if ($(this).parent().parent().find('.help-block').length === 1) {
+                    helpBlockIsLabelSibling = false;
+                } else {
+
+                    // There is no help block for this label
+                    return;                    
+                }
+            }          
+
+            if (helpBlockIsLabelSibling) {
+                helpBlockFromLabel = $(this).parent().find('.help-block');
+            } else {
+                helpBlockFromLabel = $(this).parent().parent().find('.help-block');
+            }
+
+            iconClasses = 'glyphicon glyphicon-info-sign info-icon';
+
+            if (helpBlockFromLabel.is(':visible')) {
+                iconClasses += ' activated';
+            }
+
+            output = '<span class="' + iconClasses + '"></span>';
+
+            $(this).append(output);
+
+            $(this).find('.info-icon').on('click', '', function() {
+                var helpBlock;
+
+                if (helpBlockIsLabelSibling) {
+                    helpBlock = $(this).parent().parent().find('.help-block');
+                } else {
+                    helpBlock = $(this).parent().parent().parent().find('.help-block');
+                }            
+
+                if ($(this).hasClass('activated')) {
+                    helpBlock.fadeOut(400, function() {
+                        helpBlock.addClass('hidden');
+                    });
+                    $(this).removeClass('activated');                    
+                } else {
+                    helpBlock.hide();
+                    helpBlock.removeClass('hidden');
+                    helpBlock.fadeIn();
+                    $(this).addClass('activated');                   
+                }
+            });       
+
+            // Mark the label as processed to avoid adding extra help icons to it later
+
+            $(this).addClass('has-icon');
+        });        
+    }
+
+    function updateAllHelpIcons() {
+        var pageContainer;
+
+        pageContainer = '.projectEdit';
+        updateHelpIcons(pageContainer);
+    }
+
+    $(document).ready(function() {
+        updateAllHelpIcons();
+    });     
+
+    </script>
+
+    <script type="application/javascript">
+
+    // Measure the percentage of completion for each panel and display the results to the user
+
+    // Which elements count as inputs?
+    var INPUT_ELEMENTS = ['input', 'select', 'textarea'];
+
+    // Add a class selector here if you only want inputs with a certain class to count
+    // towards the completion percentage. If left blank, all inputs will count.
+    var MEASURE_CLASS = '.priority1'; 
+
+    function setSectionCompletionPercentage(section) {
+        var inputResults = getInputResults(section);
+        var numInputs = inputResults[0];
+        var numInputsCompleted = inputResults[1];
+
+        if (numInputs === 0) {
+
+            // There are no mandatory fields, show the section as complete
+            renderCompletionPercentage(1, 1, section);
+            return;
+        }
+
+        renderCompletionPercentage(numInputsCompleted, numInputs, section);
+    }
+
+    function setPageCompletionPercentage() {
+        var inputResults = getInputResults($('.projectEdit'));
+        var numInputs = inputResults[0];
+        var numInputsCompleted = inputResults[1];
+
+        renderCompletionPercentage(numInputsCompleted, numInputs, $('.formOverviewInfo'));
+    }
+
+    function getInputResults(section) {
+        var numInputs = 0;
+        var numInputsCompleted = 0;
+
+        for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+            var selector;
+
+            selector = INPUT_ELEMENTS[i] + MEASURE_CLASS;
+
+            section.find(selector).each( function() {
+
+                if ($(this).attr('name') === 'step') {
+
+                    // This is a progress bar input
+                    // Ignore it
+                    return true;
+                }
+
+                numInputs += 1;
+
+                if ($(this).val() !== '') {
+                    numInputsCompleted += 1;
+                }
+            });
+        }    
+
+        return [numInputs, numInputsCompleted];
+    }
+
+    function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
+
+        completionPercentage = Math.floor((numInputsCompleted / numInputs) * 100);
+        section.find('.progress-bar').attr('aria-valuenow', completionPercentage);
+        section.find('.progress .sr-only').text(completionPercentage + '% Complete');
+        section.find('.progress .progress-percentage').text(completionPercentage + '%');
+        section.find('div.progress-bar').width(completionPercentage + '%');
+
+        if (completionPercentage === 0) {
+            completionClass = 'empty';
+        } else if (completionPercentage < 100) {
+            completionClass = 'incomplete';
+        } else if (completionPercentage === 100) {
+            completionClass = 'complete';
+        }
+
+        section.find('div.progress-bar').attr('data-completion', completionClass);        
+    }    
+
+    function setSectionChangeListener(section) {
+        for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
+            var selector;
+
+            selector = INPUT_ELEMENTS[i] + MEASURE_CLASS;
+
+            section.find(selector).each( function() {
+                var listener;
+
+                if ($(this).hasClass('has-listener')) {
+                    // We have already added a class for this listener
+                    // do nothing
+
+                    return;
+                }
+
+                listener = getChangeListener(section, $(this));
+
+                $(this).on('change', listener);
+            });
+        }
+    }
+
+    function getChangeListener(section, el) {
+        var listener;
+
+        listener = function() {
+            var currentSection;
+            currentSection = section;
+
+            setSectionCompletionPercentage(currentSection);
+            el.addClass('has-listener');
+            setPageCompletionPercentage();
+        };
+        return listener;
+    }
+
+    function setAllSectionsCompletionPercentage() {
+        $('.formStep').each( function() {
+            setSectionCompletionPercentage($(this));
+        });
+    }
+
+    function setAllSectionsChangeListerner() {
+        $('.formStep').each( function() {
+            setSectionChangeListener($(this));
+        });        
+    }
+
+    $(document).ready( function() {
+        setAllSectionsCompletionPercentage();
+        setAllSectionsChangeListerner();
+        setPageCompletionPercentage();
+    });
+
+    </script>
+
+    <script type="application/javascript">
+    /* INPUT VALIDATION
+    ** Validate all inputs with the given class
+    ** Display validation status to the user in real time
+    */
+
+    function setValidationListeners() {
+        $('input').each( function() {
+            var listener;
+
+            if ($(this).hasClass('validation-listener')) {
+
+                // We've already set the listener for this element, do nothing
+                return;
+            }
+
+            // Max character counts for text inputs
+            if ($(this).attr('type') === 'text' && $(this).attr('maxlength')) {
+                listener = getLengthListener($(this));            
+                $(this).on('input', function() {
+                    listener();
+                });
+                $(this).on('focusout', function() {
+                    $(this).parent().find('.charsLeft').hide();
+                });
+            }
+        });
+
+        function getLengthListener(el) {
+            var output = function() {
+                var maxLength, currentLength, charsLeft, charMessage;
+
+                maxLength = parseInt(el.attr('maxlength'), 10);
+                currentLength = el.val().length;
+                charsLeft = maxLength - currentLength;
+                charMessage = '';
+
+                if (el.parent().find('.charsLeft').length === 0) {
+                    el.parent().append('<span class="charsLeft"></span>');
+                }
+
+                if (charsLeft === 1) {
+                    charMessage = ' character remaining';
+                } else {
+                    charMessage = ' characters remaining';
+                }
+
+                el.parent().find('.charsLeft').show().text(charsLeft + charMessage);
+            };
+
+            return output;
+        }    
+
+        // Mark mandatory fields with an asterisk
+
+        function markMandatoryFields() {
+
+            // Clear any existing markers 
+            $('.mandatory').remove();
+
+            $('.priority1 ~ label').each(function() {
+                var markContainer = '<span class="mandatory">*</span>';
+                var infoSpan = $(this).find('span');
+
+                $(markContainer).insertBefore(infoSpan);
+            });     
+        }
+
+        markMandatoryFields();
+    }
+
+    $(document).ready( function() {
+        setValidationListeners();
+    });
+    </script>
+    
+{% endblock %}
