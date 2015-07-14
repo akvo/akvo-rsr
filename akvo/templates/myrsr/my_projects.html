@@ -7,7 +7,7 @@
       <div class="col-sm-6"><h3>{% trans "My projects" %}</h3></div>
       {% has_perm 'rsr.add_project' user as can_add_project %}
       {% if can_add_project %}
-      <div class="col-sm-6 text-right btnHeader"><a href="http://rsr.akvo.org/admin/rsr/project/add" class="btn btn-primary"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</a></div>
+      <div class="col-sm-6 text-right btnHeader"><a href="/admin/rsr/project/add" class="btn btn-primary"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</a></div>
       {% endif %}
     </div>
     {% if not organisations %}

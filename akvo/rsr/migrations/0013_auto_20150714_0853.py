@@ -33,14 +33,25 @@ def null_locations(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0009_auto_20150528_1413'),
+        ('rsr', '0012_partnersite_show_keyword_logos'),
     ]
 
     operations = [
         migrations.RunPython(
             null_locations,
         ),
-
+        migrations.CreateModel(
+            name='CustomField',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', akvo.rsr.fields.ValidXMLCharField(help_text='(max 255 characters)', max_length=255, verbose_name='name', blank=True)),
+                ('value', akvo.rsr.fields.ValidXMLCharField(help_text='(max 2000 characters)', max_length=2000, verbose_name='value', blank=True)),
+                ('project', models.ForeignKey(related_name='custom_fields', verbose_name='project', to='rsr.Project')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
         migrations.RenameField(
             model_name='transactionsector',
             old_name='project',
@@ -81,18 +92,6 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AlterField(
-            model_name='organisation',
-            name='can_become_reporting',
-            field=models.BooleanField(default=False, help_text='Organisation is allowed to become a reporting organisation. Can be set by superusers.', verbose_name='Reportable'),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='organisation',
-            name='language',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The main language of the organisation', max_length=2, verbose_name='language', choices=[(b'en', b'English'), (b'es', b'Spanish'), (b'fr', b'French')]),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
             model_name='organisationlocation',
             name='country',
             field=models.ForeignKey(verbose_name='country', to='rsr.Country', null=True),
@@ -129,12 +128,6 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AlterField(
-            model_name='partnersite',
-            name='default_language',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'en', max_length=5, verbose_name='Site UI default language', choices=[(b'en', b'English'), (b'es', b'Spanish'), (b'fr', b'French')]),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
             model_name='planneddisbursement',
             name='value',
             field=models.DecimalField(null=True, verbose_name='value', max_digits=10, decimal_places=2, blank=True),
@@ -144,12 +137,6 @@ class Migration(migrations.Migration):
             model_name='project',
             name='goals_overview',
             field=akvo.rsr.fields.ProjectLimitedTextField(help_text='Provide a brief description of the overall project goals. (600 characters)', verbose_name='goals overview', blank=True),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='project',
-            name='language',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The main language of the project.', max_length=2, choices=[(b'en', b'English'), (b'es', b'Spanish'), (b'fr', b'French')]),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -204,12 +191,6 @@ class Migration(migrations.Migration):
             model_name='projectlocation',
             name='longitude',
             field=akvo.rsr.fields.LongitudeField(default=0, help_text="Go to <a href='http://mygeoposition.com/' target='_blank'>http://mygeoposition.com/</a> to get the decimal coordinates of your project.", null=True, verbose_name='longitude', db_index=True),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='projectupdate',
-            name='language',
-            field=akvo.rsr.fields.ValidXMLCharField(default=b'en', help_text='The language of the update', max_length=2, choices=[(b'en', b'English'), (b'es', b'Spanish'), (b'fr', b'French')]),
             preserve_default=True,
         ),
         migrations.AlterField(

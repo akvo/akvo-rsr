@@ -76,8 +76,10 @@ class ProjectDocument(models.Model):
         title = self.title if self.title else _(u'Untitled document')
         if self.url:
             return u'<a href="%s">%s</a>' % (self.url, title,)
-        else:
+        elif self.document:
             return u'<a href="%s">%s</a>' % (self.document.url, title,)
+        else:
+            return title
 
     def iati_category(self):
         return codelist_value(DocumentCategory, self, 'category')
