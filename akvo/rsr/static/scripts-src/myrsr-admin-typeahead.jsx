@@ -263,7 +263,7 @@ function submitStep(step, level) {
     form_data = serialize(form);
 
     // Custom code per step
-    if (step === 1) {
+    if (step === '1') {
         form_data += '&eventFromPlanned=' + document.querySelector('#eventFromPlanned').value;
         form_data += '&eventFromActual=' + document.querySelector('#eventFromActual').value;
         form_data += '&eventEndPlanned=' + document.querySelector('#eventEndPlanned').value;
@@ -284,7 +284,7 @@ function submitStep(step, level) {
 
             form_data += '&value-' + input_id + '=' + input_value;
         }
-    } else if (step === 3) {
+    } else if (step === '3') {
         var reporting_org, reporting_org_value, partners;
 
         reporting_org = form.querySelector('#reportingOrganisation');
@@ -312,9 +312,9 @@ function submitStep(step, level) {
 
             form_data += '&value-' + partner_input_id + '=' + partner_input_value;
         }
-    } else if (step === 7) {
+    } else if (step === '7') {
         form_data += '&level=' + level;
-    } else if (step === 9) {
+    } else if (step === '9') {
         var budgetItems, transactions, plannedDisbursements;
 
         budgetItems = document.querySelectorAll('.budget-item');
@@ -354,7 +354,7 @@ function submitStep(step, level) {
         }
 
         form_data += '&level=' + level;
-    } else if (step === 10) {
+    } else if (step === '10') {
 //        var indicatorPeriods;
 //
 //        indicatorPeriods = document.querySelectorAll('.indicator-period-item');
@@ -385,35 +385,35 @@ function submitStep(step, level) {
 
             removeErrors(form);
             response = JSON.parse(request.responseText);
-            if (step === 7 && level === 1) {
+            if (step === '7' && level === 1) {
                 replaceNames(response.new_objects, 'administrative');
-            } else if (step === 9 && level === 1) {
+            } else if (step === '9' && level === 1) {
                 replaceNames(response.new_objects, 'sector');
-            } else if (step === 10 && level === 1) {
+            } else if (step === '10' && level === 1) {
                 replaceNames(response.new_objects, 'indicator');
-            } else if (step === 10 && level === 2) {
+            } else if (step === '10' && level === 2) {
                 replaceNames(response.new_objects, 'indicator-period');
             } else {
                 replaceNames(response.new_objects);
             }
             addErrors(response.errors);
 
-            if (step === 6) {
+            if (step === '6') {
                 saveDocuments(form, api_url, step, response.new_objects);
             }
 
-            if (step === 7 && level < 2) {
-                submitStep(7, level + 1);
+            if (step === '7' && level < 2) {
+                submitStep('7', level + 1);
                 return false;
             }
 
-            if (step === 9 && level < 2) {
-                submitStep(9, level + 1);
+            if (step === '9' && level < 2) {
+                submitStep('9', level + 1);
                 return false;
             }
 
-            if (step === 10 && level < 3) {
-                submitStep(10, level + 1);
+            if (step === '10' && level < 3) {
+                submitStep('10', level + 1);
                 return false;
             }
 
@@ -434,7 +434,7 @@ function submitStep(step, level) {
 
     request.send(form_data);
 
-    if (step === 5) {
+    if (step === '5') {
         var formData = new FormData();
         formData.append("photo", document.getElementById("photo").files[0]);
 
@@ -605,23 +605,6 @@ function removePartial(node) {
     setSectionCompletionPercentage($(parentParent.closest('.formStep')));
 }
 
-function scrollTo(div_id) {
-    var div = document.getElementById(div_id);
-    setTimeout(function () {
-        div.scrollIntoView();
-        window.scrollBy(0, -100);
-    }, 1);
-}
-
-
-
-
-
-
-
-
-
-
 function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
     var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass;
 
@@ -787,6 +770,30 @@ function getCallback(selector, childClass, valueId, label, help, placeholder, fi
     };
 
     return output;
+}
+
+function setSubmitOnClicks() {
+    var forms;
+
+    forms = document.getElementsByTagName('form');
+
+    for (var i=0; i < forms.length; i++) {
+        var stepId;
+
+        stepId = forms[i].getAttribute('id').replace('admin-step-', '');
+        forms[i].onsubmit = getFormSubmit(stepId);
+    }
+}
+
+function getFormSubmit(stepId) {
+    return function(e) {
+        e.preventDefault();
+        if (stepId === '7' || '9' || '10') {
+            submitStep(stepId, 1);
+        } else {
+            submitStep(stepId);
+        }
+    };
 }
 
 function setPartialOnClicks() {
@@ -1251,6 +1258,8 @@ $(document).ready(function() {
 
         partialsCount[partialName] = 1;
     }
+
+    setSubmitOnClicks();
 
     setPartialOnClicks();
 
