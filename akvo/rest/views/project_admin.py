@@ -861,6 +861,15 @@ def project_admin_step7(request, pk=None):
                             'div_id': 'administrative_location-' + admin_id,
                         }
                     )
+
+                    new_objects.append(
+                        {
+                            'old_id': admin_id,
+                            'new_id': str(admin.pk),
+                            'div_id': 'administrative_location-' + admin_id,
+                        }
+                    )
+
                 elif not 'add' in admin_loc_id:
                     try:
                         admin = AdministrativeLocation.objects.get(pk=int(admin_loc_id))
@@ -1374,6 +1383,15 @@ def project_admin_step9(request, pk=None):
                             'div_id': 'transaction_sector-' + sector_id,
                         }
                     )
+
+                    new_objects.append(
+                        {
+                            'old_id': sector_id,
+                            'new_id': str(sector.pk),
+                            'div_id': 'transaction_sector-' + sector_id,
+                        }
+                    )
+
                 elif not 'add' in sector_trans_id:
                     try:
                         sector = TransactionSector.objects.get(pk=int(sector_trans_id))
@@ -1536,6 +1554,14 @@ def project_admin_step10(request, pk=None):
                             'div_id': 'indicator-' + indicator_id,
                         }
                     )
+
+                    new_objects.append(
+                        {
+                            'old_id': indicator_id,
+                            'new_id': str(indicator.pk),
+                            'div_id': 'indicator-' + indicator_id,
+                        }
+                    )
                 elif not 'add' in ind_res_id:
                     try:
                         indicator = Indicator.objects.get(pk=int(ind_res_id))
@@ -1618,6 +1644,14 @@ def project_admin_step10(request, pk=None):
                     new_objects.append(
                         {
                             'old_id': ip_ind_id,
+                            'new_id': str(ip.pk),
+                            'div_id': 'indicator_period-' + ip_id,
+                        }
+                    )
+
+                    new_objects.append(
+                        {
+                            'old_id': ip_id,
                             'new_id': str(ip.pk),
                             'div_id': 'indicator_period-' + ip_id,
                         }
