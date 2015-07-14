@@ -37,9 +37,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(
-            null_locations,
-        ),
+        # migrations.RunPython(
+        #     null_locations,
+        # ),
         migrations.CreateModel(
             name='CustomField',
             fields=[
