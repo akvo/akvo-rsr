@@ -37,7 +37,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-1" action="javascript: submitStep(1)">
+                            <form role="form" id="admin-step-1">
                             <div class="form-group control">
                                 <input type="text" class="form-control validate priority1" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45"/>
                                 <label for="projectTitle" class="control-label">Project title</label>
@@ -233,7 +233,7 @@
                             </div>
                         </div>  
                         <div class="formBlock">
-                            <form role="form" id="admin-step-2" action="javascript: submitStep(2)">
+                            <form role="form" id="admin-step-2">
                             <div class="contact-information-container">
                                 {% for contact in project.contacts.all %}
                                     {% include "myrsr/project_admin_partials/contact_information_input.html" with key=contact.pk %}
@@ -269,7 +269,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-3" action="javascript: submitStep(3)">
+                            <form role="form" id="admin-step-3">
                             <div class="form-group control">
                                 <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
                                 data-child-id="reportingOrganisation"
@@ -324,7 +324,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-4" action="javascript: submitStep(4)">
+                            <form role="form" id="admin-step-4">
                             <div class="form-group control">
                                 <textarea id="summary" class="form-control priority1" name="summary" placeholder="Type in summary of the project plan">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
                                 <label class="control-label" for="summary">Summary of project plan</label>
@@ -376,7 +376,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-5" action="javascript: submitStep(5)">
+                            <form role="form" id="admin-step-5">
                             <div class="form-group control" id="photo-container">
                                 {% if project.current_image %}
                                     {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
@@ -424,7 +424,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-6" action="javascript: submitStep(6)">
+                            <form role="form" id="admin-step-6">
                             <div class="form-group">
                                 <div class="link-container">
                                     {% for link in project.links.all %}
@@ -474,7 +474,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-7" action="javascript: submitStep(7, 1)">
+                            <form role="form" id="admin-step-7">
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="scope" id="scope" class="form-control priority3">
@@ -550,7 +550,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-8" action="javascript: submitStep(8)">
+                            <form role="form" id="admin-step-8">
                             <div class="sector-container">
                                 {% for sector in project.sectors.all %}
                                     {% include "myrsr/project_admin_partials/sector_input.html" with key=sector.pk %}
@@ -598,7 +598,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-9" action="javascript: submitStep(9, 1)">
+                            <form role="form" id="admin-step-9">
                             <div class="form-group control">
                                 <input type="text" class="form-control priority3" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="Capital spend percentage"
                                 {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
@@ -691,7 +691,7 @@
                             </div>
                         </div>
                         <div class="formBlock">
-                            <form role="form" id="admin-step-10" action="javascript: submitStep(10, 1)">
+                            <form role="form" id="admin-step-10">
                             <div class="condition-container">
                                 {% for condition in project.conditions.all %}
                                     {% include "myrsr/project_admin_partials/condition_input.html" with key=condition.pk %}
@@ -766,6 +766,16 @@
     <script type="application/json" id="default-values">
         {
             "project_id": "{{ project.pk }}"
+        }
+    </script>
+
+    <script type="application/javascript">
+        function scrollTo(div_id) {
+            var div = document.getElementById(div_id);
+            setTimeout(function () {
+                div.scrollIntoView();
+                window.scrollBy(0, -100);
+            }, 1);
         }
     </script>
 
