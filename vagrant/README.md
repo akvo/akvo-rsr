@@ -6,10 +6,13 @@ If you have never used Vagrant or the RSR Vagrant development environment, follo
 
 1. Ensure you have at least Vagrant version 1.2 installed:
     
-       ~$ vagrant --version
-	   vagrant version 1.2.2
+```bash
+$ vagrant version
+Installed Version: 1.7.2
+Latest Version: 1.7.2
+```
 
-   If you don't have Vagrant installed or if you have an old version installed, head over to [http://vagrantup.com](http://vagrantup.com) to get it.
+If you don't have Vagrant installed or if you have an old version installed, head over to [http://vagrantup.com](http://vagrantup.com) to get it.
    
 2. Ensure you have Oracle VirtualBox installed. If not, you can get it here: [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
 
@@ -27,7 +30,7 @@ The first time you use the RSR environment:
 
 Periodically there will be a new base RSR machine available, which will have updated infrastructure and supporting services. When this is the case, simply `vagrant destroy` to delete your old VM, then `vagrant up` as before; a completely new machine will be created.
 
-You may also want to clean up the old base boxes. They can be found in `$HOME/.vagrant.d/boxes` on UNIXy OSs, and you can simply old ones that you do not use. 
+You may also want to clean up the old base boxes. They can be found in `$HOME/.vagrant.d/boxes` on Mac OS X, Linux and other Unix systems. You can simply remove old ones that you do not use. 
 
 
 ## About the VM
@@ -37,14 +40,13 @@ The virtual machine is provisioned with the same [Puppet](http://puppetlabs.com/
 
 ## FAQ
 
-##### Q: How do I connect to mysql?
-**A**: From your main machine, you can use the script in `scripts/devhelpers/mysql.sh` which will connect you as root. You can also `ssh` into the machine (using `vagrant ssh`) and connect as root by using `sudo -H mysql`
-
 ##### Q: How do I see debug log output?
 **A**: By default, the RSR django application is run by [gunicorn](http://gunicorn.org/) to match the production servers. However for development, it's much easier to use the django debug server. To do this, first stop the gunicorn process, then start the debug server:
 
-        scripts/devhelpers/supervisorctl.sh stop rsr rsr_reload
-        scripts/devhelpers/manage.sh runserver
+```bash
+scripts/devhelpers/supervisorctl.sh stop rsr rsr_reload
+scripts/devhelpers/manage.sh runserver
+```
          
 ##### Q: How do I migrate or get a Django shell?
 **A**: There is a helper script at `scripts/devhelpers/manage.sh` which behaves exactly like the regular Django `python manage.py…`. It will ssh into the VM and execute the command you give it, eg `manage.sh migrate` or `manage.sh shell`
@@ -52,8 +54,10 @@ The virtual machine is provisioned with the same [Puppet](http://puppetlabs.com/
 ##### Q: How do I access a partnersite?
 **A**: You will need to add an entry to your `/etc/hosts` file (or Windows equivalent), and point either `<partner_name>.localdev.akvo.org` or `<partner_name>.localakvoapp.org` to `192.168.50.101` -  for example, add this line to be able to access the Cordaid partner site:
 
-       192.168.50.101 cordaid.localdev.akvo.org
-       192.168.50.101 cordaid.localakvoapp.org
+```
+192.168.50.101 cordaid.localdev.akvo.org
+192.168.50.101 cordaid.localakvoapp.org
+```
        
 ##### Q: How do I update the Python package dependencies?
 **A**: The virtualenv on the virtual machine will be updated to match the `requirements.txt` file in your checkout when it is provisioned. This happens when the machine is booted (`vagrant up`) or you can make it happen manually by running `vagrant provision`. If you change it, for example to add a new dependency or bump a dependency version, `vagrant provision` will bring the virtualenv up to date.
@@ -81,8 +85,6 @@ There are a variety of useful scripts in `scripts/devehelpers`:
 * `setup_etc_hosts.sh` will add the necessary IP/address combinations to your `/etc/hosts` file. `cleanup_etc_hosts.sh` will remove them again.
 
 * `manage.sh` will connect to the virtual machine and run `python manage.py`. You can use it just like `python manage.py`, eg, `manage.sh shell`
-
-* `mysql.sh` will connect to the mysql server on the virtual machine as `root`
 
 * `supervisorctl.sh` will connect you to the supervisor service, allowing you to manually start and stop RSR if it is running as a service.
 

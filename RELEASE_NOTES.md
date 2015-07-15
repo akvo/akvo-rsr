@@ -7,6 +7,64 @@ Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
 
+Akvo RSR version 3.5 Islamabad
+---
+
+Wednesday 15th July 2015, kasperbrandt
+
+New & Noteworthy
+---
+### Default logo for organisations
+A default logo for organisations has been added, which will show in the organisations list when an organisation has no logo, stating "Partner logo missing". This improves the UI of the organisations list and makes it clear that the organisation has no logo.
+
+Github issue: [#1007](https://github.com/akvo/akvo-rsr/issues/1007).
+
+### Consortium logos on project pages
+In addition to adding the consortium logos to a project page in RSR v3.4, we have now extended this functionality so that it's possible to to do so on Akvo Pages as well. In the RSR admin, there is a setting for every Akvo Page to allow consortium logos to be shown or not. On RSR itself, consortium logos will always be shown.
+
+Also, we've increased the size of the consortium logos.
+
+Github issues: [#1616](https://github.com/akvo/akvo-rsr/issues/1616) and [#1631](https://github.com/akvo/akvo-rsr/issues/1631).
+
+### Increase the size of update titles to 80 characters
+The maximum number of characters allowed in the title of a project update has been increased to allow 80 characters.
+
+Github issue: [#1625](https://github.com/akvo/akvo-rsr/issues/1625).
+
+### List of project partners sorted by name
+The list of project partners is now sorted alphabetically, whereas they used to be sorted randomly.
+
+Github issue: [#1643](https://github.com/akvo/akvo-rsr/issues/1643).
+
+Bug Fixes
+---
+### Fixed '+ more' links on project page
+The '+ more' links, which are used to indicate the number of additional partners on the project page, counted the reporting organisation double in some cases. This has now been fixed.
+
+Github issue: [#1608](https://github.com/akvo/akvo-rsr/issues/1608).
+
+### Fixed actual end date on project report page
+On the project report pages, the actual end date did not display correctly. Instead, the planned end date would be shown. This has now been resolved.
+
+Github issue: [#1648](https://github.com/akvo/akvo-rsr/issues/1648).
+
+Under the Hood
+---
+### Removed legacy files
+We have removed several legacy files that were used prior to RSR v3.
+
+Github issue: [#1504](https://github.com/akvo/akvo-rsr/issues/1504).
+
+### Updated README and INSTALL documentation
+As indicated by Paul Burt ([peeb](https://github.com/peeb)), our README and INSTALL documentation was outdated and contained broken links. The broken links have now been fixed.
+
+Github pull requests: [#1584](https://github.com/akvo/akvo-rsr/pull/1584) and [#1589](https://github.com/akvo/akvo-rsr/pull/1589).
+
+### Removed log warnings for locations without coordinates
+There used to be an entry for every location without coordinates that could not be loaded in a map. However, since we there are quite a few of these and since these warning were added every time a user tried to load a map, our logs got flooded with these warnings. Therefore, we have stopped logging these warnings.
+
+Github issue: [#1632](https://github.com/akvo/akvo-rsr/issues/1632).
+
 Akvo RSR version 3.4 Honiara
 ---
 

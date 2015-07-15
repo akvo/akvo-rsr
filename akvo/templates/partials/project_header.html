@@ -3,7 +3,7 @@
 <header class="projectHeader">
     <div class="container">
         <div class="row">
-            {% if not rsr_page and project.keyword_logos %}
+            {% if not rsr_page and project.keyword_logos or rsr_page and rsr_page.show_keyword_logos and project.keyword_logos %}
             <div class="col-sm-6">
             {% else %}
             <div class="col-sm-8">
@@ -14,10 +14,10 @@
                     <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">{% trans 'Show map' %} +</a></p>
                 </div>
             </div>
-            {% if not rsr_page and project.keyword_logos %}
+            {% if not rsr_page and project.keyword_logos or rsr_page and rsr_page.show_keyword_logos and project.keyword_logos %}
             <div class="col-sm-2 shareBlock">
                 {% for keyword in project.keyword_logos|slice:":2" %}
-                    {% img keyword 75 75 keyword.label %}
+                    {% img keyword 125 60 keyword.label %}
                 {% endfor %}
             </div>
             {% endif %}
