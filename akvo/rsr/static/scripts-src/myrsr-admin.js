@@ -111,13 +111,16 @@ function addErrors(errors) {
 
 function replaceNames(newObjects, excludeClass) {
     for (var i = 0; i < newObjects.length; i++) {
-        var parentNode, newParentNodeId, inputs, selects, textareas, excludedInputs, excludedSelects, excludedTextareas;
+        var parentNode, newParentNodeId, otherParents, inputs, selects, textareas, excludedInputs, excludedSelects, excludedTextareas;
 
         parentNode = document.getElementById(newObjects[i].div_id);
         newParentNodeId = parentNode.getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
         parentNode.setAttribute("id", newParentNodeId);
 
+        otherParents = parentNode.querySelectorAll('.parent');
+
         if (excludeClass === undefined) {
+
             inputs = parentNode.querySelectorAll('input');
             selects = parentNode.querySelectorAll('select');
             textareas = parentNode.querySelectorAll('textarea');
@@ -177,6 +180,14 @@ function replaceNames(newObjects, excludeClass) {
                 excludedTextareas[o].setAttribute("id", newExcludedTextareaId);
                 excludedTextareas[o].setAttribute("name", newExcludedTextareaId);
                 excludedTextareas[o].setAttribute(excludeClass, "");
+            }
+        }
+
+        for (var p=0; p < otherParents.length; p++) {
+            if (!(otherParents[p].hasAttribute(excludeClass))) {
+                var newOtherParentId = otherParents[p].getAttributeNode("id").value + '-' + newObjects[i].new_id;
+                otherParents[p].setAttribute("id", newOtherParentId);
+                otherParents[p].setAttribute(excludeClass, "");
             }
         }
     }
@@ -355,18 +366,20 @@ function submitStep(step, level) {
 
         form_data += '&level=' + level;
     } else if (step === '10') {
-//        var indicatorPeriods;
-//
-//        indicatorPeriods = document.querySelectorAll('.indicator-period-item');
-//
-//        for (var n=0; n < indicatorPeriods.length; n++)
-//            var periodNodeId, periodId;
-//
-//            periodNodeId = indicatorPeriods[n].getAttribute('id');
-//            periodId = periodNodeId.replace('indicator_period-', '');
-//
-//            form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;
-//            form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;
+        if (level === 3) {
+            var indicatorPeriods;
+
+            indicatorPeriods = document.querySelectorAll('.indicator-period-item');
+
+            for (var n = 0; n < indicatorPeriods.length; n++) {
+                var periodId;
+
+                periodId = indicatorPeriods[n].getAttribute('id').replace('indicator_period-', '');
+
+                form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;
+                form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;
+            }
+        }
 
         form_data += '&level=' + level;
     }

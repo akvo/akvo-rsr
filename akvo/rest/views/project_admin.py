@@ -844,7 +844,6 @@ def project_admin_step7(request, pk=None):
 
                     admin_loc_id_list = admin_loc_id.split('-')
                     loc_id = admin_loc_id_list.pop()
-                    admin_id = '-'.join(admin_loc_id_list)
 
                     try:
                         loc = ProjectLocation.objects.get(pk=str(loc_id))
@@ -858,15 +857,7 @@ def project_admin_step7(request, pk=None):
                         {
                             'old_id': admin_loc_id,
                             'new_id': str(admin.pk),
-                            'div_id': 'administrative_location-' + admin_id,
-                        }
-                    )
-
-                    new_objects.append(
-                        {
-                            'old_id': admin_id,
-                            'new_id': str(admin.pk),
-                            'div_id': 'administrative_location-' + admin_id,
+                            'div_id': 'administrative_location-' + admin_loc_id,
                         }
                     )
 
@@ -1384,14 +1375,6 @@ def project_admin_step9(request, pk=None):
                         }
                     )
 
-                    new_objects.append(
-                        {
-                            'old_id': sector_id,
-                            'new_id': str(sector.pk),
-                            'div_id': 'transaction_sector-' + sector_id,
-                        }
-                    )
-
                 elif not 'add' in sector_trans_id:
                     try:
                         sector = TransactionSector.objects.get(pk=int(sector_trans_id))
@@ -1537,7 +1520,6 @@ def project_admin_step10(request, pk=None):
 
                     ind_res_id_list = ind_res_id.split('-')
                     result_id = ind_res_id_list.pop()
-                    indicator_id = '-'.join(ind_res_id_list)
 
                     try:
                         result = Result.objects.get(pk=str(result_id))
@@ -1551,17 +1533,10 @@ def project_admin_step10(request, pk=None):
                         {
                             'old_id': ind_res_id,
                             'new_id': str(indicator.pk),
-                            'div_id': 'indicator-' + indicator_id,
+                            'div_id': 'indicator-' + ind_res_id,
                         }
                     )
 
-                    new_objects.append(
-                        {
-                            'old_id': indicator_id,
-                            'new_id': str(indicator.pk),
-                            'div_id': 'indicator-' + indicator_id,
-                        }
-                    )
                 elif not 'add' in ind_res_id:
                     try:
                         indicator = Indicator.objects.get(pk=int(ind_res_id))
@@ -1621,17 +1596,15 @@ def project_admin_step10(request, pk=None):
                 ip = None
                 ip_ind_id = key.split('-', 5)[5]
 
-                if 'add' in ip_ind_id and (#data['indicator-period-start-' + ip_ind_id]
-                                           #or data['indicator-period-end-' + ip_ind_id]
-                                           data['indicator-period-target-value-' + ip_ind_id]
+                if 'add' in ip_ind_id and (data['indicator-period-start-' + ip_ind_id]
+                                           or data['indicator-period-end-' + ip_ind_id]
+                                           or data['indicator-period-target-value-' + ip_ind_id]
                                            or data['indicator-period-target-value-comment-' + ip_ind_id]
                                            or data['indicator-period-actual-value-' + ip_ind_id]
                                            or data['indicator-period-actual-value-comment-' + ip_ind_id]):
 
                     ip_ind_id_list = ip_ind_id.split('-')
                     indicator_id = ip_ind_id_list.pop()
-                    _result_id = ip_ind_id_list.pop()
-                    ip_id = '-'.join(ip_ind_id_list)
 
                     try:
                         indicator = Indicator.objects.get(pk=str(indicator_id))
@@ -1645,15 +1618,7 @@ def project_admin_step10(request, pk=None):
                         {
                             'old_id': ip_ind_id,
                             'new_id': str(ip.pk),
-                            'div_id': 'indicator_period-' + ip_id,
-                        }
-                    )
-
-                    new_objects.append(
-                        {
-                            'old_id': ip_id,
-                            'new_id': str(ip.pk),
-                            'div_id': 'indicator_period-' + ip_id,
+                            'div_id': 'indicator_period-' + ip_ind_id,
                         }
                     )
 
@@ -1673,13 +1638,13 @@ def project_admin_step10(request, pk=None):
                     )
 
                 if ip:
-                    # ip_pstart_key = 'indicator-period-start-' + ip_ind_id
-                    # ip_pstart = data[ip_pstart_key] if data[ip_pstart_key] else None
-                    # errors = save_field(ip, 'period_start', ip_pstart_key, ip_pstart, errors)
-                    #
-                    # ip_pend_key = 'indicator-period-end-' + ip_ind_id
-                    # ip_pend = data[ip_pend_key] if data[ip_pend_key] else None
-                    # errors = save_field(ip, 'period_end', ip_pend_key, ip_pend, errors)
+                    ip_pstart_key = 'indicator-period-start-' + ip_ind_id
+                    ip_pstart = data[ip_pstart_key] if data[ip_pstart_key] else None
+                    errors = save_field(ip, 'period_start', ip_pstart_key, ip_pstart, errors)
+
+                    ip_pend_key = 'indicator-period-end-' + ip_ind_id
+                    ip_pend = data[ip_pend_key] if data[ip_pend_key] else None
+                    errors = save_field(ip, 'period_end', ip_pend_key, ip_pend, errors)
 
                     ip_target_key = 'indicator-period-target-value-' + ip_ind_id
                     errors = save_field(
