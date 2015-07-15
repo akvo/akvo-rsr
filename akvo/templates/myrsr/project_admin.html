@@ -384,7 +384,7 @@
                                     {% endthumbnail %}
                                     <a onclick="deletePhoto(this);" class="btn btn-link delete-object-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>
                                 {% endif %}
-                                <input type="file" class="form-control priority1" id="photo" name="photo">
+                                <input type="file" class="form-control priority1" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}">
                                 <label class="control-label" for="photo">Photo</label>
                             </div>
                             <div class="form-group">

@@ -554,13 +554,18 @@ function deletePhoto() {
 
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
-            var imgNode, aNode;
+            var imgNode, aNode, inputNode;
 
             imgNode = document.querySelector('#img-photo');
             imgNode.parentNode.removeChild(imgNode);
 
             aNode = document.querySelector('#delete-photo');
             aNode.parentNode.removeChild(aNode);
+
+            inputNode = document.querySelector('#photo');
+            inputNode.setAttribute('default', '');
+
+            setAllSectionsCompletionPercentage();
 
             return false;
         } else {
@@ -1201,6 +1206,8 @@ function getInputResults(section) {
             numInputs += 1;
 
             if ($(this).val() !== '') {
+                numInputsCompleted += 1;
+            } else if ($(this).attr('name') === 'photo' && $(this).attr('default') !== '') {
                 numInputsCompleted += 1;
             }
         });
