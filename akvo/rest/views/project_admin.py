@@ -339,12 +339,12 @@ def project_admin_step3(request, pk=None):
                         pk=data[partner_key]
                     ) if data[partner_key] else None
                     errors = save_field(
-                        partner, 'organisation', 'partner-' + str(partner.pk), partner_organisation,
+                        partner, 'organisation', 'partner-' + partner_id, partner_organisation,
                         errors
                     )
                 except Exception as e:
                     error = str(e).capitalize()
-                    errors.append({'name': partner_key, 'error': error})
+                    errors.append({'name': 'partner-' + partner_id, 'error': error})
 
                 partner_type_key = 'partner-type-' + partner_id
                 errors = save_field(
@@ -1180,9 +1180,9 @@ def project_admin_step9(request, pk=None):
                     or data['transaction-value-date-' + trans_id]
                     or data['transaction-reference-' + trans_id]
                     or data['transaction-description-' + trans_id]
-                    # or data['transaction-provider-org-' + trans_id]
+                    or data['transaction-provider-org-' + trans_id]
                     or data['transaction-provider-org-activity-' + trans_id]
-                    # or data['transaction-receiver-org-' + trans_id]
+                    or data['transaction-receiver-org-' + trans_id]
                     or data['transaction-receiver-org-activity-' + trans_id]
                     or data['transaction-aid-type-' + trans_id]
                     or data['transaction-disbursement-channel-' + trans_id]
@@ -1241,11 +1241,39 @@ def project_admin_step9(request, pk=None):
                         trans, 'description', trans_desc_key, data[trans_desc_key], errors
                     )
 
+                    trans_provorg_key = 'value-transaction-provider-org-' + trans_id
+                    try:
+                        provider_org = Organisation.objects.get(
+                            pk=data[trans_provorg_key]
+                        ) if data[trans_provorg_key] else None
+                        errors = save_field(
+                            trans, 'provider_organisation', 'transaction-provider-org-' + trans_id,
+                            provider_org, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'transaction-provider-org-' + trans_id,
+                                       'error': error})
+
                     trans_provorg_act_key = 'transaction-provider-org-activity-' + trans_id
                     errors = save_field(
                         trans, 'provider_organisation_activity', trans_provorg_act_key,
                         data[trans_provorg_act_key], errors
                     )
+
+                    trans_recorg_key = 'value-transaction-receiver-org-' + trans_id
+                    try:
+                        receiver_org = Organisation.objects.get(
+                            pk=data[trans_recorg_key]
+                        ) if data[trans_recorg_key] else None
+                        errors = save_field(
+                            trans, 'receiver_organisation', 'transaction-receiver-org-' + trans_id,
+                            receiver_org, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'transaction-receiver-org-' + trans_id,
+                                       'error': error})
 
                     trans_recorg_act_key = 'transaction-receiver-org-activity-' + trans_id
                     errors = save_field(

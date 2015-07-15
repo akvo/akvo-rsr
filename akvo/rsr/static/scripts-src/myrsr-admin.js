@@ -326,7 +326,7 @@ function submitStep(step, level) {
     } else if (step === '7') {
         form_data += '&level=' + level;
     } else if (step === '9') {
-        var budgetItems, transactions, plannedDisbursements;
+        var budgetItems, transactions, plannedDisbursements, receiverOrgs, providerOrgs;
 
         budgetItems = document.querySelectorAll('.budget-item');
         transactions = document.querySelectorAll('.transaction-item');
@@ -362,6 +362,37 @@ function submitStep(step, level) {
             form_data += '&planned-disbursement-period-start-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-period-start-' + plannedDisbursementId).value;
             form_data += '&planned-disbursement-period-end-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-period-end-' + plannedDisbursementId).value;
             form_data += '&planned-disbursement-value-date-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-value-date-' + plannedDisbursementId).value;
+        }
+
+        receiverOrgs = form.getElementsByClassName('transaction-receiver-org-input');
+        providerOrgs = form.getElementsByClassName('transaction-provider-org-input');
+
+        for (var o=0; o < receiverOrgs.length; o++) {
+            var receiver_org_input, receiver_org_input_id, receiver_org_input_value;
+
+            receiver_org_input = receiverOrgs[o].getElementsByTagName('input')[0];
+            receiver_org_input_id = receiver_org_input.getAttribute("id");
+            if (receiver_org_input.value !== '') {
+                receiver_org_input_value = receiver_org_input.getAttribute("value");
+            } else {
+                receiver_org_input_value = '';
+            }
+
+            form_data += '&value-' + receiver_org_input_id + '=' + receiver_org_input_value;
+        }
+
+        for (var p=0; p < providerOrgs.length; p++) {
+            var provider_org_input, provider_org_input_id, provider_org_input_value;
+
+            provider_org_input = providerOrgs[p].getElementsByTagName('input')[0];
+            provider_org_input_id = provider_org_input.getAttribute("id");
+            if (provider_org_input.value !== '') {
+                provider_org_input_value = provider_org_input.getAttribute("value");
+            } else {
+                provider_org_input_value = '';
+            }
+
+            form_data += '&value-' + provider_org_input_id + '=' + provider_org_input_value;
         }
 
         form_data += '&level=' + level;
@@ -985,6 +1016,62 @@ function updateTypeaheads() {
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
         var placeholder = 'Partner:';
+
+        if ($(this).data('value') !== "") {
+            valueId = $(this).data('value');
+        }
+
+        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+    });
+
+    $('.transaction-provider-org-input').each( function() {
+
+        // Check if we've already rendered this typeahead
+        if ($(this).hasClass('has-typeahead')) {
+            return;
+        }
+
+        // The name of the property holding the text value we want to display in the typeahead
+        var filterOption = 'name';
+
+        // The id we'll give the input once it's been rendered
+        var childSelector = $(this).data('child-id');
+        var childClass = $(this).data('child-class');
+        var valueId = null;
+        var labelText = 'Provider organisation';
+        var helpText = '';
+        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                    labelText + '</label>';
+        var help = '<p class="help-block hidden">' + helpText + '</p>';
+        var placeholder = 'Provider organisation:';
+
+        if ($(this).data('value') !== "") {
+            valueId = $(this).data('value');
+        }
+
+        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+    });
+
+    $('.transaction-receiver-org-input').each( function() {
+
+        // Check if we've already rendered this typeahead
+        if ($(this).hasClass('has-typeahead')) {
+            return;
+        }
+
+        // The name of the property holding the text value we want to display in the typeahead
+        var filterOption = 'name';
+
+        // The id we'll give the input once it's been rendered
+        var childSelector = $(this).data('child-id');
+        var childClass = $(this).data('child-class');
+        var valueId = null;
+        var labelText = 'Receiver organisation';
+        var helpText = '';
+        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                    labelText + '</label>';
+        var help = '<p class="help-block hidden">' + helpText + '</p>';
+        var placeholder = 'Receiver organisation:';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
