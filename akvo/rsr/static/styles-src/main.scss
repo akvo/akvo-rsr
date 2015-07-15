@@ -622,12 +622,20 @@ div.paginationWrap {
     @extend .help-block;
 }
 
+
+
 .editDate {
     font-style: italic;
     padding: 10px 0 10px 15px;
     margin-bottom: 15px;
     span {
         color: rgba($akvoBlack, 0.3);
+    }
+    span.published {
+        color: rgba($rsrGreen, 1);
+    }
+    span.notPublished {
+        color: rgba($secondary2, 1);
     }
 }
 
@@ -2108,6 +2116,14 @@ body {
     }
 }
 .formOverviewInfo {
+    button.viewProject {
+        margin-top: 10px;
+    }
+  
+    button.publishProject {
+        margin-bottom: 10px;
+    }
+
     .progress {
         .progress-bar {
             .progress-percentage {

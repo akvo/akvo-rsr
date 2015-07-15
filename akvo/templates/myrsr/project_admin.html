@@ -1,20 +1,47 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n bootstrap3 rsr_utils thumbnail compressed%}
+{% load i18n bootstrap3 rsr_utils thumbnail compressed rules %}
 {% block title %}{% trans 'MyRSR - Project Admin' %}{% endblock %}
 {% block myrsr_main %}
     <h4>{% trans 'Project admin' %}</h4>
     <!--*************************************** FORM Container **********************************************-->
 
     <div class="formOverviewInfo">
-        <div class="editDate">
-            <span>Date created:</span>
-            <time datetime="YYYY-MM-DDThh:mm:ssTZD">
-            {{ project.created_at }}
-            </time><br/>
-            <span>Date modified:</span>
-            <time datetime="YYYY-MM-DDThh:mm:ssTZD">
-            {{ project.last_modified_at }}
-            </time>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="editDate">
+                    <span>Date created:</span>
+                    <time datetime="YYYY-MM-DDThh:mm:ssTZD">
+                    {{ project.created_at }}
+                    </time><br/>
+                    <span>Date modified:</span>
+                    <time datetime="YYYY-MM-DDThh:mm:ssTZD">
+                    {{ project.last_modified_at }}
+                    </time>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <a href="{% url 'project-main' project.pk %}" target="_blank">
+                    <button class="btn btn-primary viewProject">View project page</button>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="editDate">
+                    <span>This project is: </span>
+                    {% if project.is_published %}
+                        <span class="published" id="publishingStatus">published</span>
+                    {% else %}
+                        <span class="notPublished" id="publishingStatus">not published</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
+                {% if not project.is_published and can_publish %}
+                    <button class="btn btn-success publishProject" id="publishProject">Publish project</button>
+                {% endif %}
+            </div>
         </div>
         <div class="progress overview">
             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
@@ -762,7 +789,8 @@
 
     <script type="application/json" id="default-values">
         {
-            "project_id": "{{ project.pk }}"
+            "project_id": "{{ project.pk }}",
+            "publishing_status_id": "{{ project.publishingstatus.pk }}"
         }
     </script>
 

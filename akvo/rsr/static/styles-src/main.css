@@ -552,6 +552,10 @@ div.paginationWrap {
   margin-bottom: 15px; }
   .editDate span {
     color: rgba(32, 32, 36, 0.3); }
+  .editDate span.published {
+    color: #00a79d; }
+  .editDate span.notPublished {
+    color: #e31b23; }
 
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
@@ -1651,6 +1655,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .progress .progress-bar .progress-percentage {
   display: none; }
 
+.formOverviewInfo button.viewProject {
+  margin-top: 10px; }
+.formOverviewInfo button.publishProject {
+  margin-bottom: 10px; }
 .formOverviewInfo .progress .progress-bar .progress-percentage {
   display: initial; }
 

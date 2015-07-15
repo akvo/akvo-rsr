@@ -1350,6 +1350,66 @@ function setValidationListeners() {
     markMandatoryFields();
 }
 
+function setPublishOnClick() {
+    try {
+        var publishButton;
+
+        publishButton = document.getElementById('publishProject');
+        publishButton.onclick = getProjectPublish(defaultValues.publishing_status_id, publishButton);
+
+    } catch (error) {
+        // No publish button
+        return false;
+    }
+}
+
+function getProjectPublish(publishingStatusId, publishButton) {
+    return function(e) {
+        e.preventDefault();
+
+        publishButton.setAttribute('disabled', '');
+
+        var api_url, request;
+
+        // Create request
+        api_url = '/rest/v1/publishing_status/' + publishingStatusId + '/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('PATCH', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                // Succesfully published project!
+                var publishingStatusNode;
+
+                publishButton.parentNode.removeChild(publishButton);
+
+                publishingStatusNode = document.getElementById('publishingStatus');
+                publishingStatusNode.className = "published";
+                publishingStatusNode.innerHTML = "published";
+
+                return false;
+            } else {
+                // We reached our target server, but it returned an error
+                publishButton.removeAttribute('disabled');
+                return false;
+            }
+        };
+
+        request.onerror = function() {
+            // There was a connection error of some sort
+            publishButton.removeAttribute('disabled');
+            return false;
+        };
+
+        request.send('{"status": "published"}');
+
+    };
+}
+
+
 $(document).ready(function() {
     updateTypeaheads();
 
@@ -1366,8 +1426,8 @@ $(document).ready(function() {
         partialsCount[partialName] = 1;
     }
 
+    setPublishOnClick();
     setSubmitOnClicks();
-
     setPartialOnClicks();
 
     updateAllHelpIcons();
