@@ -339,12 +339,12 @@ def project_admin_step3(request, pk=None):
                         pk=data[partner_key]
                     ) if data[partner_key] else None
                     errors = save_field(
-                        partner, 'organisation', 'partner-' + str(partner.pk), partner_organisation,
+                        partner, 'organisation', 'partner-' + partner_id, partner_organisation,
                         errors
                     )
                 except Exception as e:
                     error = str(e).capitalize()
-                    errors.append({'name': partner_key, 'error': error})
+                    errors.append({'name': 'partner-' + partner_id, 'error': error})
 
                 partner_type_key = 'partner-type-' + partner_id
                 errors = save_field(
@@ -844,7 +844,6 @@ def project_admin_step7(request, pk=None):
 
                     admin_loc_id_list = admin_loc_id.split('-')
                     loc_id = admin_loc_id_list.pop()
-                    admin_id = '-'.join(admin_loc_id_list)
 
                     try:
                         loc = ProjectLocation.objects.get(pk=str(loc_id))
@@ -858,15 +857,7 @@ def project_admin_step7(request, pk=None):
                         {
                             'old_id': admin_loc_id,
                             'new_id': str(admin.pk),
-                            'div_id': 'administrative_location-' + admin_id,
-                        }
-                    )
-
-                    new_objects.append(
-                        {
-                            'old_id': admin_id,
-                            'new_id': str(admin.pk),
-                            'div_id': 'administrative_location-' + admin_id,
+                            'div_id': 'administrative_location-' + admin_loc_id,
                         }
                     )
 
@@ -1189,9 +1180,9 @@ def project_admin_step9(request, pk=None):
                     or data['transaction-value-date-' + trans_id]
                     or data['transaction-reference-' + trans_id]
                     or data['transaction-description-' + trans_id]
-                    # or data['transaction-provider-org-' + trans_id]
+                    or data['transaction-provider-org-' + trans_id]
                     or data['transaction-provider-org-activity-' + trans_id]
-                    # or data['transaction-receiver-org-' + trans_id]
+                    or data['transaction-receiver-org-' + trans_id]
                     or data['transaction-receiver-org-activity-' + trans_id]
                     or data['transaction-aid-type-' + trans_id]
                     or data['transaction-disbursement-channel-' + trans_id]
@@ -1250,11 +1241,39 @@ def project_admin_step9(request, pk=None):
                         trans, 'description', trans_desc_key, data[trans_desc_key], errors
                     )
 
+                    trans_provorg_key = 'value-transaction-provider-org-' + trans_id
+                    try:
+                        provider_org = Organisation.objects.get(
+                            pk=data[trans_provorg_key]
+                        ) if data[trans_provorg_key] else None
+                        errors = save_field(
+                            trans, 'provider_organisation', 'transaction-provider-org-' + trans_id,
+                            provider_org, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'transaction-provider-org-' + trans_id,
+                                       'error': error})
+
                     trans_provorg_act_key = 'transaction-provider-org-activity-' + trans_id
                     errors = save_field(
                         trans, 'provider_organisation_activity', trans_provorg_act_key,
                         data[trans_provorg_act_key], errors
                     )
+
+                    trans_recorg_key = 'value-transaction-receiver-org-' + trans_id
+                    try:
+                        receiver_org = Organisation.objects.get(
+                            pk=data[trans_recorg_key]
+                        ) if data[trans_recorg_key] else None
+                        errors = save_field(
+                            trans, 'receiver_organisation', 'transaction-receiver-org-' + trans_id,
+                            receiver_org, errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'transaction-receiver-org-' + trans_id,
+                                       'error': error})
 
                     trans_recorg_act_key = 'transaction-receiver-org-activity-' + trans_id
                     errors = save_field(
@@ -1379,14 +1398,6 @@ def project_admin_step9(request, pk=None):
                     new_objects.append(
                         {
                             'old_id': sector_trans_id,
-                            'new_id': str(sector.pk),
-                            'div_id': 'transaction_sector-' + sector_id,
-                        }
-                    )
-
-                    new_objects.append(
-                        {
-                            'old_id': sector_id,
                             'new_id': str(sector.pk),
                             'div_id': 'transaction_sector-' + sector_id,
                         }
@@ -1537,7 +1548,6 @@ def project_admin_step10(request, pk=None):
 
                     ind_res_id_list = ind_res_id.split('-')
                     result_id = ind_res_id_list.pop()
-                    indicator_id = '-'.join(ind_res_id_list)
 
                     try:
                         result = Result.objects.get(pk=str(result_id))
@@ -1551,17 +1561,10 @@ def project_admin_step10(request, pk=None):
                         {
                             'old_id': ind_res_id,
                             'new_id': str(indicator.pk),
-                            'div_id': 'indicator-' + indicator_id,
+                            'div_id': 'indicator-' + ind_res_id,
                         }
                     )
 
-                    new_objects.append(
-                        {
-                            'old_id': indicator_id,
-                            'new_id': str(indicator.pk),
-                            'div_id': 'indicator-' + indicator_id,
-                        }
-                    )
                 elif not 'add' in ind_res_id:
                     try:
                         indicator = Indicator.objects.get(pk=int(ind_res_id))
@@ -1621,17 +1624,15 @@ def project_admin_step10(request, pk=None):
                 ip = None
                 ip_ind_id = key.split('-', 5)[5]
 
-                if 'add' in ip_ind_id and (#data['indicator-period-start-' + ip_ind_id]
-                                           #or data['indicator-period-end-' + ip_ind_id]
-                                           data['indicator-period-target-value-' + ip_ind_id]
+                if 'add' in ip_ind_id and (data['indicator-period-start-' + ip_ind_id]
+                                           or data['indicator-period-end-' + ip_ind_id]
+                                           or data['indicator-period-target-value-' + ip_ind_id]
                                            or data['indicator-period-target-value-comment-' + ip_ind_id]
                                            or data['indicator-period-actual-value-' + ip_ind_id]
                                            or data['indicator-period-actual-value-comment-' + ip_ind_id]):
 
                     ip_ind_id_list = ip_ind_id.split('-')
                     indicator_id = ip_ind_id_list.pop()
-                    _result_id = ip_ind_id_list.pop()
-                    ip_id = '-'.join(ip_ind_id_list)
 
                     try:
                         indicator = Indicator.objects.get(pk=str(indicator_id))
@@ -1645,15 +1646,7 @@ def project_admin_step10(request, pk=None):
                         {
                             'old_id': ip_ind_id,
                             'new_id': str(ip.pk),
-                            'div_id': 'indicator_period-' + ip_id,
-                        }
-                    )
-
-                    new_objects.append(
-                        {
-                            'old_id': ip_id,
-                            'new_id': str(ip.pk),
-                            'div_id': 'indicator_period-' + ip_id,
+                            'div_id': 'indicator_period-' + ip_ind_id,
                         }
                     )
 
@@ -1673,13 +1666,13 @@ def project_admin_step10(request, pk=None):
                     )
 
                 if ip:
-                    # ip_pstart_key = 'indicator-period-start-' + ip_ind_id
-                    # ip_pstart = data[ip_pstart_key] if data[ip_pstart_key] else None
-                    # errors = save_field(ip, 'period_start', ip_pstart_key, ip_pstart, errors)
-                    #
-                    # ip_pend_key = 'indicator-period-end-' + ip_ind_id
-                    # ip_pend = data[ip_pend_key] if data[ip_pend_key] else None
-                    # errors = save_field(ip, 'period_end', ip_pend_key, ip_pend, errors)
+                    ip_pstart_key = 'indicator-period-start-' + ip_ind_id
+                    ip_pstart = data[ip_pstart_key] if data[ip_pstart_key] else None
+                    errors = save_field(ip, 'period_start', ip_pstart_key, ip_pstart, errors)
+
+                    ip_pend_key = 'indicator-period-end-' + ip_ind_id
+                    ip_pend = data[ip_pend_key] if data[ip_pend_key] else None
+                    errors = save_field(ip, 'period_end', ip_pend_key, ip_pend, errors)
 
                     ip_target_key = 'indicator-period-target-value-' + ip_ind_id
                     errors = save_field(

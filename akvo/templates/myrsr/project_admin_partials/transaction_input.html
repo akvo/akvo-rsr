@@ -35,12 +35,12 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <select class="form-control priority3" name="transaction-provider-org{% if key %}-{{ key }}{% endif %}" id="transaction-provider-org{% if key %}-{{ key }}{% endif %}" placeholder="Provider organisation">
-                    <option {% if not transaction.provider_organisation %} selected="selected" {% endif %}>
-                        Provider organisation:
-                    </option>
-                </select>  
-                <label class="control-label" for="transaction-provider-org{% if key %}-{{ key }}{% endif %}">Provider organisation</label>
+                <div class="transaction-provider-org-input transaction-provider-org{% if key %}-{{ key }}{% endif %} typeahead-container"
+                data-child-id="transaction-provider-org{% if key %}-{{ key }}{% endif %}"
+                data-child-class="priority3"
+                data-value="{% if transaction.provider_organisation.id %}{{transaction.provider_organisation.id}}{% endif %}"
+                data-count-class="transaction-provider-org">
+                </div>
             </div>
             <div class="col-md-6 control">
                 <input type="text" class="form-control priority3" name="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}" id="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}" placeholder="Provider organisation activity id"
@@ -52,18 +52,12 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <select class="form-control priority3" name="transaction-receiver-org{% if key %}-{{ key }}{% endif %}" id="transaction-receiver-org{% if key %}-{{ key }}{% endif %}" placeholder="Receiver organisation">
-                    <option {% if not transaction.receiver_organisation %} selected="selected" {% endif %}>
-                        Receiver organisation:
-                    </option>
-                    {% for org in organisation %}
-                        <option value="{{org.id}}" 
-                        {% if transaction.receiver_organisation.name == org.name %} selected="selected" {% endif %}>
-                            {{org.name}}
-                        </option>
-                    {% endfor %}
-                </select> 
-                <label class="control-label" for="transaction-receiver-org{% if key %}-{{ key }}{% endif %}">Receiver organisation</label>
+                <div class="transaction-receiver-org-input transaction-receiver-org{% if key %}-{{ key }}{% endif %} typeahead-container"
+                data-child-id="transaction-receiver-org{% if key %}-{{ key }}{% endif %}"
+                data-child-class="priority3"
+                data-value="{% if transaction.receiver_organisation.id %}{{transaction.receiver_organisation.id}}{% endif %}"
+                data-count-class="transaction-receiver-org">
+                </div>
             </div>
             <div class="col-md-6 control">
                 <input type="text" class="form-control priority3" name="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}" id="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}" placeholder="Receiver organisation activity id"

@@ -111,13 +111,16 @@ function addErrors(errors) {
 
 function replaceNames(newObjects, excludeClass) {
     for (var i = 0; i < newObjects.length; i++) {
-        var parentNode, newParentNodeId, inputs, selects, textareas, excludedInputs, excludedSelects, excludedTextareas;
+        var parentNode, newParentNodeId, otherParents, inputs, selects, textareas, excludedInputs, excludedSelects, excludedTextareas;
 
         parentNode = document.getElementById(newObjects[i].div_id);
         newParentNodeId = parentNode.getAttributeNode("id").value.replace(newObjects[i].old_id, newObjects[i].new_id);
         parentNode.setAttribute("id", newParentNodeId);
 
+        otherParents = parentNode.querySelectorAll('.parent');
+
         if (excludeClass === undefined) {
+
             inputs = parentNode.querySelectorAll('input');
             selects = parentNode.querySelectorAll('select');
             textareas = parentNode.querySelectorAll('textarea');
@@ -177,6 +180,14 @@ function replaceNames(newObjects, excludeClass) {
                 excludedTextareas[o].setAttribute("id", newExcludedTextareaId);
                 excludedTextareas[o].setAttribute("name", newExcludedTextareaId);
                 excludedTextareas[o].setAttribute(excludeClass, "");
+            }
+        }
+
+        for (var p=0; p < otherParents.length; p++) {
+            if (!(otherParents[p].hasAttribute(excludeClass))) {
+                var newOtherParentId = otherParents[p].getAttributeNode("id").value + '-' + newObjects[i].new_id;
+                otherParents[p].setAttribute("id", newOtherParentId);
+                otherParents[p].setAttribute(excludeClass, "");
             }
         }
     }
@@ -315,7 +326,7 @@ function submitStep(step, level) {
     } else if (step === '7') {
         form_data += '&level=' + level;
     } else if (step === '9') {
-        var budgetItems, transactions, plannedDisbursements;
+        var budgetItems, transactions, plannedDisbursements, receiverOrgs, providerOrgs;
 
         budgetItems = document.querySelectorAll('.budget-item');
         transactions = document.querySelectorAll('.transaction-item');
@@ -353,20 +364,53 @@ function submitStep(step, level) {
             form_data += '&planned-disbursement-value-date-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-value-date-' + plannedDisbursementId).value;
         }
 
+        receiverOrgs = form.getElementsByClassName('transaction-receiver-org-input');
+        providerOrgs = form.getElementsByClassName('transaction-provider-org-input');
+
+        for (var o=0; o < receiverOrgs.length; o++) {
+            var receiver_org_input, receiver_org_input_id, receiver_org_input_value;
+
+            receiver_org_input = receiverOrgs[o].getElementsByTagName('input')[0];
+            receiver_org_input_id = receiver_org_input.getAttribute("id");
+            if (receiver_org_input.value !== '') {
+                receiver_org_input_value = receiver_org_input.getAttribute("value");
+            } else {
+                receiver_org_input_value = '';
+            }
+
+            form_data += '&value-' + receiver_org_input_id + '=' + receiver_org_input_value;
+        }
+
+        for (var p=0; p < providerOrgs.length; p++) {
+            var provider_org_input, provider_org_input_id, provider_org_input_value;
+
+            provider_org_input = providerOrgs[p].getElementsByTagName('input')[0];
+            provider_org_input_id = provider_org_input.getAttribute("id");
+            if (provider_org_input.value !== '') {
+                provider_org_input_value = provider_org_input.getAttribute("value");
+            } else {
+                provider_org_input_value = '';
+            }
+
+            form_data += '&value-' + provider_org_input_id + '=' + provider_org_input_value;
+        }
+
         form_data += '&level=' + level;
     } else if (step === '10') {
-//        var indicatorPeriods;
-//
-//        indicatorPeriods = document.querySelectorAll('.indicator-period-item');
-//
-//        for (var n=0; n < indicatorPeriods.length; n++)
-//            var periodNodeId, periodId;
-//
-//            periodNodeId = indicatorPeriods[n].getAttribute('id');
-//            periodId = periodNodeId.replace('indicator_period-', '');
-//
-//            form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;
-//            form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;
+        if (level === 3) {
+            var indicatorPeriods;
+
+            indicatorPeriods = document.querySelectorAll('.indicator-period-item');
+
+            for (var n = 0; n < indicatorPeriods.length; n++) {
+                var periodId;
+
+                periodId = indicatorPeriods[n].getAttribute('id').replace('indicator_period-', '');
+
+                form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;
+                form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;
+            }
+        }
 
         form_data += '&level=' + level;
     }
@@ -510,13 +554,18 @@ function deletePhoto() {
 
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
-            var imgNode, aNode;
+            var imgNode, aNode, inputNode;
 
             imgNode = document.querySelector('#img-photo');
             imgNode.parentNode.removeChild(imgNode);
 
             aNode = document.querySelector('#delete-photo');
             aNode.parentNode.removeChild(aNode);
+
+            inputNode = document.querySelector('#photo');
+            inputNode.setAttribute('default', '');
+
+            setAllSectionsCompletionPercentage();
 
             return false;
         } else {
@@ -979,6 +1028,62 @@ function updateTypeaheads() {
 
         loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
     });
+
+    $('.transaction-provider-org-input').each( function() {
+
+        // Check if we've already rendered this typeahead
+        if ($(this).hasClass('has-typeahead')) {
+            return;
+        }
+
+        // The name of the property holding the text value we want to display in the typeahead
+        var filterOption = 'name';
+
+        // The id we'll give the input once it's been rendered
+        var childSelector = $(this).data('child-id');
+        var childClass = $(this).data('child-class');
+        var valueId = null;
+        var labelText = 'Provider organisation';
+        var helpText = '';
+        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                    labelText + '</label>';
+        var help = '<p class="help-block hidden">' + helpText + '</p>';
+        var placeholder = 'Provider organisation:';
+
+        if ($(this).data('value') !== "") {
+            valueId = $(this).data('value');
+        }
+
+        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+    });
+
+    $('.transaction-receiver-org-input').each( function() {
+
+        // Check if we've already rendered this typeahead
+        if ($(this).hasClass('has-typeahead')) {
+            return;
+        }
+
+        // The name of the property holding the text value we want to display in the typeahead
+        var filterOption = 'name';
+
+        // The id we'll give the input once it's been rendered
+        var childSelector = $(this).data('child-id');
+        var childClass = $(this).data('child-class');
+        var valueId = null;
+        var labelText = 'Receiver organisation';
+        var helpText = '';
+        var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
+                    labelText + '</label>';
+        var help = '<p class="help-block hidden">' + helpText + '</p>';
+        var placeholder = 'Receiver organisation:';
+
+        if ($(this).data('value') !== "") {
+            valueId = $(this).data('value');
+        }
+
+        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+    });
 }
 
 function updateHelpIcons(container) {
@@ -1101,6 +1206,8 @@ function getInputResults(section) {
             numInputs += 1;
 
             if ($(this).val() !== '') {
+                numInputsCompleted += 1;
+            } else if ($(this).attr('name') === 'photo' && $(this).attr('default') !== '') {
                 numInputsCompleted += 1;
             }
         });
