@@ -761,6 +761,9 @@
 {% block js %}
     {{ block.super }}
 
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.6/zepto.min.js"></script>
+    <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
+
     <script type="text/template" id="related-project-input">{% include "myrsr/project_admin_partials/related_project_input.html" %}</script>
     <script type="text/template" id="budget-item-input">{% include "myrsr/project_admin_partials/budget_item_input.html" %}</script>
     <script type="text/template" id="condition-input">{% include "myrsr/project_admin_partials/condition_input.html" %}</script> 
