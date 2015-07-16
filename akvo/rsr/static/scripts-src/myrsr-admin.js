@@ -1297,6 +1297,27 @@ function setValidationListeners() {
         }
     });
 
+    $('textarea').each( function() {
+        var listener;
+
+        if ($(this).hasClass('validation-listener')) {
+
+            // We've already set the listener for this element, do nothing
+            return;
+        }
+
+        // Max character counts for text inputs
+        if ($(this).attr('maxlength')) {
+            listener = getLengthListener($(this));
+            $(this).on('input', function() {
+                listener();
+            });
+            $(this).on('focusout', function() {
+                $(this).parent().find('.charsLeft').hide();
+            });
+        }
+    });
+
     function getLengthListener(el) {
         var output = function() {
             var maxLength, currentLength, charsLeft, charMessage;

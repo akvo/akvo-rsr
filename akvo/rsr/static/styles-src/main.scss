@@ -615,7 +615,7 @@ div.paginationWrap {
 
 .help-block {
     font-size: 0.9em;
-    color: rgba($akvoPurple, 0.3);
+    color: rgba($akvoPurple, 0.5);
 }
 
 .charsLeft {
@@ -2235,6 +2235,9 @@ body {
     }
     .col-md-4 a.btn.btn-link, .col-md-3 a.btn.btn-link {
         margin-top: 23px;
+    }
+    .add-object-link {
+        margin-top: 5px;
     }
     input, textarea, select, div.input-group {
         & + label,

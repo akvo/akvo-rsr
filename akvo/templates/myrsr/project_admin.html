@@ -82,7 +82,7 @@
                                 <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
                             </div>
                             <hr/>
-                            <h6>{% trans 'Related projects' %}</h6>
+                            <h5>{% trans 'Related projects' %}</h5>
                             <p class="help-block">{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}</p>
                             <div class="form-group">
                                 <div class="select-group control">
@@ -103,10 +103,12 @@
                                     {% include "myrsr/project_admin_partials/related_project_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <hr/>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <a href="#" class="add-related-project add-object-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -176,7 +178,7 @@
                                 <p class="help-block hidden">{% trans 'Enter the language used when entering the details for this project.' %}</p>
                             </div>
                             <hr/>
-                            <h6>{% trans 'Project photo' %}</h6>
+                            <h5>{% trans 'Project photo' %}</h5>
                             <p class="help-block">{% trans 'Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page.' %}</p>
                             <div class="row">
                                 <div class="col-md-12 text-center" id="photo-container">
@@ -196,13 +198,13 @@
                                 <div class="row">
                                     <div class="col-md-6 control">
                                         <input type="text" class="form-control priority2" id="photoCaption" placeholder="{% trans 'Photo caption' %}" name="photoCaption"
-                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %}>
+                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %} maxlength="50">
                                         <label for="photoCaption" class="control-label">{% trans 'Photo caption' %}</label>
                                         <p class="help-block hidden">{% trans 'Briefly describe who or what you see in the photo.' %}</p>
                                     </div>
                                     <div class="col-md-6 control">
                                         <input type="text" class="form-control priority2" id="photoCredit" placeholder="{% trans 'Photo credit' %}" name="photoCredit"
-                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %}>
+                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %} maxlength="50">
                                         <label for="photoCredit" class="control-label">{% trans 'Photo credit' %}</label>
                                         <p class="help-block hidden">{% trans 'Enter who took the photo.' %}</p>
                                     </div>
@@ -283,7 +285,7 @@
                 <div class="myPanel borderBottom" id="panel2">
                     <div class="formStep stepTwo">
                         <div onclick="scrollTo('panel2')">
-                            <label for="stepTwo" class="stepLabel"><h4>02 - Contact information</h4></label>
+                            <label for="stepTwo" class="stepLabel"><h4>02 - {% trans 'Contact information' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepTwo">
                         <div class="progress">
@@ -292,6 +294,7 @@
                             </div>
                         </div>  
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts.' %}</p>
                             <form role="form" id="admin-step-2">
                             <div class="contact-information-container">
                                 {% for contact in project.contacts.all %}
@@ -299,15 +302,18 @@
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/contact_information_input.html" with key='add-0' %}
                                 {% endfor %}
-                            </div> 
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <a href="#" class="add-contact-information add-object-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep2"></div>
                             </div>
@@ -319,7 +325,7 @@
                 <div class="myPanel borderBottom" id="panel3">
                     <div class="formStep stepThree">
                         <div onclick="scrollTo('panel3')">
-                            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - Partners</h4></label>
+                            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepThree">                        
                         <div class="progress">
@@ -328,41 +334,57 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">
+                                {% trans 'Indicate the reporting organisation of this project. If the organisation does not exist in the system, please add the organisation to RSR, so it shows up in the drop down menu. Note that only RSR administrators can add new organisations to the RSR database. If you don’t know who is an RSR administrator, contact' %} <a href="mailto:support@akvo.org">support@akvo.org</a>.
+                            </p>
                             <form role="form" id="admin-step-3">
-                            <div class="form-group control">
-                                <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
-                                data-child-id="reportingOrganisation"
-                                data-child-class="priority1"
-                                data-value="{% if project.sync_owner %}{{project.sync_owner.id}}{% endif %}"
-                                data-count-class="reportingOrganisation">
-                                </div>                                
-                            </div>
-                            <div class="form-group control">
-                                <div class="checkbox">
-                                    <label for="secondaryReporter" class="control-label">
-                                        <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
-                                        {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
-                                            Secondary reporter
-                                        </label>
+                            <h5>{% trans 'Reporting organisation' %}</h5>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group control">
+                                        <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
+                                        data-child-id="reportingOrganisation"
+                                        data-child-class="priority1"
+                                        data-value="{% if project.sync_owner %}{{project.sync_owner.id}}{% endif %}"
+                                        data-count-class="reportingOrganisation">
+                                        </div>
+                                    </div>
                                 </div>
-                                <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
+                                <div class="col-md-4">
+                                    <div class="form-group control">
+                                        <div class="checkbox">
+                                            <label for="secondaryReporter" class="control-label">
+                                                <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
+                                                {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
+                                                    {% trans 'Secondary reporter' %}
+                                            </label>
+                                        </div>
+                                        <p class="help-block hidden">
+                                            {% trans 'Indicate whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.' %}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <hr/>
+                            <h5>{% trans 'Participating organisations' %}</h5>
                             <div class="partner-container">
                                 {% for partnership in project.partnerships.all %}
                                     {% include "myrsr/project_admin_partials/partner_input.html" with key=partnership.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/partner_input.html" with key='add-0' %}
                                 {% endfor %}
-                            </div>                         
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-partner" id=""><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <a href="#" class="add-partner add-object-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep3"></div>
                             </div>
@@ -374,7 +396,7 @@
                 <div class="myPanel borderBottom" id="panel4">
                     <div class="formStep stepFour">
                         <div onclick="scrollTo('panel4')">
-                            <label for="stepFour" class="stepLabel"><h4>04 - Descriptions</h4></label>
+                            <label for="stepFour" class="stepLabel"><h4>04 - {% trans 'Project descriptions' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepFour">                        
                         <div class="progress">
@@ -383,34 +405,49 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future.' %}</p>
                             <form role="form" id="admin-step-4">
                             <div class="form-group control">
-                                <textarea id="summary" class="form-control priority1" name="summary" placeholder="Type in summary of the project plan">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
-                                <label class="control-label" for="summary">Summary of project plan</label>
+                                <textarea id="summary" class="form-control priority1" name="summary" placeholder="{% trans 'Summary of project plan' %}" maxlength="400" rows="4">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
+                                <label class="control-label" for="summary">{% trans 'Summary of project plan' %}</label>
+                                <p class="help-block hidden">
+                                    {% blocktrans %}Enter a brief summary. The summary should explain:<br/>
+                                    - Why the project is being carried out;<br/>
+                                    - Where it is taking place;<br/>
+                                    - Who will benefit and/or participate;<br/>
+                                    - What it specifically hopes to accomplish;<br/>
+                                    - How those specific goals will be reached{% endblocktrans %}
+                                </p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="background" class="form-control priority2" name="background" placeholder="Type in background">{% if project.background %}{{project.background}}{% endif %}</textarea>
-                                <label class="control-label" for="background">Background</label>
+                                <textarea id="background" class="form-control priority2" name="background" placeholder="{% trans 'Background' %}" maxlength="1000" rows="8">{% if project.background %}{{project.background}}{% endif %}</textarea>
+                                <label class="control-label" for="background">{% trans 'Background' %}</label>
+                                <p class="help-block hidden">{% trans 'This can include geographical, political, environmental, social and/or cultural issues.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="currentSituation" class="form-control priority2" name="currentSituation" placeholder="Type in current situation">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
-                                <label class="control-label" for="currentSituation">Current situation</label>
+                                <textarea id="currentSituation" class="form-control priority2" name="currentSituation" placeholder="{% trans 'Baseline situation' %}" maxlength="600" rows="5">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
+                                <label class="control-label" for="currentSituation">{% trans 'Baseline situation' %}</label>
+                                <p class="help-block hidden">{% trans 'Describe the situation at the start of the project.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" placeholder="Type in project plan">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
-                                <label class="control-label" for="projectPlan">Project plan</label>
+                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" placeholder="{% trans 'Project plan' %}" rows="8">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
+                                <label class="control-label" for="projectPlan">{% trans 'Project plan' %}</label>
+                                <p class="help-block hidden">{% trans 'Detailed information about the implementation of the project: the what, how, who and when.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="targetGroup" class="form-control priority2" name="targetGroup" placeholder="Type in target group">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
-                                <label class="control-label" for="targetGroup">Target group</label>
+                                <textarea id="targetGroup" class="form-control priority2" name="targetGroup" placeholder="{% trans 'Target group' %}" maxlength="600" rows="5">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
+                                <label class="control-label" for="targetGroup">{% trans 'Target group' %}</label>
+                                <p class="help-block hidden">{% trans 'This should include information about the people, organisations or resources that are being impacted by this project.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="sustainability" class="form-control priority2" name="sustainability" placeholder="Type in sustainability">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
-                                <label class="control-label" for="sustainability">Sustainability</label>
+                                <textarea id="sustainability" class="form-control priority2" name="sustainability" placeholder="{% trans 'Sustainability' %}" rows="8">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
+                                <label class="control-label" for="sustainability">{% trans 'Sustainability' %}</label>
+                                <p class="help-block hidden">{% trans 'Describe plans for sustaining/maintaining results after implementation is complete.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" placeholder="Type in goals overview">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
-                                <label class="control-label" for="goalsOverview">Goals overview</label>
+                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" placeholder="{% trans 'Goals overview' %}" maxlength="600" rows="5">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
+                                <label class="control-label" for="goalsOverview">{% trans 'Goals overview' %}</label>
+                                <p class="help-block hidden">{% trans 'Provide a brief description of the overall project goals.' %}</p>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">

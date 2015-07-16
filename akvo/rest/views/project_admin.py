@@ -213,8 +213,7 @@ def project_admin_step2(request, pk=None):
                                         or data['contact-address-' + contact_id]
                                         or data['contact-website-' + contact_id]
                                         or data['contact-department-' + contact_id]
-                                        or data['contact-country-' + contact_id]
-                                        or data['contact-state-' + contact_id]):
+                                        or data['contact-country-' + contact_id]):
                 contact = ProjectContact.objects.create(project=project)
                 new_objects.append(
                     {
@@ -285,11 +284,6 @@ def project_admin_step2(request, pk=None):
                 else:
                     country = None
                 errors = save_field(contact, 'country', contact_country_key, country, errors)
-
-                contact_state_key = 'contact-state-' + contact_id
-                errors = save_field(
-                    contact, 'state', contact_state_key, data[contact_state_key], errors
-                )
 
     return Response({
             'errors': errors,
