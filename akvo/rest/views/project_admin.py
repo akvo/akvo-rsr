@@ -72,98 +72,115 @@ def project_admin_step1(request, pk=None):
         return HttpResponseForbidden()
 
     data = request.POST
+    files = request.FILES
     errors = []
     new_objects = []
+    new_image = None
 
-    errors = save_field(project, 'title', 'projectTitle', data['projectTitle'], errors)
-    errors = save_field(project, 'subtitle', 'projectSubTitle', data['projectSubTitle'], errors)
-    errors = save_field(project, 'iati_activity_id', 'iatiId', data['iatiId'], errors)
-    errors = save_field(project, 'status', 'projectStatus', data['projectStatus'], errors)
+    if not files and 'photo' not in data.keys():
+        errors = save_field(project, 'title', 'projectTitle', data['projectTitle'], errors)
+        errors = save_field(project, 'subtitle', 'projectSubTitle', data['projectSubTitle'], errors)
+        errors = save_field(project, 'iati_activity_id', 'iatiId', data['iatiId'], errors)
+        errors = save_field(project, 'status', 'projectStatus', data['projectStatus'], errors)
 
-    date_start_planned = data['eventFromPlanned'] if data['eventFromPlanned'] else None
-    errors = save_field(
-        project, 'date_start_planned', 'eventFromPlanned', date_start_planned, errors
-    )
+        date_start_planned = data['eventFromPlanned'] if data['eventFromPlanned'] else None
+        errors = save_field(
+            project, 'date_start_planned', 'eventFromPlanned', date_start_planned, errors
+        )
 
-    date_start_actual = data['eventFromActual'] if data['eventFromActual'] else None
-    errors = save_field(project, 'date_start_actual', 'eventFromActual', date_start_actual, errors)
+        date_start_actual = data['eventFromActual'] if data['eventFromActual'] else None
+        errors = save_field(project, 'date_start_actual', 'eventFromActual', date_start_actual, errors)
 
-    date_end_planned = data['eventEndPlanned'] if data['eventEndPlanned'] else None
-    errors = save_field(project, 'date_end_planned', 'eventEndPlanned', date_end_planned, errors)
+        date_end_planned = data['eventEndPlanned'] if data['eventEndPlanned'] else None
+        errors = save_field(project, 'date_end_planned', 'eventEndPlanned', date_end_planned, errors)
 
-    date_end_actual = data['eventEndActual'] if data['eventEndActual'] else None
-    errors = save_field(project, 'date_end_actual', 'eventEndActual', date_end_actual, errors)
+        date_end_actual = data['eventEndActual'] if data['eventEndActual'] else None
+        errors = save_field(project, 'date_end_actual', 'eventEndActual', date_end_actual, errors)
 
-    errors = save_field(project, 'language', 'projectLanguage', data['projectLanguage'], errors)
-    errors = save_field(project, 'currency', 'projectCurrency', data['projectCurrency'], errors)
+        errors = save_field(project, 'language', 'projectLanguage', data['projectLanguage'], errors)
 
-    hierarchy = data['projectHierarchy'] if data['projectHierarchy'] else None
-    errors = save_field(project, 'hierarchy', 'projectHierarchy', hierarchy, errors)
+        hierarchy = data['projectHierarchy'] if data['projectHierarchy'] else None
+        errors = save_field(project, 'hierarchy', 'projectHierarchy', hierarchy, errors)
 
-    errors = save_field(
-        project, 'default_aid_type', 'defaultAidType', data['defaultAidType'], errors
-    )
-    errors = save_field(
-        project, 'default_flow_type', 'defaultFlowType', data['defaultFlowType'], errors
-    )
-    errors = save_field(
-        project, 'default_tied_status', 'defaultTiedStatus', data['defaultTiedStatus'], errors
-    )
-    errors = save_field(
-        project, 'collaboration_type', 'collaborationType', data['collaborationType'], errors
-    )
-    errors = save_field(
-        project, 'default_finance_type', 'defaultFinanceType', data['defaultFinanceType'], errors
-    )
+        errors = save_field(
+            project, 'current_image_caption', 'photoCaption', data['photoCaption'], errors
+        )
+        errors = save_field(
+            project, 'current_image_credit', 'photoCredit', data['photoCredit'], errors
+        )
 
-    # Related projects
-    for key in data.keys():
-        if 'value-related-project-project-' in key:
-            rp = None
-            rp_id = key.split('-', 4)[4]
+        errors = save_field(
+            project, 'default_aid_type', 'defaultAidType', data['defaultAidType'], errors
+        )
+        errors = save_field(
+            project, 'default_flow_type', 'defaultFlowType', data['defaultFlowType'], errors
+        )
+        errors = save_field(
+            project, 'default_tied_status', 'defaultTiedStatus', data['defaultTiedStatus'], errors
+        )
+        errors = save_field(
+            project, 'collaboration_type', 'collaborationType', data['collaborationType'], errors
+        )
+        errors = save_field(
+            project, 'default_finance_type', 'defaultFinanceType', data['defaultFinanceType'], errors
+        )
 
-            if 'add' in rp_id and (data['value-related-project-project-' + rp_id]
-                                   or data['related-project-iati-identifier-' + rp_id]
-                                   or data['related-project-relation-' + rp_id]):
-                rp = RelatedProject.objects.create(project=project)
-                new_objects.append(
-                    {
-                        'old_id': 'add-' + rp_id[-1],
-                        'new_id': str(rp.pk),
-                        'div_id': 'related_project-add-' + rp_id[-1],
-                    }
-                )
-            elif not 'add' in rp_id:
-                try:
-                    rp = RelatedProject.objects.get(pk=int(rp_id))
-                except Exception as e:
-                    error = str(e).capitalize()
-                    errors.append({'name': key, 'error': error})
+        # Related projects
+        for key in data.keys():
+            if 'value-related-project-project-' in key:
+                rp = None
+                rp_id = key.split('-', 4)[4]
 
-            if rp:
-                rp_project = 'value-related-project-project-' + rp_id
-                try:
-                    rp_rp = Project.objects.get(pk=data[rp_project]) if data[rp_project] else None
-                    errors = save_field(
-                        rp, 'related_project', 'related-project-project-' + str(rp.pk), rp_rp,
-                        errors
+                if 'add' in rp_id and (data['value-related-project-project-' + rp_id]
+                                       or data['related-project-iati-identifier-' + rp_id]
+                                       or data['related-project-relation-' + rp_id]):
+                    rp = RelatedProject.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': 'add-' + rp_id[-1],
+                            'new_id': str(rp.pk),
+                            'div_id': 'related_project-add-' + rp_id[-1],
+                        }
                     )
-                except Exception as e:
-                    error = str(e).capitalize()
-                    errors.append({'name': 'related-project-project-' + str(rp.pk), 'error': error})
+                elif not 'add' in rp_id:
+                    try:
+                        rp = RelatedProject.objects.get(pk=int(rp_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
 
-                rp_iati_id_key = 'related-project-iati-identifier-' + rp_id
-                errors = save_field(
-                    rp, 'related_iati_id', rp_iati_id_key, data[rp_iati_id_key], errors
-                )
+                if rp:
+                    rp_project = 'value-related-project-project-' + rp_id
+                    try:
+                        rp_rp = Project.objects.get(pk=data[rp_project]) if data[rp_project] else None
+                        errors = save_field(
+                            rp, 'related_project', 'related-project-project-' + str(rp.pk), rp_rp,
+                            errors
+                        )
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'related-project-project-' + str(rp.pk), 'error': error})
 
-                rp_relation_key = 'related-project-relation-' + rp_id
-                errors = save_field(rp, 'relation', rp_relation_key, data[rp_relation_key], errors)
+                    rp_iati_id_key = 'related-project-iati-identifier-' + rp_id
+                    errors = save_field(
+                        rp, 'related_iati_id', rp_iati_id_key, data[rp_iati_id_key], errors
+                    )
+
+                    rp_relation_key = 'related-project-relation-' + rp_id
+                    errors = save_field(rp, 'relation', rp_relation_key, data[rp_relation_key], errors)
+
+    elif 'photo' in files.keys():
+        errors = save_field(project, 'current_image', 'photo', files['photo'], errors)
+        if not errors:
+            new_image = get_thumbnail(
+                project.current_image, '250x250', format="PNG", upscale=True
+            ).url
 
     return Response(
         {
             'errors': errors,
             'new_objects': new_objects,
+            'new_image': new_image,
         }
     )
 
@@ -1046,6 +1063,8 @@ def project_admin_step9(request, pk=None):
             project, 'country_budget_vocabulary', 'country-budget-vocabulary',
             data['country-budget-vocabulary'], errors
         )
+
+        errors = save_field(project, 'currency', 'projectCurrency', data['projectCurrency'], errors)
 
         # Budget items
         for key in data.keys():
