@@ -1,5 +1,7 @@
+{% load i18n %}
 <div class="partner-item parent" id="partnership{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
+        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
         <div class="row">
             <div class="col-md-4 control">
                 <div class="partner-input partner{% if key %}-{{ key }}{% endif %} typeahead-container"
@@ -13,31 +15,38 @@
                 <div class="select-group">
                     <select name="partner-type{% if key %}-{{ key }}{% endif %}"
                     id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)">
-                        <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>Type:</option>
-                        <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>Field partner</option>
-                        <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>Funding partner</option>
-                        <option value="sponsor" {% if partnership.partner_type == 'sponsor' %} selected="selected" {% endif %}>Sponsor partner</option>
-                        <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>Support partner</option>
+                        <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>{% trans 'Type' %}:</option>
+                        <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>{% trans 'Field partner' %}</option>
+                        <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
+                        <option value="sponsor" {% if partnership.partner_type == 'sponsor' %} selected="selected" {% endif %}>{% trans 'Sponsor partner' %}</option>
+                        <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>{% trans 'Support partner' %}</option>
                     </select>
-                    <label for="partner-type{% if key %}-{{ key }}{% endif %}" class="control-label">Type</label>
+                    <label for="partner-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
+                    <p class="help-block hidden">
+                        {% blocktrans %}Select the role of the organisation within the project. There are four different types:<br/>
+                        Funding organisation = The government or organisation that provides funds to the activity<br/>
+                        Implementing organisation = The organisation that physically carries out the activity or intervention<br/>
+                        Accountable organisation = An organisation responsible for oversight of the activity and its outcomes<br/>
+                        Extending organisation = An organisation that manages the budget and direction of an activity on behalf of the funding organisation{% endblocktrans %}
+                    </p>
                 </div>
             </div>
             <div class="col-md-4 control">
                 <div class="input-group">
                     <span class="input-group-addon">{{ project.get_currency_display }}</span>
                     <input type="text" class="form-control priority1" id="funding-amount{% if key %}-{{ key }}{% endif %}"
-                    placeholder="Funding amount" name="funding-amount{% if key %}-{{ key }}{% endif %}"
+                    placeholder="{% trans 'Funding amount' %}" name="funding-amount{% if key %}-{{ key }}{% endif %}"
                     {% if partnership.funding_amount %}value="{{partnership.funding_amount}}"{% endif %}
                     {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
                 </div>
-                <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">Funding amount</label>
+                <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Funding amount' %}</label>
+                <p class="help-block hidden">{% trans 'The amount that the partner is funding the project for. Note that it’s only possible to indicate a funding amount for funding partners.' %}</p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 col-md-offset-3 text-center" id="delete-partner{% if key %}-{{ key }}{% endif %}">
-                <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-partner{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete partner</a>
+                <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-partner{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete participating organisation' %}</a>
             </div>
         </div>
-        <hr/>
     </div>
 </div>

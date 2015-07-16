@@ -103,10 +103,12 @@
                                     {% include "myrsr/project_admin_partials/related_project_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <hr/>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> Add another related project</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <a href="#" class="add-related-project add-object-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -300,10 +302,13 @@
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/contact_information_input.html" with key='add-0' %}
                                 {% endfor %}
-                            </div> 
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <a href="#" class="add-contact-information add-object-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
                                 </div>
                             </div>
                             <div class="row">
@@ -329,41 +334,57 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">
+                                {% trans 'Indicate the reporting organisation of this project. If the organisation does not exist in the system, please add the organisation to RSR, so it shows up in the drop down menu. Note that only RSR administrators can add new organisations to the RSR database. If you don’t know who is an RSR administrator, contact' %} <a href="mailto:support@akvo.org">support@akvo.org</a>.
+                            </p>
                             <form role="form" id="admin-step-3">
-                            <div class="form-group control">
-                                <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
-                                data-child-id="reportingOrganisation"
-                                data-child-class="priority1"
-                                data-value="{% if project.sync_owner %}{{project.sync_owner.id}}{% endif %}"
-                                data-count-class="reportingOrganisation">
-                                </div>                                
-                            </div>
-                            <div class="form-group control">
-                                <div class="checkbox">
-                                    <label for="secondaryReporter" class="control-label">
-                                        <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
-                                        {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
-                                            Secondary reporter
-                                        </label>
+                            <h5>{% trans 'Reporting organisation' %}</h5>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group control">
+                                        <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
+                                        data-child-id="reportingOrganisation"
+                                        data-child-class="priority1"
+                                        data-value="{% if project.sync_owner %}{{project.sync_owner.id}}{% endif %}"
+                                        data-count-class="reportingOrganisation">
+                                        </div>
+                                    </div>
                                 </div>
-                                <p class="help-block hidden">This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.</p>
+                                <div class="col-md-4">
+                                    <div class="form-group control">
+                                        <div class="checkbox">
+                                            <label for="secondaryReporter" class="control-label">
+                                                <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
+                                                {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
+                                                    {% trans 'Secondary reporter' %}
+                                            </label>
+                                        </div>
+                                        <p class="help-block hidden">
+                                            {% trans 'Indicate whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.' %}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <hr/>
+                            <h5>{% trans 'Participating organisations' %}</h5>
                             <div class="partner-container">
                                 {% for partnership in project.partnerships.all %}
                                     {% include "myrsr/project_admin_partials/partner_input.html" with key=partnership.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/partner_input.html" with key='add-0' %}
                                 {% endfor %}
-                            </div>                         
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-partner" id=""><span class="glyphicon glyphicon-plus"></span> Add another partner</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <a href="#" class="add-partner add-object-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep3"></div>
                             </div>

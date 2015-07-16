@@ -1,5 +1,6 @@
 {% load i18n %}
 <div class="contact-information-item parent" id="project_contact{% if key %}-{{ key }}{% endif %}">
+    <hr/>
     <div class="form-group control">
         <input type="text" class="form-control priority2" id="contact-name{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact name' %}" name="contact-name{% if key %}-{{ key }}{% endif %}" {% if contact.person_name %} value="{{contact.person_name}}" {% endif %} maxlength="100">
         <label for="contact-name" class="control-label">{% trans 'Contact name' %}</label>
@@ -98,5 +99,4 @@
             <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-contact{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete project contact</a>
         </div>
     </div>
-    <hr/>
 </div>
