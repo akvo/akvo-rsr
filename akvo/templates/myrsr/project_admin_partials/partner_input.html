@@ -27,7 +27,7 @@
                     <span class="input-group-addon">{{ project.get_currency_display }}</span>
                     <input type="text" class="form-control priority1" id="funding-amount{% if key %}-{{ key }}{% endif %}"
                     placeholder="Funding amount" name="funding-amount{% if key %}-{{ key }}{% endif %}"
-                    {% if partnership %}value="{{partnership.funding_amount}}"{% endif %}
+                    {% if partnership.funding_amount %}value="{{partnership.funding_amount}}"{% endif %}
                     {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
                 </div>
                 <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">Funding amount</label>

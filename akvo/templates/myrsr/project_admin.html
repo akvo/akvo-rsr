@@ -2,7 +2,7 @@
 {% load i18n bootstrap3 rsr_utils thumbnail compressed rules %}
 {% block title %}{% trans 'MyRSR - Project Admin' %}{% endblock %}
 {% block myrsr_main %}
-    <h4>{% trans 'Project admin' %}</h4>
+    <h3>{% trans 'Project admin' %}</h3>
     <!--*************************************** FORM Container **********************************************-->
 
     <div class="formOverviewInfo">
@@ -301,7 +301,7 @@
                                 <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
                                 data-child-id="reportingOrganisation"
                                 data-child-class="priority1"
-                                data-value="{% if project.reporting_org %}{{project.reporting_org.id}}{% endif %}"
+                                data-value="{% if project.sync_owner %}{{project.sync_owner.id}}{% endif %}"
                                 data-count-class="reportingOrganisation">
                                 </div>                                
                             </div>
@@ -804,6 +804,21 @@
                 div.scrollIntoView();
                 window.scrollBy(0, -100);
             }, 1);
+        }
+    </script>
+
+    <script type="application/javascript">
+        function toggleFunding(node) {
+            var fundingNode, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            fundingNode = parentNode.getElementsByTagName("input")[1];
+
+            if (node.options[node.selectedIndex].value === 'funding') {
+                fundingNode.removeAttribute('disabled');
+            } else {
+                fundingNode.setAttribute('disabled', '');
+            }
         }
     </script>
 
