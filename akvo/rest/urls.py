@@ -145,14 +145,13 @@ urlpatterns += patterns(
     url(r'typeaheads/organisations$',
         views.typeahead_organisation,
         name='organisation_typeahead'),
+    url(r'typeaheads/reporting_organisations$',
+        views.typeahead_reporting_organisation,
+        name='reporting_organisation_typeahead'),
     url(r'typeaheads/projects$',
         views.typeahead_project,
         name='project_typeahead'),
     url(r'typeaheads/project_updates$',
         views.typeahead_projectupdate,
         name='projectupdate_typeahead'),
-
-    # url(r'typeaheads/sectors$',
-    #     views.typeahead_sector,
-    #     name='sector_typeahead'),
 )

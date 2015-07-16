@@ -31,9 +31,11 @@ var csrftoken = getCookie('csrftoken');
 var MAX_RETRIES = 2;
 var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
 var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json';
+var reportingOrgsAPIUrl = '/rest/v1/typeaheads/reporting_organisations?format=json';
 var responses = {};
 responses[projectsAPIUrl] = null;
 responses[orgsAPIUrl] = null;
+responses[reportingOrgsAPIUrl] = null;
 
 // LOCAL STORAGE
 var MAX_LOCALSTORAGE_DAYS = 30;
@@ -618,19 +620,6 @@ function deleteDocument(document_id) {
     request.send();
 }
 
-function toggleFunding(node) {
-    var fundingNode, parentNode;
-
-    parentNode = node.parentNode.parentNode.parentNode;
-    fundingNode = parentNode.getElementsByTagName("input")[1];
-
-    if (node.options[node.selectedIndex].value === 'funding') {
-        fundingNode.removeAttribute('disabled');
-    } else {
-        fundingNode.setAttribute('disabled', '');
-    }
-}
-
 function removePartial(node) {
     var parentDiv, idArray, parentParent;
 
@@ -998,7 +987,7 @@ function updateTypeaheads() {
             valueId = $(this).data('value');
         }
 
-        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        loadAsync(reportingOrgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
     });
 
     $('.partner-input').each( function() {
