@@ -82,7 +82,7 @@
                                 <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
                             </div>
                             <hr/>
-                            <h6>{% trans 'Related projects' %}</h6>
+                            <h5>{% trans 'Related projects' %}</h5>
                             <p class="help-block">{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}</p>
                             <div class="form-group">
                                 <div class="select-group control">
@@ -176,7 +176,7 @@
                                 <p class="help-block hidden">{% trans 'Enter the language used when entering the details for this project.' %}</p>
                             </div>
                             <hr/>
-                            <h6>{% trans 'Project photo' %}</h6>
+                            <h5>{% trans 'Project photo' %}</h5>
                             <p class="help-block">{% trans 'Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page.' %}</p>
                             <div class="row">
                                 <div class="col-md-12 text-center" id="photo-container">
@@ -196,13 +196,13 @@
                                 <div class="row">
                                     <div class="col-md-6 control">
                                         <input type="text" class="form-control priority2" id="photoCaption" placeholder="{% trans 'Photo caption' %}" name="photoCaption"
-                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %}>
+                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %} maxlength="50">
                                         <label for="photoCaption" class="control-label">{% trans 'Photo caption' %}</label>
                                         <p class="help-block hidden">{% trans 'Briefly describe who or what you see in the photo.' %}</p>
                                     </div>
                                     <div class="col-md-6 control">
                                         <input type="text" class="form-control priority2" id="photoCredit" placeholder="{% trans 'Photo credit' %}" name="photoCredit"
-                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %}>
+                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %} maxlength="50">
                                         <label for="photoCredit" class="control-label">{% trans 'Photo credit' %}</label>
                                         <p class="help-block hidden">{% trans 'Enter who took the photo.' %}</p>
                                     </div>
@@ -292,6 +292,7 @@
                             </div>
                         </div>  
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts.' %}</p>
                             <form role="form" id="admin-step-2">
                             <div class="contact-information-container">
                                 {% for contact in project.contacts.all %}
@@ -302,12 +303,12 @@
                             </div> 
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> Add another contact</a>
+                                    <a href="#" class="btn btn-link add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep2"></div>
                             </div>

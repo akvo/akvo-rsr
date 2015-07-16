@@ -1,69 +1,97 @@
+{% load i18n %}
 <div class="contact-information-item parent" id="project_contact{% if key %}-{{ key }}{% endif %}">
+    <div class="form-group control">
+        <input type="text" class="form-control priority2" id="contact-name{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact name' %}" name="contact-name{% if key %}-{{ key }}{% endif %}" {% if contact.person_name %} value="{{contact.person_name}}" {% endif %} maxlength="100">
+        <label for="contact-name" class="control-label">{% trans 'Contact name' %}</label>
+        <p class="help-block hidden">{% trans 'Please enter the name of the contact person for this project.' %}</p>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group control">
+                <input type="text" class="form-control priority2" id="contact-organisation{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact organisation' %}" name="contact-organisation{% if key %}-{{ key }}{% endif %}" {% if contact.organisation %} value="{{contact.organisation}}" {% endif %} maxlength="100">
+                <label for="contactOrg" class="control-label">{% trans 'Contact organisation' %}</label>
+                <p class="help-block hidden">{% trans 'The organisation that the contact person works for.' %}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group control">
+                <input type="text" class="form-control priority2" id="contact-job-title{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Job title' %}" name="contact-job-title{% if key %}-{{ key }}{% endif %}" {% if contact.job_title %} value="{{contact.job_title}}" {% endif %} maxlength="100">
+                <label for="jobTitle" class="control-label">{% trans 'Job title' %}</label>
+                <p class="help-block hidden">{% trans 'Job title of the contact person.' %}</p>
+            </div>
+        </div>
+    </div>
     <div class="form-group control">
         <div class="select-group">
             <select name="contact-type{% if key %}-{{ key }}{% endif %}" id="contact-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                <option value="" {% if not contact.type %} selected="selected" {% endif %}>Contact type:</option>
+                <option value="" {% if not contact.type %} selected="selected" {% endif %}>{% trans 'Contact type' %}:</option>
                 {% for contact_type in contact_types %}
                     <option value="{{ contact_type.code }}" {% if contact.type == contact_type.code %} selected="selected" {% endif %}>{{ contact_type.code }} - {{ contact_type.name }}</option>
                 {% endfor %}                 
             </select>
-            <label for="projectStatus" class="control-label">Type</label>
+            <label for="contact-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Contact type' %}</label>
+            <p class="help-block hidden">{% blocktrans %}You can choose from the following 4 contact types indicating what people if needed can mainly contact you for in relation to this project:<br/>
+                1 - General enquires<br/>
+                2 - Project management<br/>
+                3 - Financial management<br/>
+                4 - Communications{% endblocktrans %}
+            </p>
         </div>
     </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-name{% if key %}-{{ key }}{% endif %}" placeholder="Contact Name" name="contact-name{% if key %}-{{ key }}{% endif %}" {% if contact.person_name %} value="{{contact.person_name}}" {% endif %}>
-        <label for="contact-name" class="control-label">Name</label>
-        <p class="help-block hidden">This should be a contact person for the project. (100 characters)</p>
-    </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-email{% if key %}-{{ key }}{% endif %}" placeholder="Contact email" name="contact-email{% if key %}-{{ key }}{% endif %}" {% if contact.email %} value="{{contact.email}}" {% endif %}>
-        <label for="contactEmail" class="control-label">Email</label>
-        <p class="help-block hidden">This should be the email address for the contact person of the project.</p>
-    </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-job-title{% if key %}-{{ key }}{% endif %}" placeholder="Job title" name="contact-job-title{% if key %}-{{ key }}{% endif %}" {% if contact.job_title %} value="{{contact.job_title}}" {% endif %}>
-        <label for="jobTitle" class="control-label">Job title</label>
-        <p class="help-block hidden">Job title of the contact. (100 characters)</p>
-    </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-organisation{% if key %}-{{ key }}{% endif %}" placeholder="Contact organisation" name="contact-organisation{% if key %}-{{ key }}{% endif %}" {% if contact.organisation %} value="{{contact.organisation}}" {% endif %}>
-        <label for="contactOrg" class="control-label">Organisation</label>
-        <p class="help-block hidden">The organisation that the contact person works for - this may differ from the reporting organisation of the project. (100 characters)</p>
-    </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-phone{% if key %}-{{ key }}{% endif %}" placeholder="Contact phone number" name="contact-phone{% if key %}-{{ key }}{% endif %}" {% if contact.telephone %} value="{{contact.telephone}}" {% endif %}>
-        <label for="contactPhone" class="control-label">Telephone</label>
-        <p class="help-block hidden">Contact number for the contact. (30 characters)</p>
-    </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-address{% if key %}-{{ key }}{% endif %}" placeholder="Contact address" name="contact-address{% if key %}-{{ key }}{% endif %}" {% if contact.mailing_address %} value="{{contact.mailing_address}}" {% endif %}>
-        <label for="contactAddress" class="control-label">Address</label>
-        <p class="help-block hidden">Address of the contact. (255 characters)</p>
-    </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-website{% if key %}-{{ key }}{% endif %}" placeholder="Contact website" name="contact-website{% if key %}-{{ key }}{% endif %}" {% if contact.website %} value="{{contact.website}}" {% endif %}>
-        <label for="contactWebsite" class="control-label">Website</label>
-    </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-department{% if key %}-{{ key }}{% endif %}" placeholder="Contact department" name="contact-department{% if key %}-{{ key }}{% endif %}" {% if contact.department %} value="{{contact.department}}" {% endif %}>
-        <label for="contactDepartment" class="control-label">Department</label>
-        <p class="help-block hidden">(100 characters)</p>
-    </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="contact-country{% if key %}-{{ key }}{% endif %}" id="contact-country{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                <option value="" {% if not contact.country %} selected="selected" {% endif %}>Country:</option>
-                {% for country in countries %}
-                    <option value="{{ country.id }}" {% if contact.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
-                {% endfor %}                  
-            </select>
-            <label for="contactCountry" class="control-label">Country</label>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group control">
+                <input type="text" class="form-control priority2" id="contact-email{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact email' %}" name="contact-email{% if key %}-{{ key }}{% endif %}" {% if contact.email %} value="{{contact.email}}" {% endif %} maxlength="254">
+                <label for="contactEmail" class="control-label">{% trans 'Contact email' %}</label>
+                <p class="help-block hidden">{% trans 'Email address for the contact person.' %}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group control">
+                <input type="text" class="form-control priority2" id="contact-phone{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact phone number' %}" name="contact-phone{% if key %}-{{ key }}{% endif %}" {% if contact.telephone %} value="{{contact.telephone}}" {% endif %} maxlength="30">
+                <label for="contactPhone" class="control-label">{% trans 'Contact phone number' %}</label>
+                <p class="help-block hidden">{% trans 'Contact number for the contact person. You do not need to provide personal contact details.' %}</p>
+            </div>
         </div>
     </div>
-    <div class="form-group control">
-        <input type="text" class="form-control priority2" id="contact-state{% if key %}-{{ key }}{% endif %}" placeholder="Contact state" name="contact-state{% if key %}-{{ key }}{% endif %}" {% if contact.state %} value="{{contact.state}}" {% endif %}>
-        <label for="contactState" class="control-label">State</label>
-        <p class="help-block hidden">(100 characters)</p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group control">
+                <input type="text" class="form-control priority2" id="contact-address{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact address' %}" name="contact-address{% if key %}-{{ key }}{% endif %}" {% if contact.mailing_address %} value="{{contact.mailing_address}}" {% endif %} maxlength="255">
+                <label for="contactAddress" class="control-label">{% trans 'Contact address' %}</label>
+                <p class="help-block hidden">{% trans 'Address of the contact person. You do not need to provide personal contact details.' %}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="select-group control">
+                    <select name="contact-country{% if key %}-{{ key }}{% endif %}" id="contact-country{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
+                        <option value="" {% if not contact.country %} selected="selected" {% endif %}>{% trans 'Country' %}:</option>
+                        {% for country in countries %}
+                            <option value="{{ country.id }}" {% if contact.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="contactCountry" class="control-label">{% trans 'Country' %}</label>
+                    <p class="help-block hidden">{% trans 'Country of the contact.' %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group control">
+                <input type="text" class="form-control priority2" id="contact-department{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact department' %}" name="contact-department{% if key %}-{{ key }}{% endif %}" {% if contact.department %} value="{{contact.department}}" {% endif %} maxlength="100">
+                <label for="contactDepartment" class="control-label">{% trans 'Contact department' %}</label>
+                <p class="help-block hidden">{% trans 'Department of the contact.' %}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group control">
+                <input type="text" class="form-control priority2" id="contact-website{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact website' %}" name="contact-website{% if key %}-{{ key }}{% endif %}" {% if contact.website %} value="{{contact.website}}" {% endif %}>
+                <label for="contactWebsite" class="control-label">{% trans 'Contact website' %}</label>
+                <p class="help-block hidden">{% trans 'The contact web address, if available.' %}</p>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3 text-center" id="delete-contact{% if key %}-{{ key }}{% endif %}">
