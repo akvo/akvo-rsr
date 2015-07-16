@@ -1748,6 +1748,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   margin-top: 23px; }
 .projectEdit .add-object-link {
   margin-top: 5px; }
+.projectEdit hr {
+  border: none;
+  height: 1px;
+  color: rgba(44, 42, 116, 0.3);
+  /* old IE */
+  background-color: rgba(44, 42, 116, 0.3);
+  /* Modern Browsers */ }
 .projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label, .projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
   position: absolute;
   top: 10px;

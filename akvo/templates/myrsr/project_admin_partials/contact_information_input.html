@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="contact-information-item parent" id="project_contact{% if key %}-{{ key }}{% endif %}">
-    <hr/>
+    {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
     <div class="form-group control">
         <input type="text" class="form-control priority2" id="contact-name{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact name' %}" name="contact-name{% if key %}-{{ key }}{% endif %}" {% if contact.person_name %} value="{{contact.person_name}}" {% endif %} maxlength="100">
         <label for="contact-name" class="control-label">{% trans 'Contact name' %}</label>
