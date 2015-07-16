@@ -9,11 +9,11 @@
         <div class="row">
             <div class="col-md-9">
                 <div class="editDate">
-                    <span>Date created:</span>
+                    <span>{% trans 'Date created' %}:</span>
                     <time datetime="YYYY-MM-DDThh:mm:ssTZD">
                     {{ project.created_at }}
                     </time><br/>
-                    <span>Date modified:</span>
+                    <span>{% trans 'Last modified' %}:</span>
                     <time datetime="YYYY-MM-DDThh:mm:ssTZD">
                     {{ project.last_modified_at }}
                     </time>
@@ -21,25 +21,25 @@
             </div>
             <div class="col-md-3 text-center">
                 <a href="{% url 'project-main' project.pk %}" target="_blank">
-                    <button class="btn btn-primary viewProject">View project page</button>
+                    <button class="btn btn-primary viewProject">{% trans 'View project page' %}</button>
                 </a>
             </div>
         </div>
         <div class="row">
             <div class="col-md-9">
                 <div class="editDate">
-                    <span>This project is: </span>
+                    <span>{% trans 'This project is:' %} </span>
                     {% if project.is_published %}
-                        <span class="published" id="publishingStatus">published</span>
+                        <span class="published" id="publishingStatus">{% trans 'published' %}</span>
                     {% else %}
-                        <span class="notPublished" id="publishingStatus">not published</span>
+                        <span class="notPublished" id="publishingStatus">{% trans 'not published' %}</span>
                     {% endif %}
                 </div>
             </div>
             <div class="col-md-3 text-center">
                 {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
                 {% if not project.is_published and can_publish %}
-                    <button class="btn btn-success publishProject" id="publishProject">Publish project</button>
+                    <button class="btn btn-success publishProject" id="publishProject">{% trans 'Publish project' %}</button>
                 {% endif %}
             </div>
         </div>
@@ -55,7 +55,7 @@
                 <div class="myPanel borderBottom" id="panel1">
                     <div class="formStep stepOne">
                         <div onclick="scrollTo('panel1')">
-                            <label for="stepOne" class="stepLabel"><h4>01 - General information</h4></label>
+                            <label for="stepOne" class="stepLabel"><h4>01 - {%  trans 'General information' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepOne" checked >
                         <div class="progress">
@@ -64,24 +64,37 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'This section contains top-level information about your project which will be used in searches.' %}</p>
                             <form role="form" id="admin-step-1">
                             <div class="form-group control">
-                                <input type="text" class="form-control validate priority1" name="projectTitle" id="projectTitle" placeholder="Project title" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45"/>
-                                <label for="projectTitle" class="control-label">Project title</label>
-                                <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (45 characters)</p>
+                                <input type="text" class="form-control validate priority1" name="projectTitle" id="projectTitle" placeholder="{% trans 'Project title' %}" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45"/>
+                                <label for="projectTitle" class="control-label">{%  trans 'Project title' %}</label>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control priority1" name="projectSubTitle" id="projectSubTitle" placeholder="Project subtitle" maxlength="75"
+                                <input type="text" class="form-control priority1" name="projectSubTitle" id="projectSubTitle" placeholder="{% trans 'Project subtitle' %}" maxlength="75"
                                 {% if project.subtitle %} value="{{project.subtitle}}" {% endif %} />
-                                <label for="projectSubTitle" class="control-label">Project subtitle</label>
-                                <p class="help-block hidden">The title and subtitle fields are the newspaper headline for your project. Use them to attract attention to what you are doing. (75 characters)</p>
+                                <label for="projectSubTitle" class="control-label">{% trans 'Project subtitle' %}</label>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control priority2" name="iatiId" id="iatiID" placeholder="iati ID" maxlength="100"
+                                <input type="text" class="form-control priority2" name="iatiId" id="iatiID" placeholder="{% trans 'IATI identifier' %}" maxlength="100"
                                 {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
-                                <label for="iatiID" class="control-label">IATI identifier</label>
-                                <p class="help-block hidden">This should be the official unique IATI Identifier for the project. The identifier consists of the IATI organisation identifier and the (organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. (100 characters)<br/>
-                                Note that 'projects' in this form are the same as 'activities' in IATI.</p>
+                                <label for="iatiID" class="control-label">{% trans 'IATI identifier' %}</label>
+                                <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
+                            </div>
+                            <hr/>
+                            <h6>{% trans 'Related projects' %}</h6>
+                            <p class="help-block">{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}</p>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2">
+                                        <option value="" {% if not project.hierarchy %} selected="selected" {% endif %}>{% trans 'Hierarchy' %}:</option>
+                                        <option value="1" {% if project.hierarchy|add:0 == 1 %} selected="selected" {% endif %}>{% trans 'Core activity' %}</option>
+                                        <option value="2" {% if project.hierarchy|add:0 == 2 %} selected="selected" {% endif %}>{% trans 'Sub activity' %}</option>
+                                        <option value="3" {% if project.hierarchy|add:0 == 3 %} selected="selected" {% endif %}>{% trans 'Lower sub activity' %}</option>
+                                    </select>
+                                    <label for="projectHierarchy" class="control-label">{% trans 'Hierarchy' %}</label>
+                                </div>
+                                <p class="help-block hidden">{% trans 'If you are reporting multiple levels of projects in RSR, you can specify whether this is a core, sub, or lower sub activity here.' %}</p>
                             </div>
                             <div class="related-project-container">
                                 {% for rp in project.related_projects.all %}
@@ -99,147 +112,166 @@
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="projectStatus" id="projectStatus" class="form-control priority1">
-                                        <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}>None</option>
-                                        <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>Needs funding</option>
-                                        <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>Active</option>
-                                        <option value="C" {% if project.status == "C" %} selected="selected"{% endif %}>Complete</option>
-                                        <option value="L" {% if project.status == "L" %} selected="selected"{% endif %}>Cancelled</option>
-                                        <option value="R" {% if project.status == "R" %} selected="selected"{% endif %}>Archived</option>
+                                        <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}>{% trans 'None' %}</option>
+                                        <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>{% trans 'Needs funding' %}</option>
+                                        <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>{% trans 'Active' %}</option>
+                                        <option value="C" {% if project.status == "C" %} selected="selected"{% endif %}>{% trans 'Complete' %}</option>
+                                        <option value="L" {% if project.status == "L" %} selected="selected"{% endif %}>{% trans 'Cancelled' %}</option>
+                                        <option value="R" {% if project.status == "R" %} selected="selected"{% endif %}>{% trans 'Archived' %}</option>
                                     </select>
-                                    <label for="projectStatus" class="control-label">Status</label>
+                                    <label for="projectStatus" class="control-label">{% trans 'Status' %}</label>
                                 </div>
                                 <p class="help-block hidden">
-                                There are four different project statuses:</p>
-                                <ol class="help-block hidden">
-                                    <li>Needs funding: projects that still need funding.</li>
-                                    <li>Active: projects that started with the implementation phase.</li>
-                                    <li>Completed: projects that have been finished.</li>
-                                    <li>Cancelled: projects that were never fully implemented or carried out.</li>
-                                </ol>
+                                    {% blocktrans %}There are four different project statuses:<br/>
+                                    1) Needs funding: projects that still need funding.<br/>
+                                    2) Active: projects that started with the implementation phase.<br/>
+                                    3) Completed: projects that have been finished.<br/>
+                                    4) Cancelled: projects that were never fully implemented or carried out.<br/>{% endblocktrans %}
+                                </p>
                             </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromPlanned" id="eventFromPlanned" placeholder="From (planned)"
+                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromPlanned" id="eventFromPlanned" placeholder="{% trans 'Start Date (planned)' %}"
                                         {% if project.date_start_planned %} value="{{project.date_start_planned|date:'c'}}" {% endif %} />
-                                        <label for="eventFromPlanned" class="control-label">Start Date (planned):</label>
+                                        <label for="eventFromPlanned" class="control-label">{% trans 'Start Date (planned)' %}:</label>
+                                        <p class="help-block hidden">{% trans 'Enter the original start date of the project.' %}</p>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control priority2" name="eventEndPlanned" id="eventEndPlanned" placeholder="To (planned)"
+                                        <input type="date" class="form-control priority2" name="eventEndPlanned" id="eventEndPlanned" placeholder="{% trans 'End Date (planned)' %}"
                                         {% if project.date_end_planned %} value="{{project.date_end_planned|date:'c'}}" {% endif %} />
-                                        <label for="eventEndPlanned" class="control-label">End Date (planned):</label>
+                                        <label for="eventEndPlanned" class="control-label">{% trans 'End Date (planned)' %}:</label>
+                                        <p class="help-block hidden">{% trans 'Enter the original end date of the project.' %}</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromActual" id="eventFromActual" placeholder="From (Actual)"
+                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromActual" id="eventFromActual" placeholder="{% trans 'Start Date (actual)' %}"
                                         {% if project.date_start_actual %} value="{{project.date_start_actual|date:'c'}}" {% endif %} />
-                                        <label for="eventFromActual" class="control-label">Start Date (Actual):</label>
+                                        <label for="eventFromActual" class="control-label">{% trans 'Start Date (actual)' %}:</label>
+                                        <p class="help-block hidden">{% trans 'Enter the actual date that the project started.' %}</p>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control priority2" name="eventEndActual" id="eventEndActual" placeholder="To (Actual)"
+                                        <input type="date" class="form-control priority2" name="eventEndActual" id="eventEndActual" placeholder="{% trans 'End Date (actual)' %}"
                                         {% if project.date_end_actual %} value="{{project.date_end_actual|date:'c'}}" {% endif %} />
-                                        <label for="eventEndActual" class="control-label">End Date (Actual):</label>
+                                        <label for="eventEndActual" class="control-label">{% trans 'End Date (actual)' %}:</label>
+                                        <p class="help-block hidden">{% trans 'Enter the actual date that the project ended.' %}</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="projectLanguage" id="projectLanguage" class="form-control priority2">
-                                        <option value="de" {% if project.language == 'de'%} selected="selected" {% endif %}>German</option>
-                                        <option value="en" {% if project.language == 'en'%} selected="selected" {% endif %}>English</option>
-                                        <option value="fr" {% if project.language == 'fr'%} selected="selected" {% endif %}>French</option>
-                                        <option value="es" {% if project.language == 'es'%} selected="selected" {% endif %}>Spanish</option>
-                                        <option value="nl" {% if project.language == 'nl'%} selected="selected" {% endif %}>Dutch</option>
-                                        <option value="ru" {% if project.language == 'ru'%} selected="selected" {% endif %}>Russian</option>
+                                        <option value="de" {% if project.language == 'de'%} selected="selected" {% endif %}>{% trans 'German' %}</option>
+                                        <option value="en" {% if project.language == 'en'%} selected="selected" {% endif %}>{% trans 'English' %}</option>
+                                        <option value="fr" {% if project.language == 'fr'%} selected="selected" {% endif %}>{% trans 'French' %}</option>
+                                        <option value="es" {% if project.language == 'es'%} selected="selected" {% endif %}>{% trans 'Spanish' %}</option>
+                                        <option value="nl" {% if project.language == 'nl'%} selected="selected" {% endif %}>{% trans 'Dutch' %}</option>
+                                        <option value="ru" {% if project.language == 'ru'%} selected="selected" {% endif %}>{% trans 'Russian' %}</option>
                                     </select>
-                                    <label for="language" class="control-label">Language</label>
+                                    <label for="language" class="control-label">{% trans 'Language' %}</label>
                                 </div>
-                                <p class="help-block hidden">The main language of the project.</p>
+                                <p class="help-block hidden">{% trans 'Enter the language used when entering the details for this project.' %}</p>
+                            </div>
+                            <hr/>
+                            <h6>{% trans 'Project photo' %}</h6>
+                            <p class="help-block">{% trans 'Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page.' %}</p>
+                            <div class="row">
+                                <div class="col-md-12 text-center" id="photo-container">
+                                    {% if project.current_image %}
+                                        {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
+                                            <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
+                                        {% endthumbnail %}
+                                        <a onclick="deletePhoto(this);" class="btn btn-link delete-object-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group control">
+                                <input type="file" class="form-control priority1" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}">
+                                <label class="control-label" for="photo">{% trans 'Photo' %}</label>
                             </div>
                             <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority1">
-                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
-                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
-                                    </select>
-                                    <label for="projectCurrency" class="control-label">Currency</label>
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control priority2" id="photoCaption" placeholder="{% trans 'Photo caption' %}" name="photoCaption"
+                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %}>
+                                        <label for="photoCaption" class="control-label">{% trans 'Photo caption' %}</label>
+                                        <p class="help-block hidden">{% trans 'Briefly describe who or what you see in the photo.' %}</p>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control priority2" id="photoCredit" placeholder="{% trans 'Photo credit' %}" name="photoCredit"
+                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %}>
+                                        <label for="photoCredit" class="control-label">{% trans 'Photo credit' %}</label>
+                                        <p class="help-block hidden">{% trans 'Enter who took the photo.' %}</p>
+                                    </div>
                                 </div>
-                                <p class="help-block hidden">The default currency for this project. Used in all financial aspects of the project.</p>
                             </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2">
-                                        <option value="" {% if not project.hierarchy %} selected="selected" {% endif %}>Hierarchy:</option>
-                                        <option value="1" {% if project.hierarchy|add:0 == 1 %} selected="selected" {% endif %}>Core activity</option>
-                                        <option value="2" {% if project.hierarchy|add:0 == 2 %} selected="selected" {% endif %}>Sub activity</option>
-                                        <option value="3" {% if project.hierarchy|add:0 == 3 %} selected="selected" {% endif %}>Lower sub activity</option>
-                                    </select>
-                                    <label for="projectHierarchy" class="control-label">Hierarchy</label>
-                                </div>
-                                <p class="help-block hidden">If you are reporting multiple levels of projects in RSR, you can specify whether this is a core or sub-project here.<br/>
-                                So for example: is this project part of a larger project or programme.</p>
-                            </div>
+                            <hr/>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="defaultAidType" id="defaultAidType" class="form-control priority3"> 
-                                        <option value="" {% if not project.default_aid_type %} selected="selected" {% endif %}>Default aid type:</option>                                      
+                                        <option value="" {% if not project.default_aid_type %} selected="selected" {% endif %}>{% trans 'Default aid type' %}:</option>
                                         {% for aid_type in aid_types %}
                                             <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %} selected="selected" {% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
                                         {% endfor %} 
                                     </select>
-                                    <label for="defaultAidType" class="control-label">Default aid type</label>
+                                    <label for="defaultAidType" class="control-label">{% trans 'Default aid type' %}</label>
+                                    <p class="help-block hidden">{% trans 'The type of aid being supplied (project-type intervention, budget support, debt relief, etc.). This element specifies a default for all the activity’s financial transactions; it can be overridden at the individual transaction level. For reference please visit' %} <a href="http://iatistandard.org/201/codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/AidType/</a></p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="defaultFlowType" id="defaultFlowType" class="form-control priority3">
-                                        <option value="" {% if not project.default_flow_type %} selected="selected" {% endif %}>Default flow type:</option>
+                                        <option value="" {% if not project.default_flow_type %} selected="selected" {% endif %}>{% trans 'Default flow type' %}:</option>
                                         {% for flow_type in flow_types %}
                                             <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %} selected="selected" {% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
                                         {% endfor %} 
                                     </select>
-                                    <label for="defaultFlowType" class="control-label">Default flow type</label>
+                                    <label for="defaultFlowType" class="control-label">{% trans 'Default flow type' %}</label>
+                                    <p class="help-block hidden">{% trans 'Whether the activity is funded by Official Development Assistance (ODA), Other Official Flows (OOF), etc. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FlowType/">http://iatistandard.org/201/codelists/FlowType/</a></p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control priority3">
-                                        <option value="" {% if not project.default_tied_status %} selected="selected" {% endif %}>Default tied status:</option>
+                                        <option value="" {% if not project.default_tied_status %} selected="selected" {% endif %}>{% trans 'Default tied status' %}:</option>
                                         {% for tied_status in tied_statuses %}
                                             <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %} selected="selected" {% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
                                         {% endfor %} 
                                     </select>
-                                    <label for="defaultTiedStatus" class="control-label">Default tied status</label>
+                                    <label for="defaultTiedStatus" class="control-label">{% trans 'Default tied status' %}</label>
+                                    <p class="help-block hidden">{% trans 'Whether the aid is untied, tied, or partially tied. This element specifies a default for all the activity’s financial transactions; it can be overridden at the individual transaction level. For reference visit' %} <a href="http://iatistandard.org/201/codelists/TiedStatus/" target="_blank">http://iatistandard.org/201/codelists/TiedStatus/</a></p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="collaborationType" id="collaborationType" class="form-control priority3">
-                                        <option value="" {% if not project.collaboration_type %} selected="selected" {% endif %}>Collaboration type:</option>
+                                        <option value="" {% if not project.collaboration_type %} selected="selected" {% endif %}>{% trans 'Collaboration type' %}:</option>
                                         {% for collaboration_type in collaboration_types %}
                                             <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %} selected="selected" {% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
                                         {% endfor %} 
                                     </select>
-                                    <label for="collaborationType" class="control-label">Collaboration type</label>
+                                    <label for="collaborationType" class="control-label">{% trans 'Collaboration type' %}</label>
+                                    <p class="help-block hidden">{% trans 'The type of collaboration involved in the activity’s disbursements, e.g. "bilateral" or "multilateral". For reference visit' %} <a href="http://iatistandard.org/201/codelists/CollaborationType/" target="_blank">http://iatistandard.org/201/codelists/CollaborationType/</a></p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="defaultFinanceType" id="defaultFinanceType" class="form-control priority3">
-                                        <option value="" {% if not project.default_finance_type %} selected="selected" {% endif %}>Default finance type:</option>
+                                        <option value="" {% if not project.default_finance_type %} selected="selected" {% endif %}>{% trans 'Default finance type' %}:</option>
                                         {% for finance_type in finance_types %}
                                             <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %} selected="selected" {% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
                                         {% endfor %} 
                                     </select>
-                                    <label for="defaultFinanceType" class="control-label">Default finance type</label>
+                                    <label for="defaultFinanceType" class="control-label">{% trans 'Default finance type' %}</label>
+                                    <p class="help-block hidden">{% trans 'The type of finance (e.g. grant, loan, debt relief, etc). This is the default value for all transactions in the activity report; it can be overridden at the individual transaction level. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a></p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep1"></div>
                             </div>
@@ -404,30 +436,9 @@
                         </div>
                         <div class="formBlock">
                             <form role="form" id="admin-step-5">
-                            <div class="form-group control" id="photo-container">
-                                {% if project.current_image %}
-                                    {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
-                                        <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
-                                    {% endthumbnail %}
-                                    <a onclick="deletePhoto(this);" class="btn btn-link delete-object-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>
-                                {% endif %}
-                                <input type="file" class="form-control priority1" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}">
-                                <label class="control-label" for="photo">Photo</label>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control priority2" id="photoCaption" placeholder="Photo caption" name="photoCaption"
-                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %}>
-                                        <label for="photoCaption" class="control-label">Photo caption</label>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="text" class="form-control priority2" id="photoCredit" placeholder="Photo credit" name="photoCredit"
-                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %}>
-                                        <label for="photoCredit" class="control-label">Photo credit</label>
-                                    </div>
-                                </div>
-                            </div>
+
+                            <!-- Removed photo! -->
+
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
@@ -626,6 +637,16 @@
                         </div>
                         <div class="formBlock">
                             <form role="form" id="admin-step-9">
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority1">
+                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
+                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
+                                    </select>
+                                    <label for="projectCurrency" class="control-label">Currency</label>
+                                </div>
+                                <p class="help-block hidden">The default currency for this project. Used in all financial aspects of the project.</p>
+                            </div>
                             <div class="form-group control">
                                 <input type="text" class="form-control priority3" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="Capital spend percentage"
                                 {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>

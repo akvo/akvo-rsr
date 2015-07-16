@@ -480,7 +480,7 @@ function submitStep(step, level) {
 
     request.send(form_data);
 
-    if (step === '5') {
+    if (step === '1') {
         var formData = new FormData();
         formData.append("photo", document.getElementById("photo").files[0]);
 
@@ -1330,9 +1330,8 @@ function setValidationListeners() {
 
         $('.priority1 ~ label').each(function() {
             var markContainer = '<span class="mandatory">*</span>';
-            var infoSpan = $(this).find('span');
 
-            $(markContainer).insertBefore(infoSpan);
+            $(markContainer).appendTo($(this));
         });
     }
 
@@ -1419,11 +1418,10 @@ $(document).ready(function() {
     setSubmitOnClicks();
     setPartialOnClicks();
 
+    setValidationListeners();
     updateAllHelpIcons();
 
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
-
-    setValidationListeners();
 });
