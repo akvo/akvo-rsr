@@ -32,9 +32,9 @@
                 </div>
             </div>
             <div class="col-md-4 control">
-                <div class="input-group">
+                <div class="input-group priority1">
                     <span class="input-group-addon">{{ project.get_currency_display }}</span>
-                    <input type="text" class="form-control priority1" id="funding-amount{% if key %}-{{ key }}{% endif %}"
+                    <input type="text" class="form-control" id="funding-amount{% if key %}-{{ key }}{% endif %}"
                     placeholder="{% trans 'Funding amount' %}" name="funding-amount{% if key %}-{{ key }}{% endif %}"
                     {% if partnership.funding_amount %}value="{{partnership.funding_amount}}"{% endif %}
                     {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>

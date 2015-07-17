@@ -2237,9 +2237,15 @@ body {
         margin-top: 23px;
     }
     .add-object-link {
-        margin-top: 5px;
+        top: 8px;
     }
-    input, textarea, select, div.input-group {
+    hr {
+        border: none;
+        height: 1px;
+        color: rgba($akvoPurple, 0.3); /* old IE */
+        background-color: rgba($akvoPurple, 0.3); /* Modern Browsers */
+    }
+    input, textarea, select {
         & + label,
         & + span + label,
         & + ul + label {
@@ -2261,6 +2267,19 @@ body {
         &:focus + span + label,
         &:focus + ul + label {
             color: $rsrBlue;
+        }
+    }
+    div.input-group {
+        & + label,
+        & + span + label,
+        & + ul + label {
+            position: absolute;
+            top: 0px;
+            transition: top 0.7s ease, opacity 0.7s ease;
+            opacity: 1;
+            // Some nice styling
+            font-size: $label-font-size;
+            font-weight: 600;
         }
     }
     .delete-object-button {

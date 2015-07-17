@@ -649,7 +649,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, 
     Typeahead = ReactTypeahead.Typeahead;   
 
     inputClass = selector + " form-control " + childClass;
-    selectorTypeahead = $('.' + selector + ' .typeahead');
+
     selectorClass = $('.' + selector);
 
     TypeaheadContainer = React.createClass({displayName: 'TypeaheadContainer',
@@ -699,10 +699,22 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, 
             }
         }
     }
-  
+
+    selectorTypeahead = selectorClass.find('.typeahead');
     selectorTypeahead.append(label);
     selectorTypeahead.append(help);
     selectorClass.addClass('has-typeahead');
+
+    // Set mandatory markers before help icons
+    selectorClass.find('.mandatory').remove();
+
+    selectorClass.find('.priority1 ~ label').each(function() {
+        var markContainer = '<span class="mandatory">*</span>';
+
+        $(markContainer).appendTo($(this));
+    });
+
+    updateHelpIcons('.' + selector);
 }
 
 
@@ -1420,6 +1432,17 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
 
 $(document).ready(function() {
+    setPublishOnClick();
+    setSubmitOnClicks();
+    setPartialOnClicks();
+
+    setValidationListeners();
+    updateAllHelpIcons();
+
+    setAllSectionsCompletionPercentage();
+    setAllSectionsChangeListerner();
+    setPageCompletionPercentage();
+
     updateTypeaheads();
 
     try {
@@ -1434,15 +1457,4 @@ $(document).ready(function() {
 
         partialsCount[partialName] = 1;
     }
-
-    setPublishOnClick();
-    setSubmitOnClicks();
-    setPartialOnClicks();
-
-    setValidationListeners();
-    updateAllHelpIcons();
-
-    setAllSectionsCompletionPercentage();
-    setAllSectionsChangeListerner();
-    setPageCompletionPercentage();
 });

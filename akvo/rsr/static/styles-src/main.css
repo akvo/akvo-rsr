@@ -1747,19 +1747,33 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .projectEdit .col-md-4 a.btn.btn-link, .projectEdit .col-md-3 a.btn.btn-link {
   margin-top: 23px; }
 .projectEdit .add-object-link {
-  margin-top: 5px; }
-.projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label, .projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
+  top: 8px; }
+.projectEdit hr {
+  border: none;
+  height: 1px;
+  color: rgba(44, 42, 116, 0.3);
+  /* old IE */
+  background-color: rgba(44, 42, 116, 0.3);
+  /* Modern Browsers */ }
+.projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label {
   position: absolute;
   top: 10px;
   transition: top 0.7s ease, opacity 0.7s ease;
   opacity: 0;
   font-size: 13px;
   font-weight: 600; }
-.projectEdit input:valid + label, .projectEdit input:valid + span + label, .projectEdit input:valid + ul + label, .projectEdit textarea:valid + label, .projectEdit textarea:valid + span + label, .projectEdit textarea:valid + ul + label, .projectEdit select:valid + label, .projectEdit select:valid + span + label, .projectEdit select:valid + ul + label, .projectEdit div.input-group:valid + label, .projectEdit div.input-group:valid + span + label, .projectEdit div.input-group:valid + ul + label {
+.projectEdit input:valid + label, .projectEdit input:valid + span + label, .projectEdit input:valid + ul + label, .projectEdit textarea:valid + label, .projectEdit textarea:valid + span + label, .projectEdit textarea:valid + ul + label, .projectEdit select:valid + label, .projectEdit select:valid + span + label, .projectEdit select:valid + ul + label {
   opacity: 1;
   top: 0px; }
-.projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label, .projectEdit div.input-group:focus + label, .projectEdit div.input-group:focus + span + label, .projectEdit div.input-group:focus + ul + label {
+.projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label {
   color: #2c2a74; }
+.projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
+  position: absolute;
+  top: 0px;
+  transition: top 0.7s ease, opacity 0.7s ease;
+  opacity: 1;
+  font-size: 13px;
+  font-weight: 600; }
 .projectEdit .delete-object-button {
   color: #d9534f; }
 .projectEdit .info-icon {
