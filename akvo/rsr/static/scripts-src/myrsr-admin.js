@@ -325,6 +325,23 @@ function submitStep(step, level) {
 
             form_data += '&value-' + partner_input_id + '=' + partner_input_value;
         }
+    } else if (step === '5') {
+        if (level === 3) {
+            var indicatorPeriods;
+
+            indicatorPeriods = document.querySelectorAll('.indicator-period-item');
+
+            for (var n = 0; n < indicatorPeriods.length; n++) {
+                var periodId;
+
+                periodId = indicatorPeriods[n].getAttribute('id').replace('indicator_period-', '');
+
+                form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;
+                form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;
+            }
+        }
+
+        form_data += '&level=' + level;
     } else if (step === '7') {
         form_data += '&level=' + level;
     } else if (step === '9') {
@@ -398,23 +415,6 @@ function submitStep(step, level) {
         }
 
         form_data += '&level=' + level;
-    } else if (step === '10') {
-        if (level === 3) {
-            var indicatorPeriods;
-
-            indicatorPeriods = document.querySelectorAll('.indicator-period-item');
-
-            for (var n = 0; n < indicatorPeriods.length; n++) {
-                var periodId;
-
-                periodId = indicatorPeriods[n].getAttribute('id').replace('indicator_period-', '');
-
-                form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;
-                form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;
-            }
-        }
-
-        form_data += '&level=' + level;
     }
 
     // Create request
@@ -431,18 +431,23 @@ function submitStep(step, level) {
 
             removeErrors(form);
             response = JSON.parse(request.responseText);
-            if (step === '7' && level === 1) {
+            if (step === '5' && level === 1) {
+                replaceNames(response.new_objects, 'indicator');
+            } else if (step === '5' && level === 2) {
+                replaceNames(response.new_objects, 'indicator-period');
+            } else if (step === '7' && level === 1) {
                 replaceNames(response.new_objects, 'administrative');
             } else if (step === '9' && level === 1) {
                 replaceNames(response.new_objects, 'sector');
-            } else if (step === '10' && level === 1) {
-                replaceNames(response.new_objects, 'indicator');
-            } else if (step === '10' && level === 2) {
-                replaceNames(response.new_objects, 'indicator-period');
             } else {
                 replaceNames(response.new_objects);
             }
             addErrors(response.errors);
+
+            if (step === '5' && level < 3) {
+                submitStep('5', level + 1);
+                return false;
+            }
 
             if (step === '6') {
                 saveDocuments(form, api_url, step, response.new_objects);
@@ -455,11 +460,6 @@ function submitStep(step, level) {
 
             if (step === '9' && level < 2) {
                 submitStep('9', level + 1);
-                return false;
-            }
-
-            if (step === '10' && level < 3) {
-                submitStep('10', level + 1);
                 return false;
             }
 
@@ -838,7 +838,7 @@ function setSubmitOnClicks() {
 function getFormSubmit(stepId) {
     return function(e) {
         e.preventDefault();
-        if (stepId === '7' || '9' || '10') {
+        if (stepId === '5' || '7' || '9') {
             submitStep(stepId, 1);
         } else {
             submitStep(stepId);

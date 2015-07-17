@@ -1,47 +1,58 @@
+{% load i18n %}
 <div class="result-item parent" id="result{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
+        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
         <div class="row">
             <div class="col-md-4 control">
-                <input type="text" class="form-control priority2" name="result-title{% if key %}-{{ key }}{% endif %}" id="result-title{% if key %}-{{ key }}{% endif %}" placeholder="Result title"
-                {% if result.title %} value="{{result.title}}" {% endif %}>
-                <label class="control-label" for="result-title{% if key %}-{{ key }}{% endif %}">Result title</label>
+                <input type="text" class="form-control priority2" name="result-title{% if key %}-{{ key }}{% endif %}" id="result-title{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Result title' %}"
+                {% if result.title %} value="{{result.title}}" {% endif %} maxlength="255">
+                <label class="control-label" for="result-title{% if key %}-{{ key }}{% endif %}">{% trans 'Result title' %}</label>
+                <p class="help-block hidden">{% trans 'The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.' %}</p>
             </div>
             <div class="col-md-4">
                 <div class="select-group control">
                     <select name="result-type{% if key %}-{{ key }}{% endif %}" id="result-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                        <option value="" {% if not result.type %} selected="selected" {% endif %}>Result type</option>
+                        <option value="" {% if not result.type %} selected="selected" {% endif %}>{% trans 'Result type' %}</option>
                         {% for entry in result_types %}
                             <option value="{{ entry.code }}" {% if result.type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
                         {% endfor %}                       
                     </select>
-                    <label class="control-label" for="result-type{% if key %}-{{ key }}{% endif %}">Result type</label>
+                    <label class="control-label" for="result-type{% if key %}-{{ key }}{% endif %}">{% trans 'Result type' %}</label>
+                    <p class="help-block hidden">
+                        {% blocktrans %}Select whether the result is an output, outcome or impact.<br/>
+                        1 - Output: Results of the activity that came about as a direct effect of your work and specific, what is done, and what communities are reached. For example, X number of individuals.<br/>
+                        2 - Outcome: Results of the activity that produce an effect on the overall communities or issues you serve. For example lower rate of infection after a vaccination program.<br/>
+                        3 - Impact: The long term effects of the outcomes, that lead to larger, over arching results, such as improved life-expectancy.<br/>
+                        9 - Other: Another type of result, not specified above.{% endblocktrans %}
+                    </p>
                 </div>
             </div>
             <div class="col-md-4 control">
                 <div class="select-group">
                     <select name="result-aggregation-status{% if key %}-{{ key }}{% endif %}" id="result-aggregation-status{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                        <option value="">Aggregation status</option>
-                        <option value="0" {% if result.aggregation_status|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}>
-                            Unknown
-                        </option>
-                        <option value="1" {% if result.aggregation_status|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>
-                            Yes
-                        </option>
-                        <option value="2" {% if result.aggregation_status|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>
-                            No
-                        </option>
+                        <option value="">{% trans 'Aggregation status' %}</option>
+                        <option value="0" {% if result.aggregation_status|yesno:"yes, no, unknown" == "unknown" %} selected="selected" {% endif %}>{% trans 'Unknown' %}</option>
+                        <option value="1" {% if result.aggregation_status|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
+                        <option value="2" {% if result.aggregation_status|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
                     </select>
-                    <label class="control-label" for="result-aggregation-status{% if key %}-{{ key }}{% endif %}">Aggregation status</label>
+                    <label class="control-label" for="result-aggregation-status{% if key %}-{{ key }}{% endif %}">{% trans 'Aggregation status' %}</label>
+                    <p class="help-block hidden">{% trans 'Indicate whether the data in the result set can be accumulated.' %}</p>
                 </div>
             </div>
         </div>
     </div>
     <div class="form-group control">
         <textarea id="result-description{% if key %}-{{ key }}{% endif %}" class="form-control priority2" name="result-description{% if key %}-{{ key }}{% endif %}"
-        placeholder="Type in the result description">{{result.description}}</textarea>
-        <label class="control-label" for="result-description{% if key %}-{{ key }}{% endif %}">Result description</label>
+        placeholder="{% trans 'Result description' %}" maxlength="2000" rows="8">{{result.description}}</textarea>
+        <label class="control-label" for="result-description{% if key %}-{{ key }}{% endif %}">{% trans 'Result description' %}</label>
+        <p class="help-block hidden">{% trans 'You can provide further information of the result here.' %}</p>
     </div>
-    <hr/>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 text-center" id="delete-result{% if key %}-{{ key }}{% endif %}">
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-result{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete result and indicator(s) belonging to this result' %}</a>
+        </div>
+    </div>
+    <h5>{% trans 'Indicators' %}</h5>
     <div class="indicator-container">
         {% for indicator in result.indicators.all %}
             {% include "myrsr/project_admin_partials/indicator_input.html" with key=indicator.pk %}
@@ -50,14 +61,11 @@
         {% endfor %}
     </div>
     <div class="row">
-        <div class="col-md-6 col-md-offset-3 text-center">
-            <a href="#" class="btn btn-link add-indicator" id=""><span class="glyphicon glyphicon-plus"></span> Add another indicator</a>
+        <div class="col-md-8">
+            <hr/>
+        </div>
+        <div class="col-md-4 text-center add-object-link">
+            <a href="#" class="add-indicator" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator' %}</a>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3 text-center" id="delete-result{% if key %}-{{ key }}{% endif %}">
-            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-result{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete result</a>
-        </div>
-    </div>
-    <hr/>
 </div>
