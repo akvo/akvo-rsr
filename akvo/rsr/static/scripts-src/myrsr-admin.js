@@ -342,9 +342,7 @@ function submitStep(step, level) {
         }
 
         form_data += '&level=' + level;
-    } else if (step === '7') {
-        form_data += '&level=' + level;
-    } else if (step === '9') {
+    } else if (step === '6') {
         var budgetItems, transactions, plannedDisbursements, receiverOrgs, providerOrgs;
 
         budgetItems = document.querySelectorAll('.budget-item');
@@ -415,6 +413,8 @@ function submitStep(step, level) {
         }
 
         form_data += '&level=' + level;
+    } else if (step === '7') {
+    form_data += '&level=' + level;
     }
 
     // Create request
@@ -435,11 +435,11 @@ function submitStep(step, level) {
                 replaceNames(response.new_objects, 'indicator');
             } else if (step === '5' && level === 2) {
                 replaceNames(response.new_objects, 'indicator-period');
-            } else if (step === '7' && level === 1) {
-                replaceNames(response.new_objects, 'administrative');
-            } else if (step === '9' && level === 1) {
+            } else if (step === '6' && level === 1) {
                 replaceNames(response.new_objects, 'sector');
-            } else {
+            }else if (step === '7' && level === 1) {
+                replaceNames(response.new_objects, 'administrative');
+            }  else {
                 replaceNames(response.new_objects);
             }
             addErrors(response.errors);
@@ -449,8 +449,9 @@ function submitStep(step, level) {
                 return false;
             }
 
-            if (step === '6') {
-                saveDocuments(form, api_url, step, response.new_objects);
+            if (step === '6' && level < 2) {
+                submitStep('6', level + 1);
+                return false;
             }
 
             if (step === '7' && level < 2) {
@@ -458,9 +459,8 @@ function submitStep(step, level) {
                 return false;
             }
 
-            if (step === '9' && level < 2) {
-                submitStep('9', level + 1);
-                return false;
+            if (step === '9') {
+                saveDocuments(form, api_url, step, response.new_objects);
             }
 
             savingStep(false, step);
@@ -838,7 +838,7 @@ function setSubmitOnClicks() {
 function getFormSubmit(stepId) {
     return function(e) {
         e.preventDefault();
-        if (stepId === '5' || '7' || '9') {
+        if (stepId === '5' || '6' || '7') {
             submitStep(stepId, 1);
         } else {
             submitStep(stepId);

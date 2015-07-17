@@ -1,67 +1,78 @@
+{% load i18n %}
 <div class="budget-item parent" id="budget_item{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
+        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="select-group control">
                     <select name="budget-item-label{% if key %}-{{ key }}{% endif %}" id="budget-item-label{% if key %}-{{ key }}{% endif %}" class="form-control priority1">
-                        <option value="" {% if not item.label %} selected="selected" {% endif %}>Budget item</option>
+                        <option value="" {% if not item.label %} selected="selected" {% endif %}>{% trans 'Budget item' %}</option>
                         {% for bi in budget_item_labels %}
                             <option value="{{bi.pk}}" {% if item.label.label == bi.label %} selected="selected" {% endif %}>{{bi.label}}</option>
                         {% endfor %} 
                     </select>
-                    <label class="control-label" for="budget-item-label{% if key %}-{{ key }}{% endif %}">Budget item</label>
+                    <label class="control-label" for="budget-item-label{% if key %}-{{ key }}{% endif %}">{% trans 'Budget item' %}</label>
+                    <p class="help-block hidden">{% trans 'Select the budget item(s) to indicate how the project budget is divided. Use the ‘Other’ fields to add custom budget items.' %}</p>
                 </div>
             </div>
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority1" name="budget-item-other{% if key %}-{{ key }}{% endif %}" id="budget-item-other{% if key %}-{{ key }}{% endif %}" placeholder="Other label extra info"
-                {% if item.other_extra %} value="{{item.other_extra}}" {% endif %}>
-                <label class="control-label" for="budget-item-other{% if key %}-{{ key }}{% endif %}">Other label extra info</label>
+            <div class="col-md-4 control">
+                <input type="text" class="form-control priority1" name="budget-item-other{% if key %}-{{ key }}{% endif %}" id="budget-item-other{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Other label extra info' %}"
+                {% if item.other_extra %} value="{{item.other_extra}}" {% endif %} maxlength="20">
+                <label class="control-label" for="budget-item-other{% if key %}-{{ key }}{% endif %}">{% trans 'Other label extra info' %}</label>
+                <p class="help-block hidden">{% trans 'Enter a description for an “other” budget item.' %}</p>
             </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="budget-item-type{% if key %}-{{ key }}{% endif %}" id="budget-item-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                <option value="" {% if not item.type %} selected="selected" {% endif %}>Budget type</option>
-                {% for bt in budget_types %}
-                    <option value="{{ bt.code }}" {% if item.type == bt.code %} selected="selected" {% endif %}>{{ bt.code }} - {{ bt.name }}</option>
-                {% endfor %}
-            </select>
-            <label for="budget-item-type{% if key %}-{{ key }}{% endif %}" class="control-label">Budget type</label>
+            <div class="col-md-4">
+                <div class="select-group control">
+                    <select name="budget-item-type{% if key %}-{{ key }}{% endif %}" id="budget-item-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
+                        <option value="" {% if not item.type %} selected="selected" {% endif %}>{% trans 'Budget type' %}</option>
+                        {% for bt in budget_types %}
+                            <option value="{{ bt.code }}" {% if item.type == bt.code %} selected="selected" {% endif %}>{{ bt.code }} - {{ bt.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="budget-item-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Budget type' %}</label>
+                    <p class="help-block hidden">{% trans 'Select whether this is an original or revised budget of the project.' %}</p>
+                </div>
+            </div>
         </div>
     </div>
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="text" class="form-control priority2" name="budget-item-value{% if key %}-{{ key }}{% endif %}" id="budget-item-value{% if key %}-{{ key }}{% endif %}" placeholder="Budget item amount"
-                {% if item.amount %} value="{{item.amount}}" {% endif %}>
-                <label class="control-label" for="budget-item-value{% if key %}-{{ key }}{% endif %}">Budget item value</label>
+                <div class="input-group priority2">
+                    <span class="input-group-addon">{{ project.get_currency_display }}</span>
+                    <input type="text" class="form-control" name="budget-item-value{% if key %}-{{ key }}{% endif %}" id="budget-item-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Budget item value' %}"
+                    {% if item.amount %} value="{{item.amount}}" {% endif %}>
+                </div>
+                <label class="control-label" for="budget-item-value{% if key %}-{{ key }}{% endif %}">{% trans 'Budget item value' %}</label>
+                <p class="help-block hidden">{% trans 'The amount of budget that is set aside for this specific budget item.' %}</p>
             </div>
             <div class="col-md-6 control">
-                <input type="date" class="form-control priority2" name="budget-item-value-date{% if key %}-{{ key }}{% endif %}" id="budget-item-value-date{% if key %}-{{ key }}{% endif %}" placeholder="Budget item amount date"
+                <input type="date" class="form-control priority2" name="budget-item-value-date{% if key %}-{{ key }}{% endif %}" id="budget-item-value-date{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Budget item value date' %}"
                 {% if item.value_date %} value="{{item.value_date|date:'c'}}" {% endif %}>
-                <label class="control-label" for="budget-item-value-date{% if key %}-{{ key }}{% endif %}">Budget item value date</label>
+                <label class="control-label" for="budget-item-value-date{% if key %}-{{ key }}{% endif %}">{% trans 'Budget item value date' %}</label>
+                <p class="help-block hidden">{% trans 'The date to be used for determining the exchange rate for currency conversions.' %}</p>
             </div>
         </div>
     </div>
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <input type="date" class="form-control priority3" name="budget-item-period-start{% if key %}-{{ key }}{% endif %}" id="budget-item-period-start{% if key %}-{{ key }}{% endif %}" placeholder="Budget item period start"
+                <input type="date" class="form-control priority3" name="budget-item-period-start{% if key %}-{{ key }}{% endif %}" id="budget-item-period-start{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Budget item period start' %}"
                 {% if item.period_start %} value="{{item.period_start|date:'c'}}" {% endif %}>
-                <label class="control-label" for="budgetItemPeriodStart">Budget item period start</label>
+                <label class="control-label" for="budgetItemPeriodStart">{% trans 'Budget item period start' %}</label>
+                <p class="help-block hidden">{% trans 'The starting date for the budget period.' %}</p>
             </div>
             <div class="col-md-6 control">
-                <input type="date" class="form-control priority3" name="budget-item-period-end{% if key %}-{{ key }}{% endif %}" id="budget-item-period-end{% if key %}-{{ key }}{% endif %}" placeholder="Budget item period end"
+                <input type="date" class="form-control priority3" name="budget-item-period-end{% if key %}-{{ key }}{% endif %}" id="budget-item-period-end{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Budget item period end' %}"
                 {% if item.period_end %} value="{{item.period_end|date:'c'}}" {% endif %}>            
-                <label class="control-label" for="budget-item-period-start{% if key %}-{{ key }}{% endif %}">Budget item period end</label>
+                <label class="control-label" for="budget-item-period-start{% if key %}-{{ key }}{% endif %}">{% trans 'Budget item period end' %}</label>
+                <p class="help-block hidden">{% trans 'The ending date for the budget period.' %}</p>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3 text-center" id="delete-budget-item{% if key %}-{{ key }}{% endif %}">
-            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-budget-item{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete budget item</a>
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-budget-item{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete budget item' %}</a>
         </div>
     </div>
-    <hr/>
 </div>

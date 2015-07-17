@@ -521,7 +521,7 @@
                 <div class="myPanel borderBottom" id="panel6">
                     <div class="formStep stepSix">
                         <div onclick="scrollTo('panel6')">
-                            <label for="stepSix" class="stepLabel"><h4>06 - Links and documents</h4></label>
+                            <label for="stepSix" class="stepLabel"><h4>06 - {% trans 'Finance' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepSix">
                         <div class="progress">
@@ -530,36 +530,118 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'You can define the budget information as a total for the whole project or within sections and periods to provide more granular information about where the project funds are being spent.' %}</p>
+                            <p class="help-block">{% trans 'Transactions refer to the actual transfers of funds between organisations related to the funding and expenditure of the project. This information is crucially important when defining the funding chain within the development aid sector and can help to shape the overall picture. Providing this information can also be beneficial to give clarity on expenditure over periods of time which is reflected within the results obtained for the project.' %}
                             <form role="form" id="admin-step-6">
                             <div class="form-group">
-                                <div class="link-container">
-                                    {% for link in project.links.all %}
-                                        {% include "myrsr/project_admin_partials/link_input.html" with key=link.pk %}
-                                    {% empty %}
-                                        {% include "myrsr/project_admin_partials/link_input.html" with key='add-0' %}
-                                    {% endfor %}
+                                <div class="select-group control">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority1">
+                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
+                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
+                                    </select>
+                                    <label for="projectCurrency" class="control-label">{% trans 'Currency' %}</label>
                                 </div>
+                                <p class="help-block hidden">{% trans 'The default currency for this project. Used in all financial aspects of the project.' %}</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label for="donateButton" class="control-label">
+                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2"
+                                        {% if project.donate_button %} checked {% endif %}>{% trans 'Donate button' %}
+                                    </label>
+                                </div>
+                                <p class="help-block hidden">
+                                    {% trans 'By ticking the checkbox, a donate button will appear at your project page in order to enable donations to your project. This is only possible in case the project is still seeking for funds.' %}
+                                </p>
+                            </div>
+                            <hr/>
+                            <h5>{% trans 'Budget items' %}</h5>
+                            <div class="form-group control">
+                                <div class="input-group priority2">
+                                    <input type="text" class="form-control priority3" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="{% trans 'Capital spend percentage' %}"
+                                    {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                                <label for="capital-spend-percentage" class="control-label">{% trans 'Capital spend percentage' %}</label>
+                                <p class="help-block hidden">{% trans 'The percentage of the total commitment allocated to or planned for capital expenditure. Content must be a positive decimal number between 0 and 100, with no percentage sign.' %}</p>
+                            </div>
+                            <div class="budget-item-container">
+                                {% for item in project.budget_items.all %}
+                                    {% include "myrsr/project_admin_partials/budget_item_input.html" with key=item.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/budget_item_input.html" with key='add-0' %}
+                                {% endfor %}
                             </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-link" id=""><span class="glyphicon glyphicon-plus"></span> Add another link</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                    <a href="#" class="add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another budget item' %}</a>
                                 </div>
                             </div>
-                                <div class="document-container">
-                                    {% for document in project.documents.all %}
-                                        {% include "myrsr/project_admin_partials/document_input.html" with key=document.pk %}
-                                    {% empty %}
-                                        {% include "myrsr/project_admin_partials/document_input.html" with key='add-0' %}
-                                    {% endfor %}
-                                </div>                         
+                            <h5>{% trans 'Country budget items' %}</h5>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3">
+                                        <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}>{% trans 'Country budget vocabulary' %}:</option>
+                                        {% for vocabulary in budget_identifier_vocabularies %}
+                                            <option value="{{ vocabulary.code }}" {% if project.country_budget_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="country-budget-vocabulary" class="control-label">{% trans 'Country budget vocabulary' %}</label>
+                                </div>
+                            </div>
+                            <div class="country-budget-item-container">
+                                {% for item in project.country_budget_items.all %}
+                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key=item.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-document" id=""><span class="glyphicon glyphicon-plus"></span> Add another document</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another country budget item' %}</a>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Transactions' %}</h5>
+                            <div class="transaction-container">
+                                {% for transaction in project.transactions.all %}
+                                    {% include "myrsr/project_admin_partials/transaction_input.html" with key=transaction.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/transaction_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                    <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Planned disbursements' %}</h5>
+                            <div class="planned-disbursement-container">
+                                {% for pd in project.planned_disbursements.all %}
+                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key=pd.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep6"></div>
                             </div>
@@ -571,7 +653,7 @@
                 <div class="myPanel borderBottom" id="panel7">
                     <div class="formStep stepSeven">
                         <div onclick="scrollTo('panel7')">
-                            <label for="stepSeven" class="stepLabel"><h4>07 - Locations</h4></label>
+                            <label for="stepSeven" class="stepLabel"><h4>07 - {% trans 'Project locations' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepSeven">
                         <div class="progress">
@@ -647,7 +729,7 @@
                 <div class="myPanel borderBottom" id="panel8">
                     <div class="formStep stepEight">
                         <div onclick="scrollTo('panel8')">
-                            <label for="stepEight" class="stepLabel"><h4>08 - Focus</h4></label>
+                            <label for="stepEight" class="stepLabel"><h4>08 - {% trans 'Project focus' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepEight">
                         <div class="progress">
@@ -695,7 +777,7 @@
                 <div class="myPanel borderBottom" id="panel9">
                     <div class="formStep stepNine">
                         <div onclick="scrollTo('panel9')">
-                            <label for="stepNine" class="stepLabel"><h4>09 - Finance</h4></label>
+                            <label for="stepNine" class="stepLabel"><h4>09 - {% trans 'Links and documents' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepNine">                        
                         <div class="progress">
@@ -706,82 +788,29 @@
                         <div class="formBlock">
                             <form role="form" id="admin-step-9">
                             <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority1">
-                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
-                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
-                                    </select>
-                                    <label for="projectCurrency" class="control-label">Currency</label>
+                                <div class="link-container">
+                                    {% for link in project.links.all %}
+                                        {% include "myrsr/project_admin_partials/link_input.html" with key=link.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_admin_partials/link_input.html" with key='add-0' %}
+                                    {% endfor %}
                                 </div>
-                                <p class="help-block hidden">The default currency for this project. Used in all financial aspects of the project.</p>
-                            </div>
-                            <div class="form-group control">
-                                <input type="text" class="form-control priority3" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="Capital spend percentage"
-                                {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
-                                <label for="capital-spend-percentage" class="control-label">Capital spend percentage</label>
-                            </div>
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3">
-                                        <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}>
-                                            Country budget vocabulary
-                                        </option>
-                                        {% for vocabulary in budget_identifier_vocabularies %}
-                                            <option value="{{ vocabulary.code }}" {% if project.country_budget_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
-                                        {% endfor %}                                        
-                                    </select>
-                                    <label for="country-budget-vocabulary" class="control-label">Country budget vocabulary</label>
-                                </div>
-                            </div>
-                            <hr/>
-                            <div class="budget-item-container">
-                                {% for item in project.budget_items.all %}
-                                    {% include "myrsr/project_admin_partials/budget_item_input.html" with key=item.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_admin_partials/budget_item_input.html" with key='add-0' %}
-                                {% endfor %}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> Add another budget item</a>
+                                    <a href="#" class="btn btn-link add-link" id=""><span class="glyphicon glyphicon-plus"></span> Add another link</a>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="country-budget-item-container">
-                                {% for item in project.country_budget_items.all %}
-                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key=item.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> Add another country budget item</a>
+                                <div class="document-container">
+                                    {% for document in project.documents.all %}
+                                        {% include "myrsr/project_admin_partials/document_input.html" with key=document.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_admin_partials/document_input.html" with key='add-0' %}
+                                    {% endfor %}
                                 </div>
-                            </div>
-                            <hr>
-                            <div class="transaction-container">
-                                {% for transaction in project.transactions.all %}
-                                    {% include "myrsr/project_admin_partials/transaction_input.html" with key=transaction.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_admin_partials/transaction_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>                             
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> Add another transaction</a>
-                                </div>
-                            </div>
-                            <div class="planned-disbursement-container">
-                                {% for pd in project.planned_disbursements.all %}
-                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key=pd.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>                            
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> Add another planned disbursement</a>
+                                    <a href="#" class="btn btn-link add-document" id=""><span class="glyphicon glyphicon-plus"></span> Add another document</a>
                                 </div>
                             </div>
                             <div class="row">
@@ -798,7 +827,7 @@
                 <div class="myPanel borderBottom" id="panel10">
                     <div class="formStep stepTen">
                         <div onclick="scrollTo('panel10')">
-                            <label for="stepTen" class="stepLabel"><h4>10 - Results</h4></label>
+                            <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepTen">
                         <div class="progress">
