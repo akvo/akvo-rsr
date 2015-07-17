@@ -463,7 +463,7 @@
                 <div class="myPanel borderBottom" id="panel5">
                     <div class="formStep stepFive">
                         <div onclick="scrollTo('panel5')">
-                            <label for="stepFive" class="stepLabel"><h4>05 - Photo</h4></label>
+                            <label for="stepFive" class="stepLabel"><h4>05 - {% trans 'Results and indicators' %}</h4></label>
                         </div>
                         <input type="radio" name="step" id="stepFive">                        
                         <div class="progress">
@@ -472,13 +472,44 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'In the results and indicators section you can set targets for your project and indicate how you are going to measure them. This will give an overview of your aimed project results in a nicely structured way.' %}</p>
+                            <p class="help-block">{% trans 'Each indicator can be given one or more periods of achievement. These periods should cover the dates from which the indicator is evaluated.' %}</p>
                             <form role="form" id="admin-step-5">
-
-                            <!-- Removed photo! -->
-
+                            <h5>{% trans 'Results' %}</h5>
+                            <div class="result-container">
+                                {% for result in project.results.all %}
+                                    {% include "myrsr/project_admin_partials/result_input.html" with key=result.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/result_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                    <a href="#" class="add-result" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Project conditions' %}</h5>
+                            <div class="condition-container">
+                                {% for condition in project.conditions.all %}
+                                    {% include "myrsr/project_admin_partials/condition_input.html" with key=condition.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/condition_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                    <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep5"></div>
                             </div>
@@ -777,30 +808,9 @@
                         </div>
                         <div class="formBlock">
                             <form role="form" id="admin-step-10">
-                            <div class="condition-container">
-                                {% for condition in project.conditions.all %}
-                                    {% include "myrsr/project_admin_partials/condition_input.html" with key=condition.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_admin_partials/condition_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-condition" id=""><span class="glyphicon glyphicon-plus"></span> Add another condition</a>
-                                </div>
-                            </div>
-                            <div class="result-container">
-                                {% for result in project.results.all %}
-                                    {% include "myrsr/project_admin_partials/result_input.html" with key=result.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_admin_partials/result_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div>                            
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-result" id=""><span class="glyphicon glyphicon-plus"></span> Add another result</a>
-                                </div>
-                            </div>
+
+                                <!-- Results section deleted -->
+
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>

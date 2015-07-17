@@ -421,31 +421,261 @@ def project_admin_step5(request, pk=None):
         return HttpResponseForbidden()
 
     data = request.POST
-    files = request.FILES
     errors = []
     new_objects = []
-    new_image = None
 
-    if not files and 'photo' not in data.keys():
-        errors = save_field(
-            project, 'current_image_caption', 'photoCaption', data['photoCaption'], errors
-        )
-        errors = save_field(
-            project, 'current_image_credit', 'photoCredit', data['photoCredit'], errors
-        )
+    if data['level'] == '1':
+        # Conditions
+        for key in data.keys():
+            if 'condition-type-' in key:
+                condition = None
+                condition_id = key.split('-', 2)[2]
 
-    elif 'photo' in files.keys():
-        errors = save_field(project, 'current_image', 'photo', files['photo'], errors)
-        if not errors:
-            new_image = get_thumbnail(
-                project.current_image, '250x250', format="PNG", upscale=True
-            ).url
+                if 'add' in condition_id and (data['condition-type-' + condition_id]
+                                              or data['condition-text-' + condition_id]):
+
+                    condition = ProjectCondition.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': condition_id,
+                            'new_id': str(condition.pk),
+                            'div_id': 'project_condition-' + condition_id,
+                        }
+                    )
+                elif not 'add' in condition_id:
+                    try:
+                        condition = ProjectCondition.objects.get(pk=int(condition_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                if condition:
+                    cond_type_key = 'condition-type-' + condition_id
+                    errors = save_field(
+                        condition, 'type', cond_type_key, data[cond_type_key], errors
+                    )
+
+                    cond_text_key = 'condition-text-' + condition_id
+                    errors = save_field(
+                        condition, 'text', cond_text_key, data[cond_text_key], errors
+                    )
+
+        # Results
+        for key in data.keys():
+            if 'result-title-' in key:
+                result = None
+                result_id = key.split('-', 2)[2]
+
+                if 'add' in result_id and (data['result-title-' + result_id]
+                                           or data['result-type-' + result_id]
+                                           or data['result-description-' + result_id]):
+
+                    result = Result.objects.create(project=project)
+                    new_objects.append(
+                        {
+                            'old_id': result_id,
+                            'new_id': str(result.pk),
+                            'div_id': 'result-' + result_id,
+                        }
+                    )
+                elif not 'add' in result_id:
+                    try:
+                        result = Result.objects.get(pk=int(result_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': str(result.pk),
+                            'new_id': str(result.pk),
+                            'div_id': 'result-' + str(result.pk),
+                        }
+                    )
+
+                if result:
+                    res_title_key = 'result-title-' + result_id
+                    errors = save_field(result, 'title', res_title_key, data[res_title_key], errors)
+
+                    res_type_key = 'result-type-' + result_id
+                    errors = save_field(result, 'type', res_type_key, data[res_type_key], errors)
+
+                    res_as_key = 'result-aggregation-status-' + result_id
+                    res_as = data[res_as_key] if data[res_as_key] else None
+                    errors = save_field(result, 'aggregation_status', res_as_key, res_as, errors)
+
+                    res_desc_key = 'result-description-' + result_id
+                    errors = save_field(
+                        result, 'description', res_desc_key, data[res_desc_key], errors
+                    )
+
+    if data['level'] == '2':
+        # Indicators
+        for key in data.keys():
+            if 'indicator-title-' in key:
+                indicator = None
+                ind_res_id = key.split('-', 2)[2]
+
+                if 'add' in ind_res_id and (data['indicator-title-' + ind_res_id]
+                                            or data['indicator-measure-' + ind_res_id]
+                                            or data['indicator-ascending-' + ind_res_id]
+                                            or data['indicator-description-' + ind_res_id]
+                                            or data['indicator-baseline-value-' + ind_res_id]
+                                            or data['indicator-baseline-comment-' + ind_res_id]
+                                            or data['indicator-baseline-year-' + ind_res_id]):
+
+                    ind_res_id_list = ind_res_id.split('-')
+                    result_id = ind_res_id_list.pop()
+
+                    try:
+                        result = Result.objects.get(pk=str(result_id))
+                        indicator = Indicator.objects.create(result=result)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'indicator-title-' + ind_res_id,
+                                       'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': ind_res_id,
+                            'new_id': str(indicator.pk),
+                            'div_id': 'indicator-' + ind_res_id,
+                        }
+                    )
+
+                elif not 'add' in ind_res_id:
+                    try:
+                        indicator = Indicator.objects.get(pk=int(ind_res_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': str(indicator.pk),
+                            'new_id': str(indicator.pk),
+                            'div_id': 'indicator-' + str(indicator.pk),
+                        }
+                    )
+
+                if indicator:
+                    ind_title_key = 'indicator-title-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'title', ind_title_key, data[ind_title_key], errors
+                    )
+
+                    ind_meas_key = 'indicator-measure-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'measure', ind_meas_key, data[ind_meas_key], errors
+                    )
+
+                    ind_asc_key = 'indicator-ascending-' + ind_res_id
+                    ind_asc = data[ind_asc_key] if data[ind_asc_key] else None
+                    errors = save_field(indicator, 'ascending', ind_asc_key, ind_asc, errors)
+
+                    ind_desc_key = 'indicator-description-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'description', ind_desc_key, data[ind_desc_key], errors
+                    )
+
+                    ind_baseval_key = 'indicator-baseline-value-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'baseline_value', ind_baseval_key, data[ind_baseval_key], errors
+                    )
+
+                    ind_basecom_key = 'indicator-baseline-comment-' + ind_res_id
+                    errors = save_field(
+                        indicator, 'baseline_comment', ind_basecom_key, data[ind_basecom_key],
+                        errors
+                    )
+
+                    ind_baseyear_key = 'indicator-baseline-year-' + ind_res_id
+                    ind_baseyear = data[ind_baseyear_key] if data[ind_baseyear_key] else None
+                    errors = save_field(
+                        indicator, 'baseline_year', ind_basecom_key, ind_baseyear, errors
+                    )
+
+    if data['level'] == '3':
+        # Indicator periods
+        for key in data.keys():
+            if 'indicator-period-target-value-comment-' in key:
+                ip = None
+                ip_ind_id = key.split('-', 5)[5]
+
+                if 'add' in ip_ind_id and (data['indicator-period-start-' + ip_ind_id]
+                                           or data['indicator-period-end-' + ip_ind_id]
+                                           or data['indicator-period-target-value-' + ip_ind_id]
+                                           or data['indicator-period-target-value-comment-' + ip_ind_id]
+                                           or data['indicator-period-actual-value-' + ip_ind_id]
+                                           or data['indicator-period-actual-value-comment-' + ip_ind_id]):
+
+                    ip_ind_id_list = ip_ind_id.split('-')
+                    indicator_id = ip_ind_id_list.pop()
+
+                    try:
+                        indicator = Indicator.objects.get(pk=str(indicator_id))
+                        ip = IndicatorPeriod.objects.create(indicator=indicator)
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': 'indicator-period-start-' + ip_ind_id,
+                                       'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': ip_ind_id,
+                            'new_id': str(ip.pk),
+                            'div_id': 'indicator_period-' + ip_ind_id,
+                        }
+                    )
+
+                elif not 'add' in ip_ind_id:
+                    try:
+                        ip = IndicatorPeriod.objects.get(pk=int(ip_ind_id))
+                    except Exception as e:
+                        error = str(e).capitalize()
+                        errors.append({'name': key, 'error': error})
+
+                    new_objects.append(
+                        {
+                            'old_id': str(ip.pk),
+                            'new_id': str(ip.pk),
+                            'div_id': 'indicator_period-' + str(ip.pk),
+                        }
+                    )
+
+                if ip:
+                    ip_pstart_key = 'indicator-period-start-' + ip_ind_id
+                    ip_pstart = data[ip_pstart_key] if data[ip_pstart_key] else None
+                    errors = save_field(ip, 'period_start', ip_pstart_key, ip_pstart, errors)
+
+                    ip_pend_key = 'indicator-period-end-' + ip_ind_id
+                    ip_pend = data[ip_pend_key] if data[ip_pend_key] else None
+                    errors = save_field(ip, 'period_end', ip_pend_key, ip_pend, errors)
+
+                    ip_target_key = 'indicator-period-target-value-' + ip_ind_id
+                    errors = save_field(
+                        ip, 'target_value', ip_target_key, data[ip_target_key], errors
+                    )
+
+                    ip_tarcom_key = 'indicator-period-target-value-comment-' + ip_ind_id
+                    errors = save_field(
+                        ip, 'target_comment', ip_tarcom_key, data[ip_tarcom_key], errors
+                    )
+
+                    ip_actual_key = 'indicator-period-actual-value-' + ip_ind_id
+                    errors = save_field(
+                        ip, 'actual_value', ip_actual_key, data[ip_actual_key], errors
+                    )
+
+                    ip_actcom_key = 'indicator-period-actual-value-comment-' + ip_ind_id
+                    errors = save_field(
+                        ip, 'actual_comment', ip_actcom_key, data[ip_actcom_key], errors
+                    )
 
     return Response(
         {
             'errors': errors,
             'new_objects': new_objects,
-            'new_image': new_image,
         }
     )
 
@@ -1458,254 +1688,6 @@ def project_admin_step10(request, pk=None):
     data = request.POST
     errors = []
     new_objects = []
-
-    if data['level'] == '1':
-        # Conditions
-        for key in data.keys():
-            if 'condition-type-' in key:
-                condition = None
-                condition_id = key.split('-', 2)[2]
-
-                if 'add' in condition_id and (data['condition-type-' + condition_id]
-                                              or data['condition-text-' + condition_id]):
-
-                    condition = ProjectCondition.objects.create(project=project)
-                    new_objects.append(
-                        {
-                            'old_id': condition_id,
-                            'new_id': str(condition.pk),
-                            'div_id': 'project_condition-' + condition_id,
-                        }
-                    )
-                elif not 'add' in condition_id:
-                    try:
-                        condition = ProjectCondition.objects.get(pk=int(condition_id))
-                    except Exception as e:
-                        error = str(e).capitalize()
-                        errors.append({'name': key, 'error': error})
-
-                if condition:
-                    cond_type_key = 'condition-type-' + condition_id
-                    errors = save_field(
-                        condition, 'type', cond_type_key, data[cond_type_key], errors
-                    )
-
-                    cond_text_key = 'condition-text-' + condition_id
-                    errors = save_field(
-                        condition, 'text', cond_text_key, data[cond_text_key], errors
-                    )
-
-        # Results
-        for key in data.keys():
-            if 'result-title-' in key:
-                result = None
-                result_id = key.split('-', 2)[2]
-
-                if 'add' in result_id and (data['result-title-' + result_id]
-                                           or data['result-type-' + result_id]
-                                           or data['result-description-' + result_id]):
-
-                    result = Result.objects.create(project=project)
-                    new_objects.append(
-                        {
-                            'old_id': result_id,
-                            'new_id': str(result.pk),
-                            'div_id': 'result-' + result_id,
-                        }
-                    )
-                elif not 'add' in result_id:
-                    try:
-                        result = Result.objects.get(pk=int(result_id))
-                    except Exception as e:
-                        error = str(e).capitalize()
-                        errors.append({'name': key, 'error': error})
-
-                    new_objects.append(
-                        {
-                            'old_id': str(result.pk),
-                            'new_id': str(result.pk),
-                            'div_id': 'result-' + str(result.pk),
-                        }
-                    )
-
-                if result:
-                    res_title_key = 'result-title-' + result_id
-                    errors = save_field(result, 'title', res_title_key, data[res_title_key], errors)
-
-                    res_type_key = 'result-type-' + result_id
-                    errors = save_field(result, 'type', res_type_key, data[res_type_key], errors)
-
-                    res_as_key = 'result-aggregation-status-' + result_id
-                    res_as = data[res_as_key] if data[res_as_key] else None
-                    errors = save_field(result, 'aggregation_status', res_as_key, res_as, errors)
-
-                    res_desc_key = 'result-description-' + result_id
-                    errors = save_field(
-                        result, 'description', res_desc_key, data[res_desc_key], errors
-                    )
-
-    if data['level'] == '2':
-        # Indicators
-        for key in data.keys():
-            if 'indicator-title-' in key:
-                indicator = None
-                ind_res_id = key.split('-', 2)[2]
-
-                if 'add' in ind_res_id and (data['indicator-title-' + ind_res_id]
-                                            or data['indicator-measure-' + ind_res_id]
-                                            or data['indicator-ascending-' + ind_res_id]
-                                            or data['indicator-description-' + ind_res_id]
-                                            or data['indicator-baseline-value-' + ind_res_id]
-                                            or data['indicator-baseline-comment-' + ind_res_id]
-                                            or data['indicator-baseline-year-' + ind_res_id]):
-
-                    ind_res_id_list = ind_res_id.split('-')
-                    result_id = ind_res_id_list.pop()
-
-                    try:
-                        result = Result.objects.get(pk=str(result_id))
-                        indicator = Indicator.objects.create(result=result)
-                    except Exception as e:
-                        error = str(e).capitalize()
-                        errors.append({'name': 'indicator-title-' + ind_res_id,
-                                       'error': error})
-
-                    new_objects.append(
-                        {
-                            'old_id': ind_res_id,
-                            'new_id': str(indicator.pk),
-                            'div_id': 'indicator-' + ind_res_id,
-                        }
-                    )
-
-                elif not 'add' in ind_res_id:
-                    try:
-                        indicator = Indicator.objects.get(pk=int(ind_res_id))
-                    except Exception as e:
-                        error = str(e).capitalize()
-                        errors.append({'name': key, 'error': error})
-
-                    new_objects.append(
-                        {
-                            'old_id': str(indicator.pk),
-                            'new_id': str(indicator.pk),
-                            'div_id': 'indicator-' + str(indicator.pk),
-                        }
-                    )
-
-                if indicator:
-                    ind_title_key = 'indicator-title-' + ind_res_id
-                    errors = save_field(
-                        indicator, 'title', ind_title_key, data[ind_title_key], errors
-                    )
-
-                    ind_meas_key = 'indicator-measure-' + ind_res_id
-                    errors = save_field(
-                        indicator, 'measure', ind_meas_key, data[ind_meas_key], errors
-                    )
-
-                    ind_asc_key = 'indicator-ascending-' + ind_res_id
-                    ind_asc = data[ind_asc_key] if data[ind_asc_key] else None
-                    errors = save_field(indicator, 'ascending', ind_asc_key, ind_asc, errors)
-
-                    ind_desc_key = 'indicator-description-' + ind_res_id
-                    errors = save_field(
-                        indicator, 'description', ind_desc_key, data[ind_desc_key], errors
-                    )
-
-                    ind_baseval_key = 'indicator-baseline-value-' + ind_res_id
-                    errors = save_field(
-                        indicator, 'baseline_value', ind_baseval_key, data[ind_baseval_key], errors
-                    )
-
-                    ind_basecom_key = 'indicator-baseline-comment-' + ind_res_id
-                    errors = save_field(
-                        indicator, 'baseline_comment', ind_basecom_key, data[ind_basecom_key],
-                        errors
-                    )
-
-                    ind_baseyear_key = 'indicator-baseline-year-' + ind_res_id
-                    ind_baseyear = data[ind_baseyear_key] if data[ind_baseyear_key] else None
-                    errors = save_field(
-                        indicator, 'baseline_year', ind_basecom_key, ind_baseyear, errors
-                    )
-
-    if data['level'] == '3':
-        # Indicator periods
-        for key in data.keys():
-            if 'indicator-period-target-value-comment-' in key:
-                ip = None
-                ip_ind_id = key.split('-', 5)[5]
-
-                if 'add' in ip_ind_id and (data['indicator-period-start-' + ip_ind_id]
-                                           or data['indicator-period-end-' + ip_ind_id]
-                                           or data['indicator-period-target-value-' + ip_ind_id]
-                                           or data['indicator-period-target-value-comment-' + ip_ind_id]
-                                           or data['indicator-period-actual-value-' + ip_ind_id]
-                                           or data['indicator-period-actual-value-comment-' + ip_ind_id]):
-
-                    ip_ind_id_list = ip_ind_id.split('-')
-                    indicator_id = ip_ind_id_list.pop()
-
-                    try:
-                        indicator = Indicator.objects.get(pk=str(indicator_id))
-                        ip = IndicatorPeriod.objects.create(indicator=indicator)
-                    except Exception as e:
-                        error = str(e).capitalize()
-                        errors.append({'name': 'indicator-period-start-' + ip_ind_id,
-                                       'error': error})
-
-                    new_objects.append(
-                        {
-                            'old_id': ip_ind_id,
-                            'new_id': str(ip.pk),
-                            'div_id': 'indicator_period-' + ip_ind_id,
-                        }
-                    )
-
-                elif not 'add' in ip_ind_id:
-                    try:
-                        ip = IndicatorPeriod.objects.get(pk=int(ip_ind_id))
-                    except Exception as e:
-                        error = str(e).capitalize()
-                        errors.append({'name': key, 'error': error})
-
-                    new_objects.append(
-                        {
-                            'old_id': str(ip.pk),
-                            'new_id': str(ip.pk),
-                            'div_id': 'indicator_period-' + str(ip.pk),
-                        }
-                    )
-
-                if ip:
-                    ip_pstart_key = 'indicator-period-start-' + ip_ind_id
-                    ip_pstart = data[ip_pstart_key] if data[ip_pstart_key] else None
-                    errors = save_field(ip, 'period_start', ip_pstart_key, ip_pstart, errors)
-
-                    ip_pend_key = 'indicator-period-end-' + ip_ind_id
-                    ip_pend = data[ip_pend_key] if data[ip_pend_key] else None
-                    errors = save_field(ip, 'period_end', ip_pend_key, ip_pend, errors)
-
-                    ip_target_key = 'indicator-period-target-value-' + ip_ind_id
-                    errors = save_field(
-                        ip, 'target_value', ip_target_key, data[ip_target_key], errors
-                    )
-
-                    ip_tarcom_key = 'indicator-period-target-value-comment-' + ip_ind_id
-                    errors = save_field(
-                        ip, 'target_comment', ip_tarcom_key, data[ip_tarcom_key], errors
-                    )
-
-                    ip_actual_key = 'indicator-period-actual-value-' + ip_ind_id
-                    errors = save_field(
-                        ip, 'actual_value', ip_actual_key, data[ip_actual_key], errors
-                    )
-
-                    ip_actcom_key = 'indicator-period-actual-value-comment-' + ip_ind_id
-                    errors = save_field(
-                        ip, 'actual_comment', ip_actcom_key, data[ip_actcom_key], errors
-                    )
 
     return Response({
             'errors': errors,
