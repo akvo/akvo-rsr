@@ -662,62 +662,75 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'The scope of the project refers to the geographical area that the project is active within.' %}</p>
+                            <p class="help-block">{% trans 'Also add the physical locations where the project is being carried out. These will appear on the map on your project page. Use the link to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to obtain the coordinates for your locations, as these are the items that ensure the pin is in the correct place.' %}</p>
                             <form role="form" id="admin-step-7">
                             <div class="form-group">
                                 <div class="select-group control">
                                     <select name="scope" id="scope" class="form-control priority3">
-                                        <option value="" {% if not project.project_scope %} selected="selected" {% endif %}>Project scope:</option>
+                                        <option value="" {% if not project.project_scope %} selected="selected" {% endif %}>{% trans 'Project scope' %}:</option>
                                         {% for scope in activity_scopes %}
                                             <option value="{{ scope.code }}" {% if project.project_scope == scope.code %} selected="selected" {% endif %}>{{ scope.code }} - {{ scope.name }}</option>
                                         {% endfor %}                                        
                                     </select>
-                                    <label for="scope" class="control-label">Project scope</label>
-                                </div>
-                            </div>
-                            <hr/>    
-                            <div class="recipient-country-container">
-                                {% for rc in project.recipient_countries.all %}
-                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" with key=rc.pk %}
-                                {% empty %}
-                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" with key='add-0' %}
-                                {% endfor %}
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-recipient-country" id=""><span class="glyphicon glyphicon-plus"></span> Add another recipient country</a>
-                                </div>
-                            </div>
-                            <hr/> 
-                            <div class="recipient-region-container">
-                            {% for rr in project.recipient_regions.all %}
-                                {% include "myrsr/project_admin_partials/recipient_region_input.html" with key=rr.pk %}
-                            {% empty %}
-                                {% include "myrsr/project_admin_partials/recipient_region_input.html" with key='add-0' %}
-                            {% endfor %}
-                            </div>                             
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-recipient-region" id=""><span class="glyphicon glyphicon-plus"></span> Add another recipient region</a>
+                                    <label for="scope" class="control-label">{% trans 'Project scope' %}</label>
+                                    <p class="help-block hidden">{% trans 'Select the geographical scope of the project.' %}</p>
                                 </div>
                             </div>
                             <hr/>
-                            <div class="project-location-container">                         
+                            <h5>{% trans 'Project locations' %}</h5>
+                            <div class="project-location-container">
                                 {% if project.locations.all %}
                                     {% for location in project.locations.all %}
                                         {% include "myrsr/project_admin_partials/project_location_input.html" with key=location.pk %}
                                     {% endfor %}
                                 {% else %}
                                     {% include "myrsr/project_admin_partials/project_location_input.html" with key='add-0' %}
-                                {% endif %}    
-                            </div>                                                       
+                                {% endif %}
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-project-location" id=""><span class="glyphicon glyphicon-plus"></span> Add another project location</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-project-location" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another project location' %}</a>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Recipient countries' %}</h5>
+                            <div class="recipient-country-container">
+                                {% for rc in project.recipient_countries.all %}
+                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" with key=rc.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/recipient_country_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-recipient-country" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient country' %}</a>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Recipient regions' %}</h5>
+                            <div class="recipient-region-container">
+                                {% for rr in project.recipient_regions.all %}
+                                    {% include "myrsr/project_admin_partials/recipient_region_input.html" with key=rr.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/recipient_region_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-recipient-region" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient region' %}</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep7"></div>
                             </div>

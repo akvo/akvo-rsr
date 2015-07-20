@@ -1,35 +1,42 @@
+{% load i18n %}
 <div class="recipient-country-item parent" id="recipient_country{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
+        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
         <div class="row">
             <div class="col-md-4">
                 <div class="select-group control">
                     <select name="recipient-country{% if key %}-{{ key }}{% endif %}" id="recipient-country{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not rc %} selected="selected" {% endif %}>Recipient country:</option>
+                        <option value="" {% if not rc %} selected="selected" {% endif %}>{% trans 'Recipient country' %}:</option>
                         {% for country in iati_countries %}
                             <option value="{{ country.code }}" {% if rc.country == country.code %} selected="selected" {% endif %}>{{ country.code }} - {{ country.name }}</option>
                         {% endfor %}
                     </select>
-                    <label class="control-label" for="recipient-country{% if key %}-{{ key }}{% endif %}">Recipient country</label>
+                    <label class="control-label" for="recipient-country{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient country' %}</label>
+                    <p class="help-block hidden">{% trans 'The country that benefits from the project.' %}</p>
                 </div>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control priority3" id="recipient-country-percentage{% if key %}-{{ key }}{% endif %}"
-                name="recipient-country-percentage{% if key %}-{{ key }}{% endif %}" placeholder="Percentage"
-                {% if rc.percentage %} value="{{rc.percentage}}" {% endif %}>
-                <label class="control-label" for="recipient-country-percentage{% if key %}-{{ key }}{% endif %}">Recipient country percentage</label>
+                <div class="input-group priority3">
+                    <input type="text" class="form-control" id="recipient-country-percentage{% if key %}-{{ key }}{% endif %}"
+                    name="recipient-country-percentage{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Recipient country percentage' %}"
+                    {% if rc.percentage %} value="{{rc.percentage}}" {% endif %}>
+                    <span class="input-group-addon">%</span>
+                </div>
+                <label class="control-label" for="recipient-country-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient country percentage' %}</label>
+                <p class="help-block hidden">{% trans 'The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%' %}</p>
             </div>
              <div class="col-md-4 control">
                 <input type="text" class="form-control priority3" id="recipient-country-description{% if key %}-{{ key }}{% endif %}"
-                name="recipient-country-description{% if key %}-{{ key }}{% endif %}" placeholder="Country description"
-                {% if rc.text %} value="{{rc.text}}" {% endif %}>
-                <label class="control-label" for="recipient-country-description{% if key %}-{{ key }}{% endif %}">Recipient country description</label>
+                name="recipient-country-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Recipient country description' %}"
+                {% if rc.text %} value="{{rc.text}}" {% endif %} maxlength="50">
+                <label class="control-label" for="recipient-country-description{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient country description' %}</label>
+                <p class="help-block hidden">{% trans 'Enter additional information about the recipient country, if necessary.' %}</p>
             </div>       
         </div>
         <div class="row">
             <div class="col-md-6 col-md-offset-3 text-center" id="delete-recipient-country{% if key %}-{{ key }}{% endif %}">
-                <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-recipient-country{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete recipient country</a>
+                <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-recipient-country{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete recipient country' %}</a>
             </div>
         </div>
-        <hr/>
     </div>
 </div>
