@@ -810,7 +810,9 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'You can add any additional supporting documents to your project or links to external websites here. This could be in the form of annual reports, baseline surveys, contextual information or any other report that can help users understand more about the project’s activities.' %}</p>
                             <form role="form" id="admin-step-9">
+                            <h5>{% trans 'Links' %}</h5>
                             <div class="form-group">
                                 <div class="link-container">
                                     {% for link in project.links.all %}
@@ -821,25 +823,32 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-link" id=""><span class="glyphicon glyphicon-plus"></span> Add another link</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another link' %}</a>
                                 </div>
                             </div>
-                                <div class="document-container">
-                                    {% for document in project.documents.all %}
-                                        {% include "myrsr/project_admin_partials/document_input.html" with key=document.pk %}
-                                    {% empty %}
-                                        {% include "myrsr/project_admin_partials/document_input.html" with key='add-0' %}
-                                    {% endfor %}
-                                </div>
+                            <h5>{% trans 'Document links' %}</h5>
+                            <div class="document-container">
+                                {% for document in project.documents.all %}
+                                    {% include "myrsr/project_admin_partials/document_input.html" with key=document.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_admin_partials/document_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-document" id=""><span class="glyphicon glyphicon-plus"></span> Add another document</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-document" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep9"></div>
                             </div>
