@@ -1,49 +1,60 @@
+{% load i18n %}
 <div class="policy-marker-item parent" id="policy_marker{% if key %}-{{ key }}{% endif %}">
     <div class="form-group">
+        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
                    <select name="policy-marker{% if key %}-{{ key }}{% endif %}" id="policy-marker{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not marker.policy_marker %} selected="selected" {% endif %}>Policy marker:</option>
+                        <option value="" {% if not marker.policy_marker %} selected="selected" {% endif %}>{% trans 'Policy marker' %}:</option>
                         {% for policy_marker in policy_markers %}
                             <option value="{{ policy_marker.code }}" {% if marker.policy_marker == policy_marker.code %} selected="selected" {% endif %}>{{ policy_marker.code }} - {{ policy_marker.name }}</option>
                         {% endfor %}
                     </select>
-                    <label class="control-label" for="policy-marker{% if key %}-{{ key }}{% endif %}">Policy marker</label>
+                    <label class="control-label" for="policy-marker{% if key %}-{{ key }}{% endif %}">{% trans 'Policy marker' %}</label>
+                    <p class="help-block hidden">{% trans 'A policy or theme addressed by the activity. These indicators track key policy issues, like gender equality, environment, and trade development.' %}</p>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
                     <select name="policy-marker-significance{% if key %}-{{ key }}{% endif %}" id="policy-marker-significance{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not marker.significance %} selected="selected" {% endif %}>Policy marker significance</option>
+                        <option value="" {% if not marker.significance %} selected="selected" {% endif %}>{% trans 'Policy marker significance' %}:</option>
                         {% for significance in policy_significances %}
                             <option value="{{ significance.code }}" {% if marker.significance == significance.code %} selected="selected" {% endif %}>{{ significance.code }} - {{ significance.name }}</option>
                         {% endfor %}
                     </select>
-                    <label class="control-label" for="policy-marker-significance{% if key %}-{{ key }}{% endif %}">Policy marker significance</label>
+                    <label class="control-label" for="policy-marker-significance{% if key %}-{{ key }}{% endif %}">{% trans 'Policy marker significance' %}</label>
+                    <p class="help-block hidden">
+                        {% blocktrans %}Each reported marker must contain the significance of the policy marker for this activity. Choices are:<br/>
+                        0 - Not targeted<br/>
+                        1 - Significant objective: the policy objectives are important, but were not the prime motivation for undertaking the activity.<br/>
+                        2 - Principal objective: the policy objective was the primary reason to undertake this activity.<br/>
+                        3 - Principal objective AND in support of an action programme: valid for the markers dealing with Desertification only.<br/>
+                        4 - Explicit primary objective: only to be used in combination with policy marker 9 - reproductive, maternal, newborn and child health.{% endblocktrans %}
+                    </p>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="select-group control">
                     <select name="policy-marker-vocabulary{% if key %}-{{ key }}{% endif %}" id="policy-marker-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not marker.vocabulary %} selected="selected" {% endif %}>Policy marker vocabulary</option>
+                        <option value="" {% if not marker.vocabulary %} selected="selected" {% endif %}>{% trans 'Policy marker vocabulary' %}:</option>
                         {% for vocabulary in policy_marker_vocabularies %}
                             <option value="{{ vocabulary.code }}" {% if marker.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                         {% endfor %}
                     </select>
-                    <label class="control-label" for="policy-marker-vocabulary{% if key %}-{{ key }}{% endif %}">Policy marker vocabulary</label>
+                    <label class="control-label" for="policy-marker-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Policy marker vocabulary' %}</label>
+                    <p class="help-block hidden">{% trans 'An IATI code for the vocabulary to be used to define policy markers. If omitted then the OECD DAC vocabulary is assumed.' %}</p>
                 </div>
             </div>
             <div class="col-md-6 control">
-                <input type="text" class="form-control priority3" id="policy-marker-description{% if key %}-{{ key }}{% endif %}" name="policy-marker-description{% if key %}-{{ key }}{% endif %}" placeholder="Policy marker description" {% if marker.description %} value="{{marker.description}}" {% endif %}>
-                <label class="control-label" for="policy-marker-description{% if key %}-{{ key }}{% endif %}">Policy marker description</label>
+                <input type="text" class="form-control priority3" id="policy-marker-description{% if key %}-{{ key }}{% endif %}" name="policy-marker-description{% if key %}-{{ key }}{% endif %}" placeholder="Policy marker description" {% if marker.description %} value="{{marker.description}}" {% endif %} maxlength="255">
+                <label class="control-label" for="policy-marker-description{% if key %}-{{ key }}{% endif %}">{% trans 'Policy marker description' %}</label>
             </div>         
         </div>
         <div class="row">
             <div class="col-md-6 col-md-offset-3 text-center" id="delete-policy-marker{% if key %}-{{ key }}{% endif %}">
-                <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-policy-marker{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete policy marker</a>
+                <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-policy-marker{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete policy marker' %}</a>
             </div>
         </div>
-        <hr/>
     </div>
 </div>

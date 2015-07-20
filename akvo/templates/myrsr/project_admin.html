@@ -751,19 +751,27 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'The project focus aims to define the broad areas of the project activities. This ensures that the project can be collectively grouped by e.g. sector with other similar projects to help make the most out of the project resources. Generally accepted codes are used to help determine these sectors:' %}</p>
+                            <p class="help-block">- <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">{% trans 'DAC-3 sector codes' %}</a> {% trans 'which are more general.' %}</p>
+                            <p class="help-block">- <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">{% trans 'DAC-5 sector codes' %}</a> {% trans 'which are most detailed.' %}</p>
                             <form role="form" id="admin-step-8">
+                            <h5>{% trans 'Sectors' %}</h5>
                             <div class="sector-container">
                                 {% for sector in project.sectors.all %}
                                     {% include "myrsr/project_admin_partials/sector_input.html" with key=sector.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/sector_input.html" with key='add-0' %}
                                 {% endfor %}
-                            </div>    
+                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-sector" id=""><span class="glyphicon glyphicon-plus"></span> Add another sector</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
                                 </div>
                             </div>
+                            <h5>{% trans 'Policy markers' %}</h5>
                             <div class="policy-marker-container">
                                 {% for marker in project.policy_markers.all %}
                                     {% include "myrsr/project_admin_partials/policy_marker_input.html" with key=marker.pk %}
@@ -772,13 +780,16 @@
                                 {% endfor %}
                             </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-3 text-center">
-                                    <a href="#" class="btn btn-link add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> Add another policy marker</a>
+                                <div class="col-md-8">
+                                    <hr/>
+                                </div>
+                                <div class="col-md-4 text-center add-object-link">
+                                     <a href="#" class="add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep8"></div>
                             </div>
