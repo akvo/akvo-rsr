@@ -1,28 +1,31 @@
+{% load i18n %}
 <div class="link-item parent" id="link{% if key %}-{{ key }}{% endif %}">
+    {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
     <div class="row">
         <div class="col-md-4 control">
             <div class="select-group">
                 <select name="link-type{% if key %}-{{ key }}{% endif %}" id="link-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                    <option value="" {% if not link.kind %} selected="selected" {% endif %}>Link type:</option>
-                    <option value="A" {% if link.kind == "A" %} selected="selected" {% endif %}>Akvopedia entry</option>
-                    <option value="E" {% if link.kind == "E" %} selected="selected" {% endif %}>External link</option>
+                    <option value="" {% if not link.kind %} selected="selected" {% endif %}>{% trans 'Link type' %}:</option>
+                    <option value="A" {% if link.kind == "A" %} selected="selected" {% endif %}>{% trans 'Akvopedia entry' %}</option>
+                    <option value="E" {% if link.kind == "E" %} selected="selected" {% endif %}>{% trans 'External link' %}</option>
                 </select>
-                <label for="link-type{% if key %}-{{ key }}{% endif %}" class="control-label">Link type</label>
+                <label for="link-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link type' %}</label>
             </div>
         </div>
         <div class="col-md-4 control">
-            <input type="text" class="form-control priority2" id="link-url{% if key %}-{{ key }}{% endif %}" name="link-url{% if key %}-{{ key }}{% endif %}" placeholder="Link URL" {% if link.url %} value="{{link.url}}" {% endif %}>
-            <label for="link-url{% if key %}-{{ key }}{% endif %}" class="control-label">Link URL</label>
+            <input type="text" class="form-control priority2" id="link-url{% if key %}-{{ key }}{% endif %}" name="link-url{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Link URL' %}" {% if link.url %} value="{{link.url}}" {% endif %}>
+            <label for="link-url{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link URL' %}</label>
+            <p class="help-block hidden">{% trans 'Enter the link to an external website you wish to redirect to from your project page.' %}</p>
         </div>
         <div class="col-md-4 control">
-            <input type="text" class="form-control priority2" name="link-caption{% if key %}-{{ key }}{% endif %}" id="link-caption{% if key %}-{{ key }}{% endif %}" placeholder="Link caption" {% if link.caption %}value="{{link.caption}}"{% endif %}>
-            <label for="link-caption{% if key %}-{{ key }}{% endif %}" class="control-label">Link caption</label>
+            <input type="text" class="form-control priority2" name="link-caption{% if key %}-{{ key }}{% endif %}" id="link-caption{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Link caption' %}" {% if link.caption %}value="{{link.caption}}"{% endif %} maxlength="50">
+            <label for="link-caption{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link caption' %}</label>
+            <p class="help-block hidden">{% trans 'Enter a name for the link you provided to click through to an external website.' %}</p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3 text-center" id="delete-link{% if key %}-{{ key }}{% endif %}">
-            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-link{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete link</a>
+            <a onclick="removePartial(this);" class="btn btn-link delete-object-button" id="delete-link{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete link' %}</a>
         </div>
     </div>
-    <hr/>
 </div>
