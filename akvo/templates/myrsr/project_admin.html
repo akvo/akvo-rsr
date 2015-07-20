@@ -869,13 +869,15 @@
                             </div>
                         </div>
                         <div class="formBlock">
+                            <p class="help-block">{% trans 'Fill in comments regarding the project. These are only for internal use and will not displayed anywhere on the project page.' %}</p>
                             <form role="form" id="admin-step-10">
-
-                                <!-- Results section deleted -->
-
+                            <div class="form-group control">
+                                <textarea id="projectComments" class="form-control priority2" name="projectComments" placeholder="{% trans 'Project comments' %}" rows="8">{% if project.notes %}{{project.notes}}{% endif %}</textarea>
+                                <label class="control-label" for="projectComments">{% trans 'Project comments' %}</label>
+                            </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep10"></div>
                             </div>
