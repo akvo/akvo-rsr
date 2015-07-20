@@ -1691,6 +1691,8 @@ def project_admin_step10(request, pk=None):
     errors = []
     new_objects = []
 
+    errors = save_field(project, 'notes', 'projectComments', data['projectComments'], errors)
+
     return Response({
             'errors': errors,
             'new_objects': new_objects,
