@@ -1371,6 +1371,54 @@ function setValidationListeners() {
     markMandatoryFields();
 }
 
+function setAdminHelpOnClick() {
+    try {
+        var doNotShowCheckbox;
+
+        doNotShowCheckbox = document.getElementById('doNotShowHelp');
+        doNotShowCheckbox.onclick = setUserNoAdminHelp(defaultValues.user_id, doNotShowCheckbox);
+
+    } catch (error) {
+        // No checkbox
+        return false;
+    }
+}
+
+function setUserNoAdminHelp(userId, checkbox) {
+    return function(e) {
+        e.preventDefault();
+
+        var api_url, request;
+
+        // Create request
+        api_url = '/rest/v1/user/' + userId + '/?format=json';
+
+        request = new XMLHttpRequest();
+        request.open('PATCH', api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                // Succesfully set user.show_admin_help to False!
+                checkbox.parentNode.parentNode.className += ' hidden';
+
+                return false;
+            } else {
+                // We reached our target server, but it returned an error
+                return false;
+            }
+        };
+
+        request.onerror = function() {
+            // There was a connection error of some sort
+            return false;
+        };
+
+        request.send('{"show_admin_help": false}');
+    };
+}
+
 function setPublishOnClick() {
     try {
         var publishButton;
@@ -1432,6 +1480,7 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
 
 $(document).ready(function() {
+    setAdminHelpOnClick();
     setPublishOnClick();
     setSubmitOnClicks();
     setPartialOnClicks();

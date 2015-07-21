@@ -59,6 +59,40 @@ function addPartnersToProject(projectId) {
     }
 }
 
+function addCustomFieldToProject(customField) {
+    var api_url, request;
+
+    // Create request
+    api_url = '/rest/v1/project_custom_field/?format=json';
+
+    request = new XMLHttpRequest();
+    request.open('POST', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/json");
+
+    request.onload = function() {
+        return false;
+    };
+
+    request.onerror = function() {
+        return false;
+    };
+
+    request.send(customField);
+}
+
+function addCustomFieldsToProject(projectId) {
+    var customFields;
+
+    customFields = defaultValues.new_project_custom_fields;
+
+    for (var i=0; i < customFields.length; i++) {
+        customFields[i].project = projectId;
+
+        addCustomFieldToProject(JSON.stringify(customFields[i]));
+    }
+}
+
 function setCreateProjectOnClick() {
     try {
         var createProjectNode;
@@ -98,6 +132,7 @@ function getCreateProject(createProjectNode) {
                     projectId = response.id;
 
                     // addPartnersToProject(projectId);
+                    addCustomFieldsToProject(projectId);
 
                     window.location = '/myrsr/project_admin/' + response.id + '/';
                 } catch (error) {

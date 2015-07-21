@@ -2,7 +2,39 @@
 {% load i18n bootstrap3 rsr_utils thumbnail compressed rules %}
 {% block title %}{% trans 'MyRSR - Project Admin' %}{% endblock %}
 {% block myrsr_main %}
-    <h3>{% trans 'Project admin' %}</h3>
+    <div id="adminHelp" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">{% trans 'Welcome to the RSR project admin' %}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{% trans "Your RSR project page shows project information to anyone who's interested: (potential) donors, support  and implementing partners, sector professionals and the wider online community. Tell your project’s story by entering complete information, in language that anyone can understand." %}</p>
+                    <p>{% trans "Before you start, please review all the project fields so you know which information belongs where in the RSR project form." %}</p>
+                    <p>{% blocktrans %} Click on the information <span class="glyphicon glyphicon-info-sign info-icon"></span> icon if you need an explanation on what information is required in a certain field. When a field has a character limit, this will be indicated underneath the field while you are typing.{% endblocktrans %}</p>
+                    <p>{% trans "The progress bars per section show different colours. An empty or red bar means nothing has been filled in, orange means some progress has been made and green means that all compulsory fields have been filled out. RSR administrators can publish the project once all mandatory fields (indicated with a red asterix) are filled out and the progress bar on top of the page is green." %}</p>
+                    {% comment %} <p>{% trans "If you want to report according to the IATI (International Aid Transparency Initiative) standard, you can tick the IATI checkbox and more fields will show in the project form. In order to be fully IATI compliant, the IATI bar on top of the page needs to be filled to 100%. The IATI term for project is “activity”." %}</p> {% endcomment %}
+                    <p>{% trans "If you have questions, please get in touch with us via" %} <a href="mailto:support@akvo.org">support@akvo.org</a>.</p>
+                    {% if user.show_admin_help %}
+                        <p>
+                            <div class="checkbox">
+                                <label for="doNotShowHelp" class="control-label has-icon">
+                                    <input id="doNotShowHelp" type="checkbox" name="doNotShowHelp">
+                                        {% trans 'Do not show this message again' %}
+                                </label>
+                            </div>
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>{% trans 'Project admin' %} <a href="javascript:showHelp();"><span class="glyphicon glyphicon-question-sign question-icon"></span></a></h3>
     <!--*************************************** FORM Container **********************************************-->
 
     <div class="formOverviewInfo">
@@ -275,6 +307,16 @@
                                     <p class="help-block hidden">{% trans 'The type of finance (e.g. grant, loan, debt relief, etc). This is the default value for all transactions in the activity report; it can be overridden at the individual transaction level. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a></p>
                                 </div>
                             </div>
+                            {% if custom_fields_section_1 %}
+                                <hr/>
+                            {% endif %}
+                            {% for customfield in custom_fields_section_1 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -315,6 +357,13 @@
                                     <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
                                 </div>
                             </div>
+                            {% for customfield in custom_fields_section_2 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -386,6 +435,13 @@
                                     <a href="#" class="add-partner" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
                                 </div>
                             </div>
+                            {% for customfield in custom_fields_section_3 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -453,6 +509,13 @@
                                 <label class="control-label" for="goalsOverview">{% trans 'Goals overview' %}</label>
                                 <p class="help-block hidden">{% trans 'Provide a brief description of the overall project goals.' %}</p>
                             </div>
+                            {% for customfield in custom_fields_section_4 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
@@ -511,6 +574,13 @@
                                     <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
                                 </div>
                             </div>
+                            {% for customfield in custom_fields_section_5 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -643,6 +713,13 @@
                                      <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
                                 </div>
                             </div>
+                            {% for customfield in custom_fields_section_6 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -732,6 +809,13 @@
                                      <a href="#" class="add-recipient-region" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient region' %}</a>
                                 </div>
                             </div>
+                            {% for customfield in custom_fields_section_7 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -791,6 +875,13 @@
                                      <a href="#" class="add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
                                 </div>
                             </div>
+                            {% for customfield in custom_fields_section_8 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -850,6 +941,13 @@
                                      <a href="#" class="add-document" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
                                 </div>
                             </div>
+                            {% for customfield in custom_fields_section_9 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -879,6 +977,13 @@
                                 <textarea id="projectComments" class="form-control priority2" name="projectComments" placeholder="{% trans 'Project comments' %}" rows="8">{% if project.notes %}{{project.notes}}{% endif %}</textarea>
                                 <label class="control-label" for="projectComments">{% trans 'Project comments' %}</label>
                             </div>
+                            {% for customfield in custom_fields_section_10 %}
+                                <div class="form-group control">
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                </div>
+                            {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
@@ -929,7 +1034,8 @@
     <script type="application/json" id="default-values">
         {
             "project_id": "{{ project.pk }}",
-            "publishing_status_id": "{{ project.publishingstatus.pk }}"
+            "publishing_status_id": "{{ project.publishingstatus.pk }}",
+            "user_id": "{{ user.pk }}"
         }
     </script>
 
@@ -977,7 +1083,21 @@
         }
     </script>
 
+    <script type="application/javascript">
+        function showHelp() {
+            $("#adminHelp").modal('show');
+        }
+    </script>
+
     {% compressed_js 'react_typeahead' %}
     {% compressed_js 'myrsr_admin' %}
     
+{% endblock %}
+
+
+{% block jq %}
+    {{ block.super }}
+    {% if user.show_admin_help %}
+        showHelp();
+    {% endif %}
 {% endblock %}

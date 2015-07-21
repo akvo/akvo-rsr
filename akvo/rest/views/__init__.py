@@ -13,7 +13,7 @@ from .budget_item import BudgetItemViewSet, CountryBudgetItemViewSet
 from .budget_item_label import BudgetItemLabelViewSet
 from .category import CategoryViewSet
 from .country import CountryViewSet
-from .custom_field import CustomFieldViewSet
+from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldViewSet
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .goal import GoalViewSet
@@ -79,7 +79,6 @@ __all__ = [
     'change_password',
     'CountryViewSet',
     'CountryBudgetItemViewSet',
-    'CustomFieldViewSet',
     'EmploymentViewSet',
     'FocusAreaViewSet',
     'GoalViewSet',
@@ -93,8 +92,9 @@ __all__ = [
     'MapOrganisationLocationViewSet',
     'MapProjectLocationViewSet',
     'MapProjectUpdateLocationViewSet',
-    'OrganisationLocationViewSet',
     'OrganisationViewSet',
+    'OrganisationLocationViewSet',
+    'OrganisationCustomFieldViewSet',
     'PartnershipViewSet',
     'PartnerSiteViewSet',
     'PartnerTypeViewSet',
@@ -103,6 +103,7 @@ __all__ = [
     'ProjectCommentViewSet',
     'ProjectConditionViewSet',
     'ProjectContactViewSet',
+    'ProjectCustomFieldViewSet',
     'ProjectDocumentViewSet',
     'ProjectExtraViewSet',
     'ProjectIatiCheckView',

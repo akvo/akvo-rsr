@@ -13,7 +13,7 @@ from .budget_item import BudgetItemSerializer, CountryBudgetItemSerializer
 from .budget_item_label import BudgetItemLabelSerializer
 from .category import CategorySerializer
 from .country import CountrySerializer
-from .custom_field import CustomFieldSerializer
+from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldSerializer
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
 from .goal import GoalSerializer
@@ -64,7 +64,6 @@ __all__ = [
     'CategorySerializer',
     'CountrySerializer',
     'CountryBudgetItemSerializer',
-    'CustomFieldSerializer',
     'EmploymentSerializer',
     'FocusAreaSerializer',
     'GoalSerializer',
@@ -78,8 +77,9 @@ __all__ = [
     'MapOrganisationLocationSerializer',
     'MapProjectLocationSerializer',
     'MapProjectUpdateLocationSerializer',
-    'OrganisationLocationSerializer',
     'OrganisationSerializer',
+    'OrganisationCustomFieldSerializer',
+    'OrganisationLocationSerializer',
     'PartnershipSerializer',
     'PartnerSiteSerializer',
     'PartnerTypeSerializer',
@@ -88,6 +88,7 @@ __all__ = [
     'ProjectCommentSerializer',
     'ProjectConditionSerializer',
     'ProjectContactSerializer',
+    'ProjectCustomFieldSerializer',
     'ProjectDocumentSerializer',
     'ProjectExtraSerializer',
     'ProjectLocationSerializer',

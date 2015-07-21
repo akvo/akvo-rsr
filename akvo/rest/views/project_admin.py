@@ -8,9 +8,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel, Country,
                              CountryBudgetItem, Indicator, IndicatorPeriod, Link, Organisation,
                              Partnership, PlannedDisbursement, PolicyMarker, Project,
-                             ProjectCondition, ProjectContact, ProjectDocument, ProjectLocation,
-                             RecipientCountry, RecipientRegion, RelatedProject, Result, Sector,
-                             Transaction, TransactionSector)
+                             ProjectCondition, ProjectContact, ProjectCustomField, ProjectDocument,
+                             ProjectLocation, RecipientCountry, RecipientRegion, RelatedProject,
+                             Result, Sector, Transaction, TransactionSector)
 
 from decimal import Decimal
 from django.http import HttpResponseForbidden
@@ -169,6 +169,19 @@ def project_admin_step1(request, pk=None):
                     rp_relation_key = 'related-project-relation-' + rp_id
                     errors = save_field(rp, 'relation', rp_relation_key, data[rp_relation_key], errors)
 
+            # Custom fields
+            elif 'custom-field-' in key:
+                cf = None
+                custom_field_id = key.split('-', 2)[2]
+
+                try:
+                    cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+                errors = save_field(cf, 'value', key, data[key], errors)
+
     elif 'photo' in files.keys():
         errors = save_field(project, 'current_image', 'photo', files['photo'], errors)
         if not errors:
@@ -285,6 +298,19 @@ def project_admin_step2(request, pk=None):
                     country = None
                 errors = save_field(contact, 'country', contact_country_key, country, errors)
 
+        # Custom fields
+        elif 'custom-field-' in key:
+            cf = None
+            custom_field_id = key.split('-', 2)[2]
+
+            try:
+                cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+            except Exception as e:
+                error = str(e).capitalize()
+                errors.append({'name': key, 'error': error})
+
+            errors = save_field(cf, 'value', key, data[key], errors)
+
     return Response({
             'errors': errors,
             'new_objects': new_objects,
@@ -374,6 +400,19 @@ def project_admin_step3(request, pk=None):
                     error = str(e).capitalize()
                     errors.append({'name': partner_funding_key, 'error': error})
 
+        # Custom fields
+        elif 'custom-field-' in key:
+            cf = None
+            custom_field_id = key.split('-', 2)[2]
+
+            try:
+                cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+            except Exception as e:
+                error = str(e).capitalize()
+                errors.append({'name': key, 'error': error})
+
+            errors = save_field(cf, 'value', key, data[key], errors)
+
     return Response({
             'errors': errors,
             'new_objects': new_objects,
@@ -403,6 +442,20 @@ def project_admin_step4(request, pk=None):
     errors = save_field(project, 'target_group', 'targetGroup', data['targetGroup'], errors)
     errors = save_field(project, 'sustainability', 'sustainability', data['sustainability'], errors)
     errors = save_field(project, 'goals_overview', 'goalsOverview', data['goalsOverview'], errors)
+
+    # Custom fields
+    for key in data.keys():
+        if 'custom-field-' in key:
+            cf = None
+            custom_field_id = key.split('-', 2)[2]
+
+            try:
+                cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+            except Exception as e:
+                error = str(e).capitalize()
+                errors.append({'name': key, 'error': error})
+
+            errors = save_field(cf, 'value', key, data[key], errors)
 
     return Response({
             'errors': errors,
@@ -460,9 +513,8 @@ def project_admin_step5(request, pk=None):
                         condition, 'text', cond_text_key, data[cond_text_key], errors
                     )
 
-        # Results
-        for key in data.keys():
-            if 'result-title-' in key:
+            # Results
+            elif 'result-title-' in key:
                 result = None
                 result_id = key.split('-', 2)[2]
 
@@ -508,6 +560,19 @@ def project_admin_step5(request, pk=None):
                     errors = save_field(
                         result, 'description', res_desc_key, data[res_desc_key], errors
                     )
+
+            # Custom fields
+            elif 'custom-field-' in key:
+                cf = None
+                custom_field_id = key.split('-', 2)[2]
+
+                try:
+                    cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+                errors = save_field(cf, 'value', key, data[key], errors)
 
     if data['level'] == '2':
         # Indicators
@@ -798,9 +863,8 @@ def project_admin_step6(request, pk=None):
                         budget, 'period_end', budget_pend_key, budget_pend, errors
                     )
 
-        # Country budget items
-        for key in data.keys():
-            if 'country-budget-item-' in key:
+            # Country budget items
+            elif 'country-budget-item-' in key:
                 cbi = None
                 cbi_id = key.split('-', 3)[3]
 
@@ -838,9 +902,8 @@ def project_admin_step6(request, pk=None):
                         error = str(e).capitalize()
                         errors.append({'name': cbi_perc_key, 'error': error})
 
-        # Transactions
-        for key in data.keys():
-            if 'transaction-value-date-' in key:
+            # Transactions
+            elif 'transaction-value-date-' in key:
                 trans = None
                 trans_id = key.split('-', 3)[3]
 
@@ -990,9 +1053,8 @@ def project_admin_step6(request, pk=None):
                         errors
                     )
 
-        # Planned disbursements
-        for key in data.keys():
-            if 'planned-disbursement-type-' in key:
+            # Planned disbursements
+            elif 'planned-disbursement-type-' in key:
                 pd = None
                 pd_id = key.split('-', 3)[3]
 
@@ -1040,6 +1102,19 @@ def project_admin_step6(request, pk=None):
                     pd_pend_key = 'planned-disbursement-period-end-' + pd_id
                     pd_pend = data[pd_pend_key] if data[pd_pend_key] else None
                     errors = save_field(pd, 'period_end', pd_pend_key, pd_pend, errors)
+
+            # Custom fields
+            elif 'custom-field-' in key:
+                cf = None
+                custom_field_id = key.split('-', 2)[2]
+
+                try:
+                    cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+                errors = save_field(cf, 'value', key, data[key], errors)
 
     elif data['level'] == '2':
         # Transaction sectors
@@ -1167,9 +1242,8 @@ def project_admin_step7(request, pk=None):
                         rc, 'text', rc_description_key, data[rc_description_key], errors
                     )
 
-        # Recipient regions
-        for key in data.keys():
-            if 'recipient-region-percentage-' in key:
+            # Recipient regions
+            elif 'recipient-region-percentage-' in key:
                 rr = None
                 rr_id = key.split('-', 3)[3]
 
@@ -1220,9 +1294,8 @@ def project_admin_step7(request, pk=None):
                         rr, 'region_vocabulary', rr_vocabulary_key, data[rr_vocabulary_key], errors
                     )
 
-        # Locations
-        for key in data.keys():
-            if 'location-latitude-' in key:
+            # Locations
+            elif 'location-latitude-' in key:
                 loc = None
                 loc_id = key.split('-', 2)[2]
 
@@ -1348,6 +1421,19 @@ def project_admin_step7(request, pk=None):
                     errors = save_field(
                         loc, 'feature_designation', loc_fd_key, data[loc_fd_key], errors
                     )
+
+            # Custom fields
+            elif 'custom-field-' in key:
+                cf = None
+                custom_field_id = key.split('-', 2)[2]
+
+                try:
+                    cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+                errors = save_field(cf, 'value', key, data[key], errors)
 
     elif data['level'] == '2':
         # Location administratives
@@ -1481,9 +1567,8 @@ def project_admin_step8(request, pk=None):
                     sector, 'text', sector_desc_key, data[sector_desc_key], errors
                 )
 
-    # Policy markers
-    for key in data.keys():
-        if 'policy-marker-significance-' in key:
+        # Policy markers
+        elif 'policy-marker-significance-' in key:
             pm = None
             pm_id = key.split('-', 3)[3]
 
@@ -1526,6 +1611,19 @@ def project_admin_step8(request, pk=None):
                 errors = save_field(
                     pm, 'description', pm_desc_key, data[pm_desc_key], errors
                 )
+
+        # Custom fields
+        elif 'custom-field-' in key:
+            cf = None
+            custom_field_id = key.split('-', 2)[2]
+
+            try:
+                cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+            except Exception as e:
+                error = str(e).capitalize()
+                errors.append({'name': key, 'error': error})
+
+            errors = save_field(cf, 'value', key, data[key], errors)
 
     return Response({
             'errors': errors,
@@ -1585,9 +1683,8 @@ def project_admin_step9(request, pk=None):
                         link, 'caption', link_caption_key, data[link_caption_key], errors
                     )
 
-        # Documents
-        for key in data.keys():
-            if 'document-url-' in key:
+            # Documents
+            elif 'document-url-' in key:
                 document = None
                 document_id = key.split('-', 2)[2]
 
@@ -1638,6 +1735,19 @@ def project_admin_step9(request, pk=None):
                         document, 'language', document_language_key, data[document_language_key],
                         errors
                     )
+
+            # Custom fields
+            elif 'custom-field-' in key:
+                cf = None
+                custom_field_id = key.split('-', 2)[2]
+
+                try:
+                    cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+                except Exception as e:
+                    error = str(e).capitalize()
+                    errors.append({'name': key, 'error': error})
+
+                errors = save_field(cf, 'value', key, data[key], errors)
 
     elif any(file_key.startswith('document-document-') for file_key in files.keys()):
         for key in files.keys():
@@ -1692,6 +1802,20 @@ def project_admin_step10(request, pk=None):
     new_objects = []
 
     errors = save_field(project, 'notes', 'projectComments', data['projectComments'], errors)
+
+    for key in data.keys():
+        # Custom fields
+        if 'custom-field-' in key:
+            cf = None
+            custom_field_id = key.split('-', 2)[2]
+
+            try:
+                cf = ProjectCustomField.objects.get(pk=int(custom_field_id))
+            except Exception as e:
+                error = str(e).capitalize()
+                errors.append({'name': key, 'error': error})
+
+            errors = save_field(cf, 'value', key, data[key], errors)
 
     return Response({
             'errors': errors,
