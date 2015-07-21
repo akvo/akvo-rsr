@@ -24,7 +24,7 @@ from ..signals import (
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
-from .custom_field import CustomField
+from .custom_field import OrganisationCustomField, ProjectCustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
@@ -71,7 +71,6 @@ __all__ = [
     'Country',
     'RecipientCountry',
     'Category',
-    'CustomField',
     'CrsAdd',
     'CrsAddOtherFlag',
     'Employment',
@@ -93,6 +92,7 @@ __all__ = [
     'ProjectUpdateLocation',
     'Organisation',
     'OrganisationAccount',
+    'OrganisationCustomField',
     'PartnerSite',
     'PartnerType',
     'Partnership',
@@ -105,6 +105,7 @@ __all__ = [
     'ProjectComment',
     'ProjectCondition',
     'ProjectContact',
+    'ProjectCustomField',
     'ProjectDocument',
     'ProjectUpdate',
     'PublishingStatus',
@@ -185,9 +186,15 @@ rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_projec
 rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.add_customfield', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_customfield', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_customfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_projectcustomfield', is_rsr_admin)
+
+rules.add_perm('rsr.add_organisationcustomfield', is_rsr_admin | is_org_admin |
+               is_org_project_editor)
+rules.add_perm('rsr.change_organisationcustomfield', is_rsr_admin | is_org_admin |
+               is_org_project_editor)
+rules.add_perm('rsr.delete_organisationcustomfield', is_rsr_admin)
 
 rules.add_perm('rsr.add_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)

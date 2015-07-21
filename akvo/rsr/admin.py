@@ -66,6 +66,17 @@ class OrganisationLocationInline(admin.StackedInline):
             return 1
 
 
+class OrganisationCustomFieldInline(admin.StackedInline):
+    model = get_model('rsr', 'organisationcustomfield')
+    fields = ('name', 'section', 'max_characters', 'help_text')
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.custom_fields.count() == 0 else 0
+        else:
+            return 1
+
+
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
     list_display = (u'identifier', u'recording_org', u'referenced_org',)
     search_fields = (u'identifier', u'recording_org__name', u'referenced_org__name',)
@@ -95,9 +106,10 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         (_(u'Contact information'),
             {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
+        (_(u'Custom fields'), {'fields': ()}),
     )
     form = OrganisationAdminForm
-    inlines = (OrganisationLocationInline,)
+    inlines = (OrganisationLocationInline, OrganisationCustomFieldInline)
     exclude = ('internal_org_ids',)
     # note that readonly_fields is changed by get_readonly_fields()
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes

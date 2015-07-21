@@ -97,6 +97,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = ImageField(_(u'avatar'), null=True, upload_to=image_path,
                         help_text=_(u'The avatar should be less than 500 kb in size.'),
     )
+    show_admin_help = models.BooleanField(_(u'Show help text in project admin'), default=True)
 
     objects = CustomUserManager()
 

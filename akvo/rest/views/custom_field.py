@@ -5,15 +5,23 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import CustomField
+from akvo.rsr.models import OrganisationCustomField, ProjectCustomField
 
-from ..serializers import CustomFieldSerializer
+from ..serializers import OrganisationCustomFieldSerializer, ProjectCustomFieldSerializer
 from ..viewsets import BaseRSRViewSet
 
 
-class CustomFieldViewSet(BaseRSRViewSet):
+class OrganisationCustomFieldViewSet(BaseRSRViewSet):
     """
     """
-    queryset = CustomField.objects.all()
-    serializer_class = CustomFieldSerializer
-    filter_fields = ('project', 'name', )
+    queryset = OrganisationCustomField.objects.all()
+    serializer_class = OrganisationCustomFieldSerializer
+    filter_fields = ('organisation', 'name', 'max_characters', 'section', )
+
+
+class ProjectCustomFieldViewSet(BaseRSRViewSet):
+    """
+    """
+    queryset = ProjectCustomField.objects.all()
+    serializer_class = ProjectCustomFieldSerializer
+    filter_fields = ('project', 'name', 'max_characters', 'section', )
