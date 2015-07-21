@@ -7,7 +7,7 @@
 
     <div class="formOverviewInfo">
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-4">
                 <div class="editDate">
                     <span>{% trans 'Date created' %}:</span>
                     <time datetime="YYYY-MM-DDThh:mm:ssTZD">
@@ -18,6 +18,10 @@
                     {{ project.last_modified_at }}
                     </time>
                 </div>
+            </div>
+            <div class="col-md-5 text-center editDate" style="top: 10px;">
+                <input id="showAdvancedFields" type="checkbox" name="showAdvancedFields" onchange="showAdvancedFields()">
+                <span>{% trans 'Show advanced fields' %}</span>
             </div>
             <div class="col-md-3 text-center">
                 <a href="{% url 'project-main' project.pk %}" target="_blank">
@@ -210,62 +214,62 @@
                                     </div>
                                 </div>
                             </div>
-                            <hr/>
+                            <hr class="hidden hide-default" />
                             <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="defaultAidType" id="defaultAidType" class="form-control priority3"> 
+                                <div class="select-group control hidden hide-default">
+                                    <select name="defaultAidType" id="defaultAidType" class="form-control priority3">
                                         <option value="" {% if not project.default_aid_type %} selected="selected" {% endif %}>{% trans 'Default aid type' %}:</option>
                                         {% for aid_type in aid_types %}
                                             <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %} selected="selected" {% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
-                                        {% endfor %} 
+                                        {% endfor %}
                                     </select>
                                     <label for="defaultAidType" class="control-label">{% trans 'Default aid type' %}</label>
                                     <p class="help-block hidden">{% trans 'The type of aid being supplied (project-type intervention, budget support, debt relief, etc.). This element specifies a default for all the activity’s financial transactions; it can be overridden at the individual transaction level. For reference please visit' %} <a href="http://iatistandard.org/201/codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/AidType/</a></p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="select-group control">
+                                <div class="select-group control hidden hide-default">
                                     <select name="defaultFlowType" id="defaultFlowType" class="form-control priority3">
                                         <option value="" {% if not project.default_flow_type %} selected="selected" {% endif %}>{% trans 'Default flow type' %}:</option>
                                         {% for flow_type in flow_types %}
                                             <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %} selected="selected" {% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
-                                        {% endfor %} 
+                                        {% endfor %}
                                     </select>
                                     <label for="defaultFlowType" class="control-label">{% trans 'Default flow type' %}</label>
                                     <p class="help-block hidden">{% trans 'Whether the activity is funded by Official Development Assistance (ODA), Other Official Flows (OOF), etc. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FlowType/">http://iatistandard.org/201/codelists/FlowType/</a></p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="select-group control">
+                                <div class="select-group control hidden hide-default">
                                     <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control priority3">
                                         <option value="" {% if not project.default_tied_status %} selected="selected" {% endif %}>{% trans 'Default tied status' %}:</option>
                                         {% for tied_status in tied_statuses %}
                                             <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %} selected="selected" {% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
-                                        {% endfor %} 
+                                        {% endfor %}
                                     </select>
                                     <label for="defaultTiedStatus" class="control-label">{% trans 'Default tied status' %}</label>
                                     <p class="help-block hidden">{% trans 'Whether the aid is untied, tied, or partially tied. This element specifies a default for all the activity’s financial transactions; it can be overridden at the individual transaction level. For reference visit' %} <a href="http://iatistandard.org/201/codelists/TiedStatus/" target="_blank">http://iatistandard.org/201/codelists/TiedStatus/</a></p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="select-group control">
+                                <div class="select-group control hidden hide-default">
                                     <select name="collaborationType" id="collaborationType" class="form-control priority3">
                                         <option value="" {% if not project.collaboration_type %} selected="selected" {% endif %}>{% trans 'Collaboration type' %}:</option>
                                         {% for collaboration_type in collaboration_types %}
                                             <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %} selected="selected" {% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
-                                        {% endfor %} 
+                                        {% endfor %}
                                     </select>
                                     <label for="collaborationType" class="control-label">{% trans 'Collaboration type' %}</label>
                                     <p class="help-block hidden">{% trans 'The type of collaboration involved in the activity’s disbursements, e.g. "bilateral" or "multilateral". For reference visit' %} <a href="http://iatistandard.org/201/codelists/CollaborationType/" target="_blank">http://iatistandard.org/201/codelists/CollaborationType/</a></p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="select-group control">
+                                <div class="select-group control hidden hide-default">
                                     <select name="defaultFinanceType" id="defaultFinanceType" class="form-control priority3">
                                         <option value="" {% if not project.default_finance_type %} selected="selected" {% endif %}>{% trans 'Default finance type' %}:</option>
                                         {% for finance_type in finance_types %}
                                             <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %} selected="selected" {% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
-                                        {% endfor %} 
+                                        {% endfor %}
                                     </select>
                                     <label for="defaultFinanceType" class="control-label">{% trans 'Default finance type' %}</label>
                                     <p class="help-block hidden">{% trans 'The type of finance (e.g. grant, loan, debt relief, etc). This is the default value for all transactions in the activity report; it can be overridden at the individual transaction level. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a></p>
@@ -292,7 +296,7 @@
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
                             </div>
-                        </div>  
+                        </div>
                         <div class="formBlock">
                             <p class="help-block">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts.' %}</p>
                             <form role="form" id="admin-step-2">
@@ -318,7 +322,7 @@
                                 <div id="savingstep2"></div>
                             </div>
                             </form>
-                        </div>                                    
+                        </div>
                     </div>
                 </div>
                 <!--*************************************** FORM STEP 3 **********************************************-->
@@ -327,7 +331,7 @@
                         <div onclick="scrollTo('panel3')">
                             <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}</h4></label>
                         </div>
-                        <input type="radio" name="step" id="stepThree">                        
+                        <input type="radio" name="step" id="stepThree">
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
@@ -351,7 +355,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-group control">
+                                    <div class="form-group control hidden hide-default">
                                         <div class="checkbox">
                                             <label for="secondaryReporter" class="control-label">
                                                 <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
@@ -398,7 +402,7 @@
                         <div onclick="scrollTo('panel4')">
                             <label for="stepFour" class="stepLabel"><h4>04 - {% trans 'Project descriptions' %}</h4></label>
                         </div>
-                        <input type="radio" name="step" id="stepFour">                        
+                        <input type="radio" name="step" id="stepFour">
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
@@ -465,7 +469,7 @@
                         <div onclick="scrollTo('panel5')">
                             <label for="stepFive" class="stepLabel"><h4>05 - {% trans 'Results and indicators' %}</h4></label>
                         </div>
-                        <input type="radio" name="step" id="stepFive">                        
+                        <input type="radio" name="step" id="stepFive">
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
@@ -491,15 +495,15 @@
                                     <a href="#" class="add-result" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
                                 </div>
                             </div>
-                            <h5>{% trans 'Project conditions' %}</h5>
-                            <div class="condition-container">
+                            <h5 class="hidden hide-default">{% trans 'Project conditions' %}</h5>
+                            <div class="condition-container hidden hide-default">
                                 {% for condition in project.conditions.all %}
                                     {% include "myrsr/project_admin_partials/condition_input.html" with key=condition.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/condition_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
+                            <div class="row hidden hide-default">
                                 <div class="col-md-8">
                                     <hr/>
                                 </div>
@@ -556,9 +560,9 @@
                             </div>
                             <hr/>
                             <h5>{% trans 'Budget items' %}</h5>
-                            <div class="form-group control">
-                                <div class="input-group priority2">
-                                    <input type="text" class="form-control priority3" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="{% trans 'Capital spend percentage' %}"
+                            <div class="form-group control hidden hide-default">
+                                <div class="input-group priority3">
+                                    <input type="text" class="form-control" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="{% trans 'Capital spend percentage' %}"
                                     {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
                                     <span class="input-group-addon">%</span>
                                 </div>
@@ -580,9 +584,9 @@
                                     <a href="#" class="add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another budget item' %}</a>
                                 </div>
                             </div>
-                            <h5>{% trans 'Country budget items' %}</h5>
+                            <h5 class="hidden hide-default">{% trans 'Country budget items' %}</h5>
                             <div class="form-group">
-                                <div class="select-group control">
+                                <div class="select-group control hidden hide-default">
                                     <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3">
                                         <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}>{% trans 'Country budget vocabulary' %}:</option>
                                         {% for vocabulary in budget_identifier_vocabularies %}
@@ -592,14 +596,14 @@
                                     <label for="country-budget-vocabulary" class="control-label">{% trans 'Country budget vocabulary' %}</label>
                                 </div>
                             </div>
-                            <div class="country-budget-item-container">
+                            <div class="country-budget-item-container hidden hide-default">
                                 {% for item in project.country_budget_items.all %}
                                     {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key=item.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
+                            <div class="row hidden hide-default">
                                 <div class="col-md-8">
                                     <hr/>
                                 </div>
@@ -607,15 +611,15 @@
                                      <a href="#" class="add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another country budget item' %}</a>
                                 </div>
                             </div>
-                            <h5>{% trans 'Transactions' %}</h5>
-                            <div class="transaction-container">
+                            <h5 class="hidden hide-default">{% trans 'Transactions' %}</h5>
+                            <div class="transaction-container hidden hide-default">
                                 {% for transaction in project.transactions.all %}
                                     {% include "myrsr/project_admin_partials/transaction_input.html" with key=transaction.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/transaction_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
+                            <div class="row hidden hide-default">
                                 <div class="col-md-8">
                                     <hr/>
                                 </div>
@@ -666,7 +670,7 @@
                             <p class="help-block">{% trans 'Also add the physical locations where the project is being carried out. These will appear on the map on your project page. Use the link to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to obtain the coordinates for your locations, as these are the items that ensure the pin is in the correct place.' %}</p>
                             <form role="form" id="admin-step-7">
                             <div class="form-group">
-                                <div class="select-group control">
+                                <div class="select-group control hidden hide-default">
                                     <select name="scope" id="scope" class="form-control priority3">
                                         <option value="" {% if not project.project_scope %} selected="selected" {% endif %}>{% trans 'Project scope' %}:</option>
                                         {% for scope in activity_scopes %}
@@ -677,7 +681,7 @@
                                     <p class="help-block hidden">{% trans 'Select the geographical scope of the project.' %}</p>
                                 </div>
                             </div>
-                            <hr/>
+                            <hr class="hidden hide-default" />
                             <h5>{% trans 'Project locations' %}</h5>
                             <div class="project-location-container">
                                 {% if project.locations.all %}
@@ -696,15 +700,15 @@
                                      <a href="#" class="add-project-location" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another project location' %}</a>
                                 </div>
                             </div>
-                            <h5>{% trans 'Recipient countries' %}</h5>
-                            <div class="recipient-country-container">
+                            <h5 class="hidden hide-default">{% trans 'Recipient countries' %}</h5>
+                            <div class="recipient-country-container hidden hide-default">
                                 {% for rc in project.recipient_countries.all %}
                                     {% include "myrsr/project_admin_partials/recipient_country_input.html" with key=rc.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/recipient_country_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
+                            <div class="row hidden hide-default">
                                 <div class="col-md-8">
                                     <hr/>
                                 </div>
@@ -712,15 +716,15 @@
                                      <a href="#" class="add-recipient-country" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient country' %}</a>
                                 </div>
                             </div>
-                            <h5>{% trans 'Recipient regions' %}</h5>
-                            <div class="recipient-region-container">
+                            <h5 class="hidden hide-default">{% trans 'Recipient regions' %}</h5>
+                            <div class="recipient-region-container hidden hide-default">
                                 {% for rr in project.recipient_regions.all %}
                                     {% include "myrsr/project_admin_partials/recipient_region_input.html" with key=rr.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/recipient_region_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
+                            <div class="row hidden hide-default">
                                 <div class="col-md-8">
                                     <hr/>
                                 </div>
@@ -771,15 +775,15 @@
                                      <a href="#" class="add-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
                                 </div>
                             </div>
-                            <h5>{% trans 'Policy markers' %}</h5>
-                            <div class="policy-marker-container">
+                            <h5 class="hidden hide-default">{% trans 'Policy markers' %}</h5>
+                            <div class="policy-marker-container hidden hide-default">
                                 {% for marker in project.policy_markers.all %}
                                     {% include "myrsr/project_admin_partials/policy_marker_input.html" with key=marker.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_admin_partials/policy_marker_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
+                            <div class="row hidden hide-default">
                                 <div class="col-md-8">
                                     <hr/>
                                 </div>
@@ -950,6 +954,25 @@
                 fundingNode.removeAttribute('disabled');
             } else {
                 fundingNode.setAttribute('disabled', '');
+            }
+        }
+    </script>
+
+    <script type="application/javascript">
+        function showAdvancedFields() {
+            var showAdvancedFields, advancedFields;
+
+            showAdvancedFields = document.getElementById("showAdvancedFields");
+            advancedFields = document.getElementsByClassName("hide-default");
+
+            if (showAdvancedFields.checked) {
+                for (var i=0; i < advancedFields.length; i++){
+                    advancedFields[i].className = advancedFields[i].className.replace("hidden", "");
+                }
+            } else {
+                for (var j=0; j < advancedFields.length; j++){
+                    advancedFields[j].className += " hidden";
+                }
             }
         }
     </script>

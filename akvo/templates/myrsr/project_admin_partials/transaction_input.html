@@ -6,7 +6,7 @@
             <div class="col-md-4 control">
                 <div class="input-group priority3">
                     <span class="input-group-addon">{{ project.get_currency_display }}</span>
-                    <input type="text" class="form-control priority3" name="transaction-value{% if key %}-{{ key }}{% endif %}" id="transaction-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction value' %}"
+                    <input type="text" class="form-control" name="transaction-value{% if key %}-{{ key }}{% endif %}" id="transaction-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction value' %}"
                     {% if transaction.value %} value="{{transaction.value}}" {% endif %}>
                 </div>
                 <label class="control-label" for="transaction-value{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value' %}</label>

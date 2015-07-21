@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="form-group">
-        <div class="row">
+        <div class="row hidden hide-default">
             <div class="col-md-6 control">
                 <textarea id="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}"
                 placeholder="{% trans 'Target value comment' %}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000" rows="5">{{period.target_comment}}</textarea>

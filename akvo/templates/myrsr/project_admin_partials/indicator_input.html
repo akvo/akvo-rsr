@@ -35,8 +35,8 @@
             </div>
         </div>
     </div>
-    <div class="form-group control">
-        <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %}
+    <div class="form-group control hidden hide-default">
+        <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %}
         placeholder="{% trans 'Indicator description' %}" maxlength="2000" rows="8">{{indicator.description}}</textarea>
         <label class="control-label" for="indicator-description{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator description' %}</label>
         <p class="help-block hidden">{% trans 'You can provide further information of the indicator here.' %}</p>
@@ -57,8 +57,8 @@
             </div>
         </div>
     </div>
-    <div class="form-group control">
-        <textarea id="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" name="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}"
+    <div class="form-group control hidden hide-default">
+        <textarea id="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}"
         placeholder="{% trans 'Baseline comment' %}" {% if indicator %}indicator{% endif %} maxlength="2000" rows="8">{{indicator.baseline_comment}}</textarea>
         <label class="control-label" for="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline comment' %}</label>
         <p class="help-block hidden">{% trans 'Here you can provide extra information on the baseline value, if needed.' %}</p>
