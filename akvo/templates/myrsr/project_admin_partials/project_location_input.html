@@ -62,7 +62,7 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group hidden hide-default">
         <div class="row">
             <div class="col-md-4 control">
                 <input type="text" class="form-control priority3" id="location-reference{% if key %}-{{ key }}{% endif %}" name="location-reference{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Reference' %}" {% if location.reference %} value="{{location.reference}}" {% endif %} maxlength="50">
@@ -81,17 +81,17 @@
             </div>
         </div>
     </div>
-    <div class="form-group control">
+    <div class="form-group control hidden hide-default">
         <textarea id="location-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="location-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Description' %}" maxlength="255">{{location.description}}</textarea>
         <label class="control-label" for="location-description{% if key %}-{{ key }}{% endif %}">{% trans 'Description' %}</label>
         <p class="help-block hidden">{% trans 'This provides free text space for providing an additional description, if needed, of the actual target of the activity. A description that qualifies the location, not the activity.' %}</p>
     </div>
-    <div class="form-group control">
+    <div class="form-group control hidden hide-default">
         <textarea id="location-activity-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="location-activity-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Activity description' %}" maxlength="255">{{location.activity_description}}</textarea>
         <label class="control-label" for="location-activity-description{% if key %}-{{ key }}{% endif %}">{% trans 'Activity description' %}</label>
         <p class="help-block hidden">{% trans 'A description that qualifies the activity taking place at the location. This should not duplicate information provided in the main activity description, and should typically be used to distinguish between activities at multiple locations within a single iati-activity record.' %}</p>
     </div>
-    <div class="form-group">
+    <div class="form-group hidden hide-default">
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
@@ -119,7 +119,7 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group hidden hide-default">
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
@@ -147,16 +147,16 @@
             </div>
         </div>
     </div>
-    <hr/>
-    <h5>{% trans 'Location administratives' %}</h5>
-    <div class="location-administrative-container">
+    <hr class="hidden hide-default"/>
+    <h5 class="hidden hide-default">{% trans 'Location administratives' %}</h5>
+    <div class="location-administrative-container hidden hide-default">
         {% for admin in location.administratives.all %}
             {% include "myrsr/project_admin_partials/location_administrative_input.html" with key=admin.pk %}
         {% empty %}
             {% include "myrsr/project_admin_partials/location_administrative_input.html" with key='add-0' %}
         {% endfor %}
     </div>
-    <div class="row">
+    <div class="row hidden hide-default">
         <div class="col-md-8">
             <hr/>
         </div>

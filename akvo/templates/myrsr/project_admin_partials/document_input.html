@@ -23,14 +23,14 @@
                 <input type="text" class="form-control priority2" id="document-title{% if key %}-{{ key }}{% endif %}" name="document-title{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Document title' %}" {% if document.title %} value="{{document.title}}" {% endif %} maxlength="100">
                 <label class="control-label" for="document-title{% if key %}-{{ key }}{% endif %}">{% trans 'Document title' %}</label>
             </div>
-            <div class="col-md-6 control">
+            <div class="col-md-6 control hidden hide-default">
                 <input type="text" class="form-control priority3" id="document-format{% if key %}-{{ key }}{% endif %}" name="document-format{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Document format' %}" {% if document.format %} value="{{document.format}}" {% endif %}>
                 <label class="control-label" for="document-format{% if key %}-{{ key }}{% endif %}">{% trans 'Document format' %}</label>
                 <p class="help-block hidden">{% trans 'This provides the code for the Internet Media Type ("MIME type") of the document, and includes pdf, msword, rtf, xml, csv, etc.' %}</p>
             </div>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group hidden hide-default">
         <div class="row">
             <div class="col-md-6">
                 <div class="select-group control">
