@@ -1059,6 +1059,7 @@
             if (node.options[node.selectedIndex].value === 'funding') {
                 fundingNode.removeAttribute('disabled');
             } else {
+                fundingNode.value = '';
                 fundingNode.setAttribute('disabled', '');
             }
         }
