@@ -32,7 +32,7 @@
                     </p>
                 </div>
             </div>
-            <div class="col-md-4 control">
+            <div class="col-md-4 control hidden hide-default">
                 <input type="text" class="form-control priority3" id="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
                 placeholder="{% trans 'Related project IATI identifier' %}" name="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
                 {% if rp %} value="{{rp.related_iati_id}}" {% endif %} maxlength="100" />
