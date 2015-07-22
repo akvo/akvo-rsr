@@ -542,9 +542,15 @@ nav.navbar-fixed-top {
 div.paginationWrap {
   clear: both; }
 
-.help-block, .charsLeft {
+.help-block, .help-block-error, .charsLeft, .save-success {
   font-size: 0.9em;
   color: rgba(44, 42, 116, 0.5); }
+
+.help-block-error {
+  color: #a94442; }
+
+.save-success {
+  color: #5cb85c; }
 
 .editDate {
   font-style: italic;

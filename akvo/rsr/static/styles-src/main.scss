@@ -618,11 +618,19 @@ div.paginationWrap {
     color: rgba($akvoPurple, 0.5);
 }
 
+.help-block-error {
+    @extend .help-block;
+    color: #a94442;
+}
+
 .charsLeft {
     @extend .help-block;
 }
 
-
+.save-success {
+    @extend .help-block;
+    color: rgba($progressSuccess, 1);
+}
 
 .editDate {
     font-style: italic;
