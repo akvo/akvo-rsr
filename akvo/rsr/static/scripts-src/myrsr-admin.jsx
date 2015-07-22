@@ -60,23 +60,30 @@ var INPUT_ELEMENTS = ['input', 'select', 'textarea'];
 var MEASURE_CLASS = '.priority1';
 
 
-function savingStep(saving, step) {
+function savingStep(saving, step, message) {
     var div, div_id;
 
     div_id = '#savingstep' + step;
     div = document.querySelector(div_id);
 
     if (saving) {
-        div.innerHTML = 'Saving...';
+        div.innerHTML = '<div class="help-block">Saving...</div>';
     } else {
-        div.innerHTML = '';
+        if (message !== undefined) {
+            div.innerHTML = message;
+            setTimeout(function () {
+                div.innerHTML = '';
+            }, 5000);
+        } else {
+            div.innerHTML = '';
+        }
     }
 }
 
 function removeErrors(form) {
     var error_elements, form_elements;
 
-    error_elements = form.getElementsByClassName('error');
+    error_elements = form.getElementsByClassName('help-block-error');
     form_elements = form.getElementsByClassName('has-error');
 
     while(error_elements.length > 0){
@@ -99,10 +106,10 @@ function addErrors(errors) {
 
         labels = form_group.getElementsByTagName('label');
         span = document.createElement("span");
-        textnode = document.createTextNode(' (' + error.error + ')');
+        textnode = document.createTextNode(error.error);
         span.appendChild(textnode);
-        span.className = 'error';
-        labels[0].appendChild(span);
+        span.className = "help-block-error";
+        labels[0].parentNode.insertBefore(span, labels[0].nextSibling);
 
         if (i === 0) {
             document.getElementById(error.name).scrollIntoView();
@@ -240,6 +247,8 @@ function saveDocuments(form, api_url, step, new_objects) {
     file_request.setRequestHeader("X-CSRFToken", csrftoken);
 
     file_request.onload = function() {
+        var message;
+
         if (file_request.status >= 200 && file_request.status < 400) {
             var response;
 
@@ -247,18 +256,28 @@ function saveDocuments(form, api_url, step, new_objects) {
             response = JSON.parse(file_request.responseText);
             addErrors(response.errors);
 
-            savingStep(false, step);
+            if (response.errors.length > 0) {
+                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving document</div>';
+                savingStep(false, step, message);
+            }
+
             return false;
         } else {
             // We reached our target server, but it returned an error
-            savingStep(false, step);
+            message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong with your request</div>';
+
+            savingStep(false, step, message);
             return false;
         }
     };
 
     file_request.onerror = function() {
         // There was a connection error of some sort
-        savingStep(false, step);
+        var message;
+
+        message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
+
+        savingStep(false, step, message);
         return false;
     };
 
@@ -268,7 +287,7 @@ function saveDocuments(form, api_url, step, new_objects) {
 function submitStep(step, level) {
     savingStep(true, step);
 
-    var api_url, form, form_data, form_div, request, file_request;
+    var api_url, form, form_data, form_div, request, file_request, message;
 
     // Collect form data
     form_div = '#admin-step-' + step;
@@ -463,17 +482,27 @@ function submitStep(step, level) {
                 saveDocuments(form, api_url, step, response.new_objects);
             }
 
-            savingStep(false, step);
+            if (response.errors.length > 0) {
+                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving</div>';
+            } else {
+                message = '<div class="save-success"><span class="glyphicon glyphicon-ok-circle"></span> Saved successfully!</div>';
+            }
+
+            savingStep(false, step, message);
             return false;
         } else {
             // We reached our target server, but it returned an error
-            savingStep(false, step);
+            message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong while saving</div>';
+
+            savingStep(false, step, message);
             return false;
         }
     };
 
     request.onerror = function() {
         // There was a connection error of some sort
+        message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
+
         savingStep(false, step);
         return false;
     };
@@ -497,17 +526,24 @@ function submitStep(step, level) {
                 replacePhoto(response.new_image);
                 addErrors(response.errors);
 
-                savingStep(false, step);
+                if (response.errors.length > 0) {
+                    message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving photo</div>';
+                    savingStep(false, step, message);
+                }
                 return false;
             } else {
                 // We reached our target server, but it returned an error
-                savingStep(false, step);
+                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong while saving</div>';
+
+                savingStep(false, step, message);
                 return false;
             }
         };
 
         file_request.onerror = function() {
             // There was a connection error of some sort
+            message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
+
             savingStep(false, step);
             return false;
         };
