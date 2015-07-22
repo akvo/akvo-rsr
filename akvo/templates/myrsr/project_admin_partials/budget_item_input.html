@@ -38,7 +38,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-6 control">
-                <div class="input-group priority2">
+                <div class="input-group priority1">
                     <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
                     <input type="text" class="form-control" name="budget-item-value{% if key %}-{{ key }}{% endif %}" id="budget-item-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Budget item value' %}"
                     {% if item.amount %} value="{{item.amount}}" {% endif %}>

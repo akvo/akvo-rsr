@@ -2,38 +2,6 @@
 {% load i18n bootstrap3 rsr_utils thumbnail compressed rules %}
 {% block title %}{% trans 'MyRSR - Project Admin' %}{% endblock %}
 {% block myrsr_main %}
-    <div id="adminHelp" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">{% trans 'Welcome to the RSR project admin' %}</h4>
-                </div>
-                <div class="modal-body">
-                    <p>{% trans "Your RSR project page shows project information to anyone who's interested: (potential) donors, support  and implementing partners, sector professionals and the wider online community. Tell your project’s story by entering complete information, in language that anyone can understand." %}</p>
-                    <p>{% trans "Before you start, please review all the project fields so you know which information belongs where in the RSR project form." %}</p>
-                    <p>{% blocktrans %} Click on the information <span class="glyphicon glyphicon-info-sign info-icon"></span> icon if you need an explanation on what information is required in a certain field. When a field has a character limit, this will be indicated underneath the field while you are typing.{% endblocktrans %}</p>
-                    <p>{% trans "The progress bars per section show different colours. An empty or red bar means nothing has been filled in, orange means some progress has been made and green means that all compulsory fields have been filled out. RSR administrators can publish the project once all mandatory fields (indicated with a red asterix) are filled out and the progress bar on top of the page is green." %}</p>
-                    {% comment %} <p>{% trans "If you want to report according to the IATI (International Aid Transparency Initiative) standard, you can tick the IATI checkbox and more fields will show in the project form. In order to be fully IATI compliant, the IATI bar on top of the page needs to be filled to 100%. The IATI term for project is “activity”." %}</p> {% endcomment %}
-                    <p>{% trans "If you have questions, please get in touch with us via" %} <a href="mailto:support@akvo.org">support@akvo.org</a>.</p>
-                    {% if user.show_admin_help %}
-                        <p>
-                            <div class="checkbox">
-                                <label for="doNotShowHelp" class="control-label has-icon">
-                                    <input id="doNotShowHelp" type="checkbox" name="doNotShowHelp">
-                                        {% trans 'Do not show this message again' %}
-                                </label>
-                            </div>
-                        </p>
-                    {% endif %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <h3>{% trans 'Project admin' %} <a href="javascript:showHelp();"><span class="glyphicon glyphicon-question-sign question-icon"></span></a></h3>
     <!--*************************************** FORM Container **********************************************-->
 
@@ -62,7 +30,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-4">
                 <div class="editDate">
                     <span>{% trans 'This project is:' %} </span>
                     {% if project.is_published %}
@@ -72,10 +40,11 @@
                     {% endif %}
                 </div>
             </div>
+            <div class="col-md-5 editDate" id="publishErrors"></div>
             <div class="col-md-3 text-center">
                 {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
                 {% if not project.is_published and can_publish %}
-                    <button class="btn btn-success publishProject" id="publishProject">{% trans 'Publish project' %}</button>
+                    <button class="btn btn-success publishProject" id="publishProject" disabled>{% trans 'Publish project' %}</button>
                 {% endif %}
             </div>
         </div>
@@ -186,7 +155,7 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromActual" id="eventFromActual" placeholder="{% trans 'Start Date (actual)' %}"
+                                        <input type="date" class="form-control ll-skin-melon priority2" name="eventFromActual" id="eventFromActual" placeholder="{% trans 'Start Date (actual)' %}"
                                         {% if project.date_start_actual %} value="{{project.date_start_actual|date:'c'}}" {% endif %} />
                                         <label for="eventFromActual" class="control-label">{% trans 'Start Date (actual)' %}:</label>
                                         <p class="help-block hidden">{% trans 'Enter the actual date that the project started.' %}</p>
@@ -319,7 +288,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep1-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep1"></div>
                             </div>
@@ -366,7 +335,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep2-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep2"></div>
                             </div>
@@ -444,7 +413,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="id="savingstep3-button""><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep3"></div>
                             </div>
@@ -518,7 +487,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep4-button"><i class="glyphicon glyphicon-save"></i> Save</button>
                                 </div>
                                 <div id="savingstep4"></div>
                             </div>
@@ -583,7 +552,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep5-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep5"></div>
                             </div>
@@ -722,7 +691,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep6-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep6"></div>
                             </div>
@@ -818,7 +787,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep7-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep7"></div>
                             </div>
@@ -884,7 +853,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep8-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep8"></div>
                             </div>
@@ -950,7 +919,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep9-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep9"></div>
                             </div>
@@ -986,7 +955,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep10-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep10"></div>
                             </div>
@@ -997,6 +966,8 @@
             </fieldset>
         </form>
     </section>
+
+{% include "myrsr/project_admin_partials/admin_help.html" %}
 {% endblock %}
 
 {% block js %}

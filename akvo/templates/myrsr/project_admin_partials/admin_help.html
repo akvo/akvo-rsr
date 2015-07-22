@@ -1,0 +1,32 @@
+{% load i18n %}
+<div id="adminHelp" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{% trans 'Welcome to the RSR project admin' %}</h4>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Your RSR project page shows project information to anyone who's interested: (potential) donors, support  and implementing partners, sector professionals and the wider online community. Tell your project’s story by entering complete information, in language that anyone can understand." %}</p>
+                <p>{% trans "Before you start, please review all the project fields so you know which information belongs where in the RSR project form." %}</p>
+                <p>{% blocktrans %}Click on the information <span class="glyphicon glyphicon-info-sign info-icon"></span> icon if you need an explanation on what information is required in a certain field. When a field has a character limit, this will be indicated underneath the field while you are typing.{% endblocktrans %}</p>
+                <p>{% trans "The progress bars per section show different colours. An empty or red bar means nothing has been filled in, orange means some progress has been made and green means that all compulsory fields have been filled out. RSR administrators can publish the project once all mandatory fields (indicated with a red asterix) are filled out and the progress bar on top of the page is green." %}</p>
+                {% comment %} <p>{% trans "If you want to report according to the IATI (International Aid Transparency Initiative) standard, you can tick the IATI checkbox and more fields will show in the project form. In order to be fully IATI compliant, the IATI bar on top of the page needs to be filled to 100%. The IATI term for project is “activity”." %}</p> {% endcomment %}
+                <p>{% trans "If you have questions, please get in touch with us via" %} <a href="mailto:support@akvo.org">support@akvo.org</a>.</p>
+                {% if user.show_admin_help %}
+                    <p>
+                        <div class="checkbox">
+                            <label for="doNotShowHelp" class="control-label has-icon">
+                                <input id="doNotShowHelp" type="checkbox" name="doNotShowHelp">
+                                    {% trans 'Do not show this message again' %}
+                            </label>
+                        </div>
+                    </p>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
