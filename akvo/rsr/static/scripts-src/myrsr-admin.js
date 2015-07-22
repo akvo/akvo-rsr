@@ -1371,6 +1371,31 @@ function setValidationListeners() {
     markMandatoryFields();
 }
 
+function setCurrencyOnChange() {
+    try {
+        var currencyDropdown;
+
+        currencyDropdown = document.getElementById('projectCurrency');
+        currencyDropdown.onchange = updateCurrency(currencyDropdown);
+    } catch (error) {
+        // No currency dropdown
+        return false;
+    }
+}
+
+function updateCurrency(currencyDropdown) {
+    return function(e) {
+        var currencyDisplays, currency;
+
+        currency = currencyDropdown.options[currencyDropdown.selectedIndex].text;
+        currencyDisplays = document.getElementsByClassName('currency-display');
+
+        for (var i=0; i < currencyDisplays.length; i++) {
+            currencyDisplays[i].innerHTML = currency;
+        }
+    };
+}
+
 function setAdminHelpOnClick() {
     try {
         var doNotShowCheckbox;
@@ -1484,6 +1509,7 @@ $(document).ready(function() {
     setPublishOnClick();
     setSubmitOnClicks();
     setPartialOnClicks();
+    setCurrencyOnChange();
 
     setValidationListeners();
     updateAllHelpIcons();

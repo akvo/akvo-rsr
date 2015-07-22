@@ -1059,6 +1059,7 @@
             if (node.options[node.selectedIndex].value === 'funding') {
                 fundingNode.removeAttribute('disabled');
             } else {
+                fundingNode.value = '';
                 fundingNode.setAttribute('disabled', '');
             }
         }
@@ -1080,6 +1081,12 @@
                     advancedFields[j].className += " hidden";
                 }
             }
+        }
+    </script>
+
+    <script type="application/javascript">
+        function updateCurrencyDisplay() {
+            // to do
         }
     </script>
 
