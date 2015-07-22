@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-6 control">
                 <div class="input-group priority2">
-                    <span class="input-group-addon">{{ project.get_currency_display }}</span>
+                    <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
                     <input type="text" class="form-control" name="planned-disbursement-value{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Planned disbursement value' %}"
                     {% if pd.value %} value="{{pd.value}}" {% endif %}>
                 </div>
