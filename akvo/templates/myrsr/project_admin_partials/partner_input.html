@@ -16,12 +16,14 @@
                     <select name="partner-type{% if key %}-{{ key }}{% endif %}"
                     id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)">
                         <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>{% trans 'Type' %}:</option>
-                        <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>{% trans 'Field partner' %}</option>
+                        <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>{% trans 'Implementing partner' %}</option>
                         <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
-                        <option value="sponsor" {% if partnership.partner_type == 'sponsor' %} selected="selected" {% endif %}>{% trans 'Sponsor partner' %}</option>
-                        <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>{% trans 'Support partner' %}</option>
+                        <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>{% trans 'Accountable partner' %}</option>
+                        <option value="extending" {% if partnership.partner_type == 'extending' %} selected="selected" {% endif %}>{% trans 'Extending partner' %}</option>
+                        {% if partnership.partner_type == 'sponsor' %}<option value="sponsor" selected="selected">{% trans 'Sponsor partner' %}</option>{% endif %}
                     </select>
                     <label for="partner-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
+                    {% if partnership.partner_type == 'sponsor' %}<p class="help-block-error">{% trans "The 'sponsor' role will soon be removed, please select a different role for this organisation." %}</p>{% endif %}
                     <p class="help-block hidden">
                         {% blocktrans %}Select the role of the organisation within the project. There are four different types:<br/>
                         Funding organisation = The government or organisation that provides funds to the activity<br/>
