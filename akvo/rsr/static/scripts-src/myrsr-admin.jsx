@@ -61,21 +61,27 @@ var MEASURE_CLASS = '.priority1';
 
 
 function savingStep(saving, step, message) {
-    var div, div_id;
+    var div, div_id, div_button_id, div_button;
 
     div_id = '#savingstep' + step;
     div = document.querySelector(div_id);
 
+    div_button_id = '#savingstep' + step + '-button';
+    div_button = document.querySelector(div_button_id);
+
     if (saving) {
+        div_button.setAttribute('disabled', '');
         div.innerHTML = '<div class="help-block">Saving...</div>';
     } else {
         if (message !== undefined) {
             div.innerHTML = message;
             setTimeout(function () {
                 div.innerHTML = '';
+                div_button.removeAttribute('disabled');
             }, 5000);
         } else {
             div.innerHTML = '';
+            div_button.removeAttribute('disabled');
         }
     }
 }
@@ -1254,6 +1260,7 @@ function getInputResults(section) {
 }
 
 function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
+    var completionPercentage, completionClass, publishButton;
 
     completionPercentage = Math.floor((numInputsCompleted / numInputs) * 100);
     section.find('.progress-bar').attr('aria-valuenow', completionPercentage);
@@ -1267,6 +1274,23 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
         completionClass = 'incomplete';
     } else if (completionPercentage === 100) {
         completionClass = 'complete';
+    }
+
+    // Enable publishing when all is filled in
+    if (completionPercentage === 100) {
+        try {
+            publishButton = document.getElementById('publishProject');
+            publishButton.removeAttribute('disabled');
+        } catch (error) {
+            // Do nothing, no publish button
+        }
+    } else {
+        try {
+            publishButton = document.getElementById('publishProject');
+            publishButton.setAttribute('disabled', '');
+        } catch (error) {
+            // Do nothing, no publish button
+        }
     }
 
     section.find('div.progress-bar').attr('data-completion', completionClass);
@@ -1499,7 +1523,10 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
         publishButton.setAttribute('disabled', '');
 
-        var api_url, request;
+        var api_url, request, publishErrorNode;
+
+        publishErrorNode = document.getElementById('publishErrors');
+        publishErrorNode.innerHTML = '';
 
         // Create request
         api_url = '/rest/v1/publishing_status/' + publishingStatusId + '/?format=json';
@@ -1524,6 +1551,27 @@ function getProjectPublish(publishingStatusId, publishButton) {
             } else {
                 // We reached our target server, but it returned an error
                 publishButton.removeAttribute('disabled');
+
+                if (request.status == 400) {
+                    // Could not publish due to checks
+                    var response, span;
+
+                    response = JSON.parse(request.responseText);
+
+                    span = document.createElement("span");
+                    span.className = 'notPublished';
+                    publishErrorNode.appendChild(span);
+
+                    try {
+                        for (var i=0; i < response.__all__.length; i++) {
+                            span.innerHTML += response.__all__[i] + '<br/>';
+                        }
+                    } catch (error) {
+                        // General error message
+                        publishErrorNode.innerHTML = 'Could not publish project';
+                    }
+                }
+
                 return false;
             }
         };

@@ -32,37 +32,38 @@ class PublishingStatus(models.Model):
 
             if not self.project.title:
                 validation_errors.append(
-                    ValidationError(_('Projects need to have a title.'),
+                    ValidationError(_('Project needs to have a title.'),
                                     code='title')
                 )
 
             if not self.project.subtitle:
                 validation_errors.append(
-                    ValidationError(_('Projects need to have a subtitle.'),
+                    ValidationError(_('Project needs to have a subtitle.'),
                                     code='subtitle')
                 )
 
             if not self.project.project_plan_summary:
                 validation_errors.append(
-                    ValidationError(_('Projects need to have the project plan summary filled in.'),
+                    ValidationError(_('Project needs to have the project plan summary filled in.'),
                                     code='summary')
-                )
-
-            if not self.project.sustainability:
-                validation_errors.append(
-                    ValidationError(_('Projects need to have the sustainability field filled in.'),
-                                    code='sustainability')
                 )
 
             if not self.project.goals_overview:
                 validation_errors.append(
-                    ValidationError(_('Projects need to have the goals overview field filled in.'),
+                    ValidationError(_('Project needs to have the goals overview field filled in.'),
                                     code='goals_overview')
+                )
+
+            if not self.project.date_start_planned:
+                validation_errors.append(
+                    ValidationError(
+                        _('Project needs to have the planned start date field filled in.'),
+                        code='goals_overview')
                 )
 
             if not self.project.partners:
                 validation_errors.append(
-                    ValidationError(_('Projects need to have at least one valid partner.'),
+                    ValidationError(_('Project needs to have at least one valid partner.'),
                                     code='partners')
                 )
             elif not self.project.partnerships.filter(
@@ -70,41 +71,74 @@ class PublishingStatus(models.Model):
             ).exists():
                 validation_errors.append(
                     ValidationError(
-                        _('Projects need to have at least one field, funding or support partner.'),
+                        _('Project needs to have at least one field, funding or support partner.'),
                         code='partners'
                     )
                 )
+            else:
+                for funding_partner in self.project.partnerships.filter(partner_type='funding'):
+                    if not funding_partner.funding_amount:
+                        validation_errors.append(
+                            ValidationError(_('All funding partners should have a funding amount.'),
+                                            code='partners'
+                            )
+                        )
+                        break
 
             if not self.project.sync_owner:
                 validation_errors.append(
-                    ValidationError(_('Projects need to have a reporting organisation.'),
+                    ValidationError(_('Project needs to have a reporting organisation.'),
                                     code='reporting_org')
                 )
 
             if not self.project.current_image:
                 validation_errors.append(
-                    ValidationError(_('Projects need to have a photo.'),
+                    ValidationError(_('Project needs to have a photo.'),
                                     code='current_image')
                 )
 
             if not self.project.locations.all():
                 validation_errors.append(
-                    ValidationError(_('Projects need to have at least one location.'),
+                    ValidationError(_('Project needs to have at least one location.'),
                                     code='location')
                 )
+            else:
+                for location in self.project.locations.all():
+                    if not location.latitude or not location.longitude or not location.country:
+                        validation_errors.append(
+                            ValidationError(
+                                _('All locations need to have a latitude, longitude and country '
+                                  'specified.'),
+                                code='location')
+                        )
+                        break
 
             if not self.project.budget_items.all():
                 validation_errors.append(
-                    ValidationError(_('Projects need to have at least one budget item.'),
+                    ValidationError(_('Project needs to have at least one budget item.'),
                                     code='budget_item')
                 )
             elif not self.project.budget_items.filter(amount__gt=0).exists():
                 validation_errors.append(
                     ValidationError(
-                        _('Projects need to have at least one budget item with an amount.'),
+                        _('Project needs to have at least one budget item with an amount.'),
                         code='budget_item'
                     )
                 )
+
+            if not self.project.sectors.all():
+                validation_errors.append(
+                    ValidationError(_('Project needs to have at least one sector.'),
+                                    code='sector')
+                )
+            else:
+                for sector in self.project.sectors.all():
+                    if not sector.sector_code:
+                        validation_errors.append(
+                            ValidationError(_('All sectors need to have a sector code.'),
+                                            code='sector')
+                        )
+                        break
 
             if validation_errors:
                 raise ValidationError(validation_errors)
