@@ -31,14 +31,13 @@
                 <h4 class="detailedInfo">{% trans "Roles" %}</h4>
                 <ul>
                   {% for type in partner.partner_types %}
-                    <li>{{type|title}} {% trans "partner" %}</li>
-                    {% comment %}
-                    {% if forloop.first %}
-                      <li>{{type|title}} {% trans "partner" %}{% if forloop.last %}.{% else %},{% endif %}</li>
+                    {% if type == 'support' %}
+                      <li>{% trans "Accountable partner" %}</li>
+                    {% elif type == 'field' %}
+                      <li>{% trans "Implementing partner" %}</li>
                     {% else %}
-                      <li>{{type}} {% trans "partner" %}{% if forloop.last %}.{% else %},{% endif %}</li>
+                      <li>{{type|title}} {% trans "partner" %}</li>
                     {% endif %}
-                    {% endcomment %}
                   {% endfor %}
                 </ul>
               </div>

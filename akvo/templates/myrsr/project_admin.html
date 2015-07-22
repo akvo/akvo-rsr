@@ -413,7 +413,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success" id="id="savingstep3-button""><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep3-button""><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep3"></div>
                             </div>
@@ -449,6 +449,11 @@
                                 </p>
                             </div>
                             <div class="form-group control">
+                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" placeholder="{% trans 'Goals overview' %}" maxlength="600" rows="5">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
+                                <label class="control-label" for="goalsOverview">{% trans 'Goals overview' %}</label>
+                                <p class="help-block hidden">{% trans 'Provide a brief description of the overall project goals.' %}</p>
+                            </div>
+                            <div class="form-group control">
                                 <textarea id="background" class="form-control priority2" name="background" placeholder="{% trans 'Background' %}" maxlength="1000" rows="8">{% if project.background %}{{project.background}}{% endif %}</textarea>
                                 <label class="control-label" for="background">{% trans 'Background' %}</label>
                                 <p class="help-block hidden">{% trans 'This can include geographical, political, environmental, social and/or cultural issues.' %}</p>
@@ -459,24 +464,19 @@
                                 <p class="help-block hidden">{% trans 'Describe the situation at the start of the project.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" placeholder="{% trans 'Project plan' %}" rows="8">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
-                                <label class="control-label" for="projectPlan">{% trans 'Project plan' %}</label>
-                                <p class="help-block hidden">{% trans 'Detailed information about the implementation of the project: the what, how, who and when.' %}</p>
-                            </div>
-                            <div class="form-group control">
                                 <textarea id="targetGroup" class="form-control priority2" name="targetGroup" placeholder="{% trans 'Target group' %}" maxlength="600" rows="5">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
                                 <label class="control-label" for="targetGroup">{% trans 'Target group' %}</label>
                                 <p class="help-block hidden">{% trans 'This should include information about the people, organisations or resources that are being impacted by this project.' %}</p>
                             </div>
                             <div class="form-group control">
+                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" placeholder="{% trans 'Project plan' %}" rows="8">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
+                                <label class="control-label" for="projectPlan">{% trans 'Project plan' %}</label>
+                                <p class="help-block hidden">{% trans 'Detailed information about the implementation of the project: the what, how, who and when.' %}</p>
+                            </div>
+                            <div class="form-group control">
                                 <textarea id="sustainability" class="form-control priority2" name="sustainability" placeholder="{% trans 'Sustainability' %}" rows="8">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
                                 <label class="control-label" for="sustainability">{% trans 'Sustainability' %}</label>
                                 <p class="help-block hidden">{% trans 'Describe plans for sustaining/maintaining results after implementation is complete.' %}</p>
-                            </div>
-                            <div class="form-group control">
-                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" placeholder="{% trans 'Goals overview' %}" maxlength="600" rows="5">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
-                                <label class="control-label" for="goalsOverview">{% trans 'Goals overview' %}</label>
-                                <p class="help-block hidden">{% trans 'Provide a brief description of the overall project goals.' %}</p>
                             </div>
                             {% for customfield in custom_fields_section_4 %}
                                 <div class="form-group control">

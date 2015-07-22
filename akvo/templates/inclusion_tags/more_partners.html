@@ -10,7 +10,15 @@
           <img src='{{partner.logo.url}}' class='extra-partner-entry'></a>
       {% endif %}
       <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
-      ({{ types|join:", "|capfirst }})
+      ({% for type in types %}
+        {% if type == 'support' %}
+          {% trans "Accountable" %}{% if not forloop.last %}, {% endif %}
+        {% elif type == 'field' %}
+          {% trans "Implementing" %}{% if not forloop.last %}, {% endif %}
+        {% else %}
+          {{type|title}}{% if not forloop.last %}, {% endif %}
+        {% endif %}
+      {% endfor %})
     </div>
   {% endfor %}
   "
