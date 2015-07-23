@@ -1174,6 +1174,7 @@ def project_admin_step6(request, pk=None):
         {
             'errors': errors,
             'new_objects': new_objects,
+            'total_budget': "{:,}".format(int(project.budget)),
         }
     )
 

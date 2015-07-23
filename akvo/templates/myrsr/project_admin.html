@@ -1,5 +1,5 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n bootstrap3 rsr_utils thumbnail compressed rules %}
+{% load i18n bootstrap3 rsr_utils thumbnail compressed rules humanize %}
 {% block title %}{% trans 'MyRSR - Project Admin' %}{% endblock %}
 {% block myrsr_main %}
     <h3>{% trans 'Project admin' %} <a href="javascript:showHelp();"><span class="glyphicon glyphicon-question-sign question-icon"></span></a></h3>
@@ -599,6 +599,7 @@
                             </div>
                             <hr/>
                             <h5>{% trans 'Budget items' %}</h5>
+                            <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
                             <div class="form-group control hidden hide-default">
                                 <div class="input-group priority3">
                                     <input type="text" class="form-control" name="capital-spend-percentage" id="capital-spend-percentage" placeholder="{% trans 'Capital spend percentage' %}"
@@ -1037,6 +1038,24 @@
     </script>
 
     <script type="application/javascript">
+        function toggleOtherLabel(node) {
+            var otherLabelNode, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            otherLabelNode = parentNode.getElementsByTagName("input")[0];
+
+            if (node.options[node.selectedIndex].text === 'Other') {
+                otherLabelNode.removeAttribute('disabled');
+                otherLabelNode.className += ' priority1';
+            } else {
+                otherLabelNode.value = '';
+                otherLabelNode.className = otherLabelNode.className.replace('priority1', '');
+                otherLabelNode.setAttribute('disabled', '');
+            }
+        }
+    </script>
+
+    <script type="application/javascript">
         function showAdvancedFields() {
             var showAdvancedFields, advancedFields;
 
@@ -1052,12 +1071,6 @@
                     advancedFields[j].className += " hidden";
                 }
             }
-        }
-    </script>
-
-    <script type="application/javascript">
-        function updateCurrencyDisplay() {
-            // to do
         }
     </script>
 
