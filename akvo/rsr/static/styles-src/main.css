@@ -1780,7 +1780,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-.projectEdit .delete-object-button {
+.projectEdit .delete-object-button, .projectEdit .delete-photo-button, .projectEdit .delete-document-button {
   color: #d9534f; }
 .projectEdit .info-icon {
   padding-left: 0.5em;

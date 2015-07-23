@@ -2293,6 +2293,12 @@ body {
     .delete-object-button {
         color: rgba($progressWarning, 1);
     }
+    .delete-photo-button {
+        @extend .delete-object-button;
+    }
+    .delete-document-button {
+        @extend .delete-object-button;
+    }
     .info-icon {
         padding-left: 0.5em;
         cursor: pointer;

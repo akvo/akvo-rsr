@@ -104,22 +104,26 @@ function removeErrors(form) {
 
 function addErrors(errors) {
     for (var i = 0; i < errors.length; i++) {
-        var error, form_group, labels, span, textnode;
+        try {
+            var error, form_group, labels, span, textnode;
 
-        error = errors[i];
-        form_group = document.querySelector('#' + error.name).parentNode;
-        form_group.className += ' has-error';
+            error = errors[i];
+            form_group = document.querySelector('#' + error.name).parentNode;
+            form_group.className += ' has-error';
 
-        labels = form_group.getElementsByTagName('label');
-        span = document.createElement("span");
-        textnode = document.createTextNode(error.error);
-        span.appendChild(textnode);
-        span.className = "help-block-error";
-        labels[0].parentNode.insertBefore(span, labels[0].nextSibling);
+            labels = form_group.getElementsByTagName('label');
+            span = document.createElement("span");
+            textnode = document.createTextNode(error.error);
+            span.appendChild(textnode);
+            span.className = "help-block-error";
+            labels[0].parentNode.insertBefore(span, labels[0].nextSibling);
 
-        if (i === 0) {
-            document.getElementById(error.name).scrollIntoView();
-            window.scrollBy(0, -100);
+            if (i === 0) {
+                document.getElementById(error.name).scrollIntoView();
+                window.scrollBy(0, -100);
+            }
+        } catch (tryError) {
+            // Can't find attribute, probably due to a name change
         }
     }
 }
@@ -226,7 +230,7 @@ function replacePhoto(photo) {
         }
 
         photo_container = document.querySelector('#photo-container');
-        add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a onclick="deletePhoto(this);" class="btn btn-link" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>';
+        add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a onclick="deletePhoto(this);" class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>';
 
         photo_container.innerHTML = add_html + photo_container.innerHTML;
     }
@@ -908,6 +912,17 @@ function setPartialOnClicks() {
             });
         });
     }
+
+    var removeLinks;
+
+    removeLinks = document.getElementsByClassName('delete-object-button');
+
+    for (var j=0; j < removeLinks.length; j++) {
+        var removeLink;
+
+        removeLink = removeLinks[j];
+        removeLink.onclick = setRemovePartial(removeLink);
+    }
 }
 
 function getOnClick(pName, element) {
@@ -1445,6 +1460,8 @@ function setCurrencyOnChange() {
 
 function updateCurrency(currencyDropdown) {
     return function(e) {
+        e.preventDefault();
+
         var currencyDisplays, currency;
 
         currency = currencyDropdown.options[currencyDropdown.selectedIndex].text;
@@ -1453,6 +1470,18 @@ function updateCurrency(currencyDropdown) {
         for (var i=0; i < currencyDisplays.length; i++) {
             currencyDisplays[i].innerHTML = currency;
         }
+    };
+}
+
+function setRemovePartialOnClicks() {
+
+}
+
+function setRemovePartial(node) {
+    return function(e) {
+        e.preventDefault();
+
+        removePartial(node);
     };
 }
 
