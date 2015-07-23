@@ -191,7 +191,7 @@
                                         {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
                                             <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
                                         {% endthumbnail %}
-                                        <a onclick="deletePhoto(this);" class="btn btn-link delete-object-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
+                                        <a onclick="deletePhoto(this);" class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
                                     {% endif %}
                                 </div>
                             </div>
