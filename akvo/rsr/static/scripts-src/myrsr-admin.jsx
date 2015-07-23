@@ -236,6 +236,13 @@ function replacePhoto(photo) {
     }
 }
 
+function replaceTotalBudget(total_budget) {
+    var totalBudgetNode;
+
+    totalBudgetNode = document.getElementById('total-budget');
+    totalBudgetNode.innerHTML = total_budget;
+}
+
 function saveDocuments(form, api_url, step, new_objects) {
     var documentFormData, documents, file_request;
 
@@ -443,7 +450,7 @@ function submitStep(step, level) {
 
         form_data += '&level=' + level;
     } else if (step === '7') {
-    form_data += '&level=' + level;
+        form_data += '&level=' + level;
     }
 
     // Create request
@@ -466,7 +473,8 @@ function submitStep(step, level) {
                 replaceNames(response.new_objects, 'indicator-period');
             } else if (step === '6' && level === 1) {
                 replaceNames(response.new_objects, 'sector');
-            }else if (step === '7' && level === 1) {
+                replaceTotalBudget(response.total_budget);
+            } else if (step === '7' && level === 1) {
                 replaceNames(response.new_objects, 'administrative');
             }  else {
                 replaceNames(response.new_objects);
@@ -574,6 +582,13 @@ function deleteItem(itemId, itemType, parentDiv) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             parentDiv.parentNode.removeChild(parentDiv);
+
+
+            // Update the budget in case of removed budget
+            if (itemType === 'budget_item') {
+                getTotalBudget();
+            }
+
             return false;
         } else {
             // We reached our target server, but it returned an error
@@ -652,6 +667,41 @@ function deleteDocument(document_id) {
             aNode.parentNode.removeChild(aNode);
 
             return false;
+        } else {
+            // We reached our target server, but it returned an error
+            return false;
+        }
+    };
+
+    request.onerror = function() {
+        // There was a connection error of some sort
+        return false;
+    };
+
+    request.send();
+}
+
+function getTotalBudget() {
+    var api_url, request;
+
+    // Create request
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/?format=json';
+
+    request = new XMLHttpRequest();
+    request.open('GET', api_url, true);
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            var response;
+
+            response = JSON.parse(request.responseText);
+            try {
+                replaceTotalBudget(response.budget);
+            } catch (error) {
+                return false;
+            }
         } else {
             // We reached our target server, but it returned an error
             return false;

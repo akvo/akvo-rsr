@@ -18,7 +18,7 @@ from akvo.utils import codelist_choices, codelist_value
 
 class BudgetItemLabel(models.Model):
     TOTAL_BUDGET_LABEL_ID = 14
-    label = ValidXMLCharField(_(u'label'), max_length=20, unique=True, db_index=True)
+    label = ValidXMLCharField(_(u'label'), max_length=30, unique=True, db_index=True)
 
     def __unicode__(self):
         return self.label
@@ -40,7 +40,7 @@ class BudgetItem(models.Model):
         help_text=_(u'Select the budget item. Use the \'Other\' fields to custom budget items.')
     )
     other_extra = ValidXMLCharField(
-        max_length=20, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
+        max_length=30, null=True, blank=True, verbose_name=_(u'"Other" labels extra info'),
         help_text=_(u'Extra information about the exact nature of an "other" budget item.'),
     )
     # Translators: This is the amount of an budget item in a currency (€ or $)
@@ -80,7 +80,6 @@ class BudgetItem(models.Model):
         ordering = ('label',)
         verbose_name = _(u'budget item')
         verbose_name_plural = _(u'budget items')
-        unique_together = ('project', 'label')
 
 
 class CountryBudgetItem(models.Model):

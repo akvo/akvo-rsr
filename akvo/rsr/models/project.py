@@ -351,16 +351,32 @@ class Project(TimestampsMixin, models.Model):
         return amount or 0
 
     # New API, de-normalized fields support
-
     def get_budget(self):
-        if 'total' in BudgetItemLabel.objects.filter(budgetitem__project__exact=self):
-            return BudgetItem.objects.filter(
-                project__exact=self
-            ).filter(label__label='total')[0].amount
+        budgets = self.budget_items.filter(amount__gt=0)
+        total_budgets = budgets.filter(label__label='Total')
+
+        if total_budgets.exists():
+            revised_total_budgets = total_budgets.filter(type='2')
+
+            if revised_total_budgets.exists():
+                return revised_total_budgets.order_by('-pk')[0].amount
+            else:
+                return total_budgets.order_by('-pk')[0].amount
+
+        elif budgets.exists():
+            summed_up_budget = 0
+
+            for budget in budgets:
+                if budgets.filter(label=budget.label, type='2').exists():
+                    if budget == budgets.filter(label=budget.label, type='2').order_by('-pk')[0]:
+                        summed_up_budget += budget.amount
+                else:
+                    summed_up_budget += budget.amount
+
+            return summed_up_budget
+
         else:
-            return BudgetItem.objects.filter(
-                project__exact=self
-            ).aggregate(Sum('amount'))['amount__sum'] or 0
+            return 0
 
     def update_budget(self):
         "Update de-normalized field"
