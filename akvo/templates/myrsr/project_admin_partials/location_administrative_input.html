@@ -1,32 +1,36 @@
 {% load i18n %}
 <div class="location-administrative-input parent" id="administrative_location{% if key %}-{{ key }}{% endif %}" {% if admin %}administrative{% endif %}>
-    <div class="form-group">
-        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
-        <div class="row">
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority3 administrative" id="location-administrative-code{% if key %}-{{ key }}{% endif %}" name="location-administrative-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Administrative code' %}" {% if admin.code %} value="{{admin.code}}" {% endif %} {% if admin %}administrative{% endif %}>
-                <label class="control-label" for="location-administrative-code{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative code' %}</label>
-                <p class="help-block hidden">{% trans 'Coded identification of national and sub-national divisions according to recognised administrative boundary repositories. Multiple levels may be reported.' %}</p>
-            </div>
-            <div class="col-md-4">
-                <div class="select-group control">
-                    <select name="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" id="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3 administrative" {% if admin %}administrative{% endif %}>
-                        <option value="" {% if not admin.vocabulary %} selected="selected" {% endif %}>{% trans 'Administrative vocabulary' %}:</option>
-                         {% for vocabulary in geographic_vocabularies %}
-                            <option value="{{ vocabulary.code }}" {% if admin.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label class="control-label" for="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative vocabulary' %}</label>
-                </div>
-            </div>
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority3 administrative" id="location-administrative-level{% if key %}-{{ key }}{% endif %}" name="location-administrative-level{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Administrative level' %}" {% if admin.level %} value="{{admin.level}}" {% endif %} {% if admin %}administrative{% endif %}>
-                <label class="control-label" for="location-administrative-level{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative level' %}</label>
-            </div>
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if admin %}+{% else %}-{% endif %}</span> {% trans 'Location administrative' %}: <span class="unicode">{% if admin %}{{ admin }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center" id="delete-administrative-level{% if key %}-{{ key }}{% endif %}">
-                <a class="btn btn-link delete-object-button" id="delete-administrative-level{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> Delete administrative</a>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-administrative-level{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if admin %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority3 administrative" id="location-administrative-code{% if key %}-{{ key }}{% endif %}" name="location-administrative-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Administrative code' %}" {% if admin.code %} value="{{admin.code}}" {% endif %} {% if admin %}administrative{% endif %}>
+                    <label class="control-label" for="location-administrative-code{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative code' %}</label>
+                    <p class="help-block hidden">{% trans 'Coded identification of national and sub-national divisions according to recognised administrative boundary repositories. Multiple levels may be reported.' %}</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="select-group control">
+                        <select name="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" id="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3 administrative" {% if admin %}administrative{% endif %}>
+                            <option value="" {% if not admin.vocabulary %} selected="selected" {% endif %}>{% trans 'Administrative vocabulary' %}:</option>
+                             {% for vocabulary in geographic_vocabularies %}
+                                <option value="{{ vocabulary.code }}" {% if admin.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative vocabulary' %}</label>
+                    </div>
+                </div>
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority3 administrative" id="location-administrative-level{% if key %}-{{ key }}{% endif %}" name="location-administrative-level{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Administrative level' %}" {% if admin.level %} value="{{admin.level}}" {% endif %} {% if admin %}administrative{% endif %}>
+                    <label class="control-label" for="location-administrative-level{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative level' %}</label>
+                </div>
             </div>
         </div>
     </div>

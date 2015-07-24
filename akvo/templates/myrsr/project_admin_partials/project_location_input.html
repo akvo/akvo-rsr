@@ -1,172 +1,172 @@
 {% load i18n %}
 <div class="project-location-item parent" id="project_location{% if key %}-{{ key }}{% endif %}">
-    <div class="form-group">
-        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
-        <div class="row">
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority1" id="location-latitude{% if key %}-{{ key }}{% endif %}" name="location-latitude{% if key %}-{{ key }}{% endif %}"
-                placeholder="{% trans 'Latitude' %}" {% if location.latitude %}
-                value="{{location.latitude}}" {% endif %}>
-                <label class="control-label" for="location-latitude{% if key %}-{{ key }}{% endif %}">{% trans 'Latitude' %}</label>
-                <p class="help-block hidden">{% trans 'Go to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to get the decimal coordinates of your project.' %}</p>
-            </div>
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority1" id="location-longitude{% if key %}-{{ key }}{% endif %}" name="location-longitude{% if key %}-{{ key }}{% endif %}"
-                placeholder="{% trans 'Longitude' %}" {% if location.longitude %}
-                value="{{location.longitude}}" {% endif %}>
-                <label class="control-label" for="location-longitude{% if key %}-{{ key }}{% endif %}">{% trans 'Longitude' %}</label>
-                <p class="help-block hidden">{% trans 'Go to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to get the decimal coordinates of your project.' %}</p>
-            </div>
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if location %}+{% else %}-{% endif %}</span> {% trans 'Project location' %}: <span class="unicode">{% if location %}{{ location }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-location{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
         </div>
     </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="location-country{% if key %}-{{ key }}{% endif %}" id="location-country{% if key %}-{{ key }}{% endif %}" class="form-control priority1">
-                <option value="" {% if not location.country %} selected="selected" {% endif %}>{% trans 'Country' %}:</option>
-                {% for country in countries %}
-                    <option value="{{ country.id }}" {% if location.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
-                {% endfor %}
-            </select>
-            <label for="location-country{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Country' %}</label>
-            <p class="help-block hidden">{% trans 'The country or countries that benefit(s) from the activity.' %}</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority2" id="location-address1{% if key %}-{{ key }}{% endif %}" name="location-address1{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Address 1' %}" {% if location.address_1 %} value="{{location.address_1}}" {% endif %} maxlength="255">
-                <label class="control-label" for="location-address1{% if key %}-{{ key }}{% endif %}">{% trans 'Address 1' %}</label>
-            </div>
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority2" id="location-address2{% if key %}-{{ key }}{% endif %}" name="location-address2{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Address 2' %}" {% if location.address_2 %} value="{{location.address_2}}" {% endif %} maxlength="255">
-                <label class="control-label" for="location-address2{% if key %}-{{ key }}{% endif %}">{% trans 'Address 2' %}</label>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority2" id="location-postal-code{% if key %}-{{ key }}{% endif %}" name="location-postal-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Postal code' %}"
-                {% if location.postcode %} value="{{location.postcode}}" {% endif %} maxlength="10">
-                <label class="control-label" for="location-postal-code{% if key %}-{{ key }}{% endif %}">{% trans 'Postal code' %}</label>
-            </div>
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority2" id="location-city{% if key %}-{{ key }}{% endif %}" name="location-city{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'City' %}"
-                {% if location.city %} value="{{location.city}}" {% endif %} maxlength="255">
-                <label class="control-label" for="location-city{% if key %}-{{ key }}{% endif %}">{% trans 'City' %}</label>
-            </div>
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority2" id="location-state{% if key %}-{{ key }}{% endif %}" name="location-state{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'State' %}"
-                {% if location.state %} value="{{location.state}}" {% endif %} maxlength="255">
-                <label class="control-label" for="location-state{% if key %}-{{ key }}{% endif %}">{% trans 'State' %}</label>
-            </div>
-        </div>
-    </div>
-    <div class="form-group hidden hide-default">
-        <div class="row">
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority3" id="location-reference{% if key %}-{{ key }}{% endif %}" name="location-reference{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Reference' %}" {% if location.reference %} value="{{location.reference}}" {% endif %} maxlength="50">
-                <label class="control-label" for="location-reference{% if key %}-{{ key }}{% endif %}">{% trans 'Reference' %}</label>
-                <p class="help-block hidden">{% trans 'An internal reference that describes the location in the reporting organisation’s own system.' %}</p>
-            </div>
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority3" id="location-code{% if key %}-{{ key }}{% endif %}" name="location-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Code' %}" {% if location.location_code %} value="{{location.location_code}}" {% endif %}>
-                <label class="control-label" for="location-code{% if key %}-{{ key }}{% endif %}">{% trans 'Code' %}</label>
-                <p class="help-block hidden">{% trans 'These are based on DAC region codes. Where an activity is considered global, the code 998 can be used.' %}</p>
-            </div>
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority3" id="location-name{% if key %}-{{ key }}{% endif %}" name="location-name{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Name' %}" {% if location.name %} value="{{location.name}}" {% endif %} maxlength="100">
-                <label class="control-label" for="location-name{% if key %}-{{ key }}{% endif %}">{% trans 'Name' %}</label>
-                <p class="help-block hidden">{% trans 'The human-readable name for the location.' %}</p>
-            </div>
-        </div>
-    </div>
-    <div class="form-group control hidden hide-default">
-        <textarea id="location-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="location-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Description' %}" maxlength="255">{{location.description}}</textarea>
-        <label class="control-label" for="location-description{% if key %}-{{ key }}{% endif %}">{% trans 'Description' %}</label>
-        <p class="help-block hidden">{% trans 'This provides free text space for providing an additional description, if needed, of the actual target of the activity. A description that qualifies the location, not the activity.' %}</p>
-    </div>
-    <div class="form-group control hidden hide-default">
-        <textarea id="location-activity-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="location-activity-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Activity description' %}" maxlength="255">{{location.activity_description}}</textarea>
-        <label class="control-label" for="location-activity-description{% if key %}-{{ key }}{% endif %}">{% trans 'Activity description' %}</label>
-        <p class="help-block hidden">{% trans 'A description that qualifies the activity taking place at the location. This should not duplicate information provided in the main activity description, and should typically be used to distinguish between activities at multiple locations within a single iati-activity record.' %}</p>
-    </div>
-    <div class="form-group hidden hide-default">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="select-group control">
-                    <select name="location-exactness{% if key %}-{{ key }}{% endif %}" id="location-exactness{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not location.exactness %} selected="selected" {% endif %}>{% trans 'Exactness' %}:</option>
-                        {% for exactness in geographic_exactnesses %}
-                            <option value="{{ exactness.code }}" {% if location.exactness == exactness.code %} selected="selected" {% endif %}>{{ exactness.code }} - {{ exactness.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label class="control-label" for="location-exactness{% if key %}-{{ key }}{% endif %}">{% trans 'Exactness' %}</label>
-                    <p class="help-block hidden">{% trans 'Defines whether the location represents the most distinct point reasonably possible for this type of activity or is an approximation due to lack of more detailed information.' %}</p>
+    <div class="hide-partial {% if location %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority1" id="location-latitude{% if key %}-{{ key }}{% endif %}" name="location-latitude{% if key %}-{{ key }}{% endif %}"
+                    placeholder="{% trans 'Latitude' %}" {% if location.latitude %}
+                    value="{{location.latitude}}" {% endif %}>
+                    <label class="control-label" for="location-latitude{% if key %}-{{ key }}{% endif %}">{% trans 'Latitude' %}</label>
+                    <p class="help-block hidden">{% trans 'Go to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to get the decimal coordinates of your project.' %}</p>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="select-group control">
-                    <select name="location-reach{% if key %}-{{ key }}{% endif %}" id="location-reach{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not location.location_reach %} selected="selected" {% endif %}>{% trans 'Reach' %}:</option>
-                        {% for reach in geographic_location_reaches %}
-                            <option value="{{ reach.code }}" {% if location.location_reach == reach.code %} selected="selected" {% endif %}>{{ reach.code }} - {{ reach.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label class="control-label" for="location-reach{% if key %}-{{ key }}{% endif %}">{% trans 'Reach' %}</label>
-                    <p class="help-block hidden">{% trans 'Does this location describe where the activity takes place or where the intended beneficiaries reside?' %}</p>
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority1" id="location-longitude{% if key %}-{{ key }}{% endif %}" name="location-longitude{% if key %}-{{ key }}{% endif %}"
+                    placeholder="{% trans 'Longitude' %}" {% if location.longitude %}
+                    value="{{location.longitude}}" {% endif %}>
+                    <label class="control-label" for="location-longitude{% if key %}-{{ key }}{% endif %}">{% trans 'Longitude' %}</label>
+                    <p class="help-block hidden">{% trans 'Go to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to get the decimal coordinates of your project.' %}</p>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="form-group hidden hide-default">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="select-group control">
-                    <select name="location-class{% if key %}-{{ key }}{% endif %}" id="location-class{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not location.location_class %} selected="selected" {% endif %}>{% trans 'Class' %}:</option>
-                        {% for class in geographic_location_classes %}
-                            <option value="{{ class.code }}" {% if location.location_class == class.code %} selected="selected" {% endif %}>{{ class.code }} - {{ class.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label class="control-label" for="location-class{% if key %}-{{ key }}{% endif %}">{% trans 'Class' %}</label>
-                    <p class="help-block hidden">{% trans 'Whether the location refers to a structure, a populated place (e.g. city or village), an administrative division, or another topological feature (e.g. river, nature reserve).' %}</p>
-                </div>
+        <div class="form-group">
+            <div class="select-group control">
+                <select name="location-country{% if key %}-{{ key }}{% endif %}" id="location-country{% if key %}-{{ key }}{% endif %}" class="form-control priority1">
+                    <option value="" {% if not location.country %} selected="selected" {% endif %}>{% trans 'Country' %}:</option>
+                    {% for country in countries %}
+                        <option value="{{ country.id }}" {% if location.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="location-country{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Country' %}</label>
+                <p class="help-block hidden">{% trans 'The country or countries that benefit(s) from the activity.' %}</p>
             </div>
-            <div class="col-md-6">
-                <div class="select-group control">
-                    <select name="location-feature-designation{% if key %}-{{ key }}{% endif %}" id="location-feature-designation{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" selected="selected">{% trans 'Feature designation' %}:</option>
-                        {% for location_type in location_types %}
-                            <option value="{{ location_type.code }}" {% if location.feature_designation == location_type.code %} selected="selected" {% endif %}>{{ location_type.code }} - {{ location_type.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label class="control-label" for="location-feature-designation{% if key %}-{{ key }}{% endif %}">{% trans 'Feature designation' %}</label>
-                    <p class="help-block hidden">{% trans 'A more refined coded classification of the type of feature referred to by this location.' %}</p>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority2" id="location-address1{% if key %}-{{ key }}{% endif %}" name="location-address1{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Address 1' %}" {% if location.address_1 %} value="{{location.address_1}}" {% endif %} maxlength="255">
+                    <label class="control-label" for="location-address1{% if key %}-{{ key }}{% endif %}">{% trans 'Address 1' %}</label>
+                </div>
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority2" id="location-address2{% if key %}-{{ key }}{% endif %}" name="location-address2{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Address 2' %}" {% if location.address_2 %} value="{{location.address_2}}" {% endif %} maxlength="255">
+                    <label class="control-label" for="location-address2{% if key %}-{{ key }}{% endif %}">{% trans 'Address 2' %}</label>
                 </div>
             </div>
         </div>
-    </div>
-    <hr class="hidden hide-default"/>
-    <h5 class="hidden hide-default">{% trans 'Location administratives' %}</h5>
-    <div class="location-administrative-container hidden hide-default">
-        {% for admin in location.administratives.all %}
-            {% include "myrsr/project_admin_partials/location_administrative_input.html" with key=admin.pk %}
-        {% empty %}
-            {% include "myrsr/project_admin_partials/location_administrative_input.html" with key='add-0' %}
-        {% endfor %}
-    </div>
-    <div class="row hidden hide-default">
-        <div class="col-md-8">
-            <hr/>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority2" id="location-postal-code{% if key %}-{{ key }}{% endif %}" name="location-postal-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Postal code' %}"
+                    {% if location.postcode %} value="{{location.postcode}}" {% endif %} maxlength="10">
+                    <label class="control-label" for="location-postal-code{% if key %}-{{ key }}{% endif %}">{% trans 'Postal code' %}</label>
+                </div>
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority2" id="location-city{% if key %}-{{ key }}{% endif %}" name="location-city{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'City' %}"
+                    {% if location.city %} value="{{location.city}}" {% endif %} maxlength="255">
+                    <label class="control-label" for="location-city{% if key %}-{{ key }}{% endif %}">{% trans 'City' %}</label>
+                </div>
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority2" id="location-state{% if key %}-{{ key }}{% endif %}" name="location-state{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'State' %}"
+                    {% if location.state %} value="{{location.state}}" {% endif %} maxlength="255">
+                    <label class="control-label" for="location-state{% if key %}-{{ key }}{% endif %}">{% trans 'State' %}</label>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 text-center add-object-link">
-             <a href="#" class="add-location-administrative" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another administrative' %}</a>
+        <div class="form-group hidden hide-default">
+            <div class="row">
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority3" id="location-reference{% if key %}-{{ key }}{% endif %}" name="location-reference{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Reference' %}" {% if location.reference %} value="{{location.reference}}" {% endif %} maxlength="50">
+                    <label class="control-label" for="location-reference{% if key %}-{{ key }}{% endif %}">{% trans 'Reference' %}</label>
+                    <p class="help-block hidden">{% trans 'An internal reference that describes the location in the reporting organisation’s own system.' %}</p>
+                </div>
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority3" id="location-code{% if key %}-{{ key }}{% endif %}" name="location-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Code' %}" {% if location.location_code %} value="{{location.location_code}}" {% endif %}>
+                    <label class="control-label" for="location-code{% if key %}-{{ key }}{% endif %}">{% trans 'Code' %}</label>
+                    <p class="help-block hidden">{% trans 'These are based on DAC region codes. Where an activity is considered global, the code 998 can be used.' %}</p>
+                </div>
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority3" id="location-name{% if key %}-{{ key }}{% endif %}" name="location-name{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Name' %}" {% if location.name %} value="{{location.name}}" {% endif %} maxlength="100">
+                    <label class="control-label" for="location-name{% if key %}-{{ key }}{% endif %}">{% trans 'Name' %}</label>
+                    <p class="help-block hidden">{% trans 'The human-readable name for the location.' %}</p>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3 text-center" id="delete-location{% if key %}-{{ key }}{% endif %}">
-            <a class="btn btn-link delete-object-button" id="delete-location{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete location' %}</a>
+        <div class="form-group control hidden hide-default">
+            <textarea id="location-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="location-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Description' %}" maxlength="255">{{location.description}}</textarea>
+            <label class="control-label" for="location-description{% if key %}-{{ key }}{% endif %}">{% trans 'Description' %}</label>
+            <p class="help-block hidden">{% trans 'This provides free text space for providing an additional description, if needed, of the actual target of the activity. A description that qualifies the location, not the activity.' %}</p>
+        </div>
+        <div class="form-group control hidden hide-default">
+            <textarea id="location-activity-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="location-activity-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Activity description' %}" maxlength="255">{{location.activity_description}}</textarea>
+            <label class="control-label" for="location-activity-description{% if key %}-{{ key }}{% endif %}">{% trans 'Activity description' %}</label>
+            <p class="help-block hidden">{% trans 'A description that qualifies the activity taking place at the location. This should not duplicate information provided in the main activity description, and should typically be used to distinguish between activities at multiple locations within a single iati-activity record.' %}</p>
+        </div>
+        <div class="form-group hidden hide-default">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="select-group control">
+                        <select name="location-exactness{% if key %}-{{ key }}{% endif %}" id="location-exactness{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                            <option value="" {% if not location.exactness %} selected="selected" {% endif %}>{% trans 'Exactness' %}:</option>
+                            {% for exactness in geographic_exactnesses %}
+                                <option value="{{ exactness.code }}" {% if location.exactness == exactness.code %} selected="selected" {% endif %}>{{ exactness.code }} - {{ exactness.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="location-exactness{% if key %}-{{ key }}{% endif %}">{% trans 'Exactness' %}</label>
+                        <p class="help-block hidden">{% trans 'Defines whether the location represents the most distinct point reasonably possible for this type of activity or is an approximation due to lack of more detailed information.' %}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="select-group control">
+                        <select name="location-reach{% if key %}-{{ key }}{% endif %}" id="location-reach{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                            <option value="" {% if not location.location_reach %} selected="selected" {% endif %}>{% trans 'Reach' %}:</option>
+                            {% for reach in geographic_location_reaches %}
+                                <option value="{{ reach.code }}" {% if location.location_reach == reach.code %} selected="selected" {% endif %}>{{ reach.code }} - {{ reach.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="location-reach{% if key %}-{{ key }}{% endif %}">{% trans 'Reach' %}</label>
+                        <p class="help-block hidden">{% trans 'Does this location describe where the activity takes place or where the intended beneficiaries reside?' %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group hidden hide-default">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="select-group control">
+                        <select name="location-class{% if key %}-{{ key }}{% endif %}" id="location-class{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                            <option value="" {% if not location.location_class %} selected="selected" {% endif %}>{% trans 'Class' %}:</option>
+                            {% for class in geographic_location_classes %}
+                                <option value="{{ class.code }}" {% if location.location_class == class.code %} selected="selected" {% endif %}>{{ class.code }} - {{ class.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="location-class{% if key %}-{{ key }}{% endif %}">{% trans 'Class' %}</label>
+                        <p class="help-block hidden">{% trans 'Whether the location refers to a structure, a populated place (e.g. city or village), an administrative division, or another topological feature (e.g. river, nature reserve).' %}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="select-group control">
+                        <select name="location-feature-designation{% if key %}-{{ key }}{% endif %}" id="location-feature-designation{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                            <option value="" selected="selected">{% trans 'Feature designation' %}:</option>
+                            {% for location_type in location_types %}
+                                <option value="{{ location_type.code }}" {% if location.feature_designation == location_type.code %} selected="selected" {% endif %}>{{ location_type.code }} - {{ location_type.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="location-feature-designation{% if key %}-{{ key }}{% endif %}">{% trans 'Feature designation' %}</label>
+                        <p class="help-block hidden">{% trans 'A more refined coded classification of the type of feature referred to by this location.' %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h5 class="hidden hide-default">{% trans 'Location administratives' %}</h5>
+        <div class="location-administrative-container hidden hide-default">
+            {% for admin in location.administratives.all %}
+                {% include "myrsr/project_admin_partials/location_administrative_input.html" with key=admin.pk %}
+            {% empty %}
+                {% include "myrsr/project_admin_partials/location_administrative_input.html" with key='add-0' %}
+            {% endfor %}
+        </div>
+        <div class="row form-group hidden hide-default">
+            <div class="col-md-12 text-right add-object-link">
+                 <a href="#" class="add-location-administrative" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another administrative' %}</a>
+            </div>
         </div>
     </div>
 </div>

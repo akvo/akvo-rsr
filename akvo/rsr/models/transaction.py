@@ -89,7 +89,15 @@ class Transaction(models.Model):
     )
 
     def __unicode__(self):
-        return unicode(self.value)
+        if self.value:
+            if self.currency:
+                return u'%s %s' % (self.iati_currency().name,
+                                   '{:,}'.format(int(self.value)))
+            else:
+                return u'%s %s' % (self.project.get_currency_display(),
+                                   '{:,}'.format(int(self.value)))
+        else:
+            return u'%s' % _(u'No value specified')
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
@@ -126,6 +134,12 @@ class TransactionSector(models.Model):
     vocabulary = ValidXMLCharField(
         _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(SECTOR_VOCABULARY)
     )
+
+    def __unicode__(self):
+        if self.code:
+            return u'%s' % self.iati_sector().name.capitalize()
+        else:
+            return u'%s' % _(u'No sector code specified')
 
     def iati_sector(self):
         if self.code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):

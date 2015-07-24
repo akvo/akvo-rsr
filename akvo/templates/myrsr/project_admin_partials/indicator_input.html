@@ -1,87 +1,88 @@
 {% load i18n %}
 <div class="indicator-item parent" id="indicator{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %}>
-    <div class="form-group">
-        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
-        <div class="row">
-            <div class="col-md-4 control">
-                <input type="text" class="form-control priority2 indicator" name="indicator-title{% if key %}-{{ key }}{% endif %}" id="indicator-title{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Indicator title' %}"
-                {% if indicator.title %} value="{{indicator.title}}" {% endif %} {% if indicator %}indicator{% endif %} maxlength="255">
-                <label class="control-label" for="indicator-title{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator title' %}</label>
-                <p class="help-block hidden">{% trans 'Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.' %}</p>
-            </div>
-            <div class="col-md-4">
-                <div class="select-group control">
-                    <select name="indicator-measure{% if key %}-{{ key }}{% endif %}" id="indicator-measure{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %}>
-                        <option value="" {% if not indicator.measure %} selected="selected" {% endif %}>{% trans 'Indicator measure' %}:</option>
-                        {% for entry in indicator_measures %}
-                            <option value="{{ entry.code }}" {% if indicator.measure == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                        {% endfor %}                     
-                    </select>
-                    <label class="control-label" for="indicator-measure{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator measure' %}</label>
-                    <p class="help-block hidden">{% trans 'Choose how the indicator will be measured (in percentage or units).' %}</p>
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if indicator %}+{% else %}-{% endif %}</span> {% trans 'Indicator' %}: <span class="unicode">{% if indicator %}{{ indicator }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-indicator{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if indicator %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority2 indicator" name="indicator-title{% if key %}-{{ key }}{% endif %}" id="indicator-title{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Indicator title' %}"
+                    {% if indicator.title %} value="{{indicator.title}}" {% endif %} {% if indicator %}indicator{% endif %} maxlength="255">
+                    <label class="control-label" for="indicator-title{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator title' %}</label>
+                    <p class="help-block hidden">{% trans 'Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.' %}</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="select-group control">
+                        <select name="indicator-measure{% if key %}-{{ key }}{% endif %}" id="indicator-measure{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %}>
+                            <option value="" {% if not indicator.measure %} selected="selected" {% endif %}>{% trans 'Indicator measure' %}:</option>
+                            {% for entry in indicator_measures %}
+                                <option value="{{ entry.code }}" {% if indicator.measure == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="indicator-measure{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator measure' %}</label>
+                        <p class="help-block hidden">{% trans 'Choose how the indicator will be measured (in percentage or units).' %}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="select-group control">
+                        <select name="indicator-ascending{% if key %}-{{ key }}{% endif %}" id="indicator-ascending{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %}>
+                            <option value="">{% trans 'Ascending' %}:</option>
+                            <option value="0" {% if indicator.ascending|yesno:"yes, no, unknown" == "unknown" %} selected="selected" {% endif %}>{% trans 'Unknown' %}</option>
+                            <option value="1" {% if indicator.ascending|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
+                            <option value="2" {% if indicator.ascending|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
+                        </select>
+                        <label class="control-label" for="indicator-ascending{% if key %}-{{ key }}{% endif %}">{% trans 'Ascending' %}</label>
+                        <p class="help-block hidden">{% trans 'Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).' %}</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="select-group control">
-                    <select name="indicator-ascending{% if key %}-{{ key }}{% endif %}" id="indicator-ascending{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %}>
-                        <option value="">{% trans 'Ascending' %}:</option>
-                        <option value="0" {% if indicator.ascending|yesno:"yes, no, unknown" == "unknown" %} selected="selected" {% endif %}>{% trans 'Unknown' %}</option>
-                        <option value="1" {% if indicator.ascending|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
-                        <option value="2" {% if indicator.ascending|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
-                    </select>
-                    <label class="control-label" for="indicator-ascending{% if key %}-{{ key }}{% endif %}">{% trans 'Ascending' %}</label>
-                    <p class="help-block hidden">{% trans 'Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).' %}</p>
+        </div>
+        <div class="form-group control hidden hide-default">
+            <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %}
+            placeholder="{% trans 'Indicator description' %}" maxlength="2000" rows="8">{{indicator.description}}</textarea>
+            <label class="control-label" for="indicator-description{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator description' %}</label>
+            <p class="help-block hidden">{% trans 'You can provide further information of the indicator here.' %}</p>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority2 indicator" name="indicator-baseline-year{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-year{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Baseline year' %}"
+                    {% if indicator.baseline_year %} value="{{indicator.baseline_year}}" {% endif %} {% if indicator %}indicator{% endif %} maxlength="4">
+                    <label class="control-label" for="indicator-baseline-year{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline year' %}</label>
+                    <p class="help-block hidden">{% trans 'The year the baseline value was taken.' %}</p>
+                </div>
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority2 indicator" name="indicator-baseline-value{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Baseline value' %}"
+                    {% if indicator.baseline_value %} value="{{indicator.baseline_value}}" {% endif %} {% if indicator %}indicator{% endif %} maxlength="50">
+                    <label class="control-label" for="indicator-baseline-value{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline value' %}</label>
+                    <p class="help-block hidden">{% trans 'The value of the baseline at the start of the project.' %}</p>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="form-group control hidden hide-default">
-        <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %}
-        placeholder="{% trans 'Indicator description' %}" maxlength="2000" rows="8">{{indicator.description}}</textarea>
-        <label class="control-label" for="indicator-description{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator description' %}</label>
-        <p class="help-block hidden">{% trans 'You can provide further information of the indicator here.' %}</p>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority2 indicator" name="indicator-baseline-year{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-year{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Baseline year' %}"
-                {% if indicator.baseline_year %} value="{{indicator.baseline_year}}" {% endif %} {% if indicator %}indicator{% endif %} maxlength="4">
-                <label class="control-label" for="indicator-baseline-year{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline year' %}</label>
-                <p class="help-block hidden">{% trans 'The year the baseline value was taken.' %}</p>
+        <div class="form-group control hidden hide-default">
+            <textarea id="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}"
+            placeholder="{% trans 'Baseline comment' %}" {% if indicator %}indicator{% endif %} maxlength="2000" rows="8">{{indicator.baseline_comment}}</textarea>
+            <label class="control-label" for="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline comment' %}</label>
+            <p class="help-block hidden">{% trans 'Here you can provide extra information on the baseline value, if needed.' %}</p>
+        </div>
+        <h5>{% trans 'Indicator periods' %}</h5>
+        <div class="indicator-period-container">
+            {% for period in indicator.periods.all %}
+                {% include "myrsr/project_admin_partials/indicator_period_input.html" with key=period.pk %}
+            {% empty %}
+                {% include "myrsr/project_admin_partials/indicator_period_input.html" with key='add-0' %}
+            {% endfor %}
+        </div>
+        <div class="row form-group">
+            <div class="col-md-12 text-right add-object-link">
+                <a href="#" class="add-indicator-period" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
             </div>
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority2 indicator" name="indicator-baseline-value{% if key %}-{{ key }}{% endif %}" id="indicator-baseline-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Baseline value' %}"
-                {% if indicator.baseline_value %} value="{{indicator.baseline_value}}" {% endif %} {% if indicator %}indicator{% endif %} maxlength="50">
-                <label class="control-label" for="indicator-baseline-value{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline value' %}</label>
-                <p class="help-block hidden">{% trans 'The value of the baseline at the start of the project.' %}</p>
-            </div>
-        </div>
-    </div>
-    <div class="form-group control hidden hide-default">
-        <textarea id="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}"
-        placeholder="{% trans 'Baseline comment' %}" {% if indicator %}indicator{% endif %} maxlength="2000" rows="8">{{indicator.baseline_comment}}</textarea>
-        <label class="control-label" for="indicator-baseline-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Baseline comment' %}</label>
-        <p class="help-block hidden">{% trans 'Here you can provide extra information on the baseline value, if needed.' %}</p>
-    </div>
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3 text-center" id="delete-indicator{% if key %}-{{ key }}{% endif %}">
-            <a class="btn btn-link delete-object-button" id="delete-indicator{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete indicator and period(s) belonging to this indicator' %}</a>
-        </div>
-    </div>
-    <h5>{% trans 'Indicator periods' %}</h5>
-    <div class="indicator-period-container">
-        {% for period in indicator.periods.all %}
-            {% include "myrsr/project_admin_partials/indicator_period_input.html" with key=period.pk %}
-        {% empty %}
-            {% include "myrsr/project_admin_partials/indicator_period_input.html" with key='add-0' %}
-        {% endfor %}
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <hr/>
-        </div>
-        <div class="col-md-4 text-center add-object-link">
-            <a href="#" class="add-indicator-period" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
         </div>
     </div>
 </div>

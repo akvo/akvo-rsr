@@ -25,7 +25,14 @@ class Link(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='links')
 
     def __unicode__(self):
-        return self.url
+        if self.url and self.caption:
+            return self.show_link()
+        elif self.url:
+            return u'<a href="%s">%s</a>' % (self.url, self.url,)
+        elif self.caption:
+            return self.caption
+        else:
+            return u'%s' % _(u'No link specified')
 
     def show_link(self):
         return u'<a href="%s">%s</a>' % (self.url, self.caption,)

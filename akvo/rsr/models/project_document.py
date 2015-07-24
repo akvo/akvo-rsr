@@ -61,7 +61,7 @@ class ProjectDocument(models.Model):
     )
 
     def __unicode__(self):
-        return self.title
+        return self.show_link()
 
     def clean(self):
         # Check if the user has at least uploaded a document or indicated an URL.

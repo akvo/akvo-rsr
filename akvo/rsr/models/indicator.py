@@ -46,7 +46,12 @@ class Indicator(models.Model):
     )
 
     def __unicode__(self):
-        return self.title
+        indicator_unicode = self.title if self.title else _(u'No indicator title')
+
+        if self.periods.all():
+            indicator_unicode += _(u' - %s periods') % (unicode(self.periods.count()))
+
+        return indicator_unicode
 
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
@@ -87,7 +92,28 @@ class IndicatorPeriod(models.Model):
     )
 
     def __unicode__(self):
-        return self.indicator.__unicode__()
+        if self.period_start:
+            period_unicode = unicode(self.period_start)
+        else:
+            period_unicode = u'%s' % _(u'No start date')
+
+        if self.period_end:
+            period_unicode += u' - %s' % unicode(self.period_end)
+        else:
+            period_unicode += u' - %s' % _(u'No end date')
+
+        if self.actual_value or self.target_value:
+            period_unicode += u' ('
+
+            if self.actual_value and self.target_value:
+                period_unicode += u'actual: %s / target: %s)' % (unicode(self.actual_value),
+                                                                 unicode(self.target_value))
+            elif self.actual_value:
+                period_unicode += u'actual: %s)' % unicode(self.actual_value)
+            else:
+                period_unicode += u'target: %s)' % unicode(self.target_value)
+
+        return period_unicode
 
     class Meta:
         app_label = 'rsr'

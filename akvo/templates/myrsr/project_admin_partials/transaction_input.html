@@ -1,201 +1,202 @@
 {% load i18n %}
 <div class="transaction-item parent" id="transaction{% if key %}-{{ key }}{% endif %}">
-    <div class="form-group">
-        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
-        <div class="row">
-            <div class="col-md-4 control">
-                <div class="input-group priority3">
-                    <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
-                    <input type="text" class="form-control" name="transaction-value{% if key %}-{{ key }}{% endif %}" id="transaction-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction value' %}"
-                    {% if transaction.value %} value="{{transaction.value}}" {% endif %}>
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if item %}+{% else %}-{% endif %}</span> {% trans 'Transaction' %}: <span class="unicode">{% if transaction %}{{ transaction }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-transaction{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if transaction %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4 control">
+                    <div class="input-group priority3">
+                        <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
+                        <input type="text" class="form-control" name="transaction-value{% if key %}-{{ key }}{% endif %}" id="transaction-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction value' %}"
+                        {% if transaction.value %} value="{{transaction.value}}" {% endif %}>
+                    </div>
+                    <label class="control-label" for="transaction-value{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value' %}</label>
+                    <p class="help-block hidden">{% trans 'Enter the transaction amount.' %}</p>
                 </div>
-                <label class="control-label" for="transaction-value{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value' %}</label>
-                <p class="help-block hidden">{% trans 'Enter the transaction amount.' %}</p>
-            </div>
-            <div class="col-md-4 control">
-                <input type="date" class="form-control priority3" name="transaction-date{% if key %}-{{ key }}{% endif %}" id="transaction-date{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction date' %}"
-                {% if transaction.transaction_date %} value="{{transaction.transaction_date|date:'c'}}" {% endif %}>
-                <label class="control-label" for="transaction-date{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction date' %}</label>
-                <p class="help-block hidden">{% trans 'Enter the financial reporting date that the transaction was/will be undertaken.' %}</p>
-            </div>
-            <div class="col-md-4 control">
-                <input type="date" class="form-control priority3" name="transaction-value-date{% if key %}-{{ key }}{% endif %}" id="transaction-value-date{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction value date' %}"
-                {% if transaction.value_date %} value="{{transaction.value_date|date:'c'}}" {% endif %}>
-                <label class="control-label" for="transaction-value-date{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value date' %}</label>
-                <p class="help-block hidden">{% trans 'The date to be used for determining the exchange rate for currency conversions of the transaction.' %}</p>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority3" name="transaction-reference{% if key %}-{{ key }}{% endif %}" id="transaction-reference{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction reference' %}"
-                {% if transaction.reference %} value="{{transaction.reference}}" {% endif %} maxlength="25">
-                <label class="control-label" for="transaction-reference{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction reference' %}</label>
-                <p class="help-block hidden">{% trans 'Enter a reference for the transaction (eg. transaction number).' %}</p>
-            </div>
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority3" name="transaction-description{% if key %}-{{ key }}{% endif %}" id="transaction-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction description' %}"
-                {% if transaction.description %} value="{{transaction.description}}" {% endif %} maxlength="255">
-                <label class="control-label" for="transaction-description{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction description' %}</label>
-                <p class="help-block hidden">{% trans 'Enter additional information for the transaction, if necessary.' %}</p>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-6 control">
-                <div class="transaction-provider-org-input transaction-provider-org{% if key %}-{{ key }}{% endif %} typeahead-container"
-                data-child-id="transaction-provider-org{% if key %}-{{ key }}{% endif %}"
-                data-child-class="priority3"
-                data-value="{% if transaction.provider_organisation.id %}{{transaction.provider_organisation.id}}{% endif %}"
-                data-count-class="transaction-provider-org">
+                <div class="col-md-4 control">
+                    <input type="date" class="form-control priority3" name="transaction-date{% if key %}-{{ key }}{% endif %}" id="transaction-date{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction date' %}"
+                    {% if transaction.transaction_date %} value="{{transaction.transaction_date|date:'c'}}" {% endif %}>
+                    <label class="control-label" for="transaction-date{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction date' %}</label>
+                    <p class="help-block hidden">{% trans 'Enter the financial reporting date that the transaction was/will be undertaken.' %}</p>
                 </div>
-            </div>
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority3" name="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}" id="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Provider organisation activity id' %}"
-                {% if transaction.provider_organisation_activity %} value="{{transaction.provider_organisation_activity}}" {% endif %}>
-                <label class="control-label" for="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}">{% trans 'Provider organisation activity id' %}</label>
-                <p class="help-block hidden">{% trans 'If incoming funds are being provided from the budget of another activity that is reported to IATI, it is STRONGLY RECOMMENDED that this should record the provider’s unique IATI activity identifier for that activity.' %}</p>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-6 control">
-                <div class="transaction-receiver-org-input transaction-receiver-org{% if key %}-{{ key }}{% endif %} typeahead-container"
-                data-child-id="transaction-receiver-org{% if key %}-{{ key }}{% endif %}"
-                data-child-class="priority3"
-                data-value="{% if transaction.receiver_organisation.id %}{{transaction.receiver_organisation.id}}{% endif %}"
-                data-count-class="transaction-receiver-org">
-                </div>
-            </div>
-            <div class="col-md-6 control">
-                <input type="text" class="form-control priority3" name="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}" id="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Receiver organisation activity id' %}"
-                {% if transaction.receiver_organisation_activity %} value="{{transaction.receiver_organisation_activity}}" {% endif %}>
-                <label class="control-label" for="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}">{% trans 'Receiver organisation activity id' %}</label>
-                <p class="help-block hidden">{% trans 'The internal identifier used by the receiver organisation for its activity that receives the funds from this transaction (not to be confused with the IATI identifier for the target activity).' %}</p>
-            </div>
-        </div>
-    </div>
-    <h5>{% trans 'Transaction sectors' %}</h5>
-    <div class="transaction-sector-container">
-        {% for sector in transaction.sectors.all %}
-            {% include "myrsr/project_admin_partials/transaction_sector_input.html" with key=sector.pk %}
-        {% empty %}
-            {% include "myrsr/project_admin_partials/transaction_sector_input.html" with key='add-0' %}
-        {% endfor %}
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <hr/>
-        </div>
-        <div class="col-md-4 text-center add-object-link">
-             <a href="#" class="add-transaction-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction sector' %}</a>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="transaction-aid-type{% if key %}-{{ key }}{% endif %}" id="transaction-aid-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                <option value="" {% if not transaction.aid_type %} selected="selected" {% endif %}>{% trans 'Transaction aid type' %}:</option>
-                {% for entry in aid_types %}
-                    <option value="{{ entry.code }}" {% if transaction.aid_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                {% endfor %}
-            </select>
-            <label for="transaction-aid-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction aid type' %}</label>
-            <p class="help-block hidden">{% trans 'The type of aid being supplied (project-type intervention, budget support, debt relief, etc.). For reference please visit' %} <a href="http://iatistandard.org/201/codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/AidType/</a>.</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" id="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                <option value="" {% if not transaction.disbursement_channel %} selected="selected" {% endif %}>{% trans 'Transaction disbursement channel' %}:</option>
-                {% for entry in disbursement_channels %}
-                    <option value="{{ entry.code }}" {% if transaction.disbursement_channel == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                {% endfor %}
-            </select>
-            <label for="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction disbursement channel' %}</label>
-            <p class="help-block hidden">{% trans 'The channel through which the funds will flow for this transaction, from an IATI codelist. See for reference' %} <a href="http://iatistandard.org/201/codelists/DisbursementChannel/" target="_blank">http://iatistandard.org/201/codelists/DisbursementChannel/</a>.</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="transaction-finance-type{% if key %}-{{ key }}{% endif %}" id="transaction-finance-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                <option value="" {% if not transaction.finance_type %} selected="selected" {% endif %}>{% trans 'Transaction finance type' %}:</option>
-                {% for entry in finance_types %}
-                    <option value="{{ entry.code }}" {% if transaction.finance_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                {% endfor %} 
-            </select>
-            <label for="transaction-finance-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction finance type' %}</label>
-            <p class="help-block hidden">{% trans 'The type of finance (e.g. grant, loan, debt relief, etc). For reference visit' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a>.</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="transaction-flow-type{% if key %}-{{ key }}{% endif %}" id="transaction-flow-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                <option value="" {% if not transaction.flow_type %} selected="selected" {% endif %}>{% trans 'Transaction flow type' %}:</option>
-                {% for entry in flow_types %}
-                    <option value="{{ entry.code }}" {% if transaction.flow_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                {% endfor %} 
-            </select>
-            <label for="transaction-flow-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction flow type' %}</label>
-            <p class="help-block hidden">{% trans 'Whether the activity is funded by Official Development Assistance (ODA), Other Official Flows (OOF), etc. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FlowType/">http://iatistandard.org/201/codelists/FlowType/</a>.</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="transaction-tied-status{% if key %}-{{ key }}{% endif %}" id="transaction-tied-status{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                <option value="" {% if not transaction.tied_status %} selected="selected" {% endif %}>{% trans 'Transaction tied status' %}:</option>
-                {% for entry in tied_statuses %}
-                    <option value="{{ entry.code }}" {% if transaction.tied_status == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                {% endfor %} 
-            </select>
-            <label for="transaction-tied-status{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction tied status' %}</label>
-            <p class="help-block hidden">{% trans 'Whether the aid is untied, tied, or partially tied. For reference visit' %} <a href="http://iatistandard.org/201/codelists/TiedStatus/" target="_blank">http://iatistandard.org/201/codelists/TiedStatus/</a>.</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="select-group control">
-            <select name="transaction-recipient-country{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-country{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                <option value="" {% if not transaction.recipient_country %} selected="selected" {% endif %}>{% trans 'Transaction recipient country' %}:</option>
-                {% for entry in iati_countries %}
-                    <option value="{{ entry.code }}" {% if transaction.recipient_country == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                {% endfor %} 
-            </select>
-            <label class="control-label" for="transaction-recipient-country{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction recipient country' %}</label>
-            <p class="help-block hidden">{% trans 'A country that will benefit from this transaction. For the codes to use, please see' %} <a href="http://iatistandard.org/201/codelists/Country/" target="_blank">http://iatistandard.org/201/codelists/Country/</a>.</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-6 control">
-                <div class="select-group">
-                    <select name="transaction-recipient-region{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-region{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not transaction.recipient_region %} selected="selected" {% endif %}>{% trans 'Transaction recipient region' %}:</option>
-                        {% for entry in regions %}
-                            <option value="{{ entry.code }}" {% if transaction.recipient_region == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                        {% endfor %} 
-                    </select>
-                    <label class="control-label" for="transaction-recipient-region{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction recipient region' %}</label>
-                    <p class="help-block hidden">{% trans 'A supranational geopolitical region that will benefit from this transaction. For the codes to use, please see' %} <a href="http://iatistandard.org/201/codelists/Region/" target="_blank">http://iatistandard.org/201/codelists/Region/</a>.</p>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="select-group control">
-                    <select name="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not transaction.recipient_region_vocabulary %} selected="selected" {% endif %}>{% trans 'Recipient region vocabulary' %}:</option>
-                        {% for entry in region_vocabularies %}
-                            <option value="{{ entry.code }}" {% if transaction.recipient_region_vocabulary == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
-                        {% endfor %} 
-                    </select>
-                    <label class="control-label" for="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region vocabulary' %}</label>
+                <div class="col-md-4 control">
+                    <input type="date" class="form-control priority3" name="transaction-value-date{% if key %}-{{ key }}{% endif %}" id="transaction-value-date{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction value date' %}"
+                    {% if transaction.value_date %} value="{{transaction.value_date|date:'c'}}" {% endif %}>
+                    <label class="control-label" for="transaction-value-date{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value date' %}</label>
+                    <p class="help-block hidden">{% trans 'The date to be used for determining the exchange rate for currency conversions of the transaction.' %}</p>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3 text-center" id="delete-transaction{% if key %}-{{ key }}{% endif %}">
-            <a class="btn btn-link delete-object-button" id="delete-transaction{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete transaction' %}</a>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority3" name="transaction-reference{% if key %}-{{ key }}{% endif %}" id="transaction-reference{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction reference' %}"
+                    {% if transaction.reference %} value="{{transaction.reference}}" {% endif %} maxlength="25">
+                    <label class="control-label" for="transaction-reference{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction reference' %}</label>
+                    <p class="help-block hidden">{% trans 'Enter a reference for the transaction (eg. transaction number).' %}</p>
+                </div>
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority3" name="transaction-description{% if key %}-{{ key }}{% endif %}" id="transaction-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction description' %}"
+                    {% if transaction.description %} value="{{transaction.description}}" {% endif %} maxlength="255">
+                    <label class="control-label" for="transaction-description{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction description' %}</label>
+                    <p class="help-block hidden">{% trans 'Enter additional information for the transaction, if necessary.' %}</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6 control">
+                    <div class="transaction-provider-org-input transaction-provider-org{% if key %}-{{ key }}{% endif %} typeahead-container"
+                    data-child-id="transaction-provider-org{% if key %}-{{ key }}{% endif %}"
+                    data-child-class="priority3"
+                    data-value="{% if transaction.provider_organisation.id %}{{transaction.provider_organisation.id}}{% endif %}"
+                    data-count-class="transaction-provider-org">
+                    </div>
+                </div>
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority3" name="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}" id="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Provider organisation activity id' %}"
+                    {% if transaction.provider_organisation_activity %} value="{{transaction.provider_organisation_activity}}" {% endif %}>
+                    <label class="control-label" for="transaction-provider-org-activity{% if key %}-{{ key }}{% endif %}">{% trans 'Provider organisation activity id' %}</label>
+                    <p class="help-block hidden">{% trans 'If incoming funds are being provided from the budget of another activity that is reported to IATI, it is STRONGLY RECOMMENDED that this should record the provider’s unique IATI activity identifier for that activity.' %}</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6 control">
+                    <div class="transaction-receiver-org-input transaction-receiver-org{% if key %}-{{ key }}{% endif %} typeahead-container"
+                    data-child-id="transaction-receiver-org{% if key %}-{{ key }}{% endif %}"
+                    data-child-class="priority3"
+                    data-value="{% if transaction.receiver_organisation.id %}{{transaction.receiver_organisation.id}}{% endif %}"
+                    data-count-class="transaction-receiver-org">
+                    </div>
+                </div>
+                <div class="col-md-6 control">
+                    <input type="text" class="form-control priority3" name="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}" id="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Receiver organisation activity id' %}"
+                    {% if transaction.receiver_organisation_activity %} value="{{transaction.receiver_organisation_activity}}" {% endif %}>
+                    <label class="control-label" for="transaction-receiver-org-activity{% if key %}-{{ key }}{% endif %}">{% trans 'Receiver organisation activity id' %}</label>
+                    <p class="help-block hidden">{% trans 'The internal identifier used by the receiver organisation for its activity that receives the funds from this transaction (not to be confused with the IATI identifier for the target activity).' %}</p>
+                </div>
+            </div>
+        </div>
+        <h5>{% trans 'Transaction sectors' %}</h5>
+        <div class="transaction-sector-container">
+            {% for sector in transaction.sectors.all %}
+                {% include "myrsr/project_admin_partials/transaction_sector_input.html" with key=sector.pk %}
+            {% empty %}
+                {% include "myrsr/project_admin_partials/transaction_sector_input.html" with key='add-0' %}
+            {% endfor %}
+        </div>
+        <div class="row form-group">
+            <div class="col-md-12 text-right add-object-link">
+                 <a href="#" class="add-transaction-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction sector' %}</a>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="select-group control">
+                <select name="transaction-aid-type{% if key %}-{{ key }}{% endif %}" id="transaction-aid-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                    <option value="" {% if not transaction.aid_type %} selected="selected" {% endif %}>{% trans 'Transaction aid type' %}:</option>
+                    {% for entry in aid_types %}
+                        <option value="{{ entry.code }}" {% if transaction.aid_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="transaction-aid-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction aid type' %}</label>
+                <p class="help-block hidden">{% trans 'The type of aid being supplied (project-type intervention, budget support, debt relief, etc.). For reference please visit' %} <a href="http://iatistandard.org/201/codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/AidType/</a>.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="select-group control">
+                <select name="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" id="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                    <option value="" {% if not transaction.disbursement_channel %} selected="selected" {% endif %}>{% trans 'Transaction disbursement channel' %}:</option>
+                    {% for entry in disbursement_channels %}
+                        <option value="{{ entry.code }}" {% if transaction.disbursement_channel == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction disbursement channel' %}</label>
+                <p class="help-block hidden">{% trans 'The channel through which the funds will flow for this transaction, from an IATI codelist. See for reference' %} <a href="http://iatistandard.org/201/codelists/DisbursementChannel/" target="_blank">http://iatistandard.org/201/codelists/DisbursementChannel/</a>.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="select-group control">
+                <select name="transaction-finance-type{% if key %}-{{ key }}{% endif %}" id="transaction-finance-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                    <option value="" {% if not transaction.finance_type %} selected="selected" {% endif %}>{% trans 'Transaction finance type' %}:</option>
+                    {% for entry in finance_types %}
+                        <option value="{{ entry.code }}" {% if transaction.finance_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="transaction-finance-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction finance type' %}</label>
+                <p class="help-block hidden">{% trans 'The type of finance (e.g. grant, loan, debt relief, etc). For reference visit' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a>.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="select-group control">
+                <select name="transaction-flow-type{% if key %}-{{ key }}{% endif %}" id="transaction-flow-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                    <option value="" {% if not transaction.flow_type %} selected="selected" {% endif %}>{% trans 'Transaction flow type' %}:</option>
+                    {% for entry in flow_types %}
+                        <option value="{{ entry.code }}" {% if transaction.flow_type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="transaction-flow-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction flow type' %}</label>
+                <p class="help-block hidden">{% trans 'Whether the activity is funded by Official Development Assistance (ODA), Other Official Flows (OOF), etc. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FlowType/">http://iatistandard.org/201/codelists/FlowType/</a>.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="select-group control">
+                <select name="transaction-tied-status{% if key %}-{{ key }}{% endif %}" id="transaction-tied-status{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                    <option value="" {% if not transaction.tied_status %} selected="selected" {% endif %}>{% trans 'Transaction tied status' %}:</option>
+                    {% for entry in tied_statuses %}
+                        <option value="{{ entry.code }}" {% if transaction.tied_status == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="transaction-tied-status{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction tied status' %}</label>
+                <p class="help-block hidden">{% trans 'Whether the aid is untied, tied, or partially tied. For reference visit' %} <a href="http://iatistandard.org/201/codelists/TiedStatus/" target="_blank">http://iatistandard.org/201/codelists/TiedStatus/</a>.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="select-group control">
+                <select name="transaction-recipient-country{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-country{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                    <option value="" {% if not transaction.recipient_country %} selected="selected" {% endif %}>{% trans 'Transaction recipient country' %}:</option>
+                    {% for entry in iati_countries %}
+                        <option value="{{ entry.code }}" {% if transaction.recipient_country == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                    {% endfor %}
+                </select>
+                <label class="control-label" for="transaction-recipient-country{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction recipient country' %}</label>
+                <p class="help-block hidden">{% trans 'A country that will benefit from this transaction. For the codes to use, please see' %} <a href="http://iatistandard.org/201/codelists/Country/" target="_blank">http://iatistandard.org/201/codelists/Country/</a>.</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6 control">
+                    <div class="select-group">
+                        <select name="transaction-recipient-region{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-region{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                            <option value="" {% if not transaction.recipient_region %} selected="selected" {% endif %}>{% trans 'Transaction recipient region' %}:</option>
+                            {% for entry in regions %}
+                                <option value="{{ entry.code }}" {% if transaction.recipient_region == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="transaction-recipient-region{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction recipient region' %}</label>
+                        <p class="help-block hidden">{% trans 'A supranational geopolitical region that will benefit from this transaction. For the codes to use, please see' %} <a href="http://iatistandard.org/201/codelists/Region/" target="_blank">http://iatistandard.org/201/codelists/Region/</a>.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="select-group control">
+                        <select name="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" id="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                            <option value="" {% if not transaction.recipient_region_vocabulary %} selected="selected" {% endif %}>{% trans 'Recipient region vocabulary' %}:</option>
+                            {% for entry in region_vocabularies %}
+                                <option value="{{ entry.code }}" {% if transaction.recipient_region_vocabulary == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="transaction-recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region vocabulary' %}</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
