@@ -1,8 +1,15 @@
 {% load i18n %}
 <div class="related-project-item parent" id="related_project{% if key %}-{{ key }}{% endif %}">
-    <hr/>
     <div class="form-group">
-        <div class="row">
+        <div class="row partial-header">
+            <div class="col-md-9 hide-partial-click">
+                <span class="folded-sign">{% if rp %}+{% else %}-{% endif %}</span> {% trans 'Related project' %}: <span class="unicode">{% if rp %}{{ rp }}{% else %}({% trans 'new' %}){% endif %}</span>
+            </div>
+            <div class="col-md-3 text-right">
+                <a class="delete-object-button" id="delete-related-project{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+            </div>
+        </div>
+        <div class="row hide-partial {% if rp %}hidden{% endif %}">
             <div class="col-md-4 control">
                 <div class="related-project-input related-project-project{% if key %}-{{ key }}{% endif %} typeahead-container"
                 data-child-id="related-project-project{% if key %}-{{ key }}{% endif %}"
@@ -38,11 +45,6 @@
                 {% if rp %} value="{{rp.related_iati_id}}" {% endif %} maxlength="100" />
                 <label for="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Related project IATI identifier' %}</label>
                 <p class="help-block hidden">{% trans 'The IATI Identifier for the related project. Only fill this in if the related project does not exist in RSR.' %}</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center" id="delete-related-project{% if key %}-{{ key }}{% endif %}">
-                <a class="btn btn-link delete-object-button" id="delete-related-project{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete related project' %}</a>
             </div>
         </div>
     </div>

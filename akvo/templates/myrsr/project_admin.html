@@ -108,12 +108,12 @@
                                     {% include "myrsr/project_admin_partials/related_project_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
+                            <div class="row form-group">
                                 <div class="col-md-4 text-center add-object-link">
                                     <a href="#" class="add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
+                                </div>
+                                <div class="col-md-8">
+                                    <hr/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -992,8 +992,7 @@
     <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}</script> 
     <script type="text/template" id="policy-marker-input">{% include "myrsr/project_admin_partials/policy_marker_input.html" %}</script> 
     <script type="text/template" id="recipient-country-input">{% include "myrsr/project_admin_partials/recipient_country_input.html" %}</script> 
-    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_admin_partials/recipient_region_input.html" %}</script> 
-    <script type="text/template" id="related-project-input">{% include "myrsr/project_admin_partials/related_project_input.html" %}</script> 
+    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_admin_partials/recipient_region_input.html" %}</script>
     <script type="text/template" id="result-input">{% include "myrsr/project_admin_partials/result_input.html" %}</script> 
     <script type="text/template" id="sector-input">{% include "myrsr/project_admin_partials/sector_input.html" %}</script> 
     <script type="text/template" id="transaction-input">{% include "myrsr/project_admin_partials/transaction_input.html" %}</script> 

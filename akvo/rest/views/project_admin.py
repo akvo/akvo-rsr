@@ -159,7 +159,9 @@ def project_admin_step1(request, pk=None):
                         )
                     except Exception as e:
                         error = str(e).capitalize()
-                        errors.append({'name': 'related-project-project-' + str(rp.pk), 'error': error})
+                        errors.append(
+                            {'name': 'related-project-project-' + str(rp.pk), 'error': error}
+                        )
 
                     rp_iati_id_key = 'related-project-iati-identifier-' + rp_id
                     errors = save_field(
@@ -167,7 +169,12 @@ def project_admin_step1(request, pk=None):
                     )
 
                     rp_relation_key = 'related-project-relation-' + rp_id
-                    errors = save_field(rp, 'relation', rp_relation_key, data[rp_relation_key], errors)
+                    errors = save_field(
+                        rp, 'relation', rp_relation_key, data[rp_relation_key], errors
+                    )
+
+                    if new_objects and new_objects[-1]['new_id'] == str(rp.pk):
+                        new_objects[-1]['unicode'] = rp.__unicode__()
 
             # Custom fields
             elif 'custom-field-' in key:

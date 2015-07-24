@@ -2291,13 +2291,13 @@ body {
         }
     }
     .delete-object-button {
-        color: rgba($progressWarning, 1);
+        color: $progressWarning;
     }
     .delete-photo-button {
-        @extend .delete-object-button;
+        color: $progressWarning;
     }
     .delete-document-button {
-        @extend .delete-object-button;
+        color: $progressWarning;
     }
     .info-icon {
         padding-left: 0.5em;
@@ -2360,5 +2360,26 @@ body {
                 background: rgba($progressSuccess, 1);
                 color: white;
             }
-        }    
+        }
+    div.parent {
+        background: rgba($progressNot, 0.15);
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        display: block;
+        width: 100%;
+        cursor: pointer;
+        top: initial;
+        padding: 5px 15px 5px 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        transition: background 0.1s linear;
+    }
+    div.partial-header {
+        font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: normal;
+        color: #2c2a74;
+        font-size: 12px;
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
 }
