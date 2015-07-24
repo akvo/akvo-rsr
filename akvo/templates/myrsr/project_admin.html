@@ -318,12 +318,12 @@
                                     {% include "myrsr/project_admin_partials/contact_information_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
+                            <div class="row form-group">
                                 <div class="col-md-4 text-center add-object-link">
                                     <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
+                                </div>
+                                <div class="col-md-8">
+                                    <hr/>
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_2 %}
@@ -396,12 +396,12 @@
                                     {% include "myrsr/project_admin_partials/partner_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
+                            <div class="row form-group">
                                 <div class="col-md-4 text-center add-object-link">
                                     <a href="#" class="add-partner" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
+                                </div>
+                                <div class="col-md-8">
+                                    <hr/>
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_3 %}

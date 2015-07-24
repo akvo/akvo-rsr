@@ -1,53 +1,57 @@
 {% load i18n %}
 <div class="partner-item parent" id="partnership{% if key %}-{{ key }}{% endif %}">
-    <div class="form-group">
-        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
-        <div class="row">
-            <div class="col-md-4 control">
-                <div class="partner-input partner{% if key %}-{{ key }}{% endif %} typeahead-container"
-                data-child-id="partner{% if key %}-{{ key }}{% endif %}"
-                data-child-class="priority1"
-                data-value="{% if partnership.organisation.id %}{{partnership.organisation.id}}{% endif %}"
-                data-count-class="partner">
-                </div>                
-            </div>
-            <div class="col-md-4 control">
-                <div class="select-group">
-                    <select name="partner-type{% if key %}-{{ key }}{% endif %}"
-                    id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)">
-                        <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>{% trans 'Type' %}:</option>
-                        <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>{% trans 'Implementing partner' %}</option>
-                        <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
-                        <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>{% trans 'Accountable partner' %}</option>
-                        <option value="extending" {% if partnership.partner_type == 'extending' %} selected="selected" {% endif %}>{% trans 'Extending partner' %}</option>
-                        {% if partnership.partner_type == 'sponsor' %}<option value="sponsor" selected="selected">{% trans 'Sponsor partner' %}</option>{% endif %}
-                    </select>
-                    <label for="partner-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
-                    {% if partnership.partner_type == 'sponsor' %}<p class="help-block-error">{% trans "The 'sponsor' role will soon be removed, please select a different role for this organisation." %}</p>{% endif %}
-                    <p class="help-block hidden">
-                        {% blocktrans %}Select the role of the organisation within the project. There are four different types:<br/>
-                        Funding organisation = The government or organisation that provides funds to the activity<br/>
-                        Implementing organisation = The organisation that physically carries out the activity or intervention<br/>
-                        Accountable organisation = An organisation responsible for oversight of the activity and its outcomes<br/>
-                        Extending organisation = An organisation that manages the budget and direction of an activity on behalf of the funding organisation{% endblocktrans %}
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4 control">
-                <div class="input-group priority1">
-                    <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
-                    <input type="text" class="form-control" id="funding-amount{% if key %}-{{ key }}{% endif %}"
-                    placeholder="{% trans 'Funding amount' %}" name="funding-amount{% if key %}-{{ key }}{% endif %}"
-                    {% if partnership.funding_amount %}value="{{partnership.funding_amount}}"{% endif %}
-                    {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
-                </div>
-                <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Funding amount' %}</label>
-                <p class="help-block hidden">{% trans 'The amount that the partner is funding the project for. Note that it’s only possible to indicate a funding amount for funding partners.' %}</p>
-            </div>
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if partnership %}+{% else %}-{% endif %}</span> {% trans 'Participating organisation' %}: <span class="unicode">{% if partnership %}{{ partnership }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center" id="delete-partner{% if key %}-{{ key }}{% endif %}">
-                <a class="btn btn-link delete-object-button" id="delete-partner{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete participating organisation' %}</a>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-partner{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if partnership %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4 control">
+                    <div class="partner-input partner{% if key %}-{{ key }}{% endif %} typeahead-container"
+                    data-child-id="partner{% if key %}-{{ key }}{% endif %}"
+                    data-child-class="priority1"
+                    data-value="{% if partnership.organisation.id %}{{partnership.organisation.id}}{% endif %}"
+                    data-count-class="partner">
+                    </div>
+                </div>
+                <div class="col-md-4 control">
+                    <div class="select-group">
+                        <select name="partner-type{% if key %}-{{ key }}{% endif %}"
+                        id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)">
+                            <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>{% trans 'Type' %}:</option>
+                            <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>{% trans 'Implementing partner' %}</option>
+                            <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
+                            <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>{% trans 'Accountable partner' %}</option>
+                            <option value="extending" {% if partnership.partner_type == 'extending' %} selected="selected" {% endif %}>{% trans 'Extending partner' %}</option>
+                            {% if partnership.partner_type == 'sponsor' %}<option value="sponsor" selected="selected">{% trans 'Sponsor partner' %}</option>{% endif %}
+                        </select>
+                        <label for="partner-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
+                        {% if partnership.partner_type == 'sponsor' %}<p class="help-block-error">{% trans "The 'sponsor' role will soon be removed, please select a different role for this organisation." %}</p>{% endif %}
+                        <p class="help-block hidden">
+                            {% blocktrans %}Select the role of the organisation within the project. There are four different types:<br/>
+                            Funding organisation = The government or organisation that provides funds to the activity<br/>
+                            Implementing organisation = The organisation that physically carries out the activity or intervention<br/>
+                            Accountable organisation = An organisation responsible for oversight of the activity and its outcomes<br/>
+                            Extending organisation = An organisation that manages the budget and direction of an activity on behalf of the funding organisation{% endblocktrans %}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 control">
+                    <div class="input-group priority1">
+                        <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
+                        <input type="text" class="form-control" id="funding-amount{% if key %}-{{ key }}{% endif %}"
+                        placeholder="{% trans 'Funding amount' %}" name="funding-amount{% if key %}-{{ key }}{% endif %}"
+                        {% if partnership.funding_amount %}value="{{partnership.funding_amount}}"{% endif %}
+                        {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
+                    </div>
+                    <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Funding amount' %}</label>
+                    <p class="help-block hidden">{% trans 'The amount that the partner is funding the project for. Note that it’s only possible to indicate a funding amount for funding partners.' %}</p>
+                </div>
             </div>
         </div>
     </div>

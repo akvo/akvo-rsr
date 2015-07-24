@@ -88,4 +88,17 @@ class Partnership(models.Model):
         ordering = ['partner_type']
 
     def __unicode__(self):
-        return self.organisation.name
+        if self.organisation.name:
+            organisation_unicode = self.organisation.name
+        elif self.organisation.long_name:
+            organisation_unicode = self.organisation.long_name
+        elif self.organisation:
+            organisation_unicode = _(u'Organisation name not specified')
+        else:
+            organisation_unicode = _(u'Organisation not specified')
+
+        if self.partner_type:
+            organisation_unicode += u' (' + unicode(dict(self.PARTNER_TYPES)[self.partner_type]) \
+                                    + u')'
+
+        return organisation_unicode

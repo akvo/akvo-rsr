@@ -410,6 +410,9 @@ def project_admin_step3(request, pk=None):
                     error = str(e).capitalize()
                     errors.append({'name': partner_funding_key, 'error': error})
 
+                if new_objects and new_objects[-1]['new_id'] == str(partner.pk):
+                    new_objects[-1]['unicode'] = partner.__unicode__()
+
         # Custom fields
         elif 'custom-field-' in key:
             cf = None
