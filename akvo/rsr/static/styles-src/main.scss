@@ -2110,7 +2110,7 @@ body {
 .progress {
     .progress-bar {
         &[data-completion='empty'] {
-            background: rgba($progressWarning, 0);
+            background: rgba($progressWarning, 1);
         }
         &[data-completion='incomplete'] {
             background: rgba($progressNot, 1);
