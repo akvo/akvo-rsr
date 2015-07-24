@@ -58,7 +58,24 @@ class BudgetItem(models.Model):
                                  choices=codelist_choices(CURRENCY))
 
     def __unicode__(self):
-        return self.label.__unicode__()
+        if self.label:
+            if self.label.label in ['Other', 'other'] and self.other_extra:
+                budget_unicode = self.other_extra
+            else:
+                budget_unicode = self.label.label
+        else:
+            budget_unicode = _(u'No budget item specified')
+
+        if self.amount:
+            budget_unicode += u' - %s %s' % (self.project.get_currency_display(),
+                                             unicode('{:,}'.format(int(self.amount))))
+        else:
+            budget_unicode += _(u' - no amount specified')
+
+        if self.type == '2':
+            budget_unicode += u' %s' % _(u'(Revised)')
+
+        return budget_unicode
 
     def get_label(self):
         "Needed since we have to have a vanilla __unicode__() method for the admin"
@@ -94,6 +111,9 @@ class CountryBudgetItem(models.Model):
         _(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
+
+    def __unicode__(self):
+        return self.iati_code().name if self.code else u'%s' % _(u'No code specified')
 
     def iati_code(self):
         return codelist_value(BudgetIdentifier, self, 'code')

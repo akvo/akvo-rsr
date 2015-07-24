@@ -30,6 +30,12 @@ class PolicyMarker(models.Model):
         _(u'description'), max_length=255, blank=True, help_text=_(u'(max 255 characters)')
     )
 
+    def __unicode__(self):
+        if self.policy_marker:
+            return self.iati_policy_marker().name
+        else:
+            return u'%s' % _(u'Policy marker not specified')
+
     def iati_policy_marker(self):
         return codelist_value(codelist_models.PolicyMarker, self, 'policy_marker')
 
@@ -38,9 +44,6 @@ class PolicyMarker(models.Model):
 
     def iati_vocabulary(self):
         return codelist_value(codelist_models.PolicyMarkerVocabulary, self, 'vocabulary')
-
-    def __unicode__(self):
-        return self.policy_marker
 
     class Meta:
         app_label = 'rsr'

@@ -159,7 +159,9 @@ def project_admin_step1(request, pk=None):
                         )
                     except Exception as e:
                         error = str(e).capitalize()
-                        errors.append({'name': 'related-project-project-' + str(rp.pk), 'error': error})
+                        errors.append(
+                            {'name': 'related-project-project-' + str(rp.pk), 'error': error}
+                        )
 
                     rp_iati_id_key = 'related-project-iati-identifier-' + rp_id
                     errors = save_field(
@@ -167,7 +169,12 @@ def project_admin_step1(request, pk=None):
                     )
 
                     rp_relation_key = 'related-project-relation-' + rp_id
-                    errors = save_field(rp, 'relation', rp_relation_key, data[rp_relation_key], errors)
+                    errors = save_field(
+                        rp, 'relation', rp_relation_key, data[rp_relation_key], errors
+                    )
+
+                    if new_objects and new_objects[-1]['new_id'] == str(rp.pk):
+                        new_objects[-1]['unicode'] = rp.__unicode__()
 
             # Custom fields
             elif 'custom-field-' in key:
@@ -298,6 +305,9 @@ def project_admin_step2(request, pk=None):
                     country = None
                 errors = save_field(contact, 'country', contact_country_key, country, errors)
 
+                if new_objects and new_objects[-1]['new_id'] == str(contact.pk):
+                        new_objects[-1]['unicode'] = contact.__unicode__()
+
         # Custom fields
         elif 'custom-field-' in key:
             cf = None
@@ -399,6 +409,9 @@ def project_admin_step3(request, pk=None):
                 except Exception as e:
                     error = str(e).capitalize()
                     errors.append({'name': partner_funding_key, 'error': error})
+
+                if new_objects and new_objects[-1]['new_id'] == str(partner.pk):
+                    new_objects[-1]['unicode'] = partner.__unicode__()
 
         # Custom fields
         elif 'custom-field-' in key:
@@ -513,6 +526,9 @@ def project_admin_step5(request, pk=None):
                         condition, 'text', cond_text_key, data[cond_text_key], errors
                     )
 
+                    if new_objects and new_objects[-1]['new_id'] == str(condition.pk):
+                        new_objects[-1]['unicode'] = condition.__unicode__()
+
             # Results
             elif 'result-title-' in key:
                 result = None
@@ -560,6 +576,9 @@ def project_admin_step5(request, pk=None):
                     errors = save_field(
                         result, 'description', res_desc_key, data[res_desc_key], errors
                     )
+
+                    if new_objects and new_objects[-1]['new_id'] == str(result.pk):
+                        new_objects[-1]['unicode'] = result.__unicode__()
 
             # Custom fields
             elif 'custom-field-' in key:
@@ -660,6 +679,9 @@ def project_admin_step5(request, pk=None):
                         indicator, 'baseline_year', ind_basecom_key, ind_baseyear, errors
                     )
 
+                    if new_objects and new_objects[-1]['new_id'] == str(indicator.pk):
+                        new_objects[-1]['unicode'] = indicator.__unicode__()
+
     if data['level'] == '3':
         # Indicator periods
         for key in data.keys():
@@ -736,6 +758,9 @@ def project_admin_step5(request, pk=None):
                     errors = save_field(
                         ip, 'actual_comment', ip_actcom_key, data[ip_actcom_key], errors
                     )
+
+                    if new_objects and new_objects[-1]['new_id'] == str(ip.pk):
+                        new_objects[-1]['unicode'] = ip.__unicode__()
 
     return Response(
         {
@@ -863,6 +888,9 @@ def project_admin_step6(request, pk=None):
                         budget, 'period_end', budget_pend_key, budget_pend, errors
                     )
 
+                    if new_objects and new_objects[-1]['new_id'] == str(budget.pk):
+                        new_objects[-1]['unicode'] = budget.__unicode__()
+
             # Country budget items
             elif 'country-budget-item-' in key:
                 cbi = None
@@ -901,6 +929,9 @@ def project_admin_step6(request, pk=None):
                     except Exception as e:
                         error = str(e).capitalize()
                         errors.append({'name': cbi_perc_key, 'error': error})
+
+                    if new_objects and new_objects[-1]['new_id'] == str(cbi.pk):
+                        new_objects[-1]['unicode'] = cbi.__unicode__()
 
             # Transactions
             elif 'transaction-value-date-' in key:
@@ -1053,6 +1084,9 @@ def project_admin_step6(request, pk=None):
                         errors
                     )
 
+                    if new_objects and new_objects[-1]['new_id'] == str(trans.pk):
+                        new_objects[-1]['unicode'] = trans.__unicode__()
+
             # Planned disbursements
             elif 'planned-disbursement-type-' in key:
                 pd = None
@@ -1102,6 +1136,9 @@ def project_admin_step6(request, pk=None):
                     pd_pend_key = 'planned-disbursement-period-end-' + pd_id
                     pd_pend = data[pd_pend_key] if data[pd_pend_key] else None
                     errors = save_field(pd, 'period_end', pd_pend_key, pd_pend, errors)
+
+                    if new_objects and new_objects[-1]['new_id'] == str(pd.pk):
+                        new_objects[-1]['unicode'] = pd.__unicode__()
 
             # Custom fields
             elif 'custom-field-' in key:
@@ -1169,6 +1206,9 @@ def project_admin_step6(request, pk=None):
                     errors = save_field(
                         sector, 'text', sector_desc_key, data[sector_desc_key], errors
                     )
+
+                    if new_objects and new_objects[-1]['new_id'] == str(sector.pk):
+                        new_objects[-1]['unicode'] = sector.__unicode__()
 
     return Response(
         {
@@ -1243,6 +1283,9 @@ def project_admin_step7(request, pk=None):
                         rc, 'text', rc_description_key, data[rc_description_key], errors
                     )
 
+                    if new_objects and new_objects[-1]['new_id'] == str(rc.pk):
+                        new_objects[-1]['unicode'] = rc.__unicode__()
+
             # Recipient regions
             elif 'recipient-region-percentage-' in key:
                 rr = None
@@ -1294,6 +1337,9 @@ def project_admin_step7(request, pk=None):
                     errors = save_field(
                         rr, 'region_vocabulary', rr_vocabulary_key, data[rr_vocabulary_key], errors
                     )
+
+                    if new_objects and new_objects[-1]['new_id'] == str(rr.pk):
+                        new_objects[-1]['unicode'] = rr.__unicode__()
 
             # Locations
             elif 'location-latitude-' in key:
@@ -1423,6 +1469,9 @@ def project_admin_step7(request, pk=None):
                         loc, 'feature_designation', loc_fd_key, data[loc_fd_key], errors
                     )
 
+                    if new_objects and new_objects[-1]['new_id'] == str(loc.pk):
+                        new_objects[-1]['unicode'] = loc.__unicode__()
+
             # Custom fields
             elif 'custom-field-' in key:
                 cf = None
@@ -1494,6 +1543,9 @@ def project_admin_step7(request, pk=None):
                     except Exception as e:
                         error = str(e).capitalize()
                         errors.append({'name': admin_level_key, 'error': error})
+
+                    if new_objects and new_objects[-1]['new_id'] == str(admin.pk):
+                        new_objects[-1]['unicode'] = admin.__unicode__()
 
     return Response({
             'errors': errors,
@@ -1568,6 +1620,9 @@ def project_admin_step8(request, pk=None):
                     sector, 'text', sector_desc_key, data[sector_desc_key], errors
                 )
 
+                if new_objects and new_objects[-1]['new_id'] == str(sector.pk):
+                    new_objects[-1]['unicode'] = sector.__unicode__()
+
         # Policy markers
         elif 'policy-marker-significance-' in key:
             pm = None
@@ -1612,6 +1667,9 @@ def project_admin_step8(request, pk=None):
                 errors = save_field(
                     pm, 'description', pm_desc_key, data[pm_desc_key], errors
                 )
+
+                if new_objects and new_objects[-1]['new_id'] == str(pm.pk):
+                    new_objects[-1]['unicode'] = pm.__unicode__()
 
         # Custom fields
         elif 'custom-field-' in key:
@@ -1684,6 +1742,9 @@ def project_admin_step9(request, pk=None):
                         link, 'caption', link_caption_key, data[link_caption_key], errors
                     )
 
+                    if new_objects and new_objects[-1]['new_id'] == str(link.pk):
+                        new_objects[-1]['unicode'] = link.__unicode__()
+
             # Documents
             elif 'document-url-' in key:
                 document = None
@@ -1736,6 +1797,9 @@ def project_admin_step9(request, pk=None):
                         document, 'language', document_language_key, data[document_language_key],
                         errors
                     )
+
+                    if new_objects and new_objects[-1]['new_id'] == str(document.pk):
+                        new_objects[-1]['unicode'] = document.__unicode__()
 
             # Custom fields
             elif 'custom-field-' in key:

@@ -138,6 +138,17 @@ function replaceNames(newObjects, excludeClass) {
 
         otherParents = parentNode.querySelectorAll('.parent');
 
+        try {
+            var newUnicode, unicodeNode;
+
+            newUnicode = newObjects[i].unicode;
+            unicodeNode = parentNode.getElementsByClassName('unicode')[0];
+
+            unicodeNode.innerHTML = newUnicode;
+        } catch (error) {
+            // No new unicode
+        }
+
         if (excludeClass === undefined) {
 
             inputs = parentNode.querySelectorAll('input');
@@ -973,6 +984,33 @@ function setPartialOnClicks() {
         removeLink = removeLinks[j];
         removeLink.onclick = setRemovePartial(removeLink);
     }
+
+    var hidePartials;
+
+    hidePartials = document.getElementsByClassName('hide-partial-click');
+
+    for (var k=0; k < hidePartials.length; k++) {
+        hidePartials[k].onclick = togglePartial(hidePartials[k]);
+    }
+}
+
+function togglePartial(hidePartial) {
+    return function(e) {
+        e.preventDefault();
+
+        var partialToHide, foldedIndicator, fold;
+
+        partialToHide = hidePartial.parentNode.parentNode.getElementsByClassName('hide-partial')[0];
+        foldedIndicator = hidePartial.getElementsByClassName('folded-sign')[0];
+
+        if (foldedIndicator.innerHTML === '-') {
+            foldedIndicator.innerHTML = '+';
+            partialToHide.className += ' hidden';
+        } else {
+            foldedIndicator.innerHTML = '-';
+            partialToHide.className = partialToHide.className.replace('hidden', '');
+        }
+    };
 }
 
 function getOnClick(pName, element) {

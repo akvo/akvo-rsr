@@ -1,54 +1,58 @@
 {% load i18n %}
 <div class="recipient-region-input parent" id="recipient_region{% if key %}-{{ key }}{% endif %}">
-    <div class="form-group">
-        {% if not forloop.first and key != 'add-0' %}<hr/>{% endif %}
-        <div class="row">
-            <div class="col-md-6">
-                <div class="select-group control">
-                    <select name="recipient-region{% if key %}-{{ key }}{% endif %}" id="recipient-region{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not rr.region %} selected="selected" {% endif %}>{% trans 'Recipient region' %}:</option>
-                        {% for region in regions %}
-                            <option value="{{ region.code }}" {% if rr.region == region.code %} selected="selected" {% endif %}>{{ region.code }} - {{ region.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label class="control-label" for="recipient-region{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region' %}</label>
-                    <p class="help-block hidden">{% trans 'This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or 'global' (activities benefiting substantially all developing countries). For the codes to use, please see' %} <a href="http://iatistandard.org/201/codelists/Region/" target="_blank">http://iatistandard.org/201/codelists/Region/</a>.</p>
-                </div>
-            </div>
-            <div class="col-md-6 control">
-                <div class="input-group priority3">
-                    <input type="text" class="form-control" id="recipient-region-percentage{% if key %}-{{ key }}{% endif %}"
-                    name="recipient-region-percentage{% if key %}-{{ key }}{% endif %}"
-                    placeholder="{% trans 'Recipient region percentage' %}" {% if rr.percentage %} value="{{rr.percentage}}" {% endif %}>
-                    <span class="input-group-addon">%</span>
-                </div>
-                <label class="control-label" for="recipient-region-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region percentage' %}</label>
-                <p class="help-block hidden">{% trans 'If the activity occurs in more than one region, the percentage of activity commitment allocated to each region should be provided if available. Percentages should add up to 100% of the activity being reported if they are shown for each region.' %}</p>
-            </div>
-            <div class="col-md-6">
-                <div class="select-group control">
-                    <select id="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}"
-                    name="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                        <option value="" {% if not rr.region_vocabulary %} selected="selected" {% endif %}>{% trans 'Recipient region vocabulary' %}:</option>
-                        {% for vocabulary in region_vocabularies %}
-                            <option value="{{ vocabulary.code }}" {% if rr.region_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
-                        {% endfor %}                  
-                    </select>
-                    <label class="control-label" for="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region vocabulary' %}</label>
-                    <p class="help-block hidden">{% trans 'The vocabulary from which the region code is drawn. If it is not present 1 – ‘OECD DAC’ is assumed. For more information, see' %} <a href="http://iatistandard.org/201/codelists/RegionVocabulary/" target="_blank">http://iatistandard.org/201/codelists/RegionVocabulary/</a>.</p>
-                </div>
-            </div>
-             <div class="col-md-6 control">
-                <input type="text" class="form-control priority3" id="recipient-region-description{% if key %}-{{ key }}{% endif %}"
-                name="recipient-region-description{% if key %}-{{ key }}{% endif %}"
-                placeholder="{% trans 'Recipient region description' %}" {% if rr.text %} value="{{rr.text}}" {% endif %} maxlength="50">
-                <label class="control-label" for="recipient-region-description{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region description' %}</label>
-                <p class="help-block hidden">{% trans 'Optionally enter a description.' %}</p>
-            </div>           
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if rr %}+{% else %}-{% endif %}</span> {% trans 'Recipient region' %}: <span class="unicode">{% if rr %}{{ rr }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center" id="delete-recipient-region{% if key %}-{{ key }}{% endif %}">
-                <a class="btn btn-link delete-object-button" id="delete-recipient-region{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete recipient region' %}</a>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-recipient-region{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if rr %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="select-group control">
+                        <select name="recipient-region{% if key %}-{{ key }}{% endif %}" id="recipient-region{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                            <option value="" {% if not rr.region %} selected="selected" {% endif %}>{% trans 'Recipient region' %}:</option>
+                            {% for region in regions %}
+                                <option value="{{ region.code }}" {% if rr.region == region.code %} selected="selected" {% endif %}>{{ region.code }} - {{ region.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="recipient-region{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region' %}</label>
+                        <p class="help-block hidden">{% trans 'This identifies the region in which the activity takes place. Regions can be supra-national (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) or 'global' (activities benefiting substantially all developing countries). For the codes to use, please see' %} <a href="http://iatistandard.org/201/codelists/Region/" target="_blank">http://iatistandard.org/201/codelists/Region/</a>.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 control">
+                    <div class="input-group priority3">
+                        <input type="text" class="form-control" id="recipient-region-percentage{% if key %}-{{ key }}{% endif %}"
+                        name="recipient-region-percentage{% if key %}-{{ key }}{% endif %}"
+                        placeholder="{% trans 'Recipient region percentage' %}" {% if rr.percentage %} value="{{rr.percentage}}" {% endif %}>
+                        <span class="input-group-addon">%</span>
+                    </div>
+                    <label class="control-label" for="recipient-region-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region percentage' %}</label>
+                    <p class="help-block hidden">{% trans 'If the activity occurs in more than one region, the percentage of activity commitment allocated to each region should be provided if available. Percentages should add up to 100% of the activity being reported if they are shown for each region.' %}</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="select-group control">
+                        <select id="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}"
+                        name="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                            <option value="" {% if not rr.region_vocabulary %} selected="selected" {% endif %}>{% trans 'Recipient region vocabulary' %}:</option>
+                            {% for vocabulary in region_vocabularies %}
+                                <option value="{{ vocabulary.code }}" {% if rr.region_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region vocabulary' %}</label>
+                        <p class="help-block hidden">{% trans 'The vocabulary from which the region code is drawn. If it is not present 1 – ‘OECD DAC’ is assumed. For more information, see' %} <a href="http://iatistandard.org/201/codelists/RegionVocabulary/" target="_blank">http://iatistandard.org/201/codelists/RegionVocabulary/</a>.</p>
+                    </div>
+                </div>
+                 <div class="col-md-6 control">
+                    <input type="text" class="form-control priority3" id="recipient-region-description{% if key %}-{{ key }}{% endif %}"
+                    name="recipient-region-description{% if key %}-{{ key }}{% endif %}"
+                    placeholder="{% trans 'Recipient region description' %}" {% if rr.text %} value="{{rr.text}}" {% endif %} maxlength="50">
+                    <label class="control-label" for="recipient-region-description{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region description' %}</label>
+                    <p class="help-block hidden">{% trans 'Optionally enter a description.' %}</p>
+                </div>
             </div>
         </div>
     </div>

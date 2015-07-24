@@ -86,7 +86,6 @@
                                 <label for="iatiID" class="control-label">{% trans 'IATI identifier' %}</label>
                                 <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
                             </div>
-                            <hr/>
                             <h5>{% trans 'Related projects' %}</h5>
                             <p class="help-block">{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}</p>
                             <div class="form-group">
@@ -108,11 +107,8 @@
                                     {% include "myrsr/project_admin_partials/related_project_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                     <a href="#" class="add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
                                 </div>
                             </div>
@@ -182,7 +178,6 @@
                                 </div>
                                 <p class="help-block hidden">{% trans 'Enter the language used when entering the details for this project.' %}</p>
                             </div>
-                            <hr/>
                             <h5>{% trans 'Project photo' %}</h5>
                             <p class="help-block">{% trans 'Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page.' %}</p>
                             <div class="row">
@@ -215,7 +210,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <hr class="hidden hide-default" />
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
                                     <select name="defaultAidType" id="defaultAidType" class="form-control priority3">
@@ -276,9 +270,6 @@
                                     <p class="help-block hidden">{% trans 'The type of finance (e.g. grant, loan, debt relief, etc). This is the default value for all transactions in the activity report; it can be overridden at the individual transaction level. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a></p>
                                 </div>
                             </div>
-                            {% if custom_fields_section_1 %}
-                                <hr/>
-                            {% endif %}
                             {% for customfield in custom_fields_section_1 %}
                                 <div class="form-group control">
                                     <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" placeholder="{{ customfield.name }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
@@ -318,11 +309,8 @@
                                     {% include "myrsr/project_admin_partials/contact_information_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                     <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
                                 </div>
                             </div>
@@ -387,7 +375,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <hr/>
                             <h5>{% trans 'Participating organisations' %}</h5>
                             <div class="partner-container">
                                 {% for partnership in project.partnerships.all %}
@@ -396,11 +383,8 @@
                                     {% include "myrsr/project_admin_partials/partner_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                     <a href="#" class="add-partner" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
                                 </div>
                             </div>
@@ -519,11 +503,8 @@
                                     {% include "myrsr/project_admin_partials/result_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                     <a href="#" class="add-result" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
                                 </div>
                             </div>
@@ -535,11 +516,8 @@
                                     {% include "myrsr/project_admin_partials/condition_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row hidden hide-default">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-right add-object-link">
                                     <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
                                 </div>
                             </div>
@@ -597,7 +575,6 @@
                                     {% trans 'By ticking the checkbox, a donate button will appear at your project page in order to enable donations to your project. This is only possible in case the project is still seeking for funds.' %}
                                 </p>
                             </div>
-                            <hr/>
                             <h5>{% trans 'Budget items' %}</h5>
                             <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
                             <div class="form-group control hidden hide-default">
@@ -616,11 +593,8 @@
                                     {% include "myrsr/project_admin_partials/budget_item_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                     <a href="#" class="add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another budget item' %}</a>
                                 </div>
                             </div>
@@ -643,11 +617,8 @@
                                     {% include "myrsr/project_admin_partials/country_budget_item_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row hidden hide-default">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another country budget item' %}</a>
                                 </div>
                             </div>
@@ -659,11 +630,8 @@
                                     {% include "myrsr/project_admin_partials/transaction_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row hidden hide-default">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-right add-object-link">
                                     <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
                                 </div>
                             </div>
@@ -675,11 +643,8 @@
                                     {% include "myrsr/project_admin_partials/planned_disbursement_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
                                 </div>
                             </div>
@@ -728,7 +693,6 @@
                                     <p class="help-block hidden">{% trans 'Select the geographical scope of the project.' %}</p>
                                 </div>
                             </div>
-                            <hr class="hidden hide-default" />
                             <h5>{% trans 'Project locations' %}</h5>
                             <div class="project-location-container">
                                 {% if project.locations.all %}
@@ -739,11 +703,8 @@
                                     {% include "myrsr/project_admin_partials/project_location_input.html" with key='add-0' %}
                                 {% endif %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-project-location" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another project location' %}</a>
                                 </div>
                             </div>
@@ -755,11 +716,8 @@
                                     {% include "myrsr/project_admin_partials/recipient_country_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row hidden hide-default">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-recipient-country" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient country' %}</a>
                                 </div>
                             </div>
@@ -771,11 +729,8 @@
                                     {% include "myrsr/project_admin_partials/recipient_region_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row hidden hide-default">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-recipient-region" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient region' %}</a>
                                 </div>
                             </div>
@@ -821,11 +776,8 @@
                                     {% include "myrsr/project_admin_partials/sector_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
                                 </div>
                             </div>
@@ -837,11 +789,8 @@
                                     {% include "myrsr/project_admin_partials/policy_marker_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row hidden hide-default">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
                                 </div>
                             </div>
@@ -887,11 +836,8 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another link' %}</a>
                                 </div>
                             </div>
@@ -903,11 +849,8 @@
                                     {% include "myrsr/project_admin_partials/document_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <hr/>
-                                </div>
-                                <div class="col-md-4 text-center add-object-link">
+                            <div class="row form-group">
+                                <div class="col-md-12 text-right add-object-link">
                                      <a href="#" class="add-document" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
                                 </div>
                             </div>
@@ -992,8 +935,7 @@
     <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_admin_partials/planned_disbursement_input.html" %}</script> 
     <script type="text/template" id="policy-marker-input">{% include "myrsr/project_admin_partials/policy_marker_input.html" %}</script> 
     <script type="text/template" id="recipient-country-input">{% include "myrsr/project_admin_partials/recipient_country_input.html" %}</script> 
-    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_admin_partials/recipient_region_input.html" %}</script> 
-    <script type="text/template" id="related-project-input">{% include "myrsr/project_admin_partials/related_project_input.html" %}</script> 
+    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_admin_partials/recipient_region_input.html" %}</script>
     <script type="text/template" id="result-input">{% include "myrsr/project_admin_partials/result_input.html" %}</script> 
     <script type="text/template" id="sector-input">{% include "myrsr/project_admin_partials/sector_input.html" %}</script> 
     <script type="text/template" id="transaction-input">{% include "myrsr/project_admin_partials/transaction_input.html" %}</script> 

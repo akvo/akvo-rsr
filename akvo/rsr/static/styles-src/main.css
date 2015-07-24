@@ -1780,7 +1780,11 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   opacity: 1;
   font-size: 13px;
   font-weight: 600; }
-.projectEdit .delete-object-button, .projectEdit .delete-photo-button, .projectEdit .delete-document-button {
+.projectEdit .delete-object-button {
+  color: #d9534f; }
+.projectEdit .delete-photo-button {
+  color: #d9534f; }
+.projectEdit .delete-document-button {
   color: #d9534f; }
 .projectEdit .info-icon {
   padding-left: 0.5em;
@@ -1827,3 +1831,22 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
 .projectEdit label.progress-bar[aria-valuenow="100"] {
   background: #5cb85c;
   color: white; }
+.projectEdit div.parent {
+  background: rgba(240, 173, 78, 0.15);
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  top: initial;
+  padding: 5px 15px 5px 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: background 0.1s linear; }
+.projectEdit div.partial-header {
+  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  color: #2c2a74;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px; }

@@ -31,7 +31,15 @@ class PlannedDisbursement(models.Model):
     )
 
     def __unicode__(self):
-        return self.value
+        if self.value:
+            if self.currency:
+                return u'%s %s' % (self.iati_currency().name,
+                                   '{:,}'.format(int(self.value)))
+            else:
+                return u'%s %s' % (self.project.get_currency_display(),
+                                   '{:,}'.format(int(self.value)))
+        else:
+            return u'%s' % _(u'No value specified')
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')

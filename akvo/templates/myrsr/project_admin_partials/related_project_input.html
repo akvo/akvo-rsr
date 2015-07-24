@@ -1,48 +1,52 @@
 {% load i18n %}
 <div class="related-project-item parent" id="related_project{% if key %}-{{ key }}{% endif %}">
-    <hr/>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-4 control">
-                <div class="related-project-input related-project-project{% if key %}-{{ key }}{% endif %} typeahead-container"
-                data-child-id="related-project-project{% if key %}-{{ key }}{% endif %}"
-                data-child-class="priority2"
-                data-value="{% if rp.related_project.id %}{{rp.related_project.id}}{% endif %}"
-                data-count-class="related-project-project">
-                </div>
-            </div>
-            <div class="col-md-4 control">
-                <div class="select-group">
-                    <select name="related-project-relation{% if key %}-{{ key }}{% endif %}" id="related-project-relation{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                        <option value="" {% if not rp.relation %} selected="selected" {% endif %}>{% trans 'Type' %}:</option>
-                        <option value="1" {% if rp.relation|add:0 == 1 %} selected="selected" {% endif %}>1 - {% trans 'Parent' %}</option>
-                        <option value="2" {% if rp.relation|add:0 == 2 %} selected="selected" {% endif %}>2 - {% trans 'Child' %}</option>
-                        <option value="3" {% if rp.relation|add:0 == 3 %} selected="selected" {% endif %}>3 - {% trans 'Sibling' %}</option>
-                        <option value="4" {% if rp.relation|add:0 == 4 %} selected="selected" {% endif %}>4 - {% trans 'Co-funded' %}</option>
-                        <option value="5" {% if rp.relation|add:0 == 5 %} selected="selected" {% endif %}>5 - {% trans 'Third party' %}</option>
-                    </select>
-                    <label for="related-project-relation{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
-                    <p class="help-block hidden">
-                        {% blocktrans %}The relation between a project and related project. There are 5 types of relations:<br/>
-                        1 - Parent: The project of this project form is a sub-component of the selected project.<br/>
-                        2 - Child: The selected project is a sub-component the project of this project form.<br/>
-                        3 - Sibling: The selected project and the project of this project form are both sub-components of an overarching project.<br/>
-                        4 - Co-funded: An activity that receives funding from more than one organisation.<br/>
-                        5 - Third party: A report by another organisation on the same activity you are reporting.{% endblocktrans %}
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4 control hidden hide-default">
-                <input type="text" class="form-control priority3" id="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
-                placeholder="{% trans 'Related project IATI identifier' %}" name="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
-                {% if rp %} value="{{rp.related_iati_id}}" {% endif %} maxlength="100" />
-                <label for="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Related project IATI identifier' %}</label>
-                <p class="help-block hidden">{% trans 'The IATI Identifier for the related project. Only fill this in if the related project does not exist in RSR.' %}</p>
-            </div>
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if rp %}+{% else %}-{% endif %}</span> {% trans 'Related project' %}: <span class="unicode">{% if rp %}{{ rp }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center" id="delete-related-project{% if key %}-{{ key }}{% endif %}">
-                <a class="btn btn-link delete-object-button" id="delete-related-project{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete related project' %}</a>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-related-project{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if rp %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4 control">
+                    <div class="related-project-input related-project-project{% if key %}-{{ key }}{% endif %} typeahead-container"
+                    data-child-id="related-project-project{% if key %}-{{ key }}{% endif %}"
+                    data-child-class="priority2"
+                    data-value="{% if rp.related_project.id %}{{rp.related_project.id}}{% endif %}"
+                    data-count-class="related-project-project">
+                    </div>
+                </div>
+                <div class="col-md-4 control">
+                    <div class="select-group">
+                        <select name="related-project-relation{% if key %}-{{ key }}{% endif %}" id="related-project-relation{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
+                            <option value="" {% if not rp.relation %} selected="selected" {% endif %}>{% trans 'Type' %}:</option>
+                            <option value="1" {% if rp.relation|add:0 == 1 %} selected="selected" {% endif %}>1 - {% trans 'Parent' %}</option>
+                            <option value="2" {% if rp.relation|add:0 == 2 %} selected="selected" {% endif %}>2 - {% trans 'Child' %}</option>
+                            <option value="3" {% if rp.relation|add:0 == 3 %} selected="selected" {% endif %}>3 - {% trans 'Sibling' %}</option>
+                            <option value="4" {% if rp.relation|add:0 == 4 %} selected="selected" {% endif %}>4 - {% trans 'Co-funded' %}</option>
+                            <option value="5" {% if rp.relation|add:0 == 5 %} selected="selected" {% endif %}>5 - {% trans 'Third party' %}</option>
+                        </select>
+                        <label for="related-project-relation{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
+                        <p class="help-block hidden">
+                            {% blocktrans %}The relation between a project and related project. There are 5 types of relations:<br/>
+                            1 - Parent: The project of this project form is a sub-component of the selected project.<br/>
+                            2 - Child: The selected project is a sub-component the project of this project form.<br/>
+                            3 - Sibling: The selected project and the project of this project form are both sub-components of an overarching project.<br/>
+                            4 - Co-funded: An activity that receives funding from more than one organisation.<br/>
+                            5 - Third party: A report by another organisation on the same activity you are reporting.{% endblocktrans %}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 control hidden hide-default">
+                    <input type="text" class="form-control priority3" id="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
+                    placeholder="{% trans 'Related project IATI identifier' %}" name="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
+                    {% if rp %} value="{{rp.related_iati_id}}" {% endif %} maxlength="100" />
+                    <label for="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Related project IATI identifier' %}</label>
+                    <p class="help-block hidden">{% trans 'The IATI Identifier for the related project. Only fill this in if the related project does not exist in RSR.' %}</p>
+                </div>
             </div>
         </div>
     </div>
