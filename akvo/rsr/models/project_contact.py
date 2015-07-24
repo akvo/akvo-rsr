@@ -60,4 +60,4 @@ class ProjectContact(models.Model):
         verbose_name_plural = _(u'contacts')
 
     def __unicode__(self):
-        return self.person_name
+        return self.person_name if self.person_name else _(u'No contact name specified')

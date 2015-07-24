@@ -2363,8 +2363,8 @@ body {
         }
     div.parent {
         background: rgba($progressNot, 0.15);
-        -webkit-border-radius: 5px;
-        border-radius: 5px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
         display: block;
         width: 100%;
         cursor: pointer;
@@ -2379,7 +2379,7 @@ body {
         font-weight: normal;
         color: #2c2a74;
         font-size: 12px;
-        margin-top: 15px;
+        margin-top: 10px;
         margin-bottom: 10px;
     }
 }

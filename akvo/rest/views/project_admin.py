@@ -305,6 +305,9 @@ def project_admin_step2(request, pk=None):
                     country = None
                 errors = save_field(contact, 'country', contact_country_key, country, errors)
 
+                if new_objects and new_objects[-1]['new_id'] == str(contact.pk):
+                        new_objects[-1]['unicode'] = contact.__unicode__()
+
         # Custom fields
         elif 'custom-field-' in key:
             cf = None
