@@ -22,7 +22,7 @@ def edit_budget_items(apps, schema_editor):
         label.save()
 
     # Rename 'Transportation' to 'Transportation / logistics'
-    transportation_label = BudgetItemLabel.objects.get(label='transportation')
+    transportation_label = BudgetItemLabel.objects.get(label='Transportation')
     transportation_label.label = 'Transportation / logistics'
     transportation_label.save()
 

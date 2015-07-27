@@ -1366,12 +1366,16 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
     var completionPercentage, completionClass, publishButton;
 
     completionPercentage = Math.floor((numInputsCompleted / numInputs) * 100);
+    if (completionPercentage === 0) {
+        // Never show an empty bar
+        completionPercentage = 1;
+    }
     section.find('.progress-bar').attr('aria-valuenow', completionPercentage);
     section.find('.progress .sr-only').text(completionPercentage + '% Complete');
     section.find('.progress .progress-percentage').text(completionPercentage + '%');
     section.find('div.progress-bar').width(completionPercentage + '%');
 
-    if (completionPercentage === 0) {
+    if (completionPercentage < 2) {
         completionClass = 'empty';
     } else if (completionPercentage < 100) {
         completionClass = 'incomplete';
