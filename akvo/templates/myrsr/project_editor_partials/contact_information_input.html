@@ -39,12 +39,7 @@
                     {% endfor %}
                 </select>
                 <label for="contact-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Contact type' %}</label>
-                <p class="help-block hidden">{% blocktrans %}You can choose from the following 4 contact types indicating what people if needed can mainly contact you for in relation to this project:<br/>
-                    1 - General enquires<br/>
-                    2 - Project management<br/>
-                    3 - Financial management<br/>
-                    4 - Communications{% endblocktrans %}
-                </p>
+                <p class="help-block hidden">{% trans 'What types of enquiries this contact person is best-placed to handle.' %}</p>
             </div>
         </div>
         <div class="row">
@@ -52,14 +47,13 @@
                 <div class="form-group control">
                     <input type="text" class="form-control priority2" id="contact-email{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact email' %}" name="contact-email{% if key %}-{{ key }}{% endif %}" {% if contact.email %} value="{{contact.email}}" {% endif %} maxlength="254">
                     <label for="contactEmail" class="control-label">{% trans 'Contact email' %}</label>
-                    <p class="help-block hidden">{% trans 'Email address for the contact person.' %}</p>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group control">
                     <input type="text" class="form-control priority2" id="contact-phone{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact phone number' %}" name="contact-phone{% if key %}-{{ key }}{% endif %}" {% if contact.telephone %} value="{{contact.telephone}}" {% endif %} maxlength="30">
                     <label for="contactPhone" class="control-label">{% trans 'Contact phone number' %}</label>
-                    <p class="help-block hidden">{% trans 'Contact number for the contact person. You do not need to provide personal contact details.' %}</p>
+                    <p class="help-block hidden">{% trans 'Contact number for the contact person. Avoid giving personal contact details.' %}</p>
                 </div>
             </div>
         </div>
@@ -68,7 +62,7 @@
                 <div class="form-group control">
                     <input type="text" class="form-control priority2" id="contact-address{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact address' %}" name="contact-address{% if key %}-{{ key }}{% endif %}" {% if contact.mailing_address %} value="{{contact.mailing_address}}" {% endif %} maxlength="255">
                     <label for="contactAddress" class="control-label">{% trans 'Contact address' %}</label>
-                    <p class="help-block hidden">{% trans 'Address of the contact person. You do not need to provide personal contact details.' %}</p>
+                    <p class="help-block hidden">{% trans 'Address of the contact person. Avoid giving personal contact details.' %}</p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -81,7 +75,6 @@
                             {% endfor %}
                         </select>
                         <label for="contactCountry" class="control-label">{% trans 'Country' %}</label>
-                        <p class="help-block hidden">{% trans 'Country of the contact.' %}</p>
                     </div>
                 </div>
             </div>
@@ -91,7 +84,6 @@
                 <div class="form-group control">
                     <input type="text" class="form-control priority2" id="contact-department{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Contact department' %}" name="contact-department{% if key %}-{{ key }}{% endif %}" {% if contact.department %} value="{{contact.department}}" {% endif %} maxlength="100">
                     <label for="contactDepartment" class="control-label">{% trans 'Contact department' %}</label>
-                    <p class="help-block hidden">{% trans 'Department of the contact.' %}</p>
                 </div>
             </div>
             <div class="col-md-6">

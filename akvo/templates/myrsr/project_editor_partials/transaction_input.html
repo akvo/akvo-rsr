@@ -89,9 +89,9 @@
         <h5>{% trans 'Transaction sectors' %}</h5>
         <div class="transaction-sector-container">
             {% for sector in transaction.sectors.all %}
-                {% include "myrsr/project_admin_partials/transaction_sector_input.html" with key=sector.pk %}
+                {% include "myrsr/project_editor_partials/transaction_sector_input.html" with key=sector.pk %}
             {% empty %}
-                {% include "myrsr/project_admin_partials/transaction_sector_input.html" with key='add-0' %}
+                {% include "myrsr/project_editor_partials/transaction_sector_input.html" with key='add-0' %}
             {% endfor %}
         </div>
         <div class="row form-group">
@@ -108,7 +108,7 @@
                     {% endfor %}
                 </select>
                 <label for="transaction-aid-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction aid type' %}</label>
-                <p class="help-block hidden">{% trans 'The type of aid being supplied (project-type intervention, budget support, debt relief, etc.). For reference please visit' %} <a href="http://iatistandard.org/201/codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/AidType/</a>.</p>
+                <p class="help-block hidden">{% trans 'Enter the type of aid being supplied. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/AidType/</a>.</p>
             </div>
         </div>
         <div class="form-group">
@@ -120,7 +120,7 @@
                     {% endfor %}
                 </select>
                 <label for="transaction-disbursement-channel{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction disbursement channel' %}</label>
-                <p class="help-block hidden">{% trans 'The channel through which the funds will flow for this transaction, from an IATI codelist. See for reference' %} <a href="http://iatistandard.org/201/codelists/DisbursementChannel/" target="_blank">http://iatistandard.org/201/codelists/DisbursementChannel/</a>.</p>
+                <p class="help-block hidden">{% trans 'Enter the channel through which the funds will flow for this transaction, from an IATI codelist. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/DisbursementChannel/" target="_blank">http://iatistandard.org/201/codelists/DisbursementChannel/</a>.</p>
             </div>
         </div>
         <div class="form-group">
@@ -132,7 +132,7 @@
                     {% endfor %}
                 </select>
                 <label for="transaction-finance-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction finance type' %}</label>
-                <p class="help-block hidden">{% trans 'The type of finance (e.g. grant, loan, debt relief, etc). For reference visit' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a>.</p>
+                <p class="help-block hidden">{% trans 'For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a>.</p>
             </div>
         </div>
         <div class="form-group">
@@ -144,7 +144,7 @@
                     {% endfor %}
                 </select>
                 <label for="transaction-flow-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Transaction flow type' %}</label>
-                <p class="help-block hidden">{% trans 'Whether the activity is funded by Official Development Assistance (ODA), Other Official Flows (OOF), etc. For reference visit' %} <a href="http://iatistandard.org/201/codelists/FlowType/">http://iatistandard.org/201/codelists/FlowType/</a>.</p>
+                <p class="help-block hidden">{% trans 'For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/FlowType/">http://iatistandard.org/201/codelists/FlowType/</a>.</p>
             </div>
         </div>
         <div class="form-group">
@@ -168,7 +168,7 @@
                     {% endfor %}
                 </select>
                 <label class="control-label" for="transaction-recipient-country{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction recipient country' %}</label>
-                <p class="help-block hidden">{% trans 'A country that will benefit from this transaction. For the codes to use, please see' %} <a href="http://iatistandard.org/201/codelists/Country/" target="_blank">http://iatistandard.org/201/codelists/Country/</a>.</p>
+                <p class="help-block hidden">{% trans 'Enter the country that will benefit from this transaction. It can only be one country per transaction. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/Country/" target="_blank">http://iatistandard.org/201/codelists/Country/</a>.</p>
             </div>
         </div>
         <div class="form-group">
@@ -182,7 +182,7 @@
                             {% endfor %}
                         </select>
                         <label class="control-label" for="transaction-recipient-region{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction recipient region' %}</label>
-                        <p class="help-block hidden">{% trans 'A supranational geopolitical region that will benefit from this transaction. For the codes to use, please see' %} <a href="http://iatistandard.org/201/codelists/Region/" target="_blank">http://iatistandard.org/201/codelists/Region/</a>.</p>
+                        <p class="help-block hidden">{% trans 'Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/Region/" target="_blank">http://iatistandard.org/201/codelists/Region/</a>.</p>
                     </div>
                 </div>
                 <div class="col-md-6">

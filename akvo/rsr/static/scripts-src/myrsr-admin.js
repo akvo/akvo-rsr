@@ -1105,12 +1105,12 @@ function updateTypeaheads() {
         var childSelector = $(this).data('child-id');
         var childClass = $(this).data('child-class');
         var valueId = null;
-        var labelText = 'Related project';
-        var helpText = 'A related that is present in RSR. If the related project is not present in RSR, please only fill in the IATI activity identifier.';
+        var labelText = defaultValues.related_project_label;
+        var helpText = defaultValues.related_project_helptext;
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = 'Related project:';
+        var placeholder = defaultValues.related_project_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
@@ -1133,12 +1133,12 @@ function updateTypeaheads() {
         var childSelector = $(this).data('child-id');
         var childClass = $(this).data('child-class');
         var valueId = null;
-        var labelText = 'Reporting organisation';
-        var helpText = 'Indicate the reporting organisation of this project. This organisation must be existing already in Akvo RSR.';
+        var labelText = defaultValues.reporting_org_label;
+        var helpText = defaultValues.reporting_org_helptext;
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = 'Reporting organisation:';
+        var placeholder = defaultValues.reporting_org_helptext + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
@@ -1161,12 +1161,12 @@ function updateTypeaheads() {
         var childSelector = $(this).data('child-id');
         var childClass = $(this).data('child-class');
         var valueId = null;
-        var labelText = 'Partner';
-        var helpText = '';
+        var labelText = defaultValues.partner_label;
+        var helpText = defaultValues.partner_helptext;
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = 'Partner:';
+        var placeholder = defaultValues.partner_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
@@ -1189,12 +1189,12 @@ function updateTypeaheads() {
         var childSelector = $(this).data('child-id');
         var childClass = $(this).data('child-class');
         var valueId = null;
-        var labelText = 'Provider organisation';
-        var helpText = '';
+        var labelText = defaultValues.provider_org_label;
+        var helpText = defaultValues.provider_org_helptext;
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = 'Provider organisation:';
+        var placeholder = defaultValues.provider_org_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
@@ -1217,12 +1217,12 @@ function updateTypeaheads() {
         var childSelector = $(this).data('child-id');
         var childClass = $(this).data('child-class');
         var valueId = null;
-        var labelText = 'Receiver organisation';
+        var labelText = defaultValues.recipient_org_label;
         var helpText = '';
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = 'Receiver organisation:';
+        var placeholder = defaultValues.recipient_org_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
@@ -1388,6 +1388,7 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
         try {
             publishButton = document.getElementById('publishProject');
             publishButton.removeAttribute('disabled');
+            publishButton.className = publishButton.className.replace('btn-danger', 'btn-success');
         } catch (error) {
             // Do nothing, no publish button
         }
@@ -1395,6 +1396,7 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
         try {
             publishButton = document.getElementById('publishProject');
             publishButton.setAttribute('disabled', '');
+            publishButton.className = publishButton.className.replace('btn-success', 'btn-danger');
         } catch (error) {
             // Do nothing, no publish button
         }

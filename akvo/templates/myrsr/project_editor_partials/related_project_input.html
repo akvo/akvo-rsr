@@ -31,12 +31,12 @@
                         </select>
                         <label for="related-project-relation{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
                         <p class="help-block hidden">
-                            {% blocktrans %}The relation between a project and related project. There are 5 types of relations:<br/>
-                            1 - Parent: The project of this project form is a sub-component of the selected project.<br/>
-                            2 - Child: The selected project is a sub-component the project of this project form.<br/>
-                            3 - Sibling: The selected project and the project of this project form are both sub-components of an overarching project.<br/>
-                            4 - Co-funded: An activity that receives funding from more than one organisation.<br/>
-                            5 - Third party: A report by another organisation on the same activity you are reporting.{% endblocktrans %}
+                            {% blocktrans %}The relationship between a project and related project. There are five types of relationships:<br/>
+                            1 - Parent: the project you are now creating is a sub-component of the selected related project.<br/>
+                            2 - Child: the selected related project is a sub-component of the project you are now creating.<br/>
+                            3 - Sibling: the selected related project and the project you are now creating are both sub-components of a parent project.<br/>
+                            4 - Co-funded: a project that receives funding from more than one organisation.<br/>
+                            5 - Third party: a report by another organisation on the same project that you are reporting on.{% endblocktrans %}
                         </p>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                     placeholder="{% trans 'Related project IATI identifier' %}" name="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}"
                     {% if rp %} value="{{rp.related_iati_id}}" {% endif %} maxlength="100" />
                     <label for="related-project-iati-identifier{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Related project IATI identifier' %}</label>
-                    <p class="help-block hidden">{% trans 'The IATI Identifier for the related project. Only fill this in if the related project does not exist in RSR.' %}</p>
+                    <p class="help-block hidden">{% trans 'In case you know the IATI identifier of a project that does not exist in RSR, you can point out the IATI identifier here.' %}</p>
                 </div>
             </div>
         </div>

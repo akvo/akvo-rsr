@@ -33,11 +33,11 @@
                         <label for="partner-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
                         {% if partnership.partner_type == 'sponsor' %}<p class="help-block-error">{% trans "The 'sponsor' role will soon be removed, please select a different role for this organisation." %}</p>{% endif %}
                         <p class="help-block hidden">
-                            {% blocktrans %}Select the role of the organisation within the project. There are four different types:<br/>
-                            Funding organisation = The government or organisation that provides funds to the activity<br/>
-                            Implementing organisation = The organisation that physically carries out the activity or intervention<br/>
-                            Accountable organisation = An organisation responsible for oversight of the activity and its outcomes<br/>
-                            Extending organisation = An organisation that manages the budget and direction of an activity on behalf of the funding organisation{% endblocktrans %}
+                            {% blocktrans %}Select the role of the organisation within the project:<br/>
+                            - Funding organisation: a government or organisation that provides funds to the project<br/>
+                            - Implementing organisation: an organisation involved in carrying out the activity or intervention<br/>
+                            - Accountable organisation: an organisation responsible for oversight of the project and its outcomes<br/>
+                            - Extending organisation: an organisation that manages the budget and direction of a project on behalf of the funding organisation{% endblocktrans %}
                         </p>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                         {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
                     </div>
                     <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Funding amount' %}</label>
-                    <p class="help-block hidden">{% trans 'The amount that the partner is funding the project for. Note that it’s only possible to indicate a funding amount for funding partners.' %}</p>
+                    <p class="help-block hidden">{% trans 'It’s only possible to indicate a funding amount for funding partners.' %}</p>
                 </div>
             </div>
         </div>

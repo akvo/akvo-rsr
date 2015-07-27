@@ -640,10 +640,10 @@ div.paginationWrap {
         color: rgba($akvoBlack, 0.3);
     }
     span.published {
-        color: rgba($rsrGreen, 1);
+        color: $progressSuccess;
     }
     span.notPublished {
-        color: rgba($secondary2, 1);
+        color: $secondary2;
     }
 }
 
@@ -2142,7 +2142,7 @@ body {
 }
 .formOverviewInfo {
     border: 1px solid rgba(52, 52, 56, 0.1);
-    padding: 10px;
+    padding: 20px;
     margin-bottom: 15px;
     @include border-radius(5px);
 }
@@ -2200,6 +2200,12 @@ body {
             width: 30%;
             top: 15px;
             right: 5px;
+        }
+        form {
+            padding-top: 10px;
+        }
+        span.tab {
+            padding-left:5em;
         }
     }
     .borderBottom {
@@ -2381,5 +2387,29 @@ body {
         font-size: 12px;
         margin-top: 10px;
         margin-bottom: 10px;
+    }
+}
+
+.legenda {
+    border: 1px solid rgba($akvoPurple, 0.5);
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 5px 5px 5px;
+    margin: 15px 15px 15px 15px;
+
+    .redLegenda {
+        background: $progressWarning;
+        color: $progressWarning;
+    }
+    .orangeLegenda {
+        background: $progressNot;
+        color: $progressNot;
+    }
+    .greenLegenda {
+        background: $progressSuccess;
+        color: $progressSuccess;
+    }
+    .mandatory {
+        color: $progressWarning;
     }
 }

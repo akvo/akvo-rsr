@@ -62,7 +62,7 @@
                       {% has_perm 'rsr.change_project' user project as can_edit_project %}
                       {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
                       {% if can_edit_project %}
-                        <a href="/myrsr/project_admin/{{project.pk}}/">{% trans 'Edit' %}</a>
+                        <a href="/myrsr/project_editor/{{project.pk}}/">{% trans 'Edit' %}</a>
                       {% endif %}
                       {% if can_publish %}
                         <a href="/admin/rsr/publishingstatus/?project={{project.pk}}">

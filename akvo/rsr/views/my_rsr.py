@@ -143,7 +143,7 @@ def my_projects(request):
     return render(request, 'myrsr/my_projects.html', context)
 
 @login_required
-def project_admin(request, project_id):
+def project_editor(request, project_id):
     """The project admin."""
     try:
         project = Project.objects.select_related(
@@ -265,7 +265,7 @@ def project_admin(request, project_id):
         'custom_fields_section_10': custom_fields_section_10,
     }
 
-    return render(request, 'myrsr/project_admin.html', context)
+    return render(request, 'myrsr/project_editor.html', context)
     
 @login_required
 def my_iati(request):

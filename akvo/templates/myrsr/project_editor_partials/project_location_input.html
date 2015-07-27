@@ -75,12 +75,12 @@
                 <div class="col-md-4 control">
                     <input type="text" class="form-control priority3" id="location-reference{% if key %}-{{ key }}{% endif %}" name="location-reference{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Reference' %}" {% if location.reference %} value="{{location.reference}}" {% endif %} maxlength="50">
                     <label class="control-label" for="location-reference{% if key %}-{{ key }}{% endif %}">{% trans 'Reference' %}</label>
-                    <p class="help-block hidden">{% trans 'An internal reference that describes the location in the reporting organisation’s own system.' %}</p>
+                    <p class="help-block hidden">{% trans 'An internal reference that describes the location in the reporting organisation’s own system. For reference see:' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/location/#attributes" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/location/#attributes</a>.</p>
                 </div>
                 <div class="col-md-4 control">
                     <input type="text" class="form-control priority3" id="location-code{% if key %}-{{ key }}{% endif %}" name="location-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Code' %}" {% if location.location_code %} value="{{location.location_code}}" {% endif %}>
                     <label class="control-label" for="location-code{% if key %}-{{ key }}{% endif %}">{% trans 'Code' %}</label>
-                    <p class="help-block hidden">{% trans 'These are based on DAC region codes. Where an activity is considered global, the code 998 can be used.' %}</p>
+                    <p class="help-block hidden">{% trans 'Enter a code to identify the region. Codes are based on DAC region codes. Where an activity is considered global, the code 998 can be used. For reference:' %} <a href="http://www.oecd.org/dac/stats/dacandcrscodelists.htm" target="_blank">http://www.oecd.org/dac/stats/dacandcrscodelists.htm</a>.</p>
                 </div>
                 <div class="col-md-4 control">
                     <input type="text" class="form-control priority3" id="location-name{% if key %}-{{ key }}{% endif %}" name="location-name{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Name' %}" {% if location.name %} value="{{location.name}}" {% endif %} maxlength="100">
@@ -90,8 +90,8 @@
             </div>
         </div>
         <div class="form-group control hidden hide-default">
-            <textarea id="location-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="location-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Description' %}" maxlength="255">{{location.description}}</textarea>
-            <label class="control-label" for="location-description{% if key %}-{{ key }}{% endif %}">{% trans 'Description' %}</label>
+            <textarea id="location-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="location-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Location description' %}" maxlength="255">{{location.description}}</textarea>
+            <label class="control-label" for="location-description{% if key %}-{{ key }}{% endif %}">{% trans 'Location description' %}</label>
             <p class="help-block hidden">{% trans 'This provides free text space for providing an additional description, if needed, of the actual target of the activity. A description that qualifies the location, not the activity.' %}</p>
         </div>
         <div class="form-group control hidden hide-default">
@@ -104,12 +104,12 @@
                 <div class="col-md-6">
                     <div class="select-group control">
                         <select name="location-exactness{% if key %}-{{ key }}{% endif %}" id="location-exactness{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                            <option value="" {% if not location.exactness %} selected="selected" {% endif %}>{% trans 'Exactness' %}:</option>
+                            <option value="" {% if not location.exactness %} selected="selected" {% endif %}>{% trans 'Location precision' %}:</option>
                             {% for exactness in geographic_exactnesses %}
                                 <option value="{{ exactness.code }}" {% if location.exactness == exactness.code %} selected="selected" {% endif %}>{{ exactness.code }} - {{ exactness.name }}</option>
                             {% endfor %}
                         </select>
-                        <label class="control-label" for="location-exactness{% if key %}-{{ key }}{% endif %}">{% trans 'Exactness' %}</label>
+                        <label class="control-label" for="location-exactness{% if key %}-{{ key }}{% endif %}">{% trans 'Location precision' %}</label>
                         <p class="help-block hidden">{% trans 'Defines whether the location represents the most distinct point reasonably possible for this type of activity or is an approximation due to lack of more detailed information.' %}</p>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                             {% endfor %}
                         </select>
                         <label class="control-label" for="location-class{% if key %}-{{ key }}{% endif %}">{% trans 'Class' %}</label>
-                        <p class="help-block hidden">{% trans 'Whether the location refers to a structure, a populated place (e.g. city or village), an administrative division, or another topological feature (e.g. river, nature reserve).' %}</p>
+                        <p class="help-block hidden">{% trans 'Does the location refer to a physical structure such as a building, a populated place (e.g. city or village), an administrative division, or another topological feature (e.g. river, nature reserve)? For reference:' %} <a href="http://iatistandard.org/201/codelists/GeographicLocationClass/" target="_blank">http://iatistandard.org/201/codelists/GeographicLocationClass/</a>.</p>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -150,7 +150,7 @@
                             {% endfor %}
                         </select>
                         <label class="control-label" for="location-feature-designation{% if key %}-{{ key }}{% endif %}">{% trans 'Feature designation' %}</label>
-                        <p class="help-block hidden">{% trans 'A more refined coded classification of the type of feature referred to by this location.' %}</p>
+                        <p class="help-block hidden">{% trans 'A more refined coded classification of the type of feature referred to by this location. For reference:' %} <a href="http://iatistandard.org/201/codelists/LocationType/" target="_blank">http://iatistandard.org/201/codelists/LocationType/</a>.</p>
                     </div>
                 </div>
             </div>
@@ -158,9 +158,9 @@
         <h5 class="hidden hide-default">{% trans 'Location administratives' %}</h5>
         <div class="location-administrative-container hidden hide-default">
             {% for admin in location.administratives.all %}
-                {% include "myrsr/project_admin_partials/location_administrative_input.html" with key=admin.pk %}
+                {% include "myrsr/project_editor_partials/location_administrative_input.html" with key=admin.pk %}
             {% empty %}
-                {% include "myrsr/project_admin_partials/location_administrative_input.html" with key='add-0' %}
+                {% include "myrsr/project_editor_partials/location_administrative_input.html" with key='add-0' %}
             {% endfor %}
         </div>
         <div class="row form-group hidden hide-default">

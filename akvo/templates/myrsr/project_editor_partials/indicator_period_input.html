@@ -45,13 +45,13 @@
             <div class="row hidden hide-default">
                 <div class="col-md-6 control">
                     <textarea id="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}"
-                    placeholder="{% trans 'Target value comment' %}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000" rows="5">{{period.target_comment}}</textarea>
+                    placeholder="{% trans 'Target value comment' %}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000">{{period.target_comment}}</textarea>
                     <label class="control-label" for="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Target value comment' %}</label>
                     <p class="help-block hidden">{% trans 'Here you can provide extra information on the target value, if needed.' %}</p>
                 </div>
                 <div class="col-md-6 control">
                     <textarea id="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}"
-                    placeholder="{% trans 'Actual value comment' %}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000" rows="5">{{period.actual_comment}}</textarea>
+                    placeholder="{% trans 'Actual value comment' %}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000">{{period.actual_comment}}</textarea>
                     <label class="control-label" for="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Actual value comment' %}</label>
                     <p class="help-block hidden">{% trans 'Here you can provide extra information on the actual value, if needed (for instance, why the actual value differs from the target value).' %}</p>
                 </div>

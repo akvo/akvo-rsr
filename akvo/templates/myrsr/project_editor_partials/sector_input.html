@@ -11,12 +11,12 @@
     <div class="hide-partial {% if sector %}hidden{% endif %}">
         <div class="form-group">
             <div class="row">
-                <div class="col-md-6 control">
+                <div class="col-md-4 control">
                     <input type="text" class="form-control priority1" id="sector-code{% if key %}-{{ key }}{% endif %}" name="sector-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Sector code' %}" {% if sector.sector_code %} value="{{sector.sector_code}}" {% endif %}>
                     <label class="control-label" for="sector-code{% if key %}-{{ key }}{% endif %}">{% trans 'Sector code' %}</label>
-                    <p class="help-block hidden">{% trans 'This provides the code for the sector and is based on DAC sectors.' %}</p>
+                    <p class="help-block hidden">{% trans 'This is based on DAC sectors.' %}</p>
                 </div>
-                <div class="col-md-6 control">
+                <div class="col-md-4 control">
                     <div class="input-group priority2">
                         <input type="text" class="form-control" id="sector-percentage{% if key %}-{{ key }}{% endif %}" name="sector-percentage{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Sector percentage' %}" {% if sector.percentage %} value="{{sector.percentage}}" {% endif %}>
                         <span class="input-group-addon">%</span>
@@ -24,7 +24,7 @@
                     <label class="control-label" for="sector-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Sector percentage' %}</label>
                     <p class="help-block hidden">{% trans 'If the activity occurs in more than one sector, the percentage of activity commitment allocated to each sector should be provided if available. Percentages should add up to 100% of the activity being reported if they are shown for each sector.' %}</p>
                 </div>
-                <div class="col-md-6 control">
+                <div class="col-md-4 control">
                     <div class="select-group">
                         <select name="sector-vocabulary{% if key %}-{{ key }}{% endif %}" id="sector-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
                             <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}>{% trans 'Sector vocabulary' %}:</option>
@@ -35,10 +35,6 @@
                         <label class="control-label" for="sector-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Sector vocabulary' %}</label>
                         <p class="help-block hidden">{% trans 'This is the code for the vocabulary used to describe the sector. This differentiates between DAC, ISO, COFOG, ADT (AidData) or WB (World Bank) vocabulary. If no code is given, it is assumed that DAC sectors are being used. Sectors should be mapped to DAC sectors where possible to enable international comparison.' %}</p>
                     </div>
-                </div>
-                <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2" id="sector-description{% if key %}-{{ key }}{% endif %}" name="sector-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Sector description' %}" {% if sector.text %} value="{{sector.text}}" {% endif %} maxlength="100">
-                    <label class="control-label" for="sector-description{% if key %}-{{ key }}{% endif %}">{% trans 'Sector description' %}</label>
                 </div>
             </div>
         </div>
