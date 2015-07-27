@@ -1668,7 +1668,7 @@ function getProjectPublish(publishingStatusId, publishButton) {
                 publishingStatusNode.className = "published";
                 publishingStatusNode.innerHTML = "published";
 
-                viewProjectButton = document.getElementbyId('viewProject');
+                viewProjectButton = document.getElementById('viewProject');
                 viewProjectButton.innerHTML = defaultValues.view_project;
 
                 return false;
