@@ -46,10 +46,11 @@ class Indicator(models.Model):
     )
 
     def __unicode__(self):
-        indicator_unicode = self.title if self.title else _(u'No indicator title')
+        indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')
 
         if self.periods.all():
-            indicator_unicode += _(u' - %s periods') % (unicode(self.periods.count()))
+            indicator_unicode += u' - %s %s' % (unicode(self.periods.count()),
+                                                _(u'period(s)'))
 
         return indicator_unicode
 

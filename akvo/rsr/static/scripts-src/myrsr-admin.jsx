@@ -1660,13 +1660,16 @@ function getProjectPublish(publishingStatusId, publishButton) {
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
                 // Succesfully published project!
-                var publishingStatusNode;
+                var publishingStatusNode, viewProjectButton;
 
                 publishButton.parentNode.removeChild(publishButton);
 
                 publishingStatusNode = document.getElementById('publishingStatus');
                 publishingStatusNode.className = "published";
                 publishingStatusNode.innerHTML = "published";
+
+                viewProjectButton = document.getElementById('viewProject');
+                viewProjectButton.innerHTML = defaultValues.view_project;
 
                 return false;
             } else {
