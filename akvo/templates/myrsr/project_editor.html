@@ -955,8 +955,6 @@
             </fieldset>
         </form>
     </section>
-
-{% include "myrsr/project_editor_partials/admin_help.html" %}
 {% endblock %}
 
 {% block js %}
@@ -1080,12 +1078,4 @@
     {% compressed_js 'react_typeahead' %}
     {% compressed_js 'myrsr_admin' %}
     
-{% endblock %}
-
-
-{% block jq %}
-    {{ block.super }}
-    {% if user.show_admin_help %}
-        showHelp();
-    {% endif %}
 {% endblock %}
