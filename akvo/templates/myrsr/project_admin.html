@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-3 text-center">
                 <a href="{% url 'project-main' project.pk %}" target="_blank">
-                    <button class="btn btn-primary viewProject">{% trans 'View project page' %}</button>
+                    <button class="btn btn-primary viewProject" id="viewProject">{% if not project.is_published %}{% trans 'Preview project page' %}{% else %}{% trans 'View project page' %}{% endif %}</button>
                 </a>
             </div>
         </div>
@@ -949,7 +949,8 @@
         {
             "project_id": "{{ project.pk }}",
             "publishing_status_id": "{{ project.publishingstatus.pk }}",
-            "user_id": "{{ user.pk }}"
+            "user_id": "{{ user.pk }}",
+            "view_project": "{% trans 'View project page' %}"
         }
     </script>
 
