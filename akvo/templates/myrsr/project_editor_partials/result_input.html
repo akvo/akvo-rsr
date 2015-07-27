@@ -51,16 +51,16 @@
         </div>
         <div class="form-group control hidden hide-default">
             <textarea id="result-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="result-description{% if key %}-{{ key }}{% endif %}"
-            placeholder="{% trans 'Result description' %}" maxlength="2000" rows="8">{{result.description}}</textarea>
+            placeholder="{% trans 'Result description' %}" maxlength="2000">{{result.description}}</textarea>
             <label class="control-label" for="result-description{% if key %}-{{ key }}{% endif %}">{% trans 'Result description' %}</label>
             <p class="help-block hidden">{% trans 'You can provide further information of the result here.' %}</p>
         </div>
         <h5>{% trans 'Indicators' %}</h5>
         <div class="indicator-container">
             {% for indicator in result.indicators.all %}
-                {% include "myrsr/project_admin_partials/indicator_input.html" with key=indicator.pk %}
+                {% include "myrsr/project_editor_partials/indicator_input.html" with key=indicator.pk %}
             {% empty %}
-                {% include "myrsr/project_admin_partials/indicator_input.html" with key='add-0' %}
+                {% include "myrsr/project_editor_partials/indicator_input.html" with key='add-0' %}
             {% endfor %}
         </div>
         <div class="row form-group">

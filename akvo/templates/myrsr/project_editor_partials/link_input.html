@@ -18,6 +18,7 @@
                         <option value="E" {% if link.kind == "E" %} selected="selected" {% endif %}>{% trans 'External link' %}</option>
                     </select>
                     <label for="link-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link type' %}</label>
+                    <p class="help-block hidden">{% trans 'You can choose between linking to an external webpage or an Akvopedia article.' %}</p>
                 </div>
             </div>
             <div class="col-md-4 control">
@@ -28,7 +29,7 @@
             <div class="col-md-4 control">
                 <input type="text" class="form-control priority2" name="link-caption{% if key %}-{{ key }}{% endif %}" id="link-caption{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Link caption' %}" {% if link.caption %}value="{{link.caption}}"{% endif %} maxlength="50">
                 <label for="link-caption{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link caption' %}</label>
-                <p class="help-block hidden">{% trans 'Enter a name for the link you provided to click through to an external website.' %}</p>
+                <p class="help-block hidden">{% trans 'Enter a name for the link.' %}</p>
             </div>
         </div>
     </div>

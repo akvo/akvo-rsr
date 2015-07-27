@@ -14,7 +14,7 @@
                 <div class="col-md-4 control">
                     <input type="text" class="form-control priority3 administrative" id="location-administrative-code{% if key %}-{{ key }}{% endif %}" name="location-administrative-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Administrative code' %}" {% if admin.code %} value="{{admin.code}}" {% endif %} {% if admin %}administrative{% endif %}>
                     <label class="control-label" for="location-administrative-code{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative code' %}</label>
-                    <p class="help-block hidden">{% trans 'Coded identification of national and sub-national divisions according to recognised administrative boundary repositories. Multiple levels may be reported.' %}</p>
+                    <p class="help-block hidden">{% trans 'Coded identification of national and sub-national divisions according to recognised administrative boundary repositories. Multiple levels may be reported. For reference:' %} <a href="http://iatistandard.org/201/codelists/GeographicVocabulary/" target="_blank">http://iatistandard.org/201/codelists/GeographicVocabulary/</a>.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="select-group control">

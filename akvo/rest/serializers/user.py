@@ -28,7 +28,6 @@ class UserSerializer(BaseRSRSerializer):
             'first_name',
             'last_name',
             'email',
-            'show_admin_help',
             'organisation',
             'organisations',
         )

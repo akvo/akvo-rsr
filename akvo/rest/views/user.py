@@ -40,7 +40,7 @@ class UserViewSet(BaseRSRViewSet):
         'organisations__primary_location__location_target__partner_types')
     serializer_class = UserSerializer
     filter_fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff',
-                     'is_admin', 'show_admin_help')
+                     'is_admin')
 
 
 @api_view(['POST'])

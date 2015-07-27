@@ -14,14 +14,14 @@
                 <div class="col-md-6 control">
                     <input type="file" class="form-control priority2" id="document-document{% if key %}-{{ key }}{% endif %}" name="document-document{% if key %}-{{ key }}{% endif %}">
                     <label class="control-label" for="document-document{% if key %}-{{ key }}{% endif %}">{% trans 'Document' %}</label>
-                    <p class="help-block hidden">{% trans 'You can upload a document to your project. To upload multiple documents, press the "Add another Project Document" link. These documents will be stored on the RSR server and will be publicly available for users to download and view to gain further insight in the project activities.' %}</p>
+                    <p class="help-block hidden">{% trans 'You can upload a document to your project. To upload multiple documents, click "Add another document". These documents will be stored on the RSR server and will be publicly available for users to download and view to gain further insight into your project activities.' %}</p>
                     {% if document.document %}<a href="{{ document.document.url }}" target="_blank" id="document-document-url{% if key %}-{{ key }}{% endif %}">{{ document.document.url }}</a>
                     <a onclick="deleteDocument({% if key %}{{ key }}{% endif %});" class="btn btn-link delete-document-button" id="delete-document-document{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete document' %}</a>{% endif %}
                 </div>
                 <div class="col-md-6 control">
                     <input type="text" class="form-control priority2" id="document-url{% if key %}-{{ key }}{% endif %}" name="document-url{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Document URL' %}" {% if document.url %} value="{{document.url}}" {% endif %}>
                     <label class="control-label" for="document-url{% if key %}-{{ key }}{% endif %}">{% trans 'Document URL' %}</label>
-                    <p class="help-block hidden">{% trans 'Enter the link of where you can find the document online.' %}</p>
+                    <p class="help-block hidden">{% trans 'Enter the the online location of your document, if possible.' %}</p>
                 </div>
             </div>
         </div>

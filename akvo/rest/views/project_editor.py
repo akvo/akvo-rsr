@@ -35,7 +35,7 @@ def save_field(project, field, form_field, form_data, errors):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_delete_document(request, project_pk=None, document_pk=None):
+def project_editor_delete_document(request, project_pk=None, document_pk=None):
     project = Project.objects.get(pk=project_pk)
     document = ProjectDocument.objects.get(pk=document_pk)
     user = request.user
@@ -50,7 +50,7 @@ def project_admin_delete_document(request, project_pk=None, document_pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_delete_photo(request, pk=None):
+def project_editor_delete_photo(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -64,7 +64,7 @@ def project_admin_delete_photo(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step1(request, pk=None):
+def project_editor_step1(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -207,7 +207,7 @@ def project_admin_step1(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step2(request, pk=None):
+def project_editor_step2(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -330,7 +330,7 @@ def project_admin_step2(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step3(request, pk=None):
+def project_editor_step3(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -435,7 +435,7 @@ def project_admin_step3(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step4(request, pk=None):
+def project_editor_step4(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -479,7 +479,7 @@ def project_admin_step4(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step5(request, pk=None):
+def project_editor_step5(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -772,7 +772,7 @@ def project_admin_step5(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step6(request, pk=None):
+def project_editor_step6(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -1221,7 +1221,7 @@ def project_admin_step6(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step7(request, pk=None):
+def project_editor_step7(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -1556,7 +1556,7 @@ def project_admin_step7(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step8(request, pk=None):
+def project_editor_step8(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -1575,8 +1575,7 @@ def project_admin_step8(request, pk=None):
 
             if 'add' in sector_id and (data['sector-code-' + sector_id]
                                        or data['sector-percentage-' + sector_id]
-                                       or data['sector-vocabulary-' + sector_id]
-                                       or data['sector-description-' + sector_id]):
+                                       or data['sector-vocabulary-' + sector_id]):
                 sector = Sector.objects.create(project=project)
                 new_objects.append(
                     {
@@ -1613,11 +1612,6 @@ def project_admin_step8(request, pk=None):
                 sector_voc_key = 'sector-vocabulary-' + sector_id
                 errors = save_field(
                     sector, 'vocabulary', sector_voc_key, data[sector_voc_key], errors
-                )
-
-                sector_desc_key = 'sector-description-' + sector_id
-                errors = save_field(
-                    sector, 'text', sector_desc_key, data[sector_desc_key], errors
                 )
 
                 if new_objects and new_objects[-1]['new_id'] == str(sector.pk):
@@ -1693,7 +1687,7 @@ def project_admin_step8(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step9(request, pk=None):
+def project_editor_step9(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 
@@ -1855,7 +1849,7 @@ def project_admin_step9(request, pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
-def project_admin_step10(request, pk=None):
+def project_editor_step10(request, pk=None):
     project = Project.objects.get(pk=pk)
     user = request.user
 

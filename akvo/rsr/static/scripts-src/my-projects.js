@@ -134,7 +134,7 @@ function getCreateProject(createProjectNode) {
                     // addPartnersToProject(projectId);
                     addCustomFieldsToProject(projectId);
 
-                    window.location = '/myrsr/project_admin/' + response.id + '/';
+                    window.location = '/myrsr/project_editor/' + response.id + '/';
                 } catch (error) {
                     // Something went wrong while parsing the response
                     createProjectNode.removeAttribute('disabled');
