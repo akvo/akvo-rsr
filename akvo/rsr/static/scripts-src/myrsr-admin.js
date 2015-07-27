@@ -465,7 +465,7 @@ function submitStep(step, level) {
     }
 
     // Create request
-    api_url = '/rest/v1/project/' + defaultValues.project_id + '/admin_step_' + step + '/?format=json';
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/step_' + step + '/?format=json';
 
     request = new XMLHttpRequest();
     request.open('POST', api_url, true);
@@ -822,6 +822,10 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, 
     });
 
     updateHelpIcons('.' + selector);
+
+    setAllSectionsCompletionPercentage();
+    setAllSectionsChangeListerner();
+    setPageCompletionPercentage();
 }
 
 
@@ -1138,7 +1142,7 @@ function updateTypeaheads() {
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = defaultValues.reporting_org_helptext + ':';
+        var placeholder = defaultValues.reporting_org_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
@@ -1567,10 +1571,6 @@ function updateCurrency(currencyDropdown) {
     };
 }
 
-function setRemovePartialOnClicks() {
-
-}
-
 function setRemovePartial(node) {
     return function(e) {
         e.preventDefault();
@@ -1675,10 +1675,6 @@ $(document).ready(function() {
     setValidationListeners();
     updateAllHelpIcons();
 
-    setAllSectionsCompletionPercentage();
-    setAllSectionsChangeListerner();
-    setPageCompletionPercentage();
-
     updateTypeaheads();
 
     try {
@@ -1693,4 +1689,8 @@ $(document).ready(function() {
 
         partialsCount[partialName] = 1;
     }
+
+    setAllSectionsCompletionPercentage();
+    setAllSectionsChangeListerner();
+    setPageCompletionPercentage();
 });

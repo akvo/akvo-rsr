@@ -382,7 +382,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-group control">
-                                        <div class="reportingOrganisation-input reportingOrganisation typeahead-container"
+                                        <div class="reportingOrganisation-input reportingOrganisation typeahead-container priority1"
                                         data-child-id="reportingOrganisation"
                                         data-child-class="priority1"
                                         data-value="{% if project.sync_owner %}{{project.sync_owner.id}}{% endif %}"
@@ -1023,9 +1023,11 @@
 
             if (node.options[node.selectedIndex].value === 'funding') {
                 fundingNode.removeAttribute('disabled');
+                fundingNode.className += ' priority1';
             } else {
                 fundingNode.value = '';
                 fundingNode.setAttribute('disabled', '');
+                fundingNode.className = fundingNode.className.replace('priority1', '');
             }
         }
 
@@ -1040,8 +1042,9 @@
                 otherLabelNode.className += ' priority1';
             } else {
                 otherLabelNode.value = '';
-                otherLabelNode.className = otherLabelNode.className.replace('priority1', '');
+                otherLabelNode.onChange();
                 otherLabelNode.setAttribute('disabled', '');
+                otherLabelNode.className = otherLabelNode.className.replace('priority1', '');
             }
         }
 
