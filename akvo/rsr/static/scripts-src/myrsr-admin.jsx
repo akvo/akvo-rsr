@@ -1347,9 +1347,12 @@ function getInputResults(section) {
         section.find(selector).each( function() {
 
             if ($(this).attr('name') === 'step') {
+                // This is a progress bar input, ignore it
+                return true;
+            }
 
-                // This is a progress bar input
-                // Ignore it
+            if (this.hasAttribute("disabled")) {
+                // This is a disabled input, ignore it
                 return true;
             }
 
