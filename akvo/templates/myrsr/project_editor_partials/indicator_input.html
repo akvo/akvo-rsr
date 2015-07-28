@@ -72,7 +72,7 @@
             <p class="help-block hidden">{% trans 'Here you can provide extra information on the baseline value, if needed.' %}</p>
         </div>
         <h5>{% trans 'Indicator periods' %}</h5>
-        <div class="indicator-period-container">
+        <div class="indicator-period-container" id="indicator-period-container">
             {% for period in indicator.periods.all %}
                 {% include "myrsr/project_editor_partials/indicator_period_input.html" with key=period.pk %}
             {% empty %}

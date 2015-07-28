@@ -59,6 +59,10 @@ var INPUT_ELEMENTS = ['input', 'select', 'textarea'];
 // towards the completion percentage. If left blank, all inputs will count.
 var MEASURE_CLASS = '.priority1';
 
+function findAncestor(el, cls) {
+    while ((el = el.parentElement) && !el.classList.contains(cls));
+    return el;
+}
 
 function savingStep(saving, step, message) {
     var div, div_id, div_button_id, div_button;
@@ -730,7 +734,7 @@ function getTotalBudget() {
 function removePartial(node) {
     var parentDiv, idArray, parentParent;
 
-    parentDiv = node.closest(".parent");
+    parentDiv = findAncestor(node, "parent");
     idArray = parentDiv.getAttributeNode("id").value.split("-");
     parentParent = parentDiv.parentNode;
 
@@ -747,7 +751,7 @@ function removePartial(node) {
     }
 
     // Update the progress bars to account for the removed inputs
-    setSectionCompletionPercentage($(parentParent.closest('.formStep')));
+    setSectionCompletionPercentage($(findAncestor(parentParent, "formStep")));
 }
 
 function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
@@ -1022,8 +1026,8 @@ function getOnClick(pName, element) {
         e.preventDefault();
 
         var markupSelector = '#' + pName + '-input';
-        var containerSelector = '.' + pName + '-container';
-        var container = element.closest(':has(' + containerSelector + ')').find(containerSelector);
+        var containerSelector = pName + '-container';
+        var container = document.getElementById(containerSelector);
 
         var markup = document.querySelector(markupSelector).innerHTML;
 
@@ -1077,14 +1081,14 @@ function getOnClick(pName, element) {
             el.data('child-id', newClass);
         }
 
-        container.append(partial);
+        container.appendChild(partial);
         partialsCount[pName] += 1;
 
         // Add any typeaheads, help icons and change listeners for the new project partial
         updateTypeaheads();
-        updateHelpIcons(containerSelector);
-        setSectionChangeListener($(containerSelector).closest('.formStep'));
-        setSectionCompletionPercentage($(containerSelector).closest('.formStep'));
+        updateHelpIcons('.' + containerSelector);
+        setSectionChangeListener(findAncestor(container, 'formStep'));
+        setSectionCompletionPercentage(findAncestor(container, 'formStep'));
         setValidationListeners();
 
         // Set onClicks for partials again in case this partial contains other partials

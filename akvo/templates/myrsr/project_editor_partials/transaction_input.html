@@ -87,7 +87,7 @@
             </div>
         </div>
         <h5>{% trans 'Transaction sectors' %}</h5>
-        <div class="transaction-sector-container">
+        <div class="transaction-sector-container" id="transaction-sector-container">
             {% for sector in transaction.sectors.all %}
                 {% include "myrsr/project_editor_partials/transaction_sector_input.html" with key=sector.pk %}
             {% empty %}
