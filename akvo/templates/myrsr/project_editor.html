@@ -91,7 +91,7 @@
                         <div onclick="scrollTo('panel1')">
                             <label for="stepOne" class="stepLabel"><h4>01 - {%  trans 'General information' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId('step-1-helptext');"></span></h4></label>
                         </div>
-                        <input type="radio" name="step" id="stepOne" checked >
+                        <input type="radio" name="step" id="stepOne">
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 <span class="sr-only"></span><span class="progress-percentage"></span>
@@ -129,7 +129,7 @@
                                 </div>
                                 <p class="help-block hidden">{% trans 'If you are reporting multiple levels of projects in RSR, you can specify whether this is a core, sub, or lower sub activity here.' %}</p>
                             </div>
-                            <div class="related-project-container">
+                            <div class="related-project-container" id="related-project-container">
                                 {% for rp in project.related_projects.all %}
                                     {% include "myrsr/project_editor_partials/related_project_input.html" with key=rp.pk %}
                                 {% empty %}
@@ -332,7 +332,7 @@
                         <div class="formBlock">
                             <p class="help-block hidden" id="step-2-helptext">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts.' %}</p>
                             <form role="form" id="admin-step-2">
-                            <div class="contact-information-container">
+                            <div class="contact-information-container" id="contact-information-container">
                                 {% for contact in project.contacts.all %}
                                     {% include "myrsr/project_editor_partials/contact_information_input.html" with key=contact.pk %}
                                 {% empty %}
@@ -407,7 +407,7 @@
                             </div>
                             <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId('partners-helptext');"></span></h5>
                             <p class="help-block hidden" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please contact <a href="mailto:support@akvo.org">support@akvo.org</a> to request to add it to the database.' %}</p>
-                            <div class="partner-container">
+                            <div class="partner-container" id="partner-container">
                                 {% for partnership in project.partnerships.all %}
                                     {% include "myrsr/project_editor_partials/partner_input.html" with key=partnership.pk %}
                                 {% empty %}
@@ -533,7 +533,7 @@
                             </div>
                             <form role="form" id="admin-step-5">
                             <h5>{% trans 'Results' %}</h5>
-                            <div class="result-container">
+                            <div class="result-container" id="result-container">
                                 {% for result in project.results.all %}
                                     {% include "myrsr/project_editor_partials/result_input.html" with key=result.pk %}
                                 {% empty %}
@@ -546,7 +546,7 @@
                                 </div>
                             </div>
                             <h5 class="hidden hide-default">{% trans 'Project conditions' %}</h5>
-                            <div class="condition-container hidden hide-default">
+                            <div class="condition-container hidden hide-default" id="condition-container">
                                 {% for condition in project.conditions.all %}
                                     {% include "myrsr/project_editor_partials/condition_input.html" with key=condition.pk %}
                                 {% empty %}
@@ -625,7 +625,7 @@
                                 <label for="capital-spend-percentage" class="control-label">{% trans 'Capital spend percentage' %}</label>
                                 <p class="help-block hidden">{% trans 'The percentage of the total commitment allocated to or planned for capital expenditure. Content must be a positive decimal number between 0 and 100, with no percentage sign.' %}</p>
                             </div>
-                            <div class="budget-item-container">
+                            <div class="budget-item-container" id="budget-item-container">
                                 {% for item in project.budget_items.all %}
                                     {% include "myrsr/project_editor_partials/budget_item_input.html" with key=item.pk %}
                                 {% empty %}
@@ -650,7 +650,7 @@
                                     <p class="help-block hidden">{% trans 'Enter an IATI code for the common functional classification or country system (this allows for common codes, country-specific codes, or any other classification agreed between countries and donors) see:' %} <a href="http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/" target="_blank">http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/</a>.</p>
                                 </div>
                             </div>
-                            <div class="country-budget-item-container hidden hide-default">
+                            <div class="country-budget-item-container hidden hide-default" id="country-budget-item-container">
                                 {% for item in project.country_budget_items.all %}
                                     {% include "myrsr/project_editor_partials/country_budget_item_input.html" with key=item.pk %}
                                 {% empty %}
@@ -663,7 +663,7 @@
                                 </div>
                             </div>
                             <h5 class="hidden hide-default">{% trans 'Transactions' %}</h5>
-                            <div class="transaction-container hidden hide-default">
+                            <div class="transaction-container hidden hide-default" id="transaction-container">
                                 {% for transaction in project.transactions.all %}
                                     {% include "myrsr/project_editor_partials/transaction_input.html" with key=transaction.pk %}
                                 {% empty %}
@@ -676,7 +676,7 @@
                                 </div>
                             </div>
                             <h5>{% trans 'Planned disbursements' %}</h5>
-                            <div class="planned-disbursement-container">
+                            <div class="planned-disbursement-container" id="planned-disbursement-container">
                                 {% for pd in project.planned_disbursements.all %}
                                     {% include "myrsr/project_editor_partials/planned_disbursement_input.html" with key=pd.pk %}
                                 {% empty %}
@@ -736,7 +736,7 @@
                                 </div>
                             </div>
                             <h5>{% trans 'Project locations' %}</h5>
-                            <div class="project-location-container">
+                            <div class="project-location-container" id="project-location-container">
                                 {% if project.locations.all %}
                                     {% for location in project.locations.all %}
                                         {% include "myrsr/project_editor_partials/project_location_input.html" with key=location.pk %}
@@ -751,7 +751,7 @@
                                 </div>
                             </div>
                             <h5 class="hidden hide-default">{% trans 'Recipient countries' %}</h5>
-                            <div class="recipient-country-container hidden hide-default">
+                            <div class="recipient-country-container hidden hide-default" id="recipient-country-container">
                                 {% for rc in project.recipient_countries.all %}
                                     {% include "myrsr/project_editor_partials/recipient_country_input.html" with key=rc.pk %}
                                 {% empty %}
@@ -764,7 +764,7 @@
                                 </div>
                             </div>
                             <h5 class="hidden hide-default">{% trans 'Recipient regions' %}</h5>
-                            <div class="recipient-region-container hidden hide-default">
+                            <div class="recipient-region-container hidden hide-default" id="recipient-region-container">
                                 {% for rr in project.recipient_regions.all %}
                                     {% include "myrsr/project_editor_partials/recipient_region_input.html" with key=rr.pk %}
                                 {% empty %}
@@ -814,7 +814,7 @@
                             </div>
                             <form role="form" id="admin-step-8">
                             <h5>{% trans 'Sectors' %}</h5>
-                            <div class="sector-container">
+                            <div class="sector-container" id="sector-container">
                                 {% for sector in project.sectors.all %}
                                     {% include "myrsr/project_editor_partials/sector_input.html" with key=sector.pk %}
                                 {% empty %}
@@ -827,7 +827,7 @@
                                 </div>
                             </div>
                             <h5 class="hidden hide-default">{% trans 'Policy markers' %}</h5>
-                            <div class="policy-marker-container hidden hide-default">
+                            <div class="policy-marker-container hidden hide-default" id="policy-marker-container">
                                 {% for marker in project.policy_markers.all %}
                                     {% include "myrsr/project_editor_partials/policy_marker_input.html" with key=marker.pk %}
                                 {% empty %}
@@ -873,7 +873,7 @@
                             <form role="form" id="admin-step-9">
                             <h5>{% trans 'Links' %}</h5>
                             <div class="form-group">
-                                <div class="link-container">
+                                <div class="link-container" id="link-container">
                                     {% for link in project.links.all %}
                                         {% include "myrsr/project_editor_partials/link_input.html" with key=link.pk %}
                                     {% empty %}
@@ -887,7 +887,7 @@
                                 </div>
                             </div>
                             <h5>{% trans 'Document links' %}</h5>
-                            <div class="document-container">
+                            <div class="document-container" id="document-container">
                                 {% for document in project.documents.all %}
                                     {% include "myrsr/project_editor_partials/document_input.html" with key=document.pk %}
                                 {% empty %}

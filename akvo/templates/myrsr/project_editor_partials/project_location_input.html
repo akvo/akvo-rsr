@@ -156,7 +156,7 @@
             </div>
         </div>
         <h5 class="hidden hide-default">{% trans 'Location administratives' %}</h5>
-        <div class="location-administrative-container hidden hide-default">
+        <div class="location-administrative-container hidden hide-default" id="location-administrative-container">
             {% for admin in location.administratives.all %}
                 {% include "myrsr/project_editor_partials/location_administrative_input.html" with key=admin.pk %}
             {% empty %}
