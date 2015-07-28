@@ -2059,6 +2059,17 @@ dd {
     white-space: pre-line;
 }
 
+a.addUpdateBtn {
+  margin-top: 10px;
+  color: white;
+  background-color: $rsrGreen;
+  border-color: $rsrGreen;
+  &:hover {
+    background-color: $anchorLinkHover;
+    border-color: $anchorLinkHover;
+  }
+}
+
 /* Google translation bar styles */
 
 body {

@@ -8,7 +8,7 @@
       {% has_perm 'rsr.add_project' user as can_add_project %}
       {% if can_add_project %}
       <div class="col-sm-6 text-right btnHeader">
-          <button class="btn btn-primary" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
+          <button class="btn btn-success" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
       </div>
       {% endif %}
     </div>
@@ -49,33 +49,20 @@
                     </a>
                     <div class="media-body">
                       <a href="{% url 'project-main' project.id %}">
-                        <h4 class="media-heading">{{ project.title }}</h4>
+                        <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
                       </a>
                       <p class="small">{{ project.subtitle }}</p>
                     </div>
                   </td>
-                  <td>{% bootstrap_icon "globe" %} {{project.primary_location.country}}, {{project.primary_location.country.continent}}</td>
+                  <td>{% bootstrap_icon "globe" %} {% if project.primary_location %}{{project.primary_location.country}}, {{project.primary_location.country.continent}}{% else %}{% trans 'Location unknown' %}{% endif %}</td>
                   <td>{{ project.show_status }}</td>
                   <td>
-                    <div class="twoColumns clearfix">
-                      <a href="{% url 'project-main' project.id %}">View</a>
                       {% has_perm 'rsr.change_project' user project as can_edit_project %}
-                      {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
                       {% if can_edit_project %}
-                        <a href="/myrsr/project_editor/{{project.pk}}/">{% trans 'Edit' %}</a>
-                      {% endif %}
-                      {% if can_publish %}
-                        <a href="/admin/rsr/publishingstatus/?project={{project.pk}}">
-                          {% if project.is_published %}
-                            {% trans 'Unpublish' %}
-                          {% else %}
-                            {% trans 'Publish' %}
-                          {% endif %}
-                        </a>
+                        <a href="{% url 'project_editor' project.pk %}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> {% trans 'Edit' %}</a>
                       {% endif %}
                       {% has_perm 'rsr.post_updates' project as can_add_update %}
-                      <a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a>
-                    </div>
+                        <br/><a href="{% url 'add-update' project.pk %}" class="btn btn-primary addUpdateBtn"><i class="glyphicon glyphicon-camera"></i> {% trans 'Add an update' %}</a>
                   </td>
                 </tr>
               {% endfor %}
