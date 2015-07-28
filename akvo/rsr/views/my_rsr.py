@@ -123,10 +123,14 @@ def my_projects(request):
 
     q = request.GET.get('q')
     if q:
-        q_list = q.split()
-        for q_item in q_list:
-            projects = projects.filter(title__icontains=q_item) | \
-                projects.filter(subtitle__icontains=q_item)
+        try:
+            project_pk = int(q)
+            projects = projects.filter(pk=project_pk)
+        except:
+            q_list = q.split()
+            for q_item in q_list:
+                projects = projects.filter(title__icontains=q_item) | \
+                    projects.filter(subtitle__icontains=q_item)
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, projects, 10)

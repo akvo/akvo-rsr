@@ -1621,6 +1621,15 @@ dd.currencyAmount {
 .updateText {
   white-space: pre-line; }
 
+a.addUpdateBtn {
+  margin-top: 10px;
+  color: white;
+  background-color: #00a79d;
+  border-color: #00a79d; }
+  a.addUpdateBtn:hover {
+    background-color: #ff5500;
+    border-color: #ff5500; }
+
 /* Google translation bar styles */
 body.translationBarActive .nav {
   padding-top: 39px; }

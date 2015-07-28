@@ -56,12 +56,14 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
+        {% if not '/myrsr/projects/' in request.get_full_path %}
         <li>
             <a href="{% if project %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
                class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
-              <i class="fa fa-camera-retro"></i> {% trans 'Add an update' %}
+              <i class="glyphicon glyphicon-camera"></i> {% trans 'Add an update' %}
             </a>
         </li>
+        {% endif %}
         {% if not user.username %}
         <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
         <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
