@@ -61,8 +61,9 @@
                       {% if can_edit_project %}
                         <a href="{% url 'project_editor' project.pk %}" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> {% trans 'Edit' %}</a>
                       {% endif %}
-                      {% has_perm 'rsr.post_updates' project as can_add_update %}
+                      {% if project.is_published %}
                         <br/><a href="{% url 'add-update' project.pk %}" class="btn btn-primary addUpdateBtn"><i class="glyphicon glyphicon-camera"></i> {% trans 'Add an update' %}</a>
+                      {% endif %}
                   </td>
                 </tr>
               {% endfor %}
