@@ -1087,8 +1087,8 @@ function getOnClick(pName, element) {
         // Add any typeaheads, help icons and change listeners for the new project partial
         updateTypeaheads();
         updateHelpIcons('.' + containerSelector);
-        setSectionChangeListener(findAncestor(container, 'formStep'));
-        setSectionCompletionPercentage(findAncestor(container, 'formStep'));
+        setSectionChangeListener($(findAncestor(container, 'formStep')));
+        setSectionCompletionPercentage($(findAncestor(container, 'formStep')));
         setValidationListeners();
 
         // Set onClicks for partials again in case this partial contains other partials
