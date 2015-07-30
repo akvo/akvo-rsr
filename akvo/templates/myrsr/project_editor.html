@@ -164,34 +164,14 @@
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon priority1" name="eventFromPlanned" id="eventFromPlanned" placeholder="{% trans 'Start Date (planned)' %}"
-                                        {% if project.date_start_planned %} value="{{project.date_start_planned|date:'c'}}" {% endif %} />
-                                        <label for="eventFromPlanned" class="control-label">{% trans 'Start Date (planned)' %}:</label>
-                                        <p class="help-block hidden">{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}</p>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="date" class="form-control priority2" name="eventEndPlanned" id="eventEndPlanned" placeholder="{% trans 'End Date (planned)' %}"
-                                        {% if project.date_end_planned %} value="{{project.date_end_planned|date:'c'}}" {% endif %} />
-                                        <label for="eventEndPlanned" class="control-label">{% trans 'End Date (planned)' %}:</label>
-                                        <p class="help-block hidden">{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}</p>
-                                    </div>
+                                    <div class="col-md-6 control priority1" id="eventFromPlanned-container" data-child="{{ project.date_start_planned|date:"d/m/Y" }}" data-label="{% trans 'Start date (planned)' %}" data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"></div>
+                                    <div class="col-md-6 control" id="eventEndPlanned-container" data-child="{{ project.date_end_planned|date:"d/m/Y" }}" data-label="{% trans 'End date (planned)' %}" data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"></div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 control">
-                                        <input type="date" class="form-control ll-skin-melon priority2" name="eventFromActual" id="eventFromActual" placeholder="{% trans 'Start Date (actual)' %}"
-                                        {% if project.date_start_actual %} value="{{project.date_start_actual|date:'c'}}" {% endif %} />
-                                        <label for="eventFromActual" class="control-label">{% trans 'Start Date (actual)' %}:</label>
-                                        <p class="help-block hidden">{% trans 'Enter the actual date that the project started (DD/MM/YYYY).' %}</p>
-                                    </div>
-                                    <div class="col-md-6 control">
-                                        <input type="date" class="form-control priority2" name="eventEndActual" id="eventEndActual" placeholder="{% trans 'End Date (actual)' %}"
-                                        {% if project.date_end_actual %} value="{{project.date_end_actual|date:'c'}}" {% endif %} />
-                                        <label for="eventEndActual" class="control-label">{% trans 'End Date (actual)' %}:</label>
-                                        <p class="help-block hidden">{% trans 'Enter the actual date that the project ended (DD/MM/YYYY).' %}</p>
-                                    </div>
+                                    <div class="col-md-6 control" id="eventFromActual-container" data-child="{{ project.date_start_actual|date:"d/m/Y" }}" data-label="{% trans 'Start date (actual)' %}" data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"></div>
+                                    <div class="col-md-6 control" id="eventEndActual-container" data-child="{{ project.date_end_actual|date:"d/m/Y" }}" data-label="{% trans 'End date (actual)' %}" data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"></div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1077,7 +1057,13 @@
         }
     </script>
 
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+
     {% compressed_js 'react_typeahead' %}
+    {% compressed_css 'react_datepicker_style' %}
+{#    {% compressed_js 'react_onclickoutside' %}#}
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
+    {% compressed_js 'react_datepicker' %}
     {% compressed_js 'myrsr_admin' %}
     
 {% endblock %}
