@@ -1063,7 +1063,8 @@
     {% compressed_css 'react_datepicker_style' %}
 {#    {% compressed_js 'react_onclickoutside' %}#}
     <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
-    {% compressed_js 'react_datepicker' %}
+{#    {% compressed_js 'react_datepicker' %}#}
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
     {% compressed_js 'myrsr_admin' %}
     
 {% endblock %}
