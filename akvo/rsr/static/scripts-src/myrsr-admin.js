@@ -27,9 +27,6 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 
-// DATEPICKERS
-var datepickers = ['eventFromPlanned', 'eventEndPlanned', 'eventFromActual', 'eventEndActual'];
-
 // TYPEAHEADS
 var MAX_RETRIES = 2;
 var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
@@ -375,60 +372,9 @@ function submitStep(step, level) {
             form_data += '&value-' + partner_input_id + '=' + partner_input_value;
         }
     } else if (step === '5') {
-        if (level === 3) {
-            var indicatorPeriods;
-
-            indicatorPeriods = document.querySelectorAll('.indicator-period-item');
-
-            for (var n = 0; n < indicatorPeriods.length; n++) {
-                var periodId;
-
-                periodId = indicatorPeriods[n].getAttribute('id').replace('indicator_period-', '');
-
-                form_data += '&indicator-period-start-' + periodId + '=' + document.querySelector('#indicator-period-start-' + periodId).value;
-                form_data += '&indicator-period-end-' + periodId + '=' + document.querySelector('#indicator-period-end-' + periodId).value;
-            }
-        }
-
         form_data += '&level=' + level;
     } else if (step === '6') {
-        var budgetItems, transactions, plannedDisbursements, receiverOrgs, providerOrgs;
-
-        budgetItems = document.querySelectorAll('.budget-item');
-        transactions = document.querySelectorAll('.transaction-item');
-        plannedDisbursements = document.querySelectorAll('.planned-disbursement-item');
-
-        for (var k=0; k < budgetItems.length; k++) {
-            var budgetItemNodeId, budgetItemId;
-
-            budgetItemNodeId = budgetItems[k].getAttribute('id');
-            budgetItemId = budgetItemNodeId.replace('budget_item-', '');
-
-            form_data += '&budget-item-value-date-' + budgetItemId + '=' + document.querySelector('#budget-item-value-date-' + budgetItemId).value;
-            form_data += '&budget-item-period-start-' + budgetItemId + '=' + document.querySelector('#budget-item-period-start-' + budgetItemId).value;
-            form_data += '&budget-item-period-end-' + budgetItemId + '=' + document.querySelector('#budget-item-period-end-' + budgetItemId).value;
-        }
-
-        for (var l=0; l < transactions.length; l++) {
-            var transactionNodeId, transactionId;
-
-            transactionNodeId = transactions[l].getAttribute('id');
-            transactionId = transactionNodeId.replace('transaction-', '');
-
-            form_data += '&transaction-date-' + transactionId + '=' + document.querySelector('#transaction-date-' + transactionId).value;
-            form_data += '&transaction-value-date-' + transactionId + '=' + document.querySelector('#transaction-value-date-' + transactionId).value;
-        }
-
-        for (var m=0; m < plannedDisbursements.length; m++) {
-            var plannedDisbursementNodeId, plannedDisbursementId;
-
-            plannedDisbursementNodeId = plannedDisbursements[m].getAttribute('id');
-            plannedDisbursementId = plannedDisbursementNodeId.replace('planned_disbursement-', '');
-
-            form_data += '&planned-disbursement-period-start-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-period-start-' + plannedDisbursementId).value;
-            form_data += '&planned-disbursement-period-end-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-period-end-' + plannedDisbursementId).value;
-            form_data += '&planned-disbursement-value-date-' + plannedDisbursementId + '=' + document.querySelector('#planned-disbursement-value-date-' + plannedDisbursementId).value;
-        }
+        var receiverOrgs, providerOrgs;
 
         receiverOrgs = form.getElementsByClassName('transaction-receiver-org-input');
         providerOrgs = form.getElementsByClassName('transaction-provider-org-input');
@@ -1055,6 +1001,10 @@ function getOnClick(pName, element) {
             addCountToName($(this));
         });
 
+        $(partial).find('.datepicker-container').each( function() {
+            addCountToName($(this));
+        });
+
         $(partial).find('.typeahead-container').each( function() {
             addCountToClass($(this));
         });
@@ -1086,7 +1036,8 @@ function getOnClick(pName, element) {
         container.appendChild(partial);
         partialsCount[pName] += 1;
 
-        // Add any typeaheads, help icons and change listeners for the new project partial
+        // Add any datepickers and typeaheads, help icons and change listeners for the new project partial
+        setDatepickers();
         updateTypeaheads();
         updateHelpIcons('.' + containerSelector);
         setSectionChangeListener($(findAncestor(container, 'formStep')));
@@ -1676,85 +1627,92 @@ function getProjectPublish(publishingStatusId, publishButton) {
     };
 }
 
-function fireEvent(element,event){
-    if (document.createEventObject){
-        // dispatch for IE
-        var evt = document.createEventObject();
-        return element.fireEvent('on'+event,evt)
-    }
-    else{
-        // dispatch for firefox + others
-        var evt = document.createEvent("HTMLEvents");
-        evt.initEvent(event, true, true ); // event type,bubbling,cancelable
-        return !element.dispatchEvent(evt);
-    }
-}
-
 function setDatepickers() {
-    for (var i=0; i < datepickers.length; i++) {
-        var containerId, containerNode, datepickerId, DatePickerComponent, helptext, initialDate, inputNode, inputValue, label;
+    var datepickerContainers;
 
-        datepickerId = datepickers[i];
+    datepickerContainers = document.getElementsByClassName('datepicker-container');
 
-        containerId = datepickerId + '-container';
-        containerNode = document.getElementById(containerId);
+    for (var i=0; i < datepickerContainers.length; i++) {
+        var datepickerId, DatePickerComponent, datepickerContainer, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
 
-        inputValue = containerNode.getAttribute('data-child');
+        datepickerContainer = datepickerContainers[i];
 
-        if (inputValue !== "") {
-            initialDate = moment(inputValue, "DD-MM-YYYY");
-        } else {
-            initialDate = null;
-        }
+        // Check if datepicker already has been set
+        if (datepickerContainer.className.indexOf('has-datepicker') == -1) {
+            datepickerId = datepickerContainer.getAttribute('id');
 
-        DatePickerComponent = React.createClass({
-            displayName: datepickerId,
-
-            getInitialState: function () {
-                return {
-                    initialDate: initialDate
-                };
-            },
-
-            handleDateChange: function (date) {
-                this.setState({
-                    initialDate: date
-                });
-            },
-
-            render: function () {
-                return React.DOM.div(null, 
-                    DatePicker(
-                    {locale:  "en",
-                    placeholderText:  "",
-                    dateFormat:  "DD/MM/YYYY",
-                    selected:  this.state.initialDate,
-                    onChange:  this.handleDateChange}
-                    )
-                );
+            // Set initial value of datepicker
+            inputValue = datepickerContainer.getAttribute('data-child');
+            if (inputValue !== "") {
+                initialDate = moment(inputValue, "DD-MM-YYYY");
+            } else {
+                initialDate = null;
             }
-        });
 
-        React.render(DatePickerComponent( {key:datepickerId} ), containerNode);
+            DatePickerComponent = React.createClass({
+                displayName: datepickerId,
 
-        inputNode = containerNode.getElementsByClassName('datepicker__input')[0];
-        inputNode.setAttribute("name", datepickerId);
-        inputNode.className += ' form-control';
+                getInitialState: function () {
+                    return {
+                        initialDate: initialDate
+                    };
+                },
 
-        if (datepickerId === 'eventFromPlanned') {
-            inputNode.className += ' priority1';
+                handleDateChange: function (date) {
+                    this.setState({
+                        initialDate: date
+                    });
+                },
+
+                render: function () {
+                    return React.DOM.div(null, 
+                        DatePicker(
+                        {locale:  "en",
+                        placeholderText:  "",
+                        dateFormat:  "DD/MM/YYYY",
+                        selected:  this.state.initialDate,
+                        onChange:  this.handleDateChange}
+                        )
+                    );
+                }
+            });
+
+            React.render(DatePickerComponent( {key:datepickerId} ), datepickerContainer);
+
+            // Set id and name of datepicker input
+            inputNode = datepickerContainer.getElementsByClassName('datepicker__input')[0];
+            inputNode.setAttribute("id", datepickerId);
+            inputNode.setAttribute("name", datepickerId);
+
+            // Set classes of datepicker input
+            inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
+
+            // Set addtional attributes of input
+            extraAttributes = datepickerContainer.getAttribute('data-attributes');
+            if (extraAttributes !== null) {
+                var extraAttributesList = extraAttributes.split(' ');
+                for (var j = 0; j < extraAttributesList.length; j++) {
+                    if (extraAttributesList[j] !== '') {
+                        inputNode.setAttribute(extraAttributesList[j], '');
+                    }
+                }
+            }
+
+            // Set label of datepicker
+            label = document.createElement('label');
+            label.setAttribute("for", datepickerId);
+            label.setAttribute("class", "control-label");
+            label.innerHTML = datepickerContainer.getAttribute('data-label');
+            inputNode.parentNode.appendChild(label);
+
+            // Set helptext of datepicker
+            helptext = document.createElement('p');
+            helptext.setAttribute("class", "help-block hidden");
+            helptext.innerHTML = datepickerContainer.getAttribute('data-helptext');
+            inputNode.parentNode.appendChild(helptext);
+
+            datepickerContainer.className += ' has-datepicker';
         }
-
-        label = document.createElement('label');
-        label.setAttribute("for", datepickerId);
-        label.setAttribute("class", "control-label");
-        label.innerHTML = containerNode.getAttribute('data-label');
-        inputNode.parentNode.appendChild(label);
-
-        helptext = document.createElement('p');
-        helptext.setAttribute("class", "help-block hidden");
-        helptext.innerHTML = containerNode.getAttribute('data-helptext');
-        inputNode.parentNode.appendChild(helptext);
     }
 }
 

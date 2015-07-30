@@ -164,14 +164,30 @@
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 control priority1" id="eventFromPlanned-container" data-child="{{ project.date_start_planned|date:"d/m/Y" }}" data-label="{% trans 'Start date (planned)' %}" data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"></div>
-                                    <div class="col-md-6 control" id="eventEndPlanned-container" data-child="{{ project.date_end_planned|date:"d/m/Y" }}" data-label="{% trans 'End date (planned)' %}" data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"></div>
+                                    <div class="col-md-6 control priority1 datepicker-container" id="eventFromPlanned"
+                                         data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
+                                         data-label="{% trans 'Start date (planned)' %}"
+                                         data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
+                                         data-classes="priority1"></div>
+                                    <div class="col-md-6 control datepicker-container" id="eventEndPlanned"
+                                         data-child="{{ project.date_end_planned|date:"d/m/Y" }}"
+                                         data-label="{% trans 'End date (planned)' %}"
+                                         data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"
+                                         data-classes="priority2"></div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 control" id="eventFromActual-container" data-child="{{ project.date_start_actual|date:"d/m/Y" }}" data-label="{% trans 'Start date (actual)' %}" data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"></div>
-                                    <div class="col-md-6 control" id="eventEndActual-container" data-child="{{ project.date_end_actual|date:"d/m/Y" }}" data-label="{% trans 'End date (actual)' %}" data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"></div>
+                                    <div class="col-md-6 control datepicker-container" id="eventFromActual"
+                                         data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
+                                         data-label="{% trans 'Start date (actual)' %}"
+                                         data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
+                                         data-classes="priority2"></div>
+                                    <div class="col-md-6 control datepicker-container" id="eventEndActual"
+                                         data-child="{{ project.date_end_actual|date:"d/m/Y" }}"
+                                         data-label="{% trans 'End date (actual)' %}"
+                                         data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"
+                                         data-classes="priority2"></div>
                                 </div>
                             </div>
                             <div class="form-group">
