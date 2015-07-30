@@ -96,7 +96,7 @@ urlpatterns = patterns(
         name='project_iati_check'),
 )
 
-# Project admin
+# Project editor
 urlpatterns += patterns(
     '',
     url(r'^project/(?P<project_pk>[0-9]+)/delete_document/(?P<document_pk>[0-9]+)/$',

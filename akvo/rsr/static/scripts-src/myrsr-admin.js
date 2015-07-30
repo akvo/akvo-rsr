@@ -27,6 +27,9 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 
+// DATEPICKERS
+var datepickers = ['eventFromPlanned', 'eventEndPlanned', 'eventFromActual', 'eventEndActual'];
+
 // TYPEAHEADS
 var MAX_RETRIES = 2;
 var projectsAPIUrl = '/rest/v1/typeaheads/projects?format=json';
@@ -328,11 +331,6 @@ function submitStep(step, level) {
 
     // Custom code per step
     if (step === '1') {
-        form_data += '&eventFromPlanned=' + document.querySelector('#eventFromPlanned').value;
-        form_data += '&eventFromActual=' + document.querySelector('#eventFromActual').value;
-        form_data += '&eventEndPlanned=' + document.querySelector('#eventEndPlanned').value;
-        form_data += '&eventEndActual=' + document.querySelector('#eventEndActual').value;
-
         var related_projects = form.getElementsByClassName('related-project-input');
 
         for (var i=0; i < related_projects.length; i++) {
@@ -521,6 +519,10 @@ function submitStep(step, level) {
                 message = '<div class="save-success"><span class="glyphicon glyphicon-ok-circle"></span> Saved successfully!</div>';
             }
 
+            var section = findAncestor(form, 'formStep');
+            setSectionCompletionPercentage($(section));
+            setPageCompletionPercentage();
+
             savingStep(false, step, message);
             return false;
         } else {
@@ -623,7 +625,7 @@ function deletePhoto() {
     var api_url, request;
 
     // Create request
-    api_url = '/rest/v1/project/' + defaultValues.project_id + '/admin_delete_photo/?format=json';
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/delete_photo/?format=json';
 
     request = new XMLHttpRequest();
     request.open('POST', api_url, true);
@@ -664,7 +666,7 @@ function deleteDocument(document_id) {
     var api_url, request;
 
     // Create request
-    api_url = '/rest/v1/project/' + defaultValues.project_id + '/admin_delete_document/' + document_id + '/?format=json';
+    api_url = '/rest/v1/project/' + defaultValues.project_id + '/delete_document/' + document_id + '/?format=json';
 
     request = new XMLHttpRequest();
     request.open('POST', api_url, true);
@@ -1336,7 +1338,26 @@ function setPageCompletionPercentage() {
     var numInputs = inputResults[0];
     var numInputsCompleted = inputResults[1];
 
-    renderCompletionPercentage(numInputsCompleted, numInputs, $('.formOverviewInfo'));
+    var completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, $('.formOverviewInfo'));
+
+    // Enable publishing when all is filled in
+    if (completionPercentage === 100) {
+        try {
+            publishButton = document.getElementById('publishProject');
+            publishButton.removeAttribute('disabled');
+            publishButton.className = publishButton.className.replace('btn-danger', 'btn-success');
+        } catch (error) {
+            // Do nothing, no publish button
+        }
+    } else {
+        try {
+            publishButton = document.getElementById('publishProject');
+            publishButton.setAttribute('disabled', '');
+            publishButton.className = publishButton.className.replace('btn-success', 'btn-danger');
+        } catch (error) {
+            // Do nothing, no publish button
+        }
+    }
 }
 
 function getInputResults(section) {
@@ -1394,26 +1415,9 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
         completionClass = 'complete';
     }
 
-    // Enable publishing when all is filled in
-    if (completionPercentage === 100) {
-        try {
-            publishButton = document.getElementById('publishProject');
-            publishButton.removeAttribute('disabled');
-            publishButton.className = publishButton.className.replace('btn-danger', 'btn-success');
-        } catch (error) {
-            // Do nothing, no publish button
-        }
-    } else {
-        try {
-            publishButton = document.getElementById('publishProject');
-            publishButton.setAttribute('disabled', '');
-            publishButton.className = publishButton.className.replace('btn-success', 'btn-danger');
-        } catch (error) {
-            // Do nothing, no publish button
-        }
-    }
-
     section.find('div.progress-bar').attr('data-completion', completionClass);
+
+    return completionPercentage;
 }
 
 function setSectionChangeListener(section) {
@@ -1672,8 +1676,92 @@ function getProjectPublish(publishingStatusId, publishButton) {
     };
 }
 
+function fireEvent(element,event){
+    if (document.createEventObject){
+        // dispatch for IE
+        var evt = document.createEventObject();
+        return element.fireEvent('on'+event,evt)
+    }
+    else{
+        // dispatch for firefox + others
+        var evt = document.createEvent("HTMLEvents");
+        evt.initEvent(event, true, true ); // event type,bubbling,cancelable
+        return !element.dispatchEvent(evt);
+    }
+}
+
+function setDatepickers() {
+    for (var i=0; i < datepickers.length; i++) {
+        var containerId, containerNode, datepickerId, DatePickerComponent, helptext, initialDate, inputNode, inputValue, label;
+
+        datepickerId = datepickers[i];
+
+        containerId = datepickerId + '-container';
+        containerNode = document.getElementById(containerId);
+
+        inputValue = containerNode.getAttribute('data-child');
+
+        if (inputValue !== "") {
+            initialDate = moment(inputValue, "DD-MM-YYYY");
+        } else {
+            initialDate = null;
+        }
+
+        DatePickerComponent = React.createClass({
+            displayName: datepickerId,
+
+            getInitialState: function () {
+                return {
+                    initialDate: initialDate
+                };
+            },
+
+            handleDateChange: function (date) {
+                this.setState({
+                    initialDate: date
+                });
+            },
+
+            render: function () {
+                return React.DOM.div(null, 
+                    DatePicker(
+                    {locale:  "en",
+                    placeholderText:  "",
+                    dateFormat:  "DD/MM/YYYY",
+                    selected:  this.state.initialDate,
+                    onChange:  this.handleDateChange}
+                    )
+                );
+            }
+        });
+
+        React.render(DatePickerComponent( {key:datepickerId} ), containerNode);
+
+        inputNode = containerNode.getElementsByClassName('datepicker__input')[0];
+        inputNode.setAttribute("name", datepickerId);
+        inputNode.className += ' form-control';
+
+        if (datepickerId === 'eventFromPlanned') {
+            inputNode.className += ' priority1';
+        }
+
+        label = document.createElement('label');
+        label.setAttribute("for", datepickerId);
+        label.setAttribute("class", "control-label");
+        label.innerHTML = containerNode.getAttribute('data-label');
+        inputNode.parentNode.appendChild(label);
+
+        helptext = document.createElement('p');
+        helptext.setAttribute("class", "help-block hidden");
+        helptext.innerHTML = containerNode.getAttribute('data-helptext');
+        inputNode.parentNode.appendChild(helptext);
+    }
+}
+
 
 $(document).ready(function() {
+    setDatepickers();
+
     setPublishOnClick();
     setSubmitOnClicks();
     setPartialOnClicks();

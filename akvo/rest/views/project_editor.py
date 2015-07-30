@@ -12,6 +12,7 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel
                              ProjectLocation, RecipientCountry, RecipientRegion, RelatedProject,
                              Result, Sector, Transaction, TransactionSector)
 
+from datetime import datetime
 from decimal import Decimal
 from django.http import HttpResponseForbidden
 
@@ -31,6 +32,13 @@ def save_field(project, field, form_field, form_data, errors):
         errors.append({'name': form_field, 'error': str(e).capitalize()})
 
     return errors
+
+
+def convert_date(date_string):
+    try:
+        return datetime.strptime(date_string, "%d/%m/%Y").strftime("%Y-%m-%d")
+    except:
+        return None
 
 
 @api_view(['POST'])
@@ -83,18 +91,18 @@ def project_editor_step1(request, pk=None):
         errors = save_field(project, 'iati_activity_id', 'iatiId', data['iatiId'], errors)
         errors = save_field(project, 'status', 'projectStatus', data['projectStatus'], errors)
 
-        date_start_planned = data['eventFromPlanned'] if data['eventFromPlanned'] else None
+        date_start_planned = convert_date(data['eventFromPlanned']) if data['eventFromPlanned'] else None
         errors = save_field(
             project, 'date_start_planned', 'eventFromPlanned', date_start_planned, errors
         )
 
-        date_start_actual = data['eventFromActual'] if data['eventFromActual'] else None
+        date_start_actual = convert_date(data['eventFromActual']) if data['eventFromActual'] else None
         errors = save_field(project, 'date_start_actual', 'eventFromActual', date_start_actual, errors)
 
-        date_end_planned = data['eventEndPlanned'] if data['eventEndPlanned'] else None
+        date_end_planned = convert_date(data['eventEndPlanned']) if data['eventEndPlanned'] else None
         errors = save_field(project, 'date_end_planned', 'eventEndPlanned', date_end_planned, errors)
 
-        date_end_actual = data['eventEndActual'] if data['eventEndActual'] else None
+        date_end_actual = convert_date(data['eventEndActual']) if data['eventEndActual'] else None
         errors = save_field(project, 'date_end_actual', 'eventEndActual', date_end_actual, errors)
 
         errors = save_field(project, 'language', 'projectLanguage', data['projectLanguage'], errors)
