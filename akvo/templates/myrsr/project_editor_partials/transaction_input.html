@@ -20,18 +20,16 @@
                     <label class="control-label" for="transaction-value{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value' %}</label>
                     <p class="help-block hidden">{% trans 'Enter the transaction amount.' %}</p>
                 </div>
-                <div class="col-md-4 control">
-                    <input type="date" class="form-control priority3" name="transaction-date{% if key %}-{{ key }}{% endif %}" id="transaction-date{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction date' %}"
-                    {% if transaction.transaction_date %} value="{{transaction.transaction_date|date:'c'}}" {% endif %}>
-                    <label class="control-label" for="transaction-date{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction date' %}</label>
-                    <p class="help-block hidden">{% trans 'Enter the financial reporting date that the transaction was/will be undertaken.' %}</p>
-                </div>
-                <div class="col-md-4 control">
-                    <input type="date" class="form-control priority3" name="transaction-value-date{% if key %}-{{ key }}{% endif %}" id="transaction-value-date{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Transaction value date' %}"
-                    {% if transaction.value_date %} value="{{transaction.value_date|date:'c'}}" {% endif %}>
-                    <label class="control-label" for="transaction-value-date{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value date' %}</label>
-                    <p class="help-block hidden">{% trans 'The date to be used for determining the exchange rate for currency conversions of the transaction.' %}</p>
-                </div>
+                <div class="col-md-4 control priority3 datepicker-container" id="transaction-date{% if key %}-{{ key }}{% endif %}"
+                     data-child="{{ transaction.transaction_date|date:"d/m/Y" }}"
+                     data-label="{% trans 'Transaction date' %}"
+                     data-helptext="{% trans 'Enter the financial reporting date that the transaction was/will be undertaken.' %}"
+                     data-classes="priority3"></div>
+                <div class="col-md-4 control priority3 datepicker-container" id="transaction-value-date{% if key %}-{{ key }}{% endif %}"
+                     data-child="{{ transaction.value_date|date:"d/m/Y" }}"
+                     data-label="{% trans 'Transaction value date' %}"
+                     data-helptext="{% trans 'The date to be used for determining the exchange rate for currency conversions of the transaction.' %}"
+                     data-classes="priority3"></div>
             </div>
         </div>
         <div class="form-group">

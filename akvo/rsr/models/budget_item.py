@@ -59,18 +59,18 @@ class BudgetItem(models.Model):
 
     def __unicode__(self):
         if self.label:
-            if self.label.label in ['Other', 'other'] and self.other_extra:
+            if self.label.label == 'Other' and self.other_extra:
                 budget_unicode = self.other_extra
             else:
                 budget_unicode = self.label.label
         else:
-            budget_unicode = _(u'No budget item specified')
+            budget_unicode = u'%s' % _(u'No budget item specified')
 
         if self.amount:
             budget_unicode += u' - %s %s' % (self.project.get_currency_display(),
                                              unicode('{:,}'.format(int(self.amount))))
         else:
-            budget_unicode += _(u' - no amount specified')
+            budget_unicode += u' - %s' % _(u'No amount specified')
 
         if self.type == '2':
             budget_unicode += u' %s' % _(u'(Revised)')

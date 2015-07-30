@@ -740,11 +740,11 @@ def project_editor_step5(request, pk=None):
 
                 if ip:
                     ip_pstart_key = 'indicator-period-start-' + ip_ind_id
-                    ip_pstart = data[ip_pstart_key] if data[ip_pstart_key] else None
+                    ip_pstart = convert_date(data[ip_pstart_key]) if data[ip_pstart_key] else None
                     errors = save_field(ip, 'period_start', ip_pstart_key, ip_pstart, errors)
 
                     ip_pend_key = 'indicator-period-end-' + ip_ind_id
-                    ip_pend = data[ip_pend_key] if data[ip_pend_key] else None
+                    ip_pend = convert_date(data[ip_pend_key]) if data[ip_pend_key] else None
                     errors = save_field(ip, 'period_end', ip_pend_key, ip_pend, errors)
 
                     ip_target_key = 'indicator-period-target-value-' + ip_ind_id
@@ -879,19 +879,19 @@ def project_editor_step6(request, pk=None):
                         errors.append({'name': budget_label_key, 'error': error})
 
                     budget_valdate_key = 'budget-item-value-date-' + budget_id
-                    budget_value_date = data[budget_valdate_key] if data[budget_valdate_key] else None
+                    budget_value_date = convert_date(data[budget_valdate_key]) if data[budget_valdate_key] else None
                     errors = save_field(
                         budget, 'value_date', budget_valdate_key, budget_value_date, errors
                     )
 
                     budget_pstart_key = 'budget-item-period-start-' + budget_id
-                    budget_pstart = data[budget_pstart_key] if data[budget_pstart_key] else None
+                    budget_pstart = convert_date(data[budget_pstart_key]) if data[budget_pstart_key] else None
                     errors = save_field(
                         budget, 'period_start', budget_pstart_key, budget_pstart, errors
                     )
 
                     budget_pend_key = 'budget-item-period-end-' + budget_id
-                    budget_pend = data[budget_pend_key] if data[budget_pend_key] else None
+                    budget_pend = convert_date(data[budget_pend_key]) if data[budget_pend_key] else None
                     errors = save_field(
                         budget, 'period_end', budget_pend_key, budget_pend, errors
                     )
@@ -998,11 +998,11 @@ def project_editor_step6(request, pk=None):
                         errors.append({'name': trans_value_key, 'error': error})
 
                     trans_date_key = 'transaction-date-' + trans_id
-                    trans_date = data[trans_date_key] if data[trans_date_key] else None
+                    trans_date = convert_date(data[trans_date_key]) if data[trans_date_key] else None
                     errors = save_field(trans, 'transaction_date', trans_date_key, trans_date, errors)
 
                     trans_valdate_key = 'transaction-value-date-' + trans_id
-                    trans_valdate = data[trans_valdate_key] if data[trans_valdate_key] else None
+                    trans_valdate = convert_date(data[trans_valdate_key]) if data[trans_valdate_key] else None
                     errors = save_field(trans, 'value_date', trans_valdate_key, trans_valdate, errors)
 
                     trans_ref_key = 'transaction-reference-' + trans_id
@@ -1131,18 +1131,18 @@ def project_editor_step6(request, pk=None):
                         errors.append({'name': pd_value_key, 'error': error})
 
                     pd_valdat_key = 'planned-disbursement-value-date-' + pd_id
-                    pd_valdat = data[pd_valdat_key] if data[pd_valdat_key] else None
+                    pd_valdat = convert_date(data[pd_valdat_key]) if data[pd_valdat_key] else None
                     errors = save_field(pd, 'value_date', pd_valdat_key, pd_valdat, errors)
 
                     pd_type_key = 'planned-disbursement-type-' + pd_id
                     errors = save_field(pd, 'type', pd_type_key, data[pd_type_key], errors)
 
                     pd_pstart_key = 'planned-disbursement-period-start-' + pd_id
-                    pd_pstart = data[pd_pstart_key] if data[pd_pstart_key] else None
+                    pd_pstart = convert_date(data[pd_pstart_key]) if data[pd_pstart_key] else None
                     errors = save_field(pd, 'period_start', pd_pstart_key, pd_pstart, errors)
 
                     pd_pend_key = 'planned-disbursement-period-end-' + pd_id
-                    pd_pend = data[pd_pend_key] if data[pd_pend_key] else None
+                    pd_pend = convert_date(data[pd_pend_key]) if data[pd_pend_key] else None
                     errors = save_field(pd, 'period_end', pd_pend_key, pd_pend, errors)
 
                     if new_objects and new_objects[-1]['new_id'] == str(pd.pk):

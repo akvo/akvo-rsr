@@ -20,12 +20,11 @@
                     <label class="control-label" for="planned-disbursement-value{% if key %}-{{ key }}{% endif %}">{% trans 'Planned disbursement value' %}</label>
                     <p class="help-block hidden">{% trans 'This should only be used to report specific planned cash transfers. ' %}</p>
                 </div>
-                <div class="col-md-6 control">
-                    <input type="date" class="form-control priority2" name="planned-disbursement-value-date{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-value-date{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Planned disbursement value date' %}"
-                    {% if pd.value_date %} value="{{pd.value_date|date:'c'}}" {% endif %}>
-                    <label class="control-label" for="planned-disbursement-value-date{% if key %}-{{ key }}{% endif %}">{% trans 'Planned disbursement value date' %}</label>
-                    <p class="help-block hidden">{% trans 'Enter the specific date (DD/MM/YYYY) for the planned disbursement value.' %}</p>
-                </div>
+                <div class="col-md-6 control priority2 datepicker-container" id="planned-disbursement-value-date{% if key %}-{{ key }}{% endif %}"
+                     data-child="{{ pd.value_date|date:"d/m/Y" }}"
+                     data-label="{% trans 'Planned disbursement value date' %}"
+                     data-helptext="{% trans 'Enter the specific date (DD/MM/YYYY) for the planned disbursement value.' %}"
+                     data-classes="priority2"></div>
             </div>
         </div>
         <div class="form-group">
@@ -41,18 +40,16 @@
         </div>
         <div class="form-group">
             <div class="row">
-                <div class="col-md-6 control">
-                    <input type="date" class="form-control priority2" name="planned-disbursement-period-start{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-period-start{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Planned disbursement period start' %}"
-                    {% if pd.period_start %} value="{{pd.period_start|date:'c'}}" {% endif %}>
-                    <label class="control-label" for="planned-disbursement-period-start{% if key %}-{{ key }}{% endif %}">{% trans 'Planned disbursement period start' %}</label>
-                    <p class="help-block hidden">{% trans 'The exact date of the planned disbursement OR the starting date for the disbursement period (DD/MM/YYYY).' %}</p>
-                </div>
-                <div class="col-md-6 control">
-                    <input type="date" class="form-control priority2" name="planned-disbursement-period-end{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-period-end{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Planned disbursement period end' %}"
-                    {% if pd.period_end %} value="{{pd.period_end|date:'c'}}" {% endif %}>
-                    <label class="control-label" for="planned-disbursement-period-end{% if key %}-{{ key }}{% endif %}">{% trans 'Planned disbursement period end' %}</label>
-                    <p class="help-block hidden">{% trans 'Enter the end date (DD/MM/YYYY) for the disbursement period.' %}</p>
-                </div>
+                <div class="col-md-6 control priority2 datepicker-container" id="planned-disbursement-period-start{% if key %}-{{ key }}{% endif %}"
+                     data-child="{{ pd.period_start|date:"d/m/Y" }}"
+                     data-label="{% trans 'Planned disbursement period start' %}"
+                     data-helptext="{% trans 'The exact date of the planned disbursement OR the starting date for the disbursement period (DD/MM/YYYY).' %}"
+                     data-classes="priority2"></div>
+                <div class="col-md-6 control priority2 datepicker-container" id="planned-disbursement-period-end{% if key %}-{{ key }}{% endif %}"
+                     data-child="{{ pd.period_end|date:"d/m/Y" }}"
+                     data-label="{% trans 'Planned disbursement period end' %}"
+                     data-helptext="{% trans 'Enter the end date (DD/MM/YYYY) for the disbursement period.' %}"
+                     data-classes="priority2"></div>
             </div>
         </div>
     </div>
