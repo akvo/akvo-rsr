@@ -14,7 +14,7 @@
                 <div class="col-md-4">
                     <div class="select-group control">
                         <select name="recipient-country{% if key %}-{{ key }}{% endif %}" id="recipient-country{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                            <option value="" {% if not rc %} selected="selected" {% endif %}>{% trans 'Recipient country' %}:</option>
+                            <option value="" {% if not rc %} selected="selected" {% endif %}></option>
                             {% for country in iati_countries %}
                                 <option value="{{ country.code }}" {% if rc.country == country.code %} selected="selected" {% endif %}>{{ country.code }} - {{ country.name }}</option>
                             {% endfor %}
@@ -26,7 +26,7 @@
                 <div class="col-md-4 control">
                     <div class="input-group priority3">
                         <input type="text" class="form-control" id="recipient-country-percentage{% if key %}-{{ key }}{% endif %}"
-                        name="recipient-country-percentage{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Recipient country percentage' %}"
+                        name="recipient-country-percentage{% if key %}-{{ key }}{% endif %}"
                         {% if rc.percentage %} value="{{rc.percentage}}" {% endif %}>
                         <span class="input-group-addon">%</span>
                     </div>
@@ -35,7 +35,7 @@
                 </div>
                  <div class="col-md-4 control">
                     <input type="text" class="form-control priority3" id="recipient-country-description{% if key %}-{{ key }}{% endif %}"
-                    name="recipient-country-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Recipient country description' %}"
+                    name="recipient-country-description{% if key %}-{{ key }}{% endif %}"
                     {% if rc.text %} value="{{rc.text}}" {% endif %} maxlength="50">
                     <label class="control-label" for="recipient-country-description{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient country description' %}</label>
                     <p class="help-block hidden">{% trans 'Enter additional information about the recipient country, if necessary.' %}</p>

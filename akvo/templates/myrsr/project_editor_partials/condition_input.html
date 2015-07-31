@@ -14,7 +14,7 @@
                 <div class="col-md-3">
                     <div class="select-group control">
                         <select name="condition-type{% if key %}-{{ key }}{% endif %}" id="condition-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                            <option value="" {% if not condition.type %} selected="selected" {% endif %}>{% trans 'Condition type' %}:</option>
+                            <option value="" {% if not condition.type %} selected="selected" {% endif %}></option>
                             {% for entry in condition_types %}
                                 <option value="{{ entry.code }}" {% if condition.type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
                             {% endfor %}
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="col-md-9 control">
-                    <textarea id="condition-text{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="condition-text{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Condition' %}" maxlength="100">{% if condition.text %}{{condition.text}}{% endif %}</textarea>
+                    <textarea id="condition-text{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="condition-text{% if key %}-{{ key }}{% endif %}" maxlength="100">{% if condition.text %}{{condition.text}}{% endif %}</textarea>
                     <label class="control-label" for="condition-text{% if key %}-{{ key }}{% endif %}">{% trans 'Condition' %}</label>
                     <p class="help-block hidden">{% trans 'The text of a specific condition attached to the Project. Organisation-wide terms and conditions that apply to all activities should not be reported here, but in either iati-organisation/document-link or iati-activity-document-link.' %}</p>
                 </div>

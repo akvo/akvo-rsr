@@ -28,13 +28,13 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-target-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Target value' %}"
+                    <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-target-value{% if key %}-{{ key }}{% endif %}"
                     {% if period.target_value %} value="{{period.target_value}}" {% endif %} {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="50">
                     <label class="control-label" for="indicator-period-target-value{% if key %}-{{ key }}{% endif %}">{% trans 'Target value' %}</label>
                     <p class="help-block hidden">{% trans 'The target value for the above period.' %}</p>
                 </div>
                 <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Actual value' %}"
+                    <input type="text" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}" id="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}"
                     {% if period.actual_value %} value="{{period.actual_value}}" {% endif %} {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="50">
                     <label class="control-label" for="indicator-period-actual-value{% if key %}-{{ key }}{% endif %}">{% trans 'Actual value' %}</label>
                     <p class="help-block hidden">{% trans 'A record of the achieved result for this period.' %}</p>
@@ -45,13 +45,13 @@
             <div class="row hidden hide-default">
                 <div class="col-md-6 control">
                     <textarea id="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}"
-                    placeholder="{% trans 'Target value comment' %}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000">{{period.target_comment}}</textarea>
+                    {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000">{{period.target_comment}}</textarea>
                     <label class="control-label" for="indicator-period-target-value-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Target value comment' %}</label>
                     <p class="help-block hidden">{% trans 'Here you can provide extra information on the target value, if needed.' %}</p>
                 </div>
                 <div class="col-md-6 control">
                     <textarea id="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator indicator-period" name="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}"
-                    placeholder="{% trans 'Actual value comment' %}" {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000">{{period.actual_comment}}</textarea>
+                    {% if indicator %}indicator{% endif %} {% if period %}indicator-period{% endif %} maxlength="2000">{{period.actual_comment}}</textarea>
                     <label class="control-label" for="indicator-period-actual-value-comment{% if key %}-{{ key }}{% endif %}">{% trans 'Actual value comment' %}</label>
                     <p class="help-block hidden">{% trans 'Here you can provide extra information on the actual value, if needed (for instance, why the actual value differs from the target value).' %}</p>
                 </div>

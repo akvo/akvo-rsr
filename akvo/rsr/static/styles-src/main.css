@@ -1868,7 +1868,7 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   border: 1px solid rgba(44, 42, 116, 0.5);
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  padding: 5px 5px 5px 5px;
+  padding: 5px 15px 5px 15px;
   margin: 15px 15px 15px 15px; }
   .legenda .redLegenda {
     background: #d9534f;
@@ -1881,3 +1881,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     color: #5cb85c; }
   .legenda .mandatory {
     color: #d9534f; }
+
+.info-icon {
+  padding-left: 0.5em;
+  cursor: pointer;
+  cursor: hand; }
+  .info-icon.activated {
+    color: rgba(44, 42, 116, 0.3); }

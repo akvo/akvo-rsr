@@ -60,6 +60,15 @@ class Project(TimestampsMixin, models.Model):
         (3, _(u'Lower Sub Activity'))
     )
 
+    LANGUAGE_OPTIONS = (
+        ('de', _(u'German')),
+        ('en', _(u'English')),
+        ('es', _(u'Spanish')),
+        ('fr', _(u'French')),
+        ('nl', _(u'Dutch')),
+        ('ru', _(u'Russian'))
+    )
+
     STATUS_NONE = 'N'
     STATUS_NEEDS_FUNDING = 'H'
     STATUS_ACTIVE = 'A'
@@ -175,7 +184,7 @@ class Project(TimestampsMixin, models.Model):
 
     # project meta info
     language = ValidXMLCharField(
-        max_length=2, choices=settings.LANGUAGES, default='en',
+        max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
         help_text=_(u'The main language of the project.')
     )
     notes = ValidXMLTextField(
@@ -212,7 +221,7 @@ class Project(TimestampsMixin, models.Model):
 
     # donate button
     donate_button = models.BooleanField(
-        _(u'donate button'), default=True,
+        _(u'donate button'), default=False,
         help_text=_(u'Show donate button for this project. If not selected, it is not possible '
                     u'to donate to this project and the donate button will not be shown.')
     )

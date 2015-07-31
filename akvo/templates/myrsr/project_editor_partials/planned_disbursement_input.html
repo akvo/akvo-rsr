@@ -14,7 +14,7 @@
                 <div class="col-md-6 control">
                     <div class="input-group priority2">
                         <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
-                        <input type="text" class="form-control" name="planned-disbursement-value{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-value{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Planned disbursement value' %}"
+                        <input type="text" class="form-control" name="planned-disbursement-value{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-value{% if key %}-{{ key }}{% endif %}"
                         {% if pd.value %} value="{{pd.value}}" {% endif %}>
                     </div>
                     <label class="control-label" for="planned-disbursement-value{% if key %}-{{ key }}{% endif %}">{% trans 'Planned disbursement value' %}</label>
@@ -30,7 +30,7 @@
         <div class="form-group">
             <div class="select-group control">
                 <select name="planned-disbursement-type{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                    <option value="" {% if not pd.type %} selected="selected" {% endif %}>{% trans 'Planned disbursement type' %}:</option>
+                    <option value="" {% if not pd.type %} selected="selected" {% endif %}></option>
                     {% for entry in budget_types %}
                         <option value="{{ entry.code }}" {% if pd.type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
                     {% endfor %}

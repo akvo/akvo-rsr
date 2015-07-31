@@ -582,13 +582,13 @@ function deletePhoto() {
         if (request.status >= 200 && request.status < 400) {
             var imgNode, aNode, inputNode;
 
-            imgNode = document.querySelector('#img-photo');
+            imgNode = document.getElementById('img-photo');
             imgNode.parentNode.removeChild(imgNode);
 
-            aNode = document.querySelector('#delete-photo');
+            aNode = document.getElementById('delete-photo');
             aNode.parentNode.removeChild(aNode);
 
-            inputNode = document.querySelector('#photo');
+            inputNode = document.getElementById('photo');
             inputNode.setAttribute('default', '');
 
             setAllSectionsCompletionPercentage();
@@ -702,7 +702,7 @@ function removePartial(node) {
     setSectionCompletionPercentage($(findAncestor(parentParent, "formStep")));
 }
 
-function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
+function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
     var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass;
 
     Typeahead = ReactTypeahead.Typeahead;   
@@ -716,7 +716,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, 
             return (
                     <div>
                         <Typeahead
-                            placeholder={placeholder}
+                            placeholder=''
                             options={typeaheadOptions}
                             onOptionSelected={typeaheadCallback}
                             maxVisible={10}
@@ -862,7 +862,7 @@ function loadAsync(url, retryCount, retryLimit, callback) {
     }
 }
 
-function processResponse(response, selector, childClass, valueId, label, help, placeholder, filterOption) {
+function processResponse(response, selector, childClass, valueId, label, help, filterOption) {
     var typeaheadOptions = response.results;
     var typeaheadCallback = function(option) {
         var el;
@@ -874,12 +874,12 @@ function processResponse(response, selector, childClass, valueId, label, help, p
         return option[filterOption];
     };
 
-    buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption);
+    buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption);
 }
 
-function getCallback(selector, childClass, valueId, label, help, placeholder, filterOption) {
+function getCallback(selector, childClass, valueId, label, help, filterOption) {
     var output = function(response) {
-        processResponse(response, selector, childClass, valueId, label, help, placeholder, filterOption);
+        processResponse(response, selector, childClass, valueId, label, help, filterOption);
     };
 
     return output;
@@ -1071,13 +1071,12 @@ function updateTypeaheads() {
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = defaultValues.related_project_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
         }
 
-        loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        loadAsync(projectsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
     });
 
     $('.reportingOrganisation-input').each( function() {
@@ -1099,13 +1098,12 @@ function updateTypeaheads() {
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = defaultValues.reporting_org_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
         }
 
-        loadAsync(reportingOrgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        loadAsync(reportingOrgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
     });
 
     $('.partner-input').each( function() {
@@ -1127,13 +1125,12 @@ function updateTypeaheads() {
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = defaultValues.partner_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
         }
 
-        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
     });
 
     $('.transaction-provider-org-input').each( function() {
@@ -1155,13 +1152,12 @@ function updateTypeaheads() {
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = defaultValues.provider_org_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
         }
 
-        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
     });
 
     $('.transaction-receiver-org-input').each( function() {
@@ -1183,13 +1179,12 @@ function updateTypeaheads() {
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
-        var placeholder = defaultValues.recipient_org_label + ':';
 
         if ($(this).data('value') !== "") {
             valueId = $(this).data('value');
         }
 
-        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, placeholder, filterOption));
+        loadAsync(orgsAPIUrl, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
     });
 }
 
@@ -1334,9 +1329,13 @@ function getInputResults(section) {
 
             numInputs += 1;
 
-            if ($(this).val() !== '') {
+            if ($(this).attr('name') == 'projectStatus' && $(this).val() === 'N') {
+                // Ignore project status 'None'
+                return true;
+            } else if ($(this).val() !== '') {
                 numInputsCompleted += 1;
             } else if ($(this).attr('name') === 'photo' && $(this).attr('default') !== '') {
+                // Custom code for project photo
                 numInputsCompleted += 1;
             }
         });
@@ -1358,7 +1357,7 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
     section.find('.progress .progress-percentage').text(completionPercentage + '%');
     section.find('div.progress-bar').width(completionPercentage + '%');
 
-    if (completionPercentage < 2) {
+    if (completionPercentage < 10) {
         completionClass = 'empty';
     } else if (completionPercentage < 100) {
         completionClass = 'incomplete';
@@ -1529,6 +1528,45 @@ function updateCurrency(currencyDropdown) {
 
         for (var i=0; i < currencyDisplays.length; i++) {
             currencyDisplays[i].innerHTML = currency;
+        }
+    };
+}
+
+function setToggleSectionOnClick () {
+    var toggleSections;
+
+    toggleSections = document.getElementsByClassName('toggleSection');
+
+    for (var i=0; i < toggleSections.length; i++) {
+        toggleSections[i].onclick = toggleSection(toggleSections[i]);
+    }
+}
+
+function toggleSection(node) {
+    return function(e) {
+        e.preventDefault();
+
+        var allFormBlocks, div, formBlock, inputStep;
+
+        div = node.parentNode.parentNode;
+        allFormBlocks = document.getElementsByClassName('formBlock');
+        formBlock = div.getElementsByClassName('formBlock')[0];
+        inputStep = div.getElementsByTagName('input')[0];
+
+        if (formBlock.className.indexOf('hidden') > -1) {
+            formBlock.className = formBlock.className.replace('hidden', '');
+            inputStep.checked = true;
+            setTimeout(function () {
+                div.scrollIntoView();
+                window.scrollBy(0, -100);
+            }, 1);
+            for (var i=0; i < allFormBlocks.length; i++) {
+                if (allFormBlocks[i] !== formBlock && allFormBlocks[i].className.indexOf('hidden') === -1) {
+                    allFormBlocks[i].className += ' hidden';
+                }
+            }
+        } else {
+            formBlock.className += ' hidden';
         }
     };
 }
@@ -1719,7 +1757,7 @@ function setDatepickers() {
 
 $(document).ready(function() {
     setDatepickers();
-
+    setToggleSectionOnClick();
     setPublishOnClick();
     setSubmitOnClicks();
     setPartialOnClicks();

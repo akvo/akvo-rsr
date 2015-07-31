@@ -12,13 +12,13 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-4 control">
-                    <input type="text" class="form-control priority1" id="sector-code{% if key %}-{{ key }}{% endif %}" name="sector-code{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Sector code' %}" {% if sector.sector_code %} value="{{sector.sector_code}}" {% endif %}>
+                    <input type="text" class="form-control priority1" id="sector-code{% if key %}-{{ key }}{% endif %}" name="sector-code{% if key %}-{{ key }}{% endif %}" {% if sector.sector_code %} value="{{sector.sector_code}}" {% endif %}>
                     <label class="control-label" for="sector-code{% if key %}-{{ key }}{% endif %}">{% trans 'Sector code' %}</label>
                     <p class="help-block hidden">{% trans 'This is based on DAC sectors.' %}</p>
                 </div>
                 <div class="col-md-4 control">
                     <div class="input-group priority2">
-                        <input type="text" class="form-control" id="sector-percentage{% if key %}-{{ key }}{% endif %}" name="sector-percentage{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Sector percentage' %}" {% if sector.percentage %} value="{{sector.percentage}}" {% endif %}>
+                        <input type="text" class="form-control" id="sector-percentage{% if key %}-{{ key }}{% endif %}" name="sector-percentage{% if key %}-{{ key }}{% endif %}" {% if sector.percentage %} value="{{sector.percentage}}" {% endif %}>
                         <span class="input-group-addon">%</span>
                     </div>
                     <label class="control-label" for="sector-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Sector percentage' %}</label>
@@ -27,7 +27,7 @@
                 <div class="col-md-4 control">
                     <div class="select-group">
                         <select name="sector-vocabulary{% if key %}-{{ key }}{% endif %}" id="sector-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                            <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}>{% trans 'Sector vocabulary' %}:</option>
+                            <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}></option>
                             {% for vocabulary in sector_vocabularies %}
                                 <option value="{{ vocabulary.code }}" {% if sector.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                             {% endfor %}

@@ -23,7 +23,7 @@
                     <div class="select-group">
                         <select name="partner-type{% if key %}-{{ key }}{% endif %}"
                         id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)">
-                            <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}>{% trans 'Type' %}:</option>
+                            <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}></option>
                             <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>{% trans 'Implementing partner' %}</option>
                             <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
                             <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>{% trans 'Accountable partner' %}</option>
@@ -45,7 +45,7 @@
                     <div class="input-group priority1">
                         <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
                         <input type="text" class="form-control priority1" id="funding-amount{% if key %}-{{ key }}{% endif %}"
-                        placeholder="{% trans 'Funding amount' %}" name="funding-amount{% if key %}-{{ key }}{% endif %}"
+                        name="funding-amount{% if key %}-{{ key }}{% endif %}"
                         {% if partnership.funding_amount %}value="{{partnership.funding_amount}}"{% endif %}
                         {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
                     </div>
