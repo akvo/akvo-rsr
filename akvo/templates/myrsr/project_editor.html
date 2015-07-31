@@ -50,13 +50,13 @@
         <div class="row">
             <div class="col-md-4 editDate">
                 <input id="showAdvancedFields" type="checkbox" name="showAdvancedFields" onchange="showAdvancedFields()">
-                <span>{% trans 'Show all fields' %}</span>
+                <span>{% trans 'Show advanced IATI fields' %}</span>
+                <span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'advancedHelptext');"></span>
             </div>
-            <div class="col-md-4 editDate" style="bottom: 10px;">
-                {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
-                {% if not project.is_published and can_publish %}
-                    <button class="btn btn-danger publishProject" id="publishProject" disabled>{% trans 'Publish project' %}</button>
-                {% endif %}
+            <div class="col-md-4">
+                <a href="{% url 'project-main' project.pk %}" target="_blank">
+                    <button class="btn btn-primary viewProject" id="viewProject">{% if not project.is_published %}{% trans 'Preview project page' %}{% else %}{% trans 'View project page' %}{% endif %}</button>
+                </a>
             </div>
             <div class="col-md-4">
                 <div class="editDate">
@@ -71,9 +71,9 @@
         </div>
         <div class="row">
             <div class="col-md-4">
-                <a href="{% url 'project-main' project.pk %}" target="_blank">
-                    <button class="btn btn-primary viewProject" id="viewProject">{% if not project.is_published %}{% trans 'Preview project page' %}{% else %}{% trans 'View project page' %}{% endif %}</button>
-                </a>
+                <div class="editDate hidden" id="advancedHelptext">
+                    <span>{% trans 'Enabling this option will allow you to see and use all available fields in RSR, specifically the fields which are available in IATI but used for specific purposes.' %}</span>
+                </div>
             </div>
             <div class="col-md-4 editDate" id="publishErrors"></div>
             <div class="col-md-4">
@@ -85,11 +85,27 @@
                 </div>
             </div>
         </div>
-        <div class="progress overview">
-            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                <span class="sr-only"></span>{# <span class="progress-percentage"></span> #}
+        {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
+        {% if not project.is_published and can_publish %}
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="progress overview">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2" style="bottom: 6px;">
+                    <button class="btn btn-danger publishProject" id="publishProject" disabled>{% trans 'Publish project' %}</button>
+                </div>
             </div>
-        </div>
+        {% else %}
+            <div class="progress overview">
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+        {% endif %}
     </div>
     <section class="panels projectEdit">
         <fieldset>
