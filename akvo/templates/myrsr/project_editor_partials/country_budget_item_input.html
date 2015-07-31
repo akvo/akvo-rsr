@@ -14,7 +14,7 @@
                 <div class="col-md-4">
                     <div class="select-group control">
                         <select name="country-budget-item{% if key %}-{{ key }}{% endif %}" id="country-budget-item{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                            <option value="" {% if not item.code %} selected="selected" {% endif %}>{% trans 'Country budget item' %}</option>
+                            <option value="" {% if not item.code %} selected="selected" {% endif %}></option>
                             {% for bi in budget_identifiers %}
                                 <option value="{{ bi.code }}" {% if item.code == bi.code %} selected="selected" {% endif %}>{{ bi.code }} - {{ bi.name }}</option>
                             {% endfor %}
@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-md-4 control">
                     <div class="input-group priority3">
-                        <input type="text" class="form-control" name="country-budget-percentage{% if key %}-{{ key }}{% endif %}" id="country-budget-percentage{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Country budget item percentage' %}"
+                        <input type="text" class="form-control" name="country-budget-percentage{% if key %}-{{ key }}{% endif %}" id="country-budget-percentage{% if key %}-{{ key }}{% endif %}"
                         {% if item.percentage %} value="{{item.percentage}}" {% endif %}>
                         <span class="input-group-addon">%</span>
                     </div>
@@ -33,7 +33,7 @@
                     <p class="help-block hidden">{% trans 'If more than one identifier is reported, the percentage share must be reported and all percentages should add up to 100 percent.' %}</p>
                 </div>
                 <div class="col-md-4 control">
-                    <input type="text" class="form-control priority3" name="country-budget-description{% if key %}-{{ key }}{% endif %}" id="country-budget-description{% if key %}-{{ key }}{% endif %}" placeholder="{% trans 'Country budget item description' %}"
+                    <input type="text" class="form-control priority3" name="country-budget-description{% if key %}-{{ key }}{% endif %}" id="country-budget-description{% if key %}-{{ key }}{% endif %}"
                     {% if item.description %} value="{{item.description}}" {% endif %} maxlength="100">
                     <label class="control-label" for="country-budget-description{% if key %}-{{ key }}{% endif %}">{% trans 'Country budget item description' %}</label>
                 </div>

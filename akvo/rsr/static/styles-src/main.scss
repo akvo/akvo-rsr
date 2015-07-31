@@ -2405,7 +2405,7 @@ body {
     border: 1px solid rgba($akvoPurple, 0.5);
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    padding: 5px 5px 5px 5px;
+    padding: 5px 15px 5px 15px;
     margin: 15px 15px 15px 15px;
 
     .redLegenda {
@@ -2422,5 +2422,15 @@ body {
     }
     .mandatory {
         color: $progressWarning;
+    }
+}
+
+.info-icon {
+    padding-left: 0.5em;
+    cursor: pointer;
+    cursor: hand;
+
+    &.activated {
+        color: rgba(44, 42, 116, 0.3);
     }
 }

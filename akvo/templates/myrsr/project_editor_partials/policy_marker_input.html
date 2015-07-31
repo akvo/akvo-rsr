@@ -14,7 +14,7 @@
                 <div class="col-md-6">
                     <div class="select-group control">
                        <select name="policy-marker{% if key %}-{{ key }}{% endif %}" id="policy-marker{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                            <option value="" {% if not marker.policy_marker %} selected="selected" {% endif %}>{% trans 'Policy marker' %}:</option>
+                            <option value="" {% if not marker.policy_marker %} selected="selected" {% endif %}></option>
                             {% for policy_marker in policy_markers %}
                                 <option value="{{ policy_marker.code }}" {% if marker.policy_marker == policy_marker.code %} selected="selected" {% endif %}>{{ policy_marker.code }} - {{ policy_marker.name }}</option>
                             {% endfor %}
@@ -26,7 +26,7 @@
                 <div class="col-md-6">
                     <div class="select-group control">
                         <select name="policy-marker-significance{% if key %}-{{ key }}{% endif %}" id="policy-marker-significance{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                            <option value="" {% if not marker.significance %} selected="selected" {% endif %}>{% trans 'Policy marker significance' %}:</option>
+                            <option value="" {% if not marker.significance %} selected="selected" {% endif %}></option>
                             {% for significance in policy_significances %}
                                 <option value="{{ significance.code }}" {% if marker.significance == significance.code %} selected="selected" {% endif %}>{{ significance.code }} - {{ significance.name }}</option>
                             {% endfor %}
@@ -45,7 +45,7 @@
                 <div class="col-md-6">
                     <div class="select-group control">
                         <select name="policy-marker-vocabulary{% if key %}-{{ key }}{% endif %}" id="policy-marker-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
-                            <option value="" {% if not marker.vocabulary %} selected="selected" {% endif %}>{% trans 'Policy marker vocabulary' %}:</option>
+                            <option value="" {% if not marker.vocabulary %} selected="selected" {% endif %}></option>
                             {% for vocabulary in policy_marker_vocabularies %}
                                 <option value="{{ vocabulary.code }}" {% if marker.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                             {% endfor %}
@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 control">
-                    <input type="text" class="form-control priority3" id="policy-marker-description{% if key %}-{{ key }}{% endif %}" name="policy-marker-description{% if key %}-{{ key }}{% endif %}" placeholder="Policy marker description" {% if marker.description %} value="{{marker.description}}" {% endif %} maxlength="255">
+                    <input type="text" class="form-control priority3" id="policy-marker-description{% if key %}-{{ key }}{% endif %}" name="policy-marker-description{% if key %}-{{ key }}{% endif %}" {% if marker.description %} value="{{marker.description}}" {% endif %} maxlength="255">
                     <label class="control-label" for="policy-marker-description{% if key %}-{{ key }}{% endif %}">{% trans 'Policy marker description' %}</label>
                 </div>
             </div>
