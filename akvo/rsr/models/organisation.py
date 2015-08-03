@@ -75,14 +75,13 @@ class Organisation(TimestampsMixin, models.Model):
         ))
         return types[iati_type]
 
-    # TODO: make name unique
     name = ValidXMLCharField(
-        _(u'name'), max_length=25, db_index=True,
+        _(u'name'), max_length=25, db_index=True, unique=True,
         help_text=_(u'Short name which will appear in organisation and partner listings '
                     u'(25 characters).')
     )
     long_name = ValidXMLCharField(
-        _(u'long name'), blank=True, max_length=75,
+        _(u'long name'), blank=True, max_length=75, unique=True,
         help_text=_(u'Full name of organisation (75 characters).'),
     )
     language = ValidXMLCharField(
