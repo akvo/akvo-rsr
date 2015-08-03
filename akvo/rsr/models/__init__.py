@@ -245,8 +245,9 @@ rules.add_perm('rsr.add_projectdocument', is_rsr_admin | is_org_admin | is_org_p
 rules.add_perm('rsr.change_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.add_organisation', is_rsr_admin)
-rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.add_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_organisation', is_rsr_admin)
 
 rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin)
