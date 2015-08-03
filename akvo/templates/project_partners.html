@@ -12,12 +12,10 @@
     		<h2 class="title">{% trans "Project partners" %}</h2>
         {% for partner in partner_vals|dictsort:"name" %}
           <div class="row verticalPadding projectPartners">
-            {% if partner.logo %}
               <div class="col-sm-2 img">
-                <a href='{% url 'organisation-main' partner.id %}'>{% img o 120 120 o.name %}</a>
+                <a href='{% url 'organisation-main' partner.id %}'>{% img partner 120 120 partner.name %}</a>
               </div>
               <div class="col-sm-6">
-            {% else %}
               <div class="col-sm-8">
             {% endif %}
                 <a href='{% url 'organisation-main' partner.id %}' class="org-link">
