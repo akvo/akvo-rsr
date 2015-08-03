@@ -14,9 +14,7 @@
           <div class="row verticalPadding projectPartners">
             {% if partner.logo %}
               <div class="col-sm-2 img">
-                <a href='{% url 'organisation-main' partner.id %}'>
-                  <img src='{{partner.logo.url}}' class='extra-partner-entry'>
-                </a>
+                <a href='{% url 'organisation-main' partner.id %}'>{% img o 120 120 o.name %}</a>
               </div>
               <div class="col-sm-6">
             {% else %}
