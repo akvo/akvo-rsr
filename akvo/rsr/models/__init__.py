@@ -265,6 +265,7 @@ rules.add_perm('tastypie.change_apikey', is_rsr_admin | is_org_admin | is_org_us
 
 rules.add_perm('rsr.add_employment', is_rsr_admin)
 rules.add_perm('rsr.change_employment', is_rsr_admin | is_org_admin | is_org_user_manager)
+rules.add_perm('rsr.delete_employment', is_rsr_admin | is_org_admin | is_org_user_manager)
 
 rules.add_perm('rsr.iati_management', is_rsr_admin | is_org_admin | is_org_project_editor)
 
