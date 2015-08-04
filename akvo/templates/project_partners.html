@@ -13,7 +13,7 @@
         {% for partner in partner_vals|dictsort:"name" %}
             <div class="row verticalPadding projectPartners">
               <div class="col-sm-2 img">
-                <a href='{% url 'organisation-main' partner.id %}'>{% img partner 120 120 partner.name %}</a>
+                <a href='{% url 'organisation-main' partner.id %}'>{% img partner.organisation_obj 120 120 partner.name %}</a>
               </div>
               <div class="col-sm-6">
                 <a href='{% url 'organisation-main' partner.id %}' class="org-link">
