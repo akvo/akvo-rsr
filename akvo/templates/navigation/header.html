@@ -57,7 +57,7 @@
 
       <ul class="nav navbar-nav navbar-right">
         <li>
-            <a href="{% if project %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
+            <a href="{% if project and project.publishingstatus.status == "published" %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
                class="btn btn-primary btn-xs navbar-btn addUpdateBtn">
               <i class="fa fa-camera-retro"></i> {% trans 'Add an update' %}
             </a>
