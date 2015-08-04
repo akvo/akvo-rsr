@@ -28,7 +28,7 @@ def unique_organisation_names(apps, schema_editor):
                 if len(org.name) > 21:
                     org.name = org.name[:-4] + u' (' + unicode(i) + u')'
                 else:
-                    org.name += u' (' + unicode(i) + u')'
+                    org.name += u' (' + unicode(i + 1) + u')'
                 org.save()
 
     for double_long_name in org_double_long_name.keys():
@@ -38,7 +38,7 @@ def unique_organisation_names(apps, schema_editor):
                 if len(org.long_name) > 71:
                     org.long_name = org.long_name[:-4] + u' (' + unicode(j) + u')'
                 else:
-                    org.long_name += u' (' + unicode(j) + u')'
+                    org.long_name += u' (' + unicode(j + 1) + u')'
                 org.save()
 
 
