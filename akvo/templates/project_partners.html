@@ -11,27 +11,21 @@
 	    <div class="container">
     		<h2 class="title">{% trans "Project partners" %}</h2>
         {% for partner in partner_vals|dictsort:"name" %}
-          <div class="row verticalPadding projectPartners">
-            {% if partner.logo %}
+            <div class="row verticalPadding projectPartners">
               <div class="col-sm-2 img">
-                <a href='{% url 'organisation-main' partner.id %}'>
-                  <img src='{{partner.logo.url}}' class='extra-partner-entry'>
-                </a>
+                <a href='{% url 'organisation-main' partner.id %}'>{% img partner.organisation_obj 120 120 partner.name %}</a>
               </div>
               <div class="col-sm-6">
-            {% else %}
-              <div class="col-sm-8">
-            {% endif %}
                 <a href='{% url 'organisation-main' partner.id %}' class="org-link">
                   <i class="fa fa-users"></i>
-                  <h2>{{partner.name}}</h2>
+                  <h2>{{ partner.name }}</h2>
                 </a>
               </div>
               <div class="col-sm-4">
                 <h4 class="detailedInfo">{% trans "Roles" %}</h4>
                 <ul>
                   {% for type in partner.partner_types %}
-                    <li>{{type|title}} {% trans "partner" %}</li>
+                    <li>{{ type|title }} {% trans "partner" %}</li>
                     {% comment %}
                     {% if forloop.first %}
                       <li>{{type|title}} {% trans "partner" %}{% if forloop.last %}.{% else %},{% endif %}</li>
