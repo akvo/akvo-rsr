@@ -449,7 +449,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-success" id="savingstep3-button""><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                    <button type="submit" class="btn btn-success" id="savingstep3-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
                                 <div id="savingstep3"></div>
                             </div>
@@ -1103,5 +1103,5 @@
 {#    {% compressed_js 'react_datepicker' %}#}
     <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
     {% compressed_js 'myrsr_admin' %}
-    
+{#    <script type="application/javascript" src="{{ STATIC_URL }}scripts/myrsr-admin.js"></script>#}
 {% endblock %}
