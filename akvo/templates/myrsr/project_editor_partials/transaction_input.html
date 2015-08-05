@@ -2,7 +2,7 @@
 <div class="transaction-item parent" id="transaction{% if key %}-{{ key }}{% endif %}">
     <div class="row partial-header">
         <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
-            <span class="folded-sign">{% if item %}+{% else %}-{% endif %}</span> {% trans 'Transaction' %}: <span class="unicode">{% if transaction %}{{ transaction }}{% else %}({% trans 'new' %}){% endif %}</span>
+            <span class="folded-sign">{% if transaction %}+{% else %}-{% endif %}</span> {% trans 'Transaction' %}: <span class="unicode">{% if transaction %}{{ transaction }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-6 text-right">
             <a class="delete-object-button" id="delete-transaction{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>

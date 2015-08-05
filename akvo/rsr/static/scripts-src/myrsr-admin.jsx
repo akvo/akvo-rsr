@@ -427,16 +427,16 @@ function submitStep(step, level) {
             removeErrors(form);
             response = JSON.parse(request.responseText);
             if (step === '5' && level === 1) {
-                replaceNames(response.new_objects, 'indicator');
+                replaceNames(response.rel_objects, 'indicator');
             } else if (step === '5' && level === 2) {
-                replaceNames(response.new_objects, 'indicator-period');
+                replaceNames(response.rel_objects, 'indicator-period');
             } else if (step === '6' && level === 1) {
-                replaceNames(response.new_objects, 'sector');
+                replaceNames(response.rel_objects, 'sector');
                 replaceTotalBudget(response.total_budget);
             } else if (step === '7' && level === 1) {
-                replaceNames(response.new_objects, 'administrative');
+                replaceNames(response.rel_objects, 'administrative');
             }  else {
-                replaceNames(response.new_objects);
+                replaceNames(response.rel_objects);
             }
             addErrors(response.errors);
 
