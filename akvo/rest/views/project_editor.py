@@ -314,7 +314,9 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
     if field[2] == 'date':
         if form_data[field_name]:
             try:
-                field_data = datetime.datetime.strptime(form_data[field_name], "%d/%m/%Y").\
+                # field_data = datetime.datetime.strptime(form_data[field_name], "%d/%m/%Y").\
+                #     strftime("%Y-%m-%d")
+                field_data = datetime.datetime.strptime("55/55/5555", "%d/%m/%Y").\
                     strftime("%Y-%m-%d")
             except ValueError as e:
                 errors = add_error(errors, e, field_name)

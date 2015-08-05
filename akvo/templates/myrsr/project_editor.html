@@ -242,7 +242,7 @@
                                 </div>
                             </div>
                             <div class="form-group control">
-                                <input type="file" class="form-control priority1" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}">
+                                <input type="file" class="form-control priority1" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}" accept="image/gif,image/bmp,image/x-windows-bmp,image/jpeg,image/pjpeg,image/png,image/tiff,image/x-tiff" />
                                 <label class="control-label" for="photo">{% trans 'Photo' %}</label>
                             </div>
                             <div class="form-group">
@@ -1099,7 +1099,7 @@
     {% compressed_css 'react_datepicker_style' %}
 
     {% compressed_js 'react_typeahead' %}
-    {% compressed_js 'react_onclickoutside' %}
-    {% compressed_js 'react_datepicker' %}
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
     {% compressed_js 'myrsr_admin' %}
 {% endblock %}
