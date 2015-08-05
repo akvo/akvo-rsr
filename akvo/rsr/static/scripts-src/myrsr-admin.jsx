@@ -109,18 +109,28 @@ function removeErrors(form) {
 function addErrors(errors) {
     for (var i = 0; i < errors.length; i++) {
         try {
-            var error, form_group, labels, span, textnode;
+            var error, errorNode, textnode;
 
             error = errors[i];
-            form_group = document.querySelector('#' + error.name).parentNode;
-            form_group.className += ' has-error';
 
-            labels = form_group.getElementsByTagName('label');
-            span = document.createElement("span");
+            errorNode = document.getElementById(error.name);
+
+            if (errorNode.className.indexOf('-container') === -1) {
+                errorNode = errorNode.parentNode;
+
+            }
+
+            if (errorNode.className.indexOf('input-group') > -1) {
+                errorNode = errorNode.parentNode;
+            }
+
+            errorNode.className += ' has-error';
+
+            var pNode = document.createElement("p");
+            pNode.className = "help-block help-block-error";
             textnode = document.createTextNode(error.error);
-            span.appendChild(textnode);
-            span.className = "help-block-error";
-            labels[0].parentNode.insertBefore(span, labels[0].nextSibling);
+            pNode.appendChild(textnode);
+            errorNode.appendChild(pNode);
 
             if (i === 0) {
                 document.getElementById(error.name).scrollIntoView();
@@ -515,6 +525,11 @@ function submitStep(step, level) {
             } else {
                 // We reached our target server, but it returned an error
                 message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong while saving</div>';
+
+                if (file_request.status == 413) {
+                    // Image is too big
+                    addErrors([{"name": "photo", "error": "Photo is too big, please upload a photo that is smaller than 2 MB."}]);
+                }
 
                 savingStep(false, step, message);
                 return false;

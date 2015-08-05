@@ -46,4 +46,4 @@ class RelatedProject(models.Model):
             return self.related_project.title
         elif self.related_iati_id:
             return self.related_iati_id
-        return _(u'No related project specified')
+        return u'%s' % _(u'No related project specified')
