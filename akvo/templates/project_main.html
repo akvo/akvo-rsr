@@ -28,7 +28,25 @@
               {% if project.iati_activity_id %}
                 <li><span class="detailedInfo">{% trans 'IATI ID' %}</span> {{project.iati_activity_id}}</li>
               {% endif %}
-              <li><span class="detailedInfo">{% trans 'Status' %}</span> {{project.get_status_display}}</li>
+              <li>
+                <span class="detailedInfo">{% trans 'Status' %}</span> {{project.get_status_display}}
+                <br/>{% trans 'Project start date (planned):' %}
+                {% if project.date_start_planned %}
+                <i class="fa fa-calendar-o"></i> {{project.date_start_planned|date:"d-M-Y"}}
+                {% endif %}
+                {% if project.date_start_actual %}
+                <br/>{% trans 'Project start date (actual):' %}
+                <i class="fa fa-calendar-o"></i> {{project.date_start_actual|date:"d-M-Y"}}
+                {% endif %}
+                {% if project.date_end_planned %}
+                <br/>{% trans 'Project end date (planned):' %}
+                <i class="fa fa-calendar-o"></i> {{project.date_end_planned|date:"d-M-Y"}}
+                {% endif %}
+                {% if project.date_end_actual %}
+                <br/>{% trans 'Project end date (actual):' %}
+                <i class="fa fa-calendar-o"></i> {{project.date_end_actual|date:"d-M-Y"}}
+                {% endif %}
+              </li>
               {% if project.has_relations %}
                 <li>
                   <span class="detailedInfo">{% trans 'Hierarchy' %}</span>
