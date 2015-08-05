@@ -161,7 +161,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                     <a href="#" class="add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
                                 </div>
                             </div>
@@ -282,7 +282,7 @@
                                         {% endfor %}
                                     </select>
                                     <label for="defaultFlowType" class="control-label">{% trans 'Default flow type' %}</label>
-                                    <p class="help-block hidden">{% trans 'This is the IATI identifier for how the activity (project) is funded. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/FlowType/">http://iatistandard.org/201/codelists/FlowType/</a>.</p>
+                                    <p class="help-block hidden">{% trans 'This is the IATI identifier for how the activity (project) is funded. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/FlowType/" target="_blank">http://iatistandard.org/201/codelists/FlowType/</a>.</p>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -328,11 +328,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep1"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep1-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep1"></div>
                             </div>
                             </form>
                         </div>
@@ -361,7 +361,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                     <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
                                 </div>
                             </div>
@@ -372,11 +372,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep2"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep2-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep2"></div>
                             </div>
                             </form>
                         </div>
@@ -436,7 +436,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                     <a href="#" class="add-partner" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
                                 </div>
                             </div>
@@ -447,11 +447,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep3"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep3-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep3"></div>
                             </div>
                             </form>
                         </div>
@@ -521,11 +521,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep4"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep4-button"><i class="glyphicon glyphicon-save"></i> Save</button>
                                 </div>
-                                <div id="savingstep4"></div>
                             </div>
                             </form>
                         </div>
@@ -562,7 +562,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                     <a href="#" class="add-result" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
                                 </div>
                             </div>
@@ -575,7 +575,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group hidden hide-default">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                     <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
                                 </div>
                             </div>
@@ -586,11 +586,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep5"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep5-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep5"></div>
                             </div>
                             </form>
                         </div>
@@ -654,7 +654,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                     <a href="#" class="add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another budget item' %}</a>
                                 </div>
                             </div>
@@ -679,7 +679,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group hidden hide-default">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another country budget item' %}</a>
                                 </div>
                             </div>
@@ -692,7 +692,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group hidden hide-default">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                     <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
                                 </div>
                             </div>
@@ -705,7 +705,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
                                 </div>
                             </div>
@@ -716,11 +716,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep6"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep6-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep6"></div>
                             </div>
                             </form>
                         </div>
@@ -767,7 +767,7 @@
                                 {% endif %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-project-location" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another project location' %}</a>
                                 </div>
                             </div>
@@ -780,7 +780,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group hidden hide-default">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-recipient-country" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient country' %}</a>
                                 </div>
                             </div>
@@ -793,7 +793,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group hidden hide-default">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-recipient-region" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient region' %}</a>
                                 </div>
                             </div>
@@ -804,11 +804,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep7"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep7-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep7"></div>
                             </div>
                             </form>
                         </div>
@@ -843,7 +843,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
                                 </div>
                             </div>
@@ -856,7 +856,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group hidden hide-default">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
                                 </div>
                             </div>
@@ -867,11 +867,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep8"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep8-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep8"></div>
                             </div>
                             </form>
                         </div>
@@ -903,7 +903,7 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another link' %}</a>
                                 </div>
                             </div>
@@ -916,7 +916,7 @@
                                 {% endfor %}
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-12 text-right add-object-link">
+                                <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-document" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
                                 </div>
                             </div>
@@ -927,11 +927,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep9"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep9-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep9"></div>
                             </div>
                             </form>
                         </div>
@@ -963,11 +963,11 @@
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
                             {% endfor %}
-                            <div class="row">
-                                <div class="col-md-2">
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep10"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
                                     <button type="submit" class="btn btn-success" id="savingstep10-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
                                 </div>
-                                <div id="savingstep10"></div>
                             </div>
                             </form>
                         </div>
@@ -1096,12 +1096,10 @@
 
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 
-    {% compressed_js 'react_typeahead' %}
     {% compressed_css 'react_datepicker_style' %}
-{#    {% compressed_js 'react_onclickoutside' %}#}
-    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
-{#    {% compressed_js 'react_datepicker' %}#}
-    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
+
+    {% compressed_js 'react_typeahead' %}
+    {% compressed_js 'react_onclickoutside' %}
+    {% compressed_js 'react_datepicker' %}
     {% compressed_js 'myrsr_admin' %}
-{#    <script type="application/javascript" src="{{ STATIC_URL }}scripts/myrsr-admin.js"></script>#}
 {% endblock %}
