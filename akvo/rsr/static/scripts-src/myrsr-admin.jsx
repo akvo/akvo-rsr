@@ -64,29 +64,35 @@ function findAncestor(el, cls) {
     return el;
 }
 
-function savingStep(saving, step, message) {
+function startSave(step) {
     var div, div_id, div_button_id, div_button;
 
-    div_id = '#savingstep' + step;
-    div = document.querySelector(div_id);
+    div_id = 'savingstep' + step;
+    div = document.getElementById(div_id);
 
-    div_button_id = '#savingstep' + step + '-button';
-    div_button = document.querySelector(div_button_id);
+    div_button_id = 'savingstep' + step + '-button';
+    div_button = document.getElementById(div_button_id);
 
-    if (saving) {
-        div_button.setAttribute('disabled', '');
-        div.innerHTML = '<div class="help-block">Saving...</div>';
-    } else {
-        if (message !== undefined) {
-            div.innerHTML = message;
-            setTimeout(function () {
-                div.innerHTML = '';
-                div_button.removeAttribute('disabled');
-            }, 5000);
-        } else {
+    div_button.setAttribute('disabled', '');
+    div.innerHTML = '<div class="help-block">Saving...</div>';
+}
+
+function finishSave(step, message) {
+    var div, div_id, div_button_id, div_button;
+
+    div_id = 'savingstep' + step;
+    div = document.getElementById(div_id);
+
+    div_button_id = 'savingstep' + step + '-button';
+    div_button = document.getElementById(div_button_id);
+
+    // Only replace the message if no error is shown yet
+    if (div.innerHTML.indexOf('class="help-block-error"') === -1) {
+        div.innerHTML = message;
+        setTimeout(function () {
             div.innerHTML = '';
             div_button.removeAttribute('disabled');
-        }
+        }, 20000);
     }
 }
 
@@ -96,13 +102,12 @@ function removeErrors(form) {
     error_elements = form.getElementsByClassName('help-block-error');
     form_elements = form.getElementsByClassName('has-error');
 
-    while(error_elements.length > 0){
+    while (error_elements.length > 0) {
         error_elements[0].parentNode.removeChild(error_elements[0]);
     }
 
-    for (var j = 0; j < form_elements.length; j++) {
-        form_elements[j].className =
-                form_elements[j].className.replace( /(?:^|\s)has-error(?!\S)/g , '' );
+    while (form_elements.length > 0) {
+        form_elements[0].className = form_elements[0].className.replace('has-error', '');
     }
 }
 
@@ -294,13 +299,12 @@ function saveDocuments(form, api_url, step, new_objects) {
         if (file_request.status >= 200 && file_request.status < 400) {
             var response;
 
-            removeErrors(form);
             response = JSON.parse(file_request.responseText);
             addErrors(response.errors);
 
             if (response.errors.length > 0) {
                 message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving document</div>';
-                savingStep(false, step, message);
+                finishSave(step, message);
             }
 
             return false;
@@ -308,7 +312,7 @@ function saveDocuments(form, api_url, step, new_objects) {
             // We reached our target server, but it returned an error
             message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong with your request</div>';
 
-            savingStep(false, step, message);
+            finishSave(step, message);
             return false;
         }
     };
@@ -319,7 +323,7 @@ function saveDocuments(form, api_url, step, new_objects) {
 
         message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
 
-        savingStep(false, step, message);
+        finishSave(step, message);
         return false;
     };
 
@@ -327,14 +331,18 @@ function saveDocuments(form, api_url, step, new_objects) {
 }
 
 function submitStep(step, level) {
-    savingStep(true, step);
-
     var api_url, form, form_data, form_div, request, file_request, message;
 
     // Collect form data
     form_div = '#admin-step-' + step;
     form = document.querySelector(form_div);
     form_data = serialize(form);
+
+    if (level === undefined || level === 1) {
+        // Indicate saving has started
+        startSave(step);
+        removeErrors(form);
+    }
 
     // Custom code per step
     if (step === '1') {
@@ -433,9 +441,16 @@ function submitStep(step, level) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             var response;
-
-            removeErrors(form);
             response = JSON.parse(request.responseText);
+
+            // Add errors
+            if (response.errors.length > 0) {
+                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving</div>';
+            } else {
+                message = '<div class="save-success"><span class="glyphicon glyphicon-ok-circle"></span> Saved successfully!</div>';
+            }
+            addErrors(response.errors);
+
             if (step === '5' && level === 1) {
                 replaceNames(response.rel_objects, 'indicator');
             } else if (step === '5' && level === 2) {
@@ -448,44 +463,35 @@ function submitStep(step, level) {
             }  else {
                 replaceNames(response.rel_objects);
             }
-            addErrors(response.errors);
 
             if (step === '5' && level < 3) {
                 submitStep('5', level + 1);
-                return false;
             }
 
             if (step === '6' && level < 2) {
                 submitStep('6', level + 1);
-                return false;
             }
 
             if (step === '7' && level < 2) {
                 submitStep('7', level + 1);
-                return false;
             }
 
             if (step === '9') {
                 saveDocuments(form, api_url, step, response.new_objects);
             }
 
-            if (response.errors.length > 0) {
-                message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving</div>';
-            } else {
-                message = '<div class="save-success"><span class="glyphicon glyphicon-ok-circle"></span> Saved successfully!</div>';
-            }
-
             var section = findAncestor(form, 'formStep');
             setSectionCompletionPercentage($(section));
             setPageCompletionPercentage();
 
-            savingStep(false, step, message);
+            finishSave(step, message);
+
             return false;
         } else {
             // We reached our target server, but it returned an error
             message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Something went wrong while saving</div>';
 
-            savingStep(false, step, message);
+            finishSave(step, message);
             return false;
         }
     };
@@ -494,7 +500,7 @@ function submitStep(step, level) {
         // There was a connection error of some sort
         message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
 
-        savingStep(false, step);
+        finishSave(step, message);
         return false;
     };
 
@@ -519,7 +525,7 @@ function submitStep(step, level) {
 
                 if (response.errors.length > 0) {
                     message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Error while saving photo</div>';
-                    savingStep(false, step, message);
+                    finishSave(step, message);
                 }
                 return false;
             } else {
@@ -531,7 +537,7 @@ function submitStep(step, level) {
                     addErrors([{"name": "photo", "error": "Photo is too big, please upload a photo that is smaller than 2 MB."}]);
                 }
 
-                savingStep(false, step, message);
+                finishSave(step, message);
                 return false;
             }
         };
@@ -540,7 +546,7 @@ function submitStep(step, level) {
             // There was a connection error of some sort
             message = '<div class="help-block-error"><span class="glyphicon glyphicon-remove-circle"></span> Connection error, check your internet connection</div>';
 
-            savingStep(false, step);
+            finishSave(step, message);
             return false;
         };
 
@@ -1295,11 +1301,13 @@ function setSectionCompletionPercentage(section) {
 }
 
 function setPageCompletionPercentage() {
-    var inputResults = getInputResults($('.projectEdit'));
-    var numInputs = inputResults[0];
-    var numInputsCompleted = inputResults[1];
+    var inputResults, numInputs, numInputsCompleted, completionPercentage, publishButton;
 
-    var completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, $('.formOverviewInfo'));
+    inputResults = getInputResults($('.projectEdit'));
+    numInputs = inputResults[0];
+    numInputsCompleted = inputResults[1];
+
+    completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, $('.formOverviewInfo'));
 
     // Enable publishing when all is filled in
     if (completionPercentage === 100) {
