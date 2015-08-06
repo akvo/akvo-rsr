@@ -244,7 +244,7 @@ class ProjectUpdateForm(forms.ModelForm):
     photo_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
-        'maxlength': '25',
+        'maxlength': '75',
         'placeholder': _(u'Photo credit'),
         }))
     video = forms.CharField(required=False, widget=forms.TextInput(attrs={
@@ -262,7 +262,7 @@ class ProjectUpdateForm(forms.ModelForm):
     video_credit = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={
         'class': 'input',
         'size': '25',
-        'maxlength': '25',
+        'maxlength': '75',
         'placeholder': _(u'Video credit'),
         }))
     latitude = forms.FloatField(widget=forms.HiddenInput())

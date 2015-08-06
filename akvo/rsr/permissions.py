@@ -26,8 +26,11 @@ def is_org_admin(user, obj):
         if employment.group == Group.objects.get(name='Admins'):
             if not obj:
                 return True
-            if isinstance(obj, Organisation) and obj == employment.organisation:
-                return True
+            elif isinstance(obj, Organisation):
+                if obj == employment.organisation:
+                    return True
+                elif obj in employment.organisation.partners():
+                    return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
                 return True
             elif isinstance(obj, Employment) and obj in employment.organisation.employees.all():
@@ -84,6 +87,11 @@ def is_org_project_editor(user, obj):
         if employment.group == Group.objects.get(name='Project Editors'):
             if not obj:
                 return True
+            elif isinstance(obj, Organisation):
+                if obj == employment.organisation:
+                    return True
+                elif obj in employment.organisation.partners():
+                    return True
             elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
                 return True
             else:

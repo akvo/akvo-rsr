@@ -3,16 +3,16 @@
 {% if partners|length > 1 %}
 <a href="{% url 'project-partners' project.id %}" class="small moreLink" data-toggle="tooltip"
   title="
-  {% for partner, types in partners.items %}
-    <div class='extra-partner-entry'>
+  <div class='extra-partner-tooltip'>
+    {% for partner, types in partners.items %}
+      <div class='extra-partner-entry'>
       {% if partner.logo %}
-        <a href='{% url 'organisation-main' partner.pk %}'>
-          <img src='{{partner.logo.url}}' class='extra-partner-entry'></a>
-      {% endif %}
+        <a href='{% url 'organisation-main' partner.pk %}'><img src='{{partner.logo.url}}' class='extra-partner-entry'></a>{% endif %}
       <a href='{% url 'organisation-main' partner.pk %}'>{{partner}}</a>
       ({{ types|join:", "|capfirst }})
-    </div>
+    {% if not forloop.last %}<hr>{% endif %}</div>
   {% endfor %}
+  </div>
   "
   data-placement="right" data-container="article" data-class="foo">
   {% blocktrans with partners_count=partners|length|add:"-1" %}

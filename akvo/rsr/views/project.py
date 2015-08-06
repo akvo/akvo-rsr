@@ -463,6 +463,7 @@ def partners(request, project_id):
         id_key = "id".decode('unicode-escape')
         p = Organisation.objects.get(pk=partner[id_key])
         partner['partner_types'] = p.has_partner_types(project)
+        partner['organisation_obj'] = p
     partner_types = _get_project_partners(project)
     context = {
         'project': project,
