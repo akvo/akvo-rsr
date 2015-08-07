@@ -314,7 +314,7 @@ def save_field(obj, field, form_field, form_data, orig_data, errors, changes):
 
 def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_obj_type=None):
     field_name = field[1] + form_obj_id
-    orig_data = form_data[field_name]
+    orig_data = form_data[field_name] if not field[2] == 'boolean' else None
 
     if field[2] == 'date':
         if orig_data:
@@ -352,6 +352,7 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
 
     elif field[2] == 'boolean':
         field_data = 'True' if field_name in form_data.keys() else 'False'
+        orig_data = field_data
 
     elif field[2] == 'none':
         field_data = orig_data if orig_data else None

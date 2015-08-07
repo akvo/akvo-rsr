@@ -21,8 +21,7 @@
                 </div>
                 <div class="col-md-4 control">
                     <div class="select-group">
-                        <select name="partner-type{% if key %}-{{ key }}{% endif %}"
-                        id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)">
+                        <select name="partner-type{% if key %}-{{ key }}{% endif %}" id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)" saved-value="{{ partnership.partner_type }}">
                             <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}></option>
                             <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>{% trans 'Implementing partner' %}</option>
                             <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
@@ -45,8 +44,7 @@
                     <div class="input-group priority1">
                         <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
                         <input type="text" class="form-control priority1" id="funding-amount{% if key %}-{{ key }}{% endif %}"
-                        name="funding-amount{% if key %}-{{ key }}{% endif %}"
-                        {% if partnership.funding_amount %}value="{{partnership.funding_amount}}"{% endif %}
+                        name="funding-amount{% if key %}-{{ key }}{% endif %}" value="{% if partnership.funding_amount %}{{ partnership.funding_amount }}{% endif %}" saved-value="{% if partnership.funding_amount %}{{ partnership.funding_amount }}{% endif %}"
                         {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
                     </div>
                     <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Funding amount' %}</label>

@@ -411,8 +411,7 @@
                                     <div class="form-group control hidden hide-default">
                                         <div class="checkbox">
                                             <label for="secondaryReporter" class="control-label">
-                                                <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
-                                                {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
+                                                <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3" {% if project.sync_owner_secondary_reporter %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
                                                     {% trans 'Secondary reporter' %}
                                             </label>
                                         </div>

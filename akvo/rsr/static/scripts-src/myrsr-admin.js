@@ -78,7 +78,7 @@ function startSave(step) {
 }
 
 function finishSave(step, message) {
-    var div, div_id, div_button_id, div_button;
+    var div, div_id, div_button_id, div_button, message_time;
 
     div_id = 'savingstep' + step;
     div = document.getElementById(div_id);
@@ -86,13 +86,21 @@ function finishSave(step, message) {
     div_button_id = 'savingstep' + step + '-button';
     div_button = document.getElementById(div_button_id);
 
+    // Show error message 20 seconds, other messages only 5 seconds
+    if (message.indexOf('class="help-block-error"') > -1) {
+        message_time = 20000;
+    } else {
+        message_time = 5000;
+    }
+
     // Only replace the message if no error is shown yet
     if (div.innerHTML.indexOf('class="help-block-error"') === -1) {
         div.innerHTML = message;
+
         setTimeout(function () {
             div.innerHTML = '';
             div_button.removeAttribute('disabled');
-        }, 1000);
+        }, message_time);
     }
 }
 
@@ -1798,30 +1806,34 @@ function checkUnsavedChangesForm(form) {
     for (var i = 0; i < inputs.length; i++) {
         if (inputs[i].type == 'file') {
             // TODO
+        } else if (inputs[i].type == 'checkbox') {
+            if (inputs[i].checked && (inputs[i].getAttribute('saved-value') == 'False')) {
+                return [true, inputs[i].getAttribute('id')];
+            } else if (!inputs[i].checked && (inputs[i].getAttribute('saved-value') == 'True')) {
+                return [true, inputs[i].getAttribute('id')];
+            }
         } else if (inputs[i].parentNode.className.indexOf('typeahead') > -1) {
             if (inputs[i].getAttribute('value') != inputs[i].getAttribute('saved-value')) {
-                return true;
+                return [true, inputs[i].getAttribute('id')];
             }
         } else if (inputs[i].value != inputs[i].getAttribute('saved-value')) {
-            return true;
+            return [true, inputs[i].getAttribute('id')];
         }
     }
 
     for (var j=0; j < selects.length; j++) {
         if (selects[j].value != selects[j].getAttribute('saved-value')) {
-            return true;
+            return [true, selects[j].getAttribute('id')];
         }
     }
 
     for (var k = 0; k < textareas.length; k++) {
         if (textareas[k].value != textareas[k].getAttribute('saved-value')) {
-            return true;
+            return [true, textareas[k].getAttribute('id')];
         }
     }
 
-    // TODO: Checkboxes
-
-    return false;
+    return [false, 'none'];
 }
 
 function checkUnsavedChanges() {
@@ -1830,13 +1842,21 @@ function checkUnsavedChanges() {
     unsavedForms = [];
     forms = [
         ['1', '01 - General information'],
+        ['2', '02 - Contact information'],
+        ['3', '03 - Project partners'],
         ['4', '04 - Project descriptions']
     ];
 
     for (var i=0; i < forms.length; i++) {
-        if (checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]))) {
-            unsavedForms.push(forms[i][1]);
+        var list = checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]));
+
+        if (list[0]) {
+            unsavedForms.push(list[1]);
         }
+
+//        if (checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]))) {
+//            unsavedForms.push(forms[i][1]);
+//        }
     }
 
     return unsavedForms;
@@ -1896,4 +1916,6 @@ $(document).ready(function() {
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
+
+    alert(document.getElementById('secondaryReporter').checked);
 });
