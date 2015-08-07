@@ -86,7 +86,9 @@
                 {% if project.is_published %}
                   {% has_perm 'rsr.post_updates' project as can_add_update %}
                   <a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a>
-                {% endif %}
+                {% else %}
+                  <a class="addUpdate disabled" title="{% trans "Can't update an unpublished project" %}">{% trans 'Update' %}</a>
+                {% endif %}                
               </div>
             </td>
           </tr>
