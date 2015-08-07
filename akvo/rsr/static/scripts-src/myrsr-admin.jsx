@@ -92,7 +92,7 @@ function finishSave(step, message) {
         setTimeout(function () {
             div.innerHTML = '';
             div_button.removeAttribute('disabled');
-        }, 20000);
+        }, 1000);
     }
 }
 
@@ -451,6 +451,14 @@ function submitStep(step, level) {
             }
             addErrors(response.errors);
 
+            // Replace saved values
+            for (var i=0; i < response.changes.length; i++) {
+                var formElement;
+
+                formElement = document.getElementById(response.changes[i][0]);
+                formElement.setAttribute('saved-value', response.changes[i][1]);
+            }
+
             if (step === '5' && level === 1) {
                 replaceNames(response.rel_objects, 'indicator');
             } else if (step === '5' && level === 2) {
@@ -776,6 +784,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
                 typeaheadInput.attr('value', savedResult.id);
                 typeaheadInput.prop('value', savedResult[filterOption]);
+
+                typeaheadInput.attr('saved-value', savedResult.id);
             }
         }
     }
@@ -1740,10 +1750,11 @@ function setDatepickers() {
 
             React.render(<DatePickerComponent key={datepickerId} />, datepickerContainer);
 
-            // Set id and name of datepicker input
+            // Set id, name and saved value of datepicker input
             inputNode = datepickerContainer.getElementsByClassName('datepicker__input')[0];
             inputNode.setAttribute("id", datepickerId);
             inputNode.setAttribute("name", datepickerId);
+            inputNode.setAttribute("saved-value", inputValue);
 
             // Set classes of datepicker input
             inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
@@ -1777,8 +1788,86 @@ function setDatepickers() {
     }
 }
 
+function checkUnsavedChangesForm(form) {
+    var inputs, selects, textareas;
+
+    inputs = form.getElementsByTagName('input');
+    selects = form.getElementsByTagName('select');
+    textareas = form.getElementsByTagName('textarea');
+
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].type == 'file') {
+            // TODO
+        } else if (inputs[i].parentNode.className.indexOf('typeahead') > -1) {
+            if (inputs[i].getAttribute('value') != inputs[i].getAttribute('saved-value')) {
+                return true;
+            }
+        } else if (inputs[i].value != inputs[i].getAttribute('saved-value')) {
+            return true;
+        }
+    }
+
+    for (var j=0; j < selects.length; j++) {
+        if (selects[j].value != selects[j].getAttribute('saved-value')) {
+            return true;
+        }
+    }
+
+    for (var k = 0; k < textareas.length; k++) {
+        if (textareas[k].value != textareas[k].getAttribute('saved-value')) {
+            return true;
+        }
+    }
+
+    // TODO: Checkboxes
+
+    return false;
+}
+
+function checkUnsavedChanges() {
+    var forms, unsavedForms;
+
+    unsavedForms = [];
+    forms = [
+        ['1', '01 - General information'],
+        ['4', '04 - Project descriptions']
+    ];
+
+    for (var i=0; i < forms.length; i++) {
+        if (checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]))) {
+            unsavedForms.push(forms[i][1]);
+        }
+    }
+
+    return unsavedForms;
+}
+
+function setUnsavedChangesMessage() {
+    window.onbeforeunload = function(e) {
+        var unsavedSections, message;
+
+        e = e || window.event;
+
+        unsavedSections = checkUnsavedChanges();
+        if (unsavedSections.length > 0) {
+            message = "You have unsaved changes in the following section(s):\n\n";
+            for (var i = 0; i < unsavedSections.length; i++) {
+                message += "\t• " + unsavedSections[i] + "\n";
+            }
+
+            // For IE and Firefox
+            if (e) {
+                e.returnValue = message;
+            }
+            // For Safari and Chrome
+            return message;
+        }
+    };
+}
+
 
 $(document).ready(function() {
+    setUnsavedChangesMessage();
     setDatepickers();
     setToggleSectionOnClick();
     setPublishOnClick();
