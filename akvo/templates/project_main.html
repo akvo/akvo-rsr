@@ -30,20 +30,20 @@
               {% endif %}
               <li>
                 <span class="detailedInfo">{% trans 'Status' %}</span> {{project.get_status_display}}
-                <br/>{% trans 'Project start date (planned):' %}
+                <br/>{% trans 'Start date (planned):' %}
                 {% if project.date_start_planned %}
                 <i class="fa fa-calendar-o"></i> {{project.date_start_planned|date:"d-M-Y"}}
                 {% endif %}
                 {% if project.date_start_actual %}
-                <br/>{% trans 'Project start date (actual):' %}
+                <br/>{% trans 'Start date (actual):' %}
                 <i class="fa fa-calendar-o"></i> {{project.date_start_actual|date:"d-M-Y"}}
                 {% endif %}
                 {% if project.date_end_planned %}
-                <br/>{% trans 'Project end date (planned):' %}
+                <br/>{% trans 'End date (planned):' %}
                 <i class="fa fa-calendar-o"></i> {{project.date_end_planned|date:"d-M-Y"}}
                 {% endif %}
                 {% if project.date_end_actual %}
-                <br/>{% trans 'Project end date (actual):' %}
+                <br/>{% trans 'End date (actual):' %}
                 <i class="fa fa-calendar-o"></i> {{project.date_end_actual|date:"d-M-Y"}}
                 {% endif %}
               </li>
