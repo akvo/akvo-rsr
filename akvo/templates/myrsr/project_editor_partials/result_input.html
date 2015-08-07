@@ -12,14 +12,13 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-4 control">
-                    <input type="text" class="form-control priority2" name="result-title{% if key %}-{{ key }}{% endif %}" id="result-title{% if key %}-{{ key }}{% endif %}"
-                    {% if result.title %} value="{{result.title}}" {% endif %} maxlength="255">
+                    <input type="text" class="form-control priority2" name="result-title{% if key %}-{{ key }}{% endif %}" id="result-title{% if key %}-{{ key }}{% endif %}" value="{{result.title}}" saved-value="{{result.title}}" maxlength="255">
                     <label class="control-label" for="result-title{% if key %}-{{ key }}{% endif %}">{% trans 'Result title' %}</label>
                     <p class="help-block hidden">{% trans 'The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.' %}</p>
                 </div>
                 <div class="col-md-4">
                     <div class="select-group control">
-                        <select name="result-type{% if key %}-{{ key }}{% endif %}" id="result-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
+                        <select name="result-type{% if key %}-{{ key }}{% endif %}" id="result-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{{ result.type }}">
                             <option value="" {% if not result.type %} selected="selected" {% endif %}></option>
                             {% for entry in result_types %}
                                 <option value="{{ entry.code }}" {% if result.type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
@@ -37,9 +36,8 @@
                 </div>
                 <div class="col-md-4 control">
                     <div class="select-group">
-                        <select name="result-aggregation-status{% if key %}-{{ key }}{% endif %}" id="result-aggregation-status{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
-                            <option value=""></option>
-                            <option value="0" {% if result.aggregation_status|yesno:"yes, no, unknown" == "unknown" %} selected="selected" {% endif %}>{% trans 'Unknown' %}</option>
+                        <select name="result-aggregation-status{% if key %}-{{ key }}{% endif %}" id="result-aggregation-status{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{{ result.aggregation_status|yesno:"1,2," }}">
+                            <option value="" {% if result.aggregation_status|yesno:"yes, no, unknown" == "unknown" %} selected="selected" {% endif %}></option>
                             <option value="1" {% if result.aggregation_status|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
                             <option value="2" {% if result.aggregation_status|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
                         </select>
@@ -50,8 +48,7 @@
             </div>
         </div>
         <div class="form-group control hidden hide-default">
-            <textarea id="result-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="result-description{% if key %}-{{ key }}{% endif %}"
-            maxlength="2000">{{result.description}}</textarea>
+            <textarea id="result-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="result-description{% if key %}-{{ key }}{% endif %}" maxlength="2000" saved-value="{{ result.description }}">{{ result.description }}</textarea>
             <label class="control-label" for="result-description{% if key %}-{{ key }}{% endif %}">{% trans 'Result description' %}</label>
             <p class="help-block hidden">{% trans 'You can provide further information of the result here.' %}</p>
         </div>

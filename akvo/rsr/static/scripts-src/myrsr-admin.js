@@ -1844,7 +1844,8 @@ function checkUnsavedChanges() {
         ['1', '01 - General information'],
         ['2', '02 - Contact information'],
         ['3', '03 - Project partners'],
-        ['4', '04 - Project descriptions']
+        ['4', '04 - Project descriptions'],
+        ['5', '05 - Results and indicators']
     ];
 
     for (var i=0; i < forms.length; i++) {
@@ -1916,6 +1917,4 @@ $(document).ready(function() {
     setAllSectionsCompletionPercentage();
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
-
-    alert(document.getElementById('secondaryReporter').checked);
 });
