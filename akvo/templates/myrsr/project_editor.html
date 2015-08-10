@@ -611,7 +611,7 @@
                             <form role="form" id="admin-step-6">
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2" saved-value="{% if project.currency %}{{ project.currency }}{% endif %}">
                                         <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
                                         <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
                                     </select>
@@ -622,8 +622,7 @@
                             <div class="form-group">
                                 <div class="checkbox">
                                     <label for="donateButton" class="control-label">
-                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2"
-                                        {% if project.donate_button %} checked {% endif %}>{% trans 'Donate button' %}
+                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
                                     </label>
                                 </div>
                                 <p class="help-block hidden">
@@ -635,7 +634,7 @@
                             <div class="form-group control hidden hide-default">
                                 <div class="input-group priority3">
                                     <input type="text" class="form-control" name="capital-spend-percentage" id="capital-spend-percentage"
-                                    {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
+                                    value="{% if project.capital_spend_percentage %}{{project.capital_spend_percentage}}{% endif %}" saved-value="{% if project.capital_spend_percentage %}{{project.capital_spend_percentage}}{% endif %}">
                                     <span class="input-group-addon">%</span>
                                 </div>
                                 <label for="capital-spend-percentage" class="control-label">{% trans 'Capital spend percentage' %}</label>
@@ -656,8 +655,8 @@
                             <h5 class="hidden hide-default">{% trans 'Country budget items' %}</h5>
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3">
-                                        <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}></option>
+                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3" saved-value="{{ project.country_budget_vocabulary }}">
+                                        <option value="" {% if not project.country_budget_vocabulary %}selected="selected"{% endif %}></option>
                                         {% for vocabulary in budget_identifier_vocabularies %}
                                             <option value="{{ vocabulary.code }}" {% if project.country_budget_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                                         {% endfor %}
@@ -741,8 +740,8 @@
                             <form role="form" id="admin-step-7">
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="scope" id="scope" class="form-control priority3">
-                                        <option value="" {% if not project.project_scope %} selected="selected" {% endif %}></option>
+                                    <select name="scope" id="scope" class="form-control priority3" saved-value="{{ project.project_scope }}">
+                                        <option value="" {% if not project.project_scope %}selected="selected"{% endif %}></option>
                                         {% for scope in activity_scopes %}
                                             <option value="{{ scope.code }}" {% if project.project_scope == scope.code %} selected="selected" {% endif %}>{{ scope.code }} - {{ scope.name }}</option>
                                         {% endfor %}                                        

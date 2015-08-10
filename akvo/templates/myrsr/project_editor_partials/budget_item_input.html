@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="select-group control">
-                        <select name="budget-item-label{% if key %}-{{ key }}{% endif %}" id="budget-item-label{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleOtherLabel(this)">
+                        <select name="budget-item-label{% if key %}-{{ key }}{% endif %}" id="budget-item-label{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleOtherLabel(this)" saved-value="{% if item.label %}{{ item.label.id }}{% endif %}">
                             <option value="" {% if not item.label %} selected="selected" {% endif %}></option>
                             {% for bi in budget_item_labels %}
                                 <option value="{{bi.pk}}" {% if item.label.label == bi.label %} selected="selected" {% endif %}>{{bi.label}}</option>
@@ -25,13 +25,13 @@
                 </div>
                 <div class="col-md-4 control">
                     <input type="text" class="form-control{% if item.label.label == 'Other' %} priority1{% endif %}" name="budget-item-other{% if key %}-{{ key }}{% endif %}" id="budget-item-other{% if key %}-{{ key }}{% endif %}"
-                    {% if item.other_extra %} value="{{item.other_extra}}" {% endif %} maxlength="30" {% if not item.label.label == 'Other' %}disabled{% endif %}>
+                    value="{{ item.other_extra }}" saved-value="{{ item.other_extra }}" maxlength="30" {% if not item.label.label == 'Other' %}disabled{% endif %}>
                     <label class="control-label" for="budget-item-other{% if key %}-{{ key }}{% endif %}">{% trans 'Other label extra info' %}</label>
                     <p class="help-block hidden">{% trans 'Enter a description for an “other” budget item.' %}</p>
                 </div>
                 <div class="col-md-4">
                     <div class="select-group control">
-                        <select name="budget-item-type{% if key %}-{{ key }}{% endif %}" id="budget-item-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
+                        <select name="budget-item-type{% if key %}-{{ key }}{% endif %}" id="budget-item-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{{ item.type }}">
                             <option value="" {% if not item.type %} selected="selected" {% endif %}></option>
                             {% for bt in budget_types %}
                                 <option value="{{ bt.code }}" {% if item.type == bt.code %} selected="selected" {% endif %}>{{ bt.code }} - {{ bt.name }}</option>
@@ -49,7 +49,7 @@
                     <div class="input-group priority1">
                         <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
                         <input type="text" class="form-control priority1" name="budget-item-value{% if key %}-{{ key }}{% endif %}" id="budget-item-value{% if key %}-{{ key }}{% endif %}"
-                        {% if item.amount %} value="{{item.amount}}" {% endif %}>
+                        value="{% if item.amount %}{{ item.amount }}{% endif %}" saved-value="{% if item.amount %}{{ item.amount }}{% endif %}">
                     </div>
                     <label class="control-label" for="budget-item-value{% if key %}-{{ key }}{% endif %}">{% trans 'Budget item value' %}</label>
                     <p class="help-block hidden">{% trans 'Enter the amount of budget that is set aside for this specific budget item.' %}</p>

@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-md-4 control">
                 <div class="select-group">
-                    <select name="link-type{% if key %}-{{ key }}{% endif %}" id="link-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2">
+                    <select name="link-type{% if key %}-{{ key }}{% endif %}" id="link-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{{ link.kind }}">
                         <option value="" {% if not link.kind %} selected="selected" {% endif %}></option>
                         <option value="A" {% if link.kind == "A" %} selected="selected" {% endif %}>{% trans 'Akvopedia entry' %}</option>
                         <option value="E" {% if link.kind == "E" %} selected="selected" {% endif %}>{% trans 'External link' %}</option>
@@ -22,12 +22,12 @@
                 </div>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control priority2" id="link-url{% if key %}-{{ key }}{% endif %}" name="link-url{% if key %}-{{ key }}{% endif %}"{% if link.url %} value="{{link.url}}" {% endif %}>
+                <input type="text" class="form-control priority2" id="link-url{% if key %}-{{ key }}{% endif %}" name="link-url{% if key %}-{{ key }}{% endif %}" value="{{ link.url }}" saved-value="{{ link.url }}">
                 <label for="link-url{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link URL' %}</label>
                 <p class="help-block hidden">{% trans 'Enter the link to an external website you wish to redirect to from your project page.' %}</p>
             </div>
             <div class="col-md-4 control">
-                <input type="text" class="form-control priority2" name="link-caption{% if key %}-{{ key }}{% endif %}" id="link-caption{% if key %}-{{ key }}{% endif %}" {% if link.caption %}value="{{link.caption}}"{% endif %} maxlength="50">
+                <input type="text" class="form-control priority2" name="link-caption{% if key %}-{{ key }}{% endif %}" id="link-caption{% if key %}-{{ key }}{% endif %}" value="{{ link.caption }}" saved-value="{{ link.caption }}" maxlength="50">
                 <label for="link-caption{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link caption' %}</label>
                 <p class="help-block hidden">{% trans 'Enter a name for the link.' %}</p>
             </div>

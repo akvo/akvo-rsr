@@ -13,14 +13,14 @@
             <div class="row">
                 <div class="col-md-4 control">
                     <input type="text" class="form-control priority2 sector" name="transaction-sector{% if key %}-{{ key }}{% endif %}" id="transaction-sector{% if key %}-{{ key }}{% endif %}"
-                    {% if sector.code %} value="{{sector.code}}" {% endif %} {% if sector %}sector{% endif %}>
+                    value="{{ sector.code }}" saved-value="{{ sector.code }}" {% if sector %}sector{% endif %}>
                     <label class="control-label" for="transaction-sector{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction sector' %}</label>
                     <p class="help-block hidden">{% trans 'A recognised code, from a recognised vocabulary, classifying the purpose of this transaction. If this element is used then ALL transaction elements should contain a transaction/sector element and iati-activity/sector should NOT be used. This element can be used multiple times, but only one sector can be reported per vocabulary.' %}</p>
                 </div>
                 <div class="col-md-4">
                     <div class="select-group control">
-                        <select name="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}" id="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority2 sector" {% if sector %}sector{% endif %}>
-                            <option value="" {% if not sector.code %} selected="selected" {% endif %}></option>
+                        <select name="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}" id="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority2 sector" saved-value="{{ sector.vocabulary }}" {% if sector %}sector{% endif %}>
+                            <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}></option>
                              {% for entry in sector_vocabularies %}
                                  <option value="{{ entry.code }}" {% if sector.vocabulary == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
                              {% endfor %}
@@ -31,7 +31,7 @@
                 </div>
                 <div class="col-md-4 control">
                     <input type="text" class="form-control priority2 sector" name="transaction-sector-description{% if key %}-{{ key }}{% endif %}" id="transaction-sector-description{% if key %}-{{ key }}{% endif %}"
-                    {% if sector.text %} value="{{sector.text}}" {% endif %} {% if sector %}sector{% endif %} maxlength="100">
+                    value="{{ sector.text }}" saved-value="{{ sector.text }}" {% if sector %}sector{% endif %} maxlength="100">
                     <label class="control-label" for="transaction-sector-description{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction sector description' %}</label>
                 </div>
             </div>

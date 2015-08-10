@@ -740,7 +740,7 @@ function removePartial(node) {
 }
 
 function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
-    var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass;
+    var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass, typeaheadInput;
 
     Typeahead = ReactTypeahead.Typeahead;   
 
@@ -782,13 +782,13 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         document.querySelector('.' + selector)
     );
 
+    typeaheadInput = $('.' + selector + ' .typeahead' + ' input');
     if (valueId !== null) {
         for (var i = 0; i < typeaheadOptions.length; i++) {
             if (parseInt(typeaheadOptions[i].id, 10) == parseInt(valueId, 10)) {
-                var savedResult, typeaheadInput;
+                var savedResult;
 
                 savedResult = typeaheadOptions[i];
-                typeaheadInput = $('.' + selector + ' .typeahead' + ' input');
 
                 typeaheadInput.attr('value', savedResult.id);
                 typeaheadInput.prop('value', savedResult[filterOption]);
@@ -796,6 +796,8 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                 typeaheadInput.attr('saved-value', savedResult.id);
             }
         }
+    } else {
+        typeaheadInput.attr('saved-value', '');
     }
 
     selectorTypeahead = selectorClass.find('.typeahead');
@@ -1805,35 +1807,35 @@ function checkUnsavedChangesForm(form) {
 
     for (var i = 0; i < inputs.length; i++) {
         if (inputs[i].type == 'file') {
-            // TODO
+            // Ignore file inputs for now.
         } else if (inputs[i].type == 'checkbox') {
             if (inputs[i].checked && (inputs[i].getAttribute('saved-value') == 'False')) {
-                return [true, inputs[i].getAttribute('id')];
+                return true;
             } else if (!inputs[i].checked && (inputs[i].getAttribute('saved-value') == 'True')) {
-                return [true, inputs[i].getAttribute('id')];
+                return true;
             }
         } else if (inputs[i].parentNode.className.indexOf('typeahead') > -1) {
             if (inputs[i].getAttribute('value') != inputs[i].getAttribute('saved-value')) {
-                return [true, inputs[i].getAttribute('id')];
+                return true;
             }
         } else if (inputs[i].value != inputs[i].getAttribute('saved-value')) {
-            return [true, inputs[i].getAttribute('id')];
+            return true;
         }
     }
 
     for (var j=0; j < selects.length; j++) {
         if (selects[j].value != selects[j].getAttribute('saved-value')) {
-            return [true, selects[j].getAttribute('id')];
+            return true;
         }
     }
 
     for (var k = 0; k < textareas.length; k++) {
         if (textareas[k].value != textareas[k].getAttribute('saved-value')) {
-            return [true, textareas[k].getAttribute('id')];
+            return true;
         }
     }
 
-    return [false, 'none'];
+    return false;
 }
 
 function checkUnsavedChanges() {
@@ -1845,19 +1847,18 @@ function checkUnsavedChanges() {
         ['2', '02 - Contact information'],
         ['3', '03 - Project partners'],
         ['4', '04 - Project descriptions'],
-        ['5', '05 - Results and indicators']
+        ['5', '05 - Results and indicators'],
+        ['6', '06 - Finance'],
+        ['7', '07 - Project locations'],
+        ['8', '08 - Project focus'],
+        ['9', '09 - Links and documents'],
+        ['10', '10 - Project comments']
     ];
 
     for (var i=0; i < forms.length; i++) {
-        var list = checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]));
-
-        if (list[0]) {
-            unsavedForms.push(list[1]);
+        if (checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]))) {
+            unsavedForms.push(forms[i][1]);
         }
-
-//        if (checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]))) {
-//            unsavedForms.push(forms[i][1]);
-//        }
     }
 
     return unsavedForms;
