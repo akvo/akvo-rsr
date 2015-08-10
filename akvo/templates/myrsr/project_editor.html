@@ -468,7 +468,7 @@
                             <p class="help-block hidden" id="step-4-helptext">{% trans 'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future.' %}</p>
                             <form role="form" id="admin-step-4">
                             <div class="form-group control">
-                                <textarea id="summary" class="form-control priority1" name="summary" maxlength="400" rows="4" saved-value="{{ project.project_plan_summary }}">{{ project.project_plan_summary }}</textarea>
+                                <textarea id="summary" class="form-control priority1" name="summary" maxlength="400" rows="5" saved-value="{{ project.project_plan_summary }}">{{ project.project_plan_summary }}</textarea>
                                 <label class="control-label" for="summary">{% trans 'Summary of project plan' %}</label>
                                 <p class="help-block hidden">
                                     {% blocktrans %}Enter a brief summary. The summary should explain:<br/>
@@ -485,7 +485,7 @@
                                 <p class="help-block hidden">{% trans 'Provide a brief description of the overall project goals.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="background" class="form-control priority2" name="background" maxlength="1000" rows="8" saved-value="{{ project.background }}">{% if project.background %}{{project.background}}{% endif %}</textarea>
+                                <textarea id="background" class="form-control priority2" name="background" maxlength="1000" rows="5" saved-value="{{ project.background }}">{% if project.background %}{{project.background}}{% endif %}</textarea>
                                 <label class="control-label" for="background">{% trans 'Background' %}</label>
                                 <p class="help-block hidden">{% trans 'This should describe the geographical, political, environmental, social and/or cultural context of the project, and any related activities that have already taken place or are underway.' %}</p>
                             </div>
@@ -500,12 +500,12 @@
                                 <p class="help-block hidden">{% trans 'This should include information about the people, organisations or resources that are being impacted by this project.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" rows="8" saved-value="{{ project.project_plan }}">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
+                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" rows="5" saved-value="{{ project.project_plan }}">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
                                 <label class="control-label" for="projectPlan">{% trans 'Project plan' %}</label>
                                 <p class="help-block hidden">{% trans 'Detailed information about the implementation of the project: the what, how, who and when.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="sustainability" class="form-control priority2" name="sustainability" rows="8" saved-value="{{ project.sustainability }}">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
+                                <textarea id="sustainability" class="form-control priority2" name="sustainability" rows="5" saved-value="{{ project.sustainability }}">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
                                 <label class="control-label" for="sustainability">{% trans 'Sustainability' %}</label>
                                 <p class="help-block hidden">{% trans 'Describe the plans for ensuring results are maintained after implementation is complete.' %}</p>
                             </div>
