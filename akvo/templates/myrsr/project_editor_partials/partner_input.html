@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 control">
-                    <div class="input-group priority1">
+                    <div class="input-group {% if partnership.partner_type == 'funding' %}priority1{% endif %}">
                         <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
                         <input type="text" class="form-control priority1" id="funding-amount{% if key %}-{{ key }}{% endif %}"
                         name="funding-amount{% if key %}-{{ key }}{% endif %}" value="{% if partnership.funding_amount %}{{ partnership.funding_amount }}{% endif %}" saved-value="{% if partnership.funding_amount %}{{ partnership.funding_amount }}{% endif %}"

@@ -66,7 +66,6 @@ PROJECT_CONTACT_FIELDS = (
     ('email', 'contact-email-', 'text'),
     ('telephone', 'contact-phone-', 'text'),
     ('mailing_address', 'contact-address-', 'text'),
-    ('country', 'contact-country-', 'related-object'),
     ('department', 'contact-department-', 'text'),
     ('website', 'contact-website-', 'text'),
 )
