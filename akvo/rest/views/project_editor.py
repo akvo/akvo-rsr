@@ -37,6 +37,7 @@ SECTION_ONE_FIELDS = (
     ('date_end_planned', 'eventEndPlanned', 'date'),
     ('date_start_actual', 'eventFromActual', 'date'),
     ('date_end_actual', 'eventEndActual', 'date'),
+    ('language', 'projectLanguage', 'text'),
     ('hierarchy', 'projectHierarchy', 'none'),
     ('current_image_caption', 'photoCaption', 'text'),
     ('current_image_credit', 'photoCredit', 'text'),
@@ -280,7 +281,7 @@ def add_error(errors, message, field_name):
     return errors
 
 
-def save_field(obj, field, form_field, form_data, errors, changes):
+def save_field(obj, field, form_field, form_data, orig_data, errors, changes):
     obj_data = getattr(obj, field)
 
     if isinstance(obj_data, int):
@@ -294,12 +295,15 @@ def save_field(obj, field, form_field, form_data, errors, changes):
         try:
             obj.save(update_fields=[field])
 
+            if form_field[:6] == 'value-':
+                form_field = form_field[6:]
+
             if not obj in [change[0] for change in changes]:
-                changes.append([obj, [field]])
+                changes.append([obj, [(field, form_field, orig_data)]])
             else:
                 for change in changes:
                     if obj == change[0]:
-                        change[1].append(field)
+                        change[1].append((field, form_field, orig_data))
                         break
 
         except Exception as e:
@@ -310,12 +314,12 @@ def save_field(obj, field, form_field, form_data, errors, changes):
 
 def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_obj_type=None):
     field_name = field[1] + form_obj_id
+    orig_data = form_data[field_name] if not field[2] == 'boolean' else None
 
     if field[2] == 'date':
-        if form_data[field_name]:
+        if orig_data:
             try:
-                field_data = datetime.datetime.strptime(form_data[field_name], "%d/%m/%Y").\
-                    strftime("%Y-%m-%d")
+                field_data = datetime.datetime.strptime(orig_data, "%d/%m/%Y").strftime("%Y-%m-%d")
             except ValueError as e:
                 errors = add_error(errors, e, field_name)
                 field_data = None
@@ -324,23 +328,22 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
 
     elif field[2] == 'integer':
         try:
-            field_data = int(form_data[field_name]) if form_data[field_name] else None
+            field_data = int(orig_data) if orig_data else None
         except ValueError as e:
             errors = add_error(errors, e, field_name)
             field_data = None
 
     elif field[2] == 'decimal':
         try:
-            field_data = decimal.Decimal(form_data[field_name]) if form_data[field_name] else None
+            field_data = decimal.Decimal(orig_data) if orig_data else None
         except decimal.InvalidOperation as e:
             errors = add_error(errors, e, field_name)
             field_data = None
 
     elif field[2] == 'related-object':
-        rel_obj_id = form_data[field_name]
-        if rel_obj_id:
+        if orig_data:
             try:
-                field_data = getattr(getattr(rel_obj_type, 'objects'), 'get')(pk=rel_obj_id)
+                field_data = getattr(getattr(rel_obj_type, 'objects'), 'get')(pk=orig_data)
             except rel_obj_type.DoesNotExist as e:
                 errors = add_error(errors, e, field_name)
                 field_data = None
@@ -349,14 +352,15 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
 
     elif field[2] == 'boolean':
         field_data = 'True' if field_name in form_data.keys() else 'False'
+        orig_data = field_data
 
     elif field[2] == 'none':
-        field_data = form_data[field_name] if form_data[field_name] else None
+        field_data = orig_data if orig_data else None
 
     else:
-        field_data = form_data[field_name]
+        field_data = orig_data
 
-    return save_field(obj, field[0], field_name, field_data, errors, changes)
+    return save_field(obj, field[0], field_name, field_data, orig_data, errors, changes)
 
 
 def check_related_object_data(obj_id, form_data, fields):
@@ -408,7 +412,7 @@ def log_changes(changes, user, project):
 
         for obj_changes in changes:
             obj = obj_changes[0]
-            fields = obj_changes[1]
+            fields = [obj_change[0] for obj_change in obj_changes[1]]
 
             if not isinstance(obj, Project):
                 obj_change_message = u''
@@ -443,6 +447,15 @@ def log_changes(changes, user, project):
             change_message=first_part + change_message
         )
 
+        field_changes = []
+        for change in changes:
+            for fields in change[1]:
+                field_changes.append([fields[1], fields[2]])
+
+        return field_changes
+
+    return []
+
 
 def log_addition(obj, user):
     change_message = u'%s' % _(u'Project editor, added.')
@@ -467,7 +480,7 @@ def project_editor_delete_document(request, project_pk=None, document_pk=None):
         return HttpResponseForbidden()
 
     errors, changes = save_field(
-        document, 'document', 'document-document-' + str(document_pk), '', [], []
+        document, 'document', 'document-document-' + str(document_pk), '', '', [], []
     )
 
     if changes:
@@ -505,7 +518,7 @@ def project_editor_delete_photo(request, pk=None):
     if not user.has_perm('rsr.change_project', project):
         return HttpResponseForbidden()
 
-    errors, changes = save_field(project, 'current_image', 'photo', '', [], [])
+    errors, changes = save_field(project, 'current_image', 'photo', '', '', [], [])
 
     if changes:
         change_message = u'%s' % _(u'Project editor, deleted: current_image.')
@@ -592,10 +605,11 @@ def project_editor_step1(request, pk=None):
             ).url
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
             'new_image': new_image,
@@ -657,10 +671,11 @@ def project_editor_step2(request, pk=None):
             errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
         }
@@ -728,10 +743,11 @@ def project_editor_step3(request, pk=None):
             errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
         }
@@ -771,10 +787,11 @@ def project_editor_step4(request, pk=None):
             errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
         }
@@ -935,10 +952,11 @@ def project_editor_step5(request, pk=None):
                         rel_objects[-1]['unicode'] = ip.__unicode__()
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
         }
@@ -1110,10 +1128,11 @@ def project_editor_step6(request, pk=None):
                         rel_objects[-1]['unicode'] = sector.__unicode__()
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
             'total_budget': "{:,}".format(int(project.budget)),
@@ -1262,10 +1281,11 @@ def project_editor_step7(request, pk=None):
                         rel_objects[-1]['unicode'] = admin.__unicode__()
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
         }
@@ -1339,10 +1359,11 @@ def project_editor_step8(request, pk=None):
             errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
         }
@@ -1438,10 +1459,11 @@ def project_editor_step9(request, pk=None):
             #     ).url
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
         }
@@ -1481,10 +1503,11 @@ def project_editor_step10(request, pk=None):
             errors, changes = process_field(cf, data, CUSTOM_FIELD, errors, changes, cf_id)
 
     # Log changes
-    log_changes(changes, user, project)
+    field_changes = log_changes(changes, user, project)
 
     return Response(
         {
+            'changes': field_changes,
             'errors': errors,
             'rel_objects': rel_objects,
         }

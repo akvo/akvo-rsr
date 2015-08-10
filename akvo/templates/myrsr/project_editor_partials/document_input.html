@@ -19,7 +19,7 @@
                     <a onclick="deleteDocument({% if key %}{{ key }}{% endif %});" class="btn btn-link delete-document-button" id="delete-document-document{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete document' %}</a>{% endif %}
                 </div>
                 <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2" id="document-url{% if key %}-{{ key }}{% endif %}" name="document-url{% if key %}-{{ key }}{% endif %}" {% if document.url %} value="{{document.url}}" {% endif %}>
+                    <input type="text" class="form-control priority2" id="document-url{% if key %}-{{ key }}{% endif %}" name="document-url{% if key %}-{{ key }}{% endif %}" value="{{ document.url }}" saved-value="{{ document.url }}">
                     <label class="control-label" for="document-url{% if key %}-{{ key }}{% endif %}">{% trans 'Document URL' %}</label>
                     <p class="help-block hidden">{% trans 'Enter the the online location of your document, if possible.' %}</p>
                 </div>
@@ -28,11 +28,11 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-6 control">
-                    <input type="text" class="form-control priority2" id="document-title{% if key %}-{{ key }}{% endif %}" name="document-title{% if key %}-{{ key }}{% endif %}" {% if document.title %} value="{{document.title}}" {% endif %} maxlength="100">
+                    <input type="text" class="form-control priority2" id="document-title{% if key %}-{{ key }}{% endif %}" name="document-title{% if key %}-{{ key }}{% endif %}" value="{{ document.title }}" saved-value="{{ document.title }}" maxlength="100">
                     <label class="control-label" for="document-title{% if key %}-{{ key }}{% endif %}">{% trans 'Document title' %}</label>
                 </div>
                 <div class="col-md-6 control hidden hide-default">
-                    <input type="text" class="form-control priority3" id="document-format{% if key %}-{{ key }}{% endif %}" name="document-format{% if key %}-{{ key }}{% endif %}" {% if document.format %} value="{{document.format}}" {% endif %}>
+                    <input type="text" class="form-control priority3" id="document-format{% if key %}-{{ key }}{% endif %}" name="document-format{% if key %}-{{ key }}{% endif %}" value="{{ document.format }}" saved-value="{{ document.format }}">
                     <label class="control-label" for="document-format{% if key %}-{{ key }}{% endif %}">{% trans 'Document format' %}</label>
                     <p class="help-block hidden">{% trans 'This provides the code for the Internet Media Type ("MIME type") of the document, and includes pdf, msword, rtf, xml, csv, etc.' %}</p>
                 </div>
@@ -42,7 +42,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="select-group control">
-                        <select class="form-control priority3" id="document-category{% if key %}-{{ key }}{% endif %}" name="document-category{% if key %}-{{ key }}{% endif %}">
+                        <select class="form-control priority3" id="document-category{% if key %}-{{ key }}{% endif %}" name="document-category{% if key %}-{{ key }}{% endif %}" saved-value="{{ document.category }}">
                             <option value="" {% if not document.category %} selected="selected" {% endif %}></option>
                             {% for category in document_categories %}
                                 <option value="{{ category.code }}" {% if document.category == category.code %} selected="selected" {% endif %}>{{ category.code }} - {{ category.name }}</option>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="select-group control">
-                        <select class="form-control priority3" id="document-language{% if key %}-{{ key }}{% endif %}" name="document-language{% if key %}-{{ key }}{% endif %}">
+                        <select class="form-control priority3" id="document-language{% if key %}-{{ key }}{% endif %}" name="document-language{% if key %}-{{ key }}{% endif %}" saved-value="{{ document.language }}">
                             <option value="" {% if not document.language %} selected="selected" {% endif %}></option>
                             {% for language in languages %}
                                 <option value="{{ language.code }}" {% if document.language == language.code %} selected="selected" {% endif %}>{{ language.code }} - {{ language.name }}</option>

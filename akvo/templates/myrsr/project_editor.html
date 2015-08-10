@@ -125,25 +125,23 @@
                             <p class="help-block hidden" id="step-1-helptext">{% trans 'This section contains top-level information about your project which will be used in searches.' %}</p>
                             <form role="form" id="admin-step-1">
                             <div class="form-group control">
-                                <input type="text" class="form-control validate priority1" name="projectTitle" id="projectTitle" value="{% if project.title %}{{project.title}}{% endif %}" maxlength="45"/>
+                                <input type="text" class="form-control validate priority1" name="projectTitle" id="projectTitle" value="{{project.title}}" saved-value="{{project.title}}" maxlength="45"/>
                                 <label for="projectTitle" class="control-label">{%  trans 'Project title' %}</label>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control priority1" name="projectSubTitle" id="projectSubTitle" maxlength="75"
-                                {% if project.subtitle %} value="{{project.subtitle}}" {% endif %} />
+                                <input type="text" class="form-control priority1" name="projectSubTitle" id="projectSubTitle" maxlength="75" value="{{project.subtitle}}" saved-value="{{project.subtitle}}"/>
                                 <label for="projectSubTitle" class="control-label">{% trans 'Project subtitle' %}</label>
                             </div>
                             <div class="form-group control">
-                                <input type="text" class="form-control priority2" name="iatiId" id="iatiID" maxlength="100"
-                                {% if project.iati_activity_id %} value="{{project.iati_activity_id}}" {% endif %} />
-                                <label for="iatiID" class="control-label">{% trans 'IATI identifier' %}</label>
+                                <input type="text" class="form-control priority2" name="iatiId" id="iatiId" maxlength="100" value="{{project.iati_activity_id}}" saved-value="{{project.iati_activity_id}}" />
+                                <label for="iatiId" class="control-label">{% trans 'IATI identifier' %}</label>
                                 <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
                             </div>
                             <h5>{% trans 'Related projects' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'related-project-helptext');"></span></h5>
                             <p class="help-block hidden" id="related-project-helptext">{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}</p>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2">
+                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2" saved-value="{% if project.hierarchy %}{{ project.hierarchy }}{% endif %}">
                                         <option value="" {% if not project.hierarchy %} selected="selected" {% endif %}></option>
                                         <option value="1" {% if project.hierarchy|add:0 == 1 %} selected="selected" {% endif %}>{% trans 'Core activity' %}</option>
                                         <option value="2" {% if project.hierarchy|add:0 == 2 %} selected="selected" {% endif %}>{% trans 'Sub activity' %}</option>
@@ -167,7 +165,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectStatus" id="projectStatus" class="form-control priority1">
+                                    <select name="projectStatus" id="projectStatus" class="form-control priority1" saved-value="{{ project.status }}">
                                         <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}></option>
                                         <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>{% trans 'Needs funding' %}</option>
                                         <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>{% trans 'Active' %}</option>
@@ -216,14 +214,14 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectLanguage" id="projectLanguage" class="form-control priority2">
-                                        <option value="" {% if not project.language %} selected="selected" {% endif %}></option>
-                                        <option value="de" {% if project.language == 'de' %} selected="selected" {% endif %}>{% trans 'German' %}</option>
-                                        <option value="en" {% if project.language == 'en' %} selected="selected" {% endif %}>{% trans 'English' %}</option>
-                                        <option value="es" {% if project.language == 'es' %} selected="selected" {% endif %}>{% trans 'Spanish' %}</option>
-                                        <option value="fr" {% if project.language == 'fr' %} selected="selected" {% endif %}>{% trans 'French' %}</option>
-                                        <option value="nl" {% if project.language == 'nl' %} selected="selected" {% endif %}>{% trans 'Dutch' %}</option>
-                                        <option value="ru" {% if project.language == 'ru' %} selected="selected" {% endif %}>{% trans 'Russian' %}</option>
+                                    <select name="projectLanguage" id="projectLanguage" class="form-control priority2" saved-value="{{ project.language }}">
+                                        <option value="" {% if not project.language %}selected="selected"{% endif %}></option>
+                                        <option value="de" {% if project.language == 'de' %}selected="selected"{% endif %}>{% trans 'German' %}</option>
+                                        <option value="en" {% if project.language == 'en' %}selected="selected"{% endif %}>{% trans 'English' %}</option>
+                                        <option value="es" {% if project.language == 'es' %}selected="selected"{% endif %}>{% trans 'Spanish' %}</option>
+                                        <option value="fr" {% if project.language == 'fr' %}selected="selected"{% endif %}>{% trans 'French' %}</option>
+                                        <option value="nl" {% if project.language == 'nl' %}selected="selected"{% endif %}>{% trans 'Dutch' %}</option>
+                                        <option value="ru" {% if project.language == 'ru' %}selected="selected"{% endif %}>{% trans 'Russian' %}</option>
                                     </select>
                                     <label for="language" class="control-label">{% trans 'Language' %}</label>
                                 </div>
@@ -248,14 +246,12 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 control">
-                                        <input type="text" class="form-control priority2" id="photoCaption" name="photoCaption"
-                                        {% if project.current_image_caption %} value="{{project.current_image_caption}}" {% endif %} maxlength="50">
+                                        <input type="text" class="form-control priority2" id="photoCaption" name="photoCaption" value="{{project.current_image_caption}}" saved-value="{{project.current_image_caption}}" maxlength="50">
                                         <label for="photoCaption" class="control-label">{% trans 'Photo caption' %}</label>
                                         <p class="help-block hidden">{% trans 'Briefly describe who or what you see in the photo.' %}</p>
                                     </div>
                                     <div class="col-md-6 control">
-                                        <input type="text" class="form-control priority2" id="photoCredit" name="photoCredit"
-                                        {% if project.current_image_credit %} value="{{project.current_image_credit}}" {% endif %} maxlength="50">
+                                        <input type="text" class="form-control priority2" id="photoCredit" name="photoCredit" value="{{project.current_image_credit}}" saved-value="{{project.current_image_credit}}" maxlength="50">
                                         <label for="photoCredit" class="control-label">{% trans 'Photo credit' %}</label>
                                         <p class="help-block hidden">{% trans 'Enter who took the photo.' %}</p>
                                     </div>
@@ -263,10 +259,10 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="defaultAidType" id="defaultAidType" class="form-control priority3">
-                                        <option value="" {% if not project.default_aid_type %} selected="selected" {% endif %}></option>
+                                    <select name="defaultAidType" id="defaultAidType" class="form-control priority3" saved-value="{{ project.default_aid_type }}">
+                                        <option value="" {% if not project.default_aid_type %}selected="selected"{% endif %}></option>
                                         {% for aid_type in aid_types %}
-                                            <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %} selected="selected" {% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
+                                            <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %}selected="selected"{% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
                                         {% endfor %}
                                     </select>
                                     <label for="defaultAidType" class="control-label">{% trans 'Default aid type' %}</label>
@@ -275,10 +271,10 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="defaultFlowType" id="defaultFlowType" class="form-control priority3">
-                                        <option value="" {% if not project.default_flow_type %} selected="selected" {% endif %}></option>
+                                    <select name="defaultFlowType" id="defaultFlowType" class="form-control priority3" saved-value="{{ project.default_flow_type }}">
+                                        <option value="" {% if not project.default_flow_type %}selected="selected"{% endif %}></option>
                                         {% for flow_type in flow_types %}
-                                            <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %} selected="selected" {% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
+                                            <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %}selected="selected"{% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
                                         {% endfor %}
                                     </select>
                                     <label for="defaultFlowType" class="control-label">{% trans 'Default flow type' %}</label>
@@ -287,10 +283,10 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control priority3">
-                                        <option value="" {% if not project.default_tied_status %} selected="selected" {% endif %}></option>
+                                    <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control priority3" saved-value="{{ project.default_tied_status }}">
+                                        <option value="" {% if not project.default_tied_status %}selected="selected"{% endif %}></option>
                                         {% for tied_status in tied_statuses %}
-                                            <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %} selected="selected" {% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
+                                            <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %}selected="selected"{% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
                                         {% endfor %}
                                     </select>
                                     <label for="defaultTiedStatus" class="control-label">{% trans 'Default tied status' %}</label>
@@ -299,10 +295,10 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="collaborationType" id="collaborationType" class="form-control priority3">
-                                        <option value="" {% if not project.collaboration_type %} selected="selected" {% endif %}></option>
+                                    <select name="collaborationType" id="collaborationType" class="form-control priority3" saved-value="{{ project.collaboration_type }}">
+                                        <option value="" {% if not project.collaboration_type %}selected="selected"{% endif %}></option>
                                         {% for collaboration_type in collaboration_types %}
-                                            <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %} selected="selected" {% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
+                                            <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %}selected="selected"{% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
                                         {% endfor %}
                                     </select>
                                     <label for="collaborationType" class="control-label">{% trans 'Collaboration type' %}</label>
@@ -311,10 +307,10 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="defaultFinanceType" id="defaultFinanceType" class="form-control priority3">
-                                        <option value="" {% if not project.default_finance_type %} selected="selected" {% endif %}></option>
+                                    <select name="defaultFinanceType" id="defaultFinanceType" class="form-control priority3" saved-value="{{ project.default_finance_type }}">
+                                        <option value="" {% if not project.default_finance_type %}selected="selected"{% endif %}></option>
                                         {% for finance_type in finance_types %}
-                                            <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %} selected="selected" {% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
+                                            <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %}selected="selected"{% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
                                         {% endfor %}
                                     </select>
                                     <label for="defaultFinanceType" class="control-label">{% trans 'Default finance type' %}</label>
@@ -323,7 +319,7 @@
                             </div>
                             {% for customfield in custom_fields_section_1 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -367,7 +363,7 @@
                             </div>
                             {% for customfield in custom_fields_section_2 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -415,8 +411,7 @@
                                     <div class="form-group control hidden hide-default">
                                         <div class="checkbox">
                                             <label for="secondaryReporter" class="control-label">
-                                                <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3"
-                                                {% if project.sync_owner_secondary_reporter %} checked {% endif %}>
+                                                <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3" {% if project.sync_owner_secondary_reporter %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
                                                     {% trans 'Secondary reporter' %}
                                             </label>
                                         </div>
@@ -442,7 +437,7 @@
                             </div>
                             {% for customfield in custom_fields_section_3 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -473,7 +468,7 @@
                             <p class="help-block hidden" id="step-4-helptext">{% trans 'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future.' %}</p>
                             <form role="form" id="admin-step-4">
                             <div class="form-group control">
-                                <textarea id="summary" class="form-control priority1" name="summary" maxlength="400" rows="4">{% if project.project_plan_summary %}{{project.project_plan_summary}}{% endif %}</textarea>
+                                <textarea id="summary" class="form-control priority1" name="summary" maxlength="400" rows="4" saved-value="{{ project.project_plan_summary }}">{{ project.project_plan_summary }}</textarea>
                                 <label class="control-label" for="summary">{% trans 'Summary of project plan' %}</label>
                                 <p class="help-block hidden">
                                     {% blocktrans %}Enter a brief summary. The summary should explain:<br/>
@@ -485,38 +480,38 @@
                                 </p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" maxlength="600" rows="5">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
+                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" maxlength="600" rows="5" saved-value="{{ project.goals_overview }}">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
                                 <label class="control-label" for="goalsOverview">{% trans 'Goals overview' %}</label>
                                 <p class="help-block hidden">{% trans 'Provide a brief description of the overall project goals.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="background" class="form-control priority2" name="background" maxlength="1000" rows="8">{% if project.background %}{{project.background}}{% endif %}</textarea>
+                                <textarea id="background" class="form-control priority2" name="background" maxlength="1000" rows="8" saved-value="{{ project.background }}">{% if project.background %}{{project.background}}{% endif %}</textarea>
                                 <label class="control-label" for="background">{% trans 'Background' %}</label>
                                 <p class="help-block hidden">{% trans 'This should describe the geographical, political, environmental, social and/or cultural context of the project, and any related activities that have already taken place or are underway.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="currentSituation" class="form-control priority2" name="currentSituation" maxlength="600" rows="5">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
+                                <textarea id="currentSituation" class="form-control priority2" name="currentSituation" maxlength="600" rows="5" saved-value="{{ project.current_status }}">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
                                 <label class="control-label" for="currentSituation">{% trans 'Baseline situation' %}</label>
                                 <p class="help-block hidden">{% trans 'Describe the situation at the start of the project.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="targetGroup" class="form-control priority2" name="targetGroup" maxlength="600" rows="5">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
+                                <textarea id="targetGroup" class="form-control priority2" name="targetGroup" maxlength="600" rows="5" saved-value="{{ project.target_group }}">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
                                 <label class="control-label" for="targetGroup">{% trans 'Target group' %}</label>
                                 <p class="help-block hidden">{% trans 'This should include information about the people, organisations or resources that are being impacted by this project.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" rows="8">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
+                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" rows="8" saved-value="{{ project.project_plan }}">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
                                 <label class="control-label" for="projectPlan">{% trans 'Project plan' %}</label>
                                 <p class="help-block hidden">{% trans 'Detailed information about the implementation of the project: the what, how, who and when.' %}</p>
                             </div>
                             <div class="form-group control">
-                                <textarea id="sustainability" class="form-control priority2" name="sustainability" rows="8">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
+                                <textarea id="sustainability" class="form-control priority2" name="sustainability" rows="8" saved-value="{{ project.sustainability }}">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
                                 <label class="control-label" for="sustainability">{% trans 'Sustainability' %}</label>
                                 <p class="help-block hidden">{% trans 'Describe the plans for ensuring results are maintained after implementation is complete.' %}</p>
                             </div>
                             {% for customfield in custom_fields_section_4 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -581,7 +576,7 @@
                             </div>
                             {% for customfield in custom_fields_section_5 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -616,7 +611,7 @@
                             <form role="form" id="admin-step-6">
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2" saved-value="{% if project.currency %}{{ project.currency }}{% endif %}">
                                         <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
                                         <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
                                     </select>
@@ -627,8 +622,7 @@
                             <div class="form-group">
                                 <div class="checkbox">
                                     <label for="donateButton" class="control-label">
-                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2"
-                                        {% if project.donate_button %} checked {% endif %}>{% trans 'Donate button' %}
+                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
                                     </label>
                                 </div>
                                 <p class="help-block hidden">
@@ -640,7 +634,7 @@
                             <div class="form-group control hidden hide-default">
                                 <div class="input-group priority3">
                                     <input type="text" class="form-control" name="capital-spend-percentage" id="capital-spend-percentage"
-                                    {% if project.capital_spend_percentage %} value="{{project.capital_spend_percentage}}" {% endif %}>
+                                    value="{% if project.capital_spend_percentage %}{{project.capital_spend_percentage}}{% endif %}" saved-value="{% if project.capital_spend_percentage %}{{project.capital_spend_percentage}}{% endif %}">
                                     <span class="input-group-addon">%</span>
                                 </div>
                                 <label for="capital-spend-percentage" class="control-label">{% trans 'Capital spend percentage' %}</label>
@@ -661,8 +655,8 @@
                             <h5 class="hidden hide-default">{% trans 'Country budget items' %}</h5>
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3">
-                                        <option value="" {% if not project.country_budget_vocabulary %} selected="selected" {% endif %}></option>
+                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3" saved-value="{{ project.country_budget_vocabulary }}">
+                                        <option value="" {% if not project.country_budget_vocabulary %}selected="selected"{% endif %}></option>
                                         {% for vocabulary in budget_identifier_vocabularies %}
                                             <option value="{{ vocabulary.code }}" {% if project.country_budget_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
                                         {% endfor %}
@@ -711,7 +705,7 @@
                             </div>
                             {% for customfield in custom_fields_section_6 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -746,8 +740,8 @@
                             <form role="form" id="admin-step-7">
                             <div class="form-group">
                                 <div class="select-group control hidden hide-default">
-                                    <select name="scope" id="scope" class="form-control priority3">
-                                        <option value="" {% if not project.project_scope %} selected="selected" {% endif %}></option>
+                                    <select name="scope" id="scope" class="form-control priority3" saved-value="{{ project.project_scope }}">
+                                        <option value="" {% if not project.project_scope %}selected="selected"{% endif %}></option>
                                         {% for scope in activity_scopes %}
                                             <option value="{{ scope.code }}" {% if project.project_scope == scope.code %} selected="selected" {% endif %}>{{ scope.code }} - {{ scope.name }}</option>
                                         {% endfor %}                                        
@@ -799,7 +793,7 @@
                             </div>
                             {% for customfield in custom_fields_section_7 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -862,7 +856,7 @@
                             </div>
                             {% for customfield in custom_fields_section_8 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}  saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -922,7 +916,7 @@
                             </div>
                             {% for customfield in custom_fields_section_9 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -950,15 +944,15 @@
                             </div>
                         </div>
                         <div class="formBlock hidden">
-                            <p class="help-block hidden" id="step-10-helptext">{% trans 'Fill in comments regarding the project. These are only for internal use and will not displayed anywhere on the project page.' %}</p>
+                            <p class="help-block hidden" id="step-10-helptext">{% trans 'Fill in comments regarding the project. These are only for internal use and will not be displayed anywhere on the project page.' %}</p>
                             <form role="form" id="admin-step-10">
                             <div class="form-group control">
-                                <textarea id="projectComments" class="form-control priority2" name="projectComments" rows="8">{% if project.notes %}{{project.notes}}{% endif %}</textarea>
+                                <textarea id="projectComments" class="form-control priority2" name="projectComments" rows="8" saved-value="{{ project.notes }}">{{ project.notes }}</textarea>
                                 <label class="control-label" for="projectComments">{% trans 'Project comments' %}</label>
                             </div>
                             {% for customfield in custom_fields_section_10 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{% if customfield.value %}{{ customfield.value }}{% endif %}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>

@@ -78,7 +78,7 @@ function startSave(step) {
 }
 
 function finishSave(step, message) {
-    var div, div_id, div_button_id, div_button;
+    var div, div_id, div_button_id, div_button, message_time;
 
     div_id = 'savingstep' + step;
     div = document.getElementById(div_id);
@@ -86,13 +86,21 @@ function finishSave(step, message) {
     div_button_id = 'savingstep' + step + '-button';
     div_button = document.getElementById(div_button_id);
 
+    // Show error message 20 seconds, other messages only 5 seconds
+    if (message.indexOf('class="help-block-error"') > -1) {
+        message_time = 20000;
+    } else {
+        message_time = 5000;
+    }
+
     // Only replace the message if no error is shown yet
     if (div.innerHTML.indexOf('class="help-block-error"') === -1) {
         div.innerHTML = message;
+
         setTimeout(function () {
             div.innerHTML = '';
             div_button.removeAttribute('disabled');
-        }, 20000);
+        }, message_time);
     }
 }
 
@@ -451,6 +459,14 @@ function submitStep(step, level) {
             }
             addErrors(response.errors);
 
+            // Replace saved values
+            for (var i=0; i < response.changes.length; i++) {
+                var formElement;
+
+                formElement = document.getElementById(response.changes[i][0]);
+                formElement.setAttribute('saved-value', response.changes[i][1]);
+            }
+
             if (step === '5' && level === 1) {
                 replaceNames(response.rel_objects, 'indicator');
             } else if (step === '5' && level === 2) {
@@ -724,7 +740,7 @@ function removePartial(node) {
 }
 
 function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
-    var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass;
+    var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass, typeaheadInput;
 
     Typeahead = ReactTypeahead.Typeahead;   
 
@@ -766,18 +782,22 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         document.querySelector('.' + selector)
     );
 
+    typeaheadInput = $('.' + selector + ' .typeahead' + ' input');
     if (valueId !== null) {
         for (var i = 0; i < typeaheadOptions.length; i++) {
             if (parseInt(typeaheadOptions[i].id, 10) == parseInt(valueId, 10)) {
-                var savedResult, typeaheadInput;
+                var savedResult;
 
                 savedResult = typeaheadOptions[i];
-                typeaheadInput = $('.' + selector + ' .typeahead' + ' input');
 
                 typeaheadInput.attr('value', savedResult.id);
                 typeaheadInput.prop('value', savedResult[filterOption]);
+
+                typeaheadInput.attr('saved-value', savedResult.id);
             }
         }
+    } else {
+        typeaheadInput.attr('saved-value', '');
     }
 
     selectorTypeahead = selectorClass.find('.typeahead');
@@ -1740,10 +1760,11 @@ function setDatepickers() {
 
             React.render(<DatePickerComponent key={datepickerId} />, datepickerContainer);
 
-            // Set id and name of datepicker input
+            // Set id, name and saved value of datepicker input
             inputNode = datepickerContainer.getElementsByClassName('datepicker__input')[0];
             inputNode.setAttribute("id", datepickerId);
             inputNode.setAttribute("name", datepickerId);
+            inputNode.setAttribute("saved-value", inputValue);
 
             // Set classes of datepicker input
             inputNode.className += ' form-control ' + datepickerContainer.getAttribute('data-classes');
@@ -1777,8 +1798,98 @@ function setDatepickers() {
     }
 }
 
+function checkUnsavedChangesForm(form) {
+    var inputs, selects, textareas;
+
+    inputs = form.getElementsByTagName('input');
+    selects = form.getElementsByTagName('select');
+    textareas = form.getElementsByTagName('textarea');
+
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].type == 'file') {
+            // Ignore file inputs for now.
+        } else if (inputs[i].type == 'checkbox') {
+            if (inputs[i].checked && (inputs[i].getAttribute('saved-value') == 'False')) {
+                return true;
+            } else if (!inputs[i].checked && (inputs[i].getAttribute('saved-value') == 'True')) {
+                return true;
+            }
+        } else if (inputs[i].parentNode.className.indexOf('typeahead') > -1) {
+            if (inputs[i].getAttribute('value') != inputs[i].getAttribute('saved-value')) {
+                return true;
+            }
+        } else if (inputs[i].value != inputs[i].getAttribute('saved-value')) {
+            return true;
+        }
+    }
+
+    for (var j=0; j < selects.length; j++) {
+        if (selects[j].value != selects[j].getAttribute('saved-value')) {
+            return true;
+        }
+    }
+
+    for (var k = 0; k < textareas.length; k++) {
+        if (textareas[k].value != textareas[k].getAttribute('saved-value')) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function checkUnsavedChanges() {
+    var forms, unsavedForms;
+
+    unsavedForms = [];
+    forms = [
+        ['1', '01 - General information'],
+        ['2', '02 - Contact information'],
+        ['3', '03 - Project partners'],
+        ['4', '04 - Project descriptions'],
+        ['5', '05 - Results and indicators'],
+        ['6', '06 - Finance'],
+        ['7', '07 - Project locations'],
+        ['8', '08 - Project focus'],
+        ['9', '09 - Links and documents'],
+        ['10', '10 - Project comments']
+    ];
+
+    for (var i=0; i < forms.length; i++) {
+        if (checkUnsavedChangesForm(document.getElementById('admin-step-' + forms[i][0]))) {
+            unsavedForms.push(forms[i][1]);
+        }
+    }
+
+    return unsavedForms;
+}
+
+function setUnsavedChangesMessage() {
+    window.onbeforeunload = function(e) {
+        var unsavedSections, message;
+
+        e = e || window.event;
+
+        unsavedSections = checkUnsavedChanges();
+        if (unsavedSections.length > 0) {
+            message = "You have unsaved changes in the following section(s):\n\n";
+            for (var i = 0; i < unsavedSections.length; i++) {
+                message += "\t• " + unsavedSections[i] + "\n";
+            }
+
+            // For IE and Firefox
+            if (e) {
+                e.returnValue = message;
+            }
+            // For Safari and Chrome
+            return message;
+        }
+    };
+}
+
 
 $(document).ready(function() {
+    setUnsavedChangesMessage();
     setDatepickers();
     setToggleSectionOnClick();
     setPublishOnClick();

@@ -12,13 +12,13 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-4 control">
-                    <input type="text" class="form-control priority3 administrative" id="location-administrative-code{% if key %}-{{ key }}{% endif %}" name="location-administrative-code{% if key %}-{{ key }}{% endif %}" {% if admin.code %} value="{{admin.code}}" {% endif %} {% if admin %}administrative{% endif %}>
+                    <input type="text" class="form-control priority3 administrative" id="location-administrative-code{% if key %}-{{ key }}{% endif %}" name="location-administrative-code{% if key %}-{{ key }}{% endif %}" value="{{ admin.code }}" saved-value="{{ admin.code }}" {% if admin %}administrative{% endif %}>
                     <label class="control-label" for="location-administrative-code{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative code' %}</label>
                     <p class="help-block hidden">{% trans 'Coded identification of national and sub-national divisions according to recognised administrative boundary repositories. Multiple levels may be reported. For reference:' %} <a href="http://iatistandard.org/201/codelists/GeographicVocabulary/" target="_blank">http://iatistandard.org/201/codelists/GeographicVocabulary/</a>.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="select-group control">
-                        <select name="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" id="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3 administrative" {% if admin %}administrative{% endif %}>
+                        <select name="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" id="location-administrative-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3 administrative" saved-value="{{ admin.vocabulary }}" {% if admin %}administrative{% endif %}>
                             <option value="" {% if not admin.vocabulary %} selected="selected" {% endif %}></option>
                              {% for vocabulary in geographic_vocabularies %}
                                 <option value="{{ vocabulary.code }}" {% if admin.vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 control">
-                    <input type="text" class="form-control priority3 administrative" id="location-administrative-level{% if key %}-{{ key }}{% endif %}" name="location-administrative-level{% if key %}-{{ key }}{% endif %}" {% if admin.level %} value="{{admin.level}}" {% endif %} {% if admin %}administrative{% endif %}>
+                    <input type="text" class="form-control priority3 administrative" id="location-administrative-level{% if key %}-{{ key }}{% endif %}" name="location-administrative-level{% if key %}-{{ key }}{% endif %}" value="{% if admin.level %}{{ admin.level }}{% endif %}" saved-value="{% if admin.level %}{{ admin.level }}{% endif %}" {% if admin %}administrative{% endif %}>
                     <label class="control-label" for="location-administrative-level{% if key %}-{{ key }}{% endif %}">{% trans 'Administrative level' %}</label>
                 </div>
             </div>

@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="select-group control">
-                        <select name="recipient-region{% if key %}-{{ key }}{% endif %}" id="recipient-region{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                        <select name="recipient-region{% if key %}-{{ key }}{% endif %}" id="recipient-region{% if key %}-{{ key }}{% endif %}" class="form-control priority3" saved-value="{{ rr.region }}">
                             <option value="" {% if not rr.region %} selected="selected" {% endif %}></option>
                             {% for region in regions %}
                                 <option value="{{ region.code }}" {% if rr.region == region.code %} selected="selected" {% endif %}>{{ region.code }} - {{ region.name }}</option>
@@ -26,8 +26,7 @@
                 <div class="col-md-6 control">
                     <div class="input-group priority3">
                         <input type="text" class="form-control" id="recipient-region-percentage{% if key %}-{{ key }}{% endif %}"
-                        name="recipient-region-percentage{% if key %}-{{ key }}{% endif %}"
-                        {% if rr.percentage %} value="{{rr.percentage}}" {% endif %}>
+                        name="recipient-region-percentage{% if key %}-{{ key }}{% endif %}" value="{% if rr.percentage %}{{ rr.percentage }}{% endif %}" saved-value="{% if rr.percentage %}{{ rr.percentage }}{% endif %}">
                         <span class="input-group-addon">%</span>
                     </div>
                     <label class="control-label" for="recipient-region-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region percentage' %}</label>
@@ -36,7 +35,7 @@
                 <div class="col-md-6">
                     <div class="select-group control">
                         <select id="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}"
-                        name="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                        name="recipient-region-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority3" saved-value="{{ rr.region_vocabulary }}">
                             <option value="" {% if not rr.region_vocabulary %} selected="selected" {% endif %}></option>
                             {% for vocabulary in region_vocabularies %}
                                 <option value="{{ vocabulary.code }}" {% if rr.region_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
@@ -48,8 +47,7 @@
                 </div>
                  <div class="col-md-6 control">
                     <input type="text" class="form-control priority3" id="recipient-region-description{% if key %}-{{ key }}{% endif %}"
-                    name="recipient-region-description{% if key %}-{{ key }}{% endif %}"
-                    {% if rr.text %} value="{{rr.text}}" {% endif %} maxlength="50">
+                    name="recipient-region-description{% if key %}-{{ key }}{% endif %}" value="{{ rr.text }}" saved-value="{{ rr.text }}" maxlength="50">
                     <label class="control-label" for="recipient-region-description{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient region description' %}</label>
                     <p class="help-block hidden">{% trans 'Optionally enter a description.' %}</p>
                 </div>

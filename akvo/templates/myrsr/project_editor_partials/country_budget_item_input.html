@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="select-group control">
-                        <select name="country-budget-item{% if key %}-{{ key }}{% endif %}" id="country-budget-item{% if key %}-{{ key }}{% endif %}" class="form-control priority3">
+                        <select name="country-budget-item{% if key %}-{{ key }}{% endif %}" id="country-budget-item{% if key %}-{{ key }}{% endif %}" class="form-control priority3" saved-value="{{ item.code }}">
                             <option value="" {% if not item.code %} selected="selected" {% endif %}></option>
                             {% for bi in budget_identifiers %}
                                 <option value="{{ bi.code }}" {% if item.code == bi.code %} selected="selected" {% endif %}>{{ bi.code }} - {{ bi.name }}</option>
@@ -26,7 +26,7 @@
                 <div class="col-md-4 control">
                     <div class="input-group priority3">
                         <input type="text" class="form-control" name="country-budget-percentage{% if key %}-{{ key }}{% endif %}" id="country-budget-percentage{% if key %}-{{ key }}{% endif %}"
-                        {% if item.percentage %} value="{{item.percentage}}" {% endif %}>
+                        value="{% if item.percentage %}{{ item.percentage }}{% endif %}" saved-value="{% if item.percentage %}{{ item.percentage }}{% endif %}">
                         <span class="input-group-addon">%</span>
                     </div>
                     <label class="control-label" for="country-budget-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Country budget item percentage' %}</label>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-md-4 control">
                     <input type="text" class="form-control priority3" name="country-budget-description{% if key %}-{{ key }}{% endif %}" id="country-budget-description{% if key %}-{{ key }}{% endif %}"
-                    {% if item.description %} value="{{item.description}}" {% endif %} maxlength="100">
+                    value="{{ item.description }}" saved-value="{{ item.description }}" maxlength="100">
                     <label class="control-label" for="country-budget-description{% if key %}-{{ key }}{% endif %}">{% trans 'Country budget item description' %}</label>
                 </div>
             </div>

@@ -73,7 +73,7 @@ class ProjectDocument(models.Model):
             self.document.name = self.document.name.encode('ascii','ignore')
 
     def show_link(self):
-        title = self.title if self.title else _(u'Untitled document')
+        title = self.title if self.title else u'%s' % _(u'Untitled document')
         if self.url:
             return u'<a href="%s">%s</a>' % (self.url, title,)
         elif self.document:
