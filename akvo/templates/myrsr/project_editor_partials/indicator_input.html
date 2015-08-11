@@ -30,10 +30,10 @@
                 </div>
                 <div class="col-md-4">
                     <div class="select-group control">
-                        <select name="indicator-ascending{% if key %}-{{ key }}{% endif %}" id="indicator-ascending{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %} saved-value="{{ indicator.ascending|yesno:"1,2,''" }}">
-                            <option value="" {% if indicator.ascending|yesno:"yes, no, unknown" == "unknown" %} selected="selected" {% endif %}></option>
-                            <option value="1" {% if indicator.ascending|yesno:"yes, no, unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
-                            <option value="2" {% if indicator.ascending|yesno:"yes, no, unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
+                        <select name="indicator-ascending{% if key %}-{{ key }}{% endif %}" id="indicator-ascending{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %} saved-value="{{ indicator.ascending|yesno:"1,2,none" }}">
+                            <option value="none" {% if indicator.ascending|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}></option>
+                            <option value="1" {% if indicator.ascending|yesno:"yes,no,unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
+                            <option value="2" {% if indicator.ascending|yesno:"yes,no,unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
                         </select>
                         <label class="control-label" for="indicator-ascending{% if key %}-{{ key }}{% endif %}">{% trans 'Ascending' %}</label>
                         <p class="help-block hidden">{% trans 'Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).' %}</p>
