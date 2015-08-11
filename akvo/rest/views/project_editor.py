@@ -144,7 +144,7 @@ BUDGET_ITEM_FIELDS = (
     ('label', 'budget-item-label-', 'related-object'),
     ('value_date', 'budget-item-value-date-', 'date'),
     ('period_start', 'budget-item-period-start-', 'date'),
-    ('period_start', 'budget-item-period-end-', 'date'),
+    ('period_end', 'budget-item-period-end-', 'date'),
 )
 
 COUNTRY_BUDGET_ITEM_FIELDS = (
