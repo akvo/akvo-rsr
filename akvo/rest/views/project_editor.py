@@ -100,14 +100,14 @@ SECTION_FOUR_FIELDS = (
 RESULT_FIELDS = (
     ('title', 'result-title-', 'text'),
     ('type', 'result-type-', 'text'),
-    ('aggregation_status', 'result-aggregation-status-', 'none'),
+    ('aggregation_status', 'result-aggregation-status-', 'none-boolean'),
     ('description', 'result-description-', 'text'),
 )
 
 INDICATOR_FIELDS = (
     ('title', 'indicator-title-', 'text'),
     ('measure', 'indicator-measure-', 'text'),
-    ('ascending', 'indicator-ascending-', 'none'),
+    ('ascending', 'indicator-ascending-', 'none-boolean'),
     ('description', 'indicator-description-', 'text'),
     ('baseline_value', 'indicator-baseline-value-', 'text'),
     ('baseline_comment', 'indicator-baseline-comment-', 'text'),
@@ -352,6 +352,9 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
     elif field[2] == 'boolean':
         field_data = 'True' if field_name in form_data.keys() else 'False'
         orig_data = field_data
+
+    elif field[2] == 'none-boolean':
+        field_data = None if orig_data == 'none' else orig_data
 
     elif field[2] == 'none':
         field_data = orig_data if orig_data else None

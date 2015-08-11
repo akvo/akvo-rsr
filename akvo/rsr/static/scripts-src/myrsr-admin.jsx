@@ -959,12 +959,12 @@ function setPartialOnClicks() {
             var callback;
 
             if ($(this).hasClass('has-onclick')) {
-
                 // already set the onclick, do nothing
                 return;
             }
+
             $(this).addClass('has-onclick');
-            callback = getOnClick(pName, $(this));
+            callback = getOnClick(pName, $(this).parent().parent().parent()[0]);
             $(this).click(function(e) {
                 callback(e);
             });
@@ -1010,13 +1010,13 @@ function togglePartial(hidePartial) {
     };
 }
 
-function getOnClick(pName, element) {
+function getOnClick(pName, parentElement) {
     var onclick = function(e) {
         e.preventDefault();
 
         var markupSelector = '#' + pName + '-input';
         var containerSelector = pName + '-container';
-        var container = document.getElementById(containerSelector);
+        var container = parentElement.querySelector('#' + containerSelector);
 
         var markup = document.querySelector(markupSelector).innerHTML;
 
