@@ -154,6 +154,7 @@ COUNTRY_BUDGET_ITEM_FIELDS = (
 )
 
 TRANSACTION_FIELDS = (
+    ('transaction_type', 'transaction-type-', 'text'),
     ('value', 'transaction-value-', 'decimal'),
     ('transaction_date', 'transaction-date-', 'date'),
     ('value_date', 'transaction-value-date-', 'date'),

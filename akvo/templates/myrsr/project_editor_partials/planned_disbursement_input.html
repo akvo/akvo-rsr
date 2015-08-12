@@ -12,7 +12,7 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-6 control">
-                    <div class="input-group priority2">
+                    <div class="input-group priority3">
                         <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
                         <input type="text" class="form-control" name="planned-disbursement-value{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-value{% if key %}-{{ key }}{% endif %}"
                         value="{% if pd.value %}{{ pd.value }}{% endif %}" saved-value="{% if pd.value %}{{ pd.value }}{% endif %}">
@@ -20,16 +20,16 @@
                     <label class="control-label" for="planned-disbursement-value{% if key %}-{{ key }}{% endif %}">{% trans 'Planned disbursement value' %}</label>
                     <p class="help-block hidden">{% trans 'This should only be used to report specific planned cash transfers. Use a period to denote decimals. ' %}</p>
                 </div>
-                <div class="col-md-6 control priority2 datepicker-container" id="planned-disbursement-value-date{% if key %}-{{ key }}{% endif %}"
+                <div class="col-md-6 control priority3 datepicker-container" id="planned-disbursement-value-date{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ pd.value_date|date:"d/m/Y" }}"
                      data-label="{% trans 'Planned disbursement value date' %}"
                      data-helptext="{% trans 'Enter the specific date (DD/MM/YYYY) for the planned disbursement value.' %}"
-                     data-classes="priority2"></div>
+                     data-classes="priority3"></div>
             </div>
         </div>
         <div class="form-group">
             <div class="select-group control">
-                <select name="planned-disbursement-type{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-type{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{{ pd.type }}">
+                <select name="planned-disbursement-type{% if key %}-{{ key }}{% endif %}" id="planned-disbursement-type{% if key %}-{{ key }}{% endif %}" class="form-control priority3" saved-value="{{ pd.type }}">
                     <option value="" {% if not pd.type %} selected="selected" {% endif %}></option>
                     {% for entry in budget_types %}
                         <option value="{{ entry.code }}" {% if pd.type == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
@@ -40,16 +40,16 @@
         </div>
         <div class="form-group">
             <div class="row">
-                <div class="col-md-6 control priority2 datepicker-container" id="planned-disbursement-period-start{% if key %}-{{ key }}{% endif %}"
+                <div class="col-md-6 control priority3 datepicker-container" id="planned-disbursement-period-start{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ pd.period_start|date:"d/m/Y" }}"
                      data-label="{% trans 'Planned disbursement period start' %}"
                      data-helptext="{% trans 'The exact date of the planned disbursement OR the starting date for the disbursement period (DD/MM/YYYY).' %}"
-                     data-classes="priority2"></div>
-                <div class="col-md-6 control priority2 datepicker-container" id="planned-disbursement-period-end{% if key %}-{{ key }}{% endif %}"
+                     data-classes="priority3"></div>
+                <div class="col-md-6 control priority3 datepicker-container" id="planned-disbursement-period-end{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ pd.period_end|date:"d/m/Y" }}"
                      data-label="{% trans 'Planned disbursement period end' %}"
                      data-helptext="{% trans 'Enter the end date (DD/MM/YYYY) for the disbursement period.' %}"
-                     data-classes="priority2"></div>
+                     data-classes="priority3"></div>
             </div>
         </div>
     </div>

@@ -166,7 +166,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectStatus" id="projectStatus" class="form-control priority1" saved-value="{{ project.status }}">
+                                    <select name="projectStatus" id="projectStatus" class="form-control priority1" saved-value="{{ project.status }}" onchange="toggleDonateButton()">
                                         <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}></option>
                                         <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>{% trans 'Needs funding' %}</option>
                                         <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>{% trans 'Active' %}</option>
@@ -623,7 +623,7 @@
                             <div class="form-group">
                                 <div class="checkbox">
                                     <label for="donateButton" class="control-label">
-                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
+                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %} {% if not project.status == "H" %}disabled{% endif %}>{% trans 'Donate button' %}
                                     </label>
                                 </div>
                                 <p class="help-block hidden">
@@ -678,28 +678,28 @@
                                      <a href="#" class="add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another country budget item' %}</a>
                                 </div>
                             </div>
-                            <h5 class="hidden hide-default">{% trans 'Transactions' %}</h5>
-                            <div class="transaction-container hidden hide-default" id="transaction-container">
+                            <h5>{% trans 'Transactions' %}</h5>
+                            <div class="transaction-container" id="transaction-container">
                                 {% for transaction in project.transactions.all %}
                                     {% include "myrsr/project_editor_partials/transaction_input.html" with key=transaction.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_editor_partials/transaction_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row form-group hidden hide-default">
+                            <div class="row form-group">
                                 <div class="col-md-12 text-center add-object-link">
                                     <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
                                 </div>
                             </div>
-                            <h5>{% trans 'Planned disbursements' %}</h5>
-                            <div class="planned-disbursement-container" id="planned-disbursement-container">
+                            <h5 class="hidden hide-default">{% trans 'Planned disbursements' %}</h5>
+                            <div class="planned-disbursement-container hidden hide-default" id="planned-disbursement-container">
                                 {% for pd in project.planned_disbursements.all %}
                                     {% include "myrsr/project_editor_partials/planned_disbursement_input.html" with key=pd.pk %}
                                 {% empty %}
                                     {% include "myrsr/project_editor_partials/planned_disbursement_input.html" with key='add-0' %}
                                 {% endfor %}
                             </div>
-                            <div class="row form-group">
+                            <div class="row form-group hidden hide-default">
                                 <div class="col-md-12 text-center add-object-link">
                                      <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
                                 </div>
@@ -1111,6 +1111,19 @@
             } else {
                 node.className += ' hidden';
                 helpIconNode.className = helpIconNode.className.replace('activated', '');
+            }
+        }
+
+        function toggleDonateButton() {
+            var donateButton, statusNode;
+
+            donateButton = document.getElementById('donateButton');
+            statusNode = document.getElementById('projectStatus');
+
+            if (donateButton.hasAttribute('disabled') && statusNode.value === "H") {
+                donateButton.removeAttribute('disabled');
+            } else if (!donateButton.hasAttribute('disabled') && statusNode.value !== "H") {
+                donateButton.setAttribute('disabled', '');
             }
         }
     </script>

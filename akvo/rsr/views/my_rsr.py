@@ -30,7 +30,7 @@ from akvo.codelists.models import (
     FinanceType, FlowType, GeographicExactness, GeographicLocationClass, GeographicLocationReach,
     GeographicalPrecision, GeographicVocabulary, IndicatorMeasure, Language, LocationType,
     PolicyMarker, PolicyMarkerVocabulary, PolicySignificance, Region, RegionVocabulary, ResultType,
-    SectorVocabulary, TiedStatus, Version
+    SectorVocabulary, TiedStatus, TransactionType, Version
 )
 
 from akvo.codelists.models import Country as IatiCountry
@@ -205,6 +205,7 @@ def project_editor(request, project_id):
     result_types = get_codelist(ResultType, iati_version)
     sector_vocabularies = get_codelist(SectorVocabulary, iati_version)
     tied_statuses = get_codelist(TiedStatus, iati_version)
+    transaction_types = get_codelist(TransactionType, iati_version)
 
     # Custom fields
     custom_fields_section_1 = project.custom_fields.filter(section=1)
@@ -257,6 +258,7 @@ def project_editor(request, project_id):
         'result_types': result_types,
         'tied_statuses': tied_statuses,
         'sector_vocabularies': sector_vocabularies,
+        'transaction_types': transaction_types,
 
         # Custom fields
         'custom_fields_section_1': custom_fields_section_1,
