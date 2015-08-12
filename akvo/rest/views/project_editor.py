@@ -249,7 +249,6 @@ POLICY_MARKER_FIELDS = (
 ## Section 9 ##
 
 LINK_FIELDS = (
-    ('kind', 'link-type-', 'text'),
     ('url', 'link-url-', 'text'),
     ('caption', 'link-caption-', 'text'),
 )
@@ -1435,7 +1434,7 @@ def project_editor_step9(request, pk=None):
         for key in data.keys():
 
             # Links
-            if 'link-type-' in key:
+            if 'link-url-' in key:
                 link_id = key.split('-', 2)[2]
 
                 link, errors, rel_objects, new_object = check_related_object(
