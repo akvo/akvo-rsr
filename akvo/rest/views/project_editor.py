@@ -6,8 +6,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rsr.models import (AdministrativeLocation, BudgetItem, BudgetItemLabel, Country,
-                             CountryBudgetItem, Indicator, IndicatorPeriod, Link, Organisation,
-                             Partnership, PlannedDisbursement, PolicyMarker, Project,
+                             CountryBudgetItem, Indicator, IndicatorPeriod, Keyword, Link,
+                             Organisation, Partnership, PlannedDisbursement, PolicyMarker, Project,
                              ProjectCondition, ProjectContact, ProjectCustomField, ProjectDocument,
                              ProjectLocation, RecipientCountry, RecipientRegion, RelatedProject,
                              Result, Sector, Transaction, TransactionSector)
@@ -144,7 +144,7 @@ BUDGET_ITEM_FIELDS = (
     ('label', 'budget-item-label-', 'related-object'),
     ('value_date', 'budget-item-value-date-', 'date'),
     ('period_start', 'budget-item-period-start-', 'date'),
-    ('period_start', 'budget-item-period-end-', 'date'),
+    ('period_end', 'budget-item-period-end-', 'date'),
 )
 
 COUNTRY_BUDGET_ITEM_FIELDS = (
@@ -268,6 +268,10 @@ PROJECT_DOCUMENT_FIELD = ('document', 'document-document-', 'none')
 
 SECTION_TEN_FIELDS = (
     ('notes', 'projectComments', 'text'),
+)
+
+KEYWORD_FIELDS = (
+    ('label', 'project-keyword-', 'related-objects')
 )
 
 ## Custom fields ##
@@ -535,6 +539,34 @@ def project_editor_delete_photo(request, pk=None):
         )
 
     return Response({'errors': errors})
+
+
+@api_view(['DELETE'])
+@permission_classes((IsAuthenticated, ))
+def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    keyword = Keyword.objects.get(pk=keyword_pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', project):
+        return HttpResponseForbidden()
+
+    if keyword in project.keywords.all():
+        project.keywords.remove(keyword)
+
+        change_message = u'%s %s.' % (_(u'Project editor, deleted: keyword'),
+                                      keyword.__unicode__())
+
+        LogEntry.objects.log_action(
+            user_id=user.pk,
+            content_type_id=ContentType.objects.get_for_model(project).pk,
+            object_id=project.pk,
+            object_repr=project.__unicode__(),
+            action_flag=CHANGE,
+            change_message=change_message
+        )
+
+    return Response({})
 
 
 @api_view(['POST'])
@@ -1492,6 +1524,53 @@ def project_editor_step10(request, pk=None):
 
     # Related objects
     for key in data.keys():
+
+        # Keywords
+        if 'keyword-id-' in key:
+            keyword_id = data[key] if data[key] else None
+            form_keyword_id = key.split('-', 2)[2]
+
+            if keyword_id:
+                try:
+                    keyword = Keyword.objects.get(pk=int(keyword_id))
+
+                    if keyword and (str(keyword_id) == form_keyword_id):
+                        # Keyword already added to project, and stayed the same
+                        rel_objects.append(
+                            {
+                                'old_id': str(keyword.pk),
+                                'new_id': str(keyword.pk),
+                                'div_id': 'keyword-' + str(keyword.pk),
+                                'unicode': keyword.__unicode__(),
+                            }
+                        )
+
+                    elif keyword_id and (str(keyword_id) != form_keyword_id):
+                        if not 'add' in form_keyword_id:
+                            # Keyword changed, delete old keyword
+                            old_keyword = Keyword.objects.get(pk=int(form_keyword_id))
+                            project.keywords.remove(old_keyword)
+
+                        project.keywords.add(keyword)
+
+                        if not project in [change[0] for change in changes]:
+                            changes.append([project, [('keyword', key, str(keyword.pk))]])
+                        else:
+                            for change in changes:
+                                if project == change[0]:
+                                    change[1].append(('keyword', key, str(keyword.pk)))
+
+                        rel_objects.append(
+                            {
+                                'old_id': key.split('-', 2)[2],
+                                'new_id': str(keyword.pk),
+                                'div_id': 'keyword-' + key.split('-', 2)[2],
+                                'unicode': keyword.__unicode__(),
+                            }
+                        )
+
+                except Exception as e:
+                    errors.append({'name': key, 'error': str(e).capitalize()})
 
         # Custom fields
         if 'custom-field-' in key:

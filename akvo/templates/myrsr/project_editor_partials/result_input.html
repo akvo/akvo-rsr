@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-md-4 control">
                     <div class="select-group">
-                        <select name="result-aggregation-status{% if key %}-{{ key }}{% endif %}" id="result-aggregation-status{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{{ result.aggregation_status|yesno:"1,2,none" }}">
+                        <select name="result-aggregation-status{% if key %}-{{ key }}{% endif %}" id="result-aggregation-status{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{% if result %}{{ result.aggregation_status|yesno:"1,2,none" }}{% else %}none{% endif %}">
                             <option value="none" {% if result.aggregation_status|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}></option>
                             <option value="1" {% if result.aggregation_status|yesno:"yes,no,unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
                             <option value="2" {% if result.aggregation_status|yesno:"yes,no,unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>

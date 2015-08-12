@@ -21,7 +21,7 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
                      SelectOrgForm, IatiExportForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import pagination, filter_query_string
-from ..models import (Country, Organisation, Employment, Project, BudgetItemLabel,
+from ..models import (Country, Organisation, Employment, Keyword, Project, BudgetItemLabel,
                       OrganisationCustomField)
 
 from akvo.codelists.models import (
@@ -167,6 +167,7 @@ def project_editor(request, project_id):
 
     budget_item_labels = BudgetItemLabel.objects.all()
     countries = Country.objects.only('name').all()
+    keywords = Keyword.objects.all()
 
     # IATI codelists
     def get_codelist(codelist, version):
@@ -224,6 +225,7 @@ def project_editor(request, project_id):
         # RSR codes
         'budget_item_labels': budget_item_labels,
         'countries': countries,
+        'keywords': keywords,
 
         # IATI codelists
         'activity_scopes': activity_scopes,
