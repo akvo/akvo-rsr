@@ -950,6 +950,21 @@
                                 <textarea id="projectComments" class="form-control priority2" name="projectComments" rows="8" saved-value="{{ project.notes }}">{{ project.notes }}</textarea>
                                 <label class="control-label" for="projectComments">{% trans 'Project comments' %}</label>
                             </div>
+                            {% if user.is_superuser or user.is_rsr_admin %}
+                                <h5>{% trans 'Keywords' %}</h5>
+                                <div class="keyword-container" id="keyword-container">
+                                    {% for keyword in project.keywords.all %}
+                                        {% include "myrsr/project_editor_partials/keyword_input.html" with key=keyword.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_editor_partials/keyword_input.html" with key='add-0' %}
+                                    {% endfor %}
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12 text-center add-object-link">
+                                         <a href="#" class="add-keyword" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another keyword' %}</a>
+                                    </div>
+                                </div>
+                            {% endif %}
                             {% for customfield in custom_fields_section_10 %}
                                 <div class="form-group control">
                                     <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
@@ -986,7 +1001,8 @@
     <script type="text/template" id="document-input">{% include "myrsr/project_editor_partials/document_input.html" %}</script> 
     <script type="text/template" id="indicator-input">{% include "myrsr/project_editor_partials/indicator_input.html" %}</script> 
     <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor_partials/indicator_period_input.html" %}</script> 
-    <script type="text/template" id="link-input">{% include "myrsr/project_editor_partials/link_input.html" %}</script> 
+    <script type="text/template" id="keyword-input">{% include "myrsr/project_editor_partials/keyword_input.html" %}</script>
+    <script type="text/template" id="link-input">{% include "myrsr/project_editor_partials/link_input.html" %}</script>
     <script type="text/template" id="project-location-input">{% include "myrsr/project_editor_partials/project_location_input.html" %}</script>     
     <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor_partials/location_administrative_input.html"%}</script> 
     <script type="text/template" id="partner-input">{% include "myrsr/project_editor_partials/partner_input.html" %}</script> 

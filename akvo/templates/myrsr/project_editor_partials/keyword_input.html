@@ -1,0 +1,27 @@
+{% load i18n %}
+<div class="keyword-item parent" id="keyword{% if key %}-{{ key }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if keyword %}+{% else %}-{% endif %}</span> {% trans 'Keyword' %}: <span class="unicode">{% if keyword %}{{ keyword }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-link{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if keyword %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-12 control">
+                <div class="select-group">
+                    <select name="keyword-id{% if key %}-{{ key }}{% endif %}" id="keyword-id{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{{ keyword.id }}">
+                        <option value="" {% if not keyword %}selected="selected"{% endif %}></option>
+                        {% for kw in keywords %}
+                            <option value="{{ kw.id }}" {% if kw == keyword %}selected="selected"{% endif %}>{{ kw.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="keyword-id{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Keyword' %}</label>
+                    <p class="help-block hidden">{% trans 'Choose a keyword to link to this project.' %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -48,7 +48,7 @@ var partials = ['related-project', 'budget-item', 'condition', 'contact-informat
     'country-budget-item','document', 'indicator', 'indicator-period', 'link', 'partner',
     'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region',
     'related-project','result', 'sector', 'transaction', 'transaction-sector',
-    'location-administrative', 'project-location'];
+    'location-administrative', 'project-location', 'keyword'];
 var partialsCount = {};
 
 // Measure the percentage of completion for each panel and display the results to the user
@@ -731,6 +731,10 @@ function removePartial(node) {
         itemId = idArray[idArray.length - 1];
         idArray.pop();
         itemType = idArray.join();
+
+        if (itemType === 'keyword') {
+            itemType = 'project/' + defaultValues.project_id + '/remove_keyword';
+        }
 
         deleteItem(itemId, itemType, parentDiv);
     }
