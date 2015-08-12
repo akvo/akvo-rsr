@@ -16,11 +16,13 @@
                     <input type="text" class="form-control priority1" id="location-latitude{% if key %}-{{ key }}{% endif %}" name="location-latitude{% if key %}-{{ key }}{% endif %}"
                     value="{% if location.latitude %}{{ location.latitude }}{% endif %}" saved-value="{% if location.latitude %}{{ location.latitude }}{% endif %}">
                     <label class="control-label" for="location-latitude{% if key %}-{{ key }}{% endif %}">{% trans 'Latitude' %}</label>
+                    <p class="help-block hidden">{% trans 'Use a period to denote decimals.' %}</p>
                 </div>
                 <div class="col-md-6 control">
                     <input type="text" class="form-control priority1" id="location-longitude{% if key %}-{{ key }}{% endif %}" name="location-longitude{% if key %}-{{ key }}{% endif %}"
                     value="{% if location.longitude %}{{ location.longitude }}{% endif %}" saved-value="{% if location.longitude %}{{ location.longitude }}{% endif %}">
                     <label class="control-label" for="location-longitude{% if key %}-{{ key }}{% endif %}">{% trans 'Longitude' %}</label>
+                    <p class="help-block hidden">{% trans 'Use a period to denote decimals.' %}</p>
                 </div>
             </div>
         </div>

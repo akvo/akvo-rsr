@@ -48,7 +48,7 @@
                         {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
                     </div>
                     <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Funding amount' %}</label>
-                    <p class="help-block hidden">{% trans 'It’s only possible to indicate a funding amount for funding partners.' %}</p>
+                    <p class="help-block hidden">{% trans 'It’s only possible to indicate a funding amount for funding partners. Use a period to denote decimals.' %}</p>
                 </div>
             </div>
         </div>

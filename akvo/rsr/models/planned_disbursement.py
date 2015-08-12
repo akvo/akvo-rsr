@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -46,6 +47,16 @@ class PlannedDisbursement(models.Model):
 
     def iati_type(self):
         return codelist_value(BudgetType, self, 'type')
+
+    def clean(self):
+        # Don't allow a start date before an end date
+        if self.period_start and self.period_end and (self.period_start > self.period_end):
+            raise ValidationError(
+                {'period_start': u'%s' % _(u'Period start cannot be at a later time than period '
+                                           u'end.'),
+                 'period_end': u'%s' % _(u'Period start cannot be at a later time than period '
+                                           u'end.')}
+            )
 
     class Meta:
         app_label = 'rsr'

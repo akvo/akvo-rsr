@@ -18,7 +18,7 @@
                         value="{% if transaction.value %}{{ transaction.value }}{% endif %}" saved-value="{% if transaction.value %}{{ transaction.value }}{% endif %}">
                     </div>
                     <label class="control-label" for="transaction-value{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value' %}</label>
-                    <p class="help-block hidden">{% trans 'Enter the transaction amount.' %}</p>
+                    <p class="help-block hidden">{% trans 'Enter the transaction amount. Use a period to denote decimals.' %}</p>
                 </div>
                 <div class="col-md-4 control priority3 datepicker-container" id="transaction-date{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ transaction.transaction_date|date:"d/m/Y" }}"

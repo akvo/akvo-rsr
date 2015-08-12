@@ -30,7 +30,7 @@
                         <span class="input-group-addon">%</span>
                     </div>
                     <label class="control-label" for="recipient-country-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient country percentage' %}</label>
-                    <p class="help-block hidden">{% trans 'The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%' %}</p>
+                    <p class="help-block hidden">{% trans 'The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%. Use a period to denote decimals.' %}</p>
                 </div>
                  <div class="col-md-4 control">
                     <input type="text" class="form-control priority3" id="recipient-country-description{% if key %}-{{ key }}{% endif %}"

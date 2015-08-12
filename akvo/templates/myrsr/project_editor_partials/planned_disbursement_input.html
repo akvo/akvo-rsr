@@ -18,7 +18,7 @@
                         value="{% if pd.value %}{{ pd.value }}{% endif %}" saved-value="{% if pd.value %}{{ pd.value }}{% endif %}">
                     </div>
                     <label class="control-label" for="planned-disbursement-value{% if key %}-{{ key }}{% endif %}">{% trans 'Planned disbursement value' %}</label>
-                    <p class="help-block hidden">{% trans 'This should only be used to report specific planned cash transfers. ' %}</p>
+                    <p class="help-block hidden">{% trans 'This should only be used to report specific planned cash transfers. Use a period to denote decimals. ' %}</p>
                 </div>
                 <div class="col-md-6 control priority2 datepicker-container" id="planned-disbursement-value-date{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ pd.value_date|date:"d/m/Y" }}"

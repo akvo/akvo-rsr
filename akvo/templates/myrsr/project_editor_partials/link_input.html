@@ -24,7 +24,7 @@
             <div class="col-md-4 control">
                 <input type="text" class="form-control priority2" id="link-url{% if key %}-{{ key }}{% endif %}" name="link-url{% if key %}-{{ key }}{% endif %}" value="{{ link.url }}" saved-value="{{ link.url }}">
                 <label for="link-url{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link URL' %}</label>
-                <p class="help-block hidden">{% trans 'Enter the link to an external website you wish to redirect to from your project page.' %}</p>
+                <p class="help-block hidden">{% trans "Enter the link to an external website you wish to redirect to from your project page. The URL should start with 'http://' or 'https://'." %}</p>
             </div>
             <div class="col-md-4 control">
                 <input type="text" class="form-control priority2" name="link-caption{% if key %}-{{ key }}{% endif %}" id="link-caption{% if key %}-{{ key }}{% endif %}" value="{{ link.caption }}" saved-value="{{ link.caption }}" maxlength="50">
