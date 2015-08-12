@@ -716,16 +716,10 @@ function getTotalBudget() {
     request.send();
 }
 
-function removePartial(node) {
-    var parentDiv, idArray, parentParent;
+function confirmRemove(idArray, parentDiv) {
+    return function(e) {
+        e.preventDefault();
 
-    parentDiv = findAncestor(node, "parent");
-    idArray = parentDiv.getAttributeNode("id").value.split("-");
-    parentParent = parentDiv.parentNode;
-
-    if (idArray[idArray.length - 2] === 'add') {
-        parentDiv.parentNode.removeChild(parentDiv);
-    } else {
         var itemId, itemType;
 
         itemId = idArray[idArray.length - 1];
@@ -737,6 +731,67 @@ function removePartial(node) {
         }
 
         deleteItem(itemId, itemType, parentDiv);
+    };
+}
+
+function dismissRemove(nodeClass, nodeId, parentNode, sureNode) {
+    return function(e) {
+        e.preventDefault();
+
+        var node, trashCan;
+
+        parentNode.removeChild(sureNode);
+
+        node = document.createElement('a');
+
+        node.setAttribute('class', nodeClass);
+        node.setAttribute('id', nodeId);
+        node.onclick = setRemovePartial(node);
+
+        trashCan = document.createElement('span');
+        trashCan.setAttribute('class', 'glyphicon glyphicon-trash');
+
+        node.appendChild(trashCan);
+        parentNode.appendChild(node);
+    };
+}
+
+function removePartial(node) {
+    var parentDiv, idArray, parentParent;
+
+    parentDiv = findAncestor(node, "parent");
+    idArray = parentDiv.getAttributeNode("id").value.split("-");
+    parentParent = parentDiv.parentNode;
+
+    if (idArray[idArray.length - 2] === 'add') {
+        // New object, not saved to the DB, so partial can be directly deleted
+        parentDiv.parentNode.removeChild(parentDiv);
+    } else {
+        // Show warning first
+        var nodeClass, nodeId, noNode, parentNode, sureNode, yesNode;
+
+        nodeClass = node.getAttribute('class');
+        nodeId = node.getAttribute('id');
+
+        parentNode = node.parentNode;
+        parentNode.removeChild(node);
+
+        sureNode = document.createElement('div');
+        sureNode.innerHTML = "Are you sure?";
+
+        yesNode = document.createElement('a');
+        yesNode.setAttribute('style', 'color: green; margin-left: 5px;');
+        yesNode.onclick = confirmRemove(idArray, parentDiv);
+        yesNode.innerHTML = 'Yes';
+
+        noNode = document.createElement('a');
+        noNode.setAttribute('style', 'color: red; margin-left: 5px;');
+        noNode.onclick = dismissRemove(nodeClass, nodeId, parentNode, sureNode);
+        noNode.innerHTML = 'No';
+
+        sureNode.appendChild(yesNode);
+        sureNode.appendChild(noNode);
+        parentNode.appendChild(sureNode);
     }
 
     // Update the progress bars to account for the removed inputs

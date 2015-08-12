@@ -5,7 +5,7 @@
             <span class="folded-sign">{% if keyword %}+{% else %}-{% endif %}</span> {% trans 'Keyword' %}: <span class="unicode">{% if keyword %}{{ keyword }}{% else %}({% trans 'new' %}){% endif %}</span>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-6 text-right">
-            <a class="delete-object-button" id="delete-link{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+            <a class="delete-object-button" id="delete-keyword{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
         </div>
     </div>
     <div class="hide-partial {% if keyword %}hidden{% endif %}">
