@@ -2,6 +2,7 @@
 {% load i18n bootstrap3 rsr_utils thumbnail compressed rules humanize %}
 {% block title %}{% trans 'MyRSR - Project Editor' %}{% endblock %}
 {% block myrsr_main %}
+    <div id="modal-wrapper"></div>
     <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'editorHelptext');"></span></h3>
     <div class="help-block" id="editorHelptext">
         <div class="row">
@@ -935,7 +936,7 @@
                 <div class="myPanel borderBottom" id="panel10">
                     <div class="formStep stepTen">
                         <div class="toggleSection">
-                            <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-10-helptext');"></span></h4></label>
+                            <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments' %}{% if user.is_superuser or user.is_rsr_admin %} {% trans 'and keywords' %}{% endif %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-10-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepTen">
                         <div class="progress">
