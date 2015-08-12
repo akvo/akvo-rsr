@@ -5,8 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -76,6 +77,16 @@ class BudgetItem(models.Model):
             budget_unicode += u' %s' % _(u'(Revised)')
 
         return budget_unicode
+
+    def clean(self):
+        # Don't allow a start date before an end date
+        if self.period_start and self.period_end and (self.period_start > self.period_end):
+            raise ValidationError(
+                {'period_start': u'%s' % _(u'Period start cannot be at a later time than period '
+                                           u'end.'),
+                 'period_end': u'%s' % _(u'Period start cannot be at a later time than period '
+                                           u'end.')}
+            )
 
     def get_label(self):
         "Needed since we have to have a vanilla __unicode__() method for the admin"

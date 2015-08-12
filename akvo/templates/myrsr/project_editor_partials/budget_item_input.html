@@ -52,7 +52,7 @@
                         value="{% if item.amount %}{{ item.amount }}{% endif %}" saved-value="{% if item.amount %}{{ item.amount }}{% endif %}">
                     </div>
                     <label class="control-label" for="budget-item-value{% if key %}-{{ key }}{% endif %}">{% trans 'Budget item value' %}</label>
-                    <p class="help-block hidden">{% trans 'Enter the amount of budget that is set aside for this specific budget item.' %}</p>
+                    <p class="help-block hidden">{% trans 'Enter the amount of budget that is set aside for this specific budget item. Use a period to denote decimals.' %}</p>
                 </div>
                 <div class="col-md-6 control priority2 datepicker-container" id="budget-item-value-date{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ item.value_date|date:"d/m/Y" }}"

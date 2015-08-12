@@ -639,7 +639,7 @@
                                     <span class="input-group-addon">%</span>
                                 </div>
                                 <label for="capital-spend-percentage" class="control-label">{% trans 'Capital spend percentage' %}</label>
-                                <p class="help-block hidden">{% trans 'The percentage of the total commitment allocated to or planned for capital expenditure. Content must be a positive decimal number between 0 and 100, with no percentage sign.' %}</p>
+                                <p class="help-block hidden">{% trans 'The percentage of the total commitment allocated to or planned for capital expenditure. Content must be a positive decimal number between 0 and 100, with no percentage sign. Use a period to denote decimals.' %}</p>
                             </div>
                             <div class="budget-item-container" id="budget-item-container">
                                 {% for item in project.budget_items.all %}
@@ -950,6 +950,7 @@
                             <div class="form-group control">
                                 <textarea id="projectComments" class="form-control priority2" name="projectComments" rows="8" saved-value="{{ project.notes }}">{{ project.notes }}</textarea>
                                 <label class="control-label" for="projectComments">{% trans 'Project comments' %}</label>
+                                <p class="help-block hidden">{% trans 'The project comments are only for internal use and will not be displayed anywhere on the project page.' %}</p>
                             </div>
                             {% if user.is_superuser or user.is_rsr_admin %}
                                 <h5>{% trans 'Keywords' %}</h5>

@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import math
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max, Sum
@@ -33,7 +34,6 @@ from ...iati.mandatory_fields import check_export_fields
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
-from .budget_item import BudgetItem, BudgetItemLabel
 from .country import Country
 from .invoice import Invoice
 from .link import Link
@@ -302,6 +302,25 @@ class Project(TimestampsMixin, models.Model):
     # http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
+
+    def clean(self):
+        # Don't allow a start date before an end date
+        if self.date_start_planned and self.date_end_planned and \
+                (self.date_start_planned > self.date_end_planned):
+            raise ValidationError(
+                {'date_start_planned': u'%s' % _(u'Start date (planned) cannot be at a later '
+                                                 u'time than end date (planned).'),
+                 'date_end_planned': u'%s' % _(u'Start date (planned) cannot be at a later '
+                                               u'time than end date (planned).')}
+            )
+        if self.date_start_actual and self.date_end_actual and \
+                (self.date_start_actual > self.date_end_actual):
+            raise ValidationError(
+                {'date_start_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
+                                                u'time than end date (actual).'),
+                 'date_end_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
+                                              u'time than end date (actual).')}
+            )
 
     @models.permalink
     def get_absolute_url(self):

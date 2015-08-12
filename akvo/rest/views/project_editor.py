@@ -294,23 +294,32 @@ def save_field(obj, field, form_field, form_data, orig_data, errors, changes):
 
     if obj_data != form_data:
         setattr(obj, field, form_data)
+        has_error = False
 
         try:
-            obj.save(update_fields=[field])
-
-            if form_field[:6] == 'value-':
-                form_field = form_field[6:]
-
-            if not obj in [change[0] for change in changes]:
-                changes.append([obj, [(field, form_field, orig_data)]])
-            else:
-                for change in changes:
-                    if obj == change[0]:
-                        change[1].append((field, form_field, orig_data))
-                        break
-
+            obj.full_clean()
         except Exception as e:
-            errors = add_error(errors, e, form_field)
+            if field in dict(e).keys():
+                has_error = True
+                errors = add_error(errors, str(dict(e)[field][0]), form_field)
+
+        if not has_error:
+            try:
+                obj.save(update_fields=[field])
+
+                if form_field[:6] == 'value-':
+                    form_field = form_field[6:]
+
+                if not obj in [change[0] for change in changes]:
+                    changes.append([obj, [(field, form_field, orig_data)]])
+                else:
+                    for change in changes:
+                        if obj == change[0]:
+                            change[1].append((field, form_field, orig_data))
+                            break
+
+            except Exception as e:
+                errors = add_error(errors, e, form_field)
 
     return errors, changes
 
@@ -456,7 +465,8 @@ def log_changes(changes, user, project):
         field_changes = []
         for change in changes:
             for fields in change[1]:
-                field_changes.append([fields[1], fields[2]])
+                if not ('photo' in fields[1] or 'document-document-' in fields[1]):
+                    field_changes.append([fields[1], fields[2]])
 
         return field_changes
 

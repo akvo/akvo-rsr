@@ -70,7 +70,7 @@
                 <div class="form-group control">
                     <input type="text" class="form-control priority2" id="contact-website{% if key %}-{{ key }}{% endif %}" name="contact-website{% if key %}-{{ key }}{% endif %}" value="{{ contact.website }}" saved-value="{{ contact.website }}">
                     <label for="contactWebsite" class="control-label">{% trans 'Contact website' %}</label>
-                    <p class="help-block hidden">{% trans 'The contact web address, if available.' %}</p>
+                    <p class="help-block hidden">{% trans "The contact web address, if available. The web address should start with 'http://' or 'https://'." %}</p>
                 </div>
             </div>
         </div>

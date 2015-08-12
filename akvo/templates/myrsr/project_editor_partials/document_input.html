@@ -21,7 +21,7 @@
                 <div class="col-md-6 control">
                     <input type="text" class="form-control priority2" id="document-url{% if key %}-{{ key }}{% endif %}" name="document-url{% if key %}-{{ key }}{% endif %}" value="{{ document.url }}" saved-value="{{ document.url }}">
                     <label class="control-label" for="document-url{% if key %}-{{ key }}{% endif %}">{% trans 'Document URL' %}</label>
-                    <p class="help-block hidden">{% trans 'Enter the the online location of your document, if possible.' %}</p>
+                    <p class="help-block hidden">{% trans "Enter the the online location of your document, if possible. The URL should start with 'http://' or 'https://'." %}</p>
                 </div>
             </div>
         </div>
