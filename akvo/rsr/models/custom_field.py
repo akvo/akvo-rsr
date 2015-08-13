@@ -56,6 +56,8 @@ class ProjectCustomField(models.Model):
                     u'there is no need for a help text. (max 1000 characters)')
     )
     value = ValidXMLTextField(_(u'value'), blank=True)
+    mandatory = models.BooleanField(_(u'mandatory'), default=False,
+                                    help_text=_(u'Indicate whether this field is mandatory or not'))
 
 
 class OrganisationCustomField(models.Model):
@@ -106,3 +108,5 @@ class OrganisationCustomField(models.Model):
         help_text=_(u'The help text to be displayed with the field in the admin. Leave empty if '
                     u'there is no need for a help text. (max 1000 characters)')
     )
+    mandatory = models.BooleanField(_(u'mandatory'), default=False,
+                                    help_text=_(u'Indicate whether this field is mandatory or not'))

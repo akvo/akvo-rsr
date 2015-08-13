@@ -324,9 +324,9 @@
                             </div>
                             {% for customfield in custom_fields_section_1 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
+                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -368,7 +368,7 @@
                             </div>
                             {% for customfield in custom_fields_section_2 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -442,7 +442,7 @@
                             </div>
                             {% for customfield in custom_fields_section_3 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -516,7 +516,7 @@
                             </div>
                             {% for customfield in custom_fields_section_4 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -581,7 +581,7 @@
                             </div>
                             {% for customfield in custom_fields_section_5 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -710,7 +710,7 @@
                             </div>
                             {% for customfield in custom_fields_section_6 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -798,7 +798,7 @@
                             </div>
                             {% for customfield in custom_fields_section_7 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -860,7 +860,7 @@
                             </div>
                             {% for customfield in custom_fields_section_8 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}  saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}  saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -920,7 +920,7 @@
                             </div>
                             {% for customfield in custom_fields_section_9 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>
@@ -972,7 +972,7 @@
                             {% endif %}
                             {% for customfield in custom_fields_section_10 %}
                                 <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority2" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
                                     <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
                                     {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text }}</p>{% endif %}
                                 </div>

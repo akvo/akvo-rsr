@@ -68,7 +68,7 @@ class OrganisationLocationInline(admin.StackedInline):
 
 class OrganisationCustomFieldInline(admin.StackedInline):
     model = get_model('rsr', 'organisationcustomfield')
-    fields = ('name', 'section', 'max_characters', 'help_text')
+    fields = ('name', 'section', 'max_characters', 'mandatory', 'help_text')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
@@ -106,7 +106,6 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         (_(u'Contact information'),
             {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
-        (_(u'Custom fields'), {'fields': ()}),
     )
     form = OrganisationAdminForm
     inlines = (OrganisationLocationInline, OrganisationCustomFieldInline)

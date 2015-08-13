@@ -25,41 +25,7 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 
-function addPartnerToProject(partnerId, projectId) {
-    var api_url, request;
-
-    // Create request
-    api_url = '/rest/v1/partnership/?format=json';
-
-    request = new XMLHttpRequest();
-    request.open('POST', api_url, true);
-    request.setRequestHeader("X-CSRFToken", csrftoken);
-    request.setRequestHeader("Content-type", "application/json");
-
-    request.onload = function() {
-        return false;
-    };
-
-    request.onerror = function() {
-        return false;
-    };
-
-    request.send('{"project": ' + projectId + ', ' +
-                  '"organisation": ' + partnerId + ', ' +
-                  '"partner_type": "support"}');
-}
-
-function addPartnersToProject(projectId) {
-    var partners;
-
-    partners = defaultValues.employments;
-
-    for (var i=0; i < partners.length; i++) {
-        addPartnerToProject(partners[i], projectId);
-    }
-}
-
-function addCustomFieldToProject(customField) {
+function addCustomFieldToProject(customField, projectId) {
     var api_url, request;
 
     // Create request
@@ -71,7 +37,11 @@ function addCustomFieldToProject(customField) {
     request.setRequestHeader("Content-type", "application/json");
 
     request.onload = function() {
-        return false;
+        if (projectId == undefined) {
+            return false;
+        } else {
+            window.location = '/myrsr/project_editor/' + projectId + '/';
+        }
     };
 
     request.onerror = function() {
@@ -86,10 +56,18 @@ function addCustomFieldsToProject(projectId) {
 
     customFields = defaultValues.new_project_custom_fields;
 
-    for (var i=0; i < customFields.length; i++) {
-        customFields[i].project = projectId;
+    if (customFields.length === 0) {
+        window.location = '/myrsr/project_editor/' + projectId + '/';
+    } else {
+        for (var i = 0; i < customFields.length; i++) {
+            customFields[i].project = projectId;
 
-        addCustomFieldToProject(JSON.stringify(customFields[i]));
+            if (i !== customFields.length - 1) {
+                addCustomFieldToProject(JSON.stringify(customFields[i]));
+            } else {
+                addCustomFieldToProject(JSON.stringify(customFields[i]), projectId);
+            }
+        }
     }
 }
 
@@ -131,10 +109,7 @@ function getCreateProject(createProjectNode) {
                     response = JSON.parse(request.response);
                     projectId = response.id;
 
-                    // addPartnersToProject(projectId);
                     addCustomFieldsToProject(projectId);
-
-                    window.location = '/myrsr/project_editor/' + response.id + '/';
                 } catch (error) {
                     // Something went wrong while parsing the response
                     createProjectNode.removeAttribute('disabled');
