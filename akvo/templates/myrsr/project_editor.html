@@ -187,12 +187,14 @@
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 control priority1 datepicker-container" id="eventFromPlanned"
+                                    <div class="col-md-6 control priority1 datepicker-container"
+                                         data-id="eventFromPlanned"
                                          data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
                                          data-label="{% trans 'Start date (planned)' %}"
                                          data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
                                          data-classes="priority1"></div>
-                                    <div class="col-md-6 control datepicker-container" id="eventEndPlanned"
+                                    <div class="col-md-6 control datepicker-container"
+                                         data-id="eventEndPlanned"
                                          data-child="{{ project.date_end_planned|date:"d/m/Y" }}"
                                          data-label="{% trans 'End date (planned)' %}"
                                          data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"
@@ -201,12 +203,14 @@
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 control datepicker-container" id="eventFromActual"
+                                    <div class="col-md-6 control datepicker-container"
+                                         data-id="eventFromActual"
                                          data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
                                          data-label="{% trans 'Start date (actual)' %}"
                                          data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
                                          data-classes="priority2"></div>
-                                    <div class="col-md-6 control datepicker-container" id="eventEndActual"
+                                    <div class="col-md-6 control datepicker-container"
+                                         data-id="eventEndActual"
                                          data-child="{{ project.date_end_actual|date:"d/m/Y" }}"
                                          data-label="{% trans 'End date (actual)' %}"
                                          data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"
@@ -826,7 +830,6 @@
                                 <p class="help-block">{% trans 'The project focus aims to define the broad areas of the project activities. This ensures that the project can be collectively grouped by e.g. sector with other similar projects to help make the most out of the project resources. Generally accepted codes are used to help determine these sectors:' %}</p>
                                 <p class="help-block">- {% trans 'DAC-3 sector codes which are more general. For reference see:' %} <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">http://iatistandard.org/201/codelists/SectorCategory/</a>.</p>
                                 <p class="help-block">- {% trans 'DAC-5 sector codes which are most detailed. For reference see:' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">http://iatistandard.org/201/codelists/Sector/</a>.</p>
-                                <p class="help-block">{% trans 'Please select the appropriate sectors for both codes.' %}</p>
                             </div>
                             <form role="form" id="admin-step-8">
                             <h5>{% trans 'Sectors' %}</h5>
@@ -1193,6 +1196,47 @@
 
                     sectorCodeNode.setAttribute('displayed-options', '2');
                 }
+            }
+        }
+
+        function toggleDocumentUpload(node) {
+            var documentUpload, documentUrl, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            documentUpload = parentNode.querySelectorAll('.show-document-upload')[0];
+            documentUrl = parentNode.querySelectorAll('.show-document-url')[0];
+
+            if (node.checked) {
+                // User wants to upload document
+                if (documentUrl.className.indexOf('hidden') === -1) {
+                    documentUrl.className += ' hidden'
+                }
+
+                if (documentUpload.className.indexOf('hidden') > -1) {
+                    documentUpload.className = documentUpload.className.replace('hidden', '')
+                }
+            } else {
+                // User wants to indicate URL
+                if (documentUpload.className.indexOf('hidden') === -1) {
+                    documentUpload.className += ' hidden'
+                }
+
+                if (documentUrl.className.indexOf('hidden') > -1) {
+                    documentUrl.className = documentUrl.className.replace('hidden', '')
+                }
+            }
+        }
+
+        function toggleDocumentUploadHelptext(node) {
+            var helpText = node.parentNode.parentNode.parentNode.querySelectorAll('.help-block')[0];
+
+            if (node.className.indexOf('activated') === -1) {
+                node.className += ' activated';
+                helpText.className = helpText.className.replace('hidden', '');
+
+            } else {
+                node.className = node.className.replace('activated', '');
+                helpText.className += ' hidden';
             }
         }
     </script>

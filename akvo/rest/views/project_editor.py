@@ -243,7 +243,6 @@ SECTOR_FIELDS = (
 POLICY_MARKER_FIELDS = (
     ('policy_marker', 'policy-marker-', 'text'),
     ('significance', 'policy-marker-significance-', 'text'),
-    ('vocabulary', 'policy-marker-vocabulary-', 'text'),
     ('description', 'policy-marker-description-', 'text'),
 )
 

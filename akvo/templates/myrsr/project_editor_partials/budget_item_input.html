@@ -54,7 +54,8 @@
                     <label class="control-label" for="budget-item-value{% if key %}-{{ key }}{% endif %}">{% trans 'Budget item value' %}</label>
                     <p class="help-block hidden">{% trans 'Enter the amount of budget that is set aside for this specific budget item. Use a period to denote decimals.' %}</p>
                 </div>
-                <div class="col-md-6 control priority2 datepicker-container" id="budget-item-value-date{% if key %}-{{ key }}{% endif %}"
+                <div class="col-md-6 control priority2 datepicker-container"
+                     data-id="budget-item-value-date{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ item.value_date|date:"d/m/Y" }}"
                      data-label="{% trans 'Budget item value date' %}"
                      data-helptext="{% trans 'Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for currency conversions.' %}"
@@ -63,12 +64,14 @@
         </div>
         <div class="form-group">
             <div class="row">
-                <div class="col-md-6 control priority2 datepicker-container" id="budget-item-period-start{% if key %}-{{ key }}{% endif %}"
+                <div class="col-md-6 control priority2 datepicker-container"
+                     data-id="budget-item-period-start{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ item.period_start|date:"d/m/Y" }}"
                      data-label="{% trans 'Budget item period start' %}"
                      data-helptext="{% trans 'Enter the start date (DD/MM/YYYY) for the budget period.' %}"
                      data-classes="priority2"></div>
-                <div class="col-md-6 control priority2 datepicker-container" id="budget-item-period-end{% if key %}-{{ key }}{% endif %}"
+                <div class="col-md-6 control priority2 datepicker-container"
+                     data-id="budget-item-period-end{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ item.period_end|date:"d/m/Y" }}"
                      data-label="{% trans 'Budget item period end' %}"
                      data-helptext="{% trans 'Enter the end date (DD/MM/YYYY) for the budget period.' %}"

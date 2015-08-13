@@ -6,6 +6,8 @@
 
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -49,3 +51,11 @@ class PolicyMarker(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'policy marker')
         verbose_name_plural = _(u'policy markers')
+
+@receiver(post_save, sender=PolicyMarker)
+def update_pm_vocabulary(sender, **kwargs):
+    "Updates the vocabulary if not specified."
+    pm = kwargs['instance']
+    if not pm.vocabulary and pm.policy_marker:
+        pm.vocabulary = '1'
+        pm.save()
