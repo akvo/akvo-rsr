@@ -10,7 +10,7 @@
     </div>
     <div class="hide-partial {% if sector %}hidden{% endif %}">
         {% if not sector.vocabulary %}
-            <p class="help-block">{% trans 'In order to select a sector code, please select a vocabulary first.' %}</p>
+            <p class="help-block">{% trans 'In order to select a sector code, please select a vocabulary first. For more information, visit these links: ' %}<a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">{% trans 'DAC-3 sector codes' %}</a> {% trans 'or' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">{% trans 'DAC-5 sector codes' %}</a>.</p>
         {% endif %}
         <div class="form-group">
             <div class="row">
@@ -23,7 +23,7 @@
                             {% endfor %}
                         </select>
                         <label class="control-label" for="sector-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Sector vocabulary' %}</label>
-                        <p class="help-block hidden">{% trans 'This is the code for the vocabulary used to describe the sector. Sectors should be mapped to DAC sectors where possible to enable international comparison.' %}</p>
+                        <p class="help-block hidden">{% trans 'This is the code for the vocabulary used to describe the sector. Sectors should be mapped to DAC sectors to enable international comparison.' %}</p>
                     </div>
                 </div>
                 <div class="col-md-4 control">
@@ -54,7 +54,7 @@
                         <span class="input-group-addon">%</span>
                     </div>
                     <label class="control-label" for="sector-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Sector percentage' %}</label>
-                    <p class="help-block hidden">{% trans 'If the activity occurs in more than one sector, the percentage of activity commitment allocated to each sector should be provided if available. Percentages should add up to 100% of the activity being reported if they are shown for each sector. Use a period to denote decimals.' %}</p>
+                    <p class="help-block hidden">{% trans "Percentages should add up to 100% of the activity being reported if they are shown for each sector. Fill in 100% if there's one sector. Use a period to denote decimals." %}</p>
                 </div>
             </div>
         </div>

@@ -198,7 +198,6 @@ def project_editor(request, project_id):
     languages = get_codelist(Language, iati_version)
     location_types = get_codelist(LocationType, iati_version)
     policy_markers = get_codelist(PolicyMarker, iati_version)
-    policy_marker_vocabularies = get_codelist(PolicyMarkerVocabulary, iati_version)
     policy_significances = get_codelist(PolicySignificance, iati_version)
     regions = get_codelist(Region, iati_version)
     region_vocabularies = get_codelist(RegionVocabulary, iati_version)
@@ -253,7 +252,6 @@ def project_editor(request, project_id):
         'languages': languages,
         'location_types': location_types,
         'policy_markers': policy_markers,
-        'policy_marker_vocabularies': policy_marker_vocabularies,
         'policy_significances': policy_significances,
         'regions': regions,
         'region_vocabularies': region_vocabularies,
