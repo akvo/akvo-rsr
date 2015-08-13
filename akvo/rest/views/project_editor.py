@@ -119,8 +119,8 @@ INDICATOR_PERIOD_FIELDS = (
     ('period_end', 'indicator-period-end-', 'date'),
     ('target_value', 'indicator-period-target-value-', 'text'),
     ('target_comment', 'indicator-period-target-value-comment-', 'text'),
-    ('target_value', 'indicator-period-actual-value-', 'text'),
-    ('target_comment', 'indicator-period-actual-value-comment-', 'text'),
+    ('actual_value', 'indicator-period-actual-value-', 'text'),
+    ('actual_comment', 'indicator-period-actual-value-comment-', 'text'),
 )
 
 PROJECT_CONDITION_FIELDS = (
@@ -160,9 +160,9 @@ TRANSACTION_FIELDS = (
     ('value_date', 'transaction-value-date-', 'date'),
     ('reference', 'transaction-reference-', 'text'),
     ('description', 'transaction-description-', 'text'),
-    ('provider_organisation', 'transaction-provider-org-', 'related-object'),
+    ('provider_organisation', 'value-transaction-provider-org-', 'related-object'),
     ('provider_organisation_activity', 'transaction-provider-org-activity-', 'text'),
-    ('receiver_organisation', 'transaction-receiver-org-', 'related-object'),
+    ('receiver_organisation', 'value-transaction-receiver-org-', 'related-object'),
     ('receiver_organisation_activity', 'transaction-receiver-org-activity-', 'text'),
     ('aid_type', 'transaction-aid-type-', 'text'),
     ('disbursement_channel', 'transaction-disbursement-channel-', 'text'),
@@ -1086,7 +1086,7 @@ def project_editor_step6(request, pk=None):
 
                 if trans:
                     for field in TRANSACTION_FIELDS:
-                        if field[0] == ('provider_organisation' or 'receiver_organisation'):
+                        if field[0] in ['provider_organisation', 'receiver_organisation']:
                             errors, changes = process_field(trans, data, field, errors, changes,
                                                             trans_id, Organisation)
                         else:

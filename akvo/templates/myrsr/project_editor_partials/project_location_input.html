@@ -29,7 +29,7 @@
         <div class="form-group">
             <div class="select-group control">
                 <select name="location-country{% if key %}-{{ key }}{% endif %}" id="location-country{% if key %}-{{ key }}{% endif %}" class="form-control priority1" saved-value="{% if location.country %}{{ location.country.id }}{% endif %}">
-                    <option value="" {% if not location.country %} selected="selected" {% endif %}>{% trans 'Country' %}:</option>
+                    <option value="" {% if not location.country %} selected="selected" {% endif %}></option>
                     {% for country in countries %}
                         <option value="{{ country.id }}" {% if location.country == country %} selected="selected" {% endif %}>{{ country.name }}</option>
                     {% endfor %}

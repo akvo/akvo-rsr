@@ -288,8 +288,9 @@ class Organisation(TimestampsMixin, models.Model):
         return self.projects.published().distinct()
 
     def all_projects(self):
-        "returns a queryset with all projects that has self as any kind of partner"
-        return self.projects.all().distinct()
+        """returns a queryset with all projects that has self as any kind of partner or reporting
+        organisation."""
+        return (self.projects.all() | self.reporting_projects.all()).distinct()
 
     def active_projects(self):
         return self.published_projects().status_not_cancelled().status_not_archived()

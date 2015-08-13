@@ -265,7 +265,7 @@ rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.delete_organisationlocation', is_rsr_admin | is_org_admin)
 
-rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)
