@@ -48,11 +48,6 @@
                         <p class="help-block hidden">{% trans 'This is based on DAC sectors. Please select a sector vocabulary first.' %}</p>
                     </div>
                 </div>
-{#                <div class="col-md-4 control">#}
-{#                    <input type="text" class="form-control priority1" id="sector-code{% if key %}-{{ key }}{% endif %}" name="sector-code{% if key %}-{{ key }}{% endif %}" value="{{ sector.sector_code }}" saved-value="{{ sector.sector_code }}">#}
-{#                    <label class="control-label" for="sector-code{% if key %}-{{ key }}{% endif %}">{% trans 'Sector code' %}</label>#}
-{#                    <p class="help-block hidden">{% trans 'This is based on DAC sectors.' %}</p>#}
-{#                </div>#}
                 <div class="col-md-4 control">
                     <div class="input-group priority1">
                         <input type="text" class="form-control priority1" id="sector-percentage{% if key %}-{{ key }}{% endif %}" name="sector-percentage{% if key %}-{{ key }}{% endif %}" value="{% if sector.percentage %}{{ sector.percentage }}{% endif %}" saved-value="{% if sector.percentage %}{{ sector.percentage }}{% endif %}">
