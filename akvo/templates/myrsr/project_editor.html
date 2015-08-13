@@ -1198,6 +1198,47 @@
                 }
             }
         }
+
+        function toggleDocumentUpload(node) {
+            var documentUpload, documentUrl, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            documentUpload = parentNode.querySelectorAll('.show-document-upload')[0];
+            documentUrl = parentNode.querySelectorAll('.show-document-url')[0];
+
+            if (node.checked) {
+                // User wants to upload document
+                if (documentUrl.className.indexOf('hidden') === -1) {
+                    documentUrl.className += ' hidden'
+                }
+
+                if (documentUpload.className.indexOf('hidden') > -1) {
+                    documentUpload.className = documentUpload.className.replace('hidden', '')
+                }
+            } else {
+                // User wants to indicate URL
+                if (documentUpload.className.indexOf('hidden') === -1) {
+                    documentUpload.className += ' hidden'
+                }
+
+                if (documentUrl.className.indexOf('hidden') > -1) {
+                    documentUrl.className = documentUrl.className.replace('hidden', '')
+                }
+            }
+        }
+
+        function toggleDocumentUploadHelptext(node) {
+            var helpText = node.parentNode.parentNode.parentNode.querySelectorAll('.help-block')[0];
+
+            if (node.className.indexOf('activated') === -1) {
+                node.className += ' activated';
+                helpText.className = helpText.className.replace('hidden', '');
+
+            } else {
+                node.className = node.className.replace('activated', '');
+                helpText.className += ' hidden';
+            }
+        }
     </script>
 
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>

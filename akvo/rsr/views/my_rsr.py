@@ -27,9 +27,9 @@ from ..models import (Country, Organisation, Employment, Keyword, Project, Budge
 from akvo.codelists.models import (
     ActivityScope, AidType, BudgetIdentifier, BudgetIdentifierVocabulary, BudgetType,
     CollaborationType, ConditionType, ContactType, DisbursementChannel, DocumentCategory,
-    FinanceType, FlowType, GeographicExactness, GeographicLocationClass, GeographicLocationReach,
-    GeographicalPrecision, GeographicVocabulary, IndicatorMeasure, Language, LocationType,
-    PolicyMarker, PolicyMarkerVocabulary, PolicySignificance, Region, RegionVocabulary, ResultType,
+    FileFormat, FinanceType, FlowType, GeographicExactness, GeographicLocationClass,
+    GeographicLocationReach, GeographicalPrecision, GeographicVocabulary, IndicatorMeasure,
+    Language, LocationType, PolicyMarker, PolicySignificance, Region, RegionVocabulary, ResultType,
     Sector, SectorCategory, SectorVocabulary, TiedStatus, TransactionType, Version
 )
 
@@ -186,6 +186,7 @@ def project_editor(request, project_id):
     contact_types = get_codelist(ContactType, iati_version)
     document_categories = get_codelist(DocumentCategory, iati_version)
     disbursement_channels = get_codelist(DisbursementChannel, iati_version)
+    file_formats = get_codelist(FileFormat, iati_version)
     finance_types = get_codelist(FinanceType, iati_version)
     flow_types = get_codelist(FlowType, iati_version)
     geographical_precisions = get_codelist(GeographicalPrecision, iati_version)
@@ -240,6 +241,27 @@ def project_editor(request, project_id):
         'contact_types': contact_types,
         'document_categories': document_categories,
         'disbursement_channels': disbursement_channels,
+        'file_formats': file_formats.filter(code__in=[
+            'application/pdf',
+            'application/vnd.ms-excel',
+            'application/msword',
+            'text/html',
+            'application/rtf',
+            'application/vnd.ms-powerpoint',
+            'image/png',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'image/jpeg',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'image/tiff',
+            'application/vnd.oasis.opendocument.text',
+            'text/xml',
+            'application/octet-stream',
+            'image/gif',
+            'text/plain',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+            'text/enriched',
+            'text/csv',
+            'application/zip']),
         'finance_types': finance_types,
         'flow_types': flow_types,
         'geographical_precisions': geographical_precisions,
