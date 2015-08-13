@@ -89,7 +89,7 @@ def update_vocabulary(sender, **kwargs):
     sector = kwargs['instance']
     if not sector.vocabulary and sector.sector_code:
         if len(sector.sector_code) == 3:
-            sector.vocabulary = 'DAC-3'
+            sector.vocabulary = '2'
         elif len(sector.sector_code) == 5:
-            sector.vocabulary = 'DAC'
+            sector.vocabulary = '1'
         sector.save()
