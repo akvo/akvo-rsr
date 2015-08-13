@@ -1779,7 +1779,7 @@ function setDatepickers() {
 
         // Check if datepicker already has been set
         if (datepickerContainer.className.indexOf('has-datepicker') == -1) {
-            datepickerId = datepickerContainer.getAttribute('id');
+            datepickerId = datepickerContainer.getAttribute('data-id');
 
             // Set initial value of datepicker
             inputValue = datepickerContainer.getAttribute('data-child');

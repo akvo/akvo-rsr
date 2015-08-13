@@ -36,12 +36,14 @@
                     <label class="control-label" for="transaction-value{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction value' %}</label>
                     <p class="help-block hidden">{% trans 'Enter the transaction amount. Use a period to denote decimals.' %}</p>
                 </div>
-                <div class="col-md-4 control priority2 datepicker-container" id="transaction-date{% if key %}-{{ key }}{% endif %}"
+                <div class="col-md-4 control priority2 datepicker-container"
+                     data-id="transaction-date{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ transaction.transaction_date|date:"d/m/Y" }}"
                      data-label="{% trans 'Transaction date' %}"
                      data-helptext="{% trans 'Enter the financial reporting date that the transaction was/will be undertaken.' %}"
                      data-classes="priority2"></div>
-                <div class="col-md-4 control priority2 datepicker-container" id="transaction-value-date{% if key %}-{{ key }}{% endif %}"
+                <div class="col-md-4 control priority2 datepicker-container"
+                     data-id="transaction-value-date{% if key %}-{{ key }}{% endif %}"
                      data-child="{{ transaction.value_date|date:"d/m/Y" }}"
                      data-label="{% trans 'Transaction value date' %}"
                      data-helptext="{% trans 'The date to be used for determining the exchange rate for currency conversions of the transaction.' %}"
