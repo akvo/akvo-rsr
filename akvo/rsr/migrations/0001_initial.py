@@ -1041,10 +1041,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(related_name='budget_items', verbose_name='project', to='rsr.Project'),
             preserve_default=True,
         ),
-        migrations.AlterUniqueTogether(
-            name='budgetitem',
-            unique_together=set([('project', 'label')]),
-        ),
         migrations.AddField(
             model_name='benchmark',
             name='category',
