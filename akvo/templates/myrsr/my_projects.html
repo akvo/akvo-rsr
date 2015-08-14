@@ -58,12 +58,10 @@
               <a class="pull-left" href="{% url 'project-main' project.id %}">
                 {% img project 64 64 project.title %}
               </a>
-
               <div class="media-body">
                 <a href="{% url 'project-main' project.id %}">
-                  <h4 class="media-heading">{{ project.title }}</h4>
+                  <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
                 </a>
-
                 <p class="small">{{ project.subtitle }}</p>
               </div>
             </td>
