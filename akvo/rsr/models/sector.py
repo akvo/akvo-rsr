@@ -43,7 +43,19 @@ class Sector(models.Model):
     )
 
     def __unicode__(self):
-        return self.sector_code
+        if self.sector_code:
+            try:
+                sector_unicode = self.iati_sector().name.capitalize()
+            except Exception as e:
+                sector_unicode = u'%s' % _(u'Sector code not found')
+        else:
+            sector_unicode = u'%s' % _(u'No sector code specified')
+
+        if self.percentage:
+            sector_unicode += u' (%s%%)' % str(self.percentage)
+
+        return sector_unicode
+
 
     def iati_sector_codes(self):
         if self.sector_code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
@@ -77,7 +89,7 @@ def update_vocabulary(sender, **kwargs):
     sector = kwargs['instance']
     if not sector.vocabulary and sector.sector_code:
         if len(sector.sector_code) == 3:
-            sector.vocabulary = 'DAC-3'
+            sector.vocabulary = '2'
         elif len(sector.sector_code) == 5:
-            sector.vocabulary = 'DAC'
+            sector.vocabulary = '1'
         sector.save()

@@ -16,13 +16,17 @@ class Partnership(models.Model):
     FUNDING_PARTNER = u'funding'
     SPONSOR_PARTNER = u'sponsor'
     SUPPORT_PARTNER = u'support'
+    EXTENDING_PARTNER = u'extending'
 
-    PARTNER_TYPE_LIST = [FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, ]
+    PARTNER_TYPE_LIST = [
+        FIELD_PARTNER, FUNDING_PARTNER, SPONSOR_PARTNER, SUPPORT_PARTNER, EXTENDING_PARTNER
+    ]
     PARTNER_LABELS = [
-        _(u'Field partner'),
+        _(u'Implementing partner'),
         _(u'Funding partner'),
         _(u'Sponsor partner'),
-        _(u'Support partner')
+        _(u'Accountable partner'),
+        _(u'Extending partner'),
     ]
 
     PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
@@ -41,11 +45,11 @@ class Partnership(models.Model):
     PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
 
     organisation = models.ForeignKey(
-        'Organisation', verbose_name=_(u'organisation'), related_name='partnerships',
+        'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', null=True,
         help_text=_(u'Select an organisation that is taking an active role in the project.'))
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
     partner_type = ValidXMLCharField(
-        _(u'partner type'), max_length=8, db_index=True, choices=PARTNER_TYPES,
+        _(u'partner type'), max_length=9, db_index=True, choices=PARTNER_TYPES, blank=True,
         help_text=_(u'Select the role that the organisation is taking within the project.'))
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
@@ -84,4 +88,18 @@ class Partnership(models.Model):
         ordering = ['partner_type']
 
     def __unicode__(self):
-        return self.organisation.name
+        if self.organisation:
+            if self.organisation.name:
+                organisation_unicode = self.organisation.name
+            elif self.organisation.long_name:
+                organisation_unicode = self.organisation.long_name
+            else:
+                organisation_unicode = u'%s' % _(u'Organisation name not specified')
+        else:
+            organisation_unicode = u'%s' % _(u'Organisation not specified')
+
+        if self.partner_type:
+            organisation_unicode += u' (' + unicode(dict(self.PARTNER_TYPES)[self.partner_type]) \
+                                    + u')'
+
+        return organisation_unicode

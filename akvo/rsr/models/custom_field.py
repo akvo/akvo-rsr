@@ -1,0 +1,112 @@
+# -*- coding: utf-8 -*-
+
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
+from ..fields import ValidXMLCharField, ValidXMLTextField
+
+
+class ProjectCustomField(models.Model):
+    """
+    Custom fields make it possible for partner to specify additional fields. When specified for a
+    project, the fields will appear in the admin (under the specified section) and can then be
+    filled in.
+
+    Custom fields for a project, linking the project to its' custom fields.
+
+    Name: name of the custom field (label in the admin)
+    Section: the section in the admin where the field should be added
+    Maxlength: the maximum number of characters of the field
+    Help text: the help text belonging to the field
+    Value: the value which can be filled in the project admin.
+    """
+    SECTIONS = (
+        (1, _(u'01 - General information')),
+        (2, _(u'02 - Contact information')),
+        (3, _(u'03 - Project partners')),
+        (4, _(u'04 - Project descriptions')),
+        (5, _(u'05 - Results and indicators')),
+        (6, _(u'06 - Finance')),
+        (7, _(u'07 - Project locations')),
+        (8, _(u'08 - Project focus')),
+        (9, _(u'09 - Links and documents')),
+        (10, _(u'10 - Project comments')),
+    )
+
+    project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='custom_fields')
+    name = ValidXMLCharField(_(u'name'), max_length=255, help_text=_(u'(max 255 characters)'))
+    section = models.IntegerField(
+        _(u'admin section'), choices=SECTIONS,
+        help_text=_(u'Select the section of the admin where the custom field should be displayed')
+    )
+    max_characters = models.IntegerField(
+        _(u'maximum characters'),
+        help_text=_(u'Set the maximum amount of characters that the user is allowed to fill in. '
+                    u'This needs to be a positive number, unless there is no character limit, '
+                    u'then use 0.')
+    )
+    help_text = ValidXMLTextField(
+        _(u'help text'), max_length=1000, blank=True,
+        help_text=_(u'The help text to be displayed with the field in the admin. Leave empty if '
+                    u'there is no need for a help text. (max 1000 characters)')
+    )
+    value = ValidXMLTextField(_(u'value'), blank=True)
+    mandatory = models.BooleanField(_(u'mandatory'), default=False,
+                                    help_text=_(u'Indicate whether this field is mandatory or not'))
+
+
+class OrganisationCustomField(models.Model):
+    """
+    Custom fields make it possible for partner to specify additional fields. When specified for a
+    project, the fields will appear in the admin (under the specified section) and can then be
+    filled in.
+
+    Custom fields for an organisation, linking the organisation to its' custom fields.
+
+    These custom fields will be used for the projects whenever a user of the organisation
+    creates a new project.
+
+    Name: name of the custom field (label in the admin)
+    Section: the section in the admin where the field should be added
+    Maxlength: the maximum number of characters of the field
+    Help text: the help text belonging to the field
+    """
+    SECTIONS = (
+        (1, _(u'01 - General information')),
+        (2, _(u'02 - Contact information')),
+        (3, _(u'03 - Project partners')),
+        (4, _(u'04 - Project descriptions')),
+        (5, _(u'05 - Results and indicators')),
+        (6, _(u'06 - Finance')),
+        (7, _(u'07 - Project locations')),
+        (8, _(u'08 - Project focus')),
+        (9, _(u'09 - Links and documents')),
+        (10, _(u'10 - Project comments')),
+    )
+
+    organisation = models.ForeignKey(
+        'Organisation', verbose_name=_(u'organisation'), related_name='custom_fields'
+    )
+    name = ValidXMLCharField(_(u'name'), max_length=255, help_text=_(u'(max 255 characters)'))
+    section = models.IntegerField(
+        _(u'admin section'), choices=SECTIONS,
+        help_text=_(u'Select the section of the admin where the custom field should be displayed')
+    )
+    max_characters = models.IntegerField(
+        _(u'maximum characters'),
+        help_text=_(u'Set the maximum amount of characters that the user is allowed to fill in. '
+                    u'This needs to be a positive number, unless there is no character limit, '
+                    u'then use 0.')
+    )
+    help_text = ValidXMLTextField(
+        _(u'help text'), max_length=1000, blank=True,
+        help_text=_(u'The help text to be displayed with the field in the admin. Leave empty if '
+                    u'there is no need for a help text. (max 1000 characters)')
+    )
+    mandatory = models.BooleanField(_(u'mandatory'), default=False,
+                                    help_text=_(u'Indicate whether this field is mandatory or not'))

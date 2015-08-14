@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import math
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Max, Sum
@@ -33,7 +34,6 @@ from ...iati.mandatory_fields import check_export_fields
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
-from .budget_item import BudgetItem, BudgetItemLabel
 from .country import Country
 from .invoice import Invoice
 from .link import Link
@@ -58,6 +58,15 @@ class Project(TimestampsMixin, models.Model):
         (1, _(u'Core Activity')),
         (2, _(u'Sub Activity')),
         (3, _(u'Lower Sub Activity'))
+    )
+
+    LANGUAGE_OPTIONS = (
+        ('de', _(u'German')),
+        ('en', _(u'English')),
+        ('es', _(u'Spanish')),
+        ('fr', _(u'French')),
+        ('nl', _(u'Dutch')),
+        ('ru', _(u'Russian'))
     )
 
     STATUS_NONE = 'N'
@@ -85,12 +94,12 @@ class Project(TimestampsMixin, models.Model):
     }
 
     title = ValidXMLCharField(
-        _(u'title'), max_length=45, db_index=True,
+        _(u'title'), max_length=45, db_index=True, blank=True,
         help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
                     u'Use them to attract attention to what you are doing. (45 characters)')
     )
     subtitle = ValidXMLCharField(
-        _(u'subtitle'), max_length=75,
+        _(u'subtitle'), max_length=75, blank=True,
         help_text=_(u'The title and subtitle fields are the newspaper headline for your project. '
                     u'Use them to attract attention to what you are doing. (75 characters)')
     )
@@ -107,9 +116,10 @@ class Project(TimestampsMixin, models.Model):
     )
     partners = models.ManyToManyField(
         'Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',
+        blank=True,
     )
     project_plan_summary = ProjectLimitedTextField(
-        _(u'summary of project plan'), max_length=400,
+        _(u'summary of project plan'), max_length=400, blank=True,
         help_text=_(u'Enter a brief summary. The summary should explain: (400 characters)<br>'
                     u'- Why the project is being carried out;<br>'
                     u'- Where it is taking place;<br>'
@@ -136,7 +146,7 @@ class Project(TimestampsMixin, models.Model):
     )
 
     goals_overview = ProjectLimitedTextField(
-        _(u'goals overview'), max_length=600,
+        _(u'goals overview'), max_length=600, blank=True,
         help_text=_(u'Provide a brief description of the overall project goals. (600 characters)')
     )
     current_status = ProjectLimitedTextField(
@@ -153,7 +163,7 @@ class Project(TimestampsMixin, models.Model):
         )
     )
     sustainability = ValidXMLTextField(
-        _(u'sustainability'),
+        _(u'sustainability'), blank=True,
         help_text=_(u'Describe plans for sustaining/maintaining results after '
                     u'implementation is complete. (unlimited)')
     )
@@ -174,10 +184,9 @@ class Project(TimestampsMixin, models.Model):
 
     # project meta info
     language = ValidXMLCharField(
-        max_length=2, choices=settings.LANGUAGES, default='en',
+        max_length=2, choices=LANGUAGE_OPTIONS, blank=True,
         help_text=_(u'The main language of the project.')
     )
-    project_rating = models.IntegerField(_(u'project rating'), default=0)
     notes = ValidXMLTextField(
         _(u'notes'), blank=True, default='', help_text=_(u'(Unlimited number of characters).')
     )
@@ -212,7 +221,7 @@ class Project(TimestampsMixin, models.Model):
 
     # donate button
     donate_button = models.BooleanField(
-        _(u'donate button'), default=True,
+        _(u'donate button'), default=False,
         help_text=_(u'Show donate button for this project. If not selected, it is not possible '
                     u'to donate to this project and the donate button will not be shown.')
     )
@@ -285,7 +294,7 @@ class Project(TimestampsMixin, models.Model):
         max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
     )
     last_update = models.ForeignKey(
-        ProjectUpdate, related_name='the_project',null=True, on_delete=models.SET_NULL
+        ProjectUpdate, related_name='the_project', null=True, on_delete=models.SET_NULL
     )
 
     # Custom manager
@@ -293,6 +302,25 @@ class Project(TimestampsMixin, models.Model):
     # http://simonwillison.net/2008/May/1/orm/
     objects = QuerySetManager()
     organisations = OrganisationsQuerySetManager()
+
+    def clean(self):
+        # Don't allow a start date before an end date
+        if self.date_start_planned and self.date_end_planned and \
+                (self.date_start_planned > self.date_end_planned):
+            raise ValidationError(
+                {'date_start_planned': u'%s' % _(u'Start date (planned) cannot be at a later '
+                                                 u'time than end date (planned).'),
+                 'date_end_planned': u'%s' % _(u'Start date (planned) cannot be at a later '
+                                               u'time than end date (planned).')}
+            )
+        if self.date_start_actual and self.date_end_actual and \
+                (self.date_start_actual > self.date_end_actual):
+            raise ValidationError(
+                {'date_start_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
+                                                u'time than end date (actual).'),
+                 'date_end_actual': u'%s' % _(u'Start date (actual) cannot be at a later '
+                                              u'time than end date (actual).')}
+            )
 
     @models.permalink
     def get_absolute_url(self):
@@ -351,16 +379,32 @@ class Project(TimestampsMixin, models.Model):
         return amount or 0
 
     # New API, de-normalized fields support
-
     def get_budget(self):
-        if 'total' in BudgetItemLabel.objects.filter(budgetitem__project__exact=self):
-            return BudgetItem.objects.filter(
-                project__exact=self
-            ).filter(label__label='total')[0].amount
+        budgets = self.budget_items.filter(amount__gt=0)
+        total_budgets = budgets.filter(label__label='Total')
+
+        if total_budgets.exists():
+            revised_total_budgets = total_budgets.filter(type='2')
+
+            if revised_total_budgets.exists():
+                return revised_total_budgets.order_by('-pk')[0].amount
+            else:
+                return total_budgets.order_by('-pk')[0].amount
+
+        elif budgets.exists():
+            summed_up_budget = 0
+
+            for budget in budgets:
+                if budgets.filter(label=budget.label, type='2').exists():
+                    if budget == budgets.filter(label=budget.label, type='2').order_by('-pk')[0]:
+                        summed_up_budget += budget.amount
+                else:
+                    summed_up_budget += budget.amount
+
+            return summed_up_budget
+
         else:
-            return BudgetItem.objects.filter(
-                project__exact=self
-            ).aggregate(Sum('amount'))['amount__sum'] or 0
+            return 0
 
     def update_budget(self):
         "Update de-normalized field"

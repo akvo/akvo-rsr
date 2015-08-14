@@ -20,8 +20,12 @@ from akvo.utils import codelist_choices, codelist_value
 class BaseLocation(models.Model):
     _help_text = _(u"Go to <a href='http://mygeoposition.com/' target='_blank'>"
                    u"http://mygeoposition.com/</a> to get the decimal coordinates of your project.")
-    latitude = LatitudeField(_(u'latitude'), db_index=True, default=0, help_text=_help_text)
-    longitude = LongitudeField(_(u'longitude'), db_index=True, default=0, help_text=_help_text)
+    latitude = LatitudeField(
+        _(u'latitude'), null=True, db_index=True, default=0, help_text=_help_text
+    )
+    longitude = LongitudeField(
+        _(u'longitude'), null=True, db_index=True, default=0, help_text=_help_text
+    )
     city = ValidXMLCharField(
         _(u'city'), blank=True, max_length=255, help_text=_(u'Select the city. (255 characters)')
     )
@@ -72,15 +76,15 @@ class BaseLocation(models.Model):
 
 class OrganisationLocation(BaseLocation):
     # the organisation that's related to this location
-    location_target = models.ForeignKey('Organisation', null=True, related_name='locations')
-    country = models.ForeignKey('Country', verbose_name=_(u'country'))
+    location_target = models.ForeignKey('Organisation', related_name='locations')
+    country = models.ForeignKey('Country', null=True, verbose_name=_(u'country'))
 
 
 class ProjectLocation(BaseLocation):
     # the project that's related to this location
-    location_target = models.ForeignKey('Project', null=True, related_name='locations')
+    location_target = models.ForeignKey('Project', related_name='locations')
     country = models.ForeignKey(
-        'Country', verbose_name=_(u'country'), help_text=_(u'Select the country.')
+        'Country', verbose_name=_(u'country'), help_text=_(u'Select the country.'), null=True
     )
 
     # Extra IATI fields
@@ -102,6 +106,21 @@ class ProjectLocation(BaseLocation):
                                        choices=codelist_choices(GEOGRAPHIC_LOCATION_CLASS))
     feature_designation = ValidXMLCharField(_(u'feature designation'), blank=True, max_length=5,
                                             choices=codelist_choices(LOCATION_TYPE))
+
+    def __unicode__(self):
+        location_unicode = self.country.name if self.country else u'%s' % _(u'No country specified')
+
+        if self.latitude:
+            location_unicode += u' (latitude: %s' % str(self.latitude)
+        else:
+            location_unicode += u' (%s' % _(u'No latitude specified')
+
+        if self.longitude:
+            location_unicode += u', longitude: %s)' % str(self.longitude)
+        else:
+            location_unicode += u', %s)' % _(u'No longitude specified')
+
+        return location_unicode
 
     def iati_vocabulary(self):
         return codelist_value(GeographicVocabulary, self, 'vocabulary')
@@ -132,6 +151,9 @@ class AdministrativeLocation(models.Model):
         _(u'administrative level'), blank=True, null=True, max_length=1
     )
 
+    def __unicode__(self):
+        return str(self.code) if self.code else u'%s' % _(u'No code specified')
+
     def iati_vocabulary(self):
         return codelist_value(GeographicVocabulary, self, 'vocabulary')
 
@@ -143,5 +165,5 @@ class AdministrativeLocation(models.Model):
 
 class ProjectUpdateLocation(BaseLocation):
     # the project update that's related to this location
-    location_target = models.ForeignKey('ProjectUpdate', null=True, related_name='locations')
+    location_target = models.ForeignKey('ProjectUpdate', related_name='locations')
     country = models.ForeignKey('Country', verbose_name=_(u'country'), null=True, blank=True,)

@@ -48,6 +48,30 @@ def is_org_admin(user, obj):
                 except:
                     pass
                 try:
+                    if obj.result.project and obj.result.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.indicator.result.project and obj.indicator.result.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.location.location_target and obj.location.location_target in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.transaction.project and obj.transaction.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
                     if isinstance(obj.location_target, Project) and \
                             obj.location_target in employment.organisation.all_projects():
                         return True
@@ -97,6 +121,30 @@ def is_org_project_editor(user, obj):
             else:
                 try:
                     if obj.project and obj.project in employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.result.project and obj.result.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.indicator.result.project and obj.indicator.result.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.location.location_target and obj.location.location_target in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
+                    if obj.transaction.project and obj.transaction.project in \
+                            employment.organisation.all_projects():
                         return True
                 except:
                     pass

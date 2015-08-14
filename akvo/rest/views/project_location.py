@@ -4,8 +4,9 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import ProjectLocation
-from ..serializers import ProjectLocationSerializer, MapProjectLocationSerializer
+from akvo.rsr.models import ProjectLocation, AdministrativeLocation
+from ..serializers import (ProjectLocationSerializer, AdministrativeLocationSerializer,
+                           MapProjectLocationSerializer)
 from ..viewsets import BaseRSRViewSet
 
 
@@ -15,6 +16,14 @@ class ProjectLocationViewSet(BaseRSRViewSet):
     queryset = ProjectLocation.objects.all()
     serializer_class = ProjectLocationSerializer
     filter_fields = ('location_target', 'country', )
+
+
+class AdministrativeLocationViewSet(BaseRSRViewSet):
+    """
+    """
+    queryset = AdministrativeLocation.objects.all()
+    serializer_class = AdministrativeLocationSerializer
+    filter_fields = ('location', 'code', )
 
 
 class MapProjectLocationViewSet(BaseRSRViewSet):

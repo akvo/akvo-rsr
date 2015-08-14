@@ -89,7 +89,15 @@ class Transaction(models.Model):
     )
 
     def __unicode__(self):
-        return unicode(self.value)
+        if self.value:
+            if self.currency:
+                return u'%s %s' % (self.iati_currency().name,
+                                   '{:,}'.format(int(self.value)))
+            else:
+                return u'%s %s' % (self.project.get_currency_display(),
+                                   '{:,}'.format(int(self.value)))
+        else:
+            return u'%s' % _(u'No value specified')
 
     def iati_currency(self):
         return codelist_value(Currency, self, 'currency')
@@ -116,7 +124,7 @@ class Transaction(models.Model):
 
 
 class TransactionSector(models.Model):
-    project = models.ForeignKey(
+    transaction = models.ForeignKey(
         'Transaction', verbose_name=_(u'transaction'), related_name='sectors'
     )
     code = ValidXMLCharField(_(u'sector'), blank=True, max_length=5)
@@ -126,6 +134,12 @@ class TransactionSector(models.Model):
     vocabulary = ValidXMLCharField(
         _(u'vocabulary'), blank=True, max_length=5, choices=codelist_choices(SECTOR_VOCABULARY)
     )
+
+    def __unicode__(self):
+        if self.code:
+            return u'%s' % self.iati_sector().name.capitalize()
+        else:
+            return u'%s' % _(u'No sector code specified')
 
     def iati_sector(self):
         if self.code and (self.vocabulary == '1' or self.vocabulary == 'DAC'):
@@ -142,4 +156,3 @@ class TransactionSector(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'transaction sector')
         verbose_name_plural = _(u'transaction sectors')
-        unique_together = ('project', 'vocabulary')

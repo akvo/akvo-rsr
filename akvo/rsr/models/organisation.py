@@ -228,7 +228,8 @@ class Organisation(TimestampsMixin, models.Model):
         def all_projects(self):
             "returns a queryset with all projects that has self as any kind of partner"
             from .project import Project
-            return Project.objects.filter(partnerships__organisation__in=self)
+            return (Project.objects.filter(partnerships__organisation__in=self) |
+                    Project.objects.filter(sync_owner__in=self)).distinct()
 
         def users(self):
             "returns a queryset of all users belonging to the organisation(s)"
@@ -286,8 +287,9 @@ class Organisation(TimestampsMixin, models.Model):
         return self.projects.published().distinct()
 
     def all_projects(self):
-        "returns a queryset with all projects that has self as any kind of partner"
-        return self.projects.all().distinct()
+        """returns a queryset with all projects that has self as any kind of partner or reporting
+        organisation."""
+        return (self.projects.all() | self.reporting_projects.all()).distinct()
 
     def active_projects(self):
         return self.published_projects().status_not_cancelled().status_not_archived()
@@ -305,8 +307,11 @@ class Organisation(TimestampsMixin, models.Model):
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
         from .partnership import Partnership
-        return [ps.partner_type for ps in Partnership.objects.filter(project=project,
-                                                                     organisation=self)]
+        partner_types = []
+        for ps in Partnership.objects.filter(project=project, organisation=self):
+            if ps.partner_type:
+                partner_types.append(ps.partner_type)
+        return partner_types
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has

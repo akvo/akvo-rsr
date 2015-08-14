@@ -6,6 +6,43 @@ Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rs
 Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
+Akvo RSR version 3.5.1 Islamabad (Minor release)
+---
+
+Thursday 6th of August 2015, kasperbrandt
+
+New & Noteworthy
+---
+### Unique organisation names
+From now on, the organisation names (both the name and long name) have to be unique. Organisation names that currently occur multiple times within RSR have been made unique by adding a '(2)' or '(3)' to the names.
+
+Github issue: [#1406](https://github.com/akvo/akvo-rsr/issues/1406).
+
+### User permissions for adding a new organisation
+As an organisation Admin or Project Editor it is now possible to add new organisations to RSR. Previously, only RSR superusers were allowed to do so.
+
+Organisation Admins or Project Editors can also edit any organisation that they are employed to, or any organisation that is a partner in a project of which their organisation(s) is a partner too. 
+
+E.g. if the user is an organisation Admin of Akvo, and Akvo is a partner of a project together with another organisation, then the user is also allowed to edit that organisation.
+
+Github issue: [#1700](https://github.com/akvo/akvo-rsr/issues/1700).
+
+Bug Fixes
+---
+### Display of project partners
+Both on the project partners page and on the project page itself, the logos of the partners weren't displayed correctly. On the project page, the logos of the partners were displayed too big. On the project partners page, the logos weren't displayed at all and the alignment of the partners wasn't consistent. This has now been fixed.
+
+Github issues: [#1667](https://github.com/akvo/akvo-rsr/issues/1667) and [#1674](https://github.com/akvo/akvo-rsr/issues/1674).
+
+### Update credit field character size increased
+We have increased the number of allowed characters in the photo and video credit fields when adding an update. This used to be 25, but is now 75 characters.
+
+Github issue: [#1682](https://github.com/akvo/akvo-rsr/issues/1682).
+
+### User permissions for deleting user employments
+As an organisation User Manager or Admin, it is now possible to detele user employments on the user management page in MyRSR. Previously, the red delete button with the white cross was visible, however, when clicked nothing happened due to the user permissions. This has now been resolved.
+
+Github issue: [#1699](https://github.com/akvo/akvo-rsr/issues/1699).
 
 Akvo RSR version 3.5 Islamabad
 ---

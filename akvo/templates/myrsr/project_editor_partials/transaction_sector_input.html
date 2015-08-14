@@ -1,0 +1,40 @@
+{% load i18n %}
+<div class="transaction-sector-item parent" id="transaction_sector{% if key %}-{{ key }}{% endif %}" {% if sector %}sector{% endif %}>
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if sector %}+{% else %}-{% endif %}</span> {% trans 'Transaction sector' %}: <span class="unicode">{% if sector %}{{ sector }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-transaction-sector{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if sector %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority2 sector" name="transaction-sector{% if key %}-{{ key }}{% endif %}" id="transaction-sector{% if key %}-{{ key }}{% endif %}"
+                    value="{{ sector.code }}" saved-value="{{ sector.code }}" {% if sector %}sector{% endif %}>
+                    <label class="control-label" for="transaction-sector{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction sector' %}</label>
+                    <p class="help-block hidden">{% trans 'A recognised code, from a recognised vocabulary, classifying the purpose of this transaction. If this element is used then ALL transaction elements should contain a transaction/sector element and iati-activity/sector should NOT be used. This element can be used multiple times, but only one sector can be reported per vocabulary.' %}</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="select-group control">
+                        <select name="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}" id="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}" class="form-control priority2 sector" saved-value="{{ sector.vocabulary }}" {% if sector %}sector{% endif %}>
+                            <option value="" {% if not sector.vocabulary %} selected="selected" {% endif %}></option>
+                             {% for entry in sector_vocabularies %}
+                                 <option value="{{ entry.code }}" {% if sector.vocabulary == entry.code %} selected="selected" {% endif %}>{{ entry.code }} - {{ entry.name }}</option>
+                             {% endfor %}
+                        </select>
+                        <label class="control-label" for="transaction-sector-vocabulary{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction sector vocabulary' %}</label>
+                        <p class="help-block hidden">{% trans 'An IATI code for the vocabulary (codelist) used for sector classifications. If omitted, OECD DAC 5-digit Purpose Codes are assumed. Note that at transaction level, only one sector per vocabulary can be reported.' %}</p>
+                    </div>
+                </div>
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority2 sector" name="transaction-sector-description{% if key %}-{{ key }}{% endif %}" id="transaction-sector-description{% if key %}-{{ key }}{% endif %}"
+                    value="{{ sector.text }}" saved-value="{{ sector.text }}" {% if sector %}sector{% endif %} maxlength="100">
+                    <label class="control-label" for="transaction-sector-description{% if key %}-{{ key }}{% endif %}">{% trans 'Transaction sector description' %}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

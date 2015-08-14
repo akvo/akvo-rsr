@@ -191,9 +191,6 @@
       <xsl:value-of select="." />
     </target_group>
   </xsl:template>
-  
-  
-  <!-- project_rating Currently not used-->
 
   <!-- notes Currently not used -->
 

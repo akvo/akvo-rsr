@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="link-item parent" id="link{% if key %}-{{ key }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if link %}+{% else %}-{% endif %}</span> {% trans 'Link' %}: <span class="unicode">{% if link %}{{ link|safe }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-link{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if link %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-6 control">
+                <input type="text" class="form-control priority2" id="link-url{% if key %}-{{ key }}{% endif %}" name="link-url{% if key %}-{{ key }}{% endif %}" value="{{ link.url }}" saved-value="{{ link.url }}">
+                <label for="link-url{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link URL' %}</label>
+                <p class="help-block hidden">{% trans "Enter the link to an external website you wish to redirect to from your project page. The URL should start with 'http://' or 'https://'." %}</p>
+            </div>
+            <div class="col-md-6 control">
+                <input type="text" class="form-control priority2" name="link-caption{% if key %}-{{ key }}{% endif %}" id="link-caption{% if key %}-{{ key }}{% endif %}" value="{{ link.caption }}" saved-value="{{ link.caption }}" maxlength="50">
+                <label for="link-caption{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Link caption' %}</label>
+                <p class="help-block hidden">{% trans 'Enter a name for the link.' %}</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,16 +1,17 @@
 {% extends "myrsr/myrsr_base.html" %}
-{% load i18n bootstrap3 rsr_utils rules %}
+{% load i18n bootstrap3 rsr_utils rules compressed %}
 {% block title %}{% trans "MyRSR - my projects" %}{% endblock %}
 {% block myrsr_main %}
   <div class="">
-    <div class="col-sm-6"><h3>{% trans "My projects" %}</h3></div>
-    {% has_perm 'rsr.add_project' user as can_add_project %}
-    {% if can_add_project %}
-      <div class="col-sm-6 text-right btnHeader"><a href="http://rsr.akvo.org/admin/rsr/project/add"
-                                                    class="btn btn-primary"><i
-          class="fa fa-plus"></i> {% trans 'Add a new project' %}</a></div>
-    {% endif %}
-  </div>
+    <div class="row">
+      <div class="col-sm-6"><h3>{% trans "My projects" %}</h3></div>
+      <div class="col-sm-6 text-right btnHeader">
+          {% has_perm 'rsr.add_project' user as can_add_project %}
+          {% if can_add_project and user.has_reportable_org %}
+            <button class="btn btn-success" id="createProject"><i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
+          {% endif %}
+      </div>
+    </div>
   {% if not organisations %}
     <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
     <p class="text-center col-sm-8 col-sm-offset-2">
@@ -22,10 +23,11 @@
       {% endblocktrans %}
     </p>
   {% else %}
+  <div class="row">
     <div class="col-sm-12">
       <form class="navbar-form" role="search">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search" name="q" id="search"
+          <input type="text" class="form-control" placeholder="{% trans 'Search' %}" name="q" id="search"
                  {% if q_search %}value="{{ q_search }}"{% endif %}>
           <div class="input-group-btn">
             <button class="btn btn-default" type="submit">
@@ -35,6 +37,7 @@
         </div>
       </form>
     </div>
+  </div>
     {% if page %}
       <table class="table table-striped table-responsive myProjectList col-sm-12">
         <thead>
@@ -64,24 +67,13 @@
                 <p class="small">{{ project.subtitle }}</p>
               </div>
             </td>
-            <td>{% bootstrap_icon "globe" %} {{ project.primary_location.country }}, {{ project.primary_location.country.continent }}</td>
+            <td>{% bootstrap_icon "globe" %} {% if project.primary_location.country %}{{ project.primary_location.country }}, {{ project.primary_location.country.continent }}{% else %}{% trans 'Location unknown' %}{% endif %}</td>
             <td>{{ project.show_status }}</td>
             <td>
               <div class="twoColumns clearfix">
-                <a href="{% url 'project-main' project.id %}">View</a>
                 {% has_perm 'rsr.change_project' user project as can_edit_project %}
-                {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
                 {% if can_edit_project %}
-                  <a href="/admin/rsr/project/{{ project.pk }}/">{% trans 'Edit' %}</a>
-                {% endif %}
-                {% if can_publish %}
-                  <a href="/admin/rsr/publishingstatus/?project={{ project.pk }}">
-                    {% if project.is_published %}
-                      {% trans 'Unpublish' %}
-                    {% else %}
-                      {% trans 'Publish' %}
-                    {% endif %}
-                  </a>
+                  <a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a>
                 {% endif %}
                 {% if project.is_published %}
                   {% has_perm 'rsr.post_updates' project as can_add_update %}
@@ -124,4 +116,17 @@
     {% endif %}
   {% endif %}
 </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="application/json" id="default-values">
+        {
+            "employments": [{% for employment in user.employers.all %}{{ employment.organisation.id }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            "new_project_custom_fields": [{% for field in new_project_custom_fields %}{"name": "{{ field.name }}", "section": {{ field.section }}, "max_characters": {{ field.max_characters }}, "mandatory": {% if field.mandatory %}true{% else %}false{% endif %}, "help_text": "{{ field.help_text|linebreaksbr }}"}{% if not forloop.last %}, {% endif %}{% endfor %}]
+        }
+    </script>
+
+    {% compressed_js 'my_projects' %}
 {% endblock %}
