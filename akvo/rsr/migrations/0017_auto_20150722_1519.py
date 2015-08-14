@@ -8,7 +8,7 @@ import akvo.rsr.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0014_auto_20150721_1343'),
+        ('rsr', '0016_auto_20150721_1343'),
     ]
 
     operations = [

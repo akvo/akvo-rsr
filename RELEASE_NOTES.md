@@ -6,6 +6,101 @@ Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rs
 Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
+Akvo RSR version 3.5.1 Islamabad (Minor release)
+---
+
+Thursday 6th of August 2015, kasperbrandt
+
+New & Noteworthy
+---
+### Unique organisation names
+From now on, the organisation names (both the name and long name) have to be unique. Organisation names that currently occur multiple times within RSR have been made unique by adding a '(2)' or '(3)' to the names.
+
+Github issue: [#1406](https://github.com/akvo/akvo-rsr/issues/1406).
+
+### User permissions for adding a new organisation
+As an organisation Admin or Project Editor it is now possible to add new organisations to RSR. Previously, only RSR superusers were allowed to do so.
+
+Organisation Admins or Project Editors can also edit any organisation that they are employed to, or any organisation that is a partner in a project of which their organisation(s) is a partner too. 
+
+E.g. if the user is an organisation Admin of Akvo, and Akvo is a partner of a project together with another organisation, then the user is also allowed to edit that organisation.
+
+Github issue: [#1700](https://github.com/akvo/akvo-rsr/issues/1700).
+
+Bug Fixes
+---
+### Display of project partners
+Both on the project partners page and on the project page itself, the logos of the partners weren't displayed correctly. On the project page, the logos of the partners were displayed too big. On the project partners page, the logos weren't displayed at all and the alignment of the partners wasn't consistent. This has now been fixed.
+
+Github issues: [#1667](https://github.com/akvo/akvo-rsr/issues/1667) and [#1674](https://github.com/akvo/akvo-rsr/issues/1674).
+
+### Update credit field character size increased
+We have increased the number of allowed characters in the photo and video credit fields when adding an update. This used to be 25, but is now 75 characters.
+
+Github issue: [#1682](https://github.com/akvo/akvo-rsr/issues/1682).
+
+### User permissions for deleting user employments
+As an organisation User Manager or Admin, it is now possible to detele user employments on the user management page in MyRSR. Previously, the red delete button with the white cross was visible, however, when clicked nothing happened due to the user permissions. This has now been resolved.
+
+Github issue: [#1699](https://github.com/akvo/akvo-rsr/issues/1699).
+
+Akvo RSR version 3.5 Islamabad
+---
+
+Wednesday 15th July 2015, kasperbrandt
+
+New & Noteworthy
+---
+### Default logo for organisations
+A default logo for organisations has been added, which will show in the organisations list when an organisation has no logo, stating "Partner logo missing". This improves the UI of the organisations list and makes it clear that the organisation has no logo.
+
+Github issue: [#1007](https://github.com/akvo/akvo-rsr/issues/1007).
+
+### Consortium logos on project pages
+In addition to adding the consortium logos to a project page in RSR v3.4, we have now extended this functionality so that it's possible to to do so on Akvo Pages as well. In the RSR admin, there is a setting for every Akvo Page to allow consortium logos to be shown or not. On RSR itself, consortium logos will always be shown.
+
+Also, we've increased the size of the consortium logos.
+
+Github issues: [#1616](https://github.com/akvo/akvo-rsr/issues/1616) and [#1631](https://github.com/akvo/akvo-rsr/issues/1631).
+
+### Increase the size of update titles to 80 characters
+The maximum number of characters allowed in the title of a project update has been increased to allow 80 characters.
+
+Github issue: [#1625](https://github.com/akvo/akvo-rsr/issues/1625).
+
+### List of project partners sorted by name
+The list of project partners is now sorted alphabetically, whereas they used to be sorted randomly.
+
+Github issue: [#1643](https://github.com/akvo/akvo-rsr/issues/1643).
+
+Bug Fixes
+---
+### Fixed '+ more' links on project page
+The '+ more' links, which are used to indicate the number of additional partners on the project page, counted the reporting organisation double in some cases. This has now been fixed.
+
+Github issue: [#1608](https://github.com/akvo/akvo-rsr/issues/1608).
+
+### Fixed actual end date on project report page
+On the project report pages, the actual end date did not display correctly. Instead, the planned end date would be shown. This has now been resolved.
+
+Github issue: [#1648](https://github.com/akvo/akvo-rsr/issues/1648).
+
+Under the Hood
+---
+### Removed legacy files
+We have removed several legacy files that were used prior to RSR v3.
+
+Github issue: [#1504](https://github.com/akvo/akvo-rsr/issues/1504).
+
+### Updated README and INSTALL documentation
+As indicated by Paul Burt ([peeb](https://github.com/peeb)), our README and INSTALL documentation was outdated and contained broken links. The broken links have now been fixed.
+
+Github pull requests: [#1584](https://github.com/akvo/akvo-rsr/pull/1584) and [#1589](https://github.com/akvo/akvo-rsr/pull/1589).
+
+### Removed log warnings for locations without coordinates
+There used to be an entry for every location without coordinates that could not be loaded in a map. However, since we there are quite a few of these and since these warning were added every time a user tried to load a map, our logs got flooded with these warnings. Therefore, we have stopped logging these warnings.
+
+Github issue: [#1632](https://github.com/akvo/akvo-rsr/issues/1632).
 
 Akvo RSR version 3.4 Honiara
 ---
