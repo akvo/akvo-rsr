@@ -140,7 +140,7 @@
                             </div>
                             <h5>{% trans 'Related projects' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'related-project-helptext');"></span></h5>
                             <p class="help-block hidden" id="related-project-helptext">{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}</p>
-                            <div class="form-group">
+                            <div class="form-group hidden hide-default">
                                 <div class="select-group control">
                                     <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2" saved-value="{% if project.hierarchy %}{{ project.hierarchy }}{% endif %}">
                                         <option value="" {% if not project.hierarchy %} selected="selected" {% endif %}></option>
