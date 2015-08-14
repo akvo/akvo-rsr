@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
             field=akvo.rsr.fields.ValidXMLCharField(unique=True, max_length=30, verbose_name='label', db_index=True),
             preserve_default=True,
         ),
-        # migrations.RunPython(
-        #     edit_budget_items,
-        # ),
+        migrations.RunPython(
+            edit_budget_items,
+        ),
     ]
