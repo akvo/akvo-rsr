@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            "DROP INDEX rsr_budgetitem_project_id_label_id;"
+            "DROP INDEX IF EXISTS rsr_budgetitem_project_id_label_id;"
         ),
         migrations.AlterField(
             model_name='budgetitem',
