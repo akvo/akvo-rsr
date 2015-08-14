@@ -1,29 +1,25 @@
 {% extends "base.html" %}
 {% load i18n rsr_filters humanize rsr_utils maps %}
-{% block title %}{{organisation.name}}{% endblock %}
+{% block title %}{{ organisation.name }}{% endblock %}
 {% block maincontent %}
   <div class="container organisationDetail">
 
     <div class="row verticalPadding organisationHeader">
 
-      <div class="col-sm-6">
+      <div class="col-sm-8">
         <div class="col-sm-12">
-          <h1><i class="fa fa-users"></i> {{organisation.name}}</h1>
+          <h1><i class="fa fa-users"></i> {{ organisation.name }}{% if organisation.long_name and not organisation.name == organisation.long_name %}<span class="h4"> ({{ organisation.long_name }})</span>{% endif %}</h1>
         </div>
-        <div class="col-sm-12 orgLogo">
-          {% if organisation.logo %}
-            {% if organisation.url %}
-              <a href="{{organisation.url}}" target="_blank">
-                {% img organisation 350 250 organisation.name %}
-              </a>
-            {% else %}
-              {% img organisation 350 250 organisation.name %}
-            {% endif %}
+        <div class="col-sm-12 orgLogo text-center">
+          {% if organisation.url %}
+            <a href="{{ organisation.url }}" target="_blank">{% img organisation 350 250 organisation.name %}</a>
+          {% else %}
+            {% img organisation 350 250 organisation.name %}
           {% endif %}
         </div>
       </div>
 
-      <div class="col-sm-5 orgDetails">
+      <div class="col-sm-3 orgDetails">
         <h4>{% trans 'Details' %}</h4>
 
         <ul class="noStyleUl">
