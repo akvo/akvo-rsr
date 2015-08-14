@@ -11,7 +11,7 @@
     <div class="hide-partial {% if result %}hidden{% endif %}">
         <div class="form-group">
             <div class="row">
-                <div class="col-md-4 control">
+                <div class="col-md-8 control">
                     <input type="text" class="form-control priority2" name="result-title{% if key %}-{{ key }}{% endif %}" id="result-title{% if key %}-{{ key }}{% endif %}" value="{{result.title}}" saved-value="{{result.title}}" maxlength="255">
                     <label class="control-label" for="result-title{% if key %}-{{ key }}{% endif %}">{% trans 'Result title' %}</label>
                     <p class="help-block hidden">{% trans 'The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.' %}</p>
@@ -27,30 +27,34 @@
                         <label class="control-label" for="result-type{% if key %}-{{ key }}{% endif %}">{% trans 'Result type' %}</label>
                         <p class="help-block hidden">
                             {% blocktrans %}Select whether the result is an output, outcome or impact.<br/>
-                            1 - Output: Results of the activity that came about as a direct effect of your work and specific, what is done, and what communities are reached. For example, X number of individuals.<br/>
-                            2 - Outcome: Results of the activity that produce an effect on the overall communities or issues you serve. For example lower rate of infection after a vaccination program.<br/>
-                            3 - Impact: The long term effects of the outcomes, that lead to larger, over arching results, such as improved life-expectancy.<br/>
+                            1 - Output: Direct result of the project activities. E.g. number of booklets produced, workshops held, people trained, latrines build.<br/>
+                            2 - Outcome: The changes or benefits that result from the program activities and resulting outputs. E.g number of beneficiaries reached, knowledge increased, capacity build, monitored behaviour change.<br/>
+                            3 - Impact: Long-term results of program (on population) that can be attributed to the project outputs and outcomes. E.g improved health, increased political participation of women.<br/>
                             9 - Other: Another type of result, not specified above.{% endblocktrans %}
                         </p>
                     </div>
                 </div>
-                <div class="col-md-4 control">
-                    <div class="select-group">
-                        <select name="result-aggregation-status{% if key %}-{{ key }}{% endif %}" id="result-aggregation-status{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{% if result %}{{ result.aggregation_status|yesno:"1,2,none" }}{% else %}none{% endif %}">
-                            <option value="none" {% if result.aggregation_status|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}></option>
-                            <option value="1" {% if result.aggregation_status|yesno:"yes,no,unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
-                            <option value="2" {% if result.aggregation_status|yesno:"yes,no,unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
-                        </select>
-                        <label class="control-label" for="result-aggregation-status{% if key %}-{{ key }}{% endif %}">{% trans 'Aggregation status' %}</label>
-                        <p class="help-block hidden">{% trans 'Indicate whether the data in the result set can be accumulated.' %}</p>
-                    </div>
-                </div>
             </div>
         </div>
-        <div class="form-group control hidden hide-default">
-            <textarea id="result-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="result-description{% if key %}-{{ key }}{% endif %}" maxlength="2000" saved-value="{{ result.description }}">{{ result.description }}</textarea>
-            <label class="control-label" for="result-description{% if key %}-{{ key }}{% endif %}">{% trans 'Result description' %}</label>
-            <p class="help-block hidden">{% trans 'You can provide further information of the result here.' %}</p>
+        <div class="row hidden hide-default">
+            <div class="col-md-8 control">
+                <div class="form-group">
+                    <textarea id="result-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3" name="result-description{% if key %}-{{ key }}{% endif %}" maxlength="2000" saved-value="{{ result.description }}">{{ result.description }}</textarea>
+                    <label class="control-label" for="result-description{% if key %}-{{ key }}{% endif %}">{% trans 'Result description' %}</label>
+                    <p class="help-block hidden">{% trans 'You can provide further information of the result here.' %}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="select-group control">
+                    <select name="result-aggregation-status{% if key %}-{{ key }}{% endif %}" id="result-aggregation-status{% if key %}-{{ key }}{% endif %}" class="form-control priority2" saved-value="{% if result %}{{ result.aggregation_status|yesno:"1,2,none" }}{% else %}none{% endif %}">
+                        <option value="none" {% if result.aggregation_status|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}></option>
+                        <option value="1" {% if result.aggregation_status|yesno:"yes,no,unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
+                        <option value="2" {% if result.aggregation_status|yesno:"yes,no,unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
+                    </select>
+                    <label class="control-label" for="result-aggregation-status{% if key %}-{{ key }}{% endif %}">{% trans 'Aggregation status' %}</label>
+                    <p class="help-block hidden">{% trans 'Indicate whether the data in the result set can be accumulated.' %}</p>
+                </div>
+            </div>
         </div>
         <h5>{% trans 'Indicators' %}</h5>
         <div class="indicator-container" id="indicator-container">

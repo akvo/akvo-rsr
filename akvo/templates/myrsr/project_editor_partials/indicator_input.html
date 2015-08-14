@@ -11,7 +11,7 @@
     <div class="hide-partial {% if indicator %}hidden{% endif %}">
         <div class="form-group">
             <div class="row">
-                <div class="col-md-4 control">
+                <div class="col-md-8 control">
                     <input type="text" class="form-control priority2 indicator" name="indicator-title{% if key %}-{{ key }}{% endif %}" id="indicator-title{% if key %}-{{ key }}{% endif %}" value="{{indicator.title}}" saved-value="{{indicator.title}}" {% if indicator %}indicator{% endif %} maxlength="255">
                     <label class="control-label" for="indicator-title{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator title' %}</label>
                     <p class="help-block hidden">{% trans 'Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.' %}</p>
@@ -28,23 +28,27 @@
                         <p class="help-block hidden">{% trans 'Choose how the indicator will be measured (in percentage or units).' %}</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="select-group control">
-                        <select name="indicator-ascending{% if key %}-{{ key }}{% endif %}" id="indicator-ascending{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %} saved-value="{% if indicator %}{{ indicator.ascending|yesno:"1,2,none" }}{% else %}none{% endif %}">
-                            <option value="none" {% if indicator.ascending|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}></option>
-                            <option value="1" {% if indicator.ascending|yesno:"yes,no,unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
-                            <option value="2" {% if indicator.ascending|yesno:"yes,no,unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
-                        </select>
-                        <label class="control-label" for="indicator-ascending{% if key %}-{{ key }}{% endif %}">{% trans 'Ascending' %}</label>
-                        <p class="help-block hidden">{% trans 'Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).' %}</p>
-                    </div>
-                </div>
             </div>
         </div>
-        <div class="form-group control hidden hide-default">
-            <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %} maxlength="2000" saved-value="{{ indicator.description }}">{{ indicator.description }}</textarea>
-            <label class="control-label" for="indicator-description{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator description' %}</label>
-            <p class="help-block hidden">{% trans 'You can provide further information of the indicator here.' %}</p>
+        <div class="row hidden hide-default">
+            <div class="col-md-8">
+                <div class="form-group control">
+                    <textarea id="indicator-description{% if key %}-{{ key }}{% endif %}" class="form-control priority3 indicator" name="indicator-description{% if key %}-{{ key }}{% endif %}" {% if indicator %}indicator{% endif %} maxlength="2000" saved-value="{{ indicator.description }}">{{ indicator.description }}</textarea>
+                    <label class="control-label" for="indicator-description{% if key %}-{{ key }}{% endif %}">{% trans 'Indicator description' %}</label>
+                    <p class="help-block hidden">{% trans 'You can provide further information of the indicator here.' %}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="select-group control">
+                    <select name="indicator-ascending{% if key %}-{{ key }}{% endif %}" id="indicator-ascending{% if key %}-{{ key }}{% endif %}" class="form-control priority2 indicator" {% if indicator %}indicator{% endif %} saved-value="{% if indicator %}{{ indicator.ascending|yesno:"1,2,none" }}{% else %}none{% endif %}">
+                        <option value="none" {% if indicator.ascending|yesno:"yes,no,unknown" == "unknown" %} selected="selected" {% endif %}></option>
+                        <option value="1" {% if indicator.ascending|yesno:"yes,no,unknown" == "yes" %} selected="selected" {% endif %}>{% trans 'Yes' %}</option>
+                        <option value="2" {% if indicator.ascending|yesno:"yes,no,unknown" == "no" %} selected="selected" {% endif %}>{% trans 'No' %}</option>
+                    </select>
+                    <label class="control-label" for="indicator-ascending{% if key %}-{{ key }}{% endif %}">{% trans 'Ascending' %}</label>
+                    <p class="help-block hidden">{% trans 'Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).' %}</p>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <div class="row">
