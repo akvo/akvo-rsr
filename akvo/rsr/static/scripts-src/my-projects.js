@@ -37,7 +37,7 @@ function addCustomFieldToProject(customField, projectId) {
     request.setRequestHeader("Content-type", "application/json");
 
     request.onload = function() {
-        if (projectId == undefined) {
+        if (projectId === undefined) {
             return false;
         } else {
             window.location = '/myrsr/project_editor/' + projectId + '/';

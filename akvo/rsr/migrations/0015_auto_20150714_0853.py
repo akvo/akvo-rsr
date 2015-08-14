@@ -6,43 +6,25 @@ import akvo.rsr.fields
 
 
 def null_locations(apps, schema_editor):
-    try:
-        Project = apps.get_model("rsr", "Project")
-        Organisation = apps.get_model("rsr", "Organisation")
-        ProjectUpdate = apps.get_model("rsr", "ProjectUpdate")
-        ProjectLocation = apps.get_model("rsr", "ProjectLocation")
-        OrganisationLocation = apps.get_model("rsr", "OrganisationLocation")
-        ProjectUpdateLocation = apps.get_model("rsr", "ProjectUpdateLocation")
+    ProjectLocation = apps.get_model("rsr", "ProjectLocation")
+    OrganisationLocation = apps.get_model("rsr", "OrganisationLocation")
+    ProjectUpdateLocation = apps.get_model("rsr", "ProjectUpdateLocation")
 
-        test_project = Project.objects.get(pk=2)
-        test_organisation = Organisation.objects.get(pk=832)
-        test_update = ProjectUpdate.objects.get(pk=7)
-
-        for null_project_location in ProjectLocation.objects.filter(location_target=None):
-            null_project_location.location_target = test_project
-            null_project_location.save()
-
-        for null_org_location in OrganisationLocation.objects.filter(location_target=None):
-            null_org_location.location_target = test_organisation
-            null_org_location.save()
-
-        for null_update_location in ProjectUpdateLocation.objects.filter(location_target=None):
-            null_update_location.location_target = test_update
-            null_update_location.save()
-    except:
-        pass
+    ProjectLocation.objects.filter(location_target=None).delete()
+    OrganisationLocation.objects.filter(location_target=None).delete()
+    ProjectUpdateLocation.objects.filter(location_target=None).delete()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0012_partnersite_show_keyword_logos'),
+            ('rsr', '0014_auto_20150803_1017'),
     ]
 
     operations = [
-        # migrations.RunPython(
-        #     null_locations,
-        # ),
+        migrations.RunPython(
+            null_locations,
+        ),
         migrations.CreateModel(
             name='CustomField',
             fields=[

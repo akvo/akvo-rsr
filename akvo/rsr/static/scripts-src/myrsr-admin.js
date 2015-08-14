@@ -1102,7 +1102,7 @@ function getOnClick(pName, parentElement) {
         });
 
         $(partial).find('.datepicker-container').each( function() {
-            addCountToName($(this));
+            addCountToDate($(this));
         });
 
         $(partial).find('.typeahead-container').each( function() {
@@ -1119,6 +1119,13 @@ function getOnClick(pName, parentElement) {
             var newID = oldID + '-add-' + partialsCount[pName];
 
             el.attr('id', newID);
+        }
+
+        function addCountToDate(el) {
+            var oldID = el.attr('data-id');
+            var newID = oldID + '-add-' + partialsCount[pName];
+
+            el.attr('data-id', newID);
         }
 
         // The typeahead containers need to have the unique identifying appended

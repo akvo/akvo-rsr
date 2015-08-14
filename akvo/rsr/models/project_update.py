@@ -59,7 +59,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         _(u'photo caption'), blank=True, max_length=75, help_text=_(u'75 characters')
     )
     photo_credit = ValidXMLCharField(
-        _(u'photo credit'), blank=True, max_length=25, help_text=_(u'25 characters')
+        _(u'photo credit'), blank=True, max_length=75, help_text=_(u'75 characters')
     )
     video = EmbedVideoField(
         _(u'video URL'), blank=True, help_text=_(u'Supported providers: YouTube and Vimeo')
@@ -68,7 +68,7 @@ class ProjectUpdate(TimestampsMixin, models.Model):
         _(u'video caption'), blank=True, max_length=75, help_text=_(u'75 characters')
     )
     video_credit = ValidXMLCharField(
-        _(u'video credit'), blank=True, max_length=25, help_text=_(u'25 characters')
+        _(u'video credit'), blank=True, max_length=75, help_text=_(u'75 characters')
     )
     update_method = ValidXMLCharField(
         _(u'update method'), blank=True, max_length=1, choices=UPDATE_METHODS, db_index=True,

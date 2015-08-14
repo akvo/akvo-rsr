@@ -55,10 +55,13 @@ def edit_budget_items(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0015_auto_20150722_1519'),
+        ('rsr', '0017_auto_20150722_1519'),
     ]
 
     operations = [
+        migrations.RunSQL(
+            "DROP INDEX rsr_budgetitem_project_id_label_id;"
+        ),
         migrations.AlterField(
             model_name='budgetitem',
             name='other_extra',
