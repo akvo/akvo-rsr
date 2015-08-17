@@ -20,7 +20,6 @@ from ..fields import ValidXMLCharField, ValidXMLTextField
 from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 
 from .country import Country
-from .partner_type import PartnerType
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
@@ -88,7 +87,6 @@ class Organisation(TimestampsMixin, models.Model):
         _(u'language'), max_length=2, choices=settings.LANGUAGES, default='en',
         help_text=_(u'The main language of the organisation'),
     )
-    partner_types = models.ManyToManyField(PartnerType)
     organisation_type = ValidXMLCharField(
         _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES
     )

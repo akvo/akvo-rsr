@@ -99,10 +99,9 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
 
     fieldsets = (
         (_(u'General information'), {'fields': (
-            'name', 'long_name', 'partner_types', 'organisation_type',
-            'new_organisation_type', 'can_become_reporting', 'logo', 'url', 'facebook',
-            'twitter', 'linkedin', 'iati_org_id', 'public_iati_file', 'language', 'content_owner',
-            'allow_edit',)}),
+            'name', 'long_name', 'organisation_type', 'new_organisation_type',
+            'can_become_reporting', 'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id',
+            'public_iati_file', 'language', 'content_owner', 'allow_edit',)}),
         (_(u'Contact information'),
             {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
@@ -120,16 +119,6 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         """Override to add self.formfield_overrides. Needed for ImageField working in the admin."""
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
-
-    def allowed_partner_types(self, obj):
-        return ', '.join([pt.label for pt in obj.partner_types.all()])
-
-    def get_list_display(self, request):
-        # see the notes fields in the change list if you have the right permissions
-        if request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('change',
-                                                                                     self.opts)):
-            return list(self.list_display) + ['allowed_partner_types']
-        return super(OrganisationAdmin, self).get_list_display(request)
 
     def get_readonly_fields(self, request, obj=None):
         """Make sure only super users can set the ability to become a reporting org"""
