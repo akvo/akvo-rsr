@@ -380,6 +380,7 @@ def user_management(request):
                 employments.filter(user__first_name__icontains=q_item) | \
                 employments.filter(user__last_name__icontains=q_item)
 
+    qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, employments, 10)
 
@@ -421,5 +422,7 @@ def user_management(request):
     context['paginator'] = paginator
     context['page_range'] = page_range
     if q:
-        context['q'] = q
+        context['q_search'] = q
+    context['q'] = filter_query_string(qs)
+
     return render(request, 'myrsr/user_management.html', context)
