@@ -285,21 +285,21 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
         if not my_org_found:
             errors += [_(u'Your organisation should be somewhere here.')]
 
-        # now check that the same org isn't assigned the same partner_type more than once
-        partner_types = {}
+        # now check that the same org isn't assigned the same iati_organisation_role more than once
+        iati_organisation_roles = {}
         for form in self.forms:
-            # populate a dict with org names as keys and a list of partner_types as values
+            # populate a dict with org names as keys and a list of iati_organisation_roles as values
             try:
                 if not form.cleaned_data.get('DELETE', False):
-                    partner_types.setdefault(
+                    iati_organisation_roles.setdefault(
                         form.cleaned_data['organisation'], []
-                    ).append(form.cleaned_data['partner_type'])
+                    ).append(form.cleaned_data['iati_organisation_role'])
             except:
                 pass
-        for org, types in partner_types.items():
-            # are there duplicates in the list of partner_types?
-            if duplicates_in_list(types):
-                errors += [_(u'{} has duplicate partner types of the same kind.'.format(org))]
+        for org, roles in iati_organisation_roles.items():
+            # are there duplicates in the list of organisation roles?
+            if duplicates_in_list(roles):
+                errors += [_(u'{} has duplicate organisation roles of the same kind.'.format(org))]
 
         self._non_form_errors = ErrorList(errors)
 

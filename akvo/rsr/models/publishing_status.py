@@ -7,6 +7,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from akvo.rsr.models import Partnership
 
 from ..fields import ValidXMLCharField
 
@@ -76,7 +77,8 @@ class PublishingStatus(models.Model):
                     )
                 )
             else:
-                for funding_partner in self.project.partnerships.filter(partner_type='funding'):
+                for funding_partner in self.project.partnerships.filter(
+                        iati_organisation_role=Partnership.IATI_FUNDING_PARTNER):
                     if not funding_partner.funding_amount:
                         validation_errors.append(
                             ValidationError(_('All funding partners should have a funding amount.'),

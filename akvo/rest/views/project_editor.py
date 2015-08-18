@@ -79,7 +79,7 @@ SECTION_THREE_FIELDS = (
 
 PARTNER_FIELDS = (
     ('organisation', 'value-partner-', 'related-object'),
-    ('partner_type', 'partner-type-', 'text'),
+    ('iati_organisation_role', 'iati-organisation-role-', 'integer'),
     ('funding_amount', 'funding-amount-', 'decimal'),
 )
 

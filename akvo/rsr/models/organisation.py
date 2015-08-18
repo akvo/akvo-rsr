@@ -21,7 +21,7 @@ from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_O
 
 from .country import Country
 from .partner_site import PartnerSite
-from .partnership import Partnership
+from akvo.rsr.models import Partnership
 from .publishing_status import PublishingStatus
 
 ORG_TYPE_NGO = 'N'
@@ -177,31 +177,34 @@ class Organisation(TimestampsMixin, models.Model):
         def has_location(self):
             return self.filter(primary_location__isnull=False)
 
-        def partners(self, partner_type):
-            "return the organisations in the queryset that are partners of type partner_type"
-            return self.filter(partnerships__partner_type__exact=partner_type).distinct()
+        def partners(self, role):
+            "return the organisations in the queryset that are partners of type role"
+            return self.filter(partnerships__iati_organisation_role__exact=role).distinct()
 
         def allpartners(self):
             return self.distinct()
 
         def fieldpartners(self):
-            return self.partners(Partnership.FIELD_PARTNER)
+            return self.partners(Partnership.IATI_IMPLEMENTING_PARTNER)
 
         def fundingpartners(self):
-            return self.partners(Partnership.FUNDING_PARTNER)
+            return self.partners(Partnership.IATI_FUNDING_PARTNER)
 
         def sponsorpartners(self):
-            return self.partners(Partnership.SPONSOR_PARTNER)
+            return self.partners(Partnership.AKVO_SPONSOR_PARTNER)
 
         def supportpartners(self):
-            return self.partners(Partnership.SUPPORT_PARTNER)
+            return self.partners(Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+        def extendingpartners(self):
+            return self.partners(Partnership.IATI_EXTENDING_PARTNER)
 
         def supportpartners_with_projects(self):
             """return the organisations in the queryset that are support partners with published
             projects, not counting archived projects"""
             from .project import Project
             return self.filter(
-                partnerships__partner_type=Partnership.SUPPORT_PARTNER,
+                partnerships__partner_type=Partnership.IATI_ACCOUNTABLE_PARTNER,
                 partnerships__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED,
                 partnerships__project__status__in=[
                     Project.STATUS_ACTIVE,
@@ -304,7 +307,6 @@ class Organisation(TimestampsMixin, models.Model):
 
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
-        from .partnership import Partnership
         partner_types = []
         for ps in Partnership.objects.filter(project=project, organisation=self):
             if ps.partner_type:

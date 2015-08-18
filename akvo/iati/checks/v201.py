@@ -109,7 +109,8 @@ class V201Checks(object):
             if partnership.organisation:
                 org = partnership.organisation
                 org_name = org.long_name or org.name
-                if partnership.partner_type and (org.iati_org_id or org_name):
+                if (partnership.iati_organisation_role and
+                        partnership.iati_organisation_role < 100 and (org.iati_org_id or org_name)):
                     valid_partner = True
                 if not partnership.partner_type:
                     checks.append((u'error', u'missing role for partner %s' % org_name))

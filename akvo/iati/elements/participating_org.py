@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from lxml import etree
+from akvo.rsr.models import Partnership
 
 TYPE_TO_CODE = {
     'funding': '1',
@@ -32,9 +33,9 @@ def participating_org(project):
 
         if org.new_organisation_type:
             element.attrib['type'] = str(org.new_organisation_type)
-
-        if partnership.partner_type in TYPE_TO_CODE.keys():
-            element.attrib['role'] = TYPE_TO_CODE[partnership.partner_type]
+        # don't include old akvo sponsor partner value when checking
+        if partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:-1]:
+            element.attrib['role'] = TYPE_TO_CODE[partnership.iati_organisation_role]
 
         narrative_element = etree.SubElement(element, "narrative")
 
