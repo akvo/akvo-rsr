@@ -438,6 +438,21 @@ function submitStep(step, level) {
         form_data += '&level=' + level;
     }
 
+    // Boolean custom fields
+    var booleanCustomFields = form.getElementsByClassName('boolean-custom-field');
+    for (var q=0; q < booleanCustomFields.length; q++) {
+        var custom_field, custom_field_id;
+
+        custom_field = booleanCustomFields[q];
+        custom_field_id = custom_field.getAttribute('id');
+
+        if (custom_field.checked) {
+            form_data = form_data.replace(custom_field_id + '=on', custom_field_id + '=True');
+        } else {
+            form_data += '&' + custom_field_id + '=False';
+        }
+    }
+
     // Create request
     api_url = '/rest/v1/project/' + defaultValues.project_id + '/step_' + step + '/?format=json';
 

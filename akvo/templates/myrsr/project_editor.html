@@ -323,10 +323,26 @@
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_1 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -367,10 +383,26 @@
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_2 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -441,10 +473,26 @@
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_3 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -515,10 +563,26 @@
                                 <p class="help-block hidden">{% trans 'Describe the plans for ensuring results are maintained after implementation is complete.' %}</p>
                             </div>
                             {% for customfield in custom_fields_section_4 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -580,10 +644,26 @@
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_5 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -709,10 +789,26 @@
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_6 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}>{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -797,10 +893,26 @@
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_7 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -859,10 +971,26 @@
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_8 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %}  saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -919,10 +1047,26 @@
                                 </div>
                             </div>
                             {% for customfield in custom_fields_section_9 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
@@ -971,10 +1115,26 @@
                                 </div>
                             {% endif %}
                             {% for customfield in custom_fields_section_10 %}
-                                <div class="form-group control">
-                                    <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
-                                    <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
-                                    {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <div class="row form-group">
