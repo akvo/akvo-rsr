@@ -39,7 +39,7 @@ from .invoice import Invoice
 from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
-from akvo.rsr.models import Partnership
+from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 

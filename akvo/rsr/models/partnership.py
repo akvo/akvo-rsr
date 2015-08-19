@@ -80,8 +80,8 @@ class Partnership(models.Model):
     partner_type = ValidXMLCharField(
         _(u'partner type'), max_length=9, db_index=True, choices=PARTNER_TYPES, blank=True,
         help_text=_(u'Select the role that the organisation is taking within the project.'))
-    # iati_organisation_role = models.PositiveSmallIntegerField(
-    #     u'Organisation role', choices=IATI_ROLES, db_index=True, null=True)
+    iati_organisation_role = models.PositiveSmallIntegerField(
+        u'Organisation role', choices=IATI_ROLES, db_index=True, null=True)
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
         help_text=_(u'The funding amount of the partner.<br>'

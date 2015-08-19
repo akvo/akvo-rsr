@@ -21,7 +21,7 @@ from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_O
 
 from .country import Country
 from .partner_site import PartnerSite
-from akvo.rsr.models import Partnership
+from .partnership import Partnership
 from .publishing_status import PublishingStatus
 
 ORG_TYPE_NGO = 'N'
