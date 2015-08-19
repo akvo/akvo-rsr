@@ -42,31 +42,32 @@ class PublishingStatus(models.Model):
                                     code='subtitle')
                 )
 
-            if not self.project.project_plan_summary:
+            if self.project.status == 'N':
                 validation_errors.append(
-                    ValidationError(_('Project needs to have the project plan summary filled in.'),
-                                    code='summary')
+                    ValidationError(_('Project needs to have a status.'),
+                                    code='status')
                 )
 
-            if not self.project.goals_overview:
-                validation_errors.append(
-                    ValidationError(_('Project needs to have the goals overview field filled in.'),
-                                    code='goals_overview')
-                )
-
-            if not self.project.date_start_planned:
+            if not (self.project.date_start_planned or self.project.date_start_actual):
                 validation_errors.append(
                     ValidationError(
-                        _('Project needs to have the planned start date field filled in.'),
-                        code='goals_overview')
+                        _('Project needs to have the planned or actual start date field filled '
+                          'in.'), code='start_date')
                 )
 
-            if not self.project.partners:
+            if not self.project.current_image:
                 validation_errors.append(
-                    ValidationError(_('Project needs to have at least one valid partner.'),
-                                    code='partners')
+                    ValidationError(_('Project needs to have a photo.'),
+                                    code='current_image')
                 )
-            elif not self.project.partnerships.filter(
+
+            if not self.project.sync_owner:
+                validation_errors.append(
+                    ValidationError(_('Project needs to have a reporting organisation.'),
+                                    code='reporting_org')
+                )
+
+            if not self.project.partnerships.filter(
                     partner_type__in=['field', 'funding', 'support']
             ).exists():
                 validation_errors.append(
@@ -85,16 +86,16 @@ class PublishingStatus(models.Model):
                         )
                         break
 
-            if not self.project.sync_owner:
+            if not self.project.project_plan_summary:
                 validation_errors.append(
-                    ValidationError(_('Project needs to have a reporting organisation.'),
-                                    code='reporting_org')
+                    ValidationError(_('Project needs to have the project plan summary filled in.'),
+                                    code='summary')
                 )
 
-            if not self.project.current_image:
+            if not self.project.goals_overview:
                 validation_errors.append(
-                    ValidationError(_('Project needs to have a photo.'),
-                                    code='current_image')
+                    ValidationError(_('Project needs to have the goals overview field filled in.'),
+                                    code='goals_overview')
                 )
 
             if not self.project.locations.all():
@@ -104,7 +105,7 @@ class PublishingStatus(models.Model):
                 )
             else:
                 for location in self.project.locations.all():
-                    if not location.latitude or not location.longitude or not location.country:
+                    if not (location.latitude and location.longitude and location.country):
                         validation_errors.append(
                             ValidationError(
                                 _('All locations need to have a latitude, longitude and country '
@@ -133,10 +134,10 @@ class PublishingStatus(models.Model):
                 )
             else:
                 for sector in self.project.sectors.all():
-                    if not sector.sector_code:
+                    if not (sector.sector_code and sector.vocabulary):
                         validation_errors.append(
-                            ValidationError(_('All sectors need to have a sector code.'),
-                                            code='sector')
+                            ValidationError(_('All sectors need to have a sector code and '
+                                              'vocabulary.'), code='sector')
                         )
                         break
 
