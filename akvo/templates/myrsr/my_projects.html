@@ -108,7 +108,7 @@
     <script type="application/json" id="default-values">
         {
             "employments": [{% for employment in user.employers.all %}{{ employment.organisation.id }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-            "new_project_custom_fields": [{% for field in new_project_custom_fields %}{"name": "{{ field.name }}", "section": {{ field.section }}, "max_characters": {{ field.max_characters }}, "mandatory": {% if field.mandatory %}true{% else %}false{% endif %}, "help_text": "{{ field.help_text|linebreaksbr }}"}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            "new_project_custom_fields": [{% for field in new_project_custom_fields %}{"name": "{{ field.name }}", "type": "{{ field.type }}", "section": {{ field.section }}, "order": {{ field.order }}, "max_characters": {% if field.max_characters %}{{ field.max_characters }}{% else %}0{% endif %}, "mandatory": {% if field.mandatory %}true{% else %}false{% endif %}, "help_text": "{{ field.help_text|linebreaksbr }}"}{% if not forloop.last %}, {% endif %}{% endfor %}]
         }
     </script>
 

@@ -68,7 +68,7 @@ class OrganisationLocationInline(admin.StackedInline):
 
 class OrganisationCustomFieldInline(admin.StackedInline):
     model = get_model('rsr', 'organisationcustomfield')
-    fields = ('name', 'section', 'max_characters', 'mandatory', 'help_text')
+    fields = ('name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text')
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
