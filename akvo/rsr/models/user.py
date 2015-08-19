@@ -354,6 +354,22 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return self.employers.all().exclude(is_approved=False)
 
+    def has_reportable_org(self):
+        """
+        Check to see if the user has at least one reportable organisation, or is a superuser.
+
+        :return: Boolean to indicate whether the user has a reportable organisation
+        """
+        if self.is_superuser or self.is_admin:
+            return True
+
+        for employment in self.approved_employments():
+            if employment.organisation.can_become_reporting:
+                return True
+
+        return False
+
+
     def employments_dict(self, org_list):
         """
         Represent User as dict with employments.

@@ -76,6 +76,10 @@ img {
     }
 }
 
+time {
+    color: $flowOrange;
+}
+
 em {
     font-family: $scriptFont;
     font-size: 1.2em;
@@ -269,7 +273,6 @@ dl {
 label {
     color: $rsrGreen;
     font-weight: normal;
-    @include noWrapTxt;
 }
 
 /****************************************************************************
@@ -608,6 +611,40 @@ nav.navbar-fixed-top {
 
 div.paginationWrap {
     clear: both;
+}
+
+.help-block {
+    font-size: 0.9em;
+    color: rgba($akvoPurple, 0.5);
+}
+
+.help-block-error {
+    @extend .help-block;
+    color: #a94442;
+}
+
+.charsLeft {
+    @extend .help-block;
+}
+
+.save-success {
+    @extend .help-block;
+    color: rgba($progressSuccess, 1);
+}
+
+.editDate {
+    font-style: italic;
+    padding: 10px 0 10px 15px;
+    margin-bottom: 15px;
+    span {
+        color: rgba($akvoBlack, 0.3);
+    }
+    span.published {
+        color: $progressSuccess;
+    }
+    span.notPublished {
+        color: $secondary2;
+    }
 }
 
 #profile {
@@ -1670,31 +1707,36 @@ div.textBlock {
     }
 }
 
-/* Project Directory Typeahead Styling */
+/* Typeahead Styling */
+
+ul.typeahead-selector {
+    margin: 0;
+    padding: 0.25em;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    background-color: #fff;
+    list-style: none;
+    @include border-radius(4px);
+    li {
+        padding-left: 6px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        &:hover,
+        &.hover {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        a {
+            color: rgb(85, 85, 85);
+        }
+    }
+}
+
 #filterForm {
     #org-filter-container {
-        ul.typeahead-selector {
+        ul.typeahead-container {
             margin: -15px 0 0 0;
-            padding: 0.25em;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            border-left: 1px solid #ccc;
-            background-color: #fff;
-            list-style: none;
-            @include border-radius(4px);
-            li {
-                padding-left: 6px;
-                padding-top: 4px;
-                padding-bottom: 4px;
-                &:hover,
-                &.hover {
-                    font-weight: bold;
-                    cursor: pointer;
-                }
-                a {
-                    color: rgb(85, 85, 85);
-                }
-            }
         }
     }
 }
@@ -1705,7 +1747,7 @@ div.textBlock {
         background: rgba($akvoBlack, 0.05);
     }
     .orgDescr {
-        background-color: rgba(lighten($akvoTvRed, 15%), 0.1);
+        background-color: rgba(lighten($akvoTvRed, 15%), 0);
         p {
             padding-left: 20px;
         }
@@ -2017,6 +2059,17 @@ dd {
     white-space: pre-line;
 }
 
+a.addUpdateBtn {
+  margin-top: 10px;
+  color: white;
+  background-color: $rsrGreen;
+  border-color: $rsrGreen;
+  &:hover {
+    background-color: $anchorLinkHover;
+    border-color: $anchorLinkHover;
+  }
+}
+
 /* Google translation bar styles */
 
 body {
@@ -2060,5 +2113,326 @@ body {
         a {
             font-weight: bold;
         }
+    }
+}
+
+/* Project Admin */
+
+.progress {
+    .progress-bar {
+        &[data-completion='empty'] {
+            background: rgba($progressWarning, 1);
+        }
+        &[data-completion='incomplete'] {
+            background: rgba($progressNot, 1);
+        }
+        &[data-completion='complete'] {
+            background: rgba($progressSuccess, 1);
+        }        
+        .progress-percentage {
+            display: none;
+        }
+    }
+}
+.formOverviewInfo {
+    .progress {
+        .progress-bar {
+            .progress-percentage {
+                display: initial;
+            }
+        }
+    }
+    .info-icon {
+        padding-left: 0.5em;
+        cursor: pointer;
+        cursor: hand;
+        color: $akvoPurple;
+
+        &.activated {
+            color: rgba(44, 42, 116, 0.3);
+        }
+    }
+}
+.formOverviewInfo {
+    border: 1px solid rgba(52, 52, 56, 0.1);
+    padding: 20px;
+    margin-bottom: 15px;
+    @include border-radius(5px);
+}
+
+.projectEdit {
+    h2 {
+        font-weight: normal;
+        text-transform: uppercase;
+        font-size: 1.5em;
+        display: block;
+    }
+    .myPanel {
+        overflow: hidden;
+        cursor: pointer;
+        line-height: 25px;
+        position: relative;
+        .formBlock {
+            width: 99%;
+            height: 0;
+            display: block;
+            overflow: hidden;
+            box-sizing: border-box;
+            transition: all .5s linear;
+            padding: 5px 15px;
+            margin: 0 auto;
+            @include border-radius(5px);
+        }
+        input[type='radio']:checked ~ .formBlock {
+            height: auto;
+            overflow: auto;
+            background: rgba($lightOrange, 0);
+            box-shadow: 0 0 15px rgba($akvoPurple, 0.2);
+        }
+    }
+    input[type='radio'] {
+        display: none;
+    }
+    .formStep {
+        position: relative;
+        & > div > label {
+            @include border-radius(5px);
+            display: block;
+            width: 100%;
+            cursor: pointer;
+            top: initial;
+            padding: 5px 5px 5px 15px;
+            transition: background 0.1s linear;
+            background: rgba($akvoPurple, 0.1);
+            &:hover {
+                background: rgba($akvoBlack, 0.05);
+            }
+        }
+        .progress {
+            position: absolute;
+            width: 30%;
+            top: 15px;
+            right: 5px;
+        }
+        form {
+            padding-top: 10px;
+        }
+        span.tab {
+            padding-left:5em;
+        }
+    }
+    .borderBottom {
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba($akvoPurple, 0);
+        &.myPanel {}
+    }
+    $padding: 10px;
+    $label-font-size: 13px;
+    *,
+    *:before,
+    *:after {
+        box-sizing: border-box;
+    }
+    .control {
+        position: relative;
+        padding-top: $padding + $label-font-size;
+        padding-bottom: $padding;
+        // you proably want to replace these with your grid classes
+        &.small {
+            width: 30%;
+        }
+        &.medium {
+            width: 70%;
+            padding-left: $padding;
+        }
+        &:last-child {
+            border: 0;
+        }
+    }
+    .control-label {
+        min-width: 90%;
+    }
+    a {
+        &.btn {
+            margin-top: 23px;
+            &.btn-link {
+                margin-top: 0;
+            }
+        }
+    }
+    .col-md-4 a.btn.btn-link, .col-md-3 a.btn.btn-link {
+        margin-top: 23px;
+    }
+    .add-object-link {
+        top: 8px;
+    }
+    hr {
+        border: none;
+        height: 1px;
+        color: rgba($akvoPurple, 0.3); /* old IE */
+        background-color: rgba($akvoPurple, 0.3); /* Modern Browsers */
+    }
+    input, textarea, select {
+        & + label,
+        & + span + label,
+        & + ul + label {
+            position: absolute;
+            top: 10px;
+            transition: top 0.7s ease, opacity 0.7s ease;
+            opacity: 0;
+            // Some nice styling
+            font-size: $label-font-size;
+            font-weight: 600;
+        }
+        &:valid + label,
+        &:valid + span + label,
+        &:valid + ul + label {
+            opacity: 1;
+            top: 0px;
+        }
+        &:focus + label,
+        &:focus + span + label,
+        &:focus + ul + label {
+            color: $rsrBlue;
+        }
+    }
+    div.input-group {
+        & + label,
+        & + span + label,
+        & + ul + label {
+            position: absolute;
+            top: 0px;
+            transition: top 0.7s ease, opacity 0.7s ease;
+            opacity: 1;
+            // Some nice styling
+            font-size: $label-font-size;
+            font-weight: 600;
+        }
+    }
+    .delete-object-button {
+        color: $progressWarning;
+    }
+    .delete-photo-button {
+        color: $progressWarning;
+    }
+    .delete-document-button {
+        color: $progressWarning;
+    }
+    .info-icon {
+        padding-left: 0.5em;
+        cursor: pointer;
+        cursor: hand;
+        font-size: 120%;
+
+        &.activated {
+            color: rgba(44, 42, 116, 0.3);
+        }
+    }
+    .mandatory {
+        color: $progressWarning;
+        font-size: 125%;
+        margin-left: 4px;
+        margin-right: -4px;
+    }
+    label.progress-bar {
+            &[aria-valuenow="0"] {
+                background: rgba($progressWarning, 1);
+                color: $progressWarning;
+            }
+            &[aria-valuenow="10"] {
+                background: rgba($progressWarning, 1);
+                color: white;
+            }
+            &[aria-valuenow="20"] {
+                background: rgba($progressWarning, 1);
+                color: white;
+            }
+            &[aria-valuenow="30"] {
+                background: rgba($progressWarning, 1);
+                color: white;
+            }
+            &[aria-valuenow="40"] {
+                background: rgba($progressNot, 1);
+                color: white;
+            }
+            &[aria-valuenow="50"] {
+                background: rgba($progressNot, 1);
+                color: white;
+            }
+            &[aria-valuenow="60"] {
+                background: rgba($progressNot, 1);
+                color: white;
+            }
+            &[aria-valuenow="70"] {
+                background: rgba($progressSuccess, 1);
+                color: white;
+            }
+            &[aria-valuenow="80"] {
+                background: rgba($progressSuccess, 1);
+                color: white;
+            }
+            &[aria-valuenow="90"] {
+                background: rgba($progressSuccess, 1);
+                color: white;
+            }
+            &[aria-valuenow="100"] {
+                background: rgba($progressSuccess, 1);
+                color: white;
+            }
+        }
+    div.parent {
+        background: rgba($progressNot, 0.15);
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        display: block;
+        width: 100%;
+        cursor: pointer;
+        top: initial;
+        padding: 5px 15px 5px 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        transition: background 0.1s linear;
+    }
+    div.partial-header {
+        font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: normal;
+        color: #2c2a74;
+        font-size: 12px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+}
+
+.legenda {
+    border: 1px solid rgba($akvoPurple, 0.5);
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 15px 5px 15px;
+    margin: 15px 15px 15px 15px;
+
+    .redLegenda {
+        background: $progressWarning;
+        color: $progressWarning;
+    }
+    .orangeLegenda {
+        background: $progressNot;
+        color: $progressNot;
+    }
+    .greenLegenda {
+        background: $progressSuccess;
+        color: $progressSuccess;
+    }
+    .mandatory {
+        color: $progressWarning;
+    }
+}
+
+.info-icon {
+    padding-left: 0.5em;
+    cursor: pointer;
+    cursor: hand;
+
+    &.activated {
+        color: rgba(44, 42, 116, 0.3);
     }
 }

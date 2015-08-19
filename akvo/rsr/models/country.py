@@ -60,6 +60,17 @@ class RecipientCountry(models.Model):
         _(u'country description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)')
     )
 
+    def __unicode__(self):
+        if self.country:
+            country_unicode = self.iati_country().name
+        else:
+            country_unicode = u'%s' % _(u'No country specified')
+
+        if self.percentage:
+            country_unicode += u' (%s%%)' % str(self.percentage)
+
+        return country_unicode
+
     def iati_country(self):
         return codelist_value(codelist_models.Country, self, 'country')
 

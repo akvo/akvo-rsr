@@ -63,6 +63,10 @@ $secondary9: rgb(74, 177, 207);
 
 $lightOrange: rgb(253,242,232);
 
+$progressSuccess: #5cb85c;
+$progressNot: #f0ad4e;
+$progressWarning: #d9534f;
+
 $bodyFont: 'Open Sans', 'Source Sans Pro',  "Helvetica Neue", Helvetica, Arial, sans-serif;
 $scriptFont: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
 $titleFont:  'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -159,6 +163,8 @@ $width-large:  1200px;
 
 }
 
+
+
 /* Placeholder
   ========================================================================== */
 
@@ -237,4 +243,39 @@ $width-large:  1200px;
   -ms-animation: #{$str};
   -o-animation: #{$str};
   animation: #{$str};      
+}
+
+$default-transition-property: all !default;
+$default-transition-duration: 1s !default;
+$default-transition-function: null !default;
+$default-transition-delay: null !default;
+$transitionable-prefixed-values: transform, transform-origin !default;
+
+@mixin transition-property($properties...) {
+  $properties: set-arglist-default($properties, $default-transition-property);
+  @include with-each-prefix(css-transitions, $transition-support-threshold) {
+    $props: if($current-prefix, prefixed-for-transition($current-prefix, $properties), $properties);
+    @include prefix-prop(transition-property, $props);
+  }
+}
+
+@mixin transition-duration($durations...) {
+  $durations: set-arglist-default($durations, $default-transition-duration);
+  @include prefixed-properties(css-transitions, $transition-support-threshold, (
+    transition-duration: $durations
+  ));
+}
+
+@mixin transition-timing-function($functions...) {
+  $functions: set-arglist-default($functions, $default-transition-function);
+  @include prefixed-properties(css-transitions, $transition-support-threshold, (
+    transition-timing-function: $functions
+  ));
+}
+
+@mixin transition-delay($delays...) {
+  $delays: set-arglist-default($delays, $default-transition-delay);
+  @include prefixed-properties(css-transitions, $transition-support-threshold, (
+    transition-delay: $delays
+  ));
 }

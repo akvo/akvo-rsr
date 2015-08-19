@@ -26,7 +26,7 @@ class RelatedProject(models.Model):
                     u'Fill this in if the related project does not exist in RSR')
     )
     relation = ValidXMLCharField(
-        _(u'relation'), max_length=1, choices=codelist_choices(RELATED_ACTIVITY_TYPE),
+        _(u'relation'), max_length=1, choices=codelist_choices(RELATED_ACTIVITY_TYPE), blank=True,
         help_text=_(u'The relation between a project and related project. '
                     u'(E.g. select the \'Parent\' relation when the selected project here is '
                     u'the parent of this project).')
@@ -40,3 +40,10 @@ class RelatedProject(models.Model):
         verbose_name = _(u'related project')
         verbose_name_plural = _(u'related projects')
         ordering = ['project', ]
+
+    def __unicode__(self):
+        if self.related_project:
+            return self.related_project.title
+        elif self.related_iati_id:
+            return self.related_iati_id
+        return u'%s' % _(u'No related project specified')

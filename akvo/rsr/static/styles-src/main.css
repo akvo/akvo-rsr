@@ -91,6 +91,9 @@ img {
   .noStyleUl li {
     padding: 0; }
 
+time {
+  color: #de8929; }
+
 em {
   font-family: 'Baskerville', "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 1.2em;
@@ -248,10 +251,7 @@ dl.dl-horizontal.org_statistics_table dd {
 
 label {
   color: #00a79d;
-  font-weight: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; }
+  font-weight: normal; }
 
 /****************************************************************************
                                 HEADER + NAVIGATION
@@ -541,6 +541,27 @@ nav.navbar-fixed-top {
 
 div.paginationWrap {
   clear: both; }
+
+.help-block, .help-block-error, .charsLeft, .save-success {
+  font-size: 0.9em;
+  color: rgba(44, 42, 116, 0.5); }
+
+.help-block-error {
+  color: #a94442; }
+
+.save-success {
+  color: #5cb85c; }
+
+.editDate {
+  font-style: italic;
+  padding: 10px 0 10px 15px;
+  margin-bottom: 15px; }
+  .editDate span {
+    color: rgba(32, 32, 36, 0.3); }
+  .editDate span.published {
+    color: #5cb85c; }
+  .editDate span.notPublished {
+    color: #e31b23; }
 
 #profile .usrAvatar {
   background-color: rgba(32, 32, 36, 0);
@@ -1364,9 +1385,9 @@ div.textBlock {
     .tooltip .tooltip-inner a {
       font-weight: bold; }
 
-/* Project Directory Typeahead Styling */
-#filterForm #org-filter-container ul.typeahead-selector {
-  margin: -15px 0 0 0;
+/* Typeahead Styling */
+ul.typeahead-selector {
+  margin: 0;
   padding: 0.25em;
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
@@ -1377,21 +1398,24 @@ div.textBlock {
   -o-border-radius: 4px;
   -webkit-border-radius: 4px;
   border-radius: 4px; }
-  #filterForm #org-filter-container ul.typeahead-selector li {
+  ul.typeahead-selector li {
     padding-left: 6px;
     padding-top: 4px;
     padding-bottom: 4px; }
-    #filterForm #org-filter-container ul.typeahead-selector li:hover, #filterForm #org-filter-container ul.typeahead-selector li.hover {
+    ul.typeahead-selector li:hover, ul.typeahead-selector li.hover {
       font-weight: bold;
       cursor: pointer; }
-    #filterForm #org-filter-container ul.typeahead-selector li a {
+    ul.typeahead-selector li a {
       color: #555555; }
+
+#filterForm #org-filter-container ul.typeahead-container {
+  margin: -15px 0 0 0; }
 
 /* Organisation Page */
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
 .organisationDetail .orgDescr {
-  background-color: rgba(244, 116, 107, 0.1); }
+  background-color: rgba(244, 116, 107, 0); }
   .organisationDetail .orgDescr p {
     padding-left: 20px; }
 .organisationDetail h1 {
@@ -1597,6 +1621,15 @@ dd.currencyAmount {
 .updateText {
   white-space: pre-line; }
 
+a.addUpdateBtn {
+  margin-top: 10px;
+  color: white;
+  background-color: #00a79d;
+  border-color: #00a79d; }
+  a.addUpdateBtn:hover {
+    background-color: #ff5500;
+    border-color: #ff5500; }
+
 /* Google translation bar styles */
 body.translationBarActive .nav {
   padding-top: 39px; }
@@ -1626,3 +1659,235 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     font-size: 1.1em; }
     #cookie-law p a {
       font-weight: bold; }
+
+/* Project Admin */
+.progress .progress-bar[data-completion='empty'] {
+  background: #d9534f; }
+.progress .progress-bar[data-completion='incomplete'] {
+  background: #f0ad4e; }
+.progress .progress-bar[data-completion='complete'] {
+  background: #5cb85c; }
+.progress .progress-bar .progress-percentage {
+  display: none; }
+
+.formOverviewInfo .progress .progress-bar .progress-percentage {
+  display: initial; }
+.formOverviewInfo .info-icon {
+  padding-left: 0.5em;
+  cursor: pointer;
+  cursor: hand;
+  color: #2c2a74; }
+  .formOverviewInfo .info-icon.activated {
+    color: rgba(44, 42, 116, 0.3); }
+
+.formOverviewInfo {
+  border: 1px solid rgba(52, 52, 56, 0.1);
+  padding: 20px;
+  margin-bottom: 15px;
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; }
+
+.projectEdit h2 {
+  font-weight: normal;
+  text-transform: uppercase;
+  font-size: 1.5em;
+  display: block; }
+.projectEdit .myPanel {
+  overflow: hidden;
+  cursor: pointer;
+  line-height: 25px;
+  position: relative; }
+  .projectEdit .myPanel .formBlock {
+    width: 99%;
+    height: 0;
+    display: block;
+    overflow: hidden;
+    box-sizing: border-box;
+    transition: all .5s linear;
+    padding: 5px 15px;
+    margin: 0 auto;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
+  .projectEdit .myPanel input[type='radio']:checked ~ .formBlock {
+    height: auto;
+    overflow: auto;
+    background: rgba(253, 242, 232, 0);
+    box-shadow: 0 0 15px rgba(44, 42, 116, 0.2); }
+.projectEdit input[type='radio'] {
+  display: none; }
+.projectEdit .formStep {
+  position: relative; }
+  .projectEdit .formStep > div > label {
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    top: initial;
+    padding: 5px 5px 5px 15px;
+    transition: background 0.1s linear;
+    background: rgba(44, 42, 116, 0.1); }
+    .projectEdit .formStep > div > label:hover {
+      background: rgba(32, 32, 36, 0.05); }
+  .projectEdit .formStep .progress {
+    position: absolute;
+    width: 30%;
+    top: 15px;
+    right: 5px; }
+  .projectEdit .formStep form {
+    padding-top: 10px; }
+  .projectEdit .formStep span.tab {
+    padding-left: 5em; }
+.projectEdit .borderBottom {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(44, 42, 116, 0); }
+.projectEdit *, .projectEdit *:before, .projectEdit *:after {
+  box-sizing: border-box; }
+.projectEdit .control {
+  position: relative;
+  padding-top: 23px;
+  padding-bottom: 10px; }
+  .projectEdit .control.small {
+    width: 30%; }
+  .projectEdit .control.medium {
+    width: 70%;
+    padding-left: 10px; }
+  .projectEdit .control:last-child {
+    border: 0; }
+.projectEdit .control-label {
+  min-width: 90%; }
+.projectEdit a.btn {
+  margin-top: 23px; }
+  .projectEdit a.btn.btn-link {
+    margin-top: 0; }
+.projectEdit .col-md-4 a.btn.btn-link, .projectEdit .col-md-3 a.btn.btn-link {
+  margin-top: 23px; }
+.projectEdit .add-object-link {
+  top: 8px; }
+.projectEdit hr {
+  border: none;
+  height: 1px;
+  color: rgba(44, 42, 116, 0.3);
+  /* old IE */
+  background-color: rgba(44, 42, 116, 0.3);
+  /* Modern Browsers */ }
+.projectEdit input + label, .projectEdit input + span + label, .projectEdit input + ul + label, .projectEdit textarea + label, .projectEdit textarea + span + label, .projectEdit textarea + ul + label, .projectEdit select + label, .projectEdit select + span + label, .projectEdit select + ul + label {
+  position: absolute;
+  top: 10px;
+  transition: top 0.7s ease, opacity 0.7s ease;
+  opacity: 0;
+  font-size: 13px;
+  font-weight: 600; }
+.projectEdit input:valid + label, .projectEdit input:valid + span + label, .projectEdit input:valid + ul + label, .projectEdit textarea:valid + label, .projectEdit textarea:valid + span + label, .projectEdit textarea:valid + ul + label, .projectEdit select:valid + label, .projectEdit select:valid + span + label, .projectEdit select:valid + ul + label {
+  opacity: 1;
+  top: 0px; }
+.projectEdit input:focus + label, .projectEdit input:focus + span + label, .projectEdit input:focus + ul + label, .projectEdit textarea:focus + label, .projectEdit textarea:focus + span + label, .projectEdit textarea:focus + ul + label, .projectEdit select:focus + label, .projectEdit select:focus + span + label, .projectEdit select:focus + ul + label {
+  color: #2c2a74; }
+.projectEdit div.input-group + label, .projectEdit div.input-group + span + label, .projectEdit div.input-group + ul + label {
+  position: absolute;
+  top: 0px;
+  transition: top 0.7s ease, opacity 0.7s ease;
+  opacity: 1;
+  font-size: 13px;
+  font-weight: 600; }
+.projectEdit .delete-object-button {
+  color: #d9534f; }
+.projectEdit .delete-photo-button {
+  color: #d9534f; }
+.projectEdit .delete-document-button {
+  color: #d9534f; }
+.projectEdit .info-icon {
+  padding-left: 0.5em;
+  cursor: pointer;
+  cursor: hand;
+  font-size: 120%; }
+  .projectEdit .info-icon.activated {
+    color: rgba(44, 42, 116, 0.3); }
+.projectEdit .mandatory {
+  color: #d9534f;
+  font-size: 125%;
+  margin-left: 4px;
+  margin-right: -4px; }
+.projectEdit label.progress-bar[aria-valuenow="0"] {
+  background: #d9534f;
+  color: #d9534f; }
+.projectEdit label.progress-bar[aria-valuenow="10"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="20"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="30"] {
+  background: #d9534f;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="40"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="50"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="60"] {
+  background: #f0ad4e;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="70"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="80"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="90"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit label.progress-bar[aria-valuenow="100"] {
+  background: #5cb85c;
+  color: white; }
+.projectEdit div.parent {
+  background: rgba(240, 173, 78, 0.15);
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  top: initial;
+  padding: 5px 15px 5px 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: background 0.1s linear; }
+.projectEdit div.partial-header {
+  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  color: #2c2a74;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+.legenda {
+  border: 1px solid rgba(44, 42, 116, 0.5);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px 15px 5px 15px;
+  margin: 15px 15px 15px 15px; }
+  .legenda .redLegenda {
+    background: #d9534f;
+    color: #d9534f; }
+  .legenda .orangeLegenda {
+    background: #f0ad4e;
+    color: #f0ad4e; }
+  .legenda .greenLegenda {
+    background: #5cb85c;
+    color: #5cb85c; }
+  .legenda .mandatory {
+    color: #d9534f; }
+
+.info-icon {
+  padding-left: 0.5em;
+  cursor: pointer;
+  cursor: hand; }
+  .info-icon.activated {
+    color: rgba(44, 42, 116, 0.3); }
