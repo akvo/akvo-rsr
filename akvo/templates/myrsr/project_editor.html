@@ -187,34 +187,46 @@
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 control priority1 datepicker-container"
-                                         data-id="eventFromPlanned"
-                                         data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
-                                         data-label="{% trans 'Start date (planned)' %}"
-                                         data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
-                                         data-classes="priority1"></div>
-                                    <div class="col-md-6 control datepicker-container"
-                                         data-id="eventEndPlanned"
-                                         data-child="{{ project.date_end_planned|date:"d/m/Y" }}"
-                                         data-label="{% trans 'End date (planned)' %}"
-                                         data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"
-                                         data-classes="priority2"></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control datepicker-container"
-                                         data-id="eventFromActual"
-                                         data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
-                                         data-label="{% trans 'Start date (actual)' %}"
-                                         data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
-                                         data-classes="priority2"></div>
-                                    <div class="col-md-6 control datepicker-container"
-                                         data-id="eventEndActual"
-                                         data-child="{{ project.date_end_actual|date:"d/m/Y" }}"
-                                         data-label="{% trans 'End date (actual)' %}"
-                                         data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"
-                                         data-classes="priority2"></div>
+                                    <div class="col-md-6">
+                                        <div class="control datepicker-container {% if project.date_start_actual %}hidden{% endif %}"
+                                             id="planned-start-date-container"
+                                             data-id="eventFromPlanned"
+                                             data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
+                                             data-label="{% trans 'Start date (planned)' %}"
+                                             data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority{% if not project.date_start_actual %}1{% else %}2{% endif %}"></div>
+                                        <div class="control datepicker-container {% if not project.date_start_actual %}hidden{% endif %}"
+                                             id="actual-start-date-container"
+                                             data-id="eventFromActual"
+                                             data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
+                                             data-label="{% trans 'Start date (actual)' %}"
+                                             data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority{% if project.date_start_actual %}1{% else %}2{% endif %}"></div>
+                                        <p>
+                                            <input type="checkbox" id="start-date-toggle" {% if project.date_start_actual %}checked{% endif %} onchange="toggleStartDate(this)">
+                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual start date' %}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="control datepicker-container {% if project.date_end_actual %}hidden{% endif %}"
+                                             id="planned-end-date-container"
+                                             data-id="eventEndPlanned"
+                                             data-child="{{ project.date_end_planned|date:"d/m/Y" }}"
+                                             data-label="{% trans 'End date (planned)' %}"
+                                             data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority2"></div>
+                                        <div class="control datepicker-container {% if not project.date_end_actual %}hidden{% endif %}"
+                                             id="actual-end-date-container"
+                                             data-id="eventEndActual"
+                                             data-child="{{ project.date_end_actual|date:"d/m/Y" }}"
+                                             data-label="{% trans 'End date (actual)' %}"
+                                             data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority2"></div>
+                                        <p>
+                                            <input type="checkbox" id="end-date-toggle" {% if project.date_end_actual %}checked{% endif %} onchange="toggleEndDate(this)">
+                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual end date' %}</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1223,7 +1235,7 @@
                 fundingInputNode.className += ' priority1';
 
                 labelNode = fundingNode.getElementsByTagName('label')[0];
-                labelNode.innerHTML = labelNode.innerHTML.replace('Funding amount', 'Funding amount<span class="mandatory">*</span>')
+                labelNode.innerHTML = labelNode.innerHTML.replace('Funding amount', 'Funding amount<span class="mandatory">*</span>');
             } else {
                 fundingInputNode.value = '';
                 fundingInputNode.setAttribute('disabled', '');
@@ -1369,20 +1381,20 @@
             if (node.checked) {
                 // User wants to upload document
                 if (documentUrl.className.indexOf('hidden') === -1) {
-                    documentUrl.className += ' hidden'
+                    documentUrl.className += ' hidden';
                 }
 
                 if (documentUpload.className.indexOf('hidden') > -1) {
-                    documentUpload.className = documentUpload.className.replace('hidden', '')
+                    documentUpload.className = documentUpload.className.replace('hidden', '');
                 }
             } else {
                 // User wants to indicate URL
                 if (documentUpload.className.indexOf('hidden') === -1) {
-                    documentUpload.className += ' hidden'
+                    documentUpload.className += ' hidden';
                 }
 
                 if (documentUrl.className.indexOf('hidden') > -1) {
-                    documentUrl.className = documentUrl.className.replace('hidden', '')
+                    documentUrl.className = documentUrl.className.replace('hidden', '');
                 }
             }
         }
@@ -1397,6 +1409,78 @@
             } else {
                 node.className = node.className.replace('activated', '');
                 helpText.className += ' hidden';
+            }
+        }
+
+        function toggleStartDate(node) {
+            var startDateActual, startDatePlanned, startDateActualInput, startDatePlannedInput, startDateActualLabel, startDatePlannedLabel, mandatoryNode;
+
+            startDateActual = document.getElementById('actual-start-date-container');
+            startDatePlanned = document.getElementById('planned-start-date-container');
+            startDateActualInput = startDateActual.getElementsByTagName('input')[0];
+            startDatePlannedInput = startDatePlanned.getElementsByTagName('input')[0];
+            startDateActualLabel = startDateActual.getElementsByTagName('label')[0];
+            startDatePlannedLabel = startDatePlanned.getElementsByTagName('label')[0];
+
+            mandatoryNode = document.createElement('span');
+            mandatoryNode.className = 'mandatory';
+            mandatoryNode.innerHTML= '*';
+
+            if (node.checked) {
+                // Show actual start date, as mandatory field
+                if (startDatePlanned.className.indexOf('hidden') === -1) {
+                    startDatePlanned.className += ' hidden';
+                    startDatePlannedInput.className = startDatePlannedInput.className.replace('priority1', 'priority2');
+                }
+
+                if (startDateActual.className.indexOf('hidden') > -1) {
+                    startDateActual.className = startDateActual.className.replace('hidden', '');
+                    startDateActualInput.className = startDateActualInput.className.replace('priority2', 'priority1');
+                }
+
+                startDateActualLabel.insertBefore(mandatoryNode, startDateActualLabel.getElementsByTagName('span')[0]);
+                startDatePlannedLabel.innerHTML = startDatePlannedLabel.innerHTML.replace('<span class="mandatory">*</span>', '')
+            } else {
+                // Show planned start date, as mandatory field
+                if (startDateActual.className.indexOf('hidden') === -1) {
+                    startDateActual.className += ' hidden';
+                    startDateActualInput.className = startDateActualInput.className.replace('priority1', 'priority2');
+                }
+
+                if (startDatePlanned.className.indexOf('hidden') > -1) {
+                    startDatePlanned.className = startDatePlanned.className.replace('hidden', '');
+                    startDatePlannedInput.className = startDatePlannedInput.className.replace('priority2', 'priority1');
+                }
+
+                startDatePlannedLabel.insertBefore(mandatoryNode, startDatePlannedLabel.getElementsByTagName('span')[0]);
+                startDateActualLabel.innerHTML = startDateActualLabel.innerHTML.replace('<span class="mandatory">*</span>', '')
+            }
+        }
+
+        function toggleEndDate(node) {
+            var endDateActual, endDatePlanned;
+
+            endDateActual = document.getElementById('actual-end-date-container');
+            endDatePlanned = document.getElementById('planned-end-date-container');
+
+            if (node.checked) {
+                // Show actual end date
+                if (endDatePlanned.className.indexOf('hidden') === -1) {
+                    endDatePlanned.className += ' hidden';
+                }
+
+                if (endDateActual.className.indexOf('hidden') > -1) {
+                    endDateActual.className = endDateActual.className.replace('hidden', '');
+                }
+            } else {
+                // Show planned end date
+                if (endDateActual.className.indexOf('hidden') === -1) {
+                    endDateActual.className += ' hidden';
+                }
+
+                if (endDatePlanned.className.indexOf('hidden') > -1) {
+                    endDatePlanned.className = endDatePlanned.className.replace('hidden', '');
+                }
             }
         }
     </script>
