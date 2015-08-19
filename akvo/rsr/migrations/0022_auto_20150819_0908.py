@@ -36,4 +36,16 @@ class Migration(migrations.Migration):
             field=akvo.rsr.fields.ValidXMLCharField(default=b'text', help_text='Select the type of custom field. Text will show a text area in the project editor, and checkbox will show a checkbox.', max_length=20, verbose_name='type', choices=[(b'text', 'Text'), (b'boolean', 'Checkbox')]),
             preserve_default=True,
         ),
+        migrations.AlterField(
+            model_name='organisationcustomfield',
+            name='max_characters',
+            field=models.IntegerField(help_text='Set the maximum amount of characters that the user is allowed to fill in. Leave empty or fill in 0 if there is no character limit.', null=True, verbose_name='maximum characters', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='projectcustomfield',
+            name='max_characters',
+            field=models.IntegerField(help_text='Set the maximum amount of characters that the user is allowed to fill in. Leave empty or fill in 0 if there is no character limit.', null=True, verbose_name='maximum characters', blank=True),
+            preserve_default=True,
+        ),
     ]

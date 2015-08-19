@@ -50,10 +50,9 @@ class ProjectCustomField(models.Model):
         help_text=_(u'Select the section of the admin where the custom field should be displayed')
     )
     max_characters = models.IntegerField(
-        _(u'maximum characters'),
+        _(u'maximum characters'), blank=True, null=True,
         help_text=_(u'Set the maximum amount of characters that the user is allowed to fill in. '
-                    u'This needs to be a positive number, unless there is no character limit, '
-                    u'then use 0.')
+                    u'Leave empty or fill in 0 if there is no character limit.')
     )
     help_text = ValidXMLTextField(
         _(u'help text'), max_length=1000, blank=True,
@@ -73,6 +72,9 @@ class ProjectCustomField(models.Model):
         help_text=_(u'Select the type of custom field. Text will show a text area in the project '
                     u'editor, and checkbox will show a checkbox.')
     )
+
+    def __unicode__(self):
+        return u'%s' % str(self.value)
 
 
 class OrganisationCustomField(models.Model):
@@ -118,10 +120,9 @@ class OrganisationCustomField(models.Model):
         help_text=_(u'Select the section of the admin where the custom field should be displayed')
     )
     max_characters = models.IntegerField(
-        _(u'maximum characters'),
+        _(u'maximum characters'), blank=True, null=True,
         help_text=_(u'Set the maximum amount of characters that the user is allowed to fill in. '
-                    u'This needs to be a positive number, unless there is no character limit, '
-                    u'then use 0.')
+                    u'Leave empty or fill in 0 if there is no character limit.')
     )
     help_text = ValidXMLTextField(
         _(u'help text'), max_length=1000, blank=True,
