@@ -38,6 +38,11 @@ class ProjectCustomField(models.Model):
         (10, _(u'10 - Project comments')),
     )
 
+    TYPES = (
+        ('text', _(u'Text')),
+        ('boolean', _(u'Checkbox')),
+    )
+
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='custom_fields')
     name = ValidXMLCharField(_(u'name'), max_length=255, help_text=_(u'(max 255 characters)'))
     section = models.IntegerField(
@@ -58,6 +63,16 @@ class ProjectCustomField(models.Model):
     value = ValidXMLTextField(_(u'value'), blank=True)
     mandatory = models.BooleanField(_(u'mandatory'), default=False,
                                     help_text=_(u'Indicate whether this field is mandatory or not'))
+    order = models.PositiveSmallIntegerField(
+        _(u'order'), help_text=_(u'The order of the fields as they will be displayed in the '
+                                 u'project editor. Must be a positive number, and the lowest '
+                                 u'number will be shown on top.')
+    )
+    type = ValidXMLCharField(
+        _(u'type'), max_length=20, choices=TYPES, default='text',
+        help_text=_(u'Select the type of custom field. Text will show a text area in the project '
+                    u'editor, and checkbox will show a checkbox.')
+    )
 
 
 class OrganisationCustomField(models.Model):
@@ -89,6 +104,11 @@ class OrganisationCustomField(models.Model):
         (10, _(u'10 - Project comments')),
     )
 
+    TYPES = (
+        ('text', _(u'Text')),
+        ('boolean', _(u'Checkbox')),
+    )
+
     organisation = models.ForeignKey(
         'Organisation', verbose_name=_(u'organisation'), related_name='custom_fields'
     )
@@ -110,3 +130,13 @@ class OrganisationCustomField(models.Model):
     )
     mandatory = models.BooleanField(_(u'mandatory'), default=False,
                                     help_text=_(u'Indicate whether this field is mandatory or not'))
+    order = models.PositiveSmallIntegerField(
+        _(u'order'), help_text=_(u'The order of the fields as they will be displayed in the '
+                                 u'project editor. Must be a positive number, and the lowest '
+                                 u'number will be shown on top.')
+    )
+    type = ValidXMLCharField(
+        _(u'type'), max_length=20, choices=TYPES, default='text',
+        help_text=_(u'Select the type of custom field. Text will show a text area in the project '
+                    u'editor, and checkbox will show a checkbox.')
+    )

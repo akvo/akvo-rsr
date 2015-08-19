@@ -210,16 +210,16 @@ def project_editor(request, project_id):
     transaction_types = get_codelist(TransactionType, iati_version)
 
     # Custom fields
-    custom_fields_section_1 = project.custom_fields.filter(section=1)
-    custom_fields_section_2 = project.custom_fields.filter(section=2)
-    custom_fields_section_3 = project.custom_fields.filter(section=3)
-    custom_fields_section_4 = project.custom_fields.filter(section=4)
-    custom_fields_section_5 = project.custom_fields.filter(section=5)
-    custom_fields_section_6 = project.custom_fields.filter(section=6)
-    custom_fields_section_7 = project.custom_fields.filter(section=7)
-    custom_fields_section_8 = project.custom_fields.filter(section=8)
-    custom_fields_section_9 = project.custom_fields.filter(section=9)
-    custom_fields_section_10 = project.custom_fields.filter(section=10)
+    custom_fields_section_1 = project.custom_fields.filter(section=1).order_by('order', 'id')
+    custom_fields_section_2 = project.custom_fields.filter(section=2).order_by('order', 'id')
+    custom_fields_section_3 = project.custom_fields.filter(section=3).order_by('order', 'id')
+    custom_fields_section_4 = project.custom_fields.filter(section=4).order_by('order', 'id')
+    custom_fields_section_5 = project.custom_fields.filter(section=5).order_by('order', 'id')
+    custom_fields_section_6 = project.custom_fields.filter(section=6).order_by('order', 'id')
+    custom_fields_section_7 = project.custom_fields.filter(section=7).order_by('order', 'id')
+    custom_fields_section_8 = project.custom_fields.filter(section=8).order_by('order', 'id')
+    custom_fields_section_9 = project.custom_fields.filter(section=9).order_by('order', 'id')
+    custom_fields_section_10 = project.custom_fields.filter(section=10).order_by('order', 'id')
     
     context = {
         'id': project_id,
