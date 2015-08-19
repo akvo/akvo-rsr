@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from lxml import etree
-from akvo.rsr.models import Partnership
 
 TYPE_TO_CODE = {
     'funding': '1',
@@ -23,6 +22,8 @@ def participating_org(project):
     :return: A list of Etree elements
     """
     partnership_elements = []
+
+    from akvo.rsr.models import Partnership
 
     for partnership in project.partnerships.all():
         org = partnership.organisation
