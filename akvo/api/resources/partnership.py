@@ -221,7 +221,6 @@ class PartnershipResource(ConditionalFullResource):
             iati_activity_id = ALL,
             internal_id = ALL,
             partner_type = ALL,
-            partner_type = ALL,
             iati_organisation_role = ALL,
             # foreign keys
             organisation = ALL_WITH_RELATIONS,

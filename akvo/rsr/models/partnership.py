@@ -38,6 +38,7 @@ class Partnership(models.Model):
     IATI_IMPLEMENTING_PARTNER = 4
     AKVO_SPONSOR_PARTNER = 100   # not part of the IATI OrganisationRole codelist!
 
+    # make sure the AKVO_SPONSOR_PARTNER is last in the list
     IATI_ROLE_LIST = [
         IATI_FUNDING_PARTNER, IATI_ACCOUNTABLE_PARTNER, IATI_EXTENDING_PARTNER,
         IATI_IMPLEMENTING_PARTNER, AKVO_SPONSOR_PARTNER,
