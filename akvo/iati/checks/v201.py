@@ -434,7 +434,7 @@ class V201Checks(object):
         checks = []
 
         for pd in self.project.planned_disbursements.all():
-            if not pd.amount:
+            if not pd.value:
                 checks.append((u'error', u'planned disbursement (id: %s) has '
                                          u'no amount' % str(pd.pk)))
             if not pd.period_start:
