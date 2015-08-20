@@ -46,7 +46,7 @@
                 {% endif %}
                 {% if project.date_start_actual %}
                   <br/>
-                  <span class="detailedInfo">{% trans 'Start date (actual)' %}</span>
+                  <span class="detailedInfo">{% trans 'Start date' %}</span>
                   <span class="detailedPoint">
                     <i class="fa fa-calendar-o"></i> {{project.date_start_actual|date:"d-M-Y"}}
                   </span>
@@ -60,7 +60,7 @@
                 {% endif %}
                 {% if project.date_end_actual %}
                   <br/>
-                  <span class="detailedInfo">{% trans 'End date (actual)' %}</span>
+                  <span class="detailedInfo">{% trans 'End date' %}</span>
                   <span class="detailedPoint">
                     <i class="fa fa-calendar-o"></i> {{project.date_end_actual|date:"d-M-Y"}}
                   </span>
