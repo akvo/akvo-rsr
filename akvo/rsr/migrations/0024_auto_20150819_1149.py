@@ -13,10 +13,15 @@ def merge_keys(apps, schema_editor):
         u'C4C': u'Connect4Change',
         u'SRHR': u'SRHR Alliance',
         u'f4winternational': u'Football for Water',
-        u'IGG-water': u'IGG-water program',
+        u'IGG-Water': u'IGG-water program',
     }
     Keyword = apps.get_model('rsr', 'Keyword')
     Project = apps.get_model('rsr', 'Project')
+    print
+    print "Keyword distribution before migration:"
+    for keyword in Keyword.objects.all():
+        projects = Project.objects.filter(keywords__exact=keyword)
+        print keyword.label, projects.count()
 
     # dict holding old labels as keys and the keword objects that replace the old labelled keywords
     keyword_merger_objects = {}
