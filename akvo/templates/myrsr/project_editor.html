@@ -1224,7 +1224,7 @@
 
     <script type="application/javascript">
         function toggleFunding(node) {
-            var fundingInputNode, fundingNode, parentNode, labelNode, mandatoryNodes;
+            var fundingInputNode, fundingNode, parentNode, labelNode, mandatoryNodes, span;
 
             parentNode = node.parentNode.parentNode.parentNode;
             fundingInputNode = parentNode.getElementsByTagName("input")[1];
@@ -1235,7 +1235,10 @@
                 fundingInputNode.className += ' priority1';
 
                 labelNode = fundingNode.getElementsByTagName('label')[0];
-                labelNode.innerHTML = labelNode.innerHTML.replace('Funding amount', 'Funding amount<span class="mandatory">*</span>');
+                span = document.createElement('span');
+                span.className = 'mandatory';
+                span.innerHTML = '*';
+                labelNode.insertBefore(span, labelNode.getElementsByTagName('span')[0]);
             } else {
                 fundingInputNode.value = '';
                 fundingInputNode.setAttribute('disabled', '');
@@ -1439,7 +1442,8 @@
                 }
 
                 startDateActualLabel.insertBefore(mandatoryNode, startDateActualLabel.getElementsByTagName('span')[0]);
-                startDatePlannedLabel.innerHTML = startDatePlannedLabel.innerHTML.replace('<span class="mandatory">*</span>', '')
+                var plannedMandatory = startDatePlannedLabel.getElementsByClassName('mandatory')[0];
+                plannedMandatory.parentNode.removeChild(plannedMandatory);
             } else {
                 // Show planned start date, as mandatory field
                 if (startDateActual.className.indexOf('hidden') === -1) {
@@ -1453,7 +1457,8 @@
                 }
 
                 startDatePlannedLabel.insertBefore(mandatoryNode, startDatePlannedLabel.getElementsByTagName('span')[0]);
-                startDateActualLabel.innerHTML = startDateActualLabel.innerHTML.replace('<span class="mandatory">*</span>', '')
+                var actualMandatory = startDateActualLabel.getElementsByClassName('mandatory')[0];
+                actualMandatory.parentNode.removeChild(actualMandatory);
             }
         }
 
