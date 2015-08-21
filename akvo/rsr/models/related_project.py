@@ -40,6 +40,7 @@ class RelatedProject(models.Model):
         verbose_name = _(u'related project')
         verbose_name_plural = _(u'related projects')
         ordering = ['project', ]
+        unique_together = ('project', 'related_project')
 
     def __unicode__(self):
         if self.related_project:

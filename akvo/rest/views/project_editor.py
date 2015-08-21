@@ -286,6 +286,9 @@ def add_error(errors, message, field_name):
 def save_field(obj, field, form_field, form_data, orig_data, errors, changes):
     obj_data = getattr(obj, field)
 
+    if form_field[:6] == 'value-':
+        form_field = form_field[6:]
+
     if isinstance(obj_data, int):
         obj_data = str(obj_data)
     elif isinstance(obj_data, datetime.date):
@@ -305,9 +308,6 @@ def save_field(obj, field, form_field, form_data, orig_data, errors, changes):
         if not has_error:
             try:
                 obj.save(update_fields=[field])
-
-                if form_field[:6] == 'value-':
-                    form_field = form_field[6:]
 
                 if not obj in [change[0] for change in changes]:
                     changes.append([obj, [(field, form_field, orig_data)]])

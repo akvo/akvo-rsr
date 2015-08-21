@@ -17,4 +17,8 @@ class Migration(migrations.Migration):
             field=models.DecimalField(null=True, verbose_name='amount', max_digits=10, decimal_places=2, blank=True),
             preserve_default=True,
         ),
+        migrations.AlterUniqueTogether(
+            name='relatedproject',
+            unique_together=set([('project', 'related_project')]),
+        ),
     ]

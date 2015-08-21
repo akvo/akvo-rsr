@@ -138,8 +138,7 @@
                                 <label for="iatiId" class="control-label">{% trans 'IATI identifier' %}</label>
                                 <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
                             </div>
-                            <h5>{% trans 'Related projects' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'related-project-helptext');"></span></h5>
-                            <p class="help-block hidden" id="related-project-helptext">{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}</p>
+                            <h5>{% trans 'Related projects' %}</h5>
                             <div class="form-group hidden hide-default">
                                 <div class="select-group control">
                                     <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2" saved-value="{% if project.hierarchy %}{{ project.hierarchy }}{% endif %}">
@@ -1202,8 +1201,8 @@
             "publishing_status_id": "{{ project.publishingstatus.pk }}",
             "user_id": "{{ user.pk }}",
             "view_project": "{% trans 'View project page' %}",
-            "related_project_label": "{% trans 'Related project' %}",
-            "related_project_helptext": "{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}",
+            "related_project_label": "{% trans 'Related RSR project' %}",
+            "related_project_helptext": "{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy, by filling in the project title. It is possible to link multiple projects.' %}",
             "reporting_org_label": "{% trans 'Reporting organisation' %}",
             "reporting_org_helptext": "{% trans 'The organisation issuing the IATI report. May be a primary source (reporting on its own activity as donor, implementing agency, etc) or a secondary source (reporting on the activities of another organisation). If the organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database, so it shows up in the drop down menu.' %}",
             "partner_label": "{% trans 'Project partner' %}",
@@ -1392,6 +1391,47 @@
 
         function toggleDocumentUploadHelptext(node) {
             var helpText = node.parentNode.parentNode.parentNode.querySelectorAll('.help-block')[0];
+
+            if (node.className.indexOf('activated') === -1) {
+                node.className += ' activated';
+                helpText.className = helpText.className.replace('hidden', '');
+
+            } else {
+                node.className = node.className.replace('activated', '');
+                helpText.className += ' hidden';
+            }
+        }
+
+        function toggleRelatedProject(node) {
+            var relatedProject, IatiIdentifier, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            relatedProject = parentNode.querySelectorAll('.related-project-input')[0];
+            IatiIdentifier = parentNode.querySelectorAll('.related-project-iati-identifier-container')[0];
+
+            if (node.checked) {
+                // User wants to indicate IATI identifier
+                if (relatedProject.className.indexOf('hidden') === -1) {
+                    relatedProject.className += ' hidden';
+                }
+
+                if (IatiIdentifier.className.indexOf('hidden') > -1) {
+                    IatiIdentifier.className = IatiIdentifier.className.replace('hidden', '');
+                }
+            } else {
+                // User wants to link to related project
+                if (IatiIdentifier.className.indexOf('hidden') === -1) {
+                    IatiIdentifier.className += ' hidden';
+                }
+
+                if (relatedProject.className.indexOf('hidden') > -1) {
+                    relatedProject.className = relatedProject.className.replace('hidden', '');
+                }
+            }
+        }
+
+        function toggleRelatedProjectHelptext(node) {
+            var helpText = node.parentNode.parentNode.querySelectorAll('.help-block')[0];
 
             if (node.className.indexOf('activated') === -1) {
                 node.className += ' activated';
