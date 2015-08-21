@@ -1722,10 +1722,33 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
         publishButton.setAttribute('disabled', '');
 
-        var api_url, request, publishErrorNode;
+        var api_url, request, publishErrorNode, span, unsavedMessage, unsavedSections;
 
+        // Remove any previous errors
         publishErrorNode = document.getElementById('publishErrors');
         publishErrorNode.innerHTML = '';
+
+        // Check for unsaved changes first
+        unsavedSections = checkUnsavedChanges();
+        if (unsavedSections.length > 0) {
+            unsavedMessage = "You can't publish, because there are unsaved changes in the following section(s):<ul>";
+
+            for (var i = 0; i < unsavedSections.length; i++) {
+                unsavedMessage += "<li>" + unsavedSections[i] + "</li>";
+            }
+
+            unsavedMessage += "</ul>";
+
+            span = document.createElement("span");
+            span.className = 'notPublished';
+            span.innerHTML = unsavedMessage;
+            publishErrorNode.appendChild(span);
+
+            publishButton.removeAttribute('disabled');
+
+            // Don't publish
+            return;
+        }
 
         // Create request
         api_url = '/rest/v1/publishing_status/' + publishingStatusId + '/?format=json';
@@ -1756,7 +1779,7 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
                 if (request.status == 400) {
                     // Could not publish due to checks
-                    var response, span;
+                    var response;
 
                     response = JSON.parse(request.responseText);
 
