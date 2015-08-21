@@ -41,6 +41,7 @@ SECTION_ONE_FIELDS = (
     ('hierarchy', 'projectHierarchy', 'none'),
     ('current_image_caption', 'photoCaption', 'text'),
     ('current_image_credit', 'photoCredit', 'text'),
+    ('currency', 'projectCurrency', 'text'),
     ('default_aid_type', 'defaultAidType', 'text'),
     ('default_flow_type', 'defaultFlowType', 'text'),
     ('default_tied_status', 'defaultTiedStatus', 'text'),
@@ -133,7 +134,6 @@ PROJECT_CONDITION_FIELDS = (
 SECTION_SIX_FIELDS = (
     ('capital_spend_percentage', 'capital-spend-percentage', 'decimal'),
     ('country_budget_vocabulary', 'country-budget-vocabulary', 'text'),
-    ('currency', 'projectCurrency', 'text'),
     ('donate_button', 'donateButton', 'boolean'),
 )
 

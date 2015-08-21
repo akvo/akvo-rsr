@@ -231,6 +231,16 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2" saved-value="{% if project.currency %}{{ project.currency }}{% endif %}">
+                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
+                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
+                                    </select>
+                                    <label for="projectCurrency" class="control-label">{% trans 'Currency' %}</label>
+                                </div>
+                                <p class="help-block hidden">{% trans 'The default currency for this project. Used in all financial aspects of the project.' %}</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
                                     <select name="projectLanguage" id="projectLanguage" class="form-control priority2" saved-value="{{ project.language }}">
                                         <option value="" {% if not project.language %}selected="selected"{% endif %}></option>
                                         <option value="de" {% if project.language == 'de' %}selected="selected"{% endif %}>{% trans 'German' %}</option>
@@ -706,16 +716,6 @@
                                 <p class="help-block">{% trans 'Transactions refer to the actual transfers of funds between organisations related to the funding and expenditure of the project. This information is crucially important when defining the funding chain within the development aid sector and can help to shape the overall picture. Providing this information can also be beneficial to give clarity on expenditure over periods of time which is reflected within the results obtained for the project.' %}</p>
                             </div>
                             <form role="form" id="admin-step-6">
-                            <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2" saved-value="{% if project.currency %}{{ project.currency }}{% endif %}">
-                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
-                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
-                                    </select>
-                                    <label for="projectCurrency" class="control-label">{% trans 'Currency' %}</label>
-                                </div>
-                                <p class="help-block hidden">{% trans 'The default currency for this project. Used in all financial aspects of the project.' %}</p>
-                            </div>
                             <div class="form-group">
                                 <div class="checkbox">
                                     <label for="donateButton" class="control-label">
