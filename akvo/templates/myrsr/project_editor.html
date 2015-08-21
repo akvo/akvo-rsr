@@ -572,7 +572,7 @@
                             <div class="form-group control">
                                 <textarea id="sustainability" class="form-control priority2" name="sustainability" rows="5" saved-value="{{ project.sustainability }}">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
                                 <label class="control-label" for="sustainability">{% trans 'Sustainability' %}</label>
-                                <p class="help-block hidden">{% trans 'Describe the plans for ensuring results are maintained after implementation is complete.' %}</p>
+                                <p class="help-block hidden">{% trans 'Describe how you aim to guarantee sustainability of the project until 10 years after project implementation. Think about the institutional setting, capacity-building, a cost recovery plan, products used, feasible arrangements for operation and maintenance, anticipation of environmental impact and social integration.' %}</p>
                             </div>
                             {% for customfield in custom_fields_section_4 %}
                                 <div id="custom_field-{{ customfield.pk }}">
