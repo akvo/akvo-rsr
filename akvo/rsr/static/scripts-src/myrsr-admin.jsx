@@ -1670,12 +1670,14 @@ function toggleSection(node) {
     return function(e) {
         e.preventDefault();
 
-        var allFormBlocks, div, formBlock, inputStep;
+        var allFormBlocks, allSections, div, formBlock, infoIcon, inputStep;
 
         div = node.parentNode.parentNode;
         allFormBlocks = document.getElementsByClassName('formBlock');
+        allSections = document.getElementsByClassName('toggleSection');
         formBlock = div.getElementsByClassName('formBlock')[0];
         inputStep = div.getElementsByTagName('input')[0];
+        infoIcon = node.getElementsByClassName('info-icon')[0];
 
         if (formBlock.className.indexOf('hidden') > -1) {
             formBlock.className = formBlock.className.replace('hidden', '');
@@ -1689,8 +1691,18 @@ function toggleSection(node) {
                     allFormBlocks[i].className += ' hidden';
                 }
             }
+            for (var j=0; j < allSections.length; j++) {
+                var sectionInfoIcon = allSections[j].getElementsByClassName('info-icon')[0];
+                if (sectionInfoIcon.className.indexOf('hidden') === -1) {
+                    sectionInfoIcon.className += ' hidden';
+                }
+            }
+            if (infoIcon.className.indexOf('hidden') > -1) {
+                infoIcon.className = infoIcon.className.replace('hidden', '');
+            }
         } else {
             formBlock.className += ' hidden';
+            infoIcon.className += ' hidden';
         }
     };
 }

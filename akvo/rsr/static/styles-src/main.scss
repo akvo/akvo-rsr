@@ -2207,6 +2207,16 @@ body {
             &:hover {
                 background: rgba($akvoBlack, 0.05);
             }
+            .info-icon {
+                padding-left: 0.5em;
+                cursor: pointer;
+                cursor: hand;
+                font-size: 90%;
+
+                &.activated {
+                    color: rgba(44, 42, 116, 0.3);
+                }
+            }
         }
         .progress {
             position: absolute;
