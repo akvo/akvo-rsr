@@ -1392,10 +1392,15 @@ function setSectionCompletionPercentage(section) {
     var numInputsCompleted = inputResults[1];
 
     if (numInputs === 0) {
-
-        // There are no mandatory fields, show the section as complete
-        renderCompletionPercentage(1, 1, section);
-        return;
+        if (section.hasClass('stepEight')) {
+            // Section 8 without mandatory fields (no sectors) should still display empty
+            renderCompletionPercentage(0, 1, section);
+            return;
+        } else {
+            // There are no mandatory fields, show the section as complete
+            renderCompletionPercentage(1, 1, section);
+            return;
+        }
     }
 
     renderCompletionPercentage(numInputsCompleted, numInputs, section);
