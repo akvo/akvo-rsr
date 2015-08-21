@@ -348,6 +348,9 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
         try:
             field_data = decimal.Decimal(orig_data) if orig_data else None
         except decimal.InvalidOperation as e:
+            if orig_data and ',' in orig_data:
+                # Specific error message for commas
+                e = u'%s' % _(u'It is not allowed to use a comma, use a period to denote decimals.')
             errors = add_error(errors, e, field_name)
             field_data = None
 
