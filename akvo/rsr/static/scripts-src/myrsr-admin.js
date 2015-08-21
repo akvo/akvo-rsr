@@ -1297,7 +1297,7 @@ function updateTypeaheads() {
         var childClass = $(this).data('child-class');
         var valueId = null;
         var labelText = defaultValues.recipient_org_label;
-        var helpText = '';
+        var helpText = defaultValues.recipient_org_helptext;
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
