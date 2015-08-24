@@ -2446,3 +2446,20 @@ body {
         color: rgba(44, 42, 116, 0.3);
     }
 }
+
+#editor-feedback {
+    a {
+        display: block;
+        position: fixed;
+        top: 400px;
+        right: -60px;
+        padding: 10px 10px;
+        border: 1px solid rgba($akvoPurple, 0.5);
+        border-radius: 5px 5px 0px 0px;
+        -webkit-border-radius: 5px 5px 0px 0px;
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+    }
+}
