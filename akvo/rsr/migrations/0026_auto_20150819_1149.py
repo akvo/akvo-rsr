@@ -26,8 +26,11 @@ def merge_keys(apps, schema_editor):
     # dict holding old labels as keys and the keword objects that replace the old labelled keywords
     keyword_merger_objects = {}
     for old_label in keyword_mergers_labels.keys():
-        new_key = Keyword.objects.get(label=keyword_mergers_labels[old_label])
-        keyword_merger_objects[old_label] = new_key
+        try:
+            new_key = Keyword.objects.get(label=keyword_mergers_labels[old_label])
+            keyword_merger_objects[old_label] = new_key
+        except:
+            print "Error: %s keyword does not exist" % str(keyword_mergers_labels[old_label])
 
     for project in Project.objects.all():
         # create a list of keyword objects for the project
