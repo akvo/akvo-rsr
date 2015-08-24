@@ -28,7 +28,7 @@ def keywords_from_sponsor_partners(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0025_auto_20150820_0144'),
+        ('rsr', '0027_auto_20150820_0144'),
     ]
 
     operations = [

@@ -51,7 +51,7 @@ def merge_keys(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0023_auto_20150819_1029'),
+        ('rsr', '0025_auto_20150819_1029'),
     ]
 
     operations = [

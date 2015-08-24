@@ -22,7 +22,7 @@ def remove_unused_keys(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0024_auto_20150819_1149'),
+        ('rsr', '0026_auto_20150819_1149'),
     ]
 
     operations = [
