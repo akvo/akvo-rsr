@@ -866,6 +866,16 @@ footer {
     color: $akvoBlack;
 }
 
+.detailedPoint {
+    float: right;
+
+    @media only screen and (max-width: $width-medium) and (min-width: $width-small) {
+        .fa-calendar-o {
+            display: none;
+        }
+    }
+}
+
 h4.detailedInfo {
     margin-bottom: 0.25em;
     color: $akvoBlack;

@@ -747,6 +747,12 @@ footer .navbar {
   font-weight: bold;
   color: #202024; }
 
+.detailedPoint {
+  float: right; }
+  @media only screen and (max-width: 992px) and (min-width: 768px) {
+    .detailedPoint .fa-calendar-o {
+      display: none; } }
+
 h4.detailedInfo {
   margin-bottom: 0.25em;
   color: #202024; }
