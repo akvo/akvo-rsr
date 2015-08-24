@@ -2,7 +2,12 @@
 {% load i18n bootstrap3 rsr_utils thumbnail compressed rules humanize %}
 {% block title %}{% trans 'MyRSR - Project Editor' %}{% endblock %}
 {% block myrsr_main %}
-    <div id="modal-wrapper"></div>
+    <!--[if lte IE 9]>
+    <div class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      {% trans 'You are using an unsupported browser (Internet Explorer 9 or less). Please update your browser to a newer version or use a different browser.' %}
+    </div>
+    <![endif]-->
     <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'editorHelptext');"></span></h3>
     <div class="help-block" id="editorHelptext">
         <div class="row">
