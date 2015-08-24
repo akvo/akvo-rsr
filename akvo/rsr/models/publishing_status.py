@@ -4,8 +4,12 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -149,3 +153,15 @@ class PublishingStatus(models.Model):
         verbose_name = _(u'publishing status')
         verbose_name_plural = _(u'publishing statuses')
         ordering = ('-status', 'project')
+
+
+@receiver(post_save, sender=PublishingStatus)
+def update_denormalized_project(sender, **kwargs):
+    "Send notification that a project is published."
+    publishing_status = kwargs['instance']
+    if publishing_status.status == PublishingStatus.STATUS_PUBLISHED:
+        send_mail(
+            'Project %s has been published' % str(publishing_status.project.pk),
+            '', getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
+            getattr(settings, "NOTIFY_PUBLISH", ["kasper@akvo.org"])
+        )
