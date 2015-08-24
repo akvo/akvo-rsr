@@ -2,7 +2,12 @@
 {% load i18n bootstrap3 rsr_utils thumbnail compressed rules humanize %}
 {% block title %}{% trans 'MyRSR - Project Editor' %}{% endblock %}
 {% block myrsr_main %}
-    <div id="modal-wrapper"></div>
+    <!--[if lte IE 9]>
+    <div class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      {% trans 'You are using an unsupported browser (Internet Explorer 9 or less). Please update your browser to a newer version or use a different browser.' %}
+    </div>
+    <![endif]-->
     <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'editorHelptext');"></span></h3>
     <div class="help-block" id="editorHelptext">
         <div class="row">
@@ -114,7 +119,7 @@
                 <div class="myPanel borderBottom" id="panel1">
                     <div class="formStep stepOne">
                         <div class="toggleSection">
-                            <label for="stepOne" class="stepLabel"><h4>01 - {%  trans 'General information' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-1-helptext');"></span></h4></label>
+                            <label for="stepOne" class="stepLabel"><h4>01 - {%  trans 'General information' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-1-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepOne">
                         <div class="progress">
@@ -138,8 +143,7 @@
                                 <label for="iatiId" class="control-label">{% trans 'IATI identifier' %}</label>
                                 <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
                             </div>
-                            <h5>{% trans 'Related projects' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'related-project-helptext');"></span></h5>
-                            <p class="help-block hidden" id="related-project-helptext">{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}</p>
+                            <h5>{% trans 'Related projects' %}</h5>
                             <div class="form-group hidden hide-default">
                                 <div class="select-group control">
                                     <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2" saved-value="{% if project.hierarchy %}{{ project.hierarchy }}{% endif %}">
@@ -187,35 +191,57 @@
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6 control priority1 datepicker-container"
-                                         data-id="eventFromPlanned"
-                                         data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
-                                         data-label="{% trans 'Start date (planned)' %}"
-                                         data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
-                                         data-classes="priority1"></div>
-                                    <div class="col-md-6 control datepicker-container"
-                                         data-id="eventEndPlanned"
-                                         data-child="{{ project.date_end_planned|date:"d/m/Y" }}"
-                                         data-label="{% trans 'End date (planned)' %}"
-                                         data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"
-                                         data-classes="priority2"></div>
+                                    <div class="col-md-6">
+                                        <div class="control datepicker-container {% if project.date_start_actual %}hidden{% endif %}"
+                                             id="planned-start-date-container"
+                                             data-id="eventFromPlanned"
+                                             data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
+                                             data-label="{% trans 'Start date (planned)' %}"
+                                             data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority{% if not project.date_start_actual %}1{% else %}2{% endif %}"></div>
+                                        <div class="control datepicker-container {% if not project.date_start_actual %}hidden{% endif %}"
+                                             id="actual-start-date-container"
+                                             data-id="eventFromActual"
+                                             data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
+                                             data-label="{% trans 'Start date (actual)' %}"
+                                             data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority{% if project.date_start_actual %}1{% else %}2{% endif %}"></div>
+                                        <p>
+                                            <input type="checkbox" id="start-date-toggle" {% if project.date_start_actual %}checked{% endif %} onchange="toggleStartDate(this)">
+                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual start date' %}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="control datepicker-container {% if project.date_end_actual %}hidden{% endif %}"
+                                             id="planned-end-date-container"
+                                             data-id="eventEndPlanned"
+                                             data-child="{{ project.date_end_planned|date:"d/m/Y" }}"
+                                             data-label="{% trans 'End date (planned)' %}"
+                                             data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority2"></div>
+                                        <div class="control datepicker-container {% if not project.date_end_actual %}hidden{% endif %}"
+                                             id="actual-end-date-container"
+                                             data-id="eventEndActual"
+                                             data-child="{{ project.date_end_actual|date:"d/m/Y" }}"
+                                             data-label="{% trans 'End date (actual)' %}"
+                                             data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority2"></div>
+                                        <p>
+                                            <input type="checkbox" id="end-date-toggle" {% if project.date_end_actual %}checked{% endif %} onchange="toggleEndDate(this)">
+                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual end date' %}</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6 control datepicker-container"
-                                         data-id="eventFromActual"
-                                         data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
-                                         data-label="{% trans 'Start date (actual)' %}"
-                                         data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
-                                         data-classes="priority2"></div>
-                                    <div class="col-md-6 control datepicker-container"
-                                         data-id="eventEndActual"
-                                         data-child="{{ project.date_end_actual|date:"d/m/Y" }}"
-                                         data-label="{% trans 'End date (actual)' %}"
-                                         data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"
-                                         data-classes="priority2"></div>
+                                <div class="select-group control">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2" saved-value="{% if project.currency %}{{ project.currency }}{% endif %}">
+                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
+                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
+                                    </select>
+                                    <label for="projectCurrency" class="control-label">{% trans 'Currency' %}</label>
                                 </div>
+                                <p class="help-block hidden">{% trans 'The default currency for this project. Used in all financial aspects of the project.' %}</p>
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
@@ -245,7 +271,7 @@
                                 </div>
                             </div>
                             <div class="form-group control">
-                                <input type="file" class="form-control priority1" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}" accept="image/gif,image/bmp,image/x-windows-bmp,image/jpeg,image/pjpeg,image/png,image/tiff,image/x-tiff" />
+                                <input type="file" class="form-control priority1" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}" accept="image/*" />
                                 <label class="control-label" for="photo">{% trans 'Photo' %}</label>
                             </div>
                             <div class="form-group">
@@ -359,7 +385,7 @@
                 <div class="myPanel borderBottom" id="panel2">
                     <div class="formStep stepTwo">
                         <div class="toggleSection">
-                            <label for="stepTwo" class="stepLabel"><h4>02 - {% trans 'Contact information' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-2-helptext');"></span></h4></label>
+                            <label for="stepTwo" class="stepLabel"><h4>02 - {% trans 'Contact information' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-2-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepTwo">
                         <div class="progress">
@@ -419,7 +445,7 @@
                 <div class="myPanel borderBottom" id="panel3">
                     <div class="formStep stepThree">
                         <div class="toggleSection">
-                            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-3-helptext');"></span></h4></label>
+                            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-3-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepThree">
                         <div class="progress">
@@ -509,7 +535,7 @@
                 <div class="myPanel borderBottom" id="panel4">
                     <div class="formStep stepFour">
                         <div class="toggleSection">
-                            <label for="stepFour" class="stepLabel"><h4>04 - {% trans 'Project descriptions' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-4-helptext');"></span></h4></label>
+                            <label for="stepFour" class="stepLabel"><h4>04 - {% trans 'Project descriptions' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-4-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepFour">
                         <div class="progress">
@@ -560,7 +586,7 @@
                             <div class="form-group control">
                                 <textarea id="sustainability" class="form-control priority2" name="sustainability" rows="5" saved-value="{{ project.sustainability }}">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
                                 <label class="control-label" for="sustainability">{% trans 'Sustainability' %}</label>
-                                <p class="help-block hidden">{% trans 'Describe the plans for ensuring results are maintained after implementation is complete.' %}</p>
+                                <p class="help-block hidden">{% trans 'Describe how you aim to guarantee sustainability of the project until 10 years after project implementation. Think about the institutional setting, capacity-building, a cost recovery plan, products used, feasible arrangements for operation and maintenance, anticipation of environmental impact and social integration.' %}</p>
                             </div>
                             {% for customfield in custom_fields_section_4 %}
                                 <div id="custom_field-{{ customfield.pk }}">
@@ -599,7 +625,7 @@
                 <div class="myPanel borderBottom" id="panel5">
                     <div class="formStep stepFive">
                         <div class="toggleSection">
-                            <label for="stepFive" class="stepLabel"><h4>05 - {% trans 'Results and indicators' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-5-helptext');"></span></h4></label>
+                            <label for="stepFive" class="stepLabel"><h4>05 - {% trans 'Results and indicators' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-5-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepFive">
                         <div class="progress">
@@ -680,7 +706,7 @@
                 <div class="myPanel borderBottom" id="panel6">
                     <div class="formStep stepSix">
                         <div class="toggleSection">
-                            <label for="stepSix" class="stepLabel"><h4>06 - {% trans 'Finance' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-6-helptext');"></span></h4></label>
+                            <label for="stepSix" class="stepLabel"><h4>06 - {% trans 'Finance' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-6-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepSix">
                         <div class="progress">
@@ -695,23 +721,13 @@
                             </div>
                             <form role="form" id="admin-step-6">
                             <div class="form-group">
-                                <div class="select-group control">
-                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2" saved-value="{% if project.currency %}{{ project.currency }}{% endif %}">
-                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
-                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
-                                    </select>
-                                    <label for="projectCurrency" class="control-label">{% trans 'Currency' %}</label>
-                                </div>
-                                <p class="help-block hidden">{% trans 'The default currency for this project. Used in all financial aspects of the project.' %}</p>
-                            </div>
-                            <div class="form-group">
                                 <div class="checkbox">
                                     <label for="donateButton" class="control-label">
-                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %} {% if not project.status == "H" %}disabled{% endif %}>{% trans 'Donate button' %}
+                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
                                     </label>
                                 </div>
                                 <p class="help-block hidden">
-                                    {% trans 'If you tick the checkbox, a donate button will appear on your project page, enabling donations to your project from people visiting the page. You can only tick this box if the project is still seeking funds.' %}
+                                    {% trans 'If you tick the checkbox, a donate button will appear on your project page, enabling donations to your project from people visiting the page. The donate button will only appear if your project needs funding,' %}
                                 </p>
                             </div>
                             <h5>{% trans 'Budget items' %}</h5>
@@ -825,7 +841,7 @@
                 <div class="myPanel borderBottom" id="panel7">
                     <div class="formStep stepSeven">
                         <div class="toggleSection">
-                            <label for="stepSeven" class="stepLabel"><h4>07 - {% trans 'Project locations' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-7-helptext');"></span></h4></label>
+                            <label for="stepSeven" class="stepLabel"><h4>07 - {% trans 'Project locations' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-7-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepSeven">
                         <div class="progress">
@@ -929,7 +945,7 @@
                 <div class="myPanel borderBottom" id="panel8">
                     <div class="formStep stepEight">
                         <div class="toggleSection">
-                            <label for="stepEight" class="stepLabel"><h4>08 - {% trans 'Project focus' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-8-helptext');"></span></h4></label>
+                            <label for="stepEight" class="stepLabel"><h4>08 - {% trans 'Project focus' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-8-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepEight">
                         <div class="progress">
@@ -1007,7 +1023,7 @@
                 <div class="myPanel borderBottom" id="panel9">
                     <div class="formStep stepNine">
                         <div class="toggleSection">
-                            <label for="stepNine" class="stepLabel"><h4>09 - {% trans 'Links and documents' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-9-helptext');"></span></h4></label>
+                            <label for="stepNine" class="stepLabel"><h4>09 - {% trans 'Links and documents' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-9-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepNine">                        
                         <div class="progress">
@@ -1083,7 +1099,7 @@
                 <div class="myPanel borderBottom" id="panel10">
                     <div class="formStep stepTen">
                         <div class="toggleSection">
-                            <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments' %}{% if user.is_superuser or user.is_rsr_admin %} {% trans 'and keywords' %}{% endif %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'step-10-helptext');"></span></h4></label>
+                            <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments' %}{% if user.is_superuser or user.is_rsr_admin %} {% trans 'and keywords' %}{% endif %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-10-helptext');"></span></h4></label>
                         </div>
                         <input type="radio" name="step" id="stepTen">
                         <div class="progress">
@@ -1150,6 +1166,19 @@
             </fieldset>
         </form>
     </section>
+    <div id="editor-feedback" class="hidden-xs">
+        <script type="text/javascript">
+            document.write(
+                "<n uers=\"znvygb:efe\056srrqonpx\100nxib\056bet?fhowrpg=EFE srrqonpx\"><v pynff=\"sn sn-pbzzrag-b\"><\057v>".replace(/[a-zA-Z]/g, function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);})
+            );
+        </script>
+        {% trans 'Provide feedback' %}
+        <script type="text/javascript">
+            document.write(
+                "<\057n>".replace(/[a-zA-Z]/g, function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);})
+            );
+        </script>
+    </div>
 {% endblock %}
 
 {% block js %}
@@ -1190,15 +1219,16 @@
             "publishing_status_id": "{{ project.publishingstatus.pk }}",
             "user_id": "{{ user.pk }}",
             "view_project": "{% trans 'View project page' %}",
-            "related_project_label": "{% trans 'Related project' %}",
-            "related_project_helptext": "{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy. It is possible to link multiple projects.' %}",
+            "related_project_label": "{% trans 'Related RSR project' %}",
+            "related_project_helptext": "{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy, by filling in the project title. It is possible to link multiple projects.' %}",
             "reporting_org_label": "{% trans 'Reporting organisation' %}",
             "reporting_org_helptext": "{% trans 'The organisation issuing the IATI report. May be a primary source (reporting on its own activity as donor, implementing agency, etc) or a secondary source (reporting on the activities of another organisation). If the organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database, so it shows up in the drop down menu.' %}",
             "partner_label": "{% trans 'Project partner' %}",
             "partner_helptext": "{% trans 'Select an organisation that is playing a role in the project.  If an organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database.' %}",
             "provider_org_label": "{% trans 'Provider organisation' %}",
             "provider_org_helptext": "{% trans 'For incoming funds, this is the organisation from which the transaction originated. It will default to the reporting organisation.' %}",
-            "recipient_org_label": "{% trans 'Recipient organisation' %}"
+            "recipient_org_label": "{% trans 'Recipient organisation' %}",
+            "recipient_org_helptext": "{% trans 'The organisation that receives the incoming funds.' %}"
         }
     </script>
 
@@ -1212,7 +1242,7 @@
 
     <script type="application/javascript">
         function toggleFunding(node) {
-            var fundingInputNode, fundingNode, parentNode, labelNode, mandatoryNodes;
+            var fundingInputNode, fundingNode, parentNode, labelNode, mandatoryNodes, span;
 
             parentNode = node.parentNode.parentNode.parentNode;
             fundingInputNode = parentNode.getElementsByTagName("input")[1];
@@ -1223,7 +1253,10 @@
                 fundingInputNode.className += ' priority1';
 
                 labelNode = fundingNode.getElementsByTagName('label')[0];
-                labelNode.innerHTML = labelNode.innerHTML.replace('Funding amount', 'Funding amount<span class="mandatory">*</span>')
+                span = document.createElement('span');
+                span.className = 'mandatory';
+                span.innerHTML = '*';
+                labelNode.insertBefore(span, labelNode.getElementsByTagName('span')[0]);
             } else {
                 fundingInputNode.value = '';
                 fundingInputNode.setAttribute('disabled', '');
@@ -1282,19 +1315,6 @@
             } else {
                 node.className += ' hidden';
                 helpIconNode.className = helpIconNode.className.replace('activated', '');
-            }
-        }
-
-        function toggleDonateButton() {
-            var donateButton, statusNode;
-
-            donateButton = document.getElementById('donateButton');
-            statusNode = document.getElementById('projectStatus');
-
-            if (donateButton.hasAttribute('disabled') && statusNode.value === "H") {
-                donateButton.removeAttribute('disabled');
-            } else if (!donateButton.hasAttribute('disabled') && statusNode.value !== "H") {
-                donateButton.setAttribute('disabled', '');
             }
         }
 
@@ -1369,20 +1389,20 @@
             if (node.checked) {
                 // User wants to upload document
                 if (documentUrl.className.indexOf('hidden') === -1) {
-                    documentUrl.className += ' hidden'
+                    documentUrl.className += ' hidden';
                 }
 
                 if (documentUpload.className.indexOf('hidden') > -1) {
-                    documentUpload.className = documentUpload.className.replace('hidden', '')
+                    documentUpload.className = documentUpload.className.replace('hidden', '');
                 }
             } else {
                 // User wants to indicate URL
                 if (documentUpload.className.indexOf('hidden') === -1) {
-                    documentUpload.className += ' hidden'
+                    documentUpload.className += ' hidden';
                 }
 
                 if (documentUrl.className.indexOf('hidden') > -1) {
-                    documentUrl.className = documentUrl.className.replace('hidden', '')
+                    documentUrl.className = documentUrl.className.replace('hidden', '');
                 }
             }
         }
@@ -1397,6 +1417,121 @@
             } else {
                 node.className = node.className.replace('activated', '');
                 helpText.className += ' hidden';
+            }
+        }
+
+        function toggleRelatedProject(node) {
+            var relatedProject, IatiIdentifier, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            relatedProject = parentNode.querySelectorAll('.related-project-input')[0];
+            IatiIdentifier = parentNode.querySelectorAll('.related-project-iati-identifier-container')[0];
+
+            if (node.checked) {
+                // User wants to indicate IATI identifier
+                if (relatedProject.className.indexOf('hidden') === -1) {
+                    relatedProject.className += ' hidden';
+                }
+
+                if (IatiIdentifier.className.indexOf('hidden') > -1) {
+                    IatiIdentifier.className = IatiIdentifier.className.replace('hidden', '');
+                }
+            } else {
+                // User wants to link to related project
+                if (IatiIdentifier.className.indexOf('hidden') === -1) {
+                    IatiIdentifier.className += ' hidden';
+                }
+
+                if (relatedProject.className.indexOf('hidden') > -1) {
+                    relatedProject.className = relatedProject.className.replace('hidden', '');
+                }
+            }
+        }
+
+        function toggleRelatedProjectHelptext(node) {
+            var helpText = node.parentNode.parentNode.querySelectorAll('.help-block')[0];
+
+            if (node.className.indexOf('activated') === -1) {
+                node.className += ' activated';
+                helpText.className = helpText.className.replace('hidden', '');
+
+            } else {
+                node.className = node.className.replace('activated', '');
+                helpText.className += ' hidden';
+            }
+        }
+
+        function toggleStartDate(node) {
+            var startDateActual, startDatePlanned, startDateActualInput, startDatePlannedInput, startDateActualLabel, startDatePlannedLabel, mandatoryNode;
+
+            startDateActual = document.getElementById('actual-start-date-container');
+            startDatePlanned = document.getElementById('planned-start-date-container');
+            startDateActualInput = startDateActual.getElementsByTagName('input')[0];
+            startDatePlannedInput = startDatePlanned.getElementsByTagName('input')[0];
+            startDateActualLabel = startDateActual.getElementsByTagName('label')[0];
+            startDatePlannedLabel = startDatePlanned.getElementsByTagName('label')[0];
+
+            mandatoryNode = document.createElement('span');
+            mandatoryNode.className = 'mandatory';
+            mandatoryNode.innerHTML= '*';
+
+            if (node.checked) {
+                // Show actual start date, as mandatory field
+                if (startDatePlanned.className.indexOf('hidden') === -1) {
+                    startDatePlanned.className += ' hidden';
+                    startDatePlannedInput.className = startDatePlannedInput.className.replace('priority1', 'priority2');
+                }
+
+                if (startDateActual.className.indexOf('hidden') > -1) {
+                    startDateActual.className = startDateActual.className.replace('hidden', '');
+                    startDateActualInput.className = startDateActualInput.className.replace('priority2', 'priority1');
+                }
+
+                startDateActualLabel.insertBefore(mandatoryNode, startDateActualLabel.getElementsByTagName('span')[0]);
+                var plannedMandatory = startDatePlannedLabel.getElementsByClassName('mandatory')[0];
+                plannedMandatory.parentNode.removeChild(plannedMandatory);
+            } else {
+                // Show planned start date, as mandatory field
+                if (startDateActual.className.indexOf('hidden') === -1) {
+                    startDateActual.className += ' hidden';
+                    startDateActualInput.className = startDateActualInput.className.replace('priority1', 'priority2');
+                }
+
+                if (startDatePlanned.className.indexOf('hidden') > -1) {
+                    startDatePlanned.className = startDatePlanned.className.replace('hidden', '');
+                    startDatePlannedInput.className = startDatePlannedInput.className.replace('priority2', 'priority1');
+                }
+
+                startDatePlannedLabel.insertBefore(mandatoryNode, startDatePlannedLabel.getElementsByTagName('span')[0]);
+                var actualMandatory = startDateActualLabel.getElementsByClassName('mandatory')[0];
+                actualMandatory.parentNode.removeChild(actualMandatory);
+            }
+        }
+
+        function toggleEndDate(node) {
+            var endDateActual, endDatePlanned;
+
+            endDateActual = document.getElementById('actual-end-date-container');
+            endDatePlanned = document.getElementById('planned-end-date-container');
+
+            if (node.checked) {
+                // Show actual end date
+                if (endDatePlanned.className.indexOf('hidden') === -1) {
+                    endDatePlanned.className += ' hidden';
+                }
+
+                if (endDateActual.className.indexOf('hidden') > -1) {
+                    endDateActual.className = endDateActual.className.replace('hidden', '');
+                }
+            } else {
+                // Show planned end date
+                if (endDateActual.className.indexOf('hidden') === -1) {
+                    endDateActual.className += ' hidden';
+                }
+
+                if (endDatePlanned.className.indexOf('hidden') > -1) {
+                    endDatePlanned.className = endDatePlanned.className.replace('hidden', '');
+                }
             }
         }
     </script>

@@ -1297,7 +1297,7 @@ function updateTypeaheads() {
         var childClass = $(this).data('child-class');
         var valueId = null;
         var labelText = defaultValues.recipient_org_label;
-        var helpText = '';
+        var helpText = defaultValues.recipient_org_helptext;
         var label = '<label for="' + childSelector + '" class="control-label typeahead-label">' +
                     labelText + '</label>';
         var help = '<p class="help-block hidden">' + helpText + '</p>';
@@ -1392,10 +1392,15 @@ function setSectionCompletionPercentage(section) {
     var numInputsCompleted = inputResults[1];
 
     if (numInputs === 0) {
-
-        // There are no mandatory fields, show the section as complete
-        renderCompletionPercentage(1, 1, section);
-        return;
+        if (section.hasClass('stepEight')) {
+            // Section 8 without mandatory fields (no sectors) should still display empty
+            renderCompletionPercentage(0, 1, section);
+            return;
+        } else {
+            // There are no mandatory fields, show the section as complete
+            renderCompletionPercentage(1, 1, section);
+            return;
+        }
     }
 
     renderCompletionPercentage(numInputsCompleted, numInputs, section);
@@ -1670,12 +1675,14 @@ function toggleSection(node) {
     return function(e) {
         e.preventDefault();
 
-        var allFormBlocks, div, formBlock, inputStep;
+        var allFormBlocks, allSections, div, formBlock, infoIcon, inputStep;
 
         div = node.parentNode.parentNode;
         allFormBlocks = document.getElementsByClassName('formBlock');
+        allSections = document.getElementsByClassName('toggleSection');
         formBlock = div.getElementsByClassName('formBlock')[0];
         inputStep = div.getElementsByTagName('input')[0];
+        infoIcon = node.getElementsByClassName('info-icon')[0];
 
         if (formBlock.className.indexOf('hidden') > -1) {
             formBlock.className = formBlock.className.replace('hidden', '');
@@ -1689,8 +1696,18 @@ function toggleSection(node) {
                     allFormBlocks[i].className += ' hidden';
                 }
             }
+            for (var j=0; j < allSections.length; j++) {
+                var sectionInfoIcon = allSections[j].getElementsByClassName('info-icon')[0];
+                if (sectionInfoIcon.className.indexOf('hidden') === -1) {
+                    sectionInfoIcon.className += ' hidden';
+                }
+            }
+            if (infoIcon.className.indexOf('hidden') > -1) {
+                infoIcon.className = infoIcon.className.replace('hidden', '');
+            }
         } else {
             formBlock.className += ' hidden';
+            infoIcon.className += ' hidden';
         }
     };
 }
@@ -1722,10 +1739,33 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
         publishButton.setAttribute('disabled', '');
 
-        var api_url, request, publishErrorNode;
+        var api_url, request, publishErrorNode, span, unsavedMessage, unsavedSections;
 
+        // Remove any previous errors
         publishErrorNode = document.getElementById('publishErrors');
         publishErrorNode.innerHTML = '';
+
+        // Check for unsaved changes first
+        unsavedSections = checkUnsavedChanges();
+        if (unsavedSections.length > 0) {
+            unsavedMessage = "You can't publish, because there are unsaved changes in the following section(s):<ul>";
+
+            for (var i = 0; i < unsavedSections.length; i++) {
+                unsavedMessage += "<li>" + unsavedSections[i] + "</li>";
+            }
+
+            unsavedMessage += "</ul>";
+
+            span = document.createElement("span");
+            span.className = 'notPublished';
+            span.innerHTML = unsavedMessage;
+            publishErrorNode.appendChild(span);
+
+            publishButton.removeAttribute('disabled');
+
+            // Don't publish
+            return;
+        }
 
         // Create request
         api_url = '/rest/v1/publishing_status/' + publishingStatusId + '/?format=json';
@@ -1756,7 +1796,7 @@ function getProjectPublish(publishingStatusId, publishButton) {
 
                 if (request.status == 400) {
                     // Could not publish due to checks
-                    var response, span;
+                    var response;
 
                     response = JSON.parse(request.responseText);
 
