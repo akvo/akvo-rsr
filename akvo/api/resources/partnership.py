@@ -197,6 +197,7 @@ class IATIPartnershipResource(ModelResource):
 class PartnershipResource(ConditionalFullResource):
     organisation = ConditionalFullToOneField('akvo.api.resources.OrganisationResource', 'organisation')
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
+    partner_type_2 = fields.CharField(attribute='iati_role_to_partner_type')
 
     def __init__(self, api_name=None):
         """ override to be able to create custom help_text on the partner_type field

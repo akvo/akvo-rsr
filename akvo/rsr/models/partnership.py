@@ -124,6 +124,12 @@ class Partnership(models.Model):
     def iati_organisation_role_label(self):
         return dict(self.IATI_ROLES)[self.iati_organisation_role]
 
+    def iati_role_to_partner_type(self):
+        if self.iati_organisation_role:
+            return self.ROLES_TO_PARTNER_TYPES_MAP[int(self.iati_organisation_role)]
+        else:
+            return None
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project partner')
