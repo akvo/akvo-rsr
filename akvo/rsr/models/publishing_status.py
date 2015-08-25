@@ -69,11 +69,14 @@ class PublishingStatus(models.Model):
                 )
 
             if not self.project.partnerships.filter(
-                    partner_type__in=['field', 'funding', 'support']
+                    iati_organisation_role__in=[Partnership.IATI_FUNDING_PARTNER,
+                                                Partnership.IATI_IMPLEMENTING_PARTNER,
+                                                Partnership.IATI_ACCOUNTABLE_PARTNER]
             ).exists():
                 validation_errors.append(
                     ValidationError(
-                        _('Project needs to have at least one field, funding or support partner.'),
+                        _('Project needs to have at least one funding, implementing or accountable '
+                          'partner.'),
                         code='partners'
                     )
                 )

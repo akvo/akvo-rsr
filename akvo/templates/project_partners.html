@@ -26,8 +26,7 @@
                 <ul>
                   {% for type in partner.partner_types %}
                     <li>
-                      {% if forloop.first %}{{type|title}}{% else %}{{type}}{% endif %}
-                      {% trans "partner" %}{% if forloop.last %}.{% else %},{% endif %}
+                      {{ type }}{% if forloop.last %}.{% else %},{% endif %}
                     </li>
                   {% endfor %}
                 </ul>

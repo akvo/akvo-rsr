@@ -204,7 +204,7 @@ class Organisation(TimestampsMixin, models.Model):
             projects, not counting archived projects"""
             from .project import Project
             return self.filter(
-                partnerships__partner_type=Partnership.IATI_ACCOUNTABLE_PARTNER,
+                partnerships__iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER,
                 partnerships__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED,
                 partnerships__project__status__in=[
                     Project.STATUS_ACTIVE,
@@ -249,27 +249,6 @@ class Organisation(TimestampsMixin, models.Model):
         return dict(IATI_LIST_ORGANISATION_TYPE)[str(self.new_organisation_type)] if \
             self.new_organisation_type else ""
 
-    def is_partner_type(self, partner_type):
-        """returns True if the organisation is a partner of type partner_type to
-        at least one project"""
-        return self.partnerships.filter(partner_type__exact=partner_type).count() > 0
-
-    def is_field_partner(self):
-        "returns True if the organisation is a field partner to at least one project"
-        return self.is_partner_type(Partnership.FIELD_PARTNER)
-
-    def is_funding_partner(self):
-        "returns True if the organisation is a funding partner to at least one project"
-        return self.is_partner_type(Partnership.FUNDING_PARTNER)
-
-    def is_sponsor_partner(self):
-        "returns True if the organisation is a sponsor partner to at least one project"
-        return self.is_partner_type(Partnership.SPONSOR_PARTNER)
-
-    def is_support_partner(self):
-        "returns True if the organisation is a support partner to at least one project"
-        return self.is_partner_type(Partnership.SUPPORT_PARTNER)
-
     def partnersites(self):
         "returns the partnersites belonging to the organisation in a PartnerSite queryset"
         return PartnerSite.objects.filter(organisation=self)
@@ -309,8 +288,8 @@ class Organisation(TimestampsMixin, models.Model):
         """Return a list of partner types of this organisation to the project"""
         partner_types = []
         for ps in Partnership.objects.filter(project=project, organisation=self):
-            if ps.partner_type:
-                partner_types.append(ps.partner_type)
+            if ps.iati_organisation_role:
+                partner_types.append(ps.iati_organisation_role_label())
         return partner_types
 
     def countries_where_active(self):
@@ -338,7 +317,7 @@ class Organisation(TimestampsMixin, models.Model):
         "How much € the organisation has pledged to projects it is a partner to"
         return self.active_projects().euros().filter(
             partnerships__organisation__exact=self,
-            partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
         ).aggregate(
             euros_pledged=Sum('partnerships__funding_amount')
         )['euros_pledged'] or 0
@@ -347,7 +326,7 @@ class Organisation(TimestampsMixin, models.Model):
         "How much $ the organisation has pledged to projects"
         return self.active_projects().dollars().filter(
             partnerships__organisation__exact=self,
-            partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
         ).aggregate(
             dollars_pledged=Sum('partnerships__funding_amount')
         )['dollars_pledged'] or 0

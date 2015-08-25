@@ -426,7 +426,7 @@ class Project(TimestampsMixin, models.Model):
     def get_pledged(self):
         """ How much is pledges by funding organisations"""
         return Partnership.objects.filter(project__exact=self).filter(
-            partner_type__exact=Partnership.IATI_FUNDING_PARTNER
+            iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
         ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
 
     def get_funds(self):

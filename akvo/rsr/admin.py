@@ -307,7 +307,7 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
 class PartnershipInline(NestedTabularInline):
 
     model = get_model('rsr', 'Partnership')
-    fields = ('organisation', 'partner_type', 'funding_amount', 'internal_id')
+    fields = ('organisation', 'iati_organisation_role', 'funding_amount', 'internal_id')
     extra = 0
     formset = RSR_PartnershipInlineFormFormSet
     formfield_overrides = {

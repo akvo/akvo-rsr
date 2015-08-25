@@ -203,9 +203,6 @@ class PartnershipResource(ConditionalFullResource):
         """ override to be able to create custom help_text on the partner_type field
         """
         super(PartnershipResource, self).__init__(api_name=None)
-        self.fields['partner_type'].help_text = "Uses the following key-value pair list: {%s}" % ', '.join(
-            ['"%s": "%s"' % (k, v) for k, v in Partnership.PARTNER_TYPES]
-        )
         self.fields[
             'iati_organisation_role'].help_text = "Uses the following key-value pair list: {%s}" % ', '.join(
             ['"%s": "%s"' % (k, v) for k, v in Partnership.IATI_ROLES]
@@ -221,7 +218,6 @@ class PartnershipResource(ConditionalFullResource):
             # other fields
             iati_activity_id = ALL,
             internal_id = ALL,
-            partner_type = ALL,
             iati_organisation_role = ALL,
             # foreign keys
             organisation = ALL_WITH_RELATIONS,

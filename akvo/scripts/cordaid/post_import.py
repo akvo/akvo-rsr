@@ -78,7 +78,7 @@ def fix_funding(budgets):
         funding_partnership, created = Partnership.objects.get_or_create(
             organisation=organisation,
             project=project,
-            partner_type=Partnership.IATI_FUNDING_PARTNER,
+            iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
             defaults={'funding_amount': amount}
         )
         if created:

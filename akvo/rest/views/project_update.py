@@ -61,15 +61,13 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         'user__organisation__primary_location',
         'user__organisation__primary_location__country',
         'user__organisation__primary_location__location_target',
-        'user__organisation__primary_location__location_target__partner_types',
         'user__organisation__primary_location__location_target__internal_org_ids',
 
     ).prefetch_related(
         'user__organisations',
         'user__organisations__primary_location',
         'user__organisations__primary_location__country',
-        'user__organisations__primary_location__location_target',
-        'user__organisations__primary_location__location_target__partner_types')
+        'user__organisations__primary_location__location_target')
     serializer_class = ProjectUpdateExtraSerializer
     filter_fields = ('project', 'user', )
 

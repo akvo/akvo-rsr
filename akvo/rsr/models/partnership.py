@@ -86,9 +86,6 @@ class Partnership(models.Model):
         'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', null=True,
         help_text=_(u'Select an organisation that is taking an active role in the project.'))
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
-    partner_type = ValidXMLCharField(
-        _(u'partner type'), max_length=9, db_index=True, choices=PARTNER_TYPES, blank=True,
-        help_text=_(u'Select the role that the organisation is taking within the project.'))
     iati_organisation_role = models.PositiveSmallIntegerField(
         u'Organisation role', choices=IATI_ROLES, db_index=True, null=True)
     funding_amount = models.DecimalField(
