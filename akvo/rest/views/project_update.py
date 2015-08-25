@@ -19,25 +19,38 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
     queryset = ProjectUpdate.objects.select_related('project',
                                                     'user').prefetch_related('locations')
     serializer_class = ProjectUpdateSerializer
-    filter_fields = ('project', 'user', )
+    filter_fields = {
+        'project': ['exact', ],
+        'user': ['exact', ],
+        'uuid': ['exact', 'icontains', ],
+        # These filters only accept a date, not a datetime
+        # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+        # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+    }
+
+    # filter_fields = ('project', 'user', )
     paginate_by_param = 'limit'
     max_paginate_by = 1000
 
     def get_queryset(self):
-        """Allow simple filtering on selected fields."""
+        """
+        Allow simple filtering on selected fields.
+        We don't use the default filter_fields, because Up filters on
+        datetime for last_modified_at, and they only support a date, not datetime.
+        """
         queryset = self.queryset
-        project = self.request.QUERY_PARAMS.get('project', None)
-        if project is not None:
-            queryset = self.queryset.filter(project=project)
-        uuid = self.request.QUERY_PARAMS.get('uuid', None)
-        if uuid is not None:
-            queryset = self.queryset.filter(uuid=uuid)
-        created_at = self.request.QUERY_PARAMS.get('created_at__gt', None)
-        if created_at is not None:
-            queryset = self.queryset.filter(created_at__gt=created_at)
-        last_modified_at = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
-        if last_modified_at is not None:
-            queryset = self.queryset.filter(last_modified_at__gt=last_modified_at)
+        created_at__gt = self.request.QUERY_PARAMS.get('created_at__gt', None)
+        if created_at__gt is not None:
+            queryset = queryset.filter(created_at__gt=created_at__gt)
+        created_at__lt = self.request.QUERY_PARAMS.get('created_at__lt', None)
+        if created_at__lt is not None:
+            queryset = queryset.filter(created_at__lt=created_at__lt)
+        last_modified_at__gt = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
+        if last_modified_at__gt is not None:
+            queryset = queryset.filter(last_modified_at__gt=last_modified_at__gt)
+        last_modified_at__lt = self.request.QUERY_PARAMS.get('last_modified_at__lt', None)
+        if last_modified_at__lt is not None:
+            queryset = queryset.filter(last_modified_at__lt=last_modified_at__lt)
         return queryset
 
 
@@ -71,21 +84,32 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         'user__organisations__primary_location__location_target',
         'user__organisations__primary_location__location_target__partner_types')
     serializer_class = ProjectUpdateExtraSerializer
-    filter_fields = ('project', 'user', )
+    filter_fields = {
+        'project': ['exact', ],
+        'user': ['exact', ],
+        'uuid': ['exact', 'icontains', ],
+        # These filters only accept a date, not a datetime
+        # 'created_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+        # 'last_modified_at': ['exact', 'gt', 'gte', 'lt', 'lte', ],
+    }
 
     def get_queryset(self):
-        """Allow simple filtering on selected fields."""
+        """
+        Allow simple filtering on selected fields.
+        We don't use the default filter_fields, because Up filters on
+        datetime for last_modified_at, and they only support a date, not datetime.
+        """
         queryset = self.queryset
-        project = self.request.QUERY_PARAMS.get('project', None)
-        if project is not None:
-            queryset = self.queryset.filter(project=project)
-        uuid = self.request.QUERY_PARAMS.get('uuid', None)
-        if uuid is not None:
-            queryset = self.queryset.filter(uuid=uuid)
-        created_at = self.request.QUERY_PARAMS.get('created_at__gt', None)
-        if created_at is not None:
-            queryset = self.queryset.filter(created_at__gt=created_at)
-        last_modified_at = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
-        if last_modified_at is not None:
-            queryset = self.queryset.filter(last_modified_at__gt=last_modified_at)
+        created_at__gt = self.request.QUERY_PARAMS.get('created_at__gt', None)
+        if created_at__gt is not None:
+            queryset = queryset.filter(created_at__gt=created_at__gt)
+        created_at__lt = self.request.QUERY_PARAMS.get('created_at__lt', None)
+        if created_at__lt is not None:
+            queryset = queryset.filter(created_at__lt=created_at__lt)
+        last_modified_at__gt = self.request.QUERY_PARAMS.get('last_modified_at__gt', None)
+        if last_modified_at__gt is not None:
+            queryset = queryset.filter(last_modified_at__gt=last_modified_at__gt)
+        last_modified_at__lt = self.request.QUERY_PARAMS.get('last_modified_at__lt', None)
+        if last_modified_at__lt is not None:
+            queryset = queryset.filter(last_modified_at__lt=last_modified_at__lt)
         return queryset
