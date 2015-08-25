@@ -51,6 +51,13 @@ class ProjectUpdateViewSet(BaseRSRViewSet):
         last_modified_at__lt = self.request.QUERY_PARAMS.get('last_modified_at__lt', None)
         if last_modified_at__lt is not None:
             queryset = queryset.filter(last_modified_at__lt=last_modified_at__lt)
+        # Get updates per organisation
+        project__partners = self.request.QUERY_PARAMS.get('project__partners', None)
+        if project__partners:
+            queryset = queryset.filter(project__partners=project__partners)
+        user__organisations = self.request.QUERY_PARAMS.get('user__organisations', None)
+        if user__organisations:
+            queryset = queryset.filter(user__organisations=user__organisations)
         return queryset
 
 
@@ -112,4 +119,11 @@ class ProjectUpdateExtraViewSet(BaseRSRViewSet):
         last_modified_at__lt = self.request.QUERY_PARAMS.get('last_modified_at__lt', None)
         if last_modified_at__lt is not None:
             queryset = queryset.filter(last_modified_at__lt=last_modified_at__lt)
+        # Get updates per organisation
+        project__partners = self.request.QUERY_PARAMS.get('project__partners', None)
+        if project__partners:
+            queryset = queryset.filter(project__partners=project__partners)
+        user__organisations = self.request.QUERY_PARAMS.get('user__organisations', None)
+        if user__organisations:
+            queryset = queryset.filter(user__organisations=user__organisations)
         return queryset
