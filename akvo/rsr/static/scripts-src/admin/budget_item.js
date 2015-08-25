@@ -23,7 +23,7 @@ $(function() {
     // show or hide the associated partnerships-*-funding_amount field depending
     // on the selected partner type
     var selected = select.options[select.selectedIndex].value;
-    if ( selected == 'funding' )
+    if ( selected == '1' )
       $("input[name='partnerships-"+ select.name.split('-')[1] +"-funding_amount']").show();
     else
       $("input[name='partnerships-"+ select.name.split('-')[1] +"-funding_amount']").hide();
@@ -43,11 +43,11 @@ $(function() {
   // find all inputs named partnerships-*-funding_amount except
   // partnerships-__prefix__-funding_amount
   $("input[name^='partnerships-'][name$='-funding_amount'][name!='partnerships-__prefix__-funding_amount']").each(function(i) {
-    var select = $("select[name='partnerships-" + i + "-partner_type']");
+    var select = $("select[name='partnerships-" + i + "-iati_organisation_role']");
     checkPartnerType(select[0]);
   });
 
-  $("select[name^='partnerships-'][name$='-partner_type']").change(function() {
+  $("select[name^='partnerships-'][name$='-iati_organisation_role']").change(function() {
     checkPartnerType(this);
   });
 

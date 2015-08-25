@@ -16,4 +16,14 @@ class PartnershipViewSet(BaseRSRViewSet):
     """
     queryset = Partnership.objects.all()
     serializer_class = PartnershipSerializer
-    filter_fields = ('project', 'organisation', 'partner_type', )
+    filter_fields = ('project', 'organisation', 'iati_organisation_role', )
+
+    def get_queryset(self):
+        """Allow filtering on partner_type."""
+        queryset = self.queryset
+        partner_type = self.request.QUERY_PARAMS.get('partner_type_2', None)
+        if partner_type and partner_type in Partnership.PARTNER_TYPES_TO_ROLES_MAP.keys():
+            queryset = self.queryset.filter(
+                iati_organisation_role=Partnership.PARTNER_TYPES_TO_ROLES_MAP[partner_type]
+            )
+        return queryset

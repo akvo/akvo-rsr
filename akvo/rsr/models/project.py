@@ -426,7 +426,7 @@ class Project(TimestampsMixin, models.Model):
     def get_pledged(self):
         """ How much is pledges by funding organisations"""
         return Partnership.objects.filter(project__exact=self).filter(
-            partner_type__exact=Partnership.FUNDING_PARTNER
+            iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
         ).aggregate(Sum('funding_amount'))['funding_amount__sum'] or 0
 
     def get_funds(self):
@@ -607,23 +607,26 @@ class Project(TimestampsMixin, models.Model):
             return qs
 
         #the following 6 methods return organisation querysets!
-        def _partners(self, partner_type=None):
+        def _partners(self, role=None):
             orgs = Organisation.objects.filter(partnerships__project__in=self)
-            if partner_type:
-                orgs = orgs.filter(partnerships__partner_type=partner_type)
+            if role:
+                orgs = orgs.filter(partnerships__iati_organisation_role=role)
             return orgs.distinct()
 
         def field_partners(self):
-            return self._partners(Partnership.FIELD_PARTNER)
+            return self._partners(Partnership.IATI_IMPLEMENTING_PARTNER)
 
         def funding_partners(self):
-            return self._partners(Partnership.FUNDING_PARTNER)
+            return self._partners(Partnership.IATI_FUNDING_PARTNER)
 
         def sponsor_partners(self):
-            return self._partners(Partnership.SPONSOR_PARTNER)
+            return self._partners(Partnership.AKVO_SPONSOR_PARTNER)
 
         def support_partners(self):
-            return self._partners(Partnership.SUPPORT_PARTNER)
+            return self._partners(Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+        def extending_partners(self):
+            return self._partners(Partnership.IATI_EXTENDING_PARTNER)
 
         def all_partners(self):
             return self._partners()
@@ -773,14 +776,14 @@ class Project(TimestampsMixin, models.Model):
         return areas
 
     #shortcuts to linked orgs for a single project
-    def _partners(self, partner_type=None):
+    def _partners(self, role=None):
         """
         Return the partner organisations to the project.
-        If partner_type is specified only organisations having that role are returned
+        If role is specified only organisations having that role are returned
         """
         orgs = self.partners.all()
-        if partner_type:
-            return orgs.filter(partnerships__partner_type=partner_type).distinct()
+        if role:
+            return orgs.filter(partnerships__iati_organisation_role=role).distinct()
         else:
             return orgs.distinct()
 
@@ -795,16 +798,19 @@ class Project(TimestampsMixin, models.Model):
             return None
 
     def field_partners(self):
-        return self._partners(Partnership.FIELD_PARTNER)
+        return self._partners(Partnership.IATI_IMPLEMENTING_PARTNER)
 
     def funding_partners(self):
-        return self._partners(Partnership.FUNDING_PARTNER)
+        return self._partners(Partnership.IATI_FUNDING_PARTNER)
 
     def sponsor_partners(self):
-        return self._partners(Partnership.SPONSOR_PARTNER)
+        return self._partners(Partnership.AKVO_SPONSOR_PARTNER)
 
     def support_partners(self):
-        return self._partners(Partnership.SUPPORT_PARTNER)
+        return self._partners(Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+    def extending_partners(self):
+        return self._partners(Partnership.IATI_EXTENDING_PARTNER)
 
     def all_partners(self):
         return self._partners()
@@ -832,7 +838,7 @@ class Project(TimestampsMixin, models.Model):
 
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
-        return self.partnerships.filter(partner_type=Partnership.FUNDING_PARTNER)
+        return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER)
 
     def show_status_large(self):
         "Show the current project status with background"

@@ -109,15 +109,16 @@ class V201Checks(object):
             if partnership.organisation:
                 org = partnership.organisation
                 org_name = org.long_name or org.name
-                if partnership.partner_type and (org.iati_org_id or org_name):
+                if (partnership.iati_organisation_role and
+                        partnership.iati_organisation_role < 100 and (org.iati_org_id or org_name)):
                     valid_partner = True
-                if not partnership.partner_type:
+                if not partnership.iati_organisation_role:
                     checks.append((u'error', u'missing role for partner %s' % org_name))
                 if not org.iati_org_id:
                     checks.append((u'warning', u'partner %s has no IATI identifier' % org_name))
                 if not org_name:
-                    checks.append((u'warning', u'%s partner has no organisation '
-                                               u'name' % partnership.partner_type))
+                    checks.append((u'warning', u'%s has no organisation '
+                                               u'name' % partnership.iati_organisation_role))
             else:
                 checks.append((u'error', u'partnership has no organisation'))
 

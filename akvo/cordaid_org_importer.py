@@ -16,7 +16,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
 from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
-from akvo.rsr.models import InternalOrganisationID, Organisation, PartnerType
+from akvo.rsr.models import InternalOrganisationID, Organisation
 from akvo.utils import model_and_instance_based_filename
 
 
@@ -95,8 +95,6 @@ def import_orgs(xml_file):
                         identifier=identifier
                     )
                     internal_org_id.save()
-                    for partner_type in PartnerType.objects.all():
-                        referenced_org.partner_types.add(partner_type)
                 except Exception, e:
                     action = "failed"
                     internal_org_id.delete()

@@ -41,6 +41,7 @@ SECTION_ONE_FIELDS = (
     ('hierarchy', 'projectHierarchy', 'none'),
     ('current_image_caption', 'photoCaption', 'text'),
     ('current_image_credit', 'photoCredit', 'text'),
+    ('currency', 'projectCurrency', 'text'),
     ('default_aid_type', 'defaultAidType', 'text'),
     ('default_flow_type', 'defaultFlowType', 'text'),
     ('default_tied_status', 'defaultTiedStatus', 'text'),
@@ -79,7 +80,7 @@ SECTION_THREE_FIELDS = (
 
 PARTNER_FIELDS = (
     ('organisation', 'value-partner-', 'related-object'),
-    ('partner_type', 'partner-type-', 'text'),
+    ('iati_organisation_role', 'partner-role-', 'integer'),
     ('funding_amount', 'funding-amount-', 'decimal'),
 )
 
@@ -133,7 +134,6 @@ PROJECT_CONDITION_FIELDS = (
 SECTION_SIX_FIELDS = (
     ('capital_spend_percentage', 'capital-spend-percentage', 'decimal'),
     ('country_budget_vocabulary', 'country-budget-vocabulary', 'text'),
-    ('currency', 'projectCurrency', 'text'),
     ('donate_button', 'donateButton', 'boolean'),
 )
 
@@ -286,6 +286,9 @@ def add_error(errors, message, field_name):
 def save_field(obj, field, form_field, form_data, orig_data, errors, changes):
     obj_data = getattr(obj, field)
 
+    if form_field[:6] == 'value-':
+        form_field = form_field[6:]
+
     if isinstance(obj_data, int):
         obj_data = str(obj_data)
     elif isinstance(obj_data, datetime.date):
@@ -305,9 +308,6 @@ def save_field(obj, field, form_field, form_data, orig_data, errors, changes):
         if not has_error:
             try:
                 obj.save(update_fields=[field])
-
-                if form_field[:6] == 'value-':
-                    form_field = form_field[6:]
 
                 if not obj in [change[0] for change in changes]:
                     changes.append([obj, [(field, form_field, orig_data)]])
@@ -348,6 +348,9 @@ def process_field(obj, form_data, field, errors, changes, form_obj_id='', rel_ob
         try:
             field_data = decimal.Decimal(orig_data) if orig_data else None
         except decimal.InvalidOperation as e:
+            if orig_data and ',' in orig_data:
+                # Specific error message for commas
+                e = u'%s' % _(u'It is not allowed to use a comma, use a period to denote decimals.')
             errors = add_error(errors, e, field_name)
             field_data = None
 
@@ -483,6 +486,7 @@ def log_addition(obj, user):
         action_flag=ADDITION,
         change_message=change_message
     )
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))

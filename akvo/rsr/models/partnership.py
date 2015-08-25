@@ -12,6 +12,7 @@ from ..fields import ValidXMLCharField
 
 
 class Partnership(models.Model):
+    # the old way
     FIELD_PARTNER = u'field'
     FUNDING_PARTNER = u'funding'
     SPONSOR_PARTNER = u'sponsor'
@@ -28,8 +29,45 @@ class Partnership(models.Model):
         _(u'Accountable partner'),
         _(u'Extending partner'),
     ]
-
     PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+
+    # the new way
+    IATI_FUNDING_PARTNER = 1
+    IATI_ACCOUNTABLE_PARTNER = 2
+    IATI_EXTENDING_PARTNER = 3
+    IATI_IMPLEMENTING_PARTNER = 4
+    AKVO_SPONSOR_PARTNER = 100   # not part of the IATI OrganisationRole codelist!
+
+    # make sure the AKVO_SPONSOR_PARTNER is last in the list
+    IATI_ROLE_LIST = [
+        IATI_FUNDING_PARTNER, IATI_ACCOUNTABLE_PARTNER, IATI_EXTENDING_PARTNER,
+        IATI_IMPLEMENTING_PARTNER, AKVO_SPONSOR_PARTNER,
+    ]
+    IATI_ROLE_LABELS = [
+        _(u'Funding partner'),
+        _(u'Accountable partner'),
+        _(u'Extending partner'),
+        _(u'Implementing partner'),
+        _(u'Sponsor partner'),
+    ]
+    IATI_ROLES = zip(IATI_ROLE_LIST, IATI_ROLE_LABELS)
+
+    # used when migrating
+    PARTNER_TYPES_TO_ROLES_MAP = {
+        FUNDING_PARTNER: IATI_FUNDING_PARTNER,
+        SUPPORT_PARTNER: IATI_ACCOUNTABLE_PARTNER,
+        FIELD_PARTNER: IATI_IMPLEMENTING_PARTNER,
+        SPONSOR_PARTNER: AKVO_SPONSOR_PARTNER,
+    }
+
+    # backwards compatibility
+    ROLES_TO_PARTNER_TYPES_MAP = {
+        IATI_FUNDING_PARTNER: FUNDING_PARTNER,
+        IATI_ACCOUNTABLE_PARTNER: SUPPORT_PARTNER,
+        IATI_EXTENDING_PARTNER: SUPPORT_PARTNER,
+        IATI_IMPLEMENTING_PARTNER: FIELD_PARTNER,
+        AKVO_SPONSOR_PARTNER: SPONSOR_PARTNER,
+    }
 
     ALLIANCE_PARTNER = u'alliance'
     KNOWLEDGE_PARTNER = u'knowledge'
@@ -48,9 +86,8 @@ class Partnership(models.Model):
         'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', null=True,
         help_text=_(u'Select an organisation that is taking an active role in the project.'))
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='partnerships')
-    partner_type = ValidXMLCharField(
-        _(u'partner type'), max_length=9, db_index=True, choices=PARTNER_TYPES, blank=True,
-        help_text=_(u'Select the role that the organisation is taking within the project.'))
+    iati_organisation_role = models.PositiveSmallIntegerField(
+        u'Organisation role', choices=IATI_ROLES, db_index=True, null=True)
     funding_amount = models.DecimalField(
         _(u'funding amount'), max_digits=10, decimal_places=2, blank=True, null=True, db_index=True,
         help_text=_(u'The funding amount of the partner.<br>'
@@ -81,11 +118,20 @@ class Partnership(models.Model):
         _(u'related IATI activity ID'), max_length=50, blank=True
     )
 
+    def iati_organisation_role_label(self):
+        return dict(self.IATI_ROLES)[self.iati_organisation_role]
+
+    def iati_role_to_partner_type(self):
+        if self.iati_organisation_role:
+            return self.ROLES_TO_PARTNER_TYPES_MAP[int(self.iati_organisation_role)]
+        else:
+            return None
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'project partner')
         verbose_name_plural = _(u'project partners')
-        ordering = ['partner_type']
+        ordering = ['iati_organisation_role']
 
     def __unicode__(self):
         if self.organisation:
@@ -98,8 +144,8 @@ class Partnership(models.Model):
         else:
             organisation_unicode = u'%s' % _(u'Organisation not specified')
 
-        if self.partner_type:
-            organisation_unicode += u' (' + unicode(dict(self.PARTNER_TYPES)[self.partner_type]) \
-                                    + u')'
-
+        if self.iati_organisation_role:
+            organisation_unicode += u' ({})'.format(
+                unicode(dict(self.IATI_ROLES)[self.iati_organisation_role])
+            )
         return organisation_unicode
