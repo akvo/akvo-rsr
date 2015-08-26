@@ -40,7 +40,7 @@
                                 {% endif %}
                             </dd>
                         {% empty %}
-                            <dt></dt><dd>{% trans 'No funders' %}</dd>
+                            <dt>{% trans 'No funders' %}</dt><dd></dd>
                         {% endfor %}
                         {% if pledged %}
                             <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{pledged|floatformat:0|intcomma}}</dd>
