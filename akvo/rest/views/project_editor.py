@@ -757,10 +757,16 @@ def project_editor_step3(request, pk=None):
         if 'value-partner-' in key:
             partner_id = key.split('-', 2)[2]
 
-            partner, errors, rel_objects, new_object = check_related_object(
-                partner_id, 'partnership', Partnership, PARTNER_FIELDS, {'project': project}, data,
-                errors, rel_objects
-            )
+            # Custom validation for partnership.organisation
+            if data[key]:
+                partner, errors, rel_objects, new_object = check_related_object(
+                    partner_id, 'partnership', Partnership, PARTNER_FIELDS, {'project': project},
+                    data, errors, rel_objects
+                )
+            else:
+                errors.append({'name': key.replace('value-', ''),
+                               'error': u'%s' % _(u"Project partner can't be blank.")})
+                new_object, partner = None, None
 
             if new_object:
                 log_addition(partner, user)
