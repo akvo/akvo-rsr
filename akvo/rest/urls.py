@@ -36,7 +36,6 @@ router.register(r'organisation_custom_field', views.OrganisationCustomFieldViewS
 router.register(r'organisation_location', views.OrganisationLocationViewSet)
 router.register(r'organisation_map_location', views.MapOrganisationLocationViewSet)
 router.register(r'partner_site', views.PartnerSiteViewSet)
-router.register(r'partner_type', views.PartnerTypeViewSet)
 router.register(r'partnership', views.PartnershipViewSet)
 router.register(r'planned_disbursement', views.PlannedDisbursementViewSet)
 router.register(r'policy_marker', views.PolicyMarkerViewSet)

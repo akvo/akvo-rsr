@@ -216,7 +216,7 @@ class IATIProjectResource(ModelResource):
                     reporting_org=temp_org['reporting_org'],
                     name='Incorrect business unit', #this should never be used, if it is the lookup of existing BUs is borked
                     long_name='Incorrect business unit',
-                    partner_type='sponsor',
+                    iati_organisation_role=100, # old partner type sponsor partner
                     new_organisation_type='21',
                     organisation=None,
                 )]

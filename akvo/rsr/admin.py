@@ -99,10 +99,9 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
 
     fieldsets = (
         (_(u'General information'), {'fields': (
-            'name', 'long_name', 'partner_types', 'organisation_type',
-            'new_organisation_type', 'can_become_reporting', 'logo', 'url', 'facebook',
-            'twitter', 'linkedin', 'iati_org_id', 'public_iati_file', 'language', 'content_owner',
-            'allow_edit',)}),
+            'name', 'long_name', 'organisation_type', 'new_organisation_type',
+            'can_become_reporting', 'logo', 'url', 'facebook', 'twitter', 'linkedin', 'iati_org_id',
+            'public_iati_file', 'language', 'content_owner', 'allow_edit',)}),
         (_(u'Contact information'),
             {'fields': ('phone', 'mobile', 'fax',  'contact_person', 'contact_email', ), }),
         (_(u'About the organisation'), {'fields': ('description', 'notes',)}),
@@ -120,16 +119,6 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         """Override to add self.formfield_overrides. Needed for ImageField working in the admin."""
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(OrganisationAdmin, self).__init__(model, admin_site)
-
-    def allowed_partner_types(self, obj):
-        return ', '.join([pt.label for pt in obj.partner_types.all()])
-
-    def get_list_display(self, request):
-        # see the notes fields in the change list if you have the right permissions
-        if request.user.has_perm(self.opts.app_label + '.' + get_permission_codename('change',
-                                                                                     self.opts)):
-            return list(self.list_display) + ['allowed_partner_types']
-        return super(OrganisationAdmin, self).get_list_display(request)
 
     def get_readonly_fields(self, request, obj=None):
         """Make sure only super users can set the ability to become a reporting org"""
@@ -296,21 +285,21 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
         if not my_org_found:
             errors += [_(u'Your organisation should be somewhere here.')]
 
-        # now check that the same org isn't assigned the same partner_type more than once
-        partner_types = {}
+        # now check that the same org isn't assigned the same iati_organisation_role more than once
+        iati_organisation_roles = {}
         for form in self.forms:
-            # populate a dict with org names as keys and a list of partner_types as values
+            # populate a dict with org names as keys and a list of iati_organisation_roles as values
             try:
                 if not form.cleaned_data.get('DELETE', False):
-                    partner_types.setdefault(
+                    iati_organisation_roles.setdefault(
                         form.cleaned_data['organisation'], []
-                    ).append(form.cleaned_data['partner_type'])
+                    ).append(form.cleaned_data['iati_organisation_role'])
             except:
                 pass
-        for org, types in partner_types.items():
-            # are there duplicates in the list of partner_types?
-            if duplicates_in_list(types):
-                errors += [_(u'{} has duplicate partner types of the same kind.'.format(org))]
+        for org, roles in iati_organisation_roles.items():
+            # are there duplicates in the list of organisation roles?
+            if duplicates_in_list(roles):
+                errors += [_(u'{} has duplicate organisation roles of the same kind.'.format(org))]
 
         self._non_form_errors = ErrorList(errors)
 
@@ -318,7 +307,7 @@ class RSR_PartnershipInlineFormFormSet(forms.models.BaseInlineFormSet):
 class PartnershipInline(NestedTabularInline):
 
     model = get_model('rsr', 'Partnership')
-    fields = ('organisation', 'partner_type', 'funding_amount', 'internal_id')
+    fields = ('organisation', 'iati_organisation_role', 'funding_amount', 'internal_id')
     extra = 0
     formset = RSR_PartnershipInlineFormFormSet
     formfield_overrides = {

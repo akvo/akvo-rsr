@@ -21,16 +21,16 @@
                 </div>
                 <div class="col-md-4 control">
                     <div class="select-group">
-                        <select name="partner-type{% if key %}-{{ key }}{% endif %}" id="partner-type{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)" saved-value="{{ partnership.partner_type }}">
-                            <option value="" {% if not partnership.partner_type %} selected="selected" {% endif %}></option>
-                            <option value="field" {% if partnership.partner_type == 'field' %} selected="selected" {% endif %}>{% trans 'Implementing partner' %}</option>
-                            <option value="funding" {% if partnership.partner_type == 'funding' %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
-                            <option value="support" {% if partnership.partner_type == 'support' %} selected="selected" {% endif %}>{% trans 'Accountable partner' %}</option>
-                            <option value="extending" {% if partnership.partner_type == 'extending' %} selected="selected" {% endif %}>{% trans 'Extending partner' %}</option>
-                            {% if partnership.partner_type == 'sponsor' %}<option value="sponsor" selected="selected">{% trans 'Sponsor partner' %}</option>{% endif %}
+                        <select name="partner-role{% if key %}-{{ key }}{% endif %}" id="partner-role{% if key %}-{{ key }}{% endif %}" class="form-control priority1" onchange="toggleFunding(this)" saved-value="{{ partnership.iati_organisation_role }}">
+                            <option value="" {% if not partnership.iati_organisation_role %} selected="selected" {% endif %}></option>
+                            <option value="1" {% if partnership.iati_organisation_role == 1 %} selected="selected" {% endif %}>{% trans 'Funding partner' %}</option>
+                            <option value="2" {% if partnership.iati_organisation_role == 2 %} selected="selected" {% endif %}>{% trans 'Accountable partner' %}</option>
+                            <option value="3" {% if partnership.iati_organisation_role == 3 %} selected="selected" {% endif %}>{% trans 'Extending partner' %}</option>
+                            <option value="4" {% if partnership.iati_organisation_role == 4 %} selected="selected" {% endif %}>{% trans 'Implementing partner' %}</option>
+                            {% if partnership.iati_organisation_role == 100 %}<option value="100" selected="selected">{% trans 'Sponsor partner' %}</option>{% endif %}
                         </select>
                         <label for="partner-type{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Type' %}</label>
-                        {% if partnership.partner_type == 'sponsor' %}<p class="help-block-error">{% trans "The 'sponsor' role will soon be removed, please select a different role for this organisation." %}</p>{% endif %}
+                        {% if partnership.iati_organisation_role == 100 %}<p class="help-block-error">{% trans "The 'sponsor' role will soon be removed, please select a different role for this organisation." %}</p>{% endif %}
                         <p class="help-block hidden">
                             {% blocktrans %}Select the role of the organisation within the project:<br/>
                             - Funding organisation: a government or organisation that provides funds to the project<br/>
@@ -41,11 +41,11 @@
                     </div>
                 </div>
                 <div class="col-md-4 control">
-                    <div class="input-group {% if partnership.partner_type == 'funding' %}priority1{% endif %}">
+                    <div class="input-group {% if partnership.iati_organisation_role == 1 %}priority1{% endif %}">
                         <span class="input-group-addon currency-display">{{ project.get_currency_display }}</span>
                         <input type="text" class="form-control priority1" id="funding-amount{% if key %}-{{ key }}{% endif %}"
                         name="funding-amount{% if key %}-{{ key }}{% endif %}" value="{% if partnership.funding_amount %}{{ partnership.funding_amount }}{% endif %}" saved-value="{% if partnership.funding_amount %}{{ partnership.funding_amount }}{% endif %}"
-                        {% if not partnership.partner_type == 'funding' %} disabled {% endif %}>
+                        {% if partnership.iati_organisation_role != 1 %} disabled {% endif %}>
                     </div>
                     <label for="funding-amount{% if key %}-{{ key }}{% endif %}" class="control-label">{% trans 'Funding amount' %}</label>
                     <p class="help-block hidden">{% trans 'It’s only possible to indicate a funding amount for funding partners. Use a period to denote decimals.' %}</p>

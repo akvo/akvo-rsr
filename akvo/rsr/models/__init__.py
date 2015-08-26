@@ -43,7 +43,6 @@ from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocat
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
 from .partner_site import PartnerSite
-from .partner_type import PartnerType
 from .partnership import Partnership
 from .payment_gateway import PayPalGateway, MollieGateway, PaymentGatewaySelector
 from .planned_disbursement import PlannedDisbursement
@@ -94,7 +93,6 @@ __all__ = [
     'OrganisationAccount',
     'OrganisationCustomField',
     'PartnerSite',
-    'PartnerType',
     'Partnership',
     'PayPalGateway',
     'MollieGateway',
@@ -153,9 +151,6 @@ rules.add_perm('rsr.change_keyword', is_rsr_admin)
 
 rules.add_perm('rsr.add_partnersite', is_rsr_admin)
 rules.add_perm('rsr.change_partnersite', is_rsr_admin | is_org_admin)
-
-rules.add_perm('rsr.add_partnertype', is_rsr_admin)
-rules.add_perm('rsr.change_partnertype', is_rsr_admin)
 
 rules.add_perm('rsr.change_organisationaccount', is_rsr_admin)
 
