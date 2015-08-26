@@ -21,9 +21,9 @@ class PartnershipViewSet(BaseRSRViewSet):
     def get_queryset(self):
         """Allow filtering on partner_type."""
         queryset = self.queryset
-        partner_type = self.request.QUERY_PARAMS.get('partner_type_2', None)
+        partner_type = self.request.QUERY_PARAMS.get('partner_type', None)
         if partner_type and partner_type in Partnership.PARTNER_TYPES_TO_ROLES_MAP.keys():
-            queryset = self.queryset.filter(
+            queryset = queryset.filter(
                 iati_organisation_role=Partnership.PARTNER_TYPES_TO_ROLES_MAP[partner_type]
             )
         return queryset

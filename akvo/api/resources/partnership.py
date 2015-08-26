@@ -197,10 +197,7 @@ class IATIPartnershipResource(ModelResource):
 class PartnershipResource(ConditionalFullResource):
     organisation = ConditionalFullToOneField('akvo.api.resources.OrganisationResource', 'organisation')
     project = ConditionalFullToOneField('akvo.api.resources.ProjectResource', 'project')
-
-    # TODO: When removing the Partnership.partner_type field from the model ALL references to
-    # partner_type_2 (strings and identifiers) should be changed to partner_type
-    partner_type_2 = fields.CharField(attribute='iati_role_to_partner_type')
+    partner_type = fields.CharField(attribute='iati_role_to_partner_type')
 
     def __init__(self, api_name=None):
         """ override to be able to create custom help_text on the partner_type field
@@ -212,14 +209,14 @@ class PartnershipResource(ConditionalFullResource):
         )
 
     def apply_filters(self, request, applicable_filters):
-        """ Custom filtering for the "fake" field partner_type_2 allowing the filtering of the
+        """ Custom filtering for the "fake" field partner_type allowing the filtering of the
         resource using the deprecated Akvo partner type values
 
         Uses Partnership.PARTNER_TYPES_TO_ROLES_MAP map the filter to the
         Partnership.iati_organisation_role field
         """
 
-        partner_type_2_filter = {}
+        partner_type_filter = {}
         if 'iati_role_to_partner_type' in [k.split('__')[0] for k in applicable_filters.keys()]:
             for k in applicable_filters.keys():
                 if k.startswith('iati_role_to_partner_type'):
@@ -228,17 +225,17 @@ class PartnershipResource(ConditionalFullResource):
                         values = [
                             Partnership.PARTNER_TYPES_TO_ROLES_MAP[v] for v in applicable_filters[k]
                         ]
-                        partner_type_2_filter['iati_organisation_role__in'] = values
+                        partner_type_filter['iati_organisation_role__in'] = values
                     else:
-                        partner_type_2_filter[
+                        partner_type_filter[
                             "iati_organisation_role__{}".format(operator)
                         ] = Partnership.PARTNER_TYPES_TO_ROLES_MAP[applicable_filters[k]]
                     applicable_filters.pop(k)
 
         default_filtering = super(PartnershipResource, self).apply_filters(request, applicable_filters)
 
-        if partner_type_2_filter:
-            return default_filtering.filter(**partner_type_2_filter)
+        if partner_type_filter:
+            return default_filtering.filter(**partner_type_filter)
         else:
             return default_filtering
 
@@ -253,7 +250,6 @@ class PartnershipResource(ConditionalFullResource):
             iati_activity_id = ALL,
             internal_id = ALL,
             partner_type = ALL,
-            partner_type_2 = ALL,
             iati_organisation_role = ALL,
             # foreign keys
             organisation = ALL_WITH_RELATIONS,

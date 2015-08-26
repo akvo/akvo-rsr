@@ -13,7 +13,7 @@ from .rsr_serializer import BaseRSRSerializer
 
 class PartnershipSerializer(BaseRSRSerializer):
 
-    partner_type_2 = serializers.Field(source='iati_role_to_partner_type')
+    partner_type = serializers.Field(source='iati_role_to_partner_type')
 
     class Meta:
         model = Partnership
