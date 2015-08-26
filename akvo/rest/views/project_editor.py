@@ -80,7 +80,7 @@ SECTION_THREE_FIELDS = (
 
 PARTNER_FIELDS = (
     ('organisation', 'value-partner-', 'related-object'),
-    ('partner_type', 'partner-type-', 'text'),
+    ('iati_organisation_role', 'partner-role-', 'integer'),
     ('funding_amount', 'funding-amount-', 'decimal'),
 )
 
@@ -486,6 +486,7 @@ def log_addition(obj, user):
         action_flag=ADDITION,
         change_message=change_message
     )
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))

@@ -524,16 +524,16 @@
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="@role='Accountable'">
-        <partner_type>support</partner_type>
+        <iati_organisation_role>2</iati_organisation_role>
       </xsl:if>
       <xsl:if test="@role='Extending'">
-        <partner_type>support</partner_type>
+        <iati_organisation_role>3</iati_organisation_role>
       </xsl:if>
       <xsl:if test="@role='Funding'">
-        <partner_type>funding</partner_type>
+        <iati_organisation_role>1</iati_organisation_role>
       </xsl:if>
       <xsl:if test="@role='Implementing'">
-        <partner_type>field</partner_type>
+        <iati_organisation_role>4</iati_organisation_role>
       </xsl:if>
     </object>
   </xsl:template>
