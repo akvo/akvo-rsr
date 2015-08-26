@@ -27,7 +27,6 @@ from .organisation import OrganisationSerializer
 from .organisation_location import (OrganisationLocationSerializer,
                                     MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer
-from .partner_type import PartnerTypeSerializer
 from .partnership import PartnershipSerializer
 from .planned_disbursement import PlannedDisbursementSerializer
 from .policy_marker import PolicyMarkerSerializer
@@ -82,7 +81,6 @@ __all__ = [
     'OrganisationLocationSerializer',
     'PartnershipSerializer',
     'PartnerSiteSerializer',
-    'PartnerTypeSerializer',
     'PlannedDisbursementSerializer',
     'PolicyMarkerSerializer',
     'ProjectCommentSerializer',

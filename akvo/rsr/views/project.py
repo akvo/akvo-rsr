@@ -461,17 +461,15 @@ def search(request):
 def partners(request, project_id):
     """."""
     project = get_object_or_404(Project, pk=project_id)
-    partner_vals = project.all_partners().values()
-    for partner in partner_vals:
+    partners = project.all_partners().values()
+    for partner in partners:
         id_key = "id".decode('unicode-escape')
         p = Organisation.objects.get(pk=partner[id_key])
         partner['partner_types'] = p.has_partner_types(project)
         partner['organisation_obj'] = p
-    partner_types = _get_project_partners(project)
     context = {
         'project': project,
-        'partner_vals': partner_vals,
-        'partner_types': partner_types
+        'partners': partners,
     }
     return render(request, 'project_partners.html', context)
 

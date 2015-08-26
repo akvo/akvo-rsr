@@ -25,17 +25,27 @@
                 </div>
                 <div class="col-sm-4 currentFunders">
                     <h4 class="">{% trans "Current funders" %}:</h4>
-                    {% for partnership in project.funding_partnerships %}
                     <dl class="dl-horizontal">
-                        <dt><a href="{% url 'organisation-main' partnership.organisation.pk %}">{% img partnership.organisation 80 60 partnership.organisation.name %}</a></dt>
-                        <dd>
-                            <a href="{% url 'organisation-main' partnership.organisation.pk %}">{{partnership.organisation}}</a>{% if partnership.funding_amount %}<br><span class="currency">{{project.get_currency_display}}</span>{{partnership.funding_amount|floatformat:0|intcomma}}{% endif %}
-                        </dd>
+                        {% for partnership in project.funding_partnerships %}
+                            <dt class="funders"><a href="{% url 'organisation-main' partnership.organisation.pk %}">{% img partnership.organisation 80 60 partnership.organisation.name %}</a></dt>
+                            <dd class="funders">
+                                <a href="{% url 'organisation-main' partnership.organisation.pk %}">{{partnership.organisation}}</a>
+                                {% if partnership.funding_amount %}
+                                    <br/>
+                                    <span class="currency">{{project.get_currency_display}}</span>{{partnership.funding_amount|floatformat:0|intcomma}}
+                                {% endif %}
+                                {% if partnership.iati_activity_id %}
+                                    <br/>
+                                    <span class="iati-activity-id">({{ partnership.iati_activity_id }})</span>
+                                {% endif %}
+                            </dd>
+                        {% empty %}
+                            <dt>{% trans 'No funders' %}</dt><dd></dd>
+                        {% endfor %}
                         {% if pledged %}
-                        <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{pledged|floatformat:0|intcomma}}</dd>
+                            <dt class="totalFinance">{% trans "Total" %}:</dt><dd class="totalFinance currencyAmount"><span class="currency">{{project.get_currency_display}}</span>{{pledged|floatformat:0|intcomma}}</dd>
                         {% endif %}
                     </dl>
-                    {% endfor %}
                     <h4>{% trans "Donations" %}:</h4>
                     <dl class="dl-horizontal">
                         {% for donation in project.all_donations %}

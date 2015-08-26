@@ -243,9 +243,15 @@ dl.dl-horizontal dt {
   dl.dl-horizontal dt.totalFinance {
     margin-top: 30px;
     font-weight: bold; }
+  dl.dl-horizontal dt.funders {
+    margin-top: 5px; }
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
+dl.dl-horizontal dd.funders {
+  margin-top: 5px; }
+  dl.dl-horizontal dd.funders span.iati-activity-id {
+    font-style: italic; }
 dl.dl-horizontal.org_statistics_table dd {
   text-align: right; }
 
@@ -538,6 +544,14 @@ nav.navbar-fixed-top {
     min-width: 170px; } }
 .myProjectList div.twoColumns.clearfix > a {
   min-width: 70px; }
+.myProjectList a.addUpdate.disabled {
+  background-color: #AB9F9F;
+  color: #E9E9E9;
+  pointer-events: initial;
+  cursor: not-allowed;
+  border: none; }
+  .myProjectList a.addUpdate.disabled:hover {
+    text-decoration: none; }
 
 div.paginationWrap {
   clear: both; }
@@ -738,6 +752,12 @@ footer .navbar {
   text-transform: uppercase;
   font-weight: bold;
   color: #202024; }
+
+.detailedPoint {
+  float: right; }
+  @media only screen and (max-width: 992px) and (min-width: 768px) {
+    .detailedPoint .fa-calendar-o {
+      display: none; } }
 
 h4.detailedInfo {
   margin-bottom: 0.25em;
@@ -1735,6 +1755,13 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
     background: rgba(44, 42, 116, 0.1); }
     .projectEdit .formStep > div > label:hover {
       background: rgba(32, 32, 36, 0.05); }
+    .projectEdit .formStep > div > label .info-icon {
+      padding-left: 0.5em;
+      cursor: pointer;
+      cursor: hand;
+      font-size: 90%; }
+      .projectEdit .formStep > div > label .info-icon.activated {
+        color: rgba(44, 42, 116, 0.3); }
   .projectEdit .formStep .progress {
     position: absolute;
     width: 30%;
@@ -1891,3 +1918,17 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   cursor: hand; }
   .info-icon.activated {
     color: rgba(44, 42, 116, 0.3); }
+
+#editor-feedback a {
+  display: block;
+  position: fixed;
+  top: 400px;
+  right: -60px;
+  padding: 10px 10px;
+  border: 1px solid rgba(44, 42, 116, 0.5);
+  border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg); }

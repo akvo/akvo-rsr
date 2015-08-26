@@ -6,8 +6,6 @@
 
 
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
@@ -82,14 +80,3 @@ class Sector(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'sector')
         verbose_name_plural = _(u'sectors')
-
-@receiver(post_save, sender=Sector)
-def update_vocabulary(sender, **kwargs):
-    "Updates the vocabulary if not specified."
-    sector = kwargs['instance']
-    if not sector.vocabulary and sector.sector_code:
-        if len(sector.sector_code) == 3:
-            sector.vocabulary = '2'
-        elif len(sector.sector_code) == 5:
-            sector.vocabulary = '1'
-        sector.save()

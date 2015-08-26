@@ -26,7 +26,6 @@ from .link import LinkViewSet
 from .organisation import OrganisationViewSet
 from .organisation_location import OrganisationLocationViewSet, MapOrganisationLocationViewSet
 from .partner_site import PartnerSiteViewSet
-from .partner_type import PartnerTypeViewSet
 from .partnership import PartnershipViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
@@ -98,7 +97,6 @@ __all__ = [
     'OrganisationCustomFieldViewSet',
     'PartnershipViewSet',
     'PartnerSiteViewSet',
-    'PartnerTypeViewSet',
     'PlannedDisbursementViewSet',
     'PolicyMarkerViewSet',
     'ProjectCommentViewSet',
