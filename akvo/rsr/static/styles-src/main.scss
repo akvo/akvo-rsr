@@ -255,11 +255,20 @@ dl {
                 margin-top: 30px;
                 font-weight: bold;
             }
+            &.funders {
+                margin-top: 5px;
+            }
         }
         dd {
             &.totalFinance {
                 margin-top: 30px;
                 font-weight: bold;
+            }
+            &.funders {
+                margin-top: 5px;
+                span.iati-activity-id {
+                    font-style: italic;
+                }
             }
         }
         &.org_statistics_table {

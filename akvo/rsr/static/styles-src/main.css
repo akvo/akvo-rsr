@@ -243,9 +243,15 @@ dl.dl-horizontal dt {
   dl.dl-horizontal dt.totalFinance {
     margin-top: 30px;
     font-weight: bold; }
+  dl.dl-horizontal dt.funders {
+    margin-top: 5px; }
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
+dl.dl-horizontal dd.funders {
+  margin-top: 5px; }
+  dl.dl-horizontal dd.funders span.iati-activity-id {
+    font-style: italic; }
 dl.dl-horizontal.org_statistics_table dd {
   text-align: right; }
 
