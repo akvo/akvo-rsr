@@ -36,7 +36,7 @@ def participating_org(project):
             element.attrib['type'] = str(org.new_organisation_type)
         # don't include old akvo sponsor partner value when checking
         if partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:-1]:
-            element.attrib['role'] = TYPE_TO_CODE[partnership.iati_organisation_role]
+            element.attrib['role'] = str(partnership.iati_organisation_role)
 
         narrative_element = etree.SubElement(element, "narrative")
 

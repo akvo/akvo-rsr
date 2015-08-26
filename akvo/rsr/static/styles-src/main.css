@@ -243,9 +243,15 @@ dl.dl-horizontal dt {
   dl.dl-horizontal dt.totalFinance {
     margin-top: 30px;
     font-weight: bold; }
+  dl.dl-horizontal dt.funders {
+    margin-top: 5px; }
 dl.dl-horizontal dd.totalFinance {
   margin-top: 30px;
   font-weight: bold; }
+dl.dl-horizontal dd.funders {
+  margin-top: 5px; }
+  dl.dl-horizontal dd.funders span.iati-activity-id {
+    font-style: italic; }
 dl.dl-horizontal.org_statistics_table dd {
   text-align: right; }
 
@@ -538,6 +544,14 @@ nav.navbar-fixed-top {
     min-width: 170px; } }
 .myProjectList div.twoColumns.clearfix > a {
   min-width: 70px; }
+.myProjectList a.addUpdate.disabled {
+  background-color: #AB9F9F;
+  color: #E9E9E9;
+  pointer-events: initial;
+  cursor: not-allowed;
+  border: none; }
+  .myProjectList a.addUpdate.disabled:hover {
+    text-decoration: none; }
 
 div.paginationWrap {
   clear: both; }
@@ -738,6 +752,12 @@ footer .navbar {
   text-transform: uppercase;
   font-weight: bold;
   color: #202024; }
+
+.detailedPoint {
+  float: right; }
+  @media only screen and (max-width: 992px) and (min-width: 768px) {
+    .detailedPoint .fa-calendar-o {
+      display: none; } }
 
 h4.detailedInfo {
   margin-bottom: 0.25em;

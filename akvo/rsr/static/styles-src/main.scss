@@ -255,11 +255,20 @@ dl {
                 margin-top: 30px;
                 font-weight: bold;
             }
+            &.funders {
+                margin-top: 5px;
+            }
         }
         dd {
             &.totalFinance {
                 margin-top: 30px;
                 font-weight: bold;
+            }
+            &.funders {
+                margin-top: 5px;
+                span.iati-activity-id {
+                    font-style: italic;
+                }
             }
         }
         &.org_statistics_table {
@@ -607,6 +616,21 @@ nav.navbar-fixed-top {
             min-width: 70px;
         }
     }
+    a {
+        &.addUpdate {
+            &.disabled {
+                background-color: #AB9F9F;
+                color: #E9E9E9;
+                pointer-events: initial;
+                cursor: not-allowed;
+                border: none;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+        }
+    }    
 }
 
 div.paginationWrap {
@@ -849,6 +873,16 @@ footer {
     text-transform: uppercase;
     font-weight: bold;
     color: $akvoBlack;
+}
+
+.detailedPoint {
+    float: right;
+
+    @media only screen and (max-width: $width-medium) and (min-width: $width-small) {
+        .fa-calendar-o {
+            display: none;
+        }
+    }
 }
 
 h4.detailedInfo {
