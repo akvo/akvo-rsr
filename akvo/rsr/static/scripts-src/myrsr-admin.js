@@ -1351,9 +1351,11 @@ function updateHelpIcons(container) {
 
         $(this).append(output);
 
-        $(this).find('.info-icon').on('click', '', function() {
+        $(this).find('.info-icon').on('click', '', function(e) {
             var helpBlock;
 
+            e.preventDefault();
+            
             if (helpBlockIsLabelSibling) {
                 helpBlock = $(this).parent().parent().find('.help-block');
             } else {
