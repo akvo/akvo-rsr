@@ -1932,3 +1932,10 @@ body.translationBarActive div.skiptranslate ~ article, body.translationBarActive
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg); }
+
+#publishProject.btn {
+  margin-top: -6px; }
+  @media only screen and (max-width: 1200px) {
+    @media only screen and (min-width: 992px) {
+      #publishProject.btn {
+        margin-left: -1.25em; } } }
