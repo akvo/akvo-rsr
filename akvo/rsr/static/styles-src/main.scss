@@ -2497,3 +2497,12 @@ body {
         -o-transform: rotate(-90deg);
     }
 }
+
+#publishProject.btn {
+    margin-top: -6px;
+    @media only screen and (max-width: $width-large) {
+        @media only screen and (min-width: $width-medium) {
+            margin-left: -1.25em;
+        }
+    }
+}
