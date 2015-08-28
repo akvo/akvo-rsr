@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from rest_framework import serializers
 from akvo.rsr.models import ProjectUpdate
 from ..fields import Base64ImageField
-from .project_update_location import (ProjectUpdateLocationSerializer,
+from .project_update_location import (ProjectUpdateLocationNestedSerializer,
                                       ProjectUpdateLocationExtraSerializer)
 from .rsr_serializer import BaseRSRSerializer
 from .user import UserSerializer
@@ -18,8 +18,8 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 
     """Serializer for project updates."""
 
-    locations = ProjectUpdateLocationSerializer(source='locations', many=True, required=False,
-                                                allow_add_remove=True)
+    locations = ProjectUpdateLocationNestedSerializer(source='locations', many=True, required=False,
+                                                      allow_add_remove=True)
     photo = Base64ImageField(required=False, allow_empty_file=True)
 
     class Meta:
