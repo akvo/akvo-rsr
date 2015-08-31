@@ -20,7 +20,6 @@ from ..fields import ValidXMLCharField, ValidXMLTextField
 from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 
 from .country import Country
-from .partner_type import PartnerType
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
@@ -88,7 +87,6 @@ class Organisation(TimestampsMixin, models.Model):
         _(u'language'), max_length=2, choices=settings.LANGUAGES, default='en',
         help_text=_(u'The main language of the organisation'),
     )
-    partner_types = models.ManyToManyField(PartnerType)
     organisation_type = ValidXMLCharField(
         _(u'organisation type'), max_length=1, db_index=True, choices=ORG_TYPES
     )
@@ -179,31 +177,34 @@ class Organisation(TimestampsMixin, models.Model):
         def has_location(self):
             return self.filter(primary_location__isnull=False)
 
-        def partners(self, partner_type):
-            "return the organisations in the queryset that are partners of type partner_type"
-            return self.filter(partnerships__partner_type__exact=partner_type).distinct()
+        def partners(self, role):
+            "return the organisations in the queryset that are partners of type role"
+            return self.filter(partnerships__iati_organisation_role__exact=role).distinct()
 
         def allpartners(self):
             return self.distinct()
 
         def fieldpartners(self):
-            return self.partners(Partnership.FIELD_PARTNER)
+            return self.partners(Partnership.IATI_IMPLEMENTING_PARTNER)
 
         def fundingpartners(self):
-            return self.partners(Partnership.FUNDING_PARTNER)
+            return self.partners(Partnership.IATI_FUNDING_PARTNER)
 
         def sponsorpartners(self):
-            return self.partners(Partnership.SPONSOR_PARTNER)
+            return self.partners(Partnership.AKVO_SPONSOR_PARTNER)
 
         def supportpartners(self):
-            return self.partners(Partnership.SUPPORT_PARTNER)
+            return self.partners(Partnership.IATI_ACCOUNTABLE_PARTNER)
+
+        def extendingpartners(self):
+            return self.partners(Partnership.IATI_EXTENDING_PARTNER)
 
         def supportpartners_with_projects(self):
             """return the organisations in the queryset that are support partners with published
             projects, not counting archived projects"""
             from .project import Project
             return self.filter(
-                partnerships__partner_type=Partnership.SUPPORT_PARTNER,
+                partnerships__iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER,
                 partnerships__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED,
                 partnerships__project__status__in=[
                     Project.STATUS_ACTIVE,
@@ -228,7 +229,8 @@ class Organisation(TimestampsMixin, models.Model):
         def all_projects(self):
             "returns a queryset with all projects that has self as any kind of partner"
             from .project import Project
-            return Project.objects.filter(partnerships__organisation__in=self)
+            return (Project.objects.filter(partnerships__organisation__in=self) |
+                    Project.objects.filter(sync_owner__in=self)).distinct()
 
         def users(self):
             "returns a queryset of all users belonging to the organisation(s)"
@@ -246,27 +248,6 @@ class Organisation(TimestampsMixin, models.Model):
     def iati_org_type(self):
         return dict(IATI_LIST_ORGANISATION_TYPE)[str(self.new_organisation_type)] if \
             self.new_organisation_type else ""
-
-    def is_partner_type(self, partner_type):
-        """returns True if the organisation is a partner of type partner_type to
-        at least one project"""
-        return self.partnerships.filter(partner_type__exact=partner_type).count() > 0
-
-    def is_field_partner(self):
-        "returns True if the organisation is a field partner to at least one project"
-        return self.is_partner_type(Partnership.FIELD_PARTNER)
-
-    def is_funding_partner(self):
-        "returns True if the organisation is a funding partner to at least one project"
-        return self.is_partner_type(Partnership.FUNDING_PARTNER)
-
-    def is_sponsor_partner(self):
-        "returns True if the organisation is a sponsor partner to at least one project"
-        return self.is_partner_type(Partnership.SPONSOR_PARTNER)
-
-    def is_support_partner(self):
-        "returns True if the organisation is a support partner to at least one project"
-        return self.is_partner_type(Partnership.SUPPORT_PARTNER)
 
     def partnersites(self):
         "returns the partnersites belonging to the organisation in a PartnerSite queryset"
@@ -286,8 +267,9 @@ class Organisation(TimestampsMixin, models.Model):
         return self.projects.published().distinct()
 
     def all_projects(self):
-        "returns a queryset with all projects that has self as any kind of partner"
-        return self.projects.all().distinct()
+        """returns a queryset with all projects that has self as any kind of partner or reporting
+        organisation."""
+        return (self.projects.all() | self.reporting_projects.all()).distinct()
 
     def active_projects(self):
         return self.published_projects().status_not_cancelled().status_not_archived()
@@ -304,9 +286,11 @@ class Organisation(TimestampsMixin, models.Model):
 
     def has_partner_types(self, project):
         """Return a list of partner types of this organisation to the project"""
-        from .partnership import Partnership
-        return [ps.partner_type for ps in Partnership.objects.filter(project=project,
-                                                                     organisation=self)]
+        partner_types = []
+        for ps in Partnership.objects.filter(project=project, organisation=self):
+            if ps.iati_organisation_role:
+                partner_types.append(ps.iati_organisation_role_label())
+        return partner_types
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
@@ -333,7 +317,7 @@ class Organisation(TimestampsMixin, models.Model):
         "How much € the organisation has pledged to projects it is a partner to"
         return self.active_projects().euros().filter(
             partnerships__organisation__exact=self,
-            partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
         ).aggregate(
             euros_pledged=Sum('partnerships__funding_amount')
         )['euros_pledged'] or 0
@@ -342,7 +326,7 @@ class Organisation(TimestampsMixin, models.Model):
         "How much $ the organisation has pledged to projects"
         return self.active_projects().dollars().filter(
             partnerships__organisation__exact=self,
-            partnerships__partner_type__exact=Partnership.FUNDING_PARTNER
+            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
         ).aggregate(
             dollars_pledged=Sum('partnerships__funding_amount')
         )['dollars_pledged'] or 0

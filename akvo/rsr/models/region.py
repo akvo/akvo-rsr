@@ -35,6 +35,17 @@ class RecipientRegion(models.Model):
         _(u'region description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)')
     )
 
+    def __unicode__(self):
+        if self.region:
+            region_unicode = self.iati_region().name
+        else:
+            region_unicode = u'%s' % _(u'No region specified')
+
+        if self.percentage:
+            region_unicode += u' (%s%%)' % str(self.percentage)
+
+        return region_unicode
+
     def iati_region(self):
         return codelist_value(Region, self, 'region')
 

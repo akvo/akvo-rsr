@@ -6,6 +6,102 @@ Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rs
 Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
+Akvo RSR version 3.6 Jakarta
+---
+
+Wednesday 26th of August 2015, kasperbrandt
+
+New & Noteworthy
+--
+### Introducing the project editor
+From the My Projects section in MyRSR, it is now possible to edit your projects in a completely new editor!
+
+Github issues: [#1525](https://github.com/akvo/akvo-rsr/issues/1525), [#1744](https://github.com/akvo/akvo-rsr/issues/1744), [#1750](https://github.com/akvo/akvo-rsr/issues/1750), [#1759](https://github.com/akvo/akvo-rsr/issues/1759) and [#1762](https://github.com/akvo/akvo-rsr/issues/1762).
+
+### Custom fields
+It is now possible to add custom text fields or checkboxes in the project editor. These can be set in the 'old' organisation admin. When an organisation admin of that organisation then creates a project, these custom fields will be automatically added to the new project.
+
+Github issue: [#1738](https://github.com/akvo/akvo-rsr/issues/1738).
+
+### IATI organisation roles
+We have switched from the RSR specific parter types to the IATI organisation roles. This means that the following switch has been made:
+
+- Support partner: renamed to Accountable partner
+- Field partner: renamed to Implementing partner
+- Funding partner: remains Funding partner
+- Extending partner: added
+- Sponsor partner: removed
+
+For current Sponsor partners, we have made sure no information is lost. Every Sponsor partner now has its own keyword, which is linked to the projects the partner used to be linked to. So it is possible to create Akvo Pages based on the keyword of a former Sponsor partner.
+
+In addition, the RSR specific partner types are still available in the API through a backwards compatible mapping.
+
+Github issue: [#1633](https://github.com/akvo/akvo-rsr/issues/1633).
+
+### Updated calculation of total budget
+In the calculation of the total budget, we now take into account the original and revised budgets.
+
+Github issues: [#1505](https://github.com/akvo/akvo-rsr/issues/1505) and [#1733](https://github.com/akvo/akvo-rsr/issues/1733).
+
+### IATI funding streams
+In RSR v2, we showed the IATI activity IDs of the funding partners. This information has now been re-added on the project finance page.
+
+Github issue: [#1659](https://github.com/akvo/akvo-rsr/issues/1659).
+
+### Organisation page layout
+The layout of the organisation page has been slightly updated. It now displays the long name as well as the short name of an organisation. In addition, the logo of the organisation is centralised and a default 'Partner logo is missing'-logo is added when no organisation logo is present.
+
+Github issue: [#1509](https://github.com/akvo/akvo-rsr/issues/1509).
+
+### Project dates on the project page
+The (planned) start and end dates of a project have now been added to the right panel on the project main page.
+
+Github issue: [#1514](https://github.com/akvo/akvo-rsr/issues/1514).
+
+### Sorting of indicators
+In the results section on the project main page, the indicators are now sorted by their starting date.
+
+Github issue: [#1532](https://github.com/akvo/akvo-rsr/issues/1532).
+
+### Filter on organisation in project_update API
+It is now possible to filter on organisations in the project_update resource of the /rest/v1/ API. This can either be done by looking for all updates of an organisation's projects (project\_\_partners) or all updates of an organisation's users (user\_\_organisations).
+
+Github issue: [#1758](https://github.com/akvo/akvo-rsr/issues/1758).
+
+Bug fixes
+--
+### Search for users on the User Management page
+When searching for users in the User Management page, the search would be lost when switching pages. This has now been resolved.
+
+Github issue: [#1560](https://github.com/akvo/akvo-rsr/issues/1560).
+
+### Disabled 'Update' button in My Project
+For non-published projects, we have disabled the 'update' button. Users were getting a 'Forbidden' error before when trying to place an update to a non-published project.
+
+Github issue: [#1571](https://github.com/akvo/akvo-rsr/issues/1571).
+
+### IATI checks for planned disbursements
+We have fixed a bug in the IATI checks for planned disbursements, which made the IATI checks crash whenever a project had a planned disbursement indicated.
+
+Github issue: [#1749](https://github.com/akvo/akvo-rsr/issues/1749).
+
+### Filters in API declared twice
+For some resources, the filters in the API were declared twice, causing random behaviour in the output of the API. In the RSR Up app, this caused a bug where not all updates were retrieved. This has now been resolved.
+
+Github issue: [#1766](https://github.com/akvo/akvo-rsr/issues/1766).
+
+Under the hood
+--
+### Added correct meta descriptions
+We have added meta descriptions for every page, so that RSR pages will have a correct description when showing up in Google search results.
+
+Github issue: [#1713](https://github.com/akvo/akvo-rsr/issues/1713).
+
+### Monitoring of published projects
+We have seen some projects that get published, even though this is not logged. In order to keep track of the projects that get published better, we will be informed when this happens.
+
+Github issue: [#1740](https://github.com/akvo/akvo-rsr/issues/1740).
+
 Akvo RSR version 3.5.1 Islamabad (Minor release)
 ---
 

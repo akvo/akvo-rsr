@@ -30,17 +30,15 @@ class UserViewSet(BaseRSRViewSet):
         'organisation__primary_location',
         'organisation__primary_location__country',
         'organisation__primary_location__location_target',
-        'organisation__primary_location__location_target__partner_types',
         'organisation__primary_location__location_target__internal_org_ids',
     ).prefetch_related(
         'organisations',
         'organisations__primary_location',
         'organisations__primary_location__country',
-        'organisations__primary_location__location_target',
-        'organisations__primary_location__location_target__partner_types')
+        'organisations__primary_location__location_target',)
     serializer_class = UserSerializer
     filter_fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff',
-                     'is_admin', )
+                     'is_admin')
 
 
 @api_view(['POST'])

@@ -1,0 +1,44 @@
+{% load i18n %}
+<div class="recipient-country-item parent" id="recipient_country{% if key %}-{{ key }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if rc %}+{% else %}-{% endif %}</span> {% trans 'Recipient country' %}: <span class="unicode">{% if rc %}{{ rc }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-recipient-country{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if rc %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="select-group control">
+                        <select name="recipient-country{% if key %}-{{ key }}{% endif %}" id="recipient-country{% if key %}-{{ key }}{% endif %}" class="form-control priority3" saved-value="{{ rc.country }}">
+                            <option value="" {% if not rc.country %} selected="selected" {% endif %}></option>
+                            {% for country in iati_countries %}
+                                <option value="{{ country.code }}" {% if rc.country == country.code %} selected="selected" {% endif %}>{{ country.code }} - {{ country.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="recipient-country{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient country' %}</label>
+                        <p class="help-block hidden">{% trans 'The country that benefits from the project.' %}</p>
+                    </div>
+                </div>
+                <div class="col-md-4 control">
+                    <div class="input-group priority3">
+                        <input type="text" class="form-control" id="recipient-country-percentage{% if key %}-{{ key }}{% endif %}"
+                        name="recipient-country-percentage{% if key %}-{{ key }}{% endif %}" value="{% if rc.percentage %}{{rc.percentage}}{% endif %}" saved-value="{% if rc.percentage %}{{rc.percentage}}{% endif %}">
+                        <span class="input-group-addon">%</span>
+                    </div>
+                    <label class="control-label" for="recipient-country-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient country percentage' %}</label>
+                    <p class="help-block hidden">{% trans 'The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%. Use a period to denote decimals.' %}</p>
+                </div>
+                 <div class="col-md-4 control">
+                    <input type="text" class="form-control priority3" id="recipient-country-description{% if key %}-{{ key }}{% endif %}"
+                    name="recipient-country-description{% if key %}-{{ key }}{% endif %}" value="{{ rc.text }}" saved-value="{{ rc.text }}" maxlength="50">
+                    <label class="control-label" for="recipient-country-description{% if key %}-{{ key }}{% endif %}">{% trans 'Recipient country description' %}</label>
+                    <p class="help-block hidden">{% trans 'Enter additional information about the recipient country, if necessary.' %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

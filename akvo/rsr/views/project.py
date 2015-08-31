@@ -129,7 +129,7 @@ def _get_accordion_data(project):
             result_data['title'] = result.title
             indicators_data = []
             for indicator in result.indicators.all():
-                for period in indicator.periods.all():
+                for period in indicator.periods.all().order_by('period_start'):
                     indicator_data = dict()
                     indicator_data['id'] = str(period.pk)
                     indicator_data['title'] = indicator.title
@@ -300,7 +300,10 @@ def main(request, project_id):
     # timeline_data = _get_timeline_data(project)
 
     reporting_org = project.reporting_org()
-    reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
+    if reporting_org:
+        reporting_org_info = (reporting_org, reporting_org.has_partner_types(project))
+    else:
+        reporting_org_info = None
     partners = _get_project_partners(project)
 
     context = {
@@ -458,17 +461,15 @@ def search(request):
 def partners(request, project_id):
     """."""
     project = get_object_or_404(Project, pk=project_id)
-    partner_vals = project.all_partners().values()
-    for partner in partner_vals:
+    partners = project.all_partners().values()
+    for partner in partners:
         id_key = "id".decode('unicode-escape')
         p = Organisation.objects.get(pk=partner[id_key])
         partner['partner_types'] = p.has_partner_types(project)
         partner['organisation_obj'] = p
-    partner_types = _get_project_partners(project)
     context = {
         'project': project,
-        'partner_vals': partner_vals,
-        'partner_types': partner_types
+        'partners': partners,
     }
     return render(request, 'project_partners.html', context)
 

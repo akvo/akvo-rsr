@@ -18,11 +18,6 @@
         "content_owner": null,
         "allow_edit": true,
         "primary_location": null,
-        "partner_types": [
-            "field",
-            "funding",
-            "sponsor"
-        ],
         "internal_org_ids": []
     },
     "organisation_location": {

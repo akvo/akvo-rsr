@@ -5,12 +5,18 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import PartnerType
+from akvo.rsr.models import OrganisationCustomField, ProjectCustomField
 
 from .rsr_serializer import BaseRSRSerializer
 
 
-class PartnerTypeSerializer(BaseRSRSerializer):
+class OrganisationCustomFieldSerializer(BaseRSRSerializer):
 
     class Meta:
-        model = PartnerType
+        model = OrganisationCustomField
+
+
+class ProjectCustomFieldSerializer(BaseRSRSerializer):
+
+    class Meta:
+        model = ProjectCustomField

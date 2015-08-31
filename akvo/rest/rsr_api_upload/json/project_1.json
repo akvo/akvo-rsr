@@ -14,7 +14,6 @@
         "background": "Background text",
         "target_group": "Target group text",
         "language": "en",
-        "project_rating": 0,
         "notes": "",
         "currency": "EUR",
         "date_request_posted": "2014-01-01",
@@ -99,7 +98,7 @@
     },
     "partnership": {
         "organisation": "Akvo",
-        "partner_type": "field",
+        "iati_organisation_role": "4",
         "funding_amount": null,
         "partner_type_extra": null,
         "iati_activity_id": null,
@@ -108,7 +107,7 @@
     },
     "partnership": {
         "organisation": "Akvo",
-        "partner_type": "funding",
+        "iati_organisation_role": "1",
         "funding_amount": 4711,
         "partner_type_extra": null,
         "iati_activity_id": null,

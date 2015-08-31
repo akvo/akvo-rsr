@@ -1,0 +1,1547 @@
+{% extends "myrsr/myrsr_base.html" %}
+{% load i18n bootstrap3 rsr_utils thumbnail compressed rules humanize %}
+{% block title %}{% trans 'MyRSR - Project Editor' %}{% endblock %}
+{% block myrsr_main %}
+    <!--[if lte IE 9]>
+    <div class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      {% trans 'You are using an unsupported browser (Internet Explorer 9 or less). Please update your browser to a newer version or use a different browser.' %}
+    </div>
+    <![endif]-->
+    <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated" onclick="toggleId(event, this, 'editorHelptext');"></span></h3>
+    <div class="help-block" id="editorHelptext">
+        <div class="row">
+            <div class="col-md-12">
+                {% trans 'Your RSR project page shows project information about what’s happening, where and who’s involved, as well as who the funders are. Tell your project’s story by entering complete information. After a project is published you can keep it up to date by adding project updates with text, photos and videos.' %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% trans 'Before you start, please review all the project fields so you know which information belongs where in the RSR project form.' %}
+            </div>
+        </div>
+        <div class="legenda">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h5>{% trans 'Legenda' %}</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-1"><span style="color:red;">*</span></div>
+                <div class="col-xs-9 col-xs-offset-1">{% trans 'Mandatory field' %}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-1"><span class="glyphicon glyphicon-info-sign info-icon"></span></div>
+                <div class="col-xs-9 col-xs-offset-1">{% trans 'Show helptext' %}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-1"><span class="redLegenda">{% trans 'legend' %}</span></div>
+                <div class="col-xs-9 col-xs-offset-1">{% trans 'No information has been filled out' %}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-1"><span class="orangeLegenda">{% trans 'legend' %}</span><br/></div>
+                <div class="col-xs-9 col-xs-offset-1">{% trans 'Work in progress' %}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-1"><span class="greenLegenda">{% trans 'legend' %}</span></div>
+                <div class="col-xs-9 col-xs-offset-1">{% trans 'All mandatory fields have been completed' %}</div>
+            </div>
+        </div>
+        {% trans 'RSR editors can edit the project information, and RSR administrators can edit and publish the project once all mandatory fields are filled out and the progress bar on top of the page is green. Changes that are made to a published project, will be visible online immediately after saving.' %}<br/><br/>
+        {% trans 'If you have questions, please get in touch with us via' %} <a href="mailto:support@akvo.org">support@akvo.org</a>.
+    </div>
+    <!--*************************************** FORM Container **********************************************-->
+
+    <div class="formOverviewInfo">
+        <div class="row">
+            <div class="col-md-4 editDate">
+                <input id="showAdvancedFields" type="checkbox" name="showAdvancedFields" onchange="showAdvancedFields()">
+                <span>{% trans 'Show advanced IATI fields' %}</span>
+                <span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'advancedHelptext');"></span>
+            </div>
+            <div class="col-md-4">
+                <a href="{% url 'project-main' project.pk %}" target="_blank">
+                    <button class="btn btn-primary viewProject" id="viewProject">{% if not project.is_published %}{% trans 'Preview project page' %}{% else %}{% trans 'View project page' %}{% endif %}</button>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <div class="editDate">
+                    <span>{% trans 'This project is:' %} </span>
+                    {% if project.is_published %}
+                        <span class="published" id="publishingStatus">{% trans 'published' %}</span>
+                    {% else %}
+                        <span class="notPublished" id="publishingStatus">{% trans 'not published' %}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="editDate hidden" id="advancedHelptext">
+                    <span>{% trans 'Enabling this option will allow you to see and use all available fields in RSR, specifically the fields which are available in IATI but used for specific purposes.' %}</span>
+                </div>
+            </div>
+            <div class="col-md-4 editDate" id="publishErrors"></div>
+            <div class="col-md-4">
+                <div class="editDate">
+                    <span>{% trans 'Date created' %}:</span>
+                    <time datetime="YYYY-MM-DDThh:mm:ssTZD">{{ project.created_at }}</time><br/>
+                    <span>{% trans 'Last modified' %}:</span>
+                    <time datetime="YYYY-MM-DDThh:mm:ssTZD">{{ project.last_modified_at }}</time>
+                </div>
+            </div>
+        </div>
+        {% has_perm 'rsr.change_publishingstatus' user project.publishingstatus as can_publish %}
+        {% if not project.is_published and can_publish %}
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="progress overview">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-danger publishProject" id="publishProject" disabled>{% trans 'Publish project' %}</button>
+                </div>
+            </div>
+        {% else %}
+            <div class="progress overview">
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <section class="panels projectEdit">
+        <fieldset>
+                <!--*************************************** FORM STEP 1 **********************************************-->
+                <div class="myPanel borderBottom" id="panel1">
+                    <div class="formStep stepOne">
+                        <div class="toggleSection">
+                            <label for="stepOne" class="stepLabel"><h4>01 - {%  trans 'General information' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-1-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepOne">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <p class="help-block hidden" id="step-1-helptext">{% trans 'This section contains top-level information about your project which will be used in searches.' %}</p>
+                            <form role="form" id="admin-step-1">
+                            <div class="form-group control">
+                                <input type="text" class="form-control validate priority1" name="projectTitle" id="projectTitle" value="{{project.title}}" saved-value="{{project.title}}" maxlength="45"/>
+                                <label for="projectTitle" class="control-label">{%  trans 'Project title' %}</label>
+                            </div>
+                            <div class="form-group control">
+                                <input type="text" class="form-control priority1" name="projectSubTitle" id="projectSubTitle" maxlength="75" value="{{project.subtitle}}" saved-value="{{project.subtitle}}"/>
+                                <label for="projectSubTitle" class="control-label">{% trans 'Project subtitle' %}</label>
+                            </div>
+                            <div class="form-group control">
+                                <input type="text" class="form-control priority2" name="iatiId" id="iatiId" maxlength="100" value="{{project.iati_activity_id}}" saved-value="{{project.iati_activity_id}}" />
+                                <label for="iatiId" class="control-label">{% trans 'IATI identifier' %}</label>
+                                <p class="help-block hidden">{% trans 'This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of: [country code]-[Chamber of Commerce number]-[organisation’s internal project code]. For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. Fore more information see' %} <a href="http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition" target="_blank">http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition</a></p>
+                            </div>
+                            <h5>{% trans 'Related projects' %}</h5>
+                            <div class="form-group hidden hide-default">
+                                <div class="select-group control">
+                                    <select name="projectHierarchy" id="projectHierarchy" class="form-control priority2" saved-value="{% if project.hierarchy %}{{ project.hierarchy }}{% endif %}">
+                                        <option value="" {% if not project.hierarchy %} selected="selected" {% endif %}></option>
+                                        <option value="1" {% if project.hierarchy|add:0 == 1 %} selected="selected" {% endif %}>{% trans 'Core activity' %}</option>
+                                        <option value="2" {% if project.hierarchy|add:0 == 2 %} selected="selected" {% endif %}>{% trans 'Sub activity' %}</option>
+                                        <option value="3" {% if project.hierarchy|add:0 == 3 %} selected="selected" {% endif %}>{% trans 'Lower sub activity' %}</option>
+                                    </select>
+                                    <label for="projectHierarchy" class="control-label">{% trans 'Hierarchy' %}</label>
+                                </div>
+                                <p class="help-block hidden">{% trans 'If you are reporting multiple levels of projects in RSR, you can specify whether this is a core, sub, or lower sub activity here.' %}</p>
+                            </div>
+                            <div class="related-project-container" id="related-project-container">
+                                {% for rp in project.related_projects.all %}
+                                    {% include "myrsr/project_editor_partials/related_project_input.html" with key=rp.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/related_project_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                    <a href="#" class="add-related-project" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another related project' %}</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectStatus" id="projectStatus" class="form-control priority1" saved-value="{{ project.status }}" onchange="toggleDonateButton()">
+                                        <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}></option>
+                                        <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>{% trans 'Needs funding' %}</option>
+                                        <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>{% trans 'Active' %}</option>
+                                        <option value="C" {% if project.status == "C" %} selected="selected"{% endif %}>{% trans 'Complete' %}</option>
+                                        <option value="L" {% if project.status == "L" %} selected="selected"{% endif %}>{% trans 'Cancelled' %}</option>
+                                        <option value="R" {% if project.status == "R" %} selected="selected"{% endif %}>{% trans 'Archived' %}</option>
+                                    </select>
+                                    <label for="projectStatus" class="control-label">{% trans 'Status' %}</label>
+                                </div>
+                                <p class="help-block hidden">
+                                    {% blocktrans %}There are five different project statuses:<br/>
+                                    1) Needs funding: this project still needs funding and implementation has not yet started.<br/>
+                                    2) Active: the implementation phase has begun.<br/>
+                                    3) Completed: the project has been completed.<br/>
+                                    4) Cancelled: the project never took place or work stopped before it was fully implemented.<br/>
+                                    5) Archived: projects are archived when the reporting partner no longer uses RSR.{% endblocktrans %}
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="control datepicker-container {% if project.date_start_actual %}hidden{% endif %}"
+                                             id="planned-start-date-container"
+                                             data-id="eventFromPlanned"
+                                             data-child="{{ project.date_start_planned|date:"d/m/Y" }}"
+                                             data-label="{% trans 'Start date (planned)' %}"
+                                             data-helptext="{% trans 'Enter the original start date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority{% if not project.date_start_actual %}1{% else %}2{% endif %}"></div>
+                                        <div class="control datepicker-container {% if not project.date_start_actual %}hidden{% endif %}"
+                                             id="actual-start-date-container"
+                                             data-id="eventFromActual"
+                                             data-child="{{ project.date_start_actual|date:"d/m/Y" }}"
+                                             data-label="{% trans 'Start date (actual)' %}"
+                                             data-helptext="{% trans 'Enter the actual start date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority{% if project.date_start_actual %}1{% else %}2{% endif %}"></div>
+                                        <p>
+                                            <input type="checkbox" id="start-date-toggle" {% if project.date_start_actual %}checked{% endif %} onchange="toggleStartDate(this)">
+                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual start date' %}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="control datepicker-container {% if project.date_end_actual %}hidden{% endif %}"
+                                             id="planned-end-date-container"
+                                             data-id="eventEndPlanned"
+                                             data-child="{{ project.date_end_planned|date:"d/m/Y" }}"
+                                             data-label="{% trans 'End date (planned)' %}"
+                                             data-helptext="{% trans 'Enter the original end date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority2"></div>
+                                        <div class="control datepicker-container {% if not project.date_end_actual %}hidden{% endif %}"
+                                             id="actual-end-date-container"
+                                             data-id="eventEndActual"
+                                             data-child="{{ project.date_end_actual|date:"d/m/Y" }}"
+                                             data-label="{% trans 'End date (actual)' %}"
+                                             data-helptext="{% trans 'Enter the actual end date of the project (DD/MM/YYYY).' %}"
+                                             data-classes="priority2"></div>
+                                        <p>
+                                            <input type="checkbox" id="end-date-toggle" {% if project.date_end_actual %}checked{% endif %} onchange="toggleEndDate(this)">
+                                            <span style="font-size: 0.9em; color: rgba(44, 42, 116, 0.5);">{% trans 'Show actual end date' %}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectCurrency" id="projectCurrency" class="form-control priority2" saved-value="{% if project.currency %}{{ project.currency }}{% endif %}">
+                                        <option value="USD" {% if project.currency == "USD"%} selected="selected" {% endif %}>$</option>
+                                        <option value="EUR" {% if project.currency == "EUR"%} selected="selected" {% endif %}>€</option>
+                                    </select>
+                                    <label for="projectCurrency" class="control-label">{% trans 'Currency' %}</label>
+                                </div>
+                                <p class="help-block hidden">{% trans 'The default currency for this project. Used in all financial aspects of the project.' %}</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control">
+                                    <select name="projectLanguage" id="projectLanguage" class="form-control priority2" saved-value="{{ project.language }}">
+                                        <option value="" {% if not project.language %}selected="selected"{% endif %}></option>
+                                        <option value="de" {% if project.language == 'de' %}selected="selected"{% endif %}>{% trans 'German' %}</option>
+                                        <option value="en" {% if project.language == 'en' %}selected="selected"{% endif %}>{% trans 'English' %}</option>
+                                        <option value="es" {% if project.language == 'es' %}selected="selected"{% endif %}>{% trans 'Spanish' %}</option>
+                                        <option value="fr" {% if project.language == 'fr' %}selected="selected"{% endif %}>{% trans 'French' %}</option>
+                                        <option value="nl" {% if project.language == 'nl' %}selected="selected"{% endif %}>{% trans 'Dutch' %}</option>
+                                        <option value="ru" {% if project.language == 'ru' %}selected="selected"{% endif %}>{% trans 'Russian' %}</option>
+                                    </select>
+                                    <label for="language" class="control-label">{% trans 'Language' %}</label>
+                                </div>
+                                <p class="help-block hidden">{% trans 'Enter the language used when entering the details for this project.' %}</p>
+                            </div>
+                            <h5>{% trans 'Project photo' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'photo-helptext');"></span></h5>
+                            <p class="help-block hidden" id="photo-helptext">{% trans 'Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page.' %}</p>
+                            <div class="row">
+                                <div class="col-md-12 text-center" id="photo-container">
+                                    {% if project.current_image %}
+                                        {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
+                                            <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
+                                        {% endthumbnail %}
+                                        <a onclick="deletePhoto(this);" class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group control">
+                                <input type="file" class="form-control priority1" id="photo" name="photo" default="{% if project.current_image %}{{ project.current_image.url }}{% endif %}" accept="image/*" />
+                                <label class="control-label" for="photo">{% trans 'Photo' %}</label>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control priority2" id="photoCaption" name="photoCaption" value="{{project.current_image_caption}}" saved-value="{{project.current_image_caption}}" maxlength="50">
+                                        <label for="photoCaption" class="control-label">{% trans 'Photo caption' %}</label>
+                                        <p class="help-block hidden">{% trans 'Briefly describe who or what you see in the photo.' %}</p>
+                                    </div>
+                                    <div class="col-md-6 control">
+                                        <input type="text" class="form-control priority2" id="photoCredit" name="photoCredit" value="{{project.current_image_credit}}" saved-value="{{project.current_image_credit}}" maxlength="50">
+                                        <label for="photoCredit" class="control-label">{% trans 'Photo credit' %}</label>
+                                        <p class="help-block hidden">{% trans 'Enter who took the photo.' %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control hidden hide-default">
+                                    <select name="defaultAidType" id="defaultAidType" class="form-control priority3" saved-value="{{ project.default_aid_type }}">
+                                        <option value="" {% if not project.default_aid_type %}selected="selected"{% endif %}></option>
+                                        {% for aid_type in aid_types %}
+                                            <option value="{{ aid_type.code }}" {% if project.default_aid_type == aid_type.code %}selected="selected"{% endif %}>{{ aid_type.code }} - {{ aid_type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="defaultAidType" class="control-label">{% trans 'Default aid type' %}</label>
+                                    <p class="help-block hidden">{% trans 'This is the IATI identifier for the type of aid being supplied or activity being undertaken. This element specifies a default for all the project’s financial transactions. This can be overridden at the individual transaction level. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/AidType/" target="_blank">http://iatistandard.org/201/codelists/AidType/</a>.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control hidden hide-default">
+                                    <select name="defaultFlowType" id="defaultFlowType" class="form-control priority3" saved-value="{{ project.default_flow_type }}">
+                                        <option value="" {% if not project.default_flow_type %}selected="selected"{% endif %}></option>
+                                        {% for flow_type in flow_types %}
+                                            <option value="{{ flow_type.code }}" {% if project.default_flow_type == flow_type.code %}selected="selected"{% endif %}>{{ flow_type.code }} - {{ flow_type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="defaultFlowType" class="control-label">{% trans 'Default flow type' %}</label>
+                                    <p class="help-block hidden">{% trans 'This is the IATI identifier for how the activity (project) is funded. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/FlowType/" target="_blank">http://iatistandard.org/201/codelists/FlowType/</a>.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control hidden hide-default">
+                                    <select name="defaultTiedStatus" id="defaultTiedStatus" class="form-control priority3" saved-value="{{ project.default_tied_status }}">
+                                        <option value="" {% if not project.default_tied_status %}selected="selected"{% endif %}></option>
+                                        {% for tied_status in tied_statuses %}
+                                            <option value="{{ tied_status.code }}" {% if project.default_tied_status == tied_status.code %}selected="selected"{% endif %}>{{ tied_status.code }} - {{ tied_status.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="defaultTiedStatus" class="control-label">{% trans 'Default tied status' %}</label>
+                                    <p class="help-block hidden">{% trans 'This element specifies a default for all the activity’s financial transactions; it can be overridden at the individual transaction level. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/TiedStatus/" target="_blank">http://iatistandard.org/201/codelists/TiedStatus/</a>.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control hidden hide-default">
+                                    <select name="collaborationType" id="collaborationType" class="form-control priority3" saved-value="{{ project.collaboration_type }}">
+                                        <option value="" {% if not project.collaboration_type %}selected="selected"{% endif %}></option>
+                                        {% for collaboration_type in collaboration_types %}
+                                            <option value="{{ collaboration_type.code }}" {% if project.collaboration_type == collaboration_type.code %}selected="selected"{% endif %}>{{ collaboration_type.code }} - {{ collaboration_type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="collaborationType" class="control-label">{% trans 'Collaboration type' %}</label>
+                                    <p class="help-block hidden">{% trans 'This is the IATI identifier for the type of collaboration involved. For reference, please visit:' %} <a href="http://iatistandard.org/201/codelists/CollaborationType/" target="_blank">http://iatistandard.org/201/codelists/CollaborationType/</a>.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="select-group control hidden hide-default">
+                                    <select name="defaultFinanceType" id="defaultFinanceType" class="form-control priority3" saved-value="{{ project.default_finance_type }}">
+                                        <option value="" {% if not project.default_finance_type %}selected="selected"{% endif %}></option>
+                                        {% for finance_type in finance_types %}
+                                            <option value="{{ finance_type.code }}" {% if project.default_finance_type == finance_type.code %}selected="selected"{% endif %}>{{ finance_type.code }} - {{ finance_type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="defaultFinanceType" class="control-label">{% trans 'Default finance type' %}</label>
+                                    <p class="help-block hidden">{% trans 'This is the IATI identifier for the type of finance. This element specifies a default for all the transactions in the project’s activity report; it can be overridden at the individual transaction level. For reference visit:' %} <a href="http://iatistandard.org/201/codelists/FinanceType/" target="_blank">http://iatistandard.org/201/codelists/FinanceType/</a>.</p>
+                                </div>
+                            </div>
+                            {% for customfield in custom_fields_section_1 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep1"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep1-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 2 **********************************************-->
+                <div class="myPanel borderBottom" id="panel2">
+                    <div class="formStep stepTwo">
+                        <div class="toggleSection">
+                            <label for="stepTwo" class="stepLabel"><h4>02 - {% trans 'Contact information' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-2-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepTwo">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <p class="help-block hidden" id="step-2-helptext">{% trans 'In this section you can provide contact information of involved project partners. You can add multiple contacts. Be aware that this information will be public, so avoid giving personal contact details.' %}</p>
+                            <form role="form" id="admin-step-2">
+                            <div class="contact-information-container" id="contact-information-container">
+                                {% for contact in project.contacts.all %}
+                                    {% include "myrsr/project_editor_partials/contact_information_input.html" with key=contact.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/contact_information_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                    <a href="#" class="add-contact-information" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another contact' %}</a>
+                                </div>
+                            </div>
+                            {% for customfield in custom_fields_section_2 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep2"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep2-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 3 **********************************************-->
+                <div class="myPanel borderBottom" id="panel3">
+                    <div class="formStep stepThree">
+                        <div class="toggleSection">
+                            <label for="stepThree" id="label3" class="stepLabel"><h4>03 - {% trans 'Project partners' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-3-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepThree">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <p class="help-block hidden" id="step-3-helptext">
+                                {% trans 'In this section you can add information about all the organisations involved in the project and their various roles. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
+                            </p>
+                            <form role="form" id="admin-step-3">
+                            <h5>{% trans 'Reporting organisation' %}</h5>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group control">
+                                        <div class="reportingOrganisation-input reportingOrganisation typeahead-container priority1"
+                                        data-child-id="reportingOrganisation"
+                                        data-child-class="priority1"
+                                        data-value="{% if project.sync_owner %}{{project.sync_owner.id}}{% endif %}"
+                                        data-count-class="reportingOrganisation">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group control hidden hide-default">
+                                        <div class="checkbox">
+                                            <label for="secondaryReporter" class="control-label">
+                                                <input id="secondaryReporter" type="checkbox" name="secondaryReporter" class="priority3" {% if project.sync_owner_secondary_reporter %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                    {% trans 'Secondary reporter' %}
+                                            </label>
+                                        </div>
+                                        <p class="help-block hidden">
+                                            {% trans 'Indicate whether the reporting organisation is a secondary publisher, publishing data for which it is not directly responsible. If the organisation is not currently featured in RSR, please contact support@akvo.org to request to add it to the database.' %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Participating organisations' %}<span class="glyphicon glyphicon-info-sign info-icon" onclick="toggleId(event, this, 'partners-helptext');"></span></h5>
+                            <p class="help-block hidden" id="partners-helptext">{% trans 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please contact <a href="mailto:support@akvo.org">support@akvo.org</a> to request to add it to the database.' %}</p>
+                            <div class="partner-container" id="partner-container">
+                                {% for partnership in project.partnerships.all %}
+                                    {% include "myrsr/project_editor_partials/partner_input.html" with key=partnership.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/partner_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                    <a href="#" class="add-partner" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another participating organisation' %}</a>
+                                </div>
+                            </div>
+                            {% for customfield in custom_fields_section_3 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep3"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep3-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 4 **********************************************-->
+                <div class="myPanel borderBottom" id="panel4">
+                    <div class="formStep stepFour">
+                        <div class="toggleSection">
+                            <label for="stepFour" class="stepLabel"><h4>04 - {% trans 'Project descriptions' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-4-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepFour">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <p class="help-block hidden" id="step-4-helptext">{% trans 'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future.' %}</p>
+                            <form role="form" id="admin-step-4">
+                            <div class="form-group control">
+                                <textarea id="summary" class="form-control priority1" name="summary" maxlength="400" rows="5" saved-value="{{ project.project_plan_summary }}">{{ project.project_plan_summary }}</textarea>
+                                <label class="control-label" for="summary">{% trans 'Summary of project plan' %}</label>
+                                <p class="help-block hidden">
+                                    {% blocktrans %}Enter a brief summary. The summary should explain:<br/>
+                                    - Why the project is being carried out;<br/>
+                                    - Where it is taking place;<br/>
+                                    - Who will benefit and/or participate;<br/>
+                                    - What it specifically hopes to accomplish;<br/>
+                                    - How those specific goals will be reached{% endblocktrans %}
+                                </p>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="goalsOverview" class="form-control priority1" name="goalsOverview" maxlength="600" rows="5" saved-value="{{ project.goals_overview }}">{% if project.goals_overview %}{{project.goals_overview}}{% endif %}</textarea>
+                                <label class="control-label" for="goalsOverview">{% trans 'Goals overview' %}</label>
+                                <p class="help-block hidden">{% trans 'Provide a brief description of the overall project goals.' %}</p>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="background" class="form-control priority2" name="background" maxlength="1000" rows="5" saved-value="{{ project.background }}">{% if project.background %}{{project.background}}{% endif %}</textarea>
+                                <label class="control-label" for="background">{% trans 'Background' %}</label>
+                                <p class="help-block hidden">{% trans 'This should describe the geographical, political, environmental, social and/or cultural context of the project, and any related activities that have already taken place or are underway.' %}</p>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="currentSituation" class="form-control priority2" name="currentSituation" maxlength="600" rows="5" saved-value="{{ project.current_status }}">{% if project.current_status %}{{project.current_status}}{% endif %}</textarea>
+                                <label class="control-label" for="currentSituation">{% trans 'Baseline situation' %}</label>
+                                <p class="help-block hidden">{% trans 'Describe the situation at the start of the project.' %}</p>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="targetGroup" class="form-control priority2" name="targetGroup" maxlength="600" rows="5" saved-value="{{ project.target_group }}">{% if project.target_group %}{{project.target_group}}{% endif %}</textarea>
+                                <label class="control-label" for="targetGroup">{% trans 'Target group' %}</label>
+                                <p class="help-block hidden">{% trans 'This should include information about the people, organisations or resources that are being impacted by this project.' %}</p>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="projectPlan" class="form-control priority2" name="projectPlan" rows="5" saved-value="{{ project.project_plan }}">{% if project.project_plan %}{{project.project_plan}}{% endif %}</textarea>
+                                <label class="control-label" for="projectPlan">{% trans 'Project plan' %}</label>
+                                <p class="help-block hidden">{% trans 'Detailed information about the implementation of the project: the what, how, who and when.' %}</p>
+                            </div>
+                            <div class="form-group control">
+                                <textarea id="sustainability" class="form-control priority2" name="sustainability" rows="5" saved-value="{{ project.sustainability }}">{% if project.sustainability %}{{project.sustainability}}{% endif %}</textarea>
+                                <label class="control-label" for="sustainability">{% trans 'Sustainability' %}</label>
+                                <p class="help-block hidden">{% trans 'Describe how you aim to guarantee sustainability of the project until 10 years after project implementation. Think about the institutional setting, capacity-building, a cost recovery plan, products used, feasible arrangements for operation and maintenance, anticipation of environmental impact and social integration.' %}</p>
+                            </div>
+                            {% for customfield in custom_fields_section_4 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep4"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep4-button"><i class="glyphicon glyphicon-save"></i> Save</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 5 **********************************************-->
+                <div class="myPanel borderBottom" id="panel5">
+                    <div class="formStep stepFive">
+                        <div class="toggleSection">
+                            <label for="stepFive" class="stepLabel"><h4>05 - {% trans 'Results and indicators' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-5-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepFive">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <div class="hidden" id="step-5-helptext">
+                                <p class="help-block">{% trans 'In the results and indicators section you can define which results you plan to achieve and how you will measure these to be able to monitor and evaluate your project. There are three main types of results. Outputs are usually very practical. For example to organise a particular type of training. An indicator can be the number of trainings given. This is easy to measure. Outcome results occur when users use outputs, for example when people portray different behaviour because of the training they took part in. Impact is a broader result such as empowered citizens.' %}</p>
+                                <p class="help-block">{% trans 'Indicators help us to measure progress on these various types of results. They are usually easy to determine for outputs (e.g. 9 trainings), harder for outcomes (e.g. number of policy documents written) and hardest (or near to impossible) for impacts. You can set a target value (e.g. 9 trainings) and later add the actual value (e.g. 8 trainings took place). This gives you progress information against set targets for monitoring and evaluation purposes. Sometimes baseline values are used to measure against (e.g. average income level at project start).' %}</p>
+                                <p class="help-block">{% trans 'Lastly, indicators can be separated per period. Especially for longer projects this is helpful to track progress during the project. For example, you can set a target of 3 trainings per year for a 3 year project. When you don’t add a period for an indicator, it is assumed that the indicator (and the target and actual values) applies to the full project period. A full example:' %}</p>
+                                <p class="help-block"><i>{% trans 'Result: "Organise training sessions for staff"' %}<br/>
+                                <span class="tab"></span>{% trans 'Indicator: "Organise 10 training sessions"' %}<br/>
+                                <span class="tab"></span><span class="tab"></span>{% trans 'Indicator period: "01-01-2015 - 31-12-2015 (Target: 10 / Actual: 5)"' %}</i></p>
+                            </div>
+                            <form role="form" id="admin-step-5">
+                            <h5>{% trans 'Results' %}</h5>
+                            <div class="result-container" id="result-container">
+                                {% for result in project.results.all %}
+                                    {% include "myrsr/project_editor_partials/result_input.html" with key=result.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/result_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                    <a href="#" class="add-result" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another result' %}</a>
+                                </div>
+                            </div>
+                            <h5 class="hidden hide-default">{% trans 'Project conditions' %}</h5>
+                            <div class="condition-container hidden hide-default" id="condition-container">
+                                {% for condition in project.conditions.all %}
+                                    {% include "myrsr/project_editor_partials/condition_input.html" with key=condition.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/condition_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-center add-object-link">
+                                    <a href="#" class="add-condition" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another condition' %}</a>
+                                </div>
+                            </div>
+                            {% for customfield in custom_fields_section_5 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep5"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep5-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 6 **********************************************-->
+                <div class="myPanel borderBottom" id="panel6">
+                    <div class="formStep stepSix">
+                        <div class="toggleSection">
+                            <label for="stepSix" class="stepLabel"><h4>06 - {% trans 'Finance' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-6-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepSix">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <div class="hidden" id="step-6-helptext">
+                                <p class="help-block">{% trans 'You can define the budget information as a total for the whole project or within sections and periods to provide more granular information about where the project funds are being spent.' %}</p>
+                                <p class="help-block">{% trans 'Transactions refer to the actual transfers of funds between organisations related to the funding and expenditure of the project. This information is crucially important when defining the funding chain within the development aid sector and can help to shape the overall picture. Providing this information can also be beneficial to give clarity on expenditure over periods of time which is reflected within the results obtained for the project.' %}</p>
+                            </div>
+                            <form role="form" id="admin-step-6">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label for="donateButton" class="control-label">
+                                        <input id="donateButton" type="checkbox" name="donateButton" class="priority2" {% if project.donate_button %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>{% trans 'Donate button' %}
+                                    </label>
+                                </div>
+                                <p class="help-block hidden">
+                                    {% trans 'If you tick the checkbox, a donate button will appear on your project page, enabling donations to your project from people visiting the page. The donate button will only appear if your project needs funding,' %}
+                                </p>
+                            </div>
+                            <h5>{% trans 'Budget items' %}</h5>
+                            <p class="help-block">{% trans 'The total value of all budget items is:' %} <span class="currency-display">{{ project.get_currency_display }}</span> <span id="total-budget">{% if project.budget %}{{ project.budget|floatformat:0|intcomma }}{% else %}0{% endif %}</span></p>
+                            <div class="form-group control hidden hide-default">
+                                <div class="input-group priority3">
+                                    <input type="text" class="form-control" name="capital-spend-percentage" id="capital-spend-percentage"
+                                    value="{% if project.capital_spend_percentage %}{{project.capital_spend_percentage}}{% endif %}" saved-value="{% if project.capital_spend_percentage %}{{project.capital_spend_percentage}}{% endif %}">
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                                <label for="capital-spend-percentage" class="control-label">{% trans 'Capital spend percentage' %}</label>
+                                <p class="help-block hidden">{% trans 'The percentage of the total commitment allocated to or planned for capital expenditure. Content must be a positive decimal number between 0 and 100, with no percentage sign. Use a period to denote decimals.' %}</p>
+                            </div>
+                            <div class="budget-item-container" id="budget-item-container">
+                                {% for item in project.budget_items.all %}
+                                    {% include "myrsr/project_editor_partials/budget_item_input.html" with key=item.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/budget_item_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                    <a href="#" class="add-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another budget item' %}</a>
+                                </div>
+                            </div>
+                            <h5 class="hidden hide-default">{% trans 'Country budget items' %}</h5>
+                            <div class="form-group">
+                                <div class="select-group control hidden hide-default">
+                                    <select name="country-budget-vocabulary" id="country-budget-vocabulary" class="form-control priority3" saved-value="{{ project.country_budget_vocabulary }}">
+                                        <option value="" {% if not project.country_budget_vocabulary %}selected="selected"{% endif %}></option>
+                                        {% for vocabulary in budget_identifier_vocabularies %}
+                                            <option value="{{ vocabulary.code }}" {% if project.country_budget_vocabulary == vocabulary.code %} selected="selected" {% endif %}>{{ vocabulary.code }} - {{ vocabulary.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="country-budget-vocabulary" class="control-label">{% trans 'Country budget vocabulary' %}</label>
+                                    <p class="help-block hidden">{% trans 'Enter an IATI code for the common functional classification or country system (this allows for common codes, country-specific codes, or any other classification agreed between countries and donors) see:' %} <a href="http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/" target="_blank">http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/</a>.</p>
+                                </div>
+                            </div>
+                            <div class="country-budget-item-container hidden hide-default" id="country-budget-item-container">
+                                {% for item in project.country_budget_items.all %}
+                                    {% include "myrsr/project_editor_partials/country_budget_item_input.html" with key=item.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/country_budget_item_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-country-budget-item" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another country budget item' %}</a>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Transactions' %}</h5>
+                            <div class="transaction-container" id="transaction-container">
+                                {% for transaction in project.transactions.all %}
+                                    {% include "myrsr/project_editor_partials/transaction_input.html" with key=transaction.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/transaction_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                    <a href="#" class="add-transaction" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another transaction' %}</a>
+                                </div>
+                            </div>
+                            <h5 class="hidden hide-default">{% trans 'Planned disbursements' %}</h5>
+                            <div class="planned-disbursement-container hidden hide-default" id="planned-disbursement-container">
+                                {% for pd in project.planned_disbursements.all %}
+                                    {% include "myrsr/project_editor_partials/planned_disbursement_input.html" with key=pd.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/planned_disbursement_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-planned-disbursement" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another planned disbursement' %}</a>
+                                </div>
+                            </div>
+                            {% for customfield in custom_fields_section_6 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep6"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep6-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 7 **********************************************-->
+                <div class="myPanel borderBottom" id="panel7">
+                    <div class="formStep stepSeven">
+                        <div class="toggleSection">
+                            <label for="stepSeven" class="stepLabel"><h4>07 - {% trans 'Project locations' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-7-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepSeven">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <div class="hidden" id="step-7-helptext">
+                                <p class="help-block">{% trans 'The scope of the project refers to the geographical area within which the project is active.' %}</p>
+                                <p class="help-block">{% trans 'Also add the physical locations where the project is being carried out. These will appear on the map on your project page. Use the link to' %} <a href="http://mygeoposition.com/" target="_blank">http://mygeoposition.com/</a> {% trans 'to obtain the coordinates for your locations to ensure the pins are correctly placed.' %}</p>
+                            </div>
+                            <form role="form" id="admin-step-7">
+                            <div class="form-group">
+                                <div class="select-group control hidden hide-default">
+                                    <select name="scope" id="scope" class="form-control priority3" saved-value="{{ project.project_scope }}">
+                                        <option value="" {% if not project.project_scope %}selected="selected"{% endif %}></option>
+                                        {% for scope in activity_scopes %}
+                                            <option value="{{ scope.code }}" {% if project.project_scope == scope.code %} selected="selected" {% endif %}>{{ scope.code }} - {{ scope.name }}</option>
+                                        {% endfor %}                                        
+                                    </select>
+                                    <label for="scope" class="control-label">{% trans 'Project scope' %}</label>
+                                    <p class="help-block hidden">{% trans 'Select the geographical scope of the project.' %}</p>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Project locations' %}</h5>
+                            <div class="project-location-container" id="project-location-container">
+                                {% if project.locations.all %}
+                                    {% for location in project.locations.all %}
+                                        {% include "myrsr/project_editor_partials/project_location_input.html" with key=location.pk %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% include "myrsr/project_editor_partials/project_location_input.html" with key='add-0' %}
+                                {% endif %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-project-location" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another project location' %}</a>
+                                </div>
+                            </div>
+                            <h5 class="hidden hide-default">{% trans 'Recipient countries' %}</h5>
+                            <div class="recipient-country-container hidden hide-default" id="recipient-country-container">
+                                {% for rc in project.recipient_countries.all %}
+                                    {% include "myrsr/project_editor_partials/recipient_country_input.html" with key=rc.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/recipient_country_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-recipient-country" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient country' %}</a>
+                                </div>
+                            </div>
+                            <h5 class="hidden hide-default">{% trans 'Recipient regions' %}</h5>
+                            <div class="recipient-region-container hidden hide-default" id="recipient-region-container">
+                                {% for rr in project.recipient_regions.all %}
+                                    {% include "myrsr/project_editor_partials/recipient_region_input.html" with key=rr.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/recipient_region_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-recipient-region" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another recipient region' %}</a>
+                                </div>
+                            </div>
+                            {% for customfield in custom_fields_section_7 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep7"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep7-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 8 **********************************************-->
+                <div class="myPanel borderBottom" id="panel8">
+                    <div class="formStep stepEight">
+                        <div class="toggleSection">
+                            <label for="stepEight" class="stepLabel"><h4>08 - {% trans 'Project focus' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-8-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepEight">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <div class="hidden" id="step-8-helptext">
+                                <p class="help-block">{% trans 'The project focus aims to define the broad areas of the project activities. This ensures that the project can be collectively grouped by e.g. sector with other similar projects to help make the most out of the project resources. Generally accepted codes are used to help determine these sectors:' %}</p>
+                                <p class="help-block">- {% trans 'DAC-3 sector codes which are more general. For reference see:' %} <a href="http://iatistandard.org/201/codelists/SectorCategory/" target="_blank">http://iatistandard.org/201/codelists/SectorCategory/</a>.</p>
+                                <p class="help-block">- {% trans 'DAC-5 sector codes which are most detailed. For reference see:' %} <a href="http://iatistandard.org/201/codelists/Sector/" target="_blank">http://iatistandard.org/201/codelists/Sector/</a>.</p>
+                            </div>
+                            <form role="form" id="admin-step-8">
+                            <h5>{% trans 'Sectors' %}</h5>
+                            <div class="sector-container" id="sector-container">
+                                {% for sector in project.sectors.all %}
+                                    {% include "myrsr/project_editor_partials/sector_input.html" with key=sector.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/sector_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-sector" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another sector' %}</a>
+                                </div>
+                            </div>
+                            <h5 class="hidden hide-default">{% trans 'Policy markers' %}</h5>
+                            <div class="policy-marker-container hidden hide-default" id="policy-marker-container">
+                                {% for marker in project.policy_markers.all %}
+                                    {% include "myrsr/project_editor_partials/policy_marker_input.html" with key=marker.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/policy_marker_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group hidden hide-default">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-policy-marker" id=""> <span class="glyphicon glyphicon-plus"></span> {% trans 'Add another policy marker' %}</a>
+                                </div>
+                            </div>
+                            {% for customfield in custom_fields_section_8 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep8"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep8-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 9 **********************************************-->
+                <div class="myPanel borderBottom" id="panel9">
+                    <div class="formStep stepNine">
+                        <div class="toggleSection">
+                            <label for="stepNine" class="stepLabel"><h4>09 - {% trans 'Links and documents' %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-9-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepNine">                        
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <p class="help-block hidden" id="step-9-helptext">{% trans 'You can add any additional supporting documents to your project or links to external websites here. This could be in the form of annual reports, baseline surveys, contextual information or any other report that can help users understand more about the project’s activities.' %}</p>
+                            <form role="form" id="admin-step-9">
+                            <h5>{% trans 'Links' %}</h5>
+                            <div class="form-group">
+                                <div class="link-container" id="link-container">
+                                    {% for link in project.links.all %}
+                                        {% include "myrsr/project_editor_partials/link_input.html" with key=link.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_editor_partials/link_input.html" with key='add-0' %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-link" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another link' %}</a>
+                                </div>
+                            </div>
+                            <h5>{% trans 'Document links' %}</h5>
+                            <div class="document-container" id="document-container">
+                                {% for document in project.documents.all %}
+                                    {% include "myrsr/project_editor_partials/document_input.html" with key=document.pk %}
+                                {% empty %}
+                                    {% include "myrsr/project_editor_partials/document_input.html" with key='add-0' %}
+                                {% endfor %}
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12 text-center add-object-link">
+                                     <a href="#" class="add-document" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another document' %}</a>
+                                </div>
+                            </div>
+                            {% for customfield in custom_fields_section_9 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep9"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep9-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--*************************************** FORM STEP 10 **********************************************-->
+                <div class="myPanel borderBottom" id="panel10">
+                    <div class="formStep stepTen">
+                        <div class="toggleSection">
+                            <label for="stepTen" class="stepLabel"><h4>10 - {% trans 'Project comments' %}{% if user.is_superuser or user.is_rsr_admin %} {% trans 'and keywords' %}{% endif %}<span class="glyphicon glyphicon-info-sign info-icon hidden" onclick="toggleId(event, this, 'step-10-helptext');"></span></h4></label>
+                        </div>
+                        <input type="radio" name="step" id="stepTen">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <span class="sr-only"></span><span class="progress-percentage"></span>
+                            </div>
+                        </div>
+                        <div class="formBlock hidden">
+                            <p class="help-block hidden" id="step-10-helptext">{% trans 'Fill in comments regarding the project. These are only for internal use and will not be displayed anywhere on the project page.' %}</p>
+                            <form role="form" id="admin-step-10">
+                            <div class="form-group control">
+                                <textarea id="projectComments" class="form-control priority2" name="projectComments" rows="8" saved-value="{{ project.notes }}">{{ project.notes }}</textarea>
+                                <label class="control-label" for="projectComments">{% trans 'Project comments' %}</label>
+                                <p class="help-block hidden">{% trans 'The project comments are only for internal use and will not be displayed anywhere on the project page.' %}</p>
+                            </div>
+                            {% if user.is_superuser or user.is_rsr_admin %}
+                                <h5>{% trans 'Keywords' %}</h5>
+                                <div class="keyword-container" id="keyword-container">
+                                    {% for keyword in project.keywords.all %}
+                                        {% include "myrsr/project_editor_partials/keyword_input.html" with key=keyword.pk %}
+                                    {% empty %}
+                                        {% include "myrsr/project_editor_partials/keyword_input.html" with key='add-0' %}
+                                    {% endfor %}
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12 text-center add-object-link">
+                                         <a href="#" class="add-keyword" id=""><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another keyword' %}</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% for customfield in custom_fields_section_10 %}
+                                <div id="custom_field-{{ customfield.pk }}">
+                                    {% if customfield.type == 'text' %}
+                                    <div class="form-group control">
+                                        <textarea id="custom-field-{{ customfield.pk }}" class="form-control priority{% if customfield.mandatory %}1{% else %}2{% endif %}" name="custom-field-{{ customfield.pk }}" {% if customfield.max_characters > 0 %}maxlength="{{ customfield.max_characters }}"{% endif %} saved-value="{{ customfield.value }}">{{ customfield.value }}</textarea>
+                                        <label class="control-label" for="custom-field-{{ customfield.pk }}">{{ customfield.name }}</label>
+                                        {% if customfield.help_text %}<p class="help-block hidden">{{ customfield.help_text|safe }}</p>{% endif %}
+                                    </div>
+                                    {% elif customfield.type == 'boolean' %}
+                                        <div class="form-group control">
+                                            <div class="checkbox">
+                                                <label for="custom-field-{{ customfield.pk }}" class="control-label">
+                                                    <input id="custom-field-{{ customfield.pk }}" type="checkbox" name="custom-field-{{ customfield.pk }}" class="priority2 boolean-custom-field" {% if customfield.value == 'True' %}checked saved-value="True"{% else %}saved-value="False"{% endif %}>
+                                                        {{ customfield.name }}
+                                                </label>
+                                            </div>
+                                            {% if customfield.help_text %}
+                                                <p class="help-block hidden">{{ customfield.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <div class="row form-group">
+                                <div class="col-xs-8 col-sm-10" style="text-align: center;" id="savingstep10"></div>
+                                <div class="col-xs-4 col-sm-2" style="text-align: right;">
+                                    <button type="submit" class="btn btn-success" id="savingstep10-button"><i class="glyphicon glyphicon-save"></i> {% trans 'Save' %}</button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+    <div id="editor-feedback" class="hidden-xs">
+        <script type="text/javascript">
+            document.write(
+                "<n uers=\"znvygb:efe\056srrqonpx\100nxib\056bet?fhowrpg=EFE srrqonpx\"><v pynff=\"sn sn-pbzzrag-b\"><\057v>".replace(/[a-zA-Z]/g, function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);})
+            );
+        </script>
+        {% trans 'Provide feedback' %}
+        <script type="text/javascript">
+            document.write(
+                "<\057n>".replace(/[a-zA-Z]/g, function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);})
+            );
+        </script>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.6/zepto.min.js"></script>
+    <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
+
+    <script type="text/template" id="related-project-input">{% include "myrsr/project_editor_partials/related_project_input.html" %}</script>
+    <script type="text/template" id="budget-item-input">{% include "myrsr/project_editor_partials/budget_item_input.html" %}</script>
+    <script type="text/template" id="condition-input">{% include "myrsr/project_editor_partials/condition_input.html" %}</script> 
+    <script type="text/template" id="contact-information-input">{% include "myrsr/project_editor_partials/contact_information_input.html" %}</script> 
+    <script type="text/template" id="country-budget-item-input">{% include "myrsr/project_editor_partials/country_budget_item_input.html" %}</script> 
+    <script type="text/template" id="document-input">{% include "myrsr/project_editor_partials/document_input.html" %}</script> 
+    <script type="text/template" id="indicator-input">{% include "myrsr/project_editor_partials/indicator_input.html" %}</script> 
+    <script type="text/template" id="indicator-period-input">{% include "myrsr/project_editor_partials/indicator_period_input.html" %}</script> 
+    <script type="text/template" id="keyword-input">{% include "myrsr/project_editor_partials/keyword_input.html" %}</script>
+    <script type="text/template" id="link-input">{% include "myrsr/project_editor_partials/link_input.html" %}</script>
+    <script type="text/template" id="project-location-input">{% include "myrsr/project_editor_partials/project_location_input.html" %}</script>     
+    <script type="text/template" id="location-administrative-input">{% include "myrsr/project_editor_partials/location_administrative_input.html"%}</script> 
+    <script type="text/template" id="partner-input">{% include "myrsr/project_editor_partials/partner_input.html" %}</script> 
+    <script type="text/template" id="planned-disbursement-input">{% include "myrsr/project_editor_partials/planned_disbursement_input.html" %}</script> 
+    <script type="text/template" id="policy-marker-input">{% include "myrsr/project_editor_partials/policy_marker_input.html" %}</script> 
+    <script type="text/template" id="recipient-country-input">{% include "myrsr/project_editor_partials/recipient_country_input.html" %}</script> 
+    <script type="text/template" id="recipient-region-input">{% include "myrsr/project_editor_partials/recipient_region_input.html" %}</script>
+    <script type="text/template" id="result-input">{% include "myrsr/project_editor_partials/result_input.html" %}</script> 
+    <script type="text/template" id="sector-input">{% include "myrsr/project_editor_partials/sector_input.html" %}</script> 
+    <script type="text/template" id="transaction-input">{% include "myrsr/project_editor_partials/transaction_input.html" %}</script> 
+    <script type="text/template" id="transaction-sector-input">{% include "myrsr/project_editor_partials/transaction_sector_input.html" %}</script>
+ 
+    {% block react_js %}
+        <script src="//fb.me/react-0.12.0.js"></script>
+    {% endblock react_js %}
+
+    <script type="application/json" id="default-values">
+        {
+            "project_id": "{{ project.pk }}",
+            "publishing_status_id": "{{ project.publishingstatus.pk }}",
+            "user_id": "{{ user.pk }}",
+            "view_project": "{% trans 'View project page' %}",
+            "related_project_label": "{% trans 'Related RSR project' %}",
+            "related_project_helptext": "{% trans 'When your project has related projects in the RSR database, you can link them here to create a hierarchy, by filling in the project title. It is possible to link multiple projects.' %}",
+            "reporting_org_label": "{% trans 'Reporting organisation' %}",
+            "reporting_org_helptext": "{% trans 'The organisation issuing the IATI report. May be a primary source (reporting on its own activity as donor, implementing agency, etc) or a secondary source (reporting on the activities of another organisation). If the organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database, so it shows up in the drop down menu.' %}",
+            "partner_label": "{% trans 'Project partner' %}",
+            "partner_helptext": "{% trans 'Select an organisation that is playing a role in the project.  If an organisation is not currently featured in RSR, please contact' %} <a href='mailto:support@akvo.org'>support@akvo.org</a> {% trans 'to request to add it to the database.' %}",
+            "provider_org_label": "{% trans 'Provider organisation' %}",
+            "provider_org_helptext": "{% trans 'For incoming funds, this is the organisation from which the transaction originated. It will default to the reporting organisation.' %}",
+            "recipient_org_label": "{% trans 'Recipient organisation' %}",
+            "recipient_org_helptext": "{% trans 'The organisation that receives the incoming funds.' %}"
+        }
+    </script>
+
+    <script type="application/json" id="sector-values">
+        [{% for sector_code in sector_codes %}{"code": "{{ sector_code.code }}", "name": "{{ sector_code.name|title }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
+    </script>
+
+    <script type="application/json" id="sector-category-values">
+        [{% for sector_cat_code in sector_category_codes %}{"code": "{{ sector_cat_code.code }}", "name": "{{ sector_cat_code.name|title }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
+    </script>
+
+    <script type="application/javascript">
+        function toggleFunding(node) {
+            var fundingInputNode, fundingNode, parentNode, labelNode, mandatoryNodes, span;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            fundingInputNode = parentNode.getElementsByTagName("input")[1];
+            fundingNode = fundingInputNode.parentNode.parentNode;
+
+            if (node.options[node.selectedIndex].value === '1') {
+                fundingInputNode.removeAttribute('disabled');
+                fundingInputNode.className += ' priority1';
+
+                labelNode = fundingNode.getElementsByTagName('label')[0];
+                span = document.createElement('span');
+                span.className = 'mandatory';
+                span.innerHTML = '*';
+                labelNode.insertBefore(span, labelNode.getElementsByTagName('span')[0]);
+            } else {
+                fundingInputNode.value = '';
+                fundingInputNode.setAttribute('disabled', '');
+                fundingInputNode.className = fundingInputNode.className.replace('priority1', '');
+
+                mandatoryNodes = fundingNode.getElementsByClassName('mandatory');
+                if (mandatoryNodes.length > 0) {
+                    mandatoryNodes[0].parentNode.removeChild(mandatoryNodes[0]);
+                }
+            }
+        }
+
+        function toggleOtherLabel(node) {
+            var otherLabelNode, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            otherLabelNode = parentNode.getElementsByTagName("input")[0];
+
+            if (node.options[node.selectedIndex].text === 'Other') {
+                otherLabelNode.removeAttribute('disabled');
+                otherLabelNode.className += ' priority1';
+            } else {
+                otherLabelNode.value = '';
+                otherLabelNode.setAttribute('disabled', '');
+                otherLabelNode.className = otherLabelNode.className.replace('priority1', '');
+            }
+        }
+
+        function showAdvancedFields() {
+            var showAdvancedFields, advancedFields;
+
+            showAdvancedFields = document.getElementById("showAdvancedFields");
+            advancedFields = document.getElementsByClassName("hide-default");
+
+            if (showAdvancedFields.checked) {
+                for (var i=0; i < advancedFields.length; i++){
+                    advancedFields[i].className = advancedFields[i].className.replace("hidden", "");
+                }
+            } else {
+                for (var j=0; j < advancedFields.length; j++){
+                    advancedFields[j].className += " hidden";
+                }
+            }
+        }
+
+        function toggleId(e, helpIconNode, nodeId) {
+            e.stopPropagation && e.stopPropagation() || (e.cancelBubble = true);
+
+            var node;
+
+            node = document.getElementById(nodeId);
+
+            if (node.className.indexOf("hidden") > -1) {
+                node.className = node.className.replace('hidden', '');
+                helpIconNode.className += ' activated';
+            } else {
+                node.className += ' hidden';
+                helpIconNode.className = helpIconNode.className.replace('activated', '');
+            }
+        }
+
+        function toggleSectors(node) {
+            var optionNode, sectorCodeId, sectorCodeNode, sectorCode, sectorCodes;
+
+            sectorCodeId = node.getAttribute('id').replace('vocabulary', 'code');
+            sectorCodeNode = document.getElementById(sectorCodeId);
+
+            if (node.value == '') {
+                // No vocabulary selected, do nothing
+            } else if (node.value == '1') {
+                // DAC-5 selected
+                if (sectorCodeNode.getAttribute('displayed-options') != '1') {
+                    sectorCodes = JSON.parse(document.getElementById("sector-values").innerHTML);
+
+                    while (sectorCodeNode.firstChild) {
+                        sectorCodeNode.removeChild(sectorCodeNode.firstChild);
+                    }
+
+                    optionNode = document.createElement('option');
+                    optionNode.setAttribute('value', '');
+                    sectorCodeNode.appendChild(optionNode);
+
+                    for (var i=0; i < sectorCodes.length; i++) {
+                        sectorCode = sectorCodes[i];
+
+                        optionNode = document.createElement('option');
+                        optionNode.setAttribute('value', sectorCode.code);
+                        optionNode.innerHTML = sectorCode.code + ' - ' + sectorCode.name;
+
+                        sectorCodeNode.appendChild(optionNode);
+                    }
+
+                    sectorCodeNode.setAttribute('displayed-options', '1');
+                }
+            } else if (node.value == '2') {
+                // DAC-3 selected
+                if (sectorCodeNode.getAttribute('displayed-options') != '2') {
+                    sectorCodes = JSON.parse(document.getElementById("sector-category-values").innerHTML);
+
+                    while (sectorCodeNode.firstChild) {
+                        sectorCodeNode.removeChild(sectorCodeNode.firstChild);
+                    }
+
+                    optionNode = document.createElement('option');
+                    optionNode.setAttribute('value', '');
+                    sectorCodeNode.appendChild(optionNode);
+
+                    for (var j=0; j < sectorCodes.length; j++) {
+                        sectorCode = sectorCodes[j];
+
+                        optionNode = document.createElement('option');
+                        optionNode.setAttribute('value', sectorCode.code);
+                        optionNode.innerHTML = sectorCode.code + ' - ' + sectorCode.name;
+
+                        sectorCodeNode.appendChild(optionNode);
+                    }
+
+                    sectorCodeNode.setAttribute('displayed-options', '2');
+                }
+            }
+        }
+
+        function toggleDocumentUpload(node) {
+            var documentUpload, documentUrl, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            documentUpload = parentNode.querySelectorAll('.show-document-upload')[0];
+            documentUrl = parentNode.querySelectorAll('.show-document-url')[0];
+
+            if (node.checked) {
+                // User wants to upload document
+                if (documentUrl.className.indexOf('hidden') === -1) {
+                    documentUrl.className += ' hidden';
+                }
+
+                if (documentUpload.className.indexOf('hidden') > -1) {
+                    documentUpload.className = documentUpload.className.replace('hidden', '');
+                }
+            } else {
+                // User wants to indicate URL
+                if (documentUpload.className.indexOf('hidden') === -1) {
+                    documentUpload.className += ' hidden';
+                }
+
+                if (documentUrl.className.indexOf('hidden') > -1) {
+                    documentUrl.className = documentUrl.className.replace('hidden', '');
+                }
+            }
+        }
+
+        function toggleDocumentUploadHelptext(node) {
+            var helpText = node.parentNode.parentNode.parentNode.querySelectorAll('.help-block')[0];
+
+            if (node.className.indexOf('activated') === -1) {
+                node.className += ' activated';
+                helpText.className = helpText.className.replace('hidden', '');
+
+            } else {
+                node.className = node.className.replace('activated', '');
+                helpText.className += ' hidden';
+            }
+        }
+
+        function toggleRelatedProject(node) {
+            var relatedProject, IatiIdentifier, parentNode;
+
+            parentNode = node.parentNode.parentNode.parentNode;
+            relatedProject = parentNode.querySelectorAll('.related-project-input')[0];
+            IatiIdentifier = parentNode.querySelectorAll('.related-project-iati-identifier-container')[0];
+
+            if (node.checked) {
+                // User wants to indicate IATI identifier
+                if (relatedProject.className.indexOf('hidden') === -1) {
+                    relatedProject.className += ' hidden';
+                }
+
+                if (IatiIdentifier.className.indexOf('hidden') > -1) {
+                    IatiIdentifier.className = IatiIdentifier.className.replace('hidden', '');
+                }
+            } else {
+                // User wants to link to related project
+                if (IatiIdentifier.className.indexOf('hidden') === -1) {
+                    IatiIdentifier.className += ' hidden';
+                }
+
+                if (relatedProject.className.indexOf('hidden') > -1) {
+                    relatedProject.className = relatedProject.className.replace('hidden', '');
+                }
+            }
+        }
+
+        function toggleRelatedProjectHelptext(node) {
+            var helpText = node.parentNode.parentNode.querySelectorAll('.help-block')[0];
+
+            if (node.className.indexOf('activated') === -1) {
+                node.className += ' activated';
+                helpText.className = helpText.className.replace('hidden', '');
+
+            } else {
+                node.className = node.className.replace('activated', '');
+                helpText.className += ' hidden';
+            }
+        }
+
+        function toggleStartDate(node) {
+            var startDateActual, startDatePlanned, startDateActualInput, startDatePlannedInput, startDateActualLabel, startDatePlannedLabel, mandatoryNode;
+
+            startDateActual = document.getElementById('actual-start-date-container');
+            startDatePlanned = document.getElementById('planned-start-date-container');
+            startDateActualInput = startDateActual.getElementsByTagName('input')[0];
+            startDatePlannedInput = startDatePlanned.getElementsByTagName('input')[0];
+            startDateActualLabel = startDateActual.getElementsByTagName('label')[0];
+            startDatePlannedLabel = startDatePlanned.getElementsByTagName('label')[0];
+
+            mandatoryNode = document.createElement('span');
+            mandatoryNode.className = 'mandatory';
+            mandatoryNode.innerHTML= '*';
+
+            if (node.checked) {
+                // Show actual start date, as mandatory field
+                if (startDatePlanned.className.indexOf('hidden') === -1) {
+                    startDatePlanned.className += ' hidden';
+                    startDatePlannedInput.className = startDatePlannedInput.className.replace('priority1', 'priority2');
+                }
+
+                if (startDateActual.className.indexOf('hidden') > -1) {
+                    startDateActual.className = startDateActual.className.replace('hidden', '');
+                    startDateActualInput.className = startDateActualInput.className.replace('priority2', 'priority1');
+                }
+
+                startDateActualLabel.insertBefore(mandatoryNode, startDateActualLabel.getElementsByTagName('span')[0]);
+                var plannedMandatory = startDatePlannedLabel.getElementsByClassName('mandatory')[0];
+                plannedMandatory.parentNode.removeChild(plannedMandatory);
+            } else {
+                // Show planned start date, as mandatory field
+                if (startDateActual.className.indexOf('hidden') === -1) {
+                    startDateActual.className += ' hidden';
+                    startDateActualInput.className = startDateActualInput.className.replace('priority1', 'priority2');
+                }
+
+                if (startDatePlanned.className.indexOf('hidden') > -1) {
+                    startDatePlanned.className = startDatePlanned.className.replace('hidden', '');
+                    startDatePlannedInput.className = startDatePlannedInput.className.replace('priority2', 'priority1');
+                }
+
+                startDatePlannedLabel.insertBefore(mandatoryNode, startDatePlannedLabel.getElementsByTagName('span')[0]);
+                var actualMandatory = startDateActualLabel.getElementsByClassName('mandatory')[0];
+                actualMandatory.parentNode.removeChild(actualMandatory);
+            }
+        }
+
+        function toggleEndDate(node) {
+            var endDateActual, endDatePlanned;
+
+            endDateActual = document.getElementById('actual-end-date-container');
+            endDatePlanned = document.getElementById('planned-end-date-container');
+
+            if (node.checked) {
+                // Show actual end date
+                if (endDatePlanned.className.indexOf('hidden') === -1) {
+                    endDatePlanned.className += ' hidden';
+                }
+
+                if (endDateActual.className.indexOf('hidden') > -1) {
+                    endDateActual.className = endDateActual.className.replace('hidden', '');
+                }
+            } else {
+                // Show planned end date
+                if (endDateActual.className.indexOf('hidden') === -1) {
+                    endDateActual.className += ' hidden';
+                }
+
+                if (endDatePlanned.className.indexOf('hidden') > -1) {
+                    endDatePlanned.className = endDatePlanned.className.replace('hidden', '');
+                }
+            }
+        }
+    </script>
+
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+
+    {% compressed_css 'react_datepicker_style' %}
+
+    {% compressed_js 'react_typeahead' %}
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-onclickoutside.js"></script>
+    <script type="application/javascript" src="{{ STATIC_URL }}lib/scripts/react-datepicker-compat.js"></script>
+    {% compressed_js 'myrsr_admin' %}
+{% endblock %}

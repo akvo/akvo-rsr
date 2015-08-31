@@ -24,6 +24,7 @@ from ..signals import (
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
 from .country import Country, RecipientCountry
+from .custom_field import OrganisationCustomField, ProjectCustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
@@ -42,7 +43,6 @@ from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocat
 from .organisation import Organisation
 from .organisation_account import OrganisationAccount
 from .partner_site import PartnerSite
-from .partner_type import PartnerType
 from .partnership import Partnership
 from .payment_gateway import PayPalGateway, MollieGateway, PaymentGatewaySelector
 from .planned_disbursement import PlannedDisbursement
@@ -91,8 +91,8 @@ __all__ = [
     'ProjectUpdateLocation',
     'Organisation',
     'OrganisationAccount',
+    'OrganisationCustomField',
     'PartnerSite',
-    'PartnerType',
     'Partnership',
     'PayPalGateway',
     'MollieGateway',
@@ -103,6 +103,7 @@ __all__ = [
     'ProjectComment',
     'ProjectCondition',
     'ProjectContact',
+    'ProjectCustomField',
     'ProjectDocument',
     'ProjectUpdate',
     'PublishingStatus',
@@ -151,9 +152,6 @@ rules.add_perm('rsr.change_keyword', is_rsr_admin)
 rules.add_perm('rsr.add_partnersite', is_rsr_admin)
 rules.add_perm('rsr.change_partnersite', is_rsr_admin | is_org_admin)
 
-rules.add_perm('rsr.add_partnertype', is_rsr_admin)
-rules.add_perm('rsr.change_partnertype', is_rsr_admin)
-
 rules.add_perm('rsr.change_organisationaccount', is_rsr_admin)
 
 rules.add_perm('rsr.add_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager |
@@ -182,6 +180,16 @@ rules.add_perm('rsr.delete_projectlocation', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_projectcustomfield', is_rsr_admin)
+
+rules.add_perm('rsr.add_organisationcustomfield', is_rsr_admin | is_org_admin |
+               is_org_project_editor)
+rules.add_perm('rsr.change_organisationcustomfield', is_rsr_admin | is_org_admin |
+               is_org_project_editor)
+rules.add_perm('rsr.delete_organisationcustomfield', is_rsr_admin)
 
 rules.add_perm('rsr.add_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
@@ -253,7 +261,7 @@ rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.delete_organisationlocation', is_rsr_admin | is_org_admin)
 
-rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)

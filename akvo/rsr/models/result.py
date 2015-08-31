@@ -35,7 +35,15 @@ class Result(models.Model):
     )
 
     def __unicode__(self):
-        return self.title
+        result_unicode = self.title if self.title else u'%s' % _(u'No result title')
+
+        if self.type:
+            result_unicode += u' (' + self.iati_type().name + u')'
+
+        if self.indicators.all():
+            result_unicode += _(u' - %s indicators') % (unicode(self.indicators.count()))
+
+        return result_unicode
 
     def iati_type(self):
         return codelist_value(ResultType, self, 'type')

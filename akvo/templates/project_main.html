@@ -24,11 +24,48 @@
         <div class="col-sm-4">
           <aside class="projectSideInfo">
             <ul>
-              <li><span class="detailedInfo">{% trans 'Project summary' %}</span><p>{{project.project_plan_summary}}</p></li>
+              <li>
+                <span class="detailedInfo">{% trans 'Project summary' %}</span>
+                <p>{{project.project_plan_summary}}</p>
+              </li>
               {% if project.iati_activity_id %}
-                <li><span class="detailedInfo">{% trans 'IATI ID' %}</span> {{project.iati_activity_id}}</li>
+                <li>
+                  <span class="detailedInfo">{% trans 'IATI ID' %}</span> 
+                  {{project.iati_activity_id}}
+                </li>
               {% endif %}
-              <li><span class="detailedInfo">{% trans 'Status' %}</span> {{project.get_status_display}}</li>
+              <li>
+                <span class="detailedInfo">{% trans 'Status' %}</span>
+                <span class="detailedPoint">{{project.get_status_display}}</span>
+                <br/>
+                {% if project.date_start_planned %}
+                  <span class="detailedInfo">{% trans 'Start date (planned)' %}</span>
+                  <span class="detailedPoint">
+                    <i class="fa fa-calendar-o"></i> {{project.date_start_planned|date:"d-M-Y"}}
+                  </span>
+                {% endif %}
+                {% if project.date_start_actual %}
+                  <br/>
+                  <span class="detailedInfo">{% trans 'Start date' %}</span>
+                  <span class="detailedPoint">
+                    <i class="fa fa-calendar-o"></i> {{project.date_start_actual|date:"d-M-Y"}}
+                  </span>
+                {% endif %}
+                {% if project.date_end_planned %}
+                  <br/>
+                  <span class="detailedInfo">{% trans 'End date (planned)' %}</span>
+                  <span class="detailedPoint">
+                    <i class="fa fa-calendar-o"></i> {{project.date_end_planned|date:"d-M-Y"}}
+                  </span>
+                {% endif %}
+                {% if project.date_end_actual %}
+                  <br/>
+                  <span class="detailedInfo">{% trans 'End date' %}</span>
+                  <span class="detailedPoint">
+                    <i class="fa fa-calendar-o"></i> {{project.date_end_actual|date:"d-M-Y"}}
+                  </span>
+                {% endif %}
+              </li>
               {% if project.has_relations %}
                 <li>
                   <span class="detailedInfo">{% trans 'Hierarchy' %}</span>
@@ -43,6 +80,7 @@
                 {% for sector in project.sectors.all %}{% if not forloop.first %}, {% endif %}{{sector.iati_sector}}{% endfor %}
                 </li>
               {% endif %}
+              {% if reporting_org %}
               <li class="projectPartners">
                 <span class="detailedInfo">{% trans "Reporting organisation" %}</span>
                 <div class="row">
@@ -62,6 +100,7 @@
                   </div>
                 </div>
               </li>
+              {% endif %}
               <li class="financeBlock">
                 <span class="detailedInfo">{% trans "financial info" %}</span>
                 <a href="{% url 'project-finance' project.id %}" class="text-center"><i class="fa fa-line-chart"></i>{% trans 'See all financial info' %}</a>

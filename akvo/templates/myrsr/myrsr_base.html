@@ -11,9 +11,12 @@
             {% with current_path=request.get_full_path %}
             <nav class="navbar navbar-nav" role="navigation">
                 <ul class="nav nav-pills nav-stacked">
-                    <li><a href="{% url 'my_details' %}"  class="{% if current_path == '/myrsr/' %}active{% endif %}">{% trans 'My details' %}</a></li>
-                    <li><a href="{% url 'my_updates' %}" class="{% if '/myrsr/updates/' in current_path %}active{% endif %}">{% trans 'My updates' %}</a></li>
-                    <li><a href="{% url 'my_projects' %}" class="{% if '/myrsr/projects/' in current_path %}active{% endif %}">{% trans 'My projects' %}</a></li>
+                    <li><a href="{% url 'my_details' %}"  class="{% if current_path == '/myrsr/' %}active{% endif %}">My details</a></li>
+                    <li><a href="{% url 'my_updates' %}" class="{% if '/myrsr/updates/' in current_path %}active{% endif %}">My updates</a></li>
+                    <li><a href="{% url 'my_projects' %}" class="{% if '/myrsr/projects/' in current_path %}active{% endif %}">My projects</a></li>
+                    {% if '/myrsr/project_editor/' in current_path %}
+                    <li><a href="#" class="active" onclick="return false;">{% trans 'Project editor' %}</a></li>
+                    {% endif %}
                     {% has_perm 'rsr.iati_management' user as can_manage_iati %}
                     {% if can_manage_iati %}
                     <li><a href="{% url 'my_iati' %}" class="{% if '/myrsr/iati/' in current_path %}active{% endif %}">{% trans "My IATI" %}</a></li>

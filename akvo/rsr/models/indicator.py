@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -46,7 +47,13 @@ class Indicator(models.Model):
     )
 
     def __unicode__(self):
-        return self.title
+        indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')
+
+        if self.periods.all():
+            indicator_unicode += u' - %s %s' % (unicode(self.periods.count()),
+                                                _(u'period(s)'))
+
+        return indicator_unicode
 
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
@@ -87,7 +94,38 @@ class IndicatorPeriod(models.Model):
     )
 
     def __unicode__(self):
-        return self.indicator.__unicode__()
+        if self.period_start:
+            period_unicode = unicode(self.period_start)
+        else:
+            period_unicode = u'%s' % _(u'No start date')
+
+        if self.period_end:
+            period_unicode += u' - %s' % unicode(self.period_end)
+        else:
+            period_unicode += u' - %s' % _(u'No end date')
+
+        if self.actual_value or self.target_value:
+            period_unicode += u' ('
+
+            if self.actual_value and self.target_value:
+                period_unicode += u'actual: %s / target: %s)' % (unicode(self.actual_value),
+                                                                 unicode(self.target_value))
+            elif self.actual_value:
+                period_unicode += u'actual: %s)' % unicode(self.actual_value)
+            else:
+                period_unicode += u'target: %s)' % unicode(self.target_value)
+
+        return period_unicode
+
+    def clean(self):
+        # Don't allow a start date before an end date
+        if self.period_start and self.period_end and (self.period_start > self.period_end):
+            raise ValidationError(
+                {'period_start': u'%s' % _(u'Period start cannot be at a later time than period '
+                                           u'end.'),
+                 'period_end': u'%s' % _(u'Period start cannot be at a later time than period '
+                                           u'end.')}
+            )
 
     class Meta:
         app_label = 'rsr'

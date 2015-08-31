@@ -1,0 +1,43 @@
+{% load i18n %}
+<div class="country-budget-item-item parent" id="country_budget_item{% if key %}-{{ key }}{% endif %}">
+    <div class="row partial-header">
+        <div class="col-md-9 col-sm-6 col-xs-6 hide-partial-click">
+            <span class="folded-sign">{% if item %}+{% else %}-{% endif %}</span> {% trans 'Country budget item' %}: <span class="unicode">{% if item %}{{ item }}{% else %}({% trans 'new' %}){% endif %}</span>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 text-right">
+            <a class="delete-object-button" id="delete-country-budget-item{% if key %}-{{ key }}{% endif %}"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="hide-partial {% if item %}hidden{% endif %}">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="select-group control">
+                        <select name="country-budget-item{% if key %}-{{ key }}{% endif %}" id="country-budget-item{% if key %}-{{ key }}{% endif %}" class="form-control priority3" saved-value="{{ item.code }}">
+                            <option value="" {% if not item.code %} selected="selected" {% endif %}></option>
+                            {% for bi in budget_identifiers %}
+                                <option value="{{ bi.code }}" {% if item.code == bi.code %} selected="selected" {% endif %}>{{ bi.code }} - {{ bi.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="control-label" for="country-budget-item{% if key %}{{ key }}{% endif %}">{% trans 'Country budget item' %}</label>
+                        <p class="help-block hidden">{% trans 'This item encodes the alignment of activities with both the functional and administrative classifications used in the recipient country’s Chart of Accounts. This applies to both on- and off-budget activities.' %}</p>
+                    </div>
+                </div>
+                <div class="col-md-4 control">
+                    <div class="input-group priority3">
+                        <input type="text" class="form-control" name="country-budget-percentage{% if key %}-{{ key }}{% endif %}" id="country-budget-percentage{% if key %}-{{ key }}{% endif %}"
+                        value="{% if item.percentage %}{{ item.percentage }}{% endif %}" saved-value="{% if item.percentage %}{{ item.percentage }}{% endif %}">
+                        <span class="input-group-addon">%</span>
+                    </div>
+                    <label class="control-label" for="country-budget-percentage{% if key %}-{{ key }}{% endif %}">{% trans 'Country budget item percentage' %}</label>
+                    <p class="help-block hidden">{% trans 'If more than one identifier is reported, the percentage share must be reported and all percentages should add up to 100 percent. Use a period to denote decimals.' %}</p>
+                </div>
+                <div class="col-md-4 control">
+                    <input type="text" class="form-control priority3" name="country-budget-description{% if key %}-{{ key }}{% endif %}" id="country-budget-description{% if key %}-{{ key }}{% endif %}"
+                    value="{{ item.description }}" saved-value="{{ item.description }}" maxlength="100">
+                    <label class="control-label" for="country-budget-description{% if key %}-{{ key }}{% endif %}">{% trans 'Country budget item description' %}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

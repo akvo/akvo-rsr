@@ -6,8 +6,7 @@
 
 {% block myrsr_main %}
     <h3>{% trans 'My updates' %}</h3>
-    <div class="col-sm-12">
-        <form class="navbar-form" role="search">
+        <form role="search">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Search" name="q" id="search" {% if q_search %}value="{{q_search}}"{% endif %}>
             <div class="input-group-btn">
@@ -17,7 +16,6 @@
             </div>
         </div>
         </form>
-    </div>
     {% if page %}
         <div id="updates">
             <table class="table table-striped table-responsive col-sm-12">
