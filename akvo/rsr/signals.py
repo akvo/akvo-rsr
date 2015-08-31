@@ -24,6 +24,7 @@ from sorl.thumbnail import ImageField
 
 from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_send_mail_to_users
 from akvo.iati.iati_export import IatiXML
+from akvo.iati.iati_import import IatiImportProcess
 
 
 def create_publishing_status(sender, **kwargs):
@@ -308,3 +309,23 @@ def create_iati_file(sender, **kwargs):
             iati_export.status = 4
             iati_export.save()
         post_save.connect(create_iati_file, sender=sender)
+
+
+def import_iati_file(sender, **kwargs):
+    """
+    Import an IATI XML file when an entry in the iati_import table is saved.
+
+    :param sender: IatiImport model
+    """
+    ## TODO: only fire when created
+    iati_import = kwargs.get("instance", None)
+
+    if iati_import:
+        post_save.disconnect(import_iati_file, sender=sender)
+        try:
+            IatiImportProcess(iati_import)
+        except:
+            iati_import.status = 5
+            iati_import.errors = True
+            iati_import.save()
+        post_save.connect(import_iati_file, sender=sender)
