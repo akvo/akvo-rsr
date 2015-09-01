@@ -317,14 +317,15 @@ def import_iati_file(sender, **kwargs):
 
     :param sender: IatiImport model
     """
-    ## TODO: only fire when created
     iati_import = kwargs.get("instance", None)
 
-    if iati_import:
+    if iati_import and iati_import.status == 1:
         post_save.disconnect(import_iati_file, sender=sender)
         try:
             IatiImportProcess(iati_import)
-        except:
+        except Exception as e:
+            iati_import_log_model = get_model('rsr', 'iatiimportlog')
+            iati_import_log_model.objects.create(iati_import=iati_import, text=e, error=True)
             iati_import.status = 5
             iati_import.errors = True
             iati_import.save()
