@@ -170,7 +170,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectStatus" id="projectStatus" class="form-control priority1" saved-value="{{ project.status }}" onchange="toggleDonateButton()">
+                                    <select name="projectStatus" id="projectStatus" class="form-control priority1" saved-value="{{ project.status }}">
                                         <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}></option>
                                         <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>{% trans 'Needs funding' %}</option>
                                         <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>{% trans 'Active' %}</option>
