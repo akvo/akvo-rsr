@@ -973,7 +973,12 @@ function loadAsync(url, retryCount, retryLimit, callback) {
 
         lsData = JSON.stringify(localStorageResponses);
 
-        localStorage.setItem(localStorageName, lsData);
+        try {
+            localStorage.setItem(localStorageName, lsData);
+        } catch (error) {
+            // Not enough space in local storage
+            localStorage.setItem(localStorageName, JSON.stringify({}));
+        }
     }
 }
 
