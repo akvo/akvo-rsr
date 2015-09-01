@@ -170,7 +170,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="select-group control">
-                                    <select name="projectStatus" id="projectStatus" class="form-control priority1" saved-value="{{ project.status }}" onchange="toggleDonateButton()">
+                                    <select name="projectStatus" id="projectStatus" class="form-control priority1" saved-value="{{ project.status }}">
                                         <option value="N" {% if project.status == "N" %} selected="selected"{% endif %}></option>
                                         <option value="H" {% if project.status == "H" %} selected="selected"{% endif %}>{% trans 'Needs funding' %}</option>
                                         <option value="A" {% if project.status == "A" %} selected="selected"{% endif %}>{% trans 'Active' %}</option>
@@ -266,7 +266,7 @@
                                         {% thumbnail project.current_image '250x250' format="PNG" upscale=True as im %}
                                             <img src="{{im.url}}" class="current-project-photo" id="img-photo" />
                                         {% endthumbnail %}
-                                        <a onclick="deletePhoto(this);" class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
+                                        <a class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> {% trans 'Delete photo' %}</a>
                                     {% endif %}
                                 </div>
                             </div>
