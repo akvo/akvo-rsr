@@ -6,9 +6,35 @@ Check out [Introducing Akvo Really Simple Reporting](http://akvo.org/products/rs
 Read more about [Akvo Products](http://akvo.org/products/).
 
 ________
-Akvo RSR version 3.6 Jakarta
----
+# Akvo RSR version 3.6.1 Jakarta (Hotfix)
+Wednesday 2nd of September 2015, kasperbrandt
 
+## New & Noteworthy
+
+### Body text in the feedback mail
+The feedback button on the project editor page now has a default text for the email body included.
+
+Github issue: [#1784](https://github.com/akvo/akvo-rsr/issues/1784).
+
+## Bug fixes
+
+### Selection boxes not loading in Google Chrome
+There was an issue with the size of the local storage in Google Chrome, which led to some of the selection boxes not being loaded. This has now been resolved.
+
+Github issue: [#1785](https://github.com/akvo/akvo-rsr/issues/1785).
+
+### Unsaved changes message still displaying after saving
+After editing the photo credit or caption and saving the project, there would still be a message displayed that there are unsaved changes when the user tried to leave the page. This has now been resolved.
+
+Github issue: [#1788](https://github.com/akvo/akvo-rsr/issues/1788).
+
+### Delete photo not responding
+Nothing happened when the 'Delete photo' link was clicked. This has now been resolved.
+
+Github issue: [#1788](https://github.com/akvo/akvo-rsr/issues/1788).
+
+
+# Akvo RSR version 3.6 Jakarta
 Wednesday 26th of August 2015, kasperbrandt
 
 New & Noteworthy
@@ -102,9 +128,7 @@ We have seen some projects that get published, even though this is not logged. I
 
 Github issue: [#1740](https://github.com/akvo/akvo-rsr/issues/1740).
 
-Akvo RSR version 3.5.1 Islamabad (Minor release)
----
-
+# Akvo RSR version 3.5.1 Islamabad (Minor release)
 Thursday 6th of August 2015, kasperbrandt
 
 New & Noteworthy
@@ -140,9 +164,7 @@ As an organisation User Manager or Admin, it is now possible to detele user empl
 
 Github issue: [#1699](https://github.com/akvo/akvo-rsr/issues/1699).
 
-Akvo RSR version 3.5 Islamabad
----
-
+# Akvo RSR version 3.5 Islamabad
 Wednesday 15th July 2015, kasperbrandt
 
 New & Noteworthy
@@ -198,9 +220,7 @@ There used to be an entry for every location without coordinates that could not 
 
 Github issue: [#1632](https://github.com/akvo/akvo-rsr/issues/1632).
 
-Akvo RSR version 3.4 Honiara
----
-
+# Akvo RSR version 3.4 Honiara
 Wednesday 24th June 2015, kasperbrandt
 
 New & Noteworthy
@@ -242,9 +262,7 @@ We have also updated the alignment and spacing in several places, and removed de
 
 Github issue: [#1615](https://github.com/akvo/akvo-rsr/issues/1615).
 
-Akvo RSR version 3.3.1 Gaborone Hotfix
----
-
+# Akvo RSR version 3.3.1 Gaborone Hotfix
 Thursday 4th June 2015, kasperbrandt
 
 Bug Fixes
@@ -275,9 +293,7 @@ Some tests were failing because we now have a different URL pattern due to trans
 
 Github issue: [#1595](https://github.com/akvo/akvo-rsr/issues/1595).
 
-Akvo RSR version 3.3 Gaborone
----
-
+# Akvo RSR version 3.3 Gaborone
 Wednesday 3rd June 2015, kasperbrandt
 
 New & Noteworthy
@@ -358,9 +374,7 @@ We have added a new step to perform unit tests during the deployment to the Test
 
 Github issue: [#1581](https://github.com/akvo/akvo-rsr/issues/1581).
 
-Akvo RSR version 3.2.3 Flying Fish Cove Hotfix
----
-
+# Akvo RSR version 3.2.3 Flying Fish Cove Hotfix
 Thursday 7th May 2015, kasperbrandt
 
 New & Noteworthy
@@ -434,9 +448,7 @@ In preparation for paperless reporting, we have increased the character limit on
 
 Github issue: [#1542](https://github.com/akvo/akvo-rsr/issues/1542).
 
-Akvo RSR version 3.2 Flying Fish Cove
----
-
+# Akvo RSR version 3.2 Flying Fish Cove
 Wednesday 15th April 2015, kasperbrandt
 
 New & Noteworthy
@@ -591,9 +603,7 @@ We have updated the version of gulp-react, to match the version of React used in
 
 Github issue: [#1371](https://github.com/akvo/akvo-rsr/issues/1371).
 
-Akvo RSR version 3.1 Episkopi
----
-
+# Akvo RSR version 3.1 Episkopi
 Thursday 18th March 2015, adriancollier
 
 New & Noteworthy
@@ -782,9 +792,7 @@ Github issue: [#727](https://github.com/akvo/akvo-rsr/issues/727)
 
 ________
 
-Akvo RSR version 3.0.2 Hotfix 2 for Douglas
----
-
+# Akvo RSR version 3.0.2 Hotfix 2 for Douglas
 Thursday 5th March 2015, adriancollier
 
 Included Fixes
@@ -797,9 +805,7 @@ Github issue: [#1289](https://github.com/akvo/akvo-rsr/issues/1289)
 
 --------
 
-Akvo RSR version 3.0.1 Hotfix for Douglas
----
-
+# Akvo RSR version 3.0.1 Hotfix for Douglas
 Friday 27th February 2015, adriancollier
 
 Included Fixes
@@ -820,11 +826,7 @@ We have modified the location API resource within the Django REST Framework API 
 
 Github issue: [#1266](https://github.com/akvo/akvo-rsr/issues/1266)
 
---------
-
-Akvo RSR version 3.0 Douglas
----
-
+# Akvo RSR version 3.0 Douglas
 Thursday 26th February 2015, adriancollier
 
 New & Noteworthy
