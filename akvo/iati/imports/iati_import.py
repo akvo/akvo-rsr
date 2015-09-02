@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..rsr.models.iati_import_log import IatiImportLog
+from ...rsr.models.iati_import_log import IatiImportLog
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -125,7 +125,8 @@ class IatiImportProcess(object):
         # Start import process
         self.set_status(3)
         self.activities = self.get_activities()
+        self.globals = self.activities.items()
 
         # Import process complete
-        self.set_end_date()
         self.set_status(4)
+        self.set_end_date()

@@ -29,7 +29,7 @@ from akvo.codelists.store.codelists_v201 import (AID_TYPE, ACTIVITY_SCOPE, COLLA
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path, rsr_show_keywords
 
-from ...iati.mandatory_fields import check_export_fields
+from ...iati.checks.mandatory_fields import check_export_fields
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin

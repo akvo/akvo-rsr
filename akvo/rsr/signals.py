@@ -23,8 +23,8 @@ from django.db.models.signals import post_save
 from sorl.thumbnail import ImageField
 
 from akvo.utils import send_donation_confirmation_emails, rsr_send_mail, rsr_send_mail_to_users
-from akvo.iati.iati_export import IatiXML
-from akvo.iati.iati_import import IatiImportProcess
+from akvo.iati.exports.iati_export import IatiXML
+from akvo.iati.imports.iati_import import IatiImportProcess
 
 
 def create_publishing_status(sender, **kwargs):
