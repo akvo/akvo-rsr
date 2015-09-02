@@ -13,24 +13,24 @@ Wednesday 2nd of September 2015, kasperbrandt
 
 New & Noteworthy
 --
-## Body text in the feedback mail
+### Body text in the feedback mail
 The feedback button on the project editor page now has a default text for the email body included.
 
 Github issue: [#1784](https://github.com/akvo/akvo-rsr/issues/1784).
 
 Bug fixes
 --
-## Selection boxes not loading in Google Chrome
+### Selection boxes not loading in Google Chrome
 There was an issue with the size of the local storage in Google Chrome, which led to some of the selection boxes not being loaded. This has now been resolved.
 
 Github issue: [#1785](https://github.com/akvo/akvo-rsr/issues/1785).
 
-## Unsaved changes message still displaying after saving
+### Unsaved changes message still displaying after saving
 After editing the photo credit or caption and saving the project, there would still be a message displayed that there are unsaved changes when the user tried to leave the page. This has now been resolved.
 
 Github issue: [#1788](https://github.com/akvo/akvo-rsr/issues/1788).
 
-## Delete photo not responding
+### Delete photo not responding
 Nothing happened when the 'Delete photo' link was clicked. This has now been resolved.
 
 Github issue: [#1788](https://github.com/akvo/akvo-rsr/issues/1788).
