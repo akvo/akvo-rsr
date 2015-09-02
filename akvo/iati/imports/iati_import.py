@@ -5,6 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ...rsr.models.iati_import_log import IatiImportLog
+from ...rsr.exceptions import ProjectException
+from .iati_import_activity import IatiImportActivity
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -35,7 +37,7 @@ class IatiImportProcess(object):
         """
         Set the status of the IATI import.
 
-        :param status: Integer based on the IATI import status codes
+        :param status: Integer; based on the IATI import status codes
         """
         self.iati_import.status = status
         self.iati_import.save()
@@ -44,7 +46,7 @@ class IatiImportProcess(object):
         """
         Get the activities from iati_import.local_file.
 
-        :return: An ElementTree node; the root node of the XML
+        :return: ElementTree; the root node of the XML
         """
         if self.file:
             parsed_xml = ElementTree.parse(self.file)
@@ -108,7 +110,7 @@ class IatiImportProcess(object):
         """
         Initialise the IATI Import process.
 
-        :param iati_import: An IatiImport Django ORM object
+        :param iati_import: IatiImport instance
         """
         self.iati_import = iati_import
         self.organisation = iati_import.reporting_organisation
@@ -125,7 +127,23 @@ class IatiImportProcess(object):
         # Start import process
         self.set_status(3)
         self.activities = self.get_activities()
-        self.globals = self.activities.items()
+        for activity in self.activities.findall('iati-activity'):
+            try:
+                IatiImportActivity(self.iati_import, activity, self.organisation, self.user,
+                                   self.activities.attrib)
+            except ProjectException as pe:
+                IatiImportLog.objects.create(
+                    iati_import=self.iati_import,
+                    text=pe.args[0]['message'],
+                    project=pe.args[0]['project'],
+                    error=True
+                )
+            except Exception as e:
+                IatiImportLog.objects.create(
+                    iati_import=self.iati_import,
+                    text=e,
+                    error=True
+                )
 
         # Import process complete
         self.set_status(4)
