@@ -17,6 +17,15 @@ from xml.etree import ElementTree
 import datetime
 import urllib2
 
+SUPPORTED_VERSIONS = [
+    '1.01',
+    '1.02',
+    '1.03',
+    '1.04',
+    '1.05',
+    '2.01',
+]
+
 
 class IatiImportProcess(object):
     def set_start_date(self):
@@ -41,6 +50,14 @@ class IatiImportProcess(object):
         """
         self.iati_import.status = status
         self.iati_import.save()
+
+    def check_version(self):
+        """
+        Check if the version of the IATI XML file is specified and supported.
+        """
+        version = self.activities.attrib['version']
+        if not version in SUPPORTED_VERSIONS:
+            raise DataError(u'Version %s not supported.' % version)
 
     def get_activities(self):
         """
@@ -127,6 +144,7 @@ class IatiImportProcess(object):
         # Start import process
         self.set_status(3)
         self.activities = self.get_activities()
+        self.check_version()
         for activity in self.activities.findall('iati-activity'):
             try:
                 IatiImportActivity(self.iati_import, activity, self.organisation, self.user,

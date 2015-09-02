@@ -53,19 +53,20 @@ class IatiImportActivity(object):
         """
         Log the changes that have been made to the project in the LogEntry model.
         """
-        message = u'IATI import, changed: '
-        for change in self.changes:
-            message += u'%s, ' % change
-        message = message[:-2] + u'.'
+        if self.changes:
+            message = u'IATI import, changed: '
+            for change in self.changes:
+                message += u'%s, ' % change
+            message = message[:-2] + u'.'
 
-        LogEntry.objects.log_action(
-            user_id=self.user.pk,
-            content_type_id=ContentType.objects.get_for_model(self.project).pk,
-            object_id=self.project.pk,
-            object_repr=self.project.__unicode__(),
-            action_flag=CHANGE,
-            change_message=message
-        )
+            LogEntry.objects.log_action(
+                user_id=self.user.pk,
+                content_type_id=ContentType.objects.get_for_model(self.project).pk,
+                object_id=self.project.pk,
+                object_repr=self.project.__unicode__(),
+                action_flag=CHANGE,
+                change_message=message
+            )
 
     def set_sync_owner(self):
         """
@@ -125,7 +126,7 @@ class IatiImportActivity(object):
         self.set_sync_owner()
 
         for field in FIELDS:
-            changes = getattr(fields, field)(self.activity, self.project)
+            changes = getattr(fields, field)(self.activity, self.project, self.globals)
             for change in changes:
                 self.changes.append(change)
 
