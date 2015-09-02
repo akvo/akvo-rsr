@@ -6,9 +6,16 @@
 
 from ...rsr.exceptions import ProjectException
 
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import get_model
 
 import datetime
+import fields
+
+FIELDS = [
+    'title',
+]
 
 
 class IatiImportActivity(object):
@@ -35,6 +42,31 @@ class IatiImportActivity(object):
         self.project_import_log.status = status
         self.project_import_log.save()
 
+    def set_errors_true(self):
+        """
+        Set the errors flag of the project import to True.
+        """
+        self.project_import_log.errors = True
+        self.project_import_log.save()
+
+    def log_changes(self):
+        """
+        Log the changes that have been made to the project in the LogEntry model.
+        """
+        message = u'IATI import, changed: '
+        for change in self.changes:
+            message += u'%s, ' % change
+        message = message[:-2] + u'.'
+
+        LogEntry.objects.log_action(
+            user_id=self.user.pk,
+            content_type_id=ContentType.objects.get_for_model(self.project).pk,
+            object_id=self.project.pk,
+            object_repr=self.project.__unicode__(),
+            action_flag=CHANGE,
+            change_message=message
+        )
+
     def set_sync_owner(self):
         """
         Check if the project can be edited by the current reporting organisation and set
@@ -42,7 +74,9 @@ class IatiImportActivity(object):
         """
         sync_owner = self.project.sync_owner
         if not self.created and sync_owner and sync_owner != self.organisation:
+            self.set_end_date()
             self.set_status(4)
+            self.set_errors_true()
             raise ProjectException({
                 'message': u'Project has a different sync_owner: %s' % sync_owner.name,
                 'project': self.project
@@ -75,6 +109,7 @@ class IatiImportActivity(object):
         self.organisation = reporting_organisation
         self.user = user
         self.globals = activities_globals
+        self.changes = []
 
         # Get or create project
         self.project, self.created = self.get_or_create_project()
@@ -88,6 +123,13 @@ class IatiImportActivity(object):
         self.set_status(2)
         self.set_start_date()
         self.set_sync_owner()
+
+        for field in FIELDS:
+            changes = getattr(fields, field)(self.activity, self.project)
+            for change in changes:
+                self.changes.append(change)
+
+        self.log_changes()
 
         # Import process finished
         self.set_status(3)
