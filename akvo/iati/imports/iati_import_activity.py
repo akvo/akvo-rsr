@@ -14,7 +14,9 @@ import datetime
 import fields
 
 FIELDS = [
+    'default_language',
     'title',
+    'subtitle',
 ]
 
 
@@ -79,7 +81,7 @@ class IatiImportActivity(object):
             self.set_status(4)
             self.set_errors_true()
             raise ProjectException({
-                'message': u'Project has a different sync_owner: %s' % sync_owner.name,
+                'message': u'Project has a different sync_owner: %s.' % sync_owner.name,
                 'project': self.project
             })
         self.project.sync_owner = self.organisation
