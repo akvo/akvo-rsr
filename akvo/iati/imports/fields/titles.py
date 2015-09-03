@@ -42,7 +42,7 @@ def subtitle(activity, project, activities_globals):
     """
     Retrieve and store the subtitle.
     In case the Akvo NS is used, the subtitle will be extracted from a 'description' element
-    with akvo type 4. Without an Akvo NS, we use the first 'description' element.
+    with akvo type 4. Without an Akvo NS, we use the first 'description' element of type 1.
 
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
@@ -53,7 +53,7 @@ def subtitle(activity, project, activities_globals):
     subtitle_element = activity.find("description[@{%s}type='4']" % settings.AKVO_NS)
 
     if subtitle_element is None:
-        subtitle_element = activity.find('description')
+        subtitle_element = activity.find("description[@type='1']")
 
     if not subtitle_element is None:
         if activities_globals['version'][0] == '1':

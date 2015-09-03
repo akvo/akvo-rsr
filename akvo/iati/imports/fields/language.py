@@ -5,11 +5,10 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-
-
-def default_language(activity, project, activities_globals):
+def language(activity, project, activities_globals):
     """
-    Retrieve and store the default language from the XML.
+    Retrieve and store the language.
+    The title will be extracted from the 'lang' attribute of the activity root element.
 
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance

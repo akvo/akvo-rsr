@@ -1,0 +1,238 @@
+# -*- coding: utf-8 -*-
+
+# Akvo RSR is covered by the GNU Affero General Public License.
+# See more details in the license.txt file located at the root folder of the Akvo RSR module.
+# For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
+
+from django.conf import settings
+
+
+def project_plan_summary(activity, project, activities_globals):
+    """
+    Retrieve and store the project plan summary.
+    In case the Akvo NS is used, the project plan summary will be extracted from a 'description'
+    element with akvo type 5. Without an Akvo NS, we use the second 'description' element of type 1.
+
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    pps_text = None
+    pps_element = activity.find("description[@{%s}type='5']" % settings.AKVO_NS)
+
+    if pps_element is None:
+        pps_element = activity.findall("description[@type='1']")[1]
+
+    if not pps_element is None:
+        if activities_globals['version'][0] == '1':
+            pps_text = pps_element.text[:400]
+        else:
+            narrative_element = pps_element.find('narrative')
+            if narrative_element is not None:
+                pps_text = narrative_element.text[:400]
+
+    if pps_text is not None and project.project_plan_summary != pps_text:
+        project.project_plan_summary = pps_text
+        project.save(update_fields=['project_plan_summary'])
+        return ['project_plan_summary']
+
+    return []
+
+
+def goals_overview(activity, project, activities_globals):
+    """
+    Retrieve and store the goals overview.
+    In case the Akvo NS is used, the goals overview will be extracted from a 'description' element
+    with akvo type 8. Without an Akvo NS, we use the first 'description' element with type 2.
+
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    go_text = None
+    go_element = activity.find("description[@{%s}type='8']" % settings.AKVO_NS)
+
+    if go_element is None:
+        go_element = activity.find("description[@type='2']")
+
+    if not go_element is None:
+        if activities_globals['version'][0] == '1':
+            go_text = go_element.text[:600]
+        else:
+            narrative_element = go_element.find('narrative')
+            if narrative_element is not None:
+                go_text = narrative_element.text[:600]
+
+    if go_text is not None and project.goals_overview != go_text:
+        project.goals_overview = go_text
+        project.save(update_fields=['goals_overview'])
+        return ['goals_overview']
+
+    return []
+
+
+def background(activity, project, activities_globals):
+    """
+    Retrieve and store the background.
+    In case the Akvo NS is used, the background will be extracted from a 'description' element
+    with akvo type 6. Without an Akvo NS, we use the third 'description' element with type 1.
+
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    background_text = None
+    background_element = activity.find("description[@{%s}type='6']" % settings.AKVO_NS)
+
+    if background_element is None:
+        background_element = activity.findall("description[@type='1']")[2]
+
+    if not background_element is None:
+        if activities_globals['version'][0] == '1':
+            background_text = background_element.text[:1000]
+        else:
+            narrative_element = background_element.find('narrative')
+            if narrative_element is not None:
+                background_text = narrative_element.text[:1000]
+
+    if background_text is not None and project.background != background_text:
+        project.background = background_text
+        project.save(update_fields=['background'])
+        return ['background']
+
+    return []
+
+
+def current_status(activity, project, activities_globals):
+    """
+    Retrieve and store the current status (or baseline status).
+    In case the Akvo NS is used, the current status will be extracted from a 'description' element
+    with akvo type 9. Without an Akvo NS, we use the fourth 'description' element with type 1.
+
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    current_status_text = None
+    current_status_element = activity.find("description[@{%s}type='9']" % settings.AKVO_NS)
+
+    if current_status_element is None:
+        current_status_element = activity.findall("description[@type='1']")[3]
+
+    if not current_status_element is None:
+        if activities_globals['version'][0] == '1':
+            current_status_text = current_status_element.text[:600]
+        else:
+            narrative_element = current_status_element.find('narrative')
+            if narrative_element is not None:
+                current_status_text = narrative_element.text[:600]
+
+    if current_status_text is not None and project.current_status != current_status_text:
+        project.current_status = current_status_text
+        project.save(update_fields=['current_status'])
+        return ['current_status']
+
+    return []
+
+
+def target_group(activity, project, activities_globals):
+    """
+    Retrieve and store the target group.
+    In case the Akvo NS is used, the target group will be extracted from a 'description' element
+    with akvo type 3. Without an Akvo NS, we use the first 'description' element with type 3.
+
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    target_group_text = None
+    target_group_element = activity.find("description[@{%s}type='3']" % settings.AKVO_NS)
+
+    if target_group_element is None:
+        target_group_element = activity.find("description[@type='3']")
+
+    if not target_group_element is None:
+        if activities_globals['version'][0] == '1':
+            target_group_text = target_group_element.text[:600]
+        else:
+            narrative_element = target_group_element.find('narrative')
+            if narrative_element is not None:
+                target_group_text = narrative_element.text[:600]
+
+    if target_group_text is not None and project.target_group != target_group_text:
+        project.target_group = target_group_text
+        project.save(update_fields=['target_group'])
+        return ['target_group']
+
+    return []
+
+
+def project_plan(activity, project, activities_globals):
+    """
+    Retrieve and store the project plan.
+    In case the Akvo NS is used, the project plan will be extracted from a 'description' element
+    with akvo type 7. Without an Akvo NS, we use the fifth 'description' element with type 1.
+
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    project_plan_text = None
+    project_plan_element = activity.find("description[@{%s}type='7']" % settings.AKVO_NS)
+
+    if project_plan_element is None:
+        project_plan_element = activity.findall("description[@type='1']")[4]
+
+    if not project_plan_element is None:
+        if activities_globals['version'][0] == '1':
+            project_plan_text = project_plan_element.text
+        else:
+            narrative_element = project_plan_element.find('narrative')
+            if narrative_element is not None:
+                project_plan_text = narrative_element.text
+
+    if project_plan_text is not None and project.project_plan != project_plan_text:
+        project.project_plan = project_plan_text
+        project.save(update_fields=['project_plan'])
+        return ['project_plan']
+
+    return []
+
+
+def sustainability(activity, project, activities_globals):
+    """
+    Retrieve and store sustainability.
+    In case the Akvo NS is used, sustainability will be extracted from a 'description' element
+    with akvo type 10. Without an Akvo NS, we use the sixth 'description' element with type 1.
+
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    sustainability_text = None
+    sustainability_element = activity.find("description[@{%s}type='10']" % settings.AKVO_NS)
+
+    if sustainability_element is None:
+        sustainability_element = activity.findall("description[@type='1']")[5]
+
+    if not sustainability_element is None:
+        if activities_globals['version'][0] == '1':
+            sustainability_text = sustainability_element.text
+        else:
+            narrative_element = sustainability_element.find('narrative')
+            if narrative_element is not None:
+                sustainability_text = narrative_element.text
+
+    if sustainability_text is not None and project.sustainability != sustainability_text:
+        project.sustainability = sustainability_text
+        project.save(update_fields=['sustainability'])
+        return ['sustainability']
+
+    return []

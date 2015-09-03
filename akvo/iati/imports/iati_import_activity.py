@@ -14,9 +14,17 @@ import datetime
 import fields
 
 FIELDS = [
-    'default_language',
     'title',
     'subtitle',
+    'status',
+    'project_plan_summary',
+    'goals_overview',
+    'background',
+    'current_status',
+    'target_group',
+    'project_plan',
+    'sustainability',
+    'language',
 ]
 
 
