@@ -22,18 +22,20 @@ def project_plan_summary(activity, project, activities_globals):
     pps_element = activity.find("description[@{%s}type='5']" % settings.AKVO_NS)
 
     if pps_element is None:
-        pps_element = activity.findall("description[@type='1']")[1]
+        descriptions_type_1 = activity.findall("description[@type='1']")
+        if len(descriptions_type_1) > 1:
+            pps_element = descriptions_type_1[1]
 
     if not pps_element is None:
         if activities_globals['version'][0] == '1':
-            pps_text = pps_element.text[:400]
+            pps_text = pps_element.text
         else:
             narrative_element = pps_element.find('narrative')
             if narrative_element is not None:
-                pps_text = narrative_element.text[:400]
+                pps_text = narrative_element.text
 
-    if pps_text is not None and project.project_plan_summary != pps_text:
-        project.project_plan_summary = pps_text
+    if pps_text is not None and project.project_plan_summary != pps_text[:400]:
+        project.project_plan_summary = pps_text[:400]
         project.save(update_fields=['project_plan_summary'])
         return ['project_plan_summary']
 
@@ -59,14 +61,14 @@ def goals_overview(activity, project, activities_globals):
 
     if not go_element is None:
         if activities_globals['version'][0] == '1':
-            go_text = go_element.text[:600]
+            go_text = go_element.text
         else:
             narrative_element = go_element.find('narrative')
             if narrative_element is not None:
-                go_text = narrative_element.text[:600]
+                go_text = narrative_element.text
 
-    if go_text is not None and project.goals_overview != go_text:
-        project.goals_overview = go_text
+    if go_text is not None and project.goals_overview != go_text[:600]:
+        project.goals_overview = go_text[:600]
         project.save(update_fields=['goals_overview'])
         return ['goals_overview']
 
@@ -88,18 +90,20 @@ def background(activity, project, activities_globals):
     background_element = activity.find("description[@{%s}type='6']" % settings.AKVO_NS)
 
     if background_element is None:
-        background_element = activity.findall("description[@type='1']")[2]
+        descriptions_type_1 = activity.findall("description[@type='1']")
+        if len(descriptions_type_1) > 2:
+            background_element = descriptions_type_1[2]
 
     if not background_element is None:
         if activities_globals['version'][0] == '1':
-            background_text = background_element.text[:1000]
+            background_text = background_element.text
         else:
             narrative_element = background_element.find('narrative')
             if narrative_element is not None:
-                background_text = narrative_element.text[:1000]
+                background_text = narrative_element.text
 
-    if background_text is not None and project.background != background_text:
-        project.background = background_text
+    if background_text is not None and project.background != background_text[:1000]:
+        project.background = background_text[:1000]
         project.save(update_fields=['background'])
         return ['background']
 
@@ -121,18 +125,20 @@ def current_status(activity, project, activities_globals):
     current_status_element = activity.find("description[@{%s}type='9']" % settings.AKVO_NS)
 
     if current_status_element is None:
-        current_status_element = activity.findall("description[@type='1']")[3]
+        descriptions_type_1 = activity.findall("description[@type='1']")
+        if len(descriptions_type_1) > 3:
+            current_status_element = descriptions_type_1[3]
 
     if not current_status_element is None:
         if activities_globals['version'][0] == '1':
-            current_status_text = current_status_element.text[:600]
+            current_status_text = current_status_element.text
         else:
             narrative_element = current_status_element.find('narrative')
             if narrative_element is not None:
-                current_status_text = narrative_element.text[:600]
+                current_status_text = narrative_element.text
 
-    if current_status_text is not None and project.current_status != current_status_text:
-        project.current_status = current_status_text
+    if current_status_text is not None and project.current_status != current_status_text[:600]:
+        project.current_status = current_status_text[:600]
         project.save(update_fields=['current_status'])
         return ['current_status']
 
@@ -158,14 +164,14 @@ def target_group(activity, project, activities_globals):
 
     if not target_group_element is None:
         if activities_globals['version'][0] == '1':
-            target_group_text = target_group_element.text[:600]
+            target_group_text = target_group_element.text
         else:
             narrative_element = target_group_element.find('narrative')
             if narrative_element is not None:
-                target_group_text = narrative_element.text[:600]
+                target_group_text = narrative_element.text
 
-    if target_group_text is not None and project.target_group != target_group_text:
-        project.target_group = target_group_text
+    if target_group_text is not None and project.target_group != target_group_text[:600]:
+        project.target_group = target_group_text[:600]
         project.save(update_fields=['target_group'])
         return ['target_group']
 
@@ -187,7 +193,9 @@ def project_plan(activity, project, activities_globals):
     project_plan_element = activity.find("description[@{%s}type='7']" % settings.AKVO_NS)
 
     if project_plan_element is None:
-        project_plan_element = activity.findall("description[@type='1']")[4]
+        descriptions_type_1 = activity.findall("description[@type='1']")
+        if len(descriptions_type_1) > 4:
+            project_plan_element = descriptions_type_1[4]
 
     if not project_plan_element is None:
         if activities_globals['version'][0] == '1':
@@ -220,7 +228,9 @@ def sustainability(activity, project, activities_globals):
     sustainability_element = activity.find("description[@{%s}type='10']" % settings.AKVO_NS)
 
     if sustainability_element is None:
-        sustainability_element = activity.findall("description[@type='1']")[5]
+        descriptions_type_1 = activity.findall("description[@type='1']")
+        if len(descriptions_type_1) > 5:
+            sustainability_element = descriptions_type_1[5]
 
     if not sustainability_element is None:
         if activities_globals['version'][0] == '1':

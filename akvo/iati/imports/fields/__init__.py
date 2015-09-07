@@ -6,12 +6,14 @@
 
 from .descriptions import (background, current_status, goals_overview, project_plan,
                            project_plan_summary, sustainability, target_group)
+from .image import current_image
 from .language import language
 from .status import status
 from .titles import title, subtitle
 
 __all__ = [
     'background',
+    'current_image',
     'current_status',
     'goals_overview',
     'language',

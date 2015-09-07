@@ -11,3 +11,11 @@ class ProjectException(Exception):
     Assumes that a project is passed together with the message in a dictionary.
     """
     pass
+
+
+class ProjectFieldException(Exception):
+    """
+    A specific Exception used in IATI imports for errors belonging to a project's field.
+    Assumes that a project and a field is passed together with the message in a dictionary.
+    """
+    pass

@@ -18,20 +18,18 @@ def title(activity, project, activities_globals):
     :return: List; contains fields that have changed
     """
     title_text = None
+    title_element = activity.find('title')
 
-    if activities_globals['version'][0] == '1':
-        title_element = activity.find('title')
-        if title_element is not None:
-            title_text = title_element.text[:45]
-    else:
-        title_element = activity.find('title')
-        if title_element is not None:
+    if title_element is not None:
+        if activities_globals['version'][0] == '1':
+            title_text = title_element.text
+        else:
             narrative_element = title_element.find('narrative')
             if narrative_element is not None:
-                title_text = narrative_element.text[:45]
+                title_text = narrative_element.text
 
-    if title_text is not None and project.title != title_text:
-        project.title = title_text
+    if title_text is not None and project.title != title_text[:45]:
+        project.title = title_text[:45]
         project.save(update_fields=['title'])
         return ['title']
 
@@ -57,14 +55,14 @@ def subtitle(activity, project, activities_globals):
 
     if not subtitle_element is None:
         if activities_globals['version'][0] == '1':
-            subtitle_text = subtitle_element.text[:75]
+            subtitle_text = subtitle_element.text
         else:
             narrative_element = subtitle_element.find('narrative')
             if narrative_element is not None:
-                subtitle_text = narrative_element.text[:75]
+                subtitle_text = narrative_element.text
 
-    if subtitle_text is not None and project.subtitle != subtitle_text:
-        project.subtitle = subtitle_text
+    if subtitle_text is not None and project.subtitle != subtitle_text[:75]:
+        project.subtitle = subtitle_text[:75]
         project.save(update_fields=['subtitle'])
         return ['subtitle']
 

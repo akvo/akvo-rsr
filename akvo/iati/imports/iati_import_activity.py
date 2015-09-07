@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ...rsr.exceptions import ProjectException
+from ...rsr.exceptions import ProjectException, ProjectFieldException
 
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
@@ -24,6 +24,7 @@ FIELDS = [
     'target_group',
     'project_plan',
     'sustainability',
+    'current_image',
     'language',
 ]
 
@@ -68,15 +69,17 @@ class IatiImportActivity(object):
             for change in self.changes:
                 message += u'%s, ' % change
             message = message[:-2] + u'.'
+        else:
+            message = u'IATI import, nothing changed.'
 
-            LogEntry.objects.log_action(
-                user_id=self.user.pk,
-                content_type_id=ContentType.objects.get_for_model(self.project).pk,
-                object_id=self.project.pk,
-                object_repr=self.project.__unicode__(),
-                action_flag=CHANGE,
-                change_message=message
-            )
+        LogEntry.objects.log_action(
+            user_id=self.user.pk,
+            content_type_id=ContentType.objects.get_for_model(self.project).pk,
+            object_id=self.project.pk,
+            object_repr=self.project.__unicode__(),
+            action_flag=CHANGE,
+            change_message=message
+        )
 
     def set_sync_owner(self):
         """
@@ -136,7 +139,25 @@ class IatiImportActivity(object):
         self.set_sync_owner()
 
         for field in FIELDS:
-            changes = getattr(fields, field)(self.activity, self.project, self.globals)
+            try:
+                changes = getattr(fields, field)(self.activity, self.project, self.globals)
+            except ProjectFieldException as pfe:
+                changes = []
+                get_model('rsr', 'iatiimportlog').objects.create(
+                    iati_import=self.iati_import,
+                    text=u'%s: %s' % (pfe.args[0]['field'], pfe.args[0]['message']),
+                    project=pfe.args[0]['project'],
+                    error=True
+                )
+            except Exception as e:
+                changes = []
+                get_model('rsr', 'iatiimportlog').objects.create(
+                    iati_import=self.iati_import,
+                    text=u'%s: %s' % (field, e),
+                    project=self.project,
+                    error=True
+                )
+
             for change in changes:
                 self.changes.append(change)
 
