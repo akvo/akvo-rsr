@@ -24,13 +24,19 @@ FIELDS = [
     'target_group',
     'project_plan',
     'sustainability',
-    'current_image',
-    'language',
-    'currency',
     'planned_start_date',
     'actual_start_date',
     'planned_end_date',
     'actual_end_date',
+    'current_image',
+    'language',
+    'currency',
+    'hierarchy',
+    'scope',
+    'default_aid_type',
+    'default_finance_type',
+    'default_flow_type',
+    'default_tied_status',
 ]
 
 

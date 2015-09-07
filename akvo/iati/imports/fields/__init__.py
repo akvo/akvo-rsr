@@ -5,11 +5,11 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from .dates import actual_end_date, actual_start_date, planned_end_date, planned_start_date
-from .defaults import currency
+from .defaults import (currency, default_aid_type, default_finance_type, default_flow_type,
+                       default_tied_status, hierarchy, language, scope)
 from .descriptions import (background, current_status, goals_overview, project_plan,
                            project_plan_summary, sustainability, target_group)
 from .image import current_image
-from .language import language
 from .status import status
 from .titles import title, subtitle
 
@@ -20,12 +20,18 @@ __all__ = [
     'currency',
     'current_image',
     'current_status',
+    'default_aid_type',
+    'default_finance_type',
+    'default_flow_type',
+    'default_tied_status',
     'goals_overview',
+    'hierarchy',
     'language',
     'planned_end_date',
     'planned_start_date',
     'project_plan',
     'project_plan_summary',
+    'scope',
     'status',
     'subtitle',
     'sustainability',
