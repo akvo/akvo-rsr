@@ -26,6 +26,11 @@ FIELDS = [
     'sustainability',
     'current_image',
     'language',
+    'currency',
+    'planned_start_date',
+    'actual_start_date',
+    'planned_end_date',
+    'actual_end_date',
 ]
 
 
@@ -69,17 +74,15 @@ class IatiImportActivity(object):
             for change in self.changes:
                 message += u'%s, ' % change
             message = message[:-2] + u'.'
-        else:
-            message = u'IATI import, nothing changed.'
 
-        LogEntry.objects.log_action(
-            user_id=self.user.pk,
-            content_type_id=ContentType.objects.get_for_model(self.project).pk,
-            object_id=self.project.pk,
-            object_repr=self.project.__unicode__(),
-            action_flag=CHANGE,
-            change_message=message
-        )
+            LogEntry.objects.log_action(
+                user_id=self.user.pk,
+                content_type_id=ContentType.objects.get_for_model(self.project).pk,
+                object_id=self.project.pk,
+                object_repr=self.project.__unicode__(),
+                action_flag=CHANGE,
+                change_message=message
+            )
 
     def set_sync_owner(self):
         """
