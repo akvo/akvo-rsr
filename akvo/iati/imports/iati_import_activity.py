@@ -36,6 +36,7 @@ FIELDS = [
     'default_flow_type',
     'default_tied_status',
     'partnerships',
+    'related_projects',
 ]
 
 

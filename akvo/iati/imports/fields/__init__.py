@@ -11,6 +11,7 @@ from .descriptions import (background, current_status, goals_overview, project_p
                            project_plan_summary, sustainability, target_group)
 from .image import current_image
 from .partnerships import partnerships
+from .related_projects import related_projects
 from .status import status
 from .titles import title, subtitle
 
@@ -33,6 +34,7 @@ __all__ = [
     'planned_start_date',
     'project_plan',
     'project_plan_summary',
+    'related_projects',
     'scope',
     'status',
     'subtitle',

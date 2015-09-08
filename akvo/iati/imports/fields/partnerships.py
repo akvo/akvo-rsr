@@ -43,11 +43,13 @@ def partnerships(activity, project, activities_globals):
         )
         imported_partnerships.append(ps)
         if created:
-            changes.append(ps)
+            changes.append(u'added partnership (id: %s): %s' % (str(ps.pk), ps))
 
     for partnership in project.partnerships.all():
         if not partnership in imported_partnerships:
-            changes.append(u'deleted %s' % partnership.__unicode__())
+            changes.append(u'deleted partnership (id: %s): %s' %
+                           (str(partnership.pk),
+                            partnership.__unicode__()))
             partnership.delete()
 
     return changes
