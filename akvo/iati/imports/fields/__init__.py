@@ -13,6 +13,7 @@ from .descriptions import (background, current_status, goals_overview, project_p
 from .image import current_image
 from .partnerships import partnerships
 from .related_projects import related_projects
+from .results import results
 from .status import status
 from .titles import title, subtitle
 
@@ -37,6 +38,7 @@ __all__ = [
     'project_plan',
     'project_plan_summary',
     'related_projects',
+    'results',
     'scope',
     'status',
     'subtitle',

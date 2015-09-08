@@ -38,6 +38,7 @@ FIELDS = [
     'partnerships',
     'related_projects',
     'contacts',
+    'results',
 ]
 
 
