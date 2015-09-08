@@ -39,6 +39,7 @@ FIELDS = [
     'related_projects',
     'contacts',
     'results',
+    'conditions',
 ]
 
 
