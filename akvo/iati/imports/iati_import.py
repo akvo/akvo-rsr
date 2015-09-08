@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from ...rsr.models.iati_import_log import IatiImportLog
-from ...rsr.exceptions import ProjectException
 from .iati_import_activity import IatiImportActivity
 
 from django.core.files import File
@@ -149,19 +148,20 @@ class IatiImportProcess(object):
             try:
                 IatiImportActivity(self.iati_import, activity, self.organisation, self.user,
                                    self.activities.attrib)
-            except ProjectException as pe:
-                IatiImportLog.objects.create(
-                    iati_import=self.iati_import,
-                    text=pe.args[0]['message'],
-                    project=pe.args[0]['project'],
-                    error=True
-                )
             except Exception as e:
-                IatiImportLog.objects.create(
-                    iati_import=self.iati_import,
-                    text=e,
-                    error=True
-                )
+                if 'project' in e.args[0].keys():
+                    IatiImportLog.objects.create(
+                        iati_import=self.iati_import,
+                        text=e.args[0]['message'],
+                        project=e.args[0]['project'],
+                        error=True
+                    )
+                else:
+                    IatiImportLog.objects.create(
+                        iati_import=self.iati_import,
+                        text=e,
+                        error=True
+                    )
 
         # Import process complete
         self.set_status(4)

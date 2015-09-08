@@ -4,8 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ...rsr.exceptions import ProjectException, ProjectFieldException
-
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import get_model
@@ -100,8 +98,9 @@ class IatiImportActivity(object):
             self.set_end_date()
             self.set_status(4)
             self.set_errors_true()
-            raise ProjectException({
-                'message': u'Project has a different sync_owner: %s.' % sync_owner.name,
+            raise Exception({
+                'message': u'sync_owner: Project has a different sync_owner (%s).' %
+                           sync_owner.name,
                 'project': self.project
             })
         self.project.sync_owner = self.organisation
@@ -150,19 +149,18 @@ class IatiImportActivity(object):
         for field in FIELDS:
             try:
                 changes = getattr(fields, field)(self.activity, self.project, self.globals)
-            except ProjectFieldException as pfe:
-                changes = []
-                get_model('rsr', 'iatiimportlog').objects.create(
-                    iati_import=self.iati_import,
-                    text=u'%s: %s' % (pfe.args[0]['field'], pfe.args[0]['message']),
-                    project=pfe.args[0]['project'],
-                    error=True
-                )
             except Exception as e:
                 changes = []
+                if isinstance(e, basestring):
+                    text = e
+                else:
+                    try:
+                        text = u", ".join(str(e_part) for e_part in e)
+                    except TypeError:
+                        text = e
                 get_model('rsr', 'iatiimportlog').objects.create(
                     iati_import=self.iati_import,
-                    text=u'%s: %s' % (field, e),
+                    text=u'%s: %s.' % (field, text),
                     project=self.project,
                     error=True
                 )

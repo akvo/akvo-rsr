@@ -4,19 +4,19 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ....rsr.exceptions import ProjectFieldException
-
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
 import urllib2
 
 VALID_IMAGE_EXTENSIONS = [
+    'gif',
     'jpg',
     'jpeg',
     'png',
-    'gif'
+    'tiff'
 ]
 
 
@@ -43,11 +43,7 @@ def current_image(activity, project, activities_globals):
             image_extension = image_url.rsplit('.', 1)[1].lower()
 
             if not image_extension in VALID_IMAGE_EXTENSIONS:
-                raise ProjectFieldException({
-                    'message': u'%s is not a valid image extension.' % image_extension,
-                    'project': project,
-                    'field': u'Image'
-                })
+                raise ValidationError(u'%s is not a valid image extension' % image_extension)
 
             if not project.current_image or \
                     (project.current_image
