@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ..utils import get_text
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files import File
@@ -59,12 +61,7 @@ def current_image(activity, project, activities_globals):
                 image_caption = None
                 title_element = document_link_element.find('title')
                 if title_element is not None:
-                    if activities_globals['version'][0] == '1':
-                        image_caption = title_element.text
-                    else:
-                        narrative_element = title_element.find('narrative')
-                        if narrative_element is not None:
-                            image_caption = narrative_element.text
+                    image_caption = get_text(title_element, activities_globals['version'])
 
                 if image_caption is not None and \
                         project.current_image_caption != image_caption[:50]:

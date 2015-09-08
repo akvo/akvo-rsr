@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ..utils import get_text
+
 from django.conf import settings
 
 
@@ -21,12 +23,7 @@ def title(activity, project, activities_globals):
     title_element = activity.find('title')
 
     if title_element is not None:
-        if activities_globals['version'][0] == '1':
-            title_text = title_element.text
-        else:
-            narrative_element = title_element.find('narrative')
-            if narrative_element is not None:
-                title_text = narrative_element.text
+        title_text = get_text(title_element, activities_globals['version'])
 
     if title_text is not None and project.title != title_text[:45]:
         project.title = title_text[:45]
@@ -54,12 +51,7 @@ def subtitle(activity, project, activities_globals):
         subtitle_element = activity.find("description[@type='1']")
 
     if not subtitle_element is None:
-        if activities_globals['version'][0] == '1':
-            subtitle_text = subtitle_element.text
-        else:
-            narrative_element = subtitle_element.find('narrative')
-            if narrative_element is not None:
-                subtitle_text = narrative_element.text
+        subtitle_text = get_text(subtitle_element, activities_globals['version'])
 
     if subtitle_text is not None and project.subtitle != subtitle_text[:75]:
         project.subtitle = subtitle_text[:75]

@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ..utils import get_text
+
 from datetime import datetime
 
 
@@ -27,7 +29,7 @@ def planned_start_date(activity, project, activities_globals):
         if 'iso-date' in psd_element.attrib.keys():
             psd_date = psd_element.attrib['iso-date']
         else:
-            psd_date = psd_element.text
+            psd_date = get_text(psd_element, activities_globals['version'])
 
         if psd_date and (not project.date_start_planned or
                          project.date_start_planned.isoformat() != psd_date):
@@ -58,7 +60,7 @@ def actual_start_date(activity, project, activities_globals):
         if 'iso-date' in asd_element.attrib.keys():
             asd_date = asd_element.attrib['iso-date']
         else:
-            asd_date = asd_element.text
+            asd_date = get_text(asd_element, activities_globals['version'])
 
         if asd_date and (not project.date_start_actual or
                          project.date_start_actual.isoformat() != asd_date):
@@ -89,7 +91,7 @@ def planned_end_date(activity, project, activities_globals):
         if 'iso-date' in ped_element.attrib.keys():
             ped_date = ped_element.attrib['iso-date']
         else:
-            ped_date = ped_element.text
+            ped_date = get_text(ped_element, activities_globals['version'])
 
         if ped_date and (not project.date_end_planned or
                          project.date_end_planned.isoformat() != ped_date):
@@ -120,7 +122,7 @@ def actual_end_date(activity, project, activities_globals):
         if 'iso-date' in aed_element.attrib.keys():
             aed_date = aed_element.attrib['iso-date']
         else:
-            aed_date = aed_element.text
+            aed_date = get_text(aed_element, activities_globals['version'])
 
         if aed_date and (not project.date_end_actual or
                          project.date_end_actual.isoformat() != aed_date):

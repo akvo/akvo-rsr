@@ -35,6 +35,7 @@ FIELDS = [
     'default_finance_type',
     'default_flow_type',
     'default_tied_status',
+    'partnerships',
 ]
 
 

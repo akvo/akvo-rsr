@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ..utils import get_text
+
 from django.conf import settings
 
 
@@ -27,12 +29,7 @@ def project_plan_summary(activity, project, activities_globals):
             pps_element = descriptions_type_1[1]
 
     if not pps_element is None:
-        if activities_globals['version'][0] == '1':
-            pps_text = pps_element.text
-        else:
-            narrative_element = pps_element.find('narrative')
-            if narrative_element is not None:
-                pps_text = narrative_element.text
+        pps_text = get_text(pps_element, activities_globals['version'])
 
     if pps_text is not None and project.project_plan_summary != pps_text[:400]:
         project.project_plan_summary = pps_text[:400]
@@ -60,12 +57,7 @@ def goals_overview(activity, project, activities_globals):
         go_element = activity.find("description[@type='2']")
 
     if not go_element is None:
-        if activities_globals['version'][0] == '1':
-            go_text = go_element.text
-        else:
-            narrative_element = go_element.find('narrative')
-            if narrative_element is not None:
-                go_text = narrative_element.text
+        go_text = get_text(go_element, activities_globals['version'])
 
     if go_text is not None and project.goals_overview != go_text[:600]:
         project.goals_overview = go_text[:600]
@@ -95,12 +87,7 @@ def background(activity, project, activities_globals):
             background_element = descriptions_type_1[2]
 
     if not background_element is None:
-        if activities_globals['version'][0] == '1':
-            background_text = background_element.text
-        else:
-            narrative_element = background_element.find('narrative')
-            if narrative_element is not None:
-                background_text = narrative_element.text
+        background_text = get_text(background_element, activities_globals['version'])
 
     if background_text is not None and project.background != background_text[:1000]:
         project.background = background_text[:1000]
@@ -130,12 +117,7 @@ def current_status(activity, project, activities_globals):
             current_status_element = descriptions_type_1[3]
 
     if not current_status_element is None:
-        if activities_globals['version'][0] == '1':
-            current_status_text = current_status_element.text
-        else:
-            narrative_element = current_status_element.find('narrative')
-            if narrative_element is not None:
-                current_status_text = narrative_element.text
+        current_status_text = get_text(current_status_element, activities_globals['version'])
 
     if current_status_text is not None and project.current_status != current_status_text[:600]:
         project.current_status = current_status_text[:600]
@@ -163,12 +145,7 @@ def target_group(activity, project, activities_globals):
         target_group_element = activity.find("description[@type='3']")
 
     if not target_group_element is None:
-        if activities_globals['version'][0] == '1':
-            target_group_text = target_group_element.text
-        else:
-            narrative_element = target_group_element.find('narrative')
-            if narrative_element is not None:
-                target_group_text = narrative_element.text
+        target_group_text = get_text(target_group_element, activities_globals['version'])
 
     if target_group_text is not None and project.target_group != target_group_text[:600]:
         project.target_group = target_group_text[:600]
@@ -198,12 +175,7 @@ def project_plan(activity, project, activities_globals):
             project_plan_element = descriptions_type_1[4]
 
     if not project_plan_element is None:
-        if activities_globals['version'][0] == '1':
-            project_plan_text = project_plan_element.text
-        else:
-            narrative_element = project_plan_element.find('narrative')
-            if narrative_element is not None:
-                project_plan_text = narrative_element.text
+        project_plan_text = get_text(project_plan_element, activities_globals['version'])
 
     if project_plan_text is not None and project.project_plan != project_plan_text:
         project.project_plan = project_plan_text
@@ -233,12 +205,7 @@ def sustainability(activity, project, activities_globals):
             sustainability_element = descriptions_type_1[5]
 
     if not sustainability_element is None:
-        if activities_globals['version'][0] == '1':
-            sustainability_text = sustainability_element.text
-        else:
-            narrative_element = sustainability_element.find('narrative')
-            if narrative_element is not None:
-                sustainability_text = narrative_element.text
+        sustainability_text = get_text(sustainability_element, activities_globals['version'])
 
     if sustainability_text is not None and project.sustainability != sustainability_text:
         project.sustainability = sustainability_text
