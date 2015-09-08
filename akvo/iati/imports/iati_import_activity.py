@@ -37,6 +37,7 @@ FIELDS = [
     'default_tied_status',
     'partnerships',
     'related_projects',
+    'contacts',
 ]
 
 
