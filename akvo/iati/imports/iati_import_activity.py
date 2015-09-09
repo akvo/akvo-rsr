@@ -41,6 +41,7 @@ FIELDS = [
     'results',
     'conditions',
     'budget_items',
+    'country_budget_items',
 ]
 
 

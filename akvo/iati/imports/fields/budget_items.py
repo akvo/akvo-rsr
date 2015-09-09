@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ..utils import get_text
+
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
@@ -23,7 +25,6 @@ def budget_items(activity, project, activities_globals):
     imported_budgets = []
     changes = []
 
-    budgets_count = len(activity.findall('budget'))
     original_budgets_count = len(activity.findall("budget[@type='1']"))
     revised_budgets_count = len(activity.findall("budget[@type='2']"))
 
@@ -100,5 +101,62 @@ def budget_items(activity, project, activities_globals):
                            (str(budget_item.pk),
                             budget_item.__unicode__()))
             budget_item.delete()
+
+    return changes
+
+
+def country_budget_items(activity, project, activities_globals):
+    """
+    Retrieve and store the country budget items.
+    The country budget items will be extracted from the 'country-budget-items' element.
+
+    :param activity: ElementTree; contains all data of the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    imported_cbis = []
+    changes = []
+
+    country_budget_vocabulary = ''
+
+    cbis_element = activity.find('country-budget-items')
+    if not cbis_element is None:
+        if 'vocabulary' in cbis_element.attrib.keys():
+            country_budget_vocabulary = cbis_element.attrib['vocabulary']
+
+        for cbi_element in cbis_element.findall('budget-item'):
+            code_text = ''
+            description_text = ''
+
+            if 'code' in cbi_element.attrib.keys():
+                code_text = cbi_element.attrib['code']
+
+            description_element = cbi_element.find('description')
+            if not description_element is None:
+                description_text = get_text(description_element, activities_globals['version'])
+
+            cbi, created = get_model('rsr', 'countrybudgetitem').objects.get_or_create(
+                project=project,
+                code=code_text,
+                description=description_text
+            )
+
+            if created:
+                changes.append(u'added country budget item (id: %s): %s' % (str(cbi.pk), cbi))
+
+            imported_cbis.append(cbi)
+
+        for cbi in project.country_budget_items.all():
+            if not cbi in imported_cbis:
+                changes.append(u'deleted country budget item (id: %s): %s' %
+                               (str(cbi.pk),
+                                cbi.__unicode__()))
+                cbi.delete()
+
+    if project.country_budget_vocabulary != country_budget_vocabulary:
+        project.country_budget_vocabulary = country_budget_vocabulary
+        project.save(update_fields=['country_budget_vocabulary'])
+        changes.append('country_budget_vocabulary')
 
     return changes
