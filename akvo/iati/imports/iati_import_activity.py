@@ -40,6 +40,7 @@ FIELDS = [
     'contacts',
     'results',
     'conditions',
+    'budget_items',
 ]
 
 

@@ -199,13 +199,19 @@ def indicator_periods(indicator_element, indicator, activities_globals):
         actual_value = ''
         actual_comment = ''
 
-        period_start_element = period.find('period-start')
-        if not period_start_element is None and 'iso-date' in period_start_element.attrib.keys():
-            period_start = datetime.strptime(period_start_element.attrib['iso-date'], '%Y-%m-%d')
+        pstart_elem = period.find('period-start')
+        if not pstart_elem is None and 'iso-date' in pstart_elem.attrib.keys():
+            try:
+                period_start = datetime.strptime(pstart_elem.attrib['iso-date'], '%Y-%m-%d').date()
+            except ValueError:
+                pass
 
-        period_end_element = period.find('period-end')
-        if not period_end_element is None and 'iso-date' in period_end_element.attrib.keys():
-            period_end = datetime.strptime(period_end_element.attrib['iso-date'], '%Y-%m-%d')
+        pend_element = period.find('period-end')
+        if not pend_element is None and 'iso-date' in pend_element.attrib.keys():
+            try:
+                period_end = datetime.strptime(pend_element.attrib['iso-date'], '%Y-%m-%d').date()
+            except ValueError:
+                pass
 
         target_element = period.find('target')
         if not target_element is None:

@@ -34,7 +34,7 @@ def planned_start_date(activity, project, activities_globals):
             psd_date_text = get_text(psd_element, activities_globals['version'])
 
         try:
-            psd_date = datetime.strptime(psd_date_text, '%Y-%m-%d')
+            psd_date = datetime.strptime(psd_date_text, '%Y-%m-%d').date()
         except ValueError:
             pass
 
@@ -71,7 +71,7 @@ def actual_start_date(activity, project, activities_globals):
             asd_date_text = get_text(asd_element, activities_globals['version'])
 
         try:
-            asd_date = datetime.strptime(asd_date_text, '%Y-%m-%d')
+            asd_date = datetime.strptime(asd_date_text, '%Y-%m-%d').date()
         except ValueError:
             pass
 
@@ -108,7 +108,7 @@ def planned_end_date(activity, project, activities_globals):
             ped_date_text = get_text(ped_element, activities_globals['version'])
 
         try:
-            ped_date = datetime.strptime(ped_date_text, '%Y-%m-%d')
+            ped_date = datetime.strptime(ped_date_text, '%Y-%m-%d').date()
         except ValueError:
             pass
 
@@ -145,7 +145,7 @@ def actual_end_date(activity, project, activities_globals):
             aed_date_text = get_text(aed_element, activities_globals['version'])
 
         try:
-            aed_date = datetime.strptime(aed_date_text, '%Y-%m-%d')
+            aed_date = datetime.strptime(aed_date_text, '%Y-%m-%d').date()
         except ValueError:
             pass
 
