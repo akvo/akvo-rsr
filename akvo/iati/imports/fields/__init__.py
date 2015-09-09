@@ -14,6 +14,7 @@ from .descriptions import (background, current_status, goals_overview, project_p
                            project_plan_summary, sustainability, target_group)
 from .image import current_image
 from .partnerships import partnerships
+from .planned_disbursements import planned_disbursements
 from .related_projects import related_projects
 from .results import results
 from .status import status
@@ -39,6 +40,7 @@ __all__ = [
     'hierarchy',
     'language',
     'partnerships',
+    'planned_disbursements',
     'planned_end_date',
     'planned_start_date',
     'project_plan',
