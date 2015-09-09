@@ -19,13 +19,13 @@ def title(activity, project, activities_globals):
     :param activities_globals: Dictionary; contains all global activities information
     :return: List; contains fields that have changed
     """
-    title_text = None
-    title_element = activity.find('title')
+    title_text = ''
 
+    title_element = activity.find('title')
     if title_element is not None:
         title_text = get_text(title_element, activities_globals['version'])
 
-    if title_text is not None and project.title != title_text[:45]:
+    if project.title != title_text[:45]:
         project.title = title_text[:45]
         project.save(update_fields=['title'])
         return ['title']
@@ -44,16 +44,16 @@ def subtitle(activity, project, activities_globals):
     :param activities_globals: Dictionary; contains all global activities information
     :return: List; contains fields that have changed
     """
-    subtitle_text = None
-    subtitle_element = activity.find("description[@{%s}type='4']" % settings.AKVO_NS)
+    subtitle_text = ''
 
+    subtitle_element = activity.find("description[@{%s}type='4']" % settings.AKVO_NS)
     if subtitle_element is None:
         subtitle_element = activity.find("description[@type='1']")
 
     if not subtitle_element is None:
         subtitle_text = get_text(subtitle_element, activities_globals['version'])
 
-    if subtitle_text is not None and project.subtitle != subtitle_text[:75]:
+    if project.subtitle != subtitle_text[:75]:
         project.subtitle = subtitle_text[:75]
         project.save(update_fields=['subtitle'])
         return ['subtitle']

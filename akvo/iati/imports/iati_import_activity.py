@@ -156,6 +156,7 @@ class IatiImportActivity(object):
                 changes = getattr(fields, field)(self.activity, self.project, self.globals)
             except Exception as e:
                 changes = []
+
                 if isinstance(e, basestring):
                     text = e
                 else:
@@ -169,6 +170,8 @@ class IatiImportActivity(object):
                     project=self.project,
                     error=True
                 )
+
+                self.set_errors_true()
 
             for change in changes:
                 self.changes.append(change)

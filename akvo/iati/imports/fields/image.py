@@ -48,8 +48,8 @@ def current_image(activity, project, activities_globals):
                 raise ValidationError(u'%s is not a valid image extension' % image_extension)
 
             if not project.current_image or \
-                    (project.current_image
-                     and not project.current_image.name.rsplit('/', 1)[1] == image_filename):
+                    (project.current_image and
+                     not project.current_image.name.rsplit('/', 1)[1] == image_filename):
                 tmp_file = NamedTemporaryFile(delete=True)
                 tmp_file.write(urllib2.urlopen(image_url, timeout=100).read())
                 tmp_file.flush()
@@ -58,25 +58,26 @@ def current_image(activity, project, activities_globals):
                 changes.append('current_image')
 
                 # Image caption
-                image_caption = None
+                image_caption = ''
+
                 title_element = document_link_element.find('title')
                 if title_element is not None:
                     image_caption = get_text(title_element, activities_globals['version'])
 
-                if image_caption is not None and \
-                        project.current_image_caption != image_caption[:50]:
+                if project.current_image_caption != image_caption[:50]:
                     project.current_image_caption = image_caption[:50]
                     project.save(update_fields=['current_image_caption'])
                     changes.append('current_image_caption')
 
                 # Image credit
-                image_credit = None
+                image_credit = ''
+
                 if '{%s}photo-credit' % settings.AKVO_NS in document_link_element.attrib.keys():
                     image_credit = document_link_element.attrib[
                         '{%s}photo-credit' % settings.AKVO_NS
                     ]
 
-                if image_credit is not None and project.current_image_credit != image_credit[:50]:
+                if project.current_image_credit != image_credit[:50]:
                     project.current_image_credit = image_credit[:50]
                     project.save(update_fields=['current_image_credit'])
                     changes.append('current_image_credit')

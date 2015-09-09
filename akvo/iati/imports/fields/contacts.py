@@ -23,55 +23,50 @@ def contacts(activity, project, activities_globals):
     changes = []
 
     for contact in activity.findall('contact-info'):
-        contact_type = contact.attrib['type'] if 'type' in contact.attrib.keys() else ''
+        contact_type = ''
+        organisation_text = ''
+        department_text = ''
+        person_name_text = ''
+        job_title_text = ''
+        telephone_text = ''
+        email_text = ''
+        website_text = ''
+        mailing_address_text = ''
+
+        if 'type' in contact.attrib.keys():
+            contact_type = contact.attrib['type']
 
         organisation_element = contact.find('organisation')
         if not organisation_element is None:
             organisation_text = get_text(organisation_element, activities_globals['version'])
-        else:
-            organisation_text = ''
 
         department_element = contact.find('department')
         if not department_element is None:
             department_text = get_text(department_element, activities_globals['version'])
-        else:
-            department_text = ''
 
         person_name_element = contact.find('person-name')
         if not person_name_element is None:
             person_name_text = get_text(person_name_element, activities_globals['version'])
-        else:
-            person_name_text = ''
 
         job_title_element = contact.find('job-title')
         if not job_title_element is None:
             job_title_text = get_text(job_title_element, activities_globals['version'])
-        else:
-            job_title_text = ''
 
         telephone_element = contact.find('telephone')
         if not telephone_element is None:
-            telephone_text = telephone_element.text
-        else:
-            telephone_text = ''
+            telephone_text = telephone_element.text if not telephone_element.text is None else ''
 
         email_element = contact.find('email')
         if not email_element is None:
-            email_text = email_element.text
-        else:
-            email_text = ''
+            email_text = email_element.text if not email_element.text is None else ''
 
         website_element = contact.find('website')
         if not website_element is None:
-            website_text = website_element.text
-        else:
-            website_text = ''
+            website_text = website_element.text if not website_element.text is None else ''
 
         mailing_address_element = contact.find('mailing-address')
         if not mailing_address_element is None:
             mailing_address_text = get_text(mailing_address_element, activities_globals['version'])
-        else:
-            mailing_address_text = ''
 
         c, created = get_model('rsr', 'projectcontact').objects.get_or_create(
             project=project,
@@ -85,9 +80,11 @@ def contacts(activity, project, activities_globals):
             department=department_text,
             website=website_text,
         )
-        imported_contacts.append(c)
+
         if created:
             changes.append(u'added contact (id: %s): %s' % (str(c.pk), c))
+
+        imported_contacts.append(c)
 
     for contact in project.contacts.all():
         if not contact in imported_contacts:

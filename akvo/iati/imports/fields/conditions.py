@@ -27,7 +27,11 @@ def conditions(activity, project, activities_globals):
     if not conditions_element is None and 'attached' in conditions_element.attrib.keys() and \
             conditions_element.attrib['attached'] == '1':
         for condition in conditions_element.findall('condition'):
-            condition_type = condition.attrib['type'] if 'type' in condition.attrib.keys() else ''
+            condition_type = ''
+
+            if 'type' in condition.attrib.keys():
+                condition_type = condition.attrib['type']
+
             condition_text = get_text(condition, activities_globals['version'])
 
             cond, created = get_model('rsr', 'projectcondition').objects.get_or_create(
@@ -35,9 +39,11 @@ def conditions(activity, project, activities_globals):
                 type=condition_type,
                 text=condition_text
             )
-            imported_conditions.append(cond)
+
             if created:
                 changes.append(u'added condition (id: %s): %s' % (str(cond.pk), cond))
+
+            imported_conditions.append(cond)
 
     for condition in project.conditions.all():
         if not condition in imported_conditions:

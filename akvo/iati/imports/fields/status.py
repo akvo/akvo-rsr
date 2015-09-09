@@ -24,14 +24,17 @@ def status(activity, project, activities_globals):
     :param activities_globals: Dictionary; contains all global activities information
     :return: List; contains fields that have changed
     """
+    project_status = 'N'
+
     activity_status = activity.find('activity-status')
     if activity_status is not None and 'code' in activity_status.attrib.keys():
         code = activity_status.attrib['code']
         if code in CODE_TO_STATUS.keys():
             project_status = CODE_TO_STATUS[code]
-            if project.status != project_status:
-                project.status = project_status
-                project.save(update_fields=['status'])
-                return ['status']
+
+    if project.status != project_status:
+        project.status = project_status
+        project.save(update_fields=['status'])
+        return ['status']
 
     return []

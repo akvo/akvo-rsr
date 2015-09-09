@@ -9,10 +9,10 @@ from ..utils import get_or_create_organisation, get_text
 from django.db.models import get_model
 
 ROLE_TO_CODE = {
-    'accountable': '2',
-    'extending': '3',
-    'funding': '1',
-    'implementing': '4'
+    'accountable': 2,
+    'extending': 3,
+    'funding': 1,
+    'implementing': 4
 }
 
 
@@ -30,20 +30,36 @@ def partnerships(activity, project, activities_globals):
     changes = []
 
     for partnership in activity.findall('participating-org'):
-        org_ref = partnership.attrib['ref'] if 'ref' in partnership.attrib.keys() else ''
+        org_ref = ''
+        partner_role = None
+
+        if 'ref' in partnership.attrib.keys():
+            org_ref = partnership.attrib['ref']
+
         org_name = get_text(partnership, activities_globals['version'])
+
         partner = get_or_create_organisation(org_ref, org_name)
-        partner_role = partnership.attrib['role'] if 'role' in partnership.attrib.keys() else None
-        if activities_globals['version'][0] == '1':
-            partner_role = ROLE_TO_CODE[partner_role.lower()]
+
+        if 'role' in partnership.attrib.keys():
+            partner_role = partnership.attrib['role']
+            if partner_role and partner_role.lower() in ROLE_TO_CODE:
+                partner_role = ROLE_TO_CODE[partner_role.lower()]
+            elif partner_role:
+                try:
+                    partner_role = int(partner_role)
+                except ValueError:
+                    pass
+
         ps, created = get_model('rsr', 'partnership').objects.get_or_create(
             project=project,
             organisation=partner,
-            iati_organisation_role=int(partner_role) if partner_role else None
+            iati_organisation_role=partner_role
         )
-        imported_partnerships.append(ps)
+
         if created:
             changes.append(u'added partnership (id: %s): %s' % (str(ps.pk), ps))
+
+        imported_partnerships.append(ps)
 
     for partnership in project.partnerships.all():
         if not partnership in imported_partnerships:

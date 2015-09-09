@@ -15,14 +15,14 @@ def get_text(element, version):
 
     :param element: ElementTree node
     :param version: String; the full IATI version, e.g. '1.03' or '2.01'
-    :return: String; text of the element or an empty string in case there is no text
+    :return: String; text of the element or None in case there is no text
     """
     if version[0] == '1':
-        return element.text
+        return element.text or ''
     else:
         narrative_element = element.find('narrative')
         if narrative_element is not None:
-            return narrative_element.text
+            return narrative_element.text or ''
     return ''
 
 
