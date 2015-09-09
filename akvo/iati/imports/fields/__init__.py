@@ -18,6 +18,7 @@ from .related_projects import related_projects
 from .results import results
 from .status import status
 from .titles import title, subtitle
+from .transactions import transactions
 
 __all__ = [
     'actual_end_date',
@@ -50,4 +51,5 @@ __all__ = [
     'sustainability',
     'target_group',
     'title',
+    'transactions',
 ]

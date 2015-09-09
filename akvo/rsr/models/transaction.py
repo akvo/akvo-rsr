@@ -136,8 +136,12 @@ class TransactionSector(models.Model):
     )
 
     def __unicode__(self):
-        if self.code:
+        if self.code and self.vocabulary in ['1', '2', 'DAC', 'DAC-3']:
             return u'%s' % self.iati_sector().name.capitalize()
+        elif self.code and self.text:
+            return u'%s - %s' % (self.code, self.text)
+        elif self.code:
+            return u'%s' % self.code
         else:
             return u'%s' % _(u'No sector code specified')
 
