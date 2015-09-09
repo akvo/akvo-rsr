@@ -13,6 +13,7 @@ from .defaults import (currency, default_aid_type, default_finance_type, default
 from .descriptions import (background, current_status, goals_overview, project_plan,
                            project_plan_summary, sustainability, target_group)
 from .image import current_image
+from .locations import locations
 from .partnerships import partnerships
 from .planned_disbursements import planned_disbursements
 from .related_projects import related_projects
@@ -39,6 +40,7 @@ __all__ = [
     'goals_overview',
     'hierarchy',
     'language',
+    'locations',
     'partnerships',
     'planned_disbursements',
     'planned_end_date',

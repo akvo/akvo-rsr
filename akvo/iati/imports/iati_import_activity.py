@@ -44,6 +44,7 @@ FIELDS = [
     'country_budget_items',
     'transactions',
     'planned_disbursements',
+    'locations',
 ]
 
 

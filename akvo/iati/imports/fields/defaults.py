@@ -92,7 +92,7 @@ def scope(activity, project, activities_globals):
 
     scope_element = activity.find("activity-scope")
     if not scope_element is None and 'code' in scope_element.attrib.keys():
-        scope_value = scope_element['code']
+        scope_value = scope_element.attrib['code']
 
     if project.project_scope != scope_value:
         project.project_scope = scope_value
@@ -117,7 +117,7 @@ def collaboration_type(activity, project, activities_globals):
 
     ct_element = activity.find("collaboration-type")
     if not ct_element is None and 'code' in ct_element.attrib.keys():
-        ct_value = ct_element['code']
+        ct_value = ct_element.attrib['code']
 
     if project.collaboration_type != ct_value:
         project.collaboration_type = ct_value
@@ -141,7 +141,7 @@ def default_flow_type(activity, project, activities_globals):
 
     dft_element = activity.find("default-flow-type")
     if not dft_element is None and 'code' in dft_element.attrib.keys():
-        dft_value = dft_element['code']
+        dft_value = dft_element.attrib['code']
 
     if project.default_flow_type != dft_value:
         project.default_flow_type = dft_value
@@ -166,7 +166,7 @@ def default_finance_type(activity, project, activities_globals):
 
     dft_element = activity.find("default-finance-type")
     if not dft_element is None and 'code' in dft_element.attrib.keys():
-        dft_value = dft_element['code']
+        dft_value = dft_element.attrib['code']
 
     if project.default_finance_type != dft_value:
         project.default_finance_type = dft_value
@@ -190,7 +190,7 @@ def default_aid_type(activity, project, activities_globals):
 
     dat_element = activity.find("default-aid-type")
     if not dat_element is None and 'code' in dat_element.attrib.keys():
-        dat_value = dat_element['code']
+        dat_value = dat_element.attrib['code']
 
     if project.default_aid_type != dat_value:
         project.default_aid_type = dat_value
@@ -215,7 +215,7 @@ def default_tied_status(activity, project, activities_globals):
 
     dts_element = activity.find("default-tied-status")
     if not dts_element is None and 'code' in dts_element.attrib.keys():
-        dts_value = dts_element['code']
+        dts_value = dts_element.attrib['code']
 
     if project.default_tied_status != dts_value:
         project.default_tied_status = dts_value
