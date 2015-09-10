@@ -13,12 +13,14 @@ from .defaults import (currency, default_aid_type, default_finance_type, default
                        default_tied_status, hierarchy, language, scope)
 from .descriptions import (background, current_status, goals_overview, project_plan,
                            project_plan_summary, sustainability, target_group)
+from .legacy_data import legacy_data
 from .links import current_image, documents, links
 from .locations import locations, recipient_countries, recipient_regions
 from .partnerships import partnerships
 from .planned_disbursements import planned_disbursements
 from .related_projects import related_projects
 from .results import results
+from .special_reporting import crs_add, fss
 from .status import status
 from .titles import title, subtitle
 from .transactions import transactions
@@ -31,6 +33,7 @@ __all__ = [
     'conditions',
     'contacts',
     'country_budget_items',
+    'crs_add',
     'currency',
     'current_image',
     'current_status',
@@ -39,9 +42,11 @@ __all__ = [
     'default_flow_type',
     'default_tied_status',
     'documents',
+    'fss',
     'goals_overview',
     'hierarchy',
     'language',
+    'legacy_data',
     'links',
     'locations',
     'partnerships',

@@ -51,6 +51,9 @@ FIELDS = [
     'policy_markers',
     'links',
     'documents',
+    'legacy_data',
+    'crs_add',
+    'fss',
 ]
 
 
