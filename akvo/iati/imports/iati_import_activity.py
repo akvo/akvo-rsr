@@ -4,8 +4,10 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from django.conf import settings
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db.models import get_model
 
 import datetime
@@ -86,8 +88,39 @@ class IatiImportActivity(object):
         """
         Set the errors flag of the project import to True.
         """
-        self.project_import_log.errors = True
-        self.project_import_log.save()
+        if not self.project_import_log.errors:
+            self.project_import_log.errors = True
+            self.project_import_log.save()
+
+    def publish(self):
+        """
+        Try to publish the project in case the project is not yet published. Unless an akvo:publish
+        attribute is set to False in the 'iati-activity' element.
+        """
+        if self.project.is_published():
+            return
+
+        if '{%s}publish' % settings.AKVO_NS in self.activity.attrib.keys() and \
+                self.activity.attrib['{%s}publish' % settings.AKVO_NS].lower() == 'false':
+            return
+
+        try:
+            self.project.publishingstatus.status = 'published'
+            self.project.publishingstatus.full_clean()
+            self.project.publishingstatus.save()
+        except ValidationError as e:
+            message = u'Project could not be published: '
+            # TODO: Ugly hack to show errors nicely
+            message += str(e).replace("{'__all__': [", '').replace("u'", "'").replace(']}', '')
+
+            get_model('rsr', 'iatiimportlog').objects.create(
+                iati_import=self.iati_import,
+                text=message,
+                project=self.project,
+                error=True
+            )
+
+            self.set_errors_true()
 
     def log_changes(self):
         """
@@ -192,6 +225,8 @@ class IatiImportActivity(object):
                 self.changes.append(change)
 
         self.log_changes()
+
+        self.publish()
 
         # Import process finished
         self.set_status(3)

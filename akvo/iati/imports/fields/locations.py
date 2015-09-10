@@ -33,8 +33,8 @@ def locations(activity, project, activities_globals):
         name = ''
         description = ''
         activity_description = ''
-        latitude = 0
-        longitude = 0
+        latitude = None
+        longitude = None
         exactness = ''
         location_class = ''
         feature_designation = ''
