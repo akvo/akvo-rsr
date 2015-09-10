@@ -45,6 +45,8 @@ FIELDS = [
     'transactions',
     'planned_disbursements',
     'locations',
+    'recipient_countries',
+    'recipient_regions',
 ]
 
 

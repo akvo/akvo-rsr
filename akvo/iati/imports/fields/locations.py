@@ -6,6 +6,8 @@
 
 from ..utils import get_text
 
+from decimal import Decimal, InvalidOperation
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import get_model
 
@@ -191,5 +193,110 @@ def administratives(location_element, location, activities_globals):
                            (str(administrative.pk),
                             administrative.__unicode__()))
             administrative.delete()
+
+    return changes
+
+
+def recipient_countries(activity, project, activities_globals):
+    """
+    Retrieve and store the recipient countries.
+    The conditions will be extracted from the 'recipient-country' elements.
+
+    :param activity: ElementTree; contains all data of the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    imported_countries = []
+    changes = []
+
+    for country in activity.findall('recipient-country'):
+        code = ''
+        percentage = None
+
+        if 'code' in country.attrib.keys():
+            code = country.attrib['code'].upper()
+
+        try:
+            if 'percentage' in country.attrib.keys():
+                percentage = Decimal(country.attrib['percentage'])
+        except InvalidOperation:
+            pass
+
+        text = get_text(country, activities_globals['version'])
+
+        rc, created = get_model('rsr', 'recipientcountry').objects.get_or_create(
+            project=project,
+            country=code,
+            percentage=percentage,
+            text=text
+        )
+
+        if created:
+            changes.append(u'added recipient country (id: %s): %s' % (str(rc.pk), rc))
+
+        imported_countries.append(rc)
+
+    for country in project.recipient_countries.all():
+        if not country in imported_countries:
+            changes.append(u'deleted recipient country (id: %s): %s' %
+                           (str(country.pk),
+                            country.__unicode__()))
+            country.delete()
+
+    return changes
+
+
+def recipient_regions(activity, project, activities_globals):
+    """
+    Retrieve and store the recipient regions.
+    The conditions will be extracted from the 'recipient-region' elements.
+
+    :param activity: ElementTree; contains all data of the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    imported_regions = []
+    changes = []
+
+    for region in activity.findall('recipient-region'):
+        code = ''
+        percentage = None
+        vocabulary = ''
+
+        text = get_text(region, activities_globals['version'])
+
+        if 'code' in region.attrib.keys():
+            code = region.attrib['code'].upper()
+
+        try:
+            if 'percentage' in region.attrib.keys():
+                percentage = Decimal(region.attrib['percentage'])
+        except InvalidOperation:
+            pass
+
+        if 'vocabulary' in region.attrib.keys():
+            vocabulary = region.attrib['vocabulary'].upper()
+
+        rr, created = get_model('rsr', 'recipientregion').objects.get_or_create(
+            project=project,
+            region=code,
+            percentage=percentage,
+            text=text,
+            region_vocabulary=vocabulary
+        )
+
+        if created:
+            changes.append(u'added recipient region (id: %s): %s' % (str(rr.pk), rr))
+
+        imported_regions.append(rr)
+
+    for region in project.recipient_regions.all():
+        if not region in imported_regions:
+            changes.append(u'deleted recipient region (id: %s): %s' %
+                           (str(region.pk),
+                            region.__unicode__()))
+            region.delete()
 
     return changes
