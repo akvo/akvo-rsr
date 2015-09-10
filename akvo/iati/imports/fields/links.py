@@ -26,8 +26,9 @@ VALID_IMAGE_EXTENSIONS = [
 def current_image(activity, project, activities_globals):
     """
     Retrieve and store the current image, as well as the image caption and credit.
-    The image will be extracted from the 'url' attribute of the first 'document-link' element. If
-    an image is successfully retrieved, the image caption will be based on the underlying 'title'
+    The image will be extracted from the 'url' attribute of the first 'document-link' element
+    containing a file with one of the extensions of VALID_IMAGE_EXTENSIONS. If an image is
+    successfully retrieved, the image caption will be based on the underlying 'title'
     element and the image credit will be based on the akvo photo-credit attribute of the
     'document-link' element.
 
@@ -64,10 +65,10 @@ def current_image(activity, project, activities_globals):
 
                 title_element = document_link_element.find('title')
                 if title_element is not None:
-                    image_caption = get_text(title_element, activities_globals['version'])
+                    image_caption = get_text(title_element, activities_globals['version'])[:50]
 
-                if project.current_image_caption != image_caption[:50]:
-                    project.current_image_caption = image_caption[:50]
+                if project.current_image_caption != image_caption:
+                    project.current_image_caption = image_caption
                     project.save(update_fields=['current_image_caption'])
                     changes.append('current_image_caption')
 
@@ -77,10 +78,10 @@ def current_image(activity, project, activities_globals):
                 if '{%s}photo-credit' % settings.AKVO_NS in document_link_element.attrib.keys():
                     image_credit = document_link_element.attrib[
                         '{%s}photo-credit' % settings.AKVO_NS
-                    ]
+                    ][:50]
 
-                if project.current_image_credit != image_credit[:50]:
-                    project.current_image_credit = image_credit[:50]
+                if project.current_image_credit != image_credit:
+                    project.current_image_credit = image_credit
                     project.save(update_fields=['current_image_credit'])
                     changes.append('current_image_credit')
 
@@ -133,7 +134,7 @@ def links(activity, project, activities_globals):
 
         title_element = doc_link.find('title')
         if not title_element is None:
-            caption = get_text(title_element, activities_globals['version'])
+            caption = get_text(title_element, activities_globals['version'])[:50]
 
         link, created = get_model('rsr', 'link').objects.get_or_create(
             project=project,
@@ -190,7 +191,7 @@ def documents(activity, project, activities_globals):
                 first_image = False
                 continue
 
-        if 'format' in doc_link.attrib.keys():
+        if 'format' in doc_link.attrib.keys() and len(doc_link.attrib['format']) < 76:
             doc_format = doc_link.attrib['format']
 
             # Check if the format is 'application/http'
@@ -199,9 +200,10 @@ def documents(activity, project, activities_globals):
 
         title_element = doc_link.find('title')
         if not title_element is None:
-            title = get_text(title_element, activities_globals['version'])
+            title = get_text(title_element, activities_globals['version'])[:100]
             if activities_globals['version'][0] == '1' and \
-                    '{%s}lang' % xml_ns in title_element.attrib.keys():
+                    '{%s}lang' % xml_ns in title_element.attrib.keys() and \
+                    len(title_element.attrib['{%s}lang' % xml_ns]) < 3:
                 title_language = title_element.attrib['{%s}lang' % xml_ns]
             elif activities_globals['version'][0] == '2':
                 narrative_element = title_element.find('narrative')
@@ -210,11 +212,13 @@ def documents(activity, project, activities_globals):
                     title_language = narrative_element.attrib['{%s}lang' % xml_ns]
 
         category_element = doc_link.find('category')
-        if not category_element is None and 'code' in category_element.attrib.keys():
+        if not category_element is None and 'code' in category_element.attrib.keys() and \
+                len(category_element.attrib['code']) < 4:
             category = category_element.attrib['code']
 
         language_element = doc_link.find('language')
-        if not language_element is None and 'code' in language_element.attrib.keys():
+        if not language_element is None and 'code' in language_element.attrib.keys() and \
+                len(language_element.attrib['code']) < 3:
             language = language_element.attrib['code']
 
         doc, created = get_model('rsr', 'projectdocument').objects.get_or_create(

@@ -29,10 +29,10 @@ def conditions(activity, project, activities_globals):
         for condition in conditions_element.findall('condition'):
             condition_type = ''
 
-            if 'type' in condition.attrib.keys():
+            if 'type' in condition.attrib.keys() and len(condition.attrib['type']) < 2:
                 condition_type = condition.attrib['type']
 
-            condition_text = get_text(condition, activities_globals['version'])
+            condition_text = get_text(condition, activities_globals['version'])[:100]
 
             cond, created = get_model('rsr', 'projectcondition').objects.get_or_create(
                 project=project,

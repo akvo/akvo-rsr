@@ -29,10 +29,10 @@ def project_plan_summary(activity, project, activities_globals):
             pps_element = descriptions_type_1[1]
 
     if not pps_element is None:
-        pps_text = get_text(pps_element, activities_globals['version'])
+        pps_text = get_text(pps_element, activities_globals['version'])[:400]
 
-    if project.project_plan_summary != pps_text[:400]:
-        project.project_plan_summary = pps_text[:400]
+    if project.project_plan_summary != pps_text:
+        project.project_plan_summary = pps_text
         project.save(update_fields=['project_plan_summary'])
         return ['project_plan_summary']
 
@@ -57,10 +57,10 @@ def goals_overview(activity, project, activities_globals):
         go_element = activity.find("description[@type='2']")
 
     if not go_element is None:
-        go_text = get_text(go_element, activities_globals['version'])
+        go_text = get_text(go_element, activities_globals['version'])[:600]
 
-    if project.goals_overview != go_text[:600]:
-        project.goals_overview = go_text[:600]
+    if project.goals_overview != go_text:
+        project.goals_overview = go_text
         project.save(update_fields=['goals_overview'])
         return ['goals_overview']
 
@@ -87,10 +87,10 @@ def background(activity, project, activities_globals):
             background_element = descriptions_type_1[2]
 
     if not background_element is None:
-        background_text = get_text(background_element, activities_globals['version'])
+        background_text = get_text(background_element, activities_globals['version'])[:1000]
 
-    if project.background != background_text[:1000]:
-        project.background = background_text[:1000]
+    if project.background != background_text:
+        project.background = background_text
         project.save(update_fields=['background'])
         return ['background']
 
@@ -117,10 +117,10 @@ def current_status(activity, project, activities_globals):
             current_status_element = descriptions_type_1[3]
 
     if not current_status_element is None:
-        current_status_text = get_text(current_status_element, activities_globals['version'])
+        current_status_text = get_text(current_status_element, activities_globals['version'])[:600]
 
-    if project.current_status != current_status_text[:600]:
-        project.current_status = current_status_text[:600]
+    if project.current_status != current_status_text:
+        project.current_status = current_status_text
         project.save(update_fields=['current_status'])
         return ['current_status']
 
@@ -145,10 +145,10 @@ def target_group(activity, project, activities_globals):
         target_group_element = activity.find("description[@type='3']")
 
     if not target_group_element is None:
-        target_group_text = get_text(target_group_element, activities_globals['version'])
+        target_group_text = get_text(target_group_element, activities_globals['version'])[:600]
 
-    if project.target_group != target_group_text[:600]:
-        project.target_group = target_group_text[:600]
+    if project.target_group != target_group_text:
+        project.target_group = target_group_text
         project.save(update_fields=['target_group'])
         return ['target_group']
 

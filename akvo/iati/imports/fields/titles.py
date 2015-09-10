@@ -23,10 +23,10 @@ def title(activity, project, activities_globals):
 
     title_element = activity.find('title')
     if title_element is not None:
-        title_text = get_text(title_element, activities_globals['version'])
+        title_text = get_text(title_element, activities_globals['version'])[:45]
 
-    if project.title != title_text[:45]:
-        project.title = title_text[:45]
+    if project.title != title_text:
+        project.title = title_text
         project.save(update_fields=['title'])
         return ['title']
 
@@ -51,10 +51,10 @@ def subtitle(activity, project, activities_globals):
         subtitle_element = activity.find("description[@type='1']")
 
     if not subtitle_element is None:
-        subtitle_text = get_text(subtitle_element, activities_globals['version'])
+        subtitle_text = get_text(subtitle_element, activities_globals['version'])[:75]
 
-    if project.subtitle != subtitle_text[:75]:
-        project.subtitle = subtitle_text[:75]
+    if project.subtitle != subtitle_text:
+        project.subtitle = subtitle_text
         project.save(update_fields=['subtitle'])
         return ['subtitle']
 

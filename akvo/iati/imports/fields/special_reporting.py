@@ -77,12 +77,14 @@ def crs_add(activity, project, activities_globals):
             crs_ins.loan_terms_rate2 = loan_terms_rate2
 
             repay_type_element = loan_terms_element.find('repayment-type')
-            if not repay_type_element is None and 'code' in repay_type_element.attrib.keys():
+            if not repay_type_element is None and 'code' in repay_type_element.attrib.keys() and \
+                    len(repay_type_element.attrib['code']) < 2:
                 repayment_type = repay_type_element.attrib['code']
             crs_ins.repayment_type = repayment_type
 
             repay_plan_element = loan_terms_element.find('repayment-plan')
-            if not repay_plan_element is None and 'code' in repay_plan_element.attrib.keys():
+            if not repay_plan_element is None and 'code' in repay_plan_element.attrib.keys() and \
+                    len(repay_plan_element.attrib['code']) < 3:
                 repayment_plan = repay_plan_element.attrib['code']
             crs_ins.repayment_plan = repayment_plan
 
@@ -125,7 +127,8 @@ def crs_add(activity, project, activities_globals):
                 pass
             crs_ins.loan_status_year = loan_status_year
 
-            if 'currency' in loan_status_element.attrib.keys():
+            if 'currency' in loan_status_element.attrib.keys() and \
+                    len(loan_status_element.attrib['currency']) < 4:
                 loan_status_currency = loan_status_element.attrib['currency']
             crs_ins.loan_status_currency = loan_status_currency
 
@@ -178,7 +181,7 @@ def crs_add(activity, project, activities_globals):
             code = ''
             significance = None
 
-            if 'code' in other_flag.attrib.keys():
+            if 'code' in other_flag.attrib.keys() and len(other_flag.attrib['code']) < 2:
                 code = other_flag.attrib['code']
 
             if 'significance' in other_flag.attrib.keys():
@@ -288,7 +291,7 @@ def fss(activity, project, activities_globals):
             except ValueError:
                 pass
 
-            if 'currency' in forecast.attrib.keys():
+            if 'currency' in forecast.attrib.keys() and len(forecast.attrib['currency']) < 4:
                 currency = forecast.attrib['currency']
 
             fore, created = get_model('rsr', 'fssforecast').objects.get_or_create(

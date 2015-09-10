@@ -42,7 +42,7 @@ def related_projects(activity, project, activities_globals):
         rp, created = get_model('rsr', 'relatedproject').objects.get_or_create(
             project=project,
             related_project=related_project_project,
-            related_iati_id=project_reference if not related_project_project else '',
+            related_iati_id=project_reference[:100] if not related_project_project else '',
             relation=project_type
         )
 

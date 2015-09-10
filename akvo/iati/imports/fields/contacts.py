@@ -33,40 +33,40 @@ def contacts(activity, project, activities_globals):
         website_text = ''
         mailing_address_text = ''
 
-        if 'type' in contact.attrib.keys():
+        if 'type' in contact.attrib.keys() and len(contact.attrib['type']) < 2:
             contact_type = contact.attrib['type']
 
         organisation_element = contact.find('organisation')
         if not organisation_element is None:
-            organisation_text = get_text(organisation_element, activities_globals['version'])
+            organisation_text = get_text(organisation_element, activities_globals['version'])[:100]
 
         department_element = contact.find('department')
         if not department_element is None:
-            department_text = get_text(department_element, activities_globals['version'])
+            department_text = get_text(department_element, activities_globals['version'])[:100]
 
         person_name_element = contact.find('person-name')
         if not person_name_element is None:
-            person_name_text = get_text(person_name_element, activities_globals['version'])
+            person_name_text = get_text(person_name_element, activities_globals['version'])[:100]
 
         job_title_element = contact.find('job-title')
         if not job_title_element is None:
-            job_title_text = get_text(job_title_element, activities_globals['version'])
+            job_title_text = get_text(job_title_element, activities_globals['version'])[:100]
 
         telephone_element = contact.find('telephone')
-        if not telephone_element is None:
-            telephone_text = telephone_element.text if not telephone_element.text is None else ''
+        if not telephone_element is None and not telephone_element.text is None:
+            telephone_text = telephone_element.text[:30]
 
         email_element = contact.find('email')
-        if not email_element is None:
-            email_text = email_element.text if not email_element.text is None else ''
+        if not email_element is None and not email_element.text is None:
+            email_text = email_element.text
 
         website_element = contact.find('website')
-        if not website_element is None:
-            website_text = website_element.text if not website_element.text is None else ''
+        if not website_element is None and not website_element.text is None:
+            website_text = website_element.text
 
-        mailing_address_element = contact.find('mailing-address')
-        if not mailing_address_element is None:
-            mailing_address_text = get_text(mailing_address_element, activities_globals['version'])
+        mail_addr_element = contact.find('mailing-address')
+        if not mail_addr_element is None:
+            mailing_address_text = get_text(mail_addr_element, activities_globals['version'])[:255]
 
         c, created = get_model('rsr', 'projectcontact').objects.get_or_create(
             project=project,

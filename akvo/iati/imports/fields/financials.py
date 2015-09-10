@@ -24,6 +24,7 @@ TYPE_TO_CODE = {
     'CG': '10'
 }
 
+
 def transactions(activity, project, activities_globals):
     """
     Retrieve and store the transactions.
@@ -58,11 +59,12 @@ def transactions(activity, project, activities_globals):
         transaction_region = ''
         transaction_region_vocabulary = ''
 
-        if 'ref' in transaction.attrib.keys():
+        if 'ref' in transaction.attrib.keys() and len(transaction.attrib['ref']) < 26:
             transaction_ref = transaction.attrib['ref']
 
         trans_type_element = transaction.find('transaction-type')
-        if not trans_type_element is None and 'code' in trans_type_element.attrib.keys():
+        if not trans_type_element is None and 'code' in trans_type_element.attrib.keys() and \
+                len(trans_type_element.attrib['code']) < 3:
             transaction_type = trans_type_element.attrib['code'].upper()
             if transaction_type in TYPE_TO_CODE.keys():
                 transaction_type = TYPE_TO_CODE[transaction_type]
@@ -89,12 +91,14 @@ def transactions(activity, project, activities_globals):
                 except ValueError:
                     pass
 
-            if 'currency' in value_element.attrib.keys():
+            if 'currency' in value_element.attrib.keys() and \
+                    len(value_element.attrib['currency']) < 4:
                 transaction_currency = value_element.attrib['currency'].upper()
 
         description_element = transaction.find('description')
         if not description_element is None:
-            transaction_description = get_text(description_element, activities_globals['version'])
+            transaction_description = get_text(description_element,
+                                               activities_globals['version'])[:255]
 
         prov_org_element = transaction.find('provider-org')
         if not prov_org_element is None:
@@ -103,7 +107,8 @@ def transactions(activity, project, activities_globals):
                 get_text(prov_org_element, activities_globals['version'])
             )
 
-            if 'provider-activity-id' in prov_org_element.attrib.keys():
+            if 'provider-activity-id' in prov_org_element.attrib.keys() and \
+                    len(prov_org_element.attrib['provider-activity-id']) < 51:
                 transaction_provider_activity_id = prov_org_element.attrib['provider-activity-id']
 
         rec_org_element = transaction.find('receiver-org')
@@ -113,38 +118,47 @@ def transactions(activity, project, activities_globals):
                 get_text(rec_org_element, activities_globals['version'])
             )
 
-            if 'receiver-activity-id' in rec_org_element.attrib.keys():
+            if 'receiver-activity-id' in rec_org_element.attrib.keys() and \
+                    len(rec_org_element.attrib['receiver-activity-id']) < 51:
                 transaction_receiver_activity_id = rec_org_element.attrib['receiver-activity-id']
 
         disbursement_element = transaction.find('disbursement-channel')
-        if not disbursement_element is None and 'code' in disbursement_element.attrib.keys():
+        if not disbursement_element is None and 'code' in disbursement_element.attrib.keys() and \
+                len(disbursement_element.attrib['code']) < 2:
             transaction_disbursement = disbursement_element.attrib['code']
 
         flow_element = transaction.find('flow-type')
-        if not flow_element is None and 'code' in flow_element.attrib.keys():
+        if not flow_element is None and 'code' in flow_element.attrib.keys() and \
+                len(flow_element.attrib['code']) < 3:
             transaction_flow = flow_element.attrib['code']
 
         finance_element = transaction.find('finance-type')
-        if not finance_element is None and 'code' in finance_element.attrib.keys():
+        if not finance_element is None and 'code' in finance_element.attrib.keys() and \
+                len(finance_element.attrib['code']) < 4:
             transaction_finance = finance_element.attrib['code']
 
         aid_element = transaction.find('aid-type')
-        if not aid_element is None and 'code' in aid_element.attrib.keys():
+        if not aid_element is None and 'code' in aid_element.attrib.keys() and \
+                len(aid_element.attrib['code']) < 4:
             transaction_aid = aid_element.attrib['code']
 
         tied_status_element = transaction.find('tied-status')
-        if not tied_status_element is None and 'code' in tied_status_element.attrib.keys():
+        if not tied_status_element is None and 'code' in tied_status_element.attrib.keys() and \
+                len(tied_status_element.attrib['code']) < 2:
             transaction_tied_status = tied_status_element.attrib['code']
 
         country_element = transaction.find('recipient-country')
-        if not country_element is None and 'code' in country_element.attrib.keys():
+        if not country_element is None and 'code' in country_element.attrib.keys() and \
+                len(country_element.attrib['code']) < 3:
             transaction_country = country_element.attrib['code'].upper()
 
         region_element = transaction.find('recipient-region')
-        if not region_element is None and 'code' in region_element.attrib.keys():
+        if not region_element is None and 'code' in region_element.attrib.keys() and \
+                len(region_element.attrib['code']) < 4:
             transaction_region = region_element.attrib['code']
 
-            if 'vocabulary' in region_element.attrib.keys():
+            if 'vocabulary' in region_element.attrib.keys() and \
+                    len(region_element.attrib['vocabulary']) < 2:
                 transaction_region_vocabulary = region_element.attrib['vocabulary']
 
         trans, created = get_model('rsr', 'transaction').objects.get_or_create(
@@ -209,13 +223,13 @@ def transaction_sectors(transaction_element, transaction, activities_globals):
         sector_code = ''
         sector_vocabulary = ''
 
-        if 'code' in sector.attrib.keys():
+        if 'code' in sector.attrib.keys() and len(sector.attrib['code']) < 6:
             sector_code = sector.attrib['code']
 
-        if 'vocabulary' in sector.attrib.keys():
+        if 'vocabulary' in sector.attrib.keys() and len(sector.attrib['vocabulary']) < 6:
             sector_vocabulary = sector.attrib['vocabulary']
 
-        sector_description = get_text(sector, activities_globals['version'])
+        sector_description = get_text(sector, activities_globals['version'])[:100]
 
         sec, created = get_model('rsr', 'transactionsector').objects.get_or_create(
             transaction=transaction,
@@ -242,7 +256,10 @@ def transaction_sectors(transaction_element, transaction, activities_globals):
 def budget_items(activity, project, activities_globals):
     """
     Retrieve and store the budget items.
-    The budget items will be extracted from the 'budget' elements.
+    The budget items will be extracted from the 'budget' elements. Since there is no place to
+    indicate the budget item label in IATI, we set it to the 'Total' label if there is only one
+    budget item (per type, e.g. if there's one original and one revised budget item, both will be
+    set to 'Total'). In all other cases, the budget item label will be set to 'Other'.
 
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
@@ -265,7 +282,7 @@ def budget_items(activity, project, activities_globals):
         label = get_model('rsr', 'budgetitemlabel').objects.get(label='Other')
         other_label = ''
 
-        if 'type' in budget.attrib.keys():
+        if 'type' in budget.attrib.keys() and len(budget.attrib['type']) < 2:
             budget_type = budget.attrib['type']
             if budget_type == '1' and original_budgets_count == 1:
                 label = get_model('rsr', 'budgetitemlabel').objects.get(label='Total')
@@ -302,7 +319,8 @@ def budget_items(activity, project, activities_globals):
                 except ValueError:
                     pass
 
-            if 'currency' in value_element.attrib.keys():
+            if 'currency' in value_element.attrib.keys() and \
+                    len(value_element.attrib['currency']) < 4:
                 currency = value_element.attrib['currency'].upper()
 
         budget, created = get_model('rsr', 'budgetitem').objects.get_or_create(
@@ -356,12 +374,13 @@ def country_budget_items(activity, project, activities_globals):
             code_text = ''
             description_text = ''
 
-            if 'code' in cbi_element.attrib.keys():
+            if 'code' in cbi_element.attrib.keys() and len(cbi_element.attrib['code']) < 7:
                 code_text = cbi_element.attrib['code']
 
             description_element = cbi_element.find('description')
             if not description_element is None:
-                description_text = get_text(description_element, activities_globals['version'])
+                description_text = get_text(description_element,
+                                            activities_globals['version'])[:100]
 
             cbi, created = get_model('rsr', 'countrybudgetitem').objects.get_or_create(
                 project=project,
@@ -402,9 +421,9 @@ def capital_spend(activity, project, activities_globals):
     capital_spend_percentage = None
 
     try:
-        capital_spend_element = activity.find('capital-spend')
-        if not capital_spend_element is None and 'percentage' in capital_spend_element.attrib.keys():
-            capital_spend_percentage = Decimal(capital_spend_element.attrib['percentage'])
+        cap_spend_element = activity.find('capital-spend')
+        if not cap_spend_element is None and 'percentage' in cap_spend_element.attrib.keys():
+            capital_spend_percentage = Decimal(cap_spend_element.attrib['percentage'])
     except InvalidOperation:
         pass
 
@@ -438,7 +457,8 @@ def planned_disbursements(activity, project, activities_globals):
         period_end = None
         disbursement_type = ''
 
-        if 'type' in planned_disbursement.attrib.keys():
+        if 'type' in planned_disbursement.attrib.keys() and \
+                len(planned_disbursement.attrib['type']) < 2:
             disbursement_type = planned_disbursement.attrib['type']
 
         if 'updated' in planned_disbursement.attrib.keys():
@@ -478,7 +498,8 @@ def planned_disbursements(activity, project, activities_globals):
                 except ValueError:
                     pass
 
-            if 'currency' in value_element.attrib.keys():
+            if 'currency' in value_element.attrib.keys() and \
+                    len(value_element.attrib['currency']) < 4:
                 currency = value_element.attrib['currency'].upper()
 
         pd, created = get_model('rsr', 'planneddisbursement').objects.get_or_create(

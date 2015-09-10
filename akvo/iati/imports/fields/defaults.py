@@ -18,7 +18,8 @@ def language(activity, project, activities_globals):
     xml_ns = 'http://www.w3.org/XML/1998/namespace'
     default_language_value = ''
 
-    if '{%s}lang' % xml_ns in activity.attrib.keys():
+    if '{%s}lang' % xml_ns in activity.attrib.keys() and \
+            len(activity.attrib['{%s}lang' % xml_ns]) < 3:
         default_language_value = activity.attrib['{%s}lang' % xml_ns].lower()
 
     if project.language != default_language_value:
@@ -41,7 +42,8 @@ def currency(activity, project, activities_globals):
     """
     default_currency_value = 'EUR'
 
-    if 'default-currency' in activity.attrib.keys():
+    if 'default-currency' in activity.attrib.keys() and \
+            len(activity.attrib['default-currency']) < 3:
         default_currency_value = activity.attrib['default-currency']
 
     if project.currency != default_currency_value:
@@ -64,11 +66,11 @@ def hierarchy(activity, project, activities_globals):
     """
     hierarchy_value = None
 
-    if 'hierarchy' in activity.attrib.keys():
-        try:
+    try:
+        if 'hierarchy' in activity.attrib.keys() and len(activity.attrib['hierarchy']) < 2:
             hierarchy_value = int(activity.attrib['hierarchy'])
-        except ValueError:
-            pass
+    except ValueError:
+        pass
 
     if project.hierarchy != hierarchy_value:
         project.hierarchy = hierarchy_value
@@ -91,7 +93,8 @@ def scope(activity, project, activities_globals):
     scope_value = ''
 
     scope_element = activity.find("activity-scope")
-    if not scope_element is None and 'code' in scope_element.attrib.keys():
+    if not scope_element is None and 'code' in scope_element.attrib.keys() and \
+            len(scope_element.attrib['code']) < 3:
         scope_value = scope_element.attrib['code']
 
     if project.project_scope != scope_value:
@@ -116,7 +119,8 @@ def collaboration_type(activity, project, activities_globals):
     ct_value = ''
 
     ct_element = activity.find("collaboration-type")
-    if not ct_element is None and 'code' in ct_element.attrib.keys():
+    if not ct_element is None and 'code' in ct_element.attrib.keys() and \
+            len(ct_element.attrib['code']) < 2:
         ct_value = ct_element.attrib['code']
 
     if project.collaboration_type != ct_value:
@@ -140,7 +144,8 @@ def default_flow_type(activity, project, activities_globals):
     dft_value = ''
 
     dft_element = activity.find("default-flow-type")
-    if not dft_element is None and 'code' in dft_element.attrib.keys():
+    if not dft_element is None and 'code' in dft_element.attrib.keys() and \
+            len(dft_element.attrib['code']) < 3:
         dft_value = dft_element.attrib['code']
 
     if project.default_flow_type != dft_value:
@@ -165,7 +170,8 @@ def default_finance_type(activity, project, activities_globals):
     dft_value = ''
 
     dft_element = activity.find("default-finance-type")
-    if not dft_element is None and 'code' in dft_element.attrib.keys():
+    if not dft_element is None and 'code' in dft_element.attrib.keys() and \
+            len(dft_element.attrib['code']) < 4:
         dft_value = dft_element.attrib['code']
 
     if project.default_finance_type != dft_value:
@@ -189,7 +195,8 @@ def default_aid_type(activity, project, activities_globals):
     dat_value = ''
 
     dat_element = activity.find("default-aid-type")
-    if not dat_element is None and 'code' in dat_element.attrib.keys():
+    if not dat_element is None and 'code' in dat_element.attrib.keys() and \
+            len(dat_element.attrib['code']) < 4:
         dat_value = dat_element.attrib['code']
 
     if project.default_aid_type != dat_value:
@@ -214,7 +221,8 @@ def default_tied_status(activity, project, activities_globals):
     dts_value = ''
 
     dts_element = activity.find("default-tied-status")
-    if not dts_element is None and 'code' in dts_element.attrib.keys():
+    if not dts_element is None and 'code' in dts_element.attrib.keys() and \
+            len(dts_element.attrib['code']) < 2:
         dts_value = dts_element.attrib['code']
 
     if project.default_tied_status != dts_value:

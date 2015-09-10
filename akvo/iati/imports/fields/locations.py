@@ -40,32 +40,35 @@ def locations(activity, project, activities_globals):
         feature_designation = ''
         country = None
 
-        if 'ref' in location.attrib.keys():
+        if 'ref' in location.attrib.keys() and len(location.attrib['ref']) < 51:
             ref = location.attrib['ref']
 
         reach_element = location.find('location-reach')
-        if not reach_element is None and 'code' in reach_element.attrib.keys():
+        if not reach_element is None and 'code' in reach_element.attrib.keys() and \
+                len(reach_element.attrib['code']) < 2:
             reach = reach_element.attrib['code']
 
         id_element = location.find('location-id')
         if not id_element is None:
-            if 'code' in id_element.attrib.keys():
+            if 'code' in id_element.attrib.keys() and len(id_element.attrib['code']) < 26:
                 code = id_element.attrib['code']
 
-            if 'vocabulary' in id_element.attrib.keys():
+            if 'vocabulary' in id_element.attrib.keys() and \
+                    len(id_element.attrib['vocabulary']) < 3:
                 vocabulary = id_element.attrib['vocabulary']
 
         name_element = location.find('name')
         if not name_element is None:
-            name = get_text(name_element, activities_globals['version'])
+            name = get_text(name_element, activities_globals['version'])[:100]
 
         description_element = location.find('description')
         if not description_element is None:
-            description = get_text(description_element, activities_globals['version'])
+            description = get_text(description_element, activities_globals['version'])[:255]
 
         act_description_element = location.find('activity-description')
         if not act_description_element is None:
-            activity_description = get_text(act_description_element, activities_globals['version'])
+            activity_description = get_text(act_description_element,
+                                            activities_globals['version'])[:255]
 
         try:
             point_element = location.find('point')
@@ -89,14 +92,17 @@ def locations(activity, project, activities_globals):
             exactness = exactness_element.attrib['code']
 
         class_element = location.find('location-class')
-        if not class_element is None and 'code' in class_element.attrib.keys():
+        if not class_element is None and 'code' in class_element.attrib.keys() and \
+                len(class_element.attrib['code']) < 2:
             location_class = class_element.attrib['code']
 
         fd_element = location.find('feature-designation')
         type_element = location.find('location-type')
-        if not fd_element is None and 'code' in fd_element.attrib.keys():
+        if not fd_element is None and 'code' in fd_element.attrib.keys() and \
+                len(fd_element.attrib['code']) < 6:
             feature_designation = fd_element.attrib['code'].upper()
-        elif not type_element is None and 'code' in type_element.attrib.keys():
+        elif not type_element is None and 'code' in type_element.attrib.keys() and \
+                len(type_element.attrib['code']) < 6:
             feature_designation = type_element.attrib['code'].upper()
 
         administrative_element = location.find('administrative')
@@ -163,13 +169,14 @@ def administratives(location_element, location, activities_globals):
         vocabulary = ''
         level = None
 
-        if 'code' in administrative.attrib.keys():
+        if 'code' in administrative.attrib.keys() and len(administrative.attrib['code']) < 26:
             code = administrative.attrib['code']
 
-        if 'vocabulary' in administrative.attrib.keys():
+        if 'vocabulary' in administrative.attrib.keys() and \
+                len(administrative.attrib['vocabulary']) < 3:
             vocabulary = administrative.attrib['vocabulary']
 
-        if 'level' in administrative.attrib.keys():
+        if 'level' in administrative.attrib.keys() and len(administrative.attrib['level']) < 2:
             try:
                 level = int(administrative.attrib['level'])
             except ValueError:
@@ -213,9 +220,9 @@ def recipient_countries(activity, project, activities_globals):
     for country in activity.findall('recipient-country'):
         code = ''
         percentage = None
-        text = get_text(country, activities_globals['version'])
+        text = get_text(country, activities_globals['version'])[:50]
 
-        if 'code' in country.attrib.keys():
+        if 'code' in country.attrib.keys() and len(country.attrib['code']) < 3:
             code = country.attrib['code'].upper()
 
         try:
@@ -263,9 +270,9 @@ def recipient_regions(activity, project, activities_globals):
         code = ''
         percentage = None
         vocabulary = ''
-        text = get_text(region, activities_globals['version'])
+        text = get_text(region, activities_globals['version'])[:50]
 
-        if 'code' in region.attrib.keys():
+        if 'code' in region.attrib.keys() and len(region.attrib['code']) < 4:
             code = region.attrib['code']
 
         try:
@@ -274,7 +281,7 @@ def recipient_regions(activity, project, activities_globals):
         except InvalidOperation:
             pass
 
-        if 'vocabulary' in region.attrib.keys():
+        if 'vocabulary' in region.attrib.keys() and len(region.attrib['vocabulary']) < 2:
             vocabulary = region.attrib['vocabulary']
 
         rr, created = get_model('rsr', 'recipientregion').objects.get_or_create(

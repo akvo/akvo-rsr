@@ -26,13 +26,13 @@ def legacy_data(activity, project, activities_globals):
         iati_equivalent = ''
 
         if 'name' in legacy.attrib.keys():
-            name = legacy.attrib['name']
+            name = legacy.attrib['name'][:100]
 
         if 'value' in legacy.attrib.keys():
-            value = legacy.attrib['value']
+            value = legacy.attrib['value'][:100]
 
         if 'iati-equivalent' in legacy.attrib.keys():
-            iati_equivalent = legacy.attrib['iati-equivalent']
+            iati_equivalent = legacy.attrib['iati-equivalent'][:100]
 
         ld, created = get_model('rsr', 'legacydata').objects.get_or_create(
             project=project,

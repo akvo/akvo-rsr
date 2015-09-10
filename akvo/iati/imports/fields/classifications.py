@@ -54,9 +54,9 @@ def sectors(activity, project, activities_globals):
         code = ''
         percentage = None
         vocabulary = ''
-        text = get_text(sector, activities_globals['version'])
+        text = get_text(sector, activities_globals['version'])[:100]
 
-        if 'code' in sector.attrib.keys():
+        if 'code' in sector.attrib.keys() and len(sector.attrib['code']) < 6:
             code = sector.attrib['code']
 
         try:
@@ -110,15 +110,15 @@ def policy_markers(activity, project, activities_globals):
         code = ''
         significance = ''
         vocabulary = ''
-        text = get_text(marker, activities_globals['version'])
+        text = get_text(marker, activities_globals['version'])[:255]
 
-        if 'code' in marker.attrib.keys():
+        if 'code' in marker.attrib.keys() and len(marker.attrib['code']) < 3:
             code = marker.attrib['code']
 
-        if 'significance' in marker.attrib.keys():
+        if 'significance' in marker.attrib.keys() and len(marker.attrib['significance']) < 3:
             significance = marker.attrib['significance']
 
-        if 'vocabulary' in marker.attrib.keys():
+        if 'vocabulary' in marker.attrib.keys() and len(marker.attrib['vocabulary']) < 6:
             vocabulary = marker.attrib['vocabulary']
             if vocabulary in POLICY_MARKER_TO_CODE.keys():
                 vocabulary = POLICY_MARKER_TO_CODE[vocabulary]

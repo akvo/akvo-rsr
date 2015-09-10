@@ -44,16 +44,17 @@ def results(activity, project, activities_globals):
         result_description_text = ''
         result_aggregation_status = None
 
-        if 'type' in result.attrib.keys():
+        if 'type' in result.attrib.keys() and len(result.attrib['type']) < 2:
             result_type = result.attrib['type']
 
         result_title_element = result.find('title')
         if not result_title_element is None:
-            result_title_text = get_text(result_title_element, activities_globals['version'])
+            result_title_text = get_text(result_title_element, activities_globals['version'])[:255]
 
         result_desc_element = result.find('description')
         if not result_desc_element is None:
-            result_description_text = get_text(result_desc_element, activities_globals['version'])
+            result_description_text = get_text(result_desc_element,
+                                               activities_globals['version'])[:2000]
 
         if 'aggregation-status' in result.attrib.keys():
             result_aggregation_status = result.attrib['aggregation-status']
@@ -113,7 +114,7 @@ def indicators(result_element, result, activities_globals):
         baseline_value = ''
         baseline_comment_text = ''
 
-        if 'measure' in indicator.attrib.keys():
+        if 'measure' in indicator.attrib.keys() and len(indicator.attrib['measure']) < 2:
             indicator_measure = indicator.attrib['measure']
 
         if 'ascending' in indicator.attrib.keys():
@@ -125,26 +126,31 @@ def indicators(result_element, result, activities_globals):
 
         indicator_title_element = indicator.find('title')
         if not indicator_title_element is None:
-            indicator_title_text = get_text(indicator_title_element, activities_globals['version'])
+            indicator_title_text = get_text(indicator_title_element,
+                                            activities_globals['version'])[:255]
 
         indicator_desc_element = indicator.find('description')
         if not indicator_desc_element is None:
-            indicator_desc_text = get_text(indicator_desc_element, activities_globals['version'])
+            indicator_desc_text = get_text(indicator_desc_element,
+                                           activities_globals['version'])[:2000]
 
         baseline_element = indicator.find('baseline')
         if not baseline_element is None:
-            if 'year' in baseline_element.attrib.keys():
+            if 'year' in baseline_element.attrib.keys() and \
+                    len(baseline_element.attrib['year']) < 5:
                 try:
                     baseline_year = int(baseline_element.attrib['year'])
                 except ValueError:
                     pass
 
-            if 'value' in baseline_element.attrib.keys():
+            if 'value' in baseline_element.attrib.keys() and \
+                    len(baseline_element.attrib['value']) < 51:
                 baseline_value = baseline_element.attrib['value']
 
             baseline_comment = baseline_element.find('comment')
             if not baseline_comment is None:
-                baseline_comment_text = get_text(baseline_comment, activities_globals['version'])
+                baseline_comment_text = get_text(baseline_comment,
+                                                 activities_globals['version'])[:2000]
 
         ind, created = get_model('rsr', 'indicator').objects.get_or_create(
             result=result,
@@ -215,21 +221,23 @@ def indicator_periods(indicator_element, indicator, activities_globals):
 
         target_element = period.find('target')
         if not target_element is None:
-            if 'value' in target_element.attrib.keys():
+            if 'value' in target_element.attrib.keys() and len(target_element.attrib['value']) < 51:
                 target_value = target_element.attrib['value']
 
             target_comment_element = target_element.find('comment')
             if not target_comment_element is None:
-                target_comment = get_text(target_comment_element, activities_globals['version'])
+                target_comment = get_text(target_comment_element,
+                                          activities_globals['version'])[:2000]
 
         actual_element = period.find('actual')
         if not actual_element is None:
-            if 'value' in actual_element.attrib.keys():
+            if 'value' in actual_element.attrib.keys() and len(actual_element.attrib['value']) < 51:
                 actual_value = actual_element.attrib['value']
 
             actual_comment_element = actual_element.find('comment')
             if not actual_comment_element is None:
-                actual_comment = get_text(actual_comment_element, activities_globals['version'])
+                actual_comment = get_text(actual_comment_element,
+                                          activities_globals['version'])[:2000]
 
         per, created = get_model('rsr', 'indicatorperiod').objects.get_or_create(
             indicator=indicator,

@@ -27,7 +27,8 @@ def status(activity, project, activities_globals):
     project_status = 'N'
 
     activity_status = activity.find('activity-status')
-    if activity_status is not None and 'code' in activity_status.attrib.keys():
+    if activity_status is not None and 'code' in activity_status.attrib.keys() and \
+            len(activity_status.attrib['code']) < 2:
         code = activity_status.attrib['code']
         if code in CODE_TO_STATUS.keys():
             project_status = CODE_TO_STATUS[code]
