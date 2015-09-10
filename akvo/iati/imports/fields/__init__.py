@@ -7,6 +7,7 @@
 from .budget_items import budget_items, country_budget_items
 from .conditions import conditions
 from .contacts import contacts
+from .classifications import policy_markers, sectors
 from .dates import actual_end_date, actual_start_date, planned_end_date, planned_start_date
 from .defaults import (currency, default_aid_type, default_finance_type, default_flow_type,
                        default_tied_status, hierarchy, language, scope)
@@ -45,6 +46,7 @@ __all__ = [
     'planned_disbursements',
     'planned_end_date',
     'planned_start_date',
+    'policy_markers',
     'project_plan',
     'project_plan_summary',
     'recipient_countries',
@@ -52,6 +54,7 @@ __all__ = [
     'related_projects',
     'results',
     'scope',
+    'sectors',
     'status',
     'subtitle',
     'sustainability',

@@ -47,6 +47,8 @@ FIELDS = [
     'locations',
     'recipient_countries',
     'recipient_regions',
+    'sectors',
+    'policy_markers',
 ]
 
 

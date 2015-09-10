@@ -213,6 +213,7 @@ def recipient_countries(activity, project, activities_globals):
     for country in activity.findall('recipient-country'):
         code = ''
         percentage = None
+        text = get_text(country, activities_globals['version'])
 
         if 'code' in country.attrib.keys():
             code = country.attrib['code'].upper()
@@ -222,8 +223,6 @@ def recipient_countries(activity, project, activities_globals):
                 percentage = Decimal(country.attrib['percentage'])
         except InvalidOperation:
             pass
-
-        text = get_text(country, activities_globals['version'])
 
         rc, created = get_model('rsr', 'recipientcountry').objects.get_or_create(
             project=project,
@@ -264,11 +263,10 @@ def recipient_regions(activity, project, activities_globals):
         code = ''
         percentage = None
         vocabulary = ''
-
         text = get_text(region, activities_globals['version'])
 
         if 'code' in region.attrib.keys():
-            code = region.attrib['code'].upper()
+            code = region.attrib['code']
 
         try:
             if 'percentage' in region.attrib.keys():
@@ -277,7 +275,7 @@ def recipient_regions(activity, project, activities_globals):
             pass
 
         if 'vocabulary' in region.attrib.keys():
-            vocabulary = region.attrib['vocabulary'].upper()
+            vocabulary = region.attrib['vocabulary']
 
         rr, created = get_model('rsr', 'recipientregion').objects.get_or_create(
             project=project,
