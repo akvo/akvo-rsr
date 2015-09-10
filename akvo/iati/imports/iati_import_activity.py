@@ -49,6 +49,8 @@ FIELDS = [
     'recipient_regions',
     'sectors',
     'policy_markers',
+    'links',
+    'documents',
 ]
 
 

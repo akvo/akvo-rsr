@@ -13,7 +13,7 @@ from .defaults import (currency, default_aid_type, default_finance_type, default
                        default_tied_status, hierarchy, language, scope)
 from .descriptions import (background, current_status, goals_overview, project_plan,
                            project_plan_summary, sustainability, target_group)
-from .image import current_image
+from .links import current_image, documents, links
 from .locations import locations, recipient_countries, recipient_regions
 from .partnerships import partnerships
 from .planned_disbursements import planned_disbursements
@@ -38,9 +38,11 @@ __all__ = [
     'default_finance_type',
     'default_flow_type',
     'default_tied_status',
+    'documents',
     'goals_overview',
     'hierarchy',
     'language',
+    'links',
     'locations',
     'partnerships',
     'planned_disbursements',
