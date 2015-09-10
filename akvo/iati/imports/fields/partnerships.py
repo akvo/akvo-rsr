@@ -19,7 +19,10 @@ ROLE_TO_CODE = {
 def partnerships(activity, project, activities_globals):
     """
     Retrieve and store the partnerships.
-    The partnerships will be extracted from the 'participating-org' elements.
+    The partnerships will be extracted from the 'participating-org' elements. Since it is not
+    possible in the IATI standard to supply the funding amount for a funding partner, this value
+    is calculated by taking the total budget of the project and dividing that by the number of
+    funding partners.
 
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
@@ -67,5 +70,17 @@ def partnerships(activity, project, activities_globals):
                            (str(partnership.pk),
                             partnership.__unicode__()))
             partnership.delete()
+
+    funding_partners = project.partnerships.filter(iati_organisation_role=1)
+    total_budget = project.budget
+
+    if funding_partners.count() > 0 and total_budget > 0:
+        average_budget = total_budget / funding_partners.count()
+        for funding_partner in funding_partners:
+            if funding_partner.funding_amount != average_budget:
+                funding_partner.funding_amount = average_budget
+                funding_partner.save()
+                changes.append(u'updated funding amount for partnership (id: %s): %s' %
+                               (str(funding_partner.pk), funding_partner))
 
     return changes
