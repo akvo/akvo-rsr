@@ -598,7 +598,6 @@ function deleteItem(itemId, itemType, parentDiv) {
         if (request.status >= 200 && request.status < 400) {
             parentDiv.parentNode.removeChild(parentDiv);
 
-
             // Update the budget in case of removed budget
             if (itemType === 'budget_item') {
                 getTotalBudget();
@@ -815,12 +814,12 @@ function removePartial(node) {
 
 function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption, selector, childClass, valueId, label, help, filterOption) {
     var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass, typeaheadInput;
-    Typeahead = ReactTypeahead.Typeahead;   
+    Typeahead = ReactTypeahead.Typeahead;
 
     inputClass = selector + " form-control " + childClass;
 
     selectorClass = document.querySelector('.' + selector);
-    
+
     TypeaheadContainer = React.createClass({
         render: function() {
             return (
@@ -842,22 +841,21 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
                               customAdd: ""
                             }}
                             inputProps={{
-                                name: selector, 
+                                name: selector,
                                 id: selector
                             }} />
                     </div>
             );
         }
     });
-    
+
     React.render(
         <TypeaheadContainer />,
         document.querySelector('.' + selector)
-    ); 
-    
+    );
+
     typeaheadInput = document.querySelector('.' + selector + ' .typeahead' + ' input');
-    
-    
+
     if (valueId !== null) {
         for (var i = 0; i < typeaheadOptions.length; i++) {
             if (parseInt(typeaheadOptions[i].id, 10) == parseInt(valueId, 10)) {
@@ -881,7 +879,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
     // Set mandatory markers before help icons
     var mandatoryMarkers = selectorClass.querySelectorAll('.mandatory');
-    
+
     for (var i = 0; i < mandatoryMarkers.length; i++) {
         mandatoryMarkers[i].parentNode.removeChild(mandatoryMarkers[i]);
     }
@@ -891,7 +889,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
 
     elAddClass(markerSpan, 'mandatory');
     markerSpan.textContent = '*';
-    
+
     for (var i = 0; i < mandatoryLabels.length; i++) {
         mandatoryLabels[i].appendChild(markerSpan);
     }
@@ -901,8 +899,6 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     setAllSectionsChangeListerner();
     setPageCompletionPercentage();
 }
-
-
 
 function loadAsync(url, retryCount, retryLimit, callback) {
     var xmlHttp;
@@ -1044,7 +1040,7 @@ function setPartialOnClicks() {
             if (elHasClass(el, 'has-onclick')) {
 
                 // already set the onclick, do nothing
-                continue;                
+                continue;
             }
 
             elAddClass(el, 'has-onclick');
@@ -1138,7 +1134,7 @@ function getOnClick(pName, parentElement) {
             var el = typeaheadContainers[i];
 
             addCountToClass(el);
-        }        
+        }
 
         function addCountToName(el) {
             var oldName = el.getAttribute('name');
@@ -1203,32 +1199,32 @@ function updateTypeaheads() {
     els = document.querySelectorAll('.reportingOrganisation-input');
     labelText = defaultValues.reporting_org_label;
     helpText = defaultValues.reporting_org_helptext;
-    filterOption = 'name';   
+    filterOption = 'name';
     API = reportingOrgsAPIUrl;
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
 
     els = document.querySelectorAll('.partner-input');
     labelText = defaultValues.reporting_org_label;
-    helpText = defaultValues.reporting_org_helptext;      
+    helpText = defaultValues.reporting_org_helptext;
     filterOption = 'name';
-    API = orgsAPIUrl; 
+    API = orgsAPIUrl;
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
 
     els = document.querySelectorAll('.transaction-provider-org-input');
     labelText = defaultValues.provider_org_label;
-    helpText = defaultValues.provider_org_helptext;      
-    filterOption = 'name';  
+    helpText = defaultValues.provider_org_helptext;
+    filterOption = 'name';
     API = orgsAPIUrl;
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
 
     els = document.querySelectorAll('.transaction-receiver-org-input');
     labelText = defaultValues.recipient_org_label;
-    helpText = defaultValues.recipient_org_helptext;      
-    filterOption = 'name';      
-    API = orgsAPIUrl; 
+    helpText = defaultValues.recipient_org_helptext;
+    filterOption = 'name';
+    API = orgsAPIUrl;
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
     function updateTypeahead(els, filterOption, labelText, helpText, API) {
@@ -1245,7 +1241,7 @@ function updateTypeaheads() {
             var childClass = el.getAttribute('data-child-class');
             var valueId = null;
             var label = document.createElement('label');
-            var help = document.createElement('p'); 
+            var help = document.createElement('p');
 
             label.setAttribute('for', childSelector);
             elAddClass(label, 'control-label');
@@ -1254,21 +1250,21 @@ function updateTypeaheads() {
 
             elAddClass(help, 'help-block');
             elAddClass(help, 'hidden');
-            help.textContent = helpText;   
+            help.textContent = helpText;
 
             if (el.getAttribute('data-value') !== "") {
                 valueId = el.getAttribute('data-value');
             }
-            
+
             var cb = getLoadAsync(childSelector, childClass, valueId, label, help, filterOption);
-            cb();               
-        }            
+            cb();
+        }
     }
 
     function getLoadAsync(childSelector, childClass, valueId, label, help, filterOption) {
         var output = function() {
             loadAsync(API, 0, MAX_RETRIES, getCallback(childSelector, childClass, valueId, label, help, filterOption));
-        }
+        };
 
         return output;
     }
@@ -1300,7 +1296,7 @@ function updateHelpIcons(container) {
             } else {
 
             // There is no help block for this label
-            continue;               
+            continue;
             }
         }
 
@@ -1308,19 +1304,19 @@ function updateHelpIcons(container) {
             helpBlockFromLabel = label.parentNode.querySelector('.help-block');
         } else {
             helpBlockFromLabel = label.parentNode.parentNode.querySelector('.help-block');
-        }   
+        }
 
         iconClasses = ['glyphicon', 'glyphicon-info-sign', 'info-icon'];
 
         if (elIsVisible(helpBlockFromLabel)) {
             iconClasses.push('activated');
-        }    
+        }
 
         output = document.createElement('span');
 
         iconClasses.forEach(function(el) {
             elAddClass(output, el);
-        });   
+        });
 
         label.appendChild(output);
 
@@ -1330,10 +1326,10 @@ function updateHelpIcons(container) {
             var el = infoIcons[i];
             var listener = getInfoIconListener(el, helpBlockIsLabelSibling);
             el.onclick = listener;
-        }  
+        }
 
         // Mark the label as processed to avoid adding extra help icons to it later
-        elAddClass(label, 'has-icon');                  
+        elAddClass(label, 'has-icon');
     }
 }
 
@@ -1351,7 +1347,7 @@ function getInfoIconListener(el, helpBlockIsLabelSibling) {
         }
 
         if (elHasClass(el, 'activated')) {
-            
+
             // Hide the helpblock
             elRemoveClass(el, 'activated');
             fadeOut(helpBlock);
@@ -1361,8 +1357,8 @@ function getInfoIconListener(el, helpBlockIsLabelSibling) {
             }
             elAddClass(el, 'activated');
             fadeIn(helpBlock);
-        }             
-    };  
+        }
+    };
 
     return output;
 }
@@ -1439,7 +1435,7 @@ function getInputResults(section) {
 
             if (result.getAttribute('name') === 'step') {
                 // This is a progress bar input, ignore it
-                continue;                
+                continue;
             }
 
             if (result.getAttribute('disabled') !== null) {
@@ -1447,7 +1443,7 @@ function getInputResults(section) {
                 continue;
             }
 
-            numInputs += 1;     
+            numInputs += 1;
 
             if (result.getAttribute('name') === 'projectStatus' && result.value === 'N') {
                 // Ignore project status 'None'
@@ -1457,7 +1453,7 @@ function getInputResults(section) {
             } else if (result.getAttribute('name') === 'photo' && result.getAttribute('default') !== '' && result.getAttribute('default') !== null) {
                 // Custom code for project photo
                 numInputsCompleted += 1;
-            }                   
+            }
         }
     }
     return [numInputs, numInputsCompleted];
@@ -1506,7 +1502,7 @@ function setSectionChangeListener(section) {
 
                 // We have already added a class for this listener
                 // do nothing
-                continue;                
+                continue;
             }
 
             listener = getChangeListener(section, this);
@@ -1559,7 +1555,7 @@ function setValidationListeners() {
         if (elHasClass(input, 'validation-listener')) {
 
             // We've already set the listener for this element, do nothing
-            continue;           
+            continue;
         }
 
         // Max character counts for text inputs
@@ -1580,16 +1576,16 @@ function setValidationListeners() {
         if (elHasClass(textarea, 'validation-listener')) {
 
             // We've already set the listener for this element, do nothing
-            continue;           
-        }     
+            continue;
+        }
 
-        // Max character counts for textareas   
+        // Max character counts for textareas
         if (textarea.hasAttribute('maxlength')) {
             inputListener = getLengthListener(textarea);
             focusOutListener = getHideCharsListener(textarea);
             textarea.addEventListener('input', inputListener);
             textarea.addEventListener('focusout', focusOutListener);
-        }        
+        }
     }
 
     function getLengthListener(el) {
@@ -2055,7 +2051,7 @@ function elAddClass(el, className) {
     if (el.classList) {
         el.classList.add(className);
     } else {
-      el.className += ' ' + className;    
+      el.className += ' ' + className;
     }
 }
 
@@ -2082,7 +2078,7 @@ function fadeIn(el) {
     last = +new Date();
 
     if (+el.style.opacity < 1) {
-      (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
+      (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
     }
   };
 
@@ -2098,7 +2094,7 @@ function fadeOut(el) {
     last = +new Date();
 
     if (+el.style.opacity > 0) {
-      (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
+      (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
     } else {
         el.style.display = 'none';
     }
