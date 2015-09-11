@@ -40,6 +40,7 @@ from .project_location import (ProjectLocationSerializer, AdministrativeLocation
 from .project_update import (ProjectUpdateSerializer,
                              ProjectUpdateExtraSerializer)
 from .project_update_location import (ProjectUpdateLocationSerializer,
+                                      ProjectUpdateLocationNestedSerializer,
                                       MapProjectUpdateLocationSerializer)
 from .publishing_status import PublishingStatusSerializer
 from .recipient_country import RecipientCountrySerializer
@@ -93,6 +94,7 @@ __all__ = [
     'ProjectSerializer',
     'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',
+    'ProjectUpdateLocationNestedSerializer',
     'ProjectUpdateSerializer',
     'ProjectUpSerializer',
     'PublishingStatusSerializer',

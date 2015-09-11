@@ -268,9 +268,11 @@ function replacePhoto(photo) {
         }
 
         photo_container = document.querySelector('#photo-container');
-        add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a onclick="deletePhoto(this);" class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>';
+        add_html = '<img src="' + photo + '" class="current-project-photo" id="img-photo"><a class="btn btn-link delete-photo-button" id="delete-photo"><span class="glyphicon glyphicon-remove"></span> Delete photo</a>';
 
         photo_container.innerHTML = add_html + photo_container.innerHTML;
+
+        setDeletePhoto();
     }
 }
 
@@ -616,6 +618,26 @@ function deleteItem(itemId, itemType, parentDiv) {
     };
 
     request.send();
+}
+
+function setDeletePhoto() {
+    try {
+        var deletePhotoButton;
+
+        deletePhotoButton = document.getElementById('delete-photo');
+        deletePhotoButton.onclick = getDeletePhoto();
+
+    } catch (error) {
+        // No delete photo button
+        return false;
+    }
+}
+
+function getDeletePhoto() {
+    return function(e) {
+        e.preventDefault();
+        deletePhoto();
+    };
 }
 
 function deletePhoto() {
@@ -976,7 +998,12 @@ function loadAsync(url, retryCount, retryLimit, callback) {
 
         lsData = JSON.stringify(localStorageResponses);
 
-        localStorage.setItem(localStorageName, lsData);
+        try {
+            localStorage.setItem(localStorageName, lsData);
+        } catch (error) {
+            // Not enough space in local storage
+            localStorage.setItem(localStorageName, JSON.stringify({}));
+        }
     }
 }
 
@@ -2111,6 +2138,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setSubmitOnClicks();
     setPartialOnClicks();
     setCurrencyOnChange();
+    setDeletePhoto();
 
     setValidationListeners();
     updateAllHelpIcons();

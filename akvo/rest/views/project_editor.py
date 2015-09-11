@@ -467,7 +467,7 @@ def log_changes(changes, user, project):
         field_changes = []
         for change in changes:
             for fields in change[1]:
-                if not ('photo' in fields[1] or 'document-document-' in fields[1]):
+                if not (fields[1] == 'photo' or 'document-document-' in fields[1]):
                     field_changes.append([fields[1], fields[2]])
 
         return field_changes

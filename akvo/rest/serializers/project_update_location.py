@@ -16,6 +16,14 @@ class ProjectUpdateLocationSerializer(BaseRSRSerializer):
         model = ProjectUpdateLocation
 
 
+class ProjectUpdateLocationNestedSerializer(ProjectUpdateLocationSerializer):
+
+    class Meta(ProjectUpdateLocationSerializer.Meta):
+        # Exclude the mandatory 'location_target' field, so that it is possible to create a
+        # project update location at the same time as the project update.
+        exclude = ('location_target',)
+
+
 class ProjectUpdateLocationExtraSerializer(ProjectUpdateLocationSerializer):
 
     # Limit update data to its PK, this is needed because of Meta.depth = 2
