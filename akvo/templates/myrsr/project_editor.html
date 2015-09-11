@@ -97,7 +97,7 @@
                 <div class="col-md-10">
                     <div class="progress overview">
                         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                            <span class="sr-only"></span>
+                            <span class="sr-only"></span><span class="progress-percentage"></span>
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
         {% else %}
             <div class="progress overview">
                 <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                    <span class="sr-only"></span>
+                    <span class="sr-only"></span><span class="progress-percentage"></span>
                 </div>
             </div>
         {% endif %}
@@ -1183,8 +1183,6 @@
 
 {% block js %}
     {{ block.super }}
-
-    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.6/zepto.min.js"></script>
     <script type="application/javascript" src="http://form-serialize.googlecode.com/svn/trunk/serialize-0.2.min.js"></script>
 
     <script type="text/template" id="related-project-input">{% include "myrsr/project_editor_partials/related_project_input.html" %}</script>
