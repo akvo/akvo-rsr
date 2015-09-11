@@ -1365,7 +1365,6 @@ function getInfoIconListener(el, helpBlockIsLabelSibling) {
         var helpBlock;
 
         e.preventDefault();
-        console.log(helpBlockIsLabelSibling);
 
         if (helpBlockIsLabelSibling) {
             helpBlock = el.parentNode.parentNode.querySelector('.help-block');
@@ -1377,13 +1376,15 @@ function getInfoIconListener(el, helpBlockIsLabelSibling) {
 
             // Hide the helpblock
             elRemoveClass(el, 'activated');
-            fadeOut(helpBlock);
+            helpBlock.style.display = 'none';
         } else {
+
+            // Show the helpblock
+            elAddClass(el, 'activated');
             if (elHasClass(helpBlock, 'hidden')) {
                 elRemoveClass(helpBlock, 'hidden');
             }
-            elAddClass(el, 'activated');
-            fadeIn(helpBlock);
+            helpBlock.style.display = 'block';
         }
     };
 
@@ -2093,41 +2094,6 @@ function elRemoveClass(el, className) {
 
 function elIsVisible(el) {
     return el.offsetWidth > 0 && el.offsetHeight > 0;
-}
-
-function fadeIn(el) {
-  el.style.opacity = 0;
-  el.style.display = 'block';
-
-  var last = +new Date();
-  var tick = function() {
-    el.style.opacity = +el.style.opacity + (new Date() - last) / 400;
-    last = +new Date();
-
-    if (+el.style.opacity < 1) {
-      (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
-    }
-  };
-
-  tick();
-}
-
-function fadeOut(el) {
-  el.style.opacity = 1;
-
-  var last = +new Date();
-  var tick = function() {
-    el.style.opacity = +el.style.opacity - (new Date() - last) / 400;
-    last = +new Date();
-
-    if (+el.style.opacity > 0) {
-      (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
-    } else {
-        el.style.display = 'none';
-    }
-  };
-
-  tick();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
