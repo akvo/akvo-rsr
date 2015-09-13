@@ -6,6 +6,7 @@
 
 from ..utils import get_or_create_organisation, get_text
 
+from django.db import transaction
 from django.db.models import get_model
 
 ROLE_TO_CODE = {
@@ -79,7 +80,9 @@ def partnerships(activity, project, activities_globals):
         for funding_partner in funding_partners:
             if funding_partner.funding_amount != average_budget:
                 funding_partner.funding_amount = average_budget
-                funding_partner.save()
+                # TODO: fix allowed amount for budget items and funding amount
+                with transaction.atomic():
+                    funding_partner.save()
                 changes.append(u'updated funding amount for partnership (id: %s): %s' %
                                (str(funding_partner.pk), funding_partner))
 

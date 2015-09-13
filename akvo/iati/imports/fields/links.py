@@ -42,16 +42,16 @@ def current_image(activity, project, activities_globals):
     for document_link_element in activity.findall('document-link'):
         if 'url' in document_link_element.attrib.keys():
             image_url = document_link_element.attrib['url']
-            image_filename = image_url.rsplit('/', 1)[1]
-            image_extension = image_filename.rsplit('.', 1)[1].lower()
-            image_filename_no_ext = image_filename.rsplit('.', 1)[0]
+            image_filename = image_url.rsplit('/', 1)[1] if '/' in image_url else ''
+            image_ext = image_filename.rsplit('.', 1)[1].lower() if '.' in image_filename else ''
+            image_name_no_ext = image_filename.rsplit('.', 1)[0] if '.' in image_filename else ''
 
-            if not image_extension in VALID_IMAGE_EXTENSIONS:
+            if not image_ext in VALID_IMAGE_EXTENSIONS:
                 continue
 
             if not project.current_image or \
                     (project.current_image
-                     and not image_filename_no_ext in
+                     and not image_name_no_ext in
                         project.current_image.name.rsplit('/', 1)[1].rsplit('.', 1)[0]):
                 tmp_file = NamedTemporaryFile(delete=True)
                 tmp_file.write(urllib2.urlopen(image_url, timeout=100).read())

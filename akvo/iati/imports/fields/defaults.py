@@ -43,7 +43,7 @@ def currency(activity, project, activities_globals):
     default_currency_value = 'EUR'
 
     if 'default-currency' in activity.attrib.keys() and \
-            len(activity.attrib['default-currency']) < 3:
+            len(activity.attrib['default-currency']) < 4:
         default_currency_value = activity.attrib['default-currency']
 
     if project.currency != default_currency_value:

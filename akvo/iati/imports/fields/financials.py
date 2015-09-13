@@ -269,6 +269,7 @@ def budget_items(activity, project, activities_globals):
     imported_budgets = []
     changes = []
 
+    all_budget_count = len(activity.findall("budget"))
     original_budgets_count = len(activity.findall("budget[@type='1']"))
     revised_budgets_count = len(activity.findall("budget[@type='2']"))
 
@@ -280,20 +281,24 @@ def budget_items(activity, project, activities_globals):
         value_date = None
         currency = ''
         label = get_model('rsr', 'budgetitemlabel').objects.get(label='Other')
-        other_label = ''
+        other_extra = 'Other'
 
         if 'type' in budget.attrib.keys() and len(budget.attrib['type']) < 2:
             budget_type = budget.attrib['type']
-            if budget_type == '1' and original_budgets_count == 1:
+            if (budget_type == '1' and original_budgets_count == 1) or \
+                    (budget_type == '2' and revised_budgets_count == 1) or all_budget_count == 1:
                 label = get_model('rsr', 'budgetitemlabel').objects.get(label='Total')
-            elif budget_type == '2' and revised_budgets_count == 1:
-                label = get_model('rsr', 'budgetitemlabel').objects.get(label='Total')
+                other_extra = ''
 
         period_start_element = budget.find('period-start')
         if not period_start_element is None and 'iso-date' in period_start_element.attrib.keys():
             period_start_text = period_start_element.attrib['iso-date']
             try:
                 period_start = datetime.strptime(period_start_text, '%Y-%m-%d').date()
+
+                if not other_extra:
+                    other_extra = str(period_start.year)
+
             except ValueError:
                 pass
 
@@ -332,7 +337,7 @@ def budget_items(activity, project, activities_globals):
             value_date=value_date,
             currency=currency,
             label=label,
-            other_extra=other_label
+            other_extra=other_extra
         )
 
         if created:
@@ -373,6 +378,7 @@ def country_budget_items(activity, project, activities_globals):
         for cbi_element in cbis_element.findall('budget-item'):
             code_text = ''
             description_text = ''
+            percentage = None
 
             if 'code' in cbi_element.attrib.keys() and len(cbi_element.attrib['code']) < 7:
                 code_text = cbi_element.attrib['code']
@@ -382,10 +388,17 @@ def country_budget_items(activity, project, activities_globals):
                 description_text = get_text(description_element,
                                             activities_globals['version'])[:100]
 
+            try:
+                if 'percentage' in cbi_element.attrib.keys():
+                    percentage = Decimal(cbi_element.attrib['percentage'])
+            except InvalidOperation:
+                pass
+
             cbi, created = get_model('rsr', 'countrybudgetitem').objects.get_or_create(
                 project=project,
                 code=code_text,
-                description=description_text
+                description=description_text,
+                percentage=percentage
             )
 
             if created:

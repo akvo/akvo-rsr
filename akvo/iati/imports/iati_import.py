@@ -91,7 +91,6 @@ class IatiImportProcess(object):
         """
         if self.iati_import.local_file:
             # File already present.
-            # Action; create log entry.
             IatiImportLog.objects.create(
                 iati_import=self.iati_import,
                 text=u'File found.'
@@ -99,8 +98,7 @@ class IatiImportProcess(object):
             return
 
         elif self.iati_import.url:
-            # No file, but URL specified.
-            # Actions; create log entry, update IATI import status and download file.
+            # No file, but URL specified. Download file from URL.
             IatiImportLog.objects.create(
                 iati_import=self.iati_import,
                 text=u'No file found, URL specified.'
@@ -108,10 +106,8 @@ class IatiImportProcess(object):
             self.download_file()
             return
 
-        else:
-            # No file or URL specified.
-            # Actions; raise error.
-            raise DataError(u'No file or URL specified.')
+        # No file or URL specified.
+        raise DataError(u'No file or URL specified.')
 
     def __init__(self, iati_import):
         """
@@ -149,19 +145,11 @@ class IatiImportProcess(object):
                 IatiImportActivity(self.iati_import, activity, self.organisation, self.user,
                                    self.activities.attrib)
             except Exception as e:
-                if 'project' in e.args[0].keys():
-                    IatiImportLog.objects.create(
-                        iati_import=self.iati_import,
-                        text=e.args[0]['message'],
-                        project=e.args[0]['project'],
-                        error=True
-                    )
-                else:
-                    IatiImportLog.objects.create(
-                        iati_import=self.iati_import,
-                        text=e,
-                        error=True
-                    )
+                IatiImportLog.objects.create(
+                    iati_import=self.iati_import,
+                    text=str(e),
+                    error=True
+                )
 
         # Import process complete
         self.set_status(4)

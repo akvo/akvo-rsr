@@ -53,7 +53,7 @@ def sectors(activity, project, activities_globals):
     for sector in activity.findall('sector'):
         code = ''
         percentage = None
-        vocabulary = ''
+        vocabulary = '1'
         text = get_text(sector, activities_globals['version'])[:100]
 
         if 'code' in sector.attrib.keys() and len(sector.attrib['code']) < 6:

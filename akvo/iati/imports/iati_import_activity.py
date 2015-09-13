@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.conf import settings
-from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db.models import get_model
@@ -33,6 +33,7 @@ FIELDS = [
     'currency',
     'hierarchy',
     'scope',
+    'collaboration_type',
     'default_aid_type',
     'default_finance_type',
     'default_flow_type',
@@ -151,11 +152,12 @@ class IatiImportActivity(object):
             self.set_end_date()
             self.set_status(4)
             self.set_errors_true()
-            raise Exception({
-                'message': u'sync_owner: Project has a different sync_owner (%s).' %
-                           sync_owner.name,
-                'project': self.project
-            })
+            get_model('rsr', 'iatiimportlog').objects.create(
+                iati_import=self.iati_import,
+                text=u'sync_owner: Project has a different sync_owner (%s).' % sync_owner.name,
+                project=self.project,
+                error=True
+            )
         self.project.sync_owner = self.organisation
         self.project.save()
 
@@ -167,7 +169,21 @@ class IatiImportActivity(object):
         :return: Tuple; (Project instance, Boolean indicating whether the project was created)
         """
         iati_identifier = self.activity.find('iati-identifier').text
-        return get_model('rsr', 'project').objects.get_or_create(iati_activity_id=iati_identifier)
+        project, created =  get_model('rsr', 'project').objects.get_or_create(
+            iati_activity_id=iati_identifier
+        )
+
+        if created:
+            LogEntry.objects.log_action(
+                user_id=self.user.pk,
+                content_type_id=ContentType.objects.get_for_model(project).pk,
+                object_id=project.pk,
+                object_repr=project.__unicode__(),
+                action_flag=ADDITION,
+                change_message=u'IATI import, created project.'
+            )
+
+        return project, created
 
     def __init__(self, iati_import, activity, reporting_organisation, user, activities_globals):
         """
@@ -204,21 +220,12 @@ class IatiImportActivity(object):
                 changes = getattr(fields, field)(self.activity, self.project, self.globals)
             except Exception as e:
                 changes = []
-
-                if isinstance(e, basestring):
-                    text = e
-                else:
-                    try:
-                        text = u", ".join(str(e_part) for e_part in e)
-                    except TypeError:
-                        text = e
                 get_model('rsr', 'iatiimportlog').objects.create(
                     iati_import=self.iati_import,
-                    text=u'%s: %s.' % (field, text),
+                    text=u'%s: %s.' % (field, str(e)),
                     project=self.project,
                     error=True
                 )
-
                 self.set_errors_true()
 
             for change in changes:
