@@ -1498,7 +1498,6 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
 
     section.querySelector('.progress-bar').setAttribute('aria-valuenow', completionPercentage);
     section.querySelector('.progress .sr-only').textContent = completionPercentage + '% Complete';
-    section.querySelector('.progress .progress-percentage').textContent = completionPercentage + '%';
     section.querySelector('div.progress-bar').style.width = completionPercentage + '%';
 
     if (completionPercentage < 10) {
