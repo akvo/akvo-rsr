@@ -284,14 +284,14 @@ class Project(TimestampsMixin, models.Model):
     # denormalized data
     # =================
     budget = models.DecimalField(
-        _(u'project budget'), max_digits=10, decimal_places=2, blank=True, null=True,
+        _(u'project budget'), max_digits=14, decimal_places=2, blank=True, null=True,
         db_index=True, default=0
     )
     funds = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+        max_digits=14, decimal_places=2, blank=True, null=True, db_index=True, default=0
     )
     funds_needed = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True, db_index=True, default=0
+        max_digits=14, decimal_places=2, blank=True, null=True, db_index=True, default=0
     )
     last_update = models.ForeignKey(
         ProjectUpdate, related_name='the_project', null=True, on_delete=models.SET_NULL

@@ -56,7 +56,7 @@ class Transaction(models.Model):
         help_text=_(u'Select the type of transaction from the list.')
     )
     value = models.DecimalField(
-        _(u'value'), blank=True, null=True, max_digits=11, decimal_places=2,
+        _(u'value'), blank=True, null=True, max_digits=14, decimal_places=2,
         help_text=_(u'Enter the transaction amount.')
     )
     value_date = models.DateField(_(u'value date'), blank=True, null=True)

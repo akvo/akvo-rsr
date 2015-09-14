@@ -81,4 +81,46 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(related_name='iati_imports', verbose_name='user', to=settings.AUTH_USER_MODEL),
             preserve_default=True,
         ),
+        migrations.AlterField(
+            model_name='budgetitem',
+            name='amount',
+            field=models.DecimalField(null=True, verbose_name='amount', max_digits=14, decimal_places=2, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='partnership',
+            name='funding_amount',
+            field=models.DecimalField(decimal_places=2, max_digits=14, blank=True, help_text="The funding amount of the partner.<br>Note that it's only possible to indicate a funding amount for funding partners.", null=True, verbose_name='funding amount', db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='planneddisbursement',
+            name='value',
+            field=models.DecimalField(null=True, verbose_name='value', max_digits=14, decimal_places=2, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='project',
+            name='budget',
+            field=models.DecimalField(decimal_places=2, default=0, max_digits=14, blank=True, null=True, verbose_name='project budget', db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='project',
+            name='funds',
+            field=models.DecimalField(decimal_places=2, default=0, max_digits=14, blank=True, null=True, db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='project',
+            name='funds_needed',
+            field=models.DecimalField(decimal_places=2, default=0, max_digits=14, blank=True, null=True, db_index=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='transaction',
+            name='value',
+            field=models.DecimalField(decimal_places=2, max_digits=14, blank=True, help_text='Enter the transaction amount.', null=True, verbose_name='value'),
+            preserve_default=True,
+        ),
     ]
