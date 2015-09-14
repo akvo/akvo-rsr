@@ -10,7 +10,7 @@ from .classifications import policy_markers, sectors
 from .dates import actual_end_date, actual_start_date, planned_end_date, planned_start_date
 from .defaults import (currency, collaboration_type, default_aid_type, default_finance_type,
                        default_flow_type, default_tied_status, hierarchy, language, scope)
-from .descriptions import (background, current_status, goals_overview, project_plan,
+from .descriptions import (background, current_status, custom_fields, goals_overview, project_plan,
                            project_plan_summary, sustainability, target_group, title, subtitle)
 from .financials import (budget_items, capital_spend, country_budget_items, planned_disbursements,
                          transactions)
@@ -37,6 +37,7 @@ __all__ = [
     'currency',
     'current_image',
     'current_status',
+    'custom_fields',
     'default_aid_type',
     'default_finance_type',
     'default_flow_type',

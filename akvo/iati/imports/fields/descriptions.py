@@ -7,6 +7,7 @@
 from ..utils import get_text
 
 from django.conf import settings
+from django.db.models import get_model
 
 START_WITH = {
     'subtitle': 'Subtitle: ',
@@ -106,7 +107,8 @@ def project_plan_summary(activity, project, activities_globals):
         if pps_element is None:
             for description in activity.findall("description"):
                 description_text = get_text(description, activities_globals['version'])
-                if ('type' not in description.attrib.keys() or description.attrib['type'] == '1') \
+                if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
+                        and (not '{%s}type' % settings.AKVO_NS in description.attrib.keys()) \
                         and (not description_text.startswith(tuple(START_WITH.values()))):
                     pps_element = description
                     break
@@ -174,7 +176,8 @@ def background(activity, project, activities_globals):
         description_count = 0
         for description in activity.findall("description"):
             description_text = get_text(description, activities_globals['version'])
-            if ('type' not in description.attrib.keys() or description.attrib['type'] == '1') \
+            if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
+                    and (not '{%s}type' % settings.AKVO_NS in description.attrib.keys()) \
                     and (not description_text.startswith(tuple(START_WITH.values()))):
                 description_count += 1
             if description_count == 2:
@@ -211,7 +214,8 @@ def current_status(activity, project, activities_globals):
         description_count = 0
         for description in activity.findall("description"):
             description_text = get_text(description, activities_globals['version'])
-            if ('type' not in description.attrib.keys() or description.attrib['type'] == '1') \
+            if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
+                    and (not '{%s}type' % settings.AKVO_NS in description.attrib.keys()) \
                     and (not description_text.startswith(tuple(START_WITH.values()))):
                 description_count += 1
             if description_count == 3:
@@ -276,7 +280,8 @@ def project_plan(activity, project, activities_globals):
         description_count = 0
         for description in activity.findall("description"):
             description_text = get_text(description, activities_globals['version'])
-            if ('type' not in description.attrib.keys() or description.attrib['type'] == '1') \
+            if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
+                    and (not '{%s}type' % settings.AKVO_NS in description.attrib.keys()) \
                     and (not description_text.startswith(tuple(START_WITH.values()))):
                 description_count += 1
             if description_count == 4:
@@ -313,7 +318,8 @@ def sustainability(activity, project, activities_globals):
         description_count = 0
         for description in activity.findall("description"):
             description_text = get_text(description, activities_globals['version'])
-            if ('type' not in description.attrib.keys() or description.attrib['type'] == '1') \
+            if (not 'type' in description.attrib.keys() or description.attrib['type'] == '1') \
+                    and (not '{%s}type' % settings.AKVO_NS in description.attrib.keys()) \
                     and (not description_text.startswith(tuple(START_WITH.values()))):
                 description_count += 1
             if description_count == 5:
@@ -329,3 +335,83 @@ def sustainability(activity, project, activities_globals):
         return ['sustainability']
 
     return []
+
+
+def custom_fields(activity, project, activities_globals):
+    """
+    Retrieve and store a custom field.
+    The custom fields will be extracted from a 'description' element with akvo type 99.
+
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    imported_fields = []
+    changes = []
+
+    for custom_field in activity.findall("description[@{%s}type='99']" % settings.AKVO_NS):
+        custom_text = get_text(custom_field, activities_globals['version'])
+        custom_label = 'Custom field'
+        section = 1
+        max_characters = 0
+        help_text = ''
+        mandatory = False
+        order = 0
+
+        if '{%s}label' % settings.AKVO_NS in custom_field.attrib.keys():
+            custom_label = custom_field.attrib['{%s}label' % settings.AKVO_NS]
+
+        if '{%s}section' % settings.AKVO_NS in custom_field.attrib.keys():
+            try:
+                section = int(custom_field.attrib['{%s}section' % settings.AKVO_NS])
+                if not section < 11:
+                    section = 1
+            except ValueError:
+                pass
+
+        if '{%s}max-characters' % settings.AKVO_NS in custom_field.attrib.keys():
+            try:
+                max_characters = int(custom_field.attrib['{%s}max-characters' % settings.AKVO_NS])
+            except ValueError:
+                pass
+
+        if '{%s}help-text' % settings.AKVO_NS in custom_field.attrib.keys():
+            help_text = custom_field.attrib['{%s}help-text' % settings.AKVO_NS]
+
+        if '{%s}mandatory' % settings.AKVO_NS in custom_field.attrib.keys():
+            mandatory_text = custom_field.attrib['{%s}mandatory' % settings.AKVO_NS]
+            if mandatory_text and mandatory_text.lower() == 'true':
+                mandatory = True
+
+        if '{%s}order' % settings.AKVO_NS in custom_field.attrib.keys():
+            try:
+                order = int(custom_field.attrib['{%s}order' % settings.AKVO_NS])
+            except ValueError:
+                pass
+
+        cf, created = get_model('rsr', 'projectcustomfield').objects.get_or_create(
+            project=project,
+            name=custom_label,
+            section=section,
+            max_characters=max_characters,
+            help_text=help_text,
+            value=custom_text,
+            mandatory=mandatory,
+            order=order,
+            type='text'
+        )
+
+        if created:
+            changes.append(u'added custom field (id: %s): %s' % (str(cf.pk), cf))
+
+        imported_fields.append(cf)
+
+    for custom_field in project.custom_fields.all():
+        if not custom_field in imported_fields:
+            changes.append(u'deleted custom field (id: %s): %s' %
+                           (str(custom_field.pk),
+                            custom_field.__unicode__()))
+            custom_field.delete()
+
+    return changes

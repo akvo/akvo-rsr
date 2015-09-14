@@ -24,6 +24,7 @@ FIELDS = [
     'target_group',
     'project_plan',
     'sustainability',
+    'custom_fields',
     'planned_start_date',
     'actual_start_date',
     'planned_end_date',
