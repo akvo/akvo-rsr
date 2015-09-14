@@ -14,9 +14,11 @@
   {% endfor %}
   </div>
   "
-  data-placement="right" data-container="article" data-class="foo">
-  {% blocktrans with partners_count=partners|length %}
-    + {{partners_count}} partners
+  data-placement="right"> +
+  {% blocktrans count num_partners=partners|length %}
+    {{ num_partners }} partner
+  {% plural %}
+    {{ num_partners }} partners
   {% endblocktrans %}
   </a>
-{% endif %}
+{% endif %}  

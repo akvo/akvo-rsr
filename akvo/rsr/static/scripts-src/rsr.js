@@ -48,6 +48,7 @@ $(document).ready(function() {
       "hide": 1000
     }
   });
+  
 
   function getCookie(name) {
     var cookieValue = null;
