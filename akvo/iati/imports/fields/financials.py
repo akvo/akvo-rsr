@@ -296,7 +296,7 @@ def budget_items(activity, project, activities_globals):
             try:
                 period_start = datetime.strptime(period_start_text, '%Y-%m-%d').date()
 
-                if not other_extra:
+                if other_extra == 'Other':
                     other_extra = str(period_start.year)
 
             except ValueError:

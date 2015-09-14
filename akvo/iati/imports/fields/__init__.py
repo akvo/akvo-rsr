@@ -11,7 +11,7 @@ from .dates import actual_end_date, actual_start_date, planned_end_date, planned
 from .defaults import (currency, collaboration_type, default_aid_type, default_finance_type,
                        default_flow_type, default_tied_status, hierarchy, language, scope)
 from .descriptions import (background, current_status, goals_overview, project_plan,
-                           project_plan_summary, sustainability, target_group)
+                           project_plan_summary, sustainability, target_group, title, subtitle)
 from .financials import (budget_items, capital_spend, country_budget_items, planned_disbursements,
                          transactions)
 from .legacy_data import legacy_data
@@ -22,7 +22,6 @@ from .related_projects import related_projects
 from .results import results
 from .special_reporting import crs_add, fss
 from .status import status
-from .titles import title, subtitle
 
 __all__ = [
     'actual_end_date',
