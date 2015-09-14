@@ -105,9 +105,15 @@ def locations(activity, project, activities_globals):
                 len(type_element.attrib['code']) < 6:
             feature_designation = type_element.attrib['code'].upper()
 
+        country_code = ''
         administrative_element = location.find('administrative')
         if not administrative_element is None and 'country' in administrative_element.attrib.keys():
             country_code = administrative_element.attrib['country'].lower()
+        elif len(activity.findall('recipient-country')) == 1:
+            country_element = activity.find('recipient-country')
+            if 'code' in country_element.attrib.keys() and len(country_element.attrib['code']) < 3:
+                country_code = country_element.attrib['code'].lower()
+        if country_code:
             try:
                 country = get_model('rsr', 'country').objects.get(iso_code=country_code)
             except ObjectDoesNotExist:
@@ -130,7 +136,7 @@ def locations(activity, project, activities_globals):
             feature_designation=feature_designation
         )
 
-        # Disregard double transactions
+        # Disregard double locations
         if not loc in imported_locations:
             if created:
                 changes.append(u'added location (id: %s): %s' % (str(loc.pk), loc))
