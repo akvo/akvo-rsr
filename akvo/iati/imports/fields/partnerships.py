@@ -80,9 +80,7 @@ def partnerships(activity, project, activities_globals):
         for funding_partner in funding_partners:
             if funding_partner.funding_amount != average_budget:
                 funding_partner.funding_amount = average_budget
-                # TODO: fix allowed amount for budget items and funding amount
-                with transaction.atomic():
-                    funding_partner.save()
+                funding_partner.save()
                 changes.append(u'updated funding amount for partnership (id: %s): %s' %
                                (str(funding_partner.pk), funding_partner))
 

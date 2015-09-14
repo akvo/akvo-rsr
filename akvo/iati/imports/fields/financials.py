@@ -80,7 +80,8 @@ def transactions(activity, project, activities_globals):
         value_element = transaction.find('value')
         if not value_element is None:
             try:
-                transaction_value = Decimal(value_element.text)
+                if value_element.text and len(value_element.text) < 15:
+                    transaction_value = Decimal(value_element.text)
             except InvalidOperation:
                 pass
 
@@ -313,7 +314,8 @@ def budget_items(activity, project, activities_globals):
         value_element = budget.find('value')
         if not value_element is None:
             try:
-                value = Decimal(value_element.text)
+                if value_element.text and len(value_element.text) < 15:
+                    value = Decimal(value_element.text)
             except InvalidOperation:
                 pass
 
@@ -500,7 +502,8 @@ def planned_disbursements(activity, project, activities_globals):
         value_element = planned_disbursement.find('value')
         if not value_element is None:
             try:
-                value = Decimal(value_element.text)
+                if value_element.text and len(value_element.text) < 15:
+                    value = Decimal(value_element.text)
             except InvalidOperation:
                 pass
 

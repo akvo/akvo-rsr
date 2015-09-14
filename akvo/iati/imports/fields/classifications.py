@@ -62,6 +62,8 @@ def sectors(activity, project, activities_globals):
         try:
             if 'percentage' in sector.attrib.keys():
                 percentage = Decimal(sector.attrib['percentage'])
+            elif len(activity.findall('sector')) == 1:
+                percentage = Decimal(100.0)
         except InvalidOperation:
             pass
 
