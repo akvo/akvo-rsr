@@ -6,7 +6,9 @@
 
 from ...rsr.models.iati_import_log import IatiImportLog
 from .iati_import_activity import IatiImportActivity
+from akvo.utils import rsr_send_mail
 
+from django.conf import settings
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import DataError
@@ -18,6 +20,32 @@ import urllib2
 
 
 class IatiImportProcess(object):
+    def send_mail(self):
+        """
+        Send an email to the RSR admins (gathered from settings) and the user linked to the
+        IATI import instance.
+        """
+        email_addresses = [email for _name, email in settings.ADMINS]
+        email_addresses.append(self.user.email)
+
+        rsr_send_mail(
+            email_addresses,
+            subject='iati_import/import_done_subject.txt',
+            message='iati_import/import_done_message.txt',
+            subject_context={
+                'iati_import': self.iati_import
+            },
+            msg_context={
+                'iati_import': self.iati_import,
+                'project_count': self.iati_import.iati_project_imports.count(),
+                'projects_created': self.iati_import.iati_project_imports.filter(action=1).count(),
+                'projects_updated': self.iati_import.iati_project_imports.filter(action=2).count(),
+                'projects_published': self.iati_import.projects.published().count(),
+                'error_logs': self.iati_import.iati_import_logs.filter(error=True),
+                'project_logs': self.iati_import.iati_project_imports.all()
+            },
+        )
+
     def set_start_date(self):
         """
         Set the start date of the IATI import.
@@ -154,3 +182,6 @@ class IatiImportProcess(object):
         # Import process complete
         self.set_status(4)
         self.set_end_date()
+
+        # Send mail
+        self.send_mail()

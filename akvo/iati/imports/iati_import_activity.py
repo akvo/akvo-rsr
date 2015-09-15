@@ -112,7 +112,6 @@ class IatiImportActivity(object):
             self.project.publishingstatus.save()
         except ValidationError as e:
             message = u'Project could not be published: '
-            # TODO: Ugly hack to show errors nicely
             message += str(e).replace("{'__all__': [", '').replace("u'", "'").replace(']}', '')
 
             get_model('rsr', 'iatiimportlog').objects.create(
@@ -147,6 +146,8 @@ class IatiImportActivity(object):
         """
         Check if the project can be edited by the current reporting organisation and set
         the sync_owner.
+
+        :return: Boolean; True if the project has the correct sync_owner and False otherwise
         """
         sync_owner = self.project.sync_owner
         if not self.created and sync_owner and sync_owner != self.organisation:
@@ -159,8 +160,10 @@ class IatiImportActivity(object):
                 project=self.project,
                 error=True
             )
+            return False
         self.project.sync_owner = self.organisation
         self.project.save()
+        return True
 
     def get_or_create_project(self):
         """
@@ -214,28 +217,27 @@ class IatiImportActivity(object):
         # Start import process
         self.set_status(2)
         self.set_start_date()
-        self.set_sync_owner()
+        if self.set_sync_owner():
+            for field in FIELDS:
+                try:
+                    changes = getattr(fields, field)(self.activity, self.project, self.globals)
+                except Exception as e:
+                    changes = []
+                    get_model('rsr', 'iatiimportlog').objects.create(
+                        iati_import=self.iati_import,
+                        text=u'%s: %s.' % (field, str(e)),
+                        project=self.project,
+                        error=True
+                    )
+                    self.set_errors_true()
 
-        for field in FIELDS:
-            try:
-                changes = getattr(fields, field)(self.activity, self.project, self.globals)
-            except Exception as e:
-                changes = []
-                get_model('rsr', 'iatiimportlog').objects.create(
-                    iati_import=self.iati_import,
-                    text=u'%s: %s.' % (field, str(e)),
-                    project=self.project,
-                    error=True
-                )
-                self.set_errors_true()
+                for change in changes:
+                    self.changes.append(change)
 
-            for change in changes:
-                self.changes.append(change)
+            self.log_changes()
 
-        self.log_changes()
+            self.publish()
 
-        self.publish()
-
-        # Import process finished
-        self.set_status(3)
-        self.set_end_date()
+            # Import process finished
+            self.set_status(3)
+            self.set_end_date()

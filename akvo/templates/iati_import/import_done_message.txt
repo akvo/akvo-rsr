@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <h1>IATI import: {{ iati_import.show_status }}</h1>
+
+    <h2>General information</h2>
+    The IATI import has been finished with the following status: {{ iati_import.show_status }}.<br/><br/>
+
+    <b>Import id:</b> {{ iati_import.pk }}<br/>
+    <b>Site:</b> {{ site }}<br/>
+    {% if iati_import.url %}<b>IATI file:</b> <a href="{{ iati_import.url }}">{{ iati_import.url }}</a><br/>{% endif %}
+    <b>Organisation:</b> {{ iati_import.reporting_organisation.name }} ({{ iati_import.reporting_organisation.iati_org_id }})<br/>
+    <b>Start date:</b> {{ iati_import.start_date }}<br/>
+    <b>End date:</b> {{ iati_import.end_date }}<br/>
+    <b>Number of projects processed:</b> {{ project_count }} ({{ projects_created }} created, {{ projects_updated }} updated)<br/>
+    <b>Number of projects published:</b> {{ projects_published }}
+
+    <h2>Errors</h2>
+    <table>
+      <tr>
+        <th>RSR project id</th>
+        <th>IATI id</th>
+        <th>Message</th>
+      </tr>
+    {% for error_log in error_logs %}
+      <tr>
+        <td>{{ error_log.project.pk }}</td>
+        <td>{{ error_log.project.iati_activity_id }}</td>
+        <td>{{ error_log.text }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+
+    <h2>Project information</h2>
+    <table>
+      <tr>
+        <th>RSR project id</th>
+        <th>IATI id</th>
+        <th>Action</th>
+        <th>Status</th>
+        <th>Published</th>
+      </tr>
+    {% for project_log in project_logs %}
+      <tr>
+        <td>{{ project_log.project.pk }}</td>
+        <td>{{ project_log.project.iati_activity_id }}</td>
+        <td>{{ project_log.show_action }}</td>
+        <td>{{ project_log.show_status }}</td>
+        <td>{% if project_log.project.is_published %}Yes{% else %}No{% endif %}</td>
+      </tr>
+    {% endfor %}
+    </table>
+  </body>
+</html>

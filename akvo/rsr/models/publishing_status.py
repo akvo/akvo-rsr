@@ -158,15 +158,3 @@ class PublishingStatus(models.Model):
         verbose_name = _(u'publishing status')
         verbose_name_plural = _(u'publishing statuses')
         ordering = ('-status', 'project')
-
-
-@receiver(post_save, sender=PublishingStatus)
-def update_denormalized_project(sender, **kwargs):
-    "Send notification that a project is published."
-    publishing_status = kwargs['instance']
-    if publishing_status.status == PublishingStatus.STATUS_PUBLISHED:
-        send_mail(
-            'Project %s has been published' % str(publishing_status.project.pk),
-            '', getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@akvo.org"),
-            getattr(settings, "NOTIFY_PUBLISH", ["kasper@akvo.org"])
-        )
