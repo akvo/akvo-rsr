@@ -2060,7 +2060,7 @@ function setUnsavedChangesMessage() {
 /* General Helper Functions */
 
 function elHasClass(el, className) {
-    if (el.classList) {
+    if (el.classList && el.classList.forEach) {
         var result = false;
         el.classList.forEach( function(entry) {
             if (entry.toString() === className.toString()) {
