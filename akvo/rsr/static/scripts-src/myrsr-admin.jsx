@@ -1238,6 +1238,7 @@ function updateTypeaheads() {
     helpText = defaultValues.reporting_org_helptext;
     filterOption = 'name';
     API = reportingOrgsAPIUrl;
+    inputType = 'org';
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
 
@@ -1246,6 +1247,8 @@ function updateTypeaheads() {
     helpText = defaultValues.reporting_org_helptext;
     filterOption = 'name';
     API = orgsAPIUrl;
+    inputType = 'org';
+
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
 
@@ -1254,6 +1257,8 @@ function updateTypeaheads() {
     helpText = defaultValues.provider_org_helptext;
     filterOption = 'name';
     API = orgsAPIUrl;
+    inputType = 'org';
+
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
 
@@ -1262,6 +1267,8 @@ function updateTypeaheads() {
     helpText = defaultValues.recipient_org_helptext;
     filterOption = 'name';
     API = orgsAPIUrl;
+    inputType = 'org';
+
 
     updateTypeahead(els, filterOption, labelText, helpText, API);
 
