@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..utils import get_text
+from ..utils import add_log, get_text
 
 from decimal import Decimal, InvalidOperation
 
@@ -12,11 +12,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import get_model
 
 
-def locations(activity, project, activities_globals):
+def locations(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the locations.
     The conditions will be extracted from the 'location' elements.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -40,35 +41,60 @@ def locations(activity, project, activities_globals):
         feature_designation = ''
         country = None
 
-        if 'ref' in location.attrib.keys() and len(location.attrib['ref']) < 51:
-            ref = location.attrib['ref']
+        if 'ref' in location.attrib.keys():
+            if not len(location.attrib['ref']) > 50:
+                ref = location.attrib['ref']
+            else:
+                add_log(iati_import, 'location_ref',
+                        'reference is too long (50 characters allowed)', project)
 
         reach_element = location.find('location-reach')
-        if not reach_element is None and 'code' in reach_element.attrib.keys() and \
-                len(reach_element.attrib['code']) < 2:
-            reach = reach_element.attrib['code']
+        if not reach_element is None and 'code' in reach_element.attrib.keys():
+            if not len(reach_element.attrib['code']) > 1:
+                reach = reach_element.attrib['code']
+            else:
+                add_log(iati_import, 'location_reach',
+                        'reach is too long (1 character allowed)', project)
 
         id_element = location.find('location-id')
         if not id_element is None:
-            if 'code' in id_element.attrib.keys() and len(id_element.attrib['code']) < 26:
-                code = id_element.attrib['code']
+            if 'code' in id_element.attrib.keys():
+                if not len(id_element.attrib['code']) > 25:
+                    code = id_element.attrib['code']
+                else:
+                    add_log(iati_import, 'location_code',
+                            'code is too long (25 characters allowed)', project)
 
-            if 'vocabulary' in id_element.attrib.keys() and \
-                    len(id_element.attrib['vocabulary']) < 3:
-                vocabulary = id_element.attrib['vocabulary']
+            if 'vocabulary' in id_element.attrib.keys():
+                if not len(id_element.attrib['vocabulary']) > 2:
+                    vocabulary = id_element.attrib['vocabulary']
+                else:
+                    add_log(iati_import, 'location_vocabulary',
+                            'vocabulary is too long (2 characters allowed)', project)
 
         name_element = location.find('name')
         if not name_element is None:
-            name = get_text(name_element, activities_globals['version'])[:100]
+            name = get_text(name_element, activities_globals['version'])
+            if len(name) > 100:
+                add_log(iati_import, 'location_name', 'name is too long (100 characters allowed)',
+                        project, 3)
+                name = name[:100]
 
         description_element = location.find('description')
         if not description_element is None:
-            description = get_text(description_element, activities_globals['version'])[:255]
+            description = get_text(description_element, activities_globals['version'])
+            if len(description) > 255:
+                add_log(iati_import, 'location_decription',
+                        'description is too long (255 characters allowed)', project, 3)
+                description = description[:255]
 
         act_description_element = location.find('activity-description')
         if not act_description_element is None:
-            activity_description = get_text(act_description_element,
-                                            activities_globals['version'])[:255]
+            activity_description = get_text(act_description_element, activities_globals['version'])
+            if len(activity_description) > 255:
+                add_log(iati_import, 'location_activity_decription',
+                        'description is too long (255 characters allowed)', project, 3)
+                activity_description = activity_description[:255]
 
         try:
             point_element = location.find('point')
@@ -84,26 +110,39 @@ def locations(activity, project, activities_globals):
                     latitude = float(coordinates_element.attrib['latitude'])
                 if 'longitude' in coordinates_element.attrib.keys():
                     longitude = float(coordinates_element.attrib['longitude'])
-        except ValueError:
-            pass
+        except ValueError as e:
+            add_log(iati_import, 'location_coordinates', str(e), project)
 
         exactness_element = location.find('exactness')
         if not exactness_element is None and 'code' in exactness_element.attrib.keys():
-            exactness = exactness_element.attrib['code']
+            if not len(exactness_element.attrib['code']) > 1:
+                exactness = exactness_element.attrib['code']
+            else:
+                add_log(iati_import, 'location_exactness',
+                        'exactness is too long (1 character allowed)', project)
 
         class_element = location.find('location-class')
-        if not class_element is None and 'code' in class_element.attrib.keys() and \
-                len(class_element.attrib['code']) < 2:
-            location_class = class_element.attrib['code']
+        if not class_element is None and 'code' in class_element.attrib.keys():
+            if not len(class_element.attrib['code']) > 1:
+                location_class = class_element.attrib['code']
+            else:
+                add_log(iati_import, 'location_class',
+                        'class is too long (1 character allowed)', project)
 
         fd_element = location.find('feature-designation')
         type_element = location.find('location-type')
-        if not fd_element is None and 'code' in fd_element.attrib.keys() and \
-                len(fd_element.attrib['code']) < 6:
-            feature_designation = fd_element.attrib['code'].upper()
-        elif not type_element is None and 'code' in type_element.attrib.keys() and \
-                len(type_element.attrib['code']) < 6:
-            feature_designation = type_element.attrib['code'].upper()
+        if not fd_element is None and 'code' in fd_element.attrib.keys():
+            if not len(fd_element.attrib['code']) > 5:
+                feature_designation = fd_element.attrib['code'].upper()
+            else:
+                add_log(iati_import, 'location_feature_designation',
+                        'feature designation is too long (5 characters allowed)', project)
+        elif not type_element is None and 'code' in type_element.attrib.keys():
+            if not len(type_element.attrib['code']) > 5:
+                feature_designation = type_element.attrib['code'].upper()
+            else:
+                add_log(iati_import, 'location_type',
+                        'type is too long (5 characters allowed)', project)
 
         country_code = ''
         administrative_element = location.find('administrative')
@@ -111,13 +150,17 @@ def locations(activity, project, activities_globals):
             country_code = administrative_element.attrib['country'].lower()
         elif len(activity.findall('recipient-country')) == 1:
             country_element = activity.find('recipient-country')
-            if 'code' in country_element.attrib.keys() and len(country_element.attrib['code']) < 3:
-                country_code = country_element.attrib['code'].lower()
+            if 'code' in country_element.attrib.keys():
+                if not len(country_element.attrib['code']) > 2:
+                    country_code = country_element.attrib['code'].lower()
+                else:
+                    add_log(iati_import, 'location_country_code',
+                            'code is too long (2 characters allowed)', project)
         if country_code:
             try:
                 country = get_model('rsr', 'country').objects.get(iso_code=country_code)
-            except ObjectDoesNotExist:
-                pass
+            except ObjectDoesNotExist as e:
+                add_log(iati_import, 'location_country', str(e), project)
 
         loc, created = get_model('rsr', 'projectlocation').objects.get_or_create(
             location_target=project,
@@ -144,7 +187,7 @@ def locations(activity, project, activities_globals):
             imported_locations.append(loc)
 
             # Process location administratives
-            for admin_change in administratives(location, loc, activities_globals):
+            for admin_change in administratives(iati_import, location, loc, activities_globals):
                 changes.append(admin_change)
 
     for location in project.locations.all():
@@ -157,11 +200,12 @@ def locations(activity, project, activities_globals):
     return changes
 
 
-def administratives(location_element, location, activities_globals):
+def administratives(iati_import, location_element, location, activities_globals):
     """
     Retrieve and store the location administratives.
     The conditions will be extracted from the 'administrative' elements in the 'location' element.
 
+    :param iati_import: IatiImport instance
     :param location_element: ElementTree; contains all data of the location
     :param location: ProjectLocation instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -175,18 +219,30 @@ def administratives(location_element, location, activities_globals):
         vocabulary = ''
         level = None
 
-        if 'code' in administrative.attrib.keys() and len(administrative.attrib['code']) < 26:
-            code = administrative.attrib['code']
+        if 'code' in administrative.attrib.keys():
+            if not len(administrative.attrib['code']) > 25:
+                code = administrative.attrib['code']
+            else:
+                add_log(iati_import, 'administrative_location_code',
+                        'code is too long (25 characters allowed)', location.location_target)
 
-        if 'vocabulary' in administrative.attrib.keys() and \
-                len(administrative.attrib['vocabulary']) < 3:
-            vocabulary = administrative.attrib['vocabulary']
+        if 'vocabulary' in administrative.attrib.keys():
+            if not len(administrative.attrib['vocabulary']) > 2:
+                vocabulary = administrative.attrib['vocabulary']
+            else:
+                add_log(iati_import, 'administrative_location_vocabulary',
+                        'vocabulary is too long (2 characters allowed)', location.location_target)
 
-        if 'level' in administrative.attrib.keys() and len(administrative.attrib['level']) < 2:
-            try:
-                level = int(administrative.attrib['level'])
-            except ValueError:
-                pass
+        if 'level' in administrative.attrib.keys():
+            if not len(administrative.attrib['level']) > 1:
+                try:
+                    level = int(administrative.attrib['level'])
+                except ValueError as e:
+                    add_log(iati_import, 'administrative_location_level', str(e),
+                            location.location_target)
+            else:
+                add_log(iati_import, 'administrative_location_level',
+                        'level is too long (1 character allowed)', location.location_target)
 
         admin, created = get_model('rsr', 'administrativelocation').objects.get_or_create(
             location=location,
@@ -210,11 +266,12 @@ def administratives(location_element, location, activities_globals):
     return changes
 
 
-def recipient_countries(activity, project, activities_globals):
+def recipient_countries(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the recipient countries.
     The conditions will be extracted from the 'recipient-country' elements.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -226,16 +283,25 @@ def recipient_countries(activity, project, activities_globals):
     for country in activity.findall('recipient-country'):
         code = ''
         percentage = None
-        text = get_text(country, activities_globals['version'])[:50]
 
-        if 'code' in country.attrib.keys() and len(country.attrib['code']) < 3:
-            code = country.attrib['code'].upper()
+        text = get_text(country, activities_globals['version'])
+        if len(text) > 50:
+            add_log(iati_import, 'recipient_country_description',
+                    'description is too long (50 characters allowed)', project, 3)
+            text = text[:50]
+
+        if 'code' in country.attrib.keys():
+            if not len(country.attrib['code']) > 2:
+                code = country.attrib['code'].upper()
+            else:
+                add_log(iati_import, 'recipient_country_code',
+                        'code is too long (2 characters allowed)', project, 3)
 
         try:
             if 'percentage' in country.attrib.keys():
                 percentage = Decimal(country.attrib['percentage'])
-        except InvalidOperation:
-            pass
+        except InvalidOperation as e:
+            add_log(iati_import, 'recipient_country_percentage', str(e), project)
 
         rc, created = get_model('rsr', 'recipientcountry').objects.get_or_create(
             project=project,
@@ -259,11 +325,12 @@ def recipient_countries(activity, project, activities_globals):
     return changes
 
 
-def recipient_regions(activity, project, activities_globals):
+def recipient_regions(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the recipient regions.
     The conditions will be extracted from the 'recipient-region' elements.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -276,19 +343,32 @@ def recipient_regions(activity, project, activities_globals):
         code = ''
         percentage = None
         vocabulary = ''
-        text = get_text(region, activities_globals['version'])[:50]
 
-        if 'code' in region.attrib.keys() and len(region.attrib['code']) < 4:
-            code = region.attrib['code']
+        text = get_text(region, activities_globals['version'])
+        if len(text) > 50:
+            add_log(iati_import, 'recipient_region_description',
+                    'decription is too long (50 characters allowed)', project, 3)
+            text = text[:50]
+
+        if 'code' in region.attrib.keys():
+            if not len(region.attrib['code']) > 3:
+                code = region.attrib['code']
+            else:
+                add_log(iati_import, 'recipient_region_code',
+                        'code is too long (3 characters allowed)', project)
 
         try:
             if 'percentage' in region.attrib.keys():
                 percentage = Decimal(region.attrib['percentage'])
-        except InvalidOperation:
-            pass
+        except InvalidOperation as e:
+            add_log(iati_import, 'recipient_region_percentage', str(e), project)
 
-        if 'vocabulary' in region.attrib.keys() and len(region.attrib['vocabulary']) < 2:
-            vocabulary = region.attrib['vocabulary']
+        if 'vocabulary' in region.attrib.keys():
+            if not len(region.attrib['vocabulary']) > 1:
+                vocabulary = region.attrib['vocabulary']
+            else:
+                add_log(iati_import, 'recipient_region_vocabulary',
+                        'vocabulary is too long (1 character allowed)', project)
 
         rr, created = get_model('rsr', 'recipientregion').objects.get_or_create(
             project=project,

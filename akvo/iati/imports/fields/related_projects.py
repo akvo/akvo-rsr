@@ -4,15 +4,18 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ..utils import add_log
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import get_model
 
 
-def related_projects(activity, project, activities_globals):
+def related_projects(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the related projects.
     The related projects will be extracted from the 'related-activity' elements.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -30,14 +33,21 @@ def related_projects(activity, project, activities_globals):
             project_reference = related_project.attrib['ref']
 
         if 'type' in related_project.attrib.keys():
-            project_type = related_project.attrib['type']
+            if not len(related_project.attrib['type']) > 1:
+                project_type = related_project.attrib['type']
+            else:
+                add_log(iati_import, 'related_project_type',
+                        'type is too long (1 character allowed)', project)
 
         try:
             related_project_project = get_model('rsr', 'project').objects.get(
                 iati_activity_id=project_reference
             )
         except ObjectDoesNotExist:
-            pass
+            if related_project_project and len(project_reference) > 100:
+                add_log(iati_import, 'related_project_reference',
+                        'reference too long (100 characters allowed)', project)
+                project_reference = ''
 
         rp, created = get_model('rsr', 'relatedproject').objects.get_or_create(
             project=project,

@@ -4,16 +4,17 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..utils import get_text
+from ..utils import add_log, get_text
 
 from django.db.models import get_model
 
 
-def conditions(activity, project, activities_globals):
+def conditions(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the conditions.
     The conditions will be extracted from the 'conditions' elements in the 'conditions' element.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -29,10 +30,18 @@ def conditions(activity, project, activities_globals):
         for condition in conditions_element.findall('condition'):
             condition_type = ''
 
-            if 'type' in condition.attrib.keys() and len(condition.attrib['type']) < 2:
-                condition_type = condition.attrib['type']
+            if 'type' in condition.attrib.keys():
+                if not len(condition.attrib['type']) > 1:
+                    condition_type = condition.attrib['type']
+                else:
+                    add_log(iati_import, 'condition',
+                            'condition type is too long (1 character allowed)', project)
 
-            condition_text = get_text(condition, activities_globals['version'])[:100]
+            condition_text = get_text(condition, activities_globals['version'])
+            if len(condition_text) > 100:
+                add_log(iati_import, 'condition', 'condition is too long (100 character allowed)',
+                        project, 3)
+                condition_text = condition_text[:100]
 
             cond, created = get_model('rsr', 'projectcondition').objects.get_or_create(
                 project=project,

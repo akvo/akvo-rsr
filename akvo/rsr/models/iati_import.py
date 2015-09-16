@@ -28,7 +28,6 @@ class IatiImport(models.Model):
     reporting_organisation = models.ForeignKey(
         'Organisation', verbose_name=_(u'reporting organisation'), related_name='iati_imports'
     )
-    # This user will be used for logging the actions in the LogEntry model
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_imports'
     )
@@ -52,7 +51,7 @@ class IatiImport(models.Model):
         verbose_name_plural = _(u'IATI imports')
 
     def show_status(self):
-        if self.status not in STATUS_CODE.keys():
+        if not self.status in STATUS_CODE.keys():
             return _(u'unknown status')
         else:
             return STATUS_CODE[int(self.status)]

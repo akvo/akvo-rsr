@@ -4,17 +4,18 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..utils import get_text
+from ..utils import add_log, get_text
 
 from datetime import datetime
 
 
-def planned_start_date(activity, project, activities_globals):
+def planned_start_date(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the planned start date.
     The codelist changed from v1 to v2. For v1 we retrieve the 'activity-date's with type
     'start-planned' and for v2 we use type '1'.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -35,8 +36,8 @@ def planned_start_date(activity, project, activities_globals):
 
         try:
             psd_date = datetime.strptime(psd_date_text, '%Y-%m-%d').date()
-        except ValueError:
-            pass
+        except ValueError as e:
+            add_log(iati_import, 'planned_start_date', str(e), project)
 
     if project.date_start_planned != psd_date:
         project.date_start_planned = psd_date
@@ -46,12 +47,13 @@ def planned_start_date(activity, project, activities_globals):
     return []
 
 
-def actual_start_date(activity, project, activities_globals):
+def actual_start_date(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the actual start date.
     The codelist changed from v1 to v2. For v1 we retrieve the 'activity-date's with type
     'start-actual' and for v2 we use type '2'.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -72,8 +74,8 @@ def actual_start_date(activity, project, activities_globals):
 
         try:
             asd_date = datetime.strptime(asd_date_text, '%Y-%m-%d').date()
-        except ValueError:
-            pass
+        except ValueError as e:
+            add_log(iati_import, 'planned_start_date', str(e), project)
 
     if project.date_start_actual != asd_date:
         project.date_start_actual = asd_date
@@ -83,12 +85,13 @@ def actual_start_date(activity, project, activities_globals):
     return []
 
 
-def planned_end_date(activity, project, activities_globals):
+def planned_end_date(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the planned end date.
     The codelist changed from v1 to v2. For v1 we retrieve the 'activity-date's with type
     'end-planned' and for v2 we use type '3'.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -109,8 +112,8 @@ def planned_end_date(activity, project, activities_globals):
 
         try:
             ped_date = datetime.strptime(ped_date_text, '%Y-%m-%d').date()
-        except ValueError:
-            pass
+        except ValueError as e:
+            add_log(iati_import, 'planned_start_date', str(e), project)
 
     if project.date_end_planned != ped_date:
         project.date_end_planned = ped_date
@@ -120,12 +123,13 @@ def planned_end_date(activity, project, activities_globals):
     return []
 
 
-def actual_end_date(activity, project, activities_globals):
+def actual_end_date(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the planned end date.
     The codelist changed from v1 to v2. For v1 we retrieve the 'activity-date's with type
     'end-actual' and for v2 we use type '4'.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -146,8 +150,8 @@ def actual_end_date(activity, project, activities_globals):
 
         try:
             aed_date = datetime.strptime(aed_date_text, '%Y-%m-%d').date()
-        except ValueError:
-            pass
+        except ValueError as e:
+            add_log(iati_import, 'planned_start_date', str(e), project)
 
     if project.date_end_actual != aed_date:
         project.date_end_actual = aed_date

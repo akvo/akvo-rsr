@@ -4,9 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..utils import get_or_create_organisation, get_text
+from ..utils import add_log, get_or_create_organisation, get_text
 
-from django.db import transaction
 from django.db.models import get_model
 
 ROLE_TO_CODE = {
@@ -17,7 +16,7 @@ ROLE_TO_CODE = {
 }
 
 
-def partnerships(activity, project, activities_globals):
+def partnerships(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the partnerships.
     The partnerships will be extracted from the 'participating-org' elements. Since it is not
@@ -25,6 +24,7 @@ def partnerships(activity, project, activities_globals):
     is calculated by taking the total budget of the project and dividing that by the number of
     funding partners.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -51,8 +51,13 @@ def partnerships(activity, project, activities_globals):
             elif partner_role:
                 try:
                     partner_role = int(partner_role)
-                except ValueError:
-                    pass
+                except ValueError as e:
+                    add_log(iati_import, 'participating_org_role', str(e), project)
+
+        if not (partner or partner_role):
+            add_log(iati_import, 'participating_org', 'participating organisation or role missing',
+                    project, 1)
+            continue
 
         ps, created = get_model('rsr', 'partnership').objects.get_or_create(
             project=project,

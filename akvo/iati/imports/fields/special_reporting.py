@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from ..utils import add_log
+
 from datetime import datetime
 
 from decimal import Decimal, InvalidOperation
@@ -26,11 +28,12 @@ FALSE_VALUES = [
 ]
 
 
-def crs_add(activity, project, activities_globals):
+def crs_add(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the CRS++ data.
     The CRS++ data will be extracted from the 'crs-add' element.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -65,27 +68,33 @@ def crs_add(activity, project, activities_globals):
             try:
                 if 'rate-1' in loan_terms_element.attrib.keys():
                     loan_terms_rate1 = Decimal(loan_terms_element.attrib['rate-1'])
-            except InvalidOperation:
-                pass
+            except InvalidOperation as e:
+                add_log(iati_import, 'crs_add_rate1', str(e), project)
             crs_ins.loan_terms_rate1 = loan_terms_rate1
 
             try:
                 if 'rate-2' in loan_terms_element.attrib.keys():
                     loan_terms_rate2 = Decimal(loan_terms_element.attrib['rate-2'])
-            except InvalidOperation:
-                pass
+            except InvalidOperation as e:
+                add_log(iati_import, 'crs_add_rate2', str(e), project)
             crs_ins.loan_terms_rate2 = loan_terms_rate2
 
             repay_type_element = loan_terms_element.find('repayment-type')
-            if not repay_type_element is None and 'code' in repay_type_element.attrib.keys() and \
-                    len(repay_type_element.attrib['code']) < 2:
-                repayment_type = repay_type_element.attrib['code']
+            if not repay_type_element is None and 'code' in repay_type_element.attrib.keys():
+                if not len(repay_type_element.attrib['code']) > 1:
+                    repayment_type = repay_type_element.attrib['code']
+                else:
+                    add_log(iati_import, 'crs_add_repayment_type',
+                            'type is too long (1 character allowed)', project)
             crs_ins.repayment_type = repayment_type
 
             repay_plan_element = loan_terms_element.find('repayment-plan')
-            if not repay_plan_element is None and 'code' in repay_plan_element.attrib.keys() and \
-                    len(repay_plan_element.attrib['code']) < 3:
-                repayment_plan = repay_plan_element.attrib['code']
+            if not repay_plan_element is None and 'code' in repay_plan_element.attrib.keys():
+                if not len(repay_plan_element.attrib['code']) > 2:
+                    repayment_plan = repay_plan_element.attrib['code']
+                else:
+                    add_log(iati_import, 'crs_add_repayment_plan',
+                            'plan is too long (2 characters allowed)', project)
             crs_ins.repayment_plan = repayment_plan
 
             try:
@@ -94,8 +103,8 @@ def crs_add(activity, project, activities_globals):
                     commitment_date = datetime.strptime(
                         com_date_element.attrib['iso-date'], '%Y-%m-%d'
                     ).date()
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'crs_add_commitment_date', str(e), project)
             crs_ins.commitment_date = commitment_date
 
             try:
@@ -104,8 +113,8 @@ def crs_add(activity, project, activities_globals):
                     repayment_first_date = datetime.strptime(
                         repay_first_elem.attrib['iso-date'], '%Y-%m-%d'
                     ).date()
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'crs_add_repayment_first_date', str(e), project)
             crs_ins.repayment_first_date = repayment_first_date
 
             try:
@@ -114,8 +123,8 @@ def crs_add(activity, project, activities_globals):
                     repayment_final_date = datetime.strptime(
                         repay_final_elem.attrib['iso-date'], '%Y-%m-%d'
                     ).date()
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'crs_add_repayment_final_date', str(e), project)
             crs_ins.repayment_final_date = repayment_final_date
 
         loan_status_element = crs_element.find('loan-status')
@@ -123,13 +132,16 @@ def crs_add(activity, project, activities_globals):
             try:
                 if 'year' in loan_status_element.attrib.keys():
                     loan_status_year = int(loan_status_element.attrib['year'])
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'crs_add_loan_status_year', str(e), project)
             crs_ins.loan_status_year = loan_status_year
 
-            if 'currency' in loan_status_element.attrib.keys() and \
-                    len(loan_status_element.attrib['currency']) < 4:
-                loan_status_currency = loan_status_element.attrib['currency']
+            if 'currency' in loan_status_element.attrib.keys():
+                if not len(loan_status_element.attrib['currency']) > 3:
+                    loan_status_currency = loan_status_element.attrib['currency']
+                else:
+                    add_log(iati_import, 'crs_add_loan_status_currency',
+                            'currency is too long (3 characters allowed)', project)
             crs_ins.loan_status_currency = loan_status_currency
 
             try:
@@ -137,40 +149,40 @@ def crs_add(activity, project, activities_globals):
                     loan_status_value_date = datetime.strptime(
                         loan_status_element.attrib['iso-date'], '%Y-%m-%d'
                     ).date()
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'crs_add_value_date', str(e), project)
             crs_ins.loan_status_value_date = loan_status_value_date
 
             try:
                 interest_element = loan_status_element.find('interest-received')
                 if not interest_element is None:
                     interest_received = Decimal(interest_element.text)
-            except InvalidOperation:
-                pass
+            except InvalidOperation as e:
+                add_log(iati_import, 'crs_add_interest_received', str(e), project)
             crs_ins.interest_received = interest_received
 
             try:
                 principal_element = loan_status_element.find('principal-outstanding')
                 if not principal_element is None:
                     principal_outstanding = Decimal(principal_element.text)
-            except InvalidOperation:
-                pass
+            except InvalidOperation as e:
+                add_log(iati_import, 'crs_add_principal_outstanding', str(e), project)
             crs_ins.principal_outstanding = principal_outstanding
 
             try:
                 prin_arrears_element = loan_status_element.find('principal-arrears')
                 if not prin_arrears_element is None:
                     principal_arrears = Decimal(prin_arrears_element.text)
-            except InvalidOperation:
-                pass
+            except InvalidOperation as e:
+                add_log(iati_import, 'crs_add_principal_arrears', str(e), project)
             crs_ins.principal_arrears = principal_arrears
 
             try:
                 inter_arrears_element = loan_status_element.find('interest-arrears')
                 if not inter_arrears_element is None:
                     interest_arrears = Decimal(inter_arrears_element.text)
-            except InvalidOperation:
-                pass
+            except InvalidOperation as e:
+                add_log(iati_import, 'crs_add_interest_arrears', str(e), project)
             crs_ins.interest_arrears = interest_arrears
 
         crs_ins.save()
@@ -181,8 +193,12 @@ def crs_add(activity, project, activities_globals):
             code = ''
             significance = None
 
-            if 'code' in other_flag.attrib.keys() and len(other_flag.attrib['code']) < 2:
-                code = other_flag.attrib['code']
+            if 'code' in other_flag.attrib.keys():
+                if not len(other_flag.attrib['code']) > 1:
+                    code = other_flag.attrib['code']
+                else:
+                    add_log(iati_import, 'crs_add_other_flag_code',
+                            'code is too long (1 character allowed)', project)
 
             if 'significance' in other_flag.attrib.keys():
                 significance = other_flag.attrib['significance']
@@ -218,11 +234,12 @@ def crs_add(activity, project, activities_globals):
     return changes
 
 
-def fss(activity, project, activities_globals):
+def fss(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the FSS data.
     The FSS data will be extracted from the 'fss' element.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -246,8 +263,8 @@ def fss(activity, project, activities_globals):
                 extraction_date = datetime.strptime(
                     fss_element.attrib['extraction-date'], '%Y-%m-%d'
                 ).date()
-        except ValueError:
-            pass
+        except ValueError as e:
+            add_log(iati_import, 'fss_extraction_date', str(e), project)
         fss_ins.extraction_date = extraction_date
 
         if 'priority' in fss_element.attrib.keys():
@@ -261,8 +278,8 @@ def fss(activity, project, activities_globals):
         try:
             if 'phaseout-year' in fss_element.attrib.keys():
                 phaseout_year = int(fss_element.attrib['phaseout-year'])
-        except ValueError:
-            pass
+        except ValueError as e:
+            add_log(iati_import, 'fss_phaseout_year', str(e), project)
         fss_ins.phaseout_year = phaseout_year
 
         fss_ins.save()
@@ -273,29 +290,36 @@ def fss(activity, project, activities_globals):
             year = None
             value_date = None
             currency = ''
+            value = None
 
             try:
-                value = Decimal(forecast.text)
-            except InvalidOperation:
-                value = None
+                if forecast.text is not None:
+                    value = Decimal(forecast.text)
+            except InvalidOperation as e:
+                add_log(iati_import, 'fss_forecast_value', str(e), project)
 
             try:
                 if 'year' in forecast.attrib.keys():
                     year = int(forecast.attrib['year'])
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'fss_forecast_year', str(e), project)
 
             try:
                 if 'value-date' in forecast.attrib.keys():
                     value_date = datetime.strptime(forecast.attrib['value-date'], '%Y-%m-%d').date()
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'fss_forecast_value_date', str(e), project)
 
-            if 'currency' in forecast.attrib.keys() and len(forecast.attrib['currency']) < 4:
-                currency = forecast.attrib['currency']
+            if 'currency' in forecast.attrib.keys():
+                if not len(forecast.attrib['currency']) > 3:
+                    currency = forecast.attrib['currency']
+                else:
+                    add_log(iati_import, 'fss_forecast_currency',
+                            'currency is too long (3 characters allowed)', project)
 
             fore, created = get_model('rsr', 'fssforecast').objects.get_or_create(
                 fss=fss_ins,
+                value=value,
                 year=year,
                 value_date=value_date,
                 currency=currency

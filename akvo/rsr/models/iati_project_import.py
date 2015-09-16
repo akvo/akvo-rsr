@@ -33,7 +33,6 @@ class IatiProjectImport(models.Model):
     status = models.PositiveSmallIntegerField(_(u'status'), default=1)
     start_date = models.DateTimeField(_(u'start date'), null=True, blank=True)
     end_date = models.DateTimeField(_(u'end date'), null=True, blank=True)
-    errors = models.BooleanField(_(u'errors'), default=False)
 
     def __unicode__(self):
         return u'%s %s' % (_(u'IATI project import for'), self.project)

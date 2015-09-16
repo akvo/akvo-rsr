@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..utils import get_text
+from ..utils import add_log, get_text
 
 from django.conf import settings
 from django.core.files import File
@@ -23,7 +23,7 @@ VALID_IMAGE_EXTENSIONS = [
 ]
 
 
-def current_image(activity, project, activities_globals):
+def current_image(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the current image, as well as the image caption and credit.
     The image will be extracted from the 'url' attribute of the first 'document-link' element
@@ -32,6 +32,7 @@ def current_image(activity, project, activities_globals):
     element and the image credit will be based on the akvo photo-credit attribute of the
     'document-link' element.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data for the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -65,7 +66,11 @@ def current_image(activity, project, activities_globals):
 
                 title_element = document_link_element.find('title')
                 if title_element is not None:
-                    image_caption = get_text(title_element, activities_globals['version'])[:50]
+                    image_caption = get_text(title_element, activities_globals['version'])
+                    if len(image_caption) > 50:
+                        add_log(iati_import, 'image_caption',
+                                'caption too long (50 characters allowed)', project, 3)
+                        image_caption = image_caption[:50]
 
                 if project.current_image_caption != image_caption:
                     project.current_image_caption = image_caption
@@ -78,7 +83,11 @@ def current_image(activity, project, activities_globals):
                 if '{%s}photo-credit' % settings.AKVO_NS in document_link_element.attrib.keys():
                     image_credit = document_link_element.attrib[
                         '{%s}photo-credit' % settings.AKVO_NS
-                    ][:50]
+                    ]
+                    if len(image_credit) > 50:
+                        add_log(iati_import, 'image_credit',
+                                'credit too long (50 characters allowed)', project, 3)
+                        image_credit = image_credit[:50]
 
                 if project.current_image_credit != image_credit:
                     project.current_image_credit = image_credit
@@ -90,12 +99,13 @@ def current_image(activity, project, activities_globals):
     return changes
 
 
-def links(activity, project, activities_globals):
+def links(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the links.
     The conditions will be extracted from the 'activity-website' elements, and the 'document-link'
     elements with format 'application/http'. Links to RSR itself will be skipped.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -134,7 +144,11 @@ def links(activity, project, activities_globals):
 
         title_element = doc_link.find('title')
         if not title_element is None:
-            caption = get_text(title_element, activities_globals['version'])[:50]
+            caption = get_text(title_element, activities_globals['version'])
+            if len(caption) > 50:
+                add_log(iati_import, 'link_caption', 'caption is too long (50 characters allowed)',
+                        project, 3)
+                caption = caption[:50]
 
         link, created = get_model('rsr', 'link').objects.get_or_create(
             project=project,
@@ -157,13 +171,14 @@ def links(activity, project, activities_globals):
     return changes
 
 
-def documents(activity, project, activities_globals):
+def documents(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the documents.
     The conditions will be extracted from the 'document-link' elements. However, the first image
     file and all document-links with format 'application/http' will be skipped since these are
     already imported as the current image or links of the project.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -191,8 +206,12 @@ def documents(activity, project, activities_globals):
                 first_image = False
                 continue
 
-        if 'format' in doc_link.attrib.keys() and len(doc_link.attrib['format']) < 76:
-            doc_format = doc_link.attrib['format']
+        if 'format' in doc_link.attrib.keys():
+            if not len(doc_link.attrib['format']) > 75:
+                doc_format = doc_link.attrib['format']
+            else:
+                add_log(iati_import, 'document_link_format',
+                        'format is too long (75 characters allowed)', project)
 
             # Check if the format is 'application/http'
             if doc_format == 'application/http':
@@ -200,26 +219,44 @@ def documents(activity, project, activities_globals):
 
         title_element = doc_link.find('title')
         if not title_element is None:
-            title = get_text(title_element, activities_globals['version'])[:100]
+            title = get_text(title_element, activities_globals['version'])
+            if len(title) > 100:
+                add_log(iati_import, 'document_link_title',
+                        'title is too long (100 characters allowed)', project, 3)
+                title = title[:100]
+
             if activities_globals['version'][0] == '1' and \
-                    '{%s}lang' % xml_ns in title_element.attrib.keys() and \
-                    len(title_element.attrib['{%s}lang' % xml_ns]) < 3:
-                title_language = title_element.attrib['{%s}lang' % xml_ns]
+                    '{%s}lang' % xml_ns in title_element.attrib.keys():
+                if not len(title_element.attrib['{%s}lang' % xml_ns]) > 2:
+                    title_language = title_element.attrib['{%s}lang' % xml_ns]
+                else:
+                    add_log(iati_import, 'document_link_title_language',
+                            'language is too long (2 characters allowed)', project)
             elif activities_globals['version'][0] == '2':
                 narrative_element = title_element.find('narrative')
                 if not narrative_element is None and \
                         '{%s}lang' % xml_ns in narrative_element.attrib.keys():
-                    title_language = narrative_element.attrib['{%s}lang' % xml_ns]
+                    if not len(narrative_element.attrib['{%s}lang' % xml_ns]) > 2:
+                        title_language = narrative_element.attrib['{%s}lang' % xml_ns]
+                    else:
+                        add_log(iati_import, 'document_link_title_language',
+                                'language is too long (2 characters allowed)', project)
 
         category_element = doc_link.find('category')
-        if not category_element is None and 'code' in category_element.attrib.keys() and \
-                len(category_element.attrib['code']) < 4:
-            category = category_element.attrib['code']
+        if not category_element is None and 'code' in category_element.attrib.keys():
+            if not len(category_element.attrib['code']) > 3:
+                category = category_element.attrib['code']
+            else:
+                add_log(iati_import, 'document_link_category',
+                        'category is too long (3 characters allowed)', project)
 
         language_element = doc_link.find('language')
-        if not language_element is None and 'code' in language_element.attrib.keys() and \
-                len(language_element.attrib['code']) < 3:
-            language = language_element.attrib['code']
+        if not language_element is None and 'code' in language_element.attrib.keys():
+            if not len(language_element.attrib['code']) > 2:
+                language = language_element.attrib['code']
+            else:
+                add_log(iati_import, 'document_link_language',
+                        'language is too long (2 characters allowed)', project)
 
         doc, created = get_model('rsr', 'projectdocument').objects.get_or_create(
             project=project,

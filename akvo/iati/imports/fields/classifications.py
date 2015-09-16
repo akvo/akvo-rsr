@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..utils import get_text
+from ..utils import add_log, get_text
 
 from decimal import Decimal, InvalidOperation
 
@@ -37,11 +37,12 @@ POLICY_MARKER_TO_CODE = {
 }
 
 
-def sectors(activity, project, activities_globals):
+def sectors(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the sectors.
     The conditions will be extracted from the 'sector' elements.
 
+    :param activity: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -54,23 +55,35 @@ def sectors(activity, project, activities_globals):
         code = ''
         percentage = None
         vocabulary = '1'
-        text = get_text(sector, activities_globals['version'])[:100]
 
-        if 'code' in sector.attrib.keys() and len(sector.attrib['code']) < 6:
-            code = sector.attrib['code']
+        text = get_text(sector, activities_globals['version'])
+        if len(text) > 100:
+            add_log(iati_import, 'sector', 'description is too long (100 characters allowed)',
+                    project, 3)
+            text = text[:100]
+
+        if 'code' in sector.attrib.keys():
+            if not len(sector.attrib['code']) > 5:
+                code = sector.attrib['code']
+            else:
+                add_log(iati_import, 'sector', 'code is too long (5 characters allowed)', project)
 
         try:
             if 'percentage' in sector.attrib.keys():
                 percentage = Decimal(sector.attrib['percentage'])
             elif len(activity.findall('sector')) == 1:
                 percentage = Decimal(100.0)
-        except InvalidOperation:
-            pass
+        except InvalidOperation as e:
+            add_log(iati_import, 'sector', str(e), project)
 
         if 'vocabulary' in sector.attrib.keys():
-            vocabulary = sector.attrib['vocabulary']
-            if vocabulary in SECTOR_TO_CODE.keys():
-                vocabulary = SECTOR_TO_CODE[vocabulary]
+            if not len(sector.attrib['vocabulary']) > 5:
+                vocabulary = sector.attrib['vocabulary']
+                if vocabulary in SECTOR_TO_CODE.keys():
+                    vocabulary = SECTOR_TO_CODE[vocabulary]
+            else:
+                add_log(iati_import, 'sector', 'vocabulary is too long (5 characters allowed)',
+                        project)
 
         sec, created = get_model('rsr', 'sector').objects.get_or_create(
             project=project,
@@ -95,11 +108,12 @@ def sectors(activity, project, activities_globals):
     return changes
 
 
-def policy_markers(activity, project, activities_globals):
+def policy_markers(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the policy markers.
     The conditions will be extracted from the 'policy-marker' elements.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -112,18 +126,35 @@ def policy_markers(activity, project, activities_globals):
         code = ''
         significance = ''
         vocabulary = ''
-        text = get_text(marker, activities_globals['version'])[:255]
 
-        if 'code' in marker.attrib.keys() and len(marker.attrib['code']) < 3:
-            code = marker.attrib['code']
+        text = get_text(marker, activities_globals['version'])
+        if len(text) > 255:
+            add_log(iati_import, 'policy_marker',
+                    'description is too long (255 characters allowed)', project, 3)
+            text = text[:255]
 
-        if 'significance' in marker.attrib.keys() and len(marker.attrib['significance']) < 3:
-            significance = marker.attrib['significance']
+        if 'code' in marker.attrib.keys():
+            if not len(marker.attrib['code']) > 2:
+                code = marker.attrib['code']
+            else:
+                add_log(iati_import, 'policy_marker', 'code is too long (2 characters allowed)',
+                        project)
 
-        if 'vocabulary' in marker.attrib.keys() and len(marker.attrib['vocabulary']) < 6:
-            vocabulary = marker.attrib['vocabulary']
-            if vocabulary in POLICY_MARKER_TO_CODE.keys():
-                vocabulary = POLICY_MARKER_TO_CODE[vocabulary]
+        if 'significance' in marker.attrib.keys():
+            if not len(marker.attrib['significance']) > 2:
+                significance = marker.attrib['significance']
+            else:
+                add_log(iati_import, 'policy_marker',
+                        'significance is too long (2 characters allowed)', project)
+
+        if 'vocabulary' in marker.attrib.keys():
+            if not len(marker.attrib['vocabulary']) > 5:
+                vocabulary = marker.attrib['vocabulary']
+                if vocabulary in POLICY_MARKER_TO_CODE.keys():
+                    vocabulary = POLICY_MARKER_TO_CODE[vocabulary]
+            else:
+                add_log(iati_import, 'policy_marker',
+                        'vocabulary is too long (5 characters allowed)', project)
 
         pm, created = get_model('rsr', 'policymarker').objects.get_or_create(
             project=project,

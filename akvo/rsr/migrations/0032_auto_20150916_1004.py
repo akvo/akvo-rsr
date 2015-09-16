@@ -34,8 +34,8 @@ class Migration(migrations.Migration):
             name='IatiImportLog',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('severity', models.IntegerField(default=1, verbose_name='severity')),
                 ('text', akvo.rsr.fields.ValidXMLTextField(verbose_name='text')),
-                ('error', models.BooleanField(default=False, verbose_name='error')),
                 ('iati_import', models.ForeignKey(related_name='iati_import_logs', verbose_name='iati_import', to='rsr.IatiImport')),
                 ('project', models.ForeignKey(related_name='iati_project_import_logs', verbose_name='project', blank=True, to='rsr.Project', null=True)),
             ],
@@ -53,7 +53,6 @@ class Migration(migrations.Migration):
                 ('status', models.PositiveSmallIntegerField(default=1, verbose_name='status')),
                 ('start_date', models.DateTimeField(null=True, verbose_name='start date', blank=True)),
                 ('end_date', models.DateTimeField(null=True, verbose_name='end date', blank=True)),
-                ('errors', models.BooleanField(default=False, verbose_name='errors')),
                 ('iati_import', models.ForeignKey(related_name='iati_project_imports', verbose_name='iati_import', to='rsr.IatiImport')),
                 ('project', models.ForeignKey(related_name='iati_project_imports', verbose_name='project', to='rsr.Project')),
             ],

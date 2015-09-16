@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..utils import get_text
+from ..utils import add_log, get_text
 
 from django.db.models import get_model
 
@@ -25,11 +25,12 @@ FALSE_VALUES = [
 ]
 
 
-def results(activity, project, activities_globals):
+def results(iati_import, activity, project, activities_globals):
     """
     Retrieve and store the result information.
     The results will be extracted from the 'result' elements.
 
+    :param iati_import: IatiImport instance
     :param activity: ElementTree; contains all data of the activity
     :param project: Project instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -44,17 +45,27 @@ def results(activity, project, activities_globals):
         result_description_text = ''
         result_aggregation_status = None
 
-        if 'type' in result.attrib.keys() and len(result.attrib['type']) < 2:
-            result_type = result.attrib['type']
+        if 'type' in result.attrib.keys():
+            if not len(result.attrib['type']) > 1:
+                result_type = result.attrib['type']
+            else:
+                add_log(iati_import, 'result_type', 'type too long (1 character allowed)', project)
 
         result_title_element = result.find('title')
         if not result_title_element is None:
-            result_title_text = get_text(result_title_element, activities_globals['version'])[:255]
+            result_title_text = get_text(result_title_element, activities_globals['version'])
+            if len(result_title_text) > 255:
+                add_log(iati_import, 'result_title', 'title too long (255 characters allowed)',
+                        project, 3)
+                result_title_text = result_title_text[:255]
 
         result_desc_element = result.find('description')
         if not result_desc_element is None:
-            result_description_text = get_text(result_desc_element,
-                                               activities_globals['version'])[:2000]
+            result_description_text = get_text(result_desc_element, activities_globals['version'])
+            if len(result_description_text) > 2000:
+                add_log(iati_import, 'result_description',
+                        'description too long (2000 characters allowed)', project, 3)
+                result_description_text = result_description_text[:2000]
 
         if 'aggregation-status' in result.attrib.keys():
             result_aggregation_status = result.attrib['aggregation-status']
@@ -79,7 +90,7 @@ def results(activity, project, activities_globals):
             imported_results.append(res)
 
             # Process indicators
-            for ind_change in indicators(result, res, activities_globals):
+            for ind_change in indicators(iati_import, result, res, activities_globals):
                 changes.append(ind_change)
 
     for result in project.results.all():
@@ -92,11 +103,12 @@ def results(activity, project, activities_globals):
     return changes
 
 
-def indicators(result_element, result, activities_globals):
+def indicators(iati_import, result_element, result, activities_globals):
     """
     Retrieve and store the indicator information of a result.
     The indicators will be extracted from the 'indicator' elements.
 
+    :param iati_import: IatiImport instance
     :param result_element: ElementTree; contains all data of the result
     :param result: Result instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -114,8 +126,12 @@ def indicators(result_element, result, activities_globals):
         baseline_value = ''
         baseline_comment_text = ''
 
-        if 'measure' in indicator.attrib.keys() and len(indicator.attrib['measure']) < 2:
-            indicator_measure = indicator.attrib['measure']
+        if 'measure' in indicator.attrib.keys():
+            if not len(indicator.attrib['measure']) > 1:
+                indicator_measure = indicator.attrib['measure']
+            else:
+                add_log(iati_import, 'indicator_measure', 'measure too long (1 character allowed)',
+                        result.project)
 
         if 'ascending' in indicator.attrib.keys():
             indicator_ascending = indicator.attrib['ascending']
@@ -126,31 +142,46 @@ def indicators(result_element, result, activities_globals):
 
         indicator_title_element = indicator.find('title')
         if not indicator_title_element is None:
-            indicator_title_text = get_text(indicator_title_element,
-                                            activities_globals['version'])[:255]
+            indicator_title_text = get_text(indicator_title_element, activities_globals['version'])
+            if len(indicator_title_text) > 255:
+                add_log(iati_import, 'indicator_title', 'title too long (255 characters allowed)',
+                        result.project, 3)
+                indicator_title_text = indicator_title_text[:255]
 
         indicator_desc_element = indicator.find('description')
         if not indicator_desc_element is None:
-            indicator_desc_text = get_text(indicator_desc_element,
-                                           activities_globals['version'])[:2000]
+            indicator_desc_text = get_text(indicator_desc_element, activities_globals['version'])
+            if len(indicator_desc_text) > 2000:
+                add_log(iati_import, 'indicator_description',
+                        'description too long (2000 characters allowed)', result.project, 3)
+                indicator_desc_text = indicator_desc_text[:2000]
 
         baseline_element = indicator.find('baseline')
         if not baseline_element is None:
-            if 'year' in baseline_element.attrib.keys() and \
-                    len(baseline_element.attrib['year']) < 5:
-                try:
-                    baseline_year = int(baseline_element.attrib['year'])
-                except ValueError:
-                    pass
+            if 'year' in baseline_element.attrib.keys():
+                if not len(baseline_element.attrib['year']) > 4:
+                    try:
+                        baseline_year = int(baseline_element.attrib['year'])
+                    except ValueError as e:
+                        add_log(iati_import, 'indicator_baseline_year', str(e), result.project)
+                else:
+                    add_log(iati_import, 'indicator_baseline_year',
+                            'year too long (4 characters allowed)', result.project)
 
-            if 'value' in baseline_element.attrib.keys() and \
-                    len(baseline_element.attrib['value']) < 51:
-                baseline_value = baseline_element.attrib['value']
+            if 'value' in baseline_element.attrib.keys():
+                if not len(baseline_element.attrib['value']) > 50:
+                    baseline_value = baseline_element.attrib['value']
+                else:
+                    add_log(iati_import, 'indicator_baseline_value',
+                            'value too long (50 characters allowed)', result.project)
 
             baseline_comment = baseline_element.find('comment')
             if not baseline_comment is None:
-                baseline_comment_text = get_text(baseline_comment,
-                                                 activities_globals['version'])[:2000]
+                baseline_comment_text = get_text(baseline_comment, activities_globals['version'])
+                if len(baseline_comment_text) > 2000:
+                    add_log(iati_import, 'indicator_baseline_comment',
+                            'comment too long (2000 characters allowed)', result.project, 3)
+                    baseline_comment_text = baseline_comment_text[:2000]
 
         ind, created = get_model('rsr', 'indicator').objects.get_or_create(
             result=result,
@@ -171,7 +202,7 @@ def indicators(result_element, result, activities_globals):
             imported_indicators.append(ind)
 
             # Process indicator periods
-            for period_change in indicator_periods(indicator, ind, activities_globals):
+            for period_change in indicator_periods(iati_import, indicator, ind, activities_globals):
                 changes.append(period_change)
 
     for indicator in result.indicators.all():
@@ -184,11 +215,12 @@ def indicators(result_element, result, activities_globals):
     return changes
 
 
-def indicator_periods(indicator_element, indicator, activities_globals):
+def indicator_periods(iati_import, indicator_element, indicator, activities_globals):
     """
     Retrieve and store the indicator period information of an indicator.
     The indicator periods will be extracted from the 'period' elements.
 
+    :param iati_import: IatiImport instance
     :param indicator_element: ElementTree; contains all data of the indicator
     :param indicator: Indicator instance
     :param activities_globals: Dictionary; contains all global activities information
@@ -209,35 +241,51 @@ def indicator_periods(indicator_element, indicator, activities_globals):
         if not pstart_elem is None and 'iso-date' in pstart_elem.attrib.keys():
             try:
                 period_start = datetime.strptime(pstart_elem.attrib['iso-date'], '%Y-%m-%d').date()
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'indicator_period_start', str(e), indicator.result.project)
 
         pend_element = period.find('period-end')
         if not pend_element is None and 'iso-date' in pend_element.attrib.keys():
             try:
                 period_end = datetime.strptime(pend_element.attrib['iso-date'], '%Y-%m-%d').date()
-            except ValueError:
-                pass
+            except ValueError as e:
+                add_log(iati_import, 'indicator_period_end', str(e), indicator.result.project)
 
         target_element = period.find('target')
         if not target_element is None:
-            if 'value' in target_element.attrib.keys() and len(target_element.attrib['value']) < 51:
-                target_value = target_element.attrib['value']
+            if 'value' in target_element.attrib.keys():
+                if not len(target_element.attrib['value']) > 50:
+                    target_value = target_element.attrib['value']
+                else:
+                    add_log(iati_import, 'indicator_period_target_value',
+                            'value too long (50 characters allowed', indicator.result.project)
 
             target_comment_element = target_element.find('comment')
             if not target_comment_element is None:
-                target_comment = get_text(target_comment_element,
-                                          activities_globals['version'])[:2000]
+                target_comment = get_text(target_comment_element, activities_globals['version'])
+                if len(target_comment) > 2000:
+                    add_log(iati_import, 'indicator_period_target_comment',
+                            'comment too long (2000 characters allowed',
+                            indicator.result.project, 3)
+                    target_comment = target_comment[:2000]
 
         actual_element = period.find('actual')
         if not actual_element is None:
-            if 'value' in actual_element.attrib.keys() and len(actual_element.attrib['value']) < 51:
-                actual_value = actual_element.attrib['value']
+            if 'value' in actual_element.attrib.keys():
+                if not len(actual_element.attrib['value']) > 50:
+                    actual_value = actual_element.attrib['value']
+                else:
+                    add_log(iati_import, 'indicator_period_actual_value',
+                            'value too long (50 characters allowed', indicator.result.project)
 
             actual_comment_element = actual_element.find('comment')
             if not actual_comment_element is None:
-                actual_comment = get_text(actual_comment_element,
-                                          activities_globals['version'])[:2000]
+                actual_comment = get_text(actual_comment_element, activities_globals['version'])
+                if len(actual_comment) > 2000:
+                    add_log(iati_import, 'indicator_period_actual_comment',
+                            'comment too long (2000 characters allowed',
+                            indicator.result.project, 3)
+                    actual_comment = actual_comment[:2000]
 
         per, created = get_model('rsr', 'indicatorperiod').objects.get_or_create(
             indicator=indicator,

@@ -8,6 +8,24 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import get_model
 
 
+def add_log(iati_import, field, error, project=None, severity=2):
+    """
+    Add a log entry in the IatiImportLog model.
+
+    :param iati_import: IatiImport instance
+    :param field: String; name of the field
+    :param error: String; error description
+    :param project: Project instance
+    :param severity: Integer
+    """
+    get_model('rsr', 'iatiimportlog').objects.create(
+        iati_import=iati_import,
+        text=u'%s: %s.' % (field, error),
+        project=project,
+        severity=severity
+    )
+
+
 def get_text(element, version):
     """
     Returns the text of an element. Based on the IATI version, this is the direct text of the
@@ -35,8 +53,11 @@ def get_or_create_organisation(ref, name):
 
     :param ref: String; the reference of the organisation that is specified in the IATI file.
     :param name: String; the name of the organisation that is specified in the IATI file.
-    :return: Organisation instance
+    :return: Organisation instance or None
     """
+    if not (ref or name):
+        return None
+
     if ref:
         try:
             return get_model('rsr', 'organisation').objects.get(iati_org_id=ref)
@@ -55,6 +76,6 @@ def get_or_create_organisation(ref, name):
     return get_model('rsr', 'organisation').objects.create(
         name=name[:25],
         long_name=name[:75],
-        iati_org_id=ref,
+        iati_org_id=ref if ref else None,
         organisation_type='N'
     )
