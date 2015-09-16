@@ -838,7 +838,7 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
     var Typeahead, TypeaheadLabel, TypeaheadContainer, selectorTypeahead, selectorClass, inputClass, typeaheadInput;
     Typeahead = ReactTypeahead.Typeahead;
 
-    if (inputType === 'project'); {
+    if (inputType === 'project') {
         typeaheadOptions.forEach(function(o) {
             o.filterOption = o.id + ' ' + o.title;
             o.displayOption = o.title + ' (ID: ' + o.id + ')';
