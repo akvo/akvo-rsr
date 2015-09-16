@@ -4,7 +4,18 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..utils import add_log
+from ..utils import add_log, get_text
+
+from django.db.models import get_model
+
+CODE_TO_STATUS = {
+    '1': 'H',
+    '2': 'A',
+    '3': 'C',
+    '4': 'C',
+    '5': 'L',
+    '6': 'R'
+}
 
 
 def language(iati_import, activity, project, activities_globals):
@@ -267,3 +278,90 @@ def default_tied_status(iati_import, activity, project, activities_globals):
         return ['default_tied_status']
 
     return []
+
+
+def status(iati_import, activity, project, activities_globals):
+    """
+    Retrieve and store the status.
+    The title will be extracted from the 'code' attribute of the 'activity-status' element.
+
+    :param iati_import: IatiImport instance
+    :param activity: ElementTree; contains all data for the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    project_status = 'N'
+
+    activity_status = activity.find('activity-status')
+    if activity_status is not None and 'code' in activity_status.attrib.keys():
+        if not len(activity_status.attrib['code']) > 1:
+            code = activity_status.attrib['code']
+            if code in CODE_TO_STATUS.keys():
+                project_status = CODE_TO_STATUS[code]
+            else:
+                add_log(iati_import, 'status', 'invalid status code', project)
+        else:
+            add_log(iati_import, 'status', 'status is too long (1 character allowed)', project)
+
+    if project.status != project_status:
+        project.status = project_status
+        project.save(update_fields=['status'])
+        return ['status']
+
+    return []
+
+
+def conditions(iati_import, activity, project, activities_globals):
+    """
+    Retrieve and store the conditions.
+    The conditions will be extracted from the 'conditions' elements in the 'conditions' element.
+
+    :param iati_import: IatiImport instance
+    :param activity: ElementTree; contains all data of the activity
+    :param project: Project instance
+    :param activities_globals: Dictionary; contains all global activities information
+    :return: List; contains fields that have changed
+    """
+    imported_conditions = []
+    changes = []
+
+    conditions_element = activity.find('conditions')
+
+    if not conditions_element is None and 'attached' in conditions_element.attrib.keys() and \
+            conditions_element.attrib['attached'] == '1':
+        for condition in conditions_element.findall('condition'):
+            condition_type = ''
+
+            if 'type' in condition.attrib.keys():
+                if not len(condition.attrib['type']) > 1:
+                    condition_type = condition.attrib['type']
+                else:
+                    add_log(iati_import, 'condition',
+                            'condition type is too long (1 character allowed)', project)
+
+            condition_text = get_text(condition, activities_globals['version'])
+            if len(condition_text) > 100:
+                add_log(iati_import, 'condition', 'condition is too long (100 character allowed)',
+                        project, 3)
+                condition_text = condition_text[:100]
+
+            cond, created = get_model('rsr', 'projectcondition').objects.get_or_create(
+                project=project,
+                type=condition_type,
+                text=condition_text
+            )
+
+            if created:
+                changes.append(u'added condition (id: %s): %s' % (str(cond.pk), cond))
+
+            imported_conditions.append(cond)
+
+    for condition in project.conditions.all():
+        if not condition in imported_conditions:
+            changes.append(u'deleted condition (id: %s): %s' %
+                           (str(condition.pk),
+                            condition.__unicode__()))
+            condition.delete()
+
+    return changes

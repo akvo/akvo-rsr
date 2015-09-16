@@ -50,7 +50,7 @@ FIELDS = [
     'partnerships',
     'related_projects',
     'contacts',
-    # 'results',
+    'results',
     'conditions',
     'locations',
     'recipient_countries',
