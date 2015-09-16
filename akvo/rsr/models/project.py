@@ -242,7 +242,8 @@ class Project(TimestampsMixin, models.Model):
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(
-        _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True,
+        _(u'IATI Project Identifier'), max_length=100, blank=True, db_index=True, null=True,
+        unique=True,
         help_text=_(u'This should be the official unique IATI Identifier for the project. '
                     u'The identifier consists of the IATI organisation identifier and the '
                     u'(organisations internal) project identifier, e.g. NL-KVK-31156201-TZ1234. '
