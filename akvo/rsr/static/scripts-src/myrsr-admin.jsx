@@ -845,6 +845,12 @@ function buildReactComponents(typeaheadOptions, typeaheadCallback, displayOption
         });
         filterOption = 'filterOption';
         displayOption = 'displayOption';
+    } else if (inputType === 'org') {
+        typeaheadOptions.forEach(function(o) {
+            o.filterOption = o.name + ' ' + o.long_name;
+        });        
+        filterOption = 'filterOption';
+        console.dir(typeaheadOptions);
     }
 
     inputClass = selector + " form-control " + childClass;
@@ -1240,7 +1246,7 @@ function updateTypeaheads() {
     API = reportingOrgsAPIUrl;
     inputType = 'org';
 
-    updateTypeahead(els, filterOption, labelText, helpText, API);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
 
     els = document.querySelectorAll('.partner-input');
     labelText = defaultValues.reporting_org_label;
@@ -1250,7 +1256,7 @@ function updateTypeaheads() {
     inputType = 'org';
 
 
-    updateTypeahead(els, filterOption, labelText, helpText, API);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
 
     els = document.querySelectorAll('.transaction-provider-org-input');
     labelText = defaultValues.provider_org_label;
@@ -1260,7 +1266,7 @@ function updateTypeaheads() {
     inputType = 'org';
 
 
-    updateTypeahead(els, filterOption, labelText, helpText, API);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
 
     els = document.querySelectorAll('.transaction-receiver-org-input');
     labelText = defaultValues.recipient_org_label;
@@ -1270,7 +1276,7 @@ function updateTypeaheads() {
     inputType = 'org';
 
 
-    updateTypeahead(els, filterOption, labelText, helpText, API);
+    updateTypeahead(els, filterOption, labelText, helpText, API, inputType);
 
     function updateTypeahead(els, filterOption, labelText, helpText, API, inputType) {
         for (var i = 0; i < els.length; i++) {
