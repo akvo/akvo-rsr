@@ -23,7 +23,8 @@ def more_link(context, project):
     """Generate the more links."""
     partners = {}
     for partner in project.all_partners():
-        partners[partner] = partner.has_partner_types(project)
+        if partner != project.reporting_org():
+            partners[partner] = partner.has_partner_types(project)
     return {
         'project': project,
         'partners': partners
